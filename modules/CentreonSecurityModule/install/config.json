@@ -5,6 +5,8 @@
     "author" : [
         "Merethis"
     ],
+    "isuninstallable" : false,
+    "isdisableable" : false,
     "url" : "",
     "description" : "Centreon Security Module",
     "core version" : "3.0.0",

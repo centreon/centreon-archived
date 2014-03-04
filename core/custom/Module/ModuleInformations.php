@@ -67,17 +67,17 @@ class ModuleInformations
     
     public static function isModuleActivated($moduleName)
     {
-        $resultModule = \Centreon\Models\Module::getIdByParameter('name', $moduleName);
-        $result = \Centreon\Models\Module::getParameters($resultModule[0], 'isactivated');
+        $moduleId = self::getModuleIdByName($moduleName);
+        $result = \Centreon\Models\Module::getParameters($moduleId, 'isactivated');
         return (boolean)$result['isactivated'];
     }
     
     public static function isModuleInstalled($moduleName)
     {
         $isinstalled = false;
-        $resultModule = \Centreon\Models\Module::getIdByParameter('name', $moduleName);
-        if (count($resultModule) > 0) {
-            $result = \Centreon\Models\Module::getParameters($resultModule[0], 'isinstalled');
+        $moduleId = self::getModuleIdByName($moduleName);
+        if ($moduleId != false) {
+            $result = \Centreon\Models\Module::getParameters($moduleId, 'isinstalled');
             $isinstalled = (boolean)$result['isinstalled'];
         }
         return $isinstalled;
@@ -101,17 +101,30 @@ class ModuleInformations
     
     /**
      * 
+     * @param type $moduleName
+     * @return type
      */
-    public static function addInformationsInDb()
+    public static function getModuleIdByName($moduleName)
     {
+        $returnValue = false;
+        $resultModule = \Centreon\Models\Module::getIdByParameter('name', $moduleName);
         
+        if (count($resultModule) > 0) {
+            $returnValue = $resultModule[0];
+        }
+        
+        return $returnValue;
     }
     
-    /**
-     * 
-     */
-    public static function updateInformationsInDb()
+    public static function getModuleList()
     {
+        $moduleList = array();
+        $rawModuleList = \Centreon\Models\Module::getList('name');
         
+        foreach($rawModuleList as $module) {
+            $moduleList[] = $module['name'];
+        }
+        
+        return $moduleList;
     }
 }

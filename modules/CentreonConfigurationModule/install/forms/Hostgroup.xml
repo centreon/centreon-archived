@@ -33,4 +33,10 @@
 			</block>
 		</section>
 	</form>
+    <wizard name="add_hostgroup">
+        <route>/configuration/hostgroup/add</route>
+        <step name="General">
+            <field name="hg_name" mandatory="1"></field>
+        </step>
+    </wizard>
 </forms>

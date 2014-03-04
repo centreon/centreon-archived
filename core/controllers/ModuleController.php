@@ -39,8 +39,5 @@ namespace Centreon\Controllers;
 
 class ModuleController extends \Centreon\Internal\Controller
 {
-    private function display()
-    {
-        
-    }
+    
 }

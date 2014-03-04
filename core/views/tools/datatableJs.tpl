@@ -10,6 +10,7 @@
             "sPaginationType": "bootstrap",
             "bSortCellsTop": true,
             'sDom': "<'row'r<'clear'><'col-sm-6'l><'col-sm-6'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            "order": [[ 1, "asc" ]],
             "oTableTools": {
                 "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}",
                 "aButtons": [
@@ -19,6 +20,9 @@
                         "aButtons": [ "copy", "csv", "xls", "pdf", "print" ]
                     }
                 ]
+            },
+            "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                jQuery('td:eq(0)', nRow).css('text-align', 'center');
             },
             "aoColumnDefs": [
                 { "bAutoWidth" : false, "bSortable": false, "sWidth": "10px", "aTargets": [0] }
@@ -41,6 +45,10 @@
             ]
         });
     });
+
+    setInterval(function () { 
+            oTable.fnDraw(false);
+    }, 60000);
 
     function toggleSelectedAction() {
         var countElem = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]').length;

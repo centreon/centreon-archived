@@ -74,6 +74,9 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function customviewAction()
     {
+        if (isset($_SESSION['customview_filters'])) {
+            unset($_SESSION['customview_filters']);
+        }
         $this->currentView = CustomviewRepository::getCurrentView($this->user->getId(), $this->getParams());
         $template = \Centreon\Internal\Di::getDefault()->get('template');
         $template->addCss('jquery.gridster.min.css')
@@ -116,19 +119,30 @@ class CustomviewController extends \Centreon\Internal\Controller
         foreach ($filters as $k => $v) {
             $options .= sprintf('<option value="%s">%s</option>', $k, $v);
         }
-        $filterHtml = <<<EOF
+        $filterHtml = '
 <div class="filter-div col-md-2"> 
     <div class="remove-filter fa fa-times-circle"></div> 
     <div> 
         <select class="filter-name form-control input-sm"> 
-            $options
+            '.$options.'
         </select> 
     </div> 
+    <div>
+        <select class="filter-cmp form-control input-sm">
+            <option value="'.CustomviewRepository::EQUAL.'">equal</option>
+            <option value="'.CustomviewRepository::NOT_EQUAL.'">not equal</option>
+            <option value="'.CustomviewRepository::CONTAINS.'">contains</option>
+            <option value="'.CustomviewRepository::NOT_CONTAINS.'">not contains</option>
+            <option value="'.CustomviewRepository::GREATER.'">greater than</option>
+            <option value="'.CustomviewRepository::GREATER_EQUAL.'">greater or equal</option>
+            <option value="'.CustomviewRepository::LESSER.'">lesser than</option>
+            <option value="'.CustomviewRepository::LESSER_EQUAL.'">lesser or equal</option>
+        </select>
+    </div>
     <div> 
         <input type="text" class="filter-value form-control input-sm"></input> 
     </div> 
-</div>
-EOF;
+</div>';
         $template->assign('filterHtml', $filterHtml);
         $template->assign('filterHtmlForJs', str_replace(array("\r", "\n"), "", $filterHtml));
         $template->display('file:[CentreonCustomviewModule]customview.tpl');
@@ -397,9 +411,13 @@ EOF;
         if (isset($params['filterNames']) && isset($params['filterValues'])) {
             $filterNames = json_decode($params['filterNames']);
             $filterValues = json_decode($params['filterValues']);
+            $filterCmp = json_decode($params['filterCmp']);
             foreach($filterNames as $index => $name) {
                 if ($name != "" && isset($filterValues[$index])) {
-                    $_SESSION['customview_filters'][$name] = $params['filterValues'][$index];
+                    $_SESSION['customview_filters'][$name] = CustomviewRepository::getCmpString(
+                        $filterCmp[$index], 
+                        $filterValues[$index]
+                    );
                 }
             }
         }

@@ -145,4 +145,27 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             )
         )
     );
+
+    public static function getTemplateName($template_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Check if the template_id is well formated */
+        if (!isset($template_id) || $template_id == "") {
+            return -1;
+        }
+
+        /* Get information into the database. */
+        $query = "SELECT service_description FROM service WHERE service_id = '$template_id' AND service_register = '0'";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return $row["service_description"];
+        }
+        return -1;
+    }
+
 }

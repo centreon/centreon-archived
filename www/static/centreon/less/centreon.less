@@ -6,6 +6,8 @@
 
 /* Left bar */
 @left-bar-width: 220px;
+@left-cursor-width: 4px;
+
 
 div.row-divider {
     margin-bottom: 30px;
@@ -132,7 +134,7 @@ aside {
     position: relative;
     
     li {
-        background-color: @navbar-default-link-active-bg;
+//        background-color: @navbar-default-link-active-bg;
 
         &:before {
             content: "";
@@ -140,7 +142,7 @@ aside {
             width: 8px;
             left: 23px;
             top: 16px;
-            border-top: 1px solid @navbar-default-color;
+//            border-top: 1px solid @navbar-default-color;
             position: absolute;
             z-index: 1;
         }
@@ -158,10 +160,24 @@ aside {
         left: 23px;
         top: 0;
         bottom: 0;
-        border-left: 1px solid @navbar-default-color;
+//        border-left: 1px solid @navbar-default-color;
         position: absolute;
         z-index: 1;
     }
+}
+
+.submenu-active {
+     border-left: @left-cursor-width solid #428bca;
+     font-weight: bold;
+}
+
+.submenu-active a {
+     color: #428bca !important;
+     margin-left: -@left-cursor-width;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+     background-color: #000;
 }
 
 /* Menu environment */

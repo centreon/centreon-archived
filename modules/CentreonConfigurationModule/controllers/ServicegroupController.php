@@ -78,17 +78,6 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
     {
         parent::datatableAction();
     }
-    
-    /**
-     * Create a new servicegroup
-     *
-     * @method post
-     * @route /configuration/servicegroup/create
-     */
-    public function createAction()
-    {
-        parent::createAction(); 
-    }
 
     /**
      * Update a servicegroup
@@ -111,7 +100,20 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function addAction()
     {
+        $this->tpl->assign('validateUrl', '/configuration/servicegroup/add');
         parent::addAction();
+    }
+    
+    /**
+     * Add a servicegroup
+     *
+     *
+     * @method post
+     * @route /configuration/servicegroup/add
+     */
+    public function createAction()
+    {
+        parent::createAction();
     }
     
     /**

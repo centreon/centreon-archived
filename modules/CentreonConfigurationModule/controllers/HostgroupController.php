@@ -78,38 +78,39 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
     
     /**
-     * Create a new hostgroup
-     *
-     * @method post
-     * @route /configuration/hostgroup/create
-     */
-    public function createAction()
-    {
-        
-    }
-
-    /**
      * Update a hostgroup
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/hostgroup/update
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
      * Add a hostgroup
-     *
      *
      * @method get
      * @route /configuration/hostgroup/add
      */
     public function addAction()
     {
+        $this->tpl->assign('validateUrl', '/configuration/hostgroup/add');
         parent::addAction();
+    }
+    
+    /**
+     * Add a hostgroup
+     *
+     *
+     * @method post
+     * @route /configuration/hostgroup/add
+     */
+    public function createAction()
+    {
+        parent::createAction();
     }
     
     /**

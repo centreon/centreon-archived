@@ -81,17 +81,6 @@ class ContacttemplateController extends \CentreonConfiguration\Controllers\Objec
     }
     
     /**
-     * Create a new contact template
-     *
-     * @method post
-     * @route /configuration/contacttemplate/create
-     */
-    public function createAction()
-    {
-        parent::createAction();   
-    }
-
-    /**
      * Update a contact template
      *
      *
@@ -110,9 +99,9 @@ class ContacttemplateController extends \CentreonConfiguration\Controllers\Objec
      * @method get
      * @route /configuration/contacttemplate/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

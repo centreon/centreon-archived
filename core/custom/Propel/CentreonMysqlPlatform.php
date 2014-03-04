@@ -37,6 +37,81 @@ namespace Centreon\Custom\Propel;
 
 class CentreonMysqlPlatform extends \MysqlPlatform
 {
+    /**
+     * Builds the DDL SQL to alter a table
+     * based on a PropelTableDiff instance
+     *
+     * @return string
+     */
+    public function getModifyTableDDL(\PropelTableDiff $tableDiff)
+    {
+        $ret = '';
+
+        // drop indices, foreign keys
+        foreach ($tableDiff->getRemovedFks() as $fk) {
+            $ret .= $this->getDropForeignKeyDDL($fk);
+        }
+        foreach ($tableDiff->getModifiedFks() as $fkName => $fkModification) {
+            list($fromFk, $toFk) = $fkModification;
+            $ret .= $this->getDropForeignKeyDDL($fromFk);
+        }
+        foreach ($tableDiff->getRemovedIndices() as $index) {
+            $ret .= $this->getDropIndexDDL($index);
+        }
+        foreach ($tableDiff->getModifiedIndices() as $indexName => $indexModification) {
+            list($fromIndex, $toIndex) = $indexModification;
+            $ret .= $this->getDropIndexDDL($fromIndex);
+        }
+
+        // alter table structure
+        foreach ($tableDiff->getRenamedColumns() as $columnRenaming) {
+            $ret .= $this->getRenameColumnDDL($columnRenaming[0], $columnRenaming[1]);
+        }
+        if ($modifiedColumns = $tableDiff->getModifiedColumns()) {
+            $ret .= $this->getModifyColumnsDDL($modifiedColumns);
+        }
+        if ($addedColumns = $tableDiff->getAddedColumns()) {
+            $ret .= $this->getAddColumnsDDL($addedColumns);
+        }
+        foreach ($tableDiff->getRemovedColumns() as $column) {
+            $ret .= $this->getRemoveColumnDDL($column);
+        }
+
+        // add new indices and foreign keys
+        if ($tableDiff->hasModifiedPk()) {
+            if ($tableDiff->getFromTable()->getName() === $tableDiff->getToTable()->getName()) {
+                $dropDDL = str_replace(";\n", ", ", $this->getDropPrimaryKeyDDL($tableDiff->getFromTable()));
+                $addDDL = $this->getAddPrimaryKeyDDL($tableDiff->getToTable());
+                $ret .= $dropDDL . (substr($addDDL, strpos($addDDL, "ADD PRIMARY")));
+            } else {
+                $ret .= $this->getDropPrimaryKeyDDL($tableDiff->getFromTable());
+                $ret .= $this->getAddPrimaryKeyDDL($tableDiff->getToTable());
+            }
+        }
+        foreach ($tableDiff->getModifiedIndices() as $indexName => $indexModification) {
+            list($fromIndex, $toIndex) = $indexModification;
+            $ret .= $this->getAddIndexDDL($toIndex);
+        }
+        foreach ($tableDiff->getAddedIndices() as $index) {
+            $ret .= $this->getAddIndexDDL($index);
+        }
+        foreach ($tableDiff->getModifiedFks() as $fkName => $fkModification) {
+            list($fromFk, $toFk) = $fkModification;
+            $ret .= $this->getAddForeignKeyDDL($toFk);
+        }
+        foreach ($tableDiff->getAddedFks() as $fk) {
+            $ret .= $this->getAddForeignKeyDDL($fk);
+        }
+
+        return $ret;
+    }
+    
+        
+    /**
+     * 
+     * @param \Table $table
+     * @return type
+     */
     protected function getTableOptions(\Table $table)
     {
         $dbVI = $table->getDatabase()->getVendorInfoForType('mysql');

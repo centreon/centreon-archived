@@ -1,0 +1,21 @@
+[
+    {
+      "name": "Administration",
+      "short_name": "administration",
+      "icon_class": "fa fa-folder-open",
+      "bgcolor": "#FA5858",
+      "menus" : [
+            {
+              "name": "Extensions",
+              "short_name": "extensions",
+              "menus" : [
+                    {
+                        "name" : "Modules",
+                        "short_name" : "modules",
+                        "route" : "/administration/extensions/module"
+                    }
+                ]
+            }
+        ]
+    }
+]

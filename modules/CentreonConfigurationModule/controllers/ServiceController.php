@@ -112,33 +112,20 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     {
         parent::datatableAction();
     }
-    
-    /**
-     * Create a new service
-     *
-     * @method post
-     * @route /configuration/service/create
-     */
-    public function createAction()
-    {
-        
-    }
 
     /**
      * Update a service
      *
-     *
-     * @method put
+     * @method post
      * @route /configuration/service/update
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
      * Add a service
-     *
      *
      * @method get
      * @route /configuration/service/add
@@ -146,6 +133,17 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     public function addAction()
     {
         parent::addAction();
+    }
+    
+    /**
+     * Add a service
+     *
+     * @method post
+     * @route /configuration/service/add
+     */
+    public function createAction()
+    {
+        parent::createAction();
     }
     
     /**
@@ -337,7 +335,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     /**
      * Trap for a specific service
      *
-     * @method post
+     * @method get
      * @route /configuration/service/[i:id]/trap
      */
     public function trapForServiceAction()

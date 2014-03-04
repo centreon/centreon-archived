@@ -12,6 +12,7 @@ class Installer
     protected static $steps;
     protected static $wizards;
     protected static $stepFields;
+    protected static $validators;
 
     /**
      * Init arrays
@@ -63,6 +64,17 @@ class Installer
             }
         }
     }
+    
+    public static function initValidators()
+    {
+        self::$validators = array();
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->query("SELECT validator_id, name FROM form_validator");
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            self::$validators[$row['name']] = $row['validator_id'];
+        }
+    }
 
     /**
      * Init arrays
@@ -109,24 +121,26 @@ class Installer
      *
      * @param array $data
      */
-    public static function insertForm($data)
+    public static function insertForm($data, $moduleId)
     {
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$forms[$key])) {
-            $sql = 'INSERT INTO form (name, route, redirect, redirect_route) 
-              VALUES (:name, :route, :redirect, :redirect_route)';
+            $sql = 'INSERT INTO form (name, route, redirect, redirect_route, module_id) 
+              VALUES (:name, :route, :redirect, :redirect_route, :module)';
         } else {
             $sql = 'UPDATE form SET route = :route,
                 redirect = :redirect,
                 redirect_route = :redirect_route
-                WHERE name = :name';
+                WHERE name = :name
+                AND module_id = :module';
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':route', $data['route']);
         $stmt->bindParam(':redirect', $data['redirect']);
         $stmt->bindParam(':redirect_route', $data['redirect_route']);
+        $stmt->bindParam(':module', $moduleId);
         $stmt->execute();
         if (!isset(self::$forms[$key])) {
             self::$forms[$key] = $db->lastInsertId('form', 'form_id');
@@ -242,6 +256,8 @@ class Installer
         if (!isset(self::$fields[$key])) {
             self::$fields[$key] = $db->lastInsertId('form_field', 'field_id');
         }
+        
+        
     }
 
     /**
@@ -272,6 +288,35 @@ class Installer
         $tmp = $key . ';' . $fname;
         self::$blockFields[$tmp] = self::$blocks[$key] . ';' . self::$fields[$fname];
     }
+    
+    /**
+     * 
+     * @param type $data
+     */
+    public static function addValidatorsToField($data)
+    {
+        $fname = (string)$data['field_name'];
+        $validators = $data['validators'];
+        if (isset(self::$fields[$fname]) && !is_null($validators->validator)) {
+            foreach ($validators->validator as $validator) {
+                if (isset(self::$validators[(string)$validator])) {
+                    $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+                    $stmt = $db->prepare('DELETE FROM form_field_validator_relation 
+                        WHERE validator_id = :validator_id AND field_id = :field_id');
+                    $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
+                    $stmt->bindParam(':field_id', self::$fields[$fname]);
+                    $stmt->execute();
+
+                    $stmt = $db->prepare('REPLACE INTO form_field_validator_relation (validator_id, field_id, client_side_event) 
+                        VALUES (:validator_id, :field_id, :client_side_event)');
+                    $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
+                    $stmt->bindParam(':field_id', self::$fields[$fname]);
+                    $stmt->bindParam(':client_side_event', $validator['events']);
+                    $stmt->execute();
+                }
+            }
+        }
+    }
 
     /**
      * Install form from XML string
@@ -283,9 +328,9 @@ class Installer
         $xml = simplexml_load_file($xmlFile);
         foreach ($xml as $form) {
             if ($form->getName() == 'form') {
-                self::processForm($moduleId, $form);
+                self::processForm($form, $moduleId);
             } elseif ($form->getName() == 'wizard') {
-                self::processWizard($form);
+                self::processWizard($form, $moduleId);
             }
         }
     }
@@ -295,17 +340,18 @@ class Installer
      *
      * @param array $data
      */
-    protected static function insertWizard($data)
+    protected static function insertWizard($data, $moduleId)
     {
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$wizards[$key])) {
-            $sql = 'INSERT INTO form_wizard (name, route) 
-              VALUES (:name, :route)';
+            $sql = 'INSERT INTO form_wizard (name, route, module_id) 
+              VALUES (:name, :route, :module)';
         } else {
             $sql = 'UPDATE form_wizard SET route = :route
                 WHERE name = :name 
-                AND wizard_id = :wizard_id';
+                AND wizard_id = :wizard_id
+                AND module_id = :module';
         }
         $stmt = $db->prepare($sql);
         if (isset(self::$wizards[$key])) {
@@ -313,6 +359,7 @@ class Installer
         }
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':route', $data['route']);
+        $stmt->bindParam(':module', $moduleId);
         $stmt->execute();
         if (!isset(self::$wizards[$key])) {
             self::$wizards[$key] = $db->lastInsertId('form_wizard', 'wizard_id');
@@ -378,16 +425,17 @@ class Installer
      *
      * @param SimpleXMLElement $wizard
      */
-    protected static function processWizard($wizard)
+    protected static function processWizard($wizard, $moduleId)
     {
         $insertedSteps = array();
         $insertedFields = array();
         self::initWizard($wizard['name']);
+        self::initValidators();
         $wizardData = array(
             'name' => $wizard['name'],
             'route' => $wizard->route
         );
-        self::insertWizard(array_map('strval', $wizardData));
+        self::insertWizard(array_map('strval', $wizardData), $moduleId);
         $stepRank = 1;
         foreach ($wizard->step as $step) {
             $stepData = array(
@@ -407,6 +455,11 @@ class Installer
                     'rank' => $fieldRank
                 );
                 self::addFieldToStep(array_map('strval', $stepFieldData));
+                $fieldValidators = array(
+                    'field_name' => $field['name'],
+                    'validators' => $field->validators
+                );
+                self::addValidatorsToField($fieldValidators);
                 $fieldRank++;
                 $insertedFields[] = implode(';', array($wizard['name'], $step['name'], $field['name']));
             }
@@ -421,19 +474,20 @@ class Installer
      *
      * @param SimpleXMLElement $form
      */
-    protected static function processForm($moduleId, $form)
+    protected static function processForm($form, $moduleId)
     {
         $insertedSections = array();
         $insertedBlocks = array();
         $insertedFields = array();
         self::initForm($form['name']);
+        self::initValidators();
         $formData = array(
             'name' => $form['name'],
             'route' => $form->route,
             'redirect' => $form->redirect,
             'redirect_route' => $form->redirect_route
         );
-        self::insertForm(array_map('strval', $formData));
+        self::insertForm(array_map('strval', $formData), $moduleId);
         $sectionRank = 1;
         foreach ($form->section as $section) {
             $sectionData = array(
@@ -470,7 +524,7 @@ class Installer
                         'module_id' => $moduleId,
                         'child_actions' => $field->child_actions,
                         'attributes' => $attributes,
-                        'help' => $field->help
+                        'help' => $field->help,
                     );
                     self::insertField(array_map('strval', $fieldData));
                     $blockFieldData = array(
@@ -482,6 +536,11 @@ class Installer
                         'rank' => $fieldRank
                     );
                     self::addFieldToBlock(array_map('strval', $blockFieldData));
+                    $fieldValidators = array(
+                        'field_name' => $field['name'],
+                        'validators' => $field->validators
+                    );
+                    self::addValidatorsToField($fieldValidators);
                     $fieldRank++;
                     $insertedFields[] = implode(
                         ';', 
@@ -618,32 +677,5 @@ class Installer
             }
         }
         $db->commit();
-    }
-    
-    /**
-     * 
-     */
-    public static function cleanDb($moduleId)
-    {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        
-        // Remove the field first
-        $sqlFields = "DELETE FROM form_field WHERE module_id = '$moduleId'";
-        $stmtRemoveFields = $db->query($sqlFields);
-        
-        // First clean the block
-        $sqlBlock = "DELETE FROM form_block WHERE NOT EXISTS (SELECT block_id FROM form_block_field_relation)";
-        $stmtRemoveBlock = $db->query($sqlBlock);
-        
-        // Second clean the section
-        $sqlSection = "DELETE FROM form_section WHERE NOT EXISTS (SELECT section_id FROM form_block)";
-        $stmtRemoveSection = $db->query($sqlSection);
-        
-        
-        // Then last but not least clean the form
-        $sqlForm = "DELETE FROM form WHERE NOT EXISTS (SELECT form_id FROM form_section)";
-        $stmtForm = $db->query($sqlForm);
-        
-        
     }
 }

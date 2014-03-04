@@ -282,6 +282,15 @@ class ConfigGenerateMainRepository
         $disabledField["nagios_activate"] = 1;
         $disabledField["debug_level_opt"] = 1;
         $disabledField["cfg_file"] = 1;
+        
+        /* Todo : Remove */
+        $disabledField["use_check_result_path"] = 1;
+        $disabledField["temp_file"] = 1;
+        $disabledField["nagios_user"] = 1; 
+        $disabledField["nagios_group"] = 1; 
+        $disabledField["log_rotation_method"] = 1; 
+        $disabledField["log_archive_path"] = 1; 
+        $disabledField["lock_file"] = 1; 
         return $disabledField;
     }
 }

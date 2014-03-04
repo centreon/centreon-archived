@@ -69,7 +69,7 @@
                     {
                         "name": "Connectors",
                         "short_name": "conf_connectors_list",
-                        "route": "/configuration/command"
+                        "route": "/configuration/connector"
                     }
                 ]
             },

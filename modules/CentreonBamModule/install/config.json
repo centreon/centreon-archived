@@ -5,6 +5,8 @@
     "author" : [
         "Merethis"
     ],
+    "isuninstallable" : false,
+    "isdisableable" : true,
     "url" : "",
     "description" : "Centreon Business Activity Monitoring module",
     "core version" : "3.0.0",

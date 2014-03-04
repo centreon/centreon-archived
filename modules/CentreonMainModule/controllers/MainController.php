@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonHome\Controllers;
+namespace CentreonMain\Controllers;
 
 /**
  * Home controller
@@ -40,7 +40,7 @@ namespace CentreonHome\Controllers;
  * @package Centreon
  * @subpackage Controllers
  */
-class HomeController extends \Centreon\Internal\Controller
+class MainController extends \Centreon\Internal\Controller
 {
     /**
      * Action for home page
@@ -50,8 +50,6 @@ class HomeController extends \Centreon\Internal\Controller
      */
     public function homeAction()
     {
-        \Centreon\Internal\Di::getDefault()
-            ->get('template')
-            ->display('file:[CentreonHomeModule]home.tpl');
+        $this->display('home.tpl');
     }
 }

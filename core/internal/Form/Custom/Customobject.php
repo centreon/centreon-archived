@@ -75,7 +75,7 @@ abstract class Customobject
                 } else {
                     $validatorRoute = \Centreon\Internal\Di::getDefault()
                         ->get('router')
-                        ->getPathFor('/validator/'.$validator['validator_action']);
+                        ->getPathFor($validator['validator_action']);
 
                     $ajaxCall = '$.ajax({
                             url: "'.$validatorRoute.'",
@@ -94,12 +94,13 @@ abstract class Customobject
                             $eventValidation .= '$("#'.$element['name'].'").on ("'.$event.'" , function(){ '.
                                $ajaxCall.
                                '.success(function(data, status, jqxhr) {
-                                   if (data["success"]) {
-                                       $(this).val(data["value"]);
-                                   } else {
-                                       alertClose();
-                                       alertMessage("<b>'.$label.'</b> " + data["error"], "alert-danger");
-                                   }
+                                    if (data["success"]) {
+                                        alertClose();
+                                        $(this).val(data["value"]);
+                                    } else {
+                                        alertClose();
+                                        alertMessage("<b>'.$label.'</b> " + data["error"], "alert-danger");
+                                    }
                                });
                             });';
                         }

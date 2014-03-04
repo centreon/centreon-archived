@@ -75,18 +75,6 @@ class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     {
         parent::datatableAction();
     }
-    
-    /**
-     * Create a new command
-     *
-     * @method post
-     * @route /configuration/command/create
-     * @acl view,add
-     */
-    public function createAction()
-    {
-        parent::createAction();     
-    }
 
     /**
      * Update a command
@@ -109,9 +97,9 @@ class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      * @route /configuration/command/add
      * @acl add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

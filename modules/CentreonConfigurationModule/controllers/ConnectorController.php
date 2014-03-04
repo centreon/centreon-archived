@@ -75,18 +75,6 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     {
         parent::datatableAction();
     }
-    
-    /**
-     * Create a new connector
-     *
-     * @method post
-     * @route /configuration/connector/create
-     * @acl add
-     */
-    public function createAction()
-    {
-        var_dump($this->getParams());
-    }
 
     /**
      * Update a connector
@@ -98,26 +86,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function updateAction()
     {
-        $givenParameters = $this->getParams('post');
-        
-        if (Form::validateSecurity($givenParameters['token'])) {
-            $connector = array(
-                'name' => $givenParameters['name'],
-                'description' => $givenParameters['description'],
-                'command_line' => $givenParameters['command_line'],
-                'enabled' => $givenParameters['enabled'],
-            );
-            
-            $connObj = new \CentreonConfiguration\Models\Connector();
-            try {
-                $connObj->update($givenParameters['id'], $connector);
-            } catch (Exception $e) {
-                echo "fail";
-            }
-            echo 'success';
-        } else {
-            echo "fail";
-        }
+        parent::updateAction();
     }
     
     /**
@@ -130,7 +99,21 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function addAction()
     {
+        $this->tpl->assign('validateUrl', '/configuration/connector/add');
         parent::addAction();
+    }
+    
+    /**
+     * Add a connector
+     *
+     *
+     * @method post
+     * @route /configuration/connector/add
+     * @acl add
+     */
+    public function createAction()
+    {
+        parent::createAction();
     }
     
     /**

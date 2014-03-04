@@ -42,6 +42,7 @@
  * Name:     get_environment_id
  * Purpose:  returns The id of environment
  * -------------------------------------------------------------
+ * @todo - use cache here, LEFT JOIN may have performance issues !
  */
 function smarty_function_get_environment_id($params, $template)
 {
@@ -49,29 +50,25 @@ function smarty_function_get_environment_id($params, $template)
     $router = $di->get('router');
     $route = $router->getCurrentUri();
     $db = $di->get('db_centreon');
-    
+
+    $arr = array('envid' => 0, 'subid' => 0, 'childid' => 0);
+
     /* Get environment */
-    $queryGetParent = "SELECT parent_id FROM menus WHERE menu_id = :menu_id";
-    $queryGetCurrent = "SELECT menu_id FROM menus WHERE url = :url";
-    $stmt = $db->prepare($queryGetCurrent);
-    $stmt->bindParam(':url', $route, \PDO::PARAM_STR);
+    $stmt = $db->prepare("SELECT m1.parent_id as envid, m1.menu_id as subid, 
+            m1.url as lvl1_url, m2.url as lvl2_url, m2.menu_id as childid
+        FROM menus m1 LEFT JOIN menus m2 ON m1.menu_id = m2.parent_id
+        WHERE m1.parent_id IN (SELECT menu_id FROM menus WHERE parent_id IS NULL) 
+        ORDER BY LENGTH(m2.url) DESC, LENGTH(m1.url) DESC");
     $stmt->execute();
-    $row = $stmt->fetch();
-    $stmt->closeCursor();
-    if ($row === false) {
-        return 1;
-    }
-    $menuId = $row['menu_id'];
-    $parentId = null;
-    do {
-        if (false === is_null($parentId)) {
-            $menuId = $parentId;
+    $len = 0;
+    while ($row = $stmt->fetch()) {
+	$url = is_null($row['lvl1_url']) ? $row['lvl2_url'] : $row['lvl1_url'];
+        if (preg_match("/^".preg_quote($url, '/')."/", $route, $matches)) {
+            $arr['envid'] = $row['envid'];
+            $arr['subid'] = $row['subid'];
+            $arr['childid'] = is_null($row['childid']) ? 0 : $row['childid'];
+            break;
         }
-        $stmt = $db->prepare($queryGetParent);
-        $stmt->bindParam(':menu_id', $menuId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch();
-        $parentId = $row['parent_id'];
-    } while(false === is_null($parentId));
-    return $menuId;
+    }
+    return json_encode($arr);
 }

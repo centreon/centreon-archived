@@ -82,21 +82,10 @@ class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
     }
     
     /**
-     * Create a new user
-     *
-     * @method post
-     * @route /configuration/user/create
-     */
-    public function createAction()
-    {
-        parent::createAction();   
-    }
-
-    /**
      * Update a user
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/user/update
      */
     public function updateAction()
@@ -111,9 +100,9 @@ class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
      * @method get
      * @route /configuration/user/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

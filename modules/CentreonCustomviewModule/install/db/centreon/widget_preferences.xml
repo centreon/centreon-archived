@@ -4,6 +4,7 @@
         <column name="widget_id" phpName="WidgetId" type="INTEGER" required="false"/>
         <column name="parameter_id" phpName="ParameterId" type="INTEGER" required="true"/>
         <column name="preference_value" phpName="PreferenceValue" type="VARCHAR" size="255" required="true"/>
+        <column name="comparator" phpName="Comparator" type="TINYINT" required="false"/>
         <foreign-key foreignTable="widgets" name="fk_widget_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="widget_id" foreign="widget_id"/>
         </foreign-key>

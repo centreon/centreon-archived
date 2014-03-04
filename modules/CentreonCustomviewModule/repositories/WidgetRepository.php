@@ -403,14 +403,21 @@ class WidgetRepository
         $widgetData = self::getWidgetData($params['widget_id']);
         $db->beginTransaction();
         foreach ($params as $key => $val) {
-            $stmt = $db->prepare("INSERT INTO widget_preferences (widget_id, parameter_id, preference_value) 
-                VALUES (?, ?, ?)");
+            $stmt = $db->prepare("
+                INSERT INTO widget_preferences (widget_id, parameter_id, preference_value, comparator)
+                VALUES (?, ?, ?, ?)");
+            $cmpKey = 'cmp-'.$key;
+            $cmpVal = 0;
+            if (isset($params[$cmpKey])) {
+                $cmpVal = $params[$cmpKey];
+            }
             $parameterId = self::getParameterIdByName($widgetData['widget_model_id'], $key);
             if ($parameterId) {
                 $stmt->execute(array(
                     $params['widget_id'], 
                     $parameterId,
-                    $val
+                    $val,
+                    $cmpVal
                 ));
             }
         }
@@ -565,11 +572,11 @@ class WidgetRepository
      * @param string $formName
      * @param int $widgetModelId
      */
-    public static function insertWidgetWizard($formName, $widgetModelId)
+    public static function insertWidgetWizard($formName, $widgetModelId, $moduleId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("INSERT INTO form_wizard (name, route) VALUES (?, ?)");
-        $stmt->execute(array($formName, "/customview/widgetsettings/$widgetModelId"));
+        $stmt = $db->prepare("INSERT INTO form_wizard (name, route, module_id) VALUES (?, ?, ?)");
+        $stmt->execute(array($formName, "/customview/widgetsettings/$widgetModelId", $moduleId));
     }
 
     /**
@@ -577,17 +584,20 @@ class WidgetRepository
      *
      * @param string $jsonFile
      */
-    public static function install($jsonFile)
+    public static function install($jsonFile, $moduleName)
     {
         $config = self::readConfigFile($jsonFile);
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $isactivated = 1;
         $isinstalled = 1;
+        
+        $module = \Centreon\Custom\Module\ModuleInformations::getModuleIdByName($moduleName);
+        
         $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, version,
-            author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled)
+            author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled, module_id)
         	VALUES (:name, :shortname, :description, :version, 
             :author, :email, :website, :keywords, :screenshot, :thumbnail,
-            :isactivated, :isinstalled)");
+            :isactivated, :isinstalled, :module)");
         $stmt->bindParam(':name', $config['name']);
         $stmt->bindParam(':shortname', $config['shortname']);
         $stmt->bindParam(':description', $config['description']);
@@ -600,10 +610,11 @@ class WidgetRepository
         $stmt->bindParam(':thumbnail', $config['thumbnail']);
         $stmt->bindParam(':isactivated', $isactivated);
         $stmt->bindParam(':isinstalled', $isinstalled);
+        $stmt->bindParam(':module', $module);
         $stmt->execute();
         $lastId = self::getLastInsertedWidgetModelId($config['name']);
         self::insertWidgetPreferences($lastId, $config);
-        self::insertWidgetWizard($config['name'], $lastId);
+        self::insertWidgetWizard($config['name'], $lastId, $module);
     }
 
 
@@ -796,13 +807,27 @@ class WidgetRepository
             $tab[$row['parameter_code_name']] = $row['default_value'];
         }
 
-        $stmt = $db->prepare("SELECT pref.preference_value, param.parameter_code_name
+        $stmt = $db->prepare("SELECT pref.preference_value, param.parameter_code_name, pref.comparator
             FROM widget_preferences pref, widget_parameters param
            	WHERE param.parameter_id = pref.parameter_id
            	AND pref.widget_id = ?");
         $stmt->execute(array($widgetId));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tab[$row['parameter_code_name']] = $row['preference_value'];
+            if (!$row['comparator']) {
+                $tab[$row['parameter_code_name']] = $row['preference_value'];
+            } else {
+                $tab[$row['parameter_code_name']] = CustomviewRepository::getCmpString(
+                    $row['comparator'],
+                    $row['preference_value']
+                );
+            }
+        }
+        if (isset($_SESSION['customview_filters'])) {
+            foreach ($_SESSION['customview_filters'] as $key => $value) {
+                if ($value != "" && isset($_SESSION['customview_filters'])) {
+                    $tab[$key] = $value;
+                }
+            }
         }
         return $tab;
     }

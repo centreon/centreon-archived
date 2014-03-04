@@ -1,0 +1,25 @@
+{
+    "name": "Centreon Main",
+    "shortname" : "centreon-main",
+    "version": "3.0.0",
+    "author" : [
+        "Merethis"
+    ],
+    "isuninstallable" : false,
+    "isdisableable" : false,
+    "url" : "",
+    "description" : "Centreon Main Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        
+    ],
+    "program dependencies" : [
+        
+    ]
+}

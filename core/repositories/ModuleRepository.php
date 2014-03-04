@@ -109,7 +109,8 @@ class ModuleRepository extends \Centreon\Repository\Repository
         array(
             'select' => array(
                 'Installed' => '1',
-                'Not installed' => '0'
+                'Not installed' => '0',
+                'Core Module' => '2'
             )
         ),
     );
@@ -121,7 +122,7 @@ class ModuleRepository extends \Centreon\Repository\Repository
     public static $columnCast = array(
         'isactivated' => array(
             'type' => 'select',
-            'parameters' =>array(
+            'parameters' => array(
                 'selecttype' => 'url',
                 'parameters' => array(
                     '0' => array(
@@ -142,6 +143,16 @@ class ModuleRepository extends \Centreon\Repository\Repository
                             ),
                             'linkName' => 'Enabled',
                             'styleClass' => 'btn btn-success btn-block'
+                        )
+                    ),
+                    '2' => array(
+                        'parameters' => array(
+                            'route' => '/administration/extensions/module/[i:id]',
+                            'routeParams' => array(
+                                'id' => '::id::'
+                            ),
+                            'linkName' => 'Not Disableable',
+                            'styleClass' => 'btn btn-primary btn-block'
                         )
                     ),
                 )
@@ -170,6 +181,16 @@ class ModuleRepository extends \Centreon\Repository\Repository
                             ),
                             'linkName' => 'Installed',
                             'styleClass' => 'btn btn-success btn-block'
+                        )
+                    ),
+                    '2' => array(
+                        'parameters' => array(
+                            'route' => '/administration/extensions/module/[i:id]',
+                            'routeParams' => array(
+                                'id' => '::id::'
+                            ),
+                            'linkName' => 'Core Module',
+                            'styleClass' => 'btn btn-primary btn-block'
                         )
                     ),
                 )
@@ -286,34 +307,11 @@ class ModuleRepository extends \Centreon\Repository\Repository
         // Returning the result
         $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
-        // Get current moduleName
-        $moduleNameList = array();
-        foreach($resultSet as $cModule) {
-            $moduleNameList[] = $cModule['name'];
-        }
-        
         // Add file system repo
-        $rawModuleList = glob(__DIR__."/../../modules/*Module/");
-        foreach ($rawModuleList as $module) {
-            if (file_exists(realpath($module . 'install/config.json'))) {
-                $b = json_decode(file_get_contents($module . 'install/config.json'), true);
-                if (!in_array($b['shortname'], $moduleNameList)) {
-                    $resultSet[] = array(
-                        'id' => 0,
-                        'name' => $b['shortname'],
-                        'description' => $b['name'],
-                        'version' => $b['version'],
-                        'author' => implode(", ", $b['author']),
-                        'isactivated' => 0,
-                        'isinstalled' => 0,
-                        'alias' => $b['name'],
-                    );
-                }
-            }
+        if ($a = strpos($finalRequest, 'isinstalled')) {
+            $paramName = substr($finalRequest, $a, 21);
+            self::getFilesystemModule($resultSet);
         }
-        
-        /*var_dump($resultSet);
-        var_dump(array_unique($resultSet));*/
         
         $countTab = count($resultSet);
         $objectTab = array();
@@ -339,5 +337,36 @@ class ModuleRepository extends \Centreon\Repository\Repository
                 )
             )
         );
+    }
+    
+    public static function getFilesystemModule(& $resultSet)
+    {
+        // Get current moduleName
+        $moduleNameList = \Centreon\Custom\Module\ModuleInformations::getModuleList();
+        
+        /*echo '<pre>';
+        var_dump($moduleNameList);
+        var_dump($resultSet);
+        echo '</pre>';
+        die();*/
+        
+        $rawModuleList = glob(__DIR__."/../../modules/*Module/");
+        foreach ($rawModuleList as $module) {
+            if (file_exists(realpath($module . 'install/config.json'))) {
+                $b = json_decode(file_get_contents($module . 'install/config.json'), true);
+                if (!in_array($b['shortname'], $moduleNameList)) {
+                    $resultSet[] = array(
+                        'id' => 0,
+                        'name' => $b['shortname'],
+                        'description' => $b['name'],
+                        'version' => $b['version'],
+                        'author' => implode(", ", $b['author']),
+                        'isactivated' => 0,
+                        'isinstalled' => 0,
+                        'alias' => $b['name'],
+                    );
+                }
+            }
+        }
     }
 }

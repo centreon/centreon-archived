@@ -148,7 +148,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT name, command_line FROM connector WHERE enabled = 1 ORDER BY name";
+        $query = "SELECT name AS connector_name, command_line AS connector_line FROM connector WHERE enabled = 1 ORDER BY name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

@@ -486,6 +486,28 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             )
         );
     }
+    
+    /**
+     * 
+     */
+    public function enableAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+    }
+    
+    /**
+     * 
+     */
+    public function disableAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+    }
 
     /**
      * Apply the massive change to a object

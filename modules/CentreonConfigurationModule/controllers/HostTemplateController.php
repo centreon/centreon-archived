@@ -35,16 +35,10 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Host;
 use \CentreonConfiguration\Models\Relation\Host\Contact;
 use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
 use \CentreonConfiguration\Models\Relation\Host\Hostchild;
 use \CentreonConfiguration\Models\Relation\Host\Hostparent;
-use \CentreonConfiguration\Models\Relation\Host\Poller;
-use \CentreonConfiguration\Models\Timeperiod;
-use \CentreonConfiguration\Models\Command;
-use \Centreon\Form;
-use \Centreon\Form\Generator;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -133,7 +127,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     public function createAction()
     {
         $givenParameters = $this->getParams('post');
-        $givenParameters['host_register'] = 1;
+        $givenParameters['host_register'] = 0;
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
@@ -167,8 +161,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/hosttemplate/add');
+        $this->tpl->assign('validateUrl', '/configuration/hosttemplate/add');
         parent::addAction();
     }
     

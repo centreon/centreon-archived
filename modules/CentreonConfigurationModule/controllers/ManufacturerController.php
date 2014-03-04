@@ -74,17 +74,6 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\ObjectAb
     }
     
     /**
-     * Create a new manufacturer
-     *
-     * @method post
-     * @route /configuration/manufacturer/create
-     */
-    public function createAction()
-    {
-        
-    }
-
-    /**
      * Update a manufacturer
      *
      *
@@ -103,9 +92,9 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\ObjectAb
      * @method get
      * @route /configuration/manufacturer/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

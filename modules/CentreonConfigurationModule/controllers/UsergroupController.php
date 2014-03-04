@@ -37,7 +37,7 @@ namespace CentreonConfiguration\Controllers;
 
 class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'User group';
+    protected $objectDisplayName = 'Usergroup';
     protected $objectName = 'usergroup';
     protected $objectBaseUrl = '/configuration/usergroup';
     protected $objectClass = '\CentreonConfiguration\Models\Contactgroup';
@@ -77,17 +77,6 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
     
     /**
-     * Create a new usergroup
-     *
-     * @method post
-     * @route /configuration/usergroup/create
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-
-    /**
      * Update a usergroup
      *
      *
@@ -108,7 +97,20 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function addAction()
     {
+        $this->tpl->assign('validateUrl', '/configuration/usergroup/add');
         parent::addAction();    
+    }
+    
+    /**
+     * Add a usergroup
+     *
+     *
+     * @method post
+     * @route /configuration/usergroup/add
+     */
+    public function createAction()
+    {
+        parent::createAction();    
     }
     
     /**

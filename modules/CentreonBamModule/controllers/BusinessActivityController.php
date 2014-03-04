@@ -44,6 +44,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     protected $objectClass = '\CentreonBam\Models\Businessactivity';
     
     public static $moduleName = 'CentreonBam';
+    public static $relationMap = array();
     
     /**
      * 
@@ -100,7 +101,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
      */
     public function createAction()
     {
-        
+        parent::createAction();
     }
     
     /**

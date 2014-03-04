@@ -47,7 +47,7 @@ function smarty_function_get_breadcrumb($params, $template)
 {
     $di = \Centreon\Internal\Di::getDefault();
     $router = $di->get('router');
-    $route = $router->request()->pathname();
+    $route = $router->getCurrentUri();
     $baseUrl = $di->get('config')->get('global', 'base_url');
     $route = str_replace($baseUrl, '/', $route);
     $breadcrumb = array();

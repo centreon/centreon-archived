@@ -51,10 +51,10 @@ function smarty_function_environment($params, $template) {
     foreach ($envmenu as $menu) {
         $html .= "<li class=\"envmenu\" ".($menu['bgcolor'] ? "style=\"background-color: {$menu['bgcolor']};\"" : ""). "data-menu=\"{$menu['menu_id']}\">";
         $html .= "<div class=\"icon\">";
-        if ($menu['icon_class']) {
+        if (isset($menu['icon_class']) && $menu['icon_class']) {
             $html .= "<i class=\"{$menu['icon_class']}\"></i>";
-        } elseif ($menu['icon_img']) {
-            $html .= "<img src=\"{$menu['icon_img']}\" class=\"\">";
+        } elseif (isset($menu['icon']) && $menu['icon']) {
+            $html .= "<img src=\"{$menu['icon']}\" class=\"\">";
         }
         $html .= "</div>";
         $html .= "<div class=\"name\">";

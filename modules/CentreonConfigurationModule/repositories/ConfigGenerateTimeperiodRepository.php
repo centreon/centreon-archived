@@ -71,7 +71,7 @@ class ConfigGenerateTimeperiodRepository
                 if ($key == 'tp_name') {
                     $key = "timeperiod_name";
                 }
-                if (!isset($enableField[$key])) {
+                if (!isset($enableField[$key]) && $value != "") {
                     $key = str_replace("tp_", "", $key);
                     $tmpData[$key] = $value;
                 }
