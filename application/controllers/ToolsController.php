@@ -87,10 +87,10 @@ class ToolsController extends \Centreon\Core\Controller
         $router = $di->get('router');
         $params = $router->request()->paramsNamed();
         $filename = $params['image'] . $params['format'];
-        $query = 'SELECT `binary`, `mimetype`
-            FROM binaries
-            WHERE filetype = 1
-                AND filename = :filename';
+        $query = 'SELECT b.binary, b.mimetype
+            FROM binaries b, view_img i
+            WHERE i.img_name = :filename
+                AND i.binary_id = b.binary_id';
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
         $stmt->execute();
@@ -108,6 +108,7 @@ class ToolsController extends \Centreon\Core\Controller
         }
         $router->response()->header('Content-Type', $row['mimetype']);
         $router->response()->body($row['binary']);
+        $router->response()->send();
     }
 
     /**
