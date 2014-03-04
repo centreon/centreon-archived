@@ -1,7 +1,7 @@
 -- Menu with for routing
 -- @TODO See if icon is a relation to a image table
 CREATE TABLE `menus` (
-    `menu_id` INT NOT NULL AUTO_INCREMENT,
+    `menu_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `parent_id` INT,
     `url` VARCHAR(255) DEFAULT NULL,

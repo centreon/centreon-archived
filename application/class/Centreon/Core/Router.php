@@ -54,6 +54,20 @@ class Router extends \Klein\Klein
     protected $routesData = array();
 
     /**
+     * Temporary store the 404 route
+     *
+     * @var array
+     */
+    protected $notFoundRoute = array();
+
+    /**
+     * Count the deep of scan for loadin route
+     *
+     * @var int
+     */
+    protected $countDeep = 0;
+
+    /**
      * Parse routes
      *
      * @param string $pref | class prefix
@@ -61,6 +75,7 @@ class Router extends \Klein\Klein
      */
     public function parseRoutes($pref, $dir)
     {
+        $this->countDeep++;
         if ($handle = opendir($dir)) {
             $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
             while (false !== ($dirname = readdir($handle))) {
@@ -73,8 +88,14 @@ class Router extends \Klein\Klein
                                 $data['acl'] = "";
                             }
                             $this->routesData[] = $data;
-                            if (substr($data['route'], 0, 1) === '@') {
+                            if (substr($data['route'], 0, 1) === '@' || $data['route'] === '405') {
                                 $routeName = $data['route'];
+                            } elseif ($data['route'] === '404') {
+                                $this->notFoundRoute = array(
+                                    'controllerName' => $controllerName,
+                                    'action' => $action,
+                                    'method' => $data['method_type']
+                                );
                             } else {
                                 $routeName = $baseUrl.$data['route'];
                             }
@@ -109,6 +130,19 @@ class Router extends \Klein\Klein
                 }
             }
             closedir($handle);
+        }
+        $this->countDeep--;
+        if (0 === $this->countDeep) {
+            $controllerName = $this->notFoundRoute['controllerName'];
+            $action = $this->notFoundRoute['action'];
+            $this->respond(
+                $this->notFoundRoute['method'],
+                '404',
+                function ($request, $response) use ($controllerName, $action) {
+                    $obj = new $controllerName($request);
+                    $obj->$action();
+                }
+            );
         }
     }
 

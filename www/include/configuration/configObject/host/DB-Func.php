@@ -2206,7 +2206,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null) 
                                  "service_activate" => array("service_activate" => 1),
                                  "service_hPars" => array("0" => $hID), 
                                  "service_sgs" => $service_sgs);
-                $service_id = insertServiceInDB($service);
+                $service_id = insertServiceInDB($service, array());
             }
         }
         $antiLoop[$hID2] = 1;
