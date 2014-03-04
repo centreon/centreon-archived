@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Menu extends Object
 {
-    protected $table = "menus";
-    protected $primaryKey = "menu_id";
-    protected $uniqueLabelField = "url";
+    protected static $table = "menus";
+    protected static $primaryKey = "menu_id";
+    protected static $uniqueLabelField = "url";
 }
