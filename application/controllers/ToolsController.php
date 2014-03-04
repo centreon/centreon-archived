@@ -63,7 +63,7 @@ class ToolsController extends \Centreon\Core\Controller
         $route = str_replace('.min.', '.', $route);
         $centreonPath = realpath(__DIR__ . '/../../www/');
         if (false === file_exists($centreonPath . $route)) {
-            $response->redirect('404', 404);
+            $this->notFoundAction();
             return;
         }
         
@@ -96,17 +96,32 @@ class ToolsController extends \Centreon\Core\Controller
         $stmt->execute();
         $row = $stmt->fetch();
         if (false === $row) {
-            $response->redirect('404', 404);
+            $this->notFoundAction();
             return;
         }
 
         /* Write file in filesystem for serve file by http server */
         $centreonPath = realpath(__DIR__ . '/../../www/');
         $filefs = $centreonPath . '/uploads/' . $filename;
-	    if (false === file_exists($filename)) {
+        if (false === file_exists($filename)) {
             file_put_contents($filefs, $row['binary']);
-	    }
+        }
         $router->response()->header('Content-Type', $row['mimetype']);
         $router->response()->body($row['binary']);
+    }
+
+    /**
+     * Page 404
+     *
+     * @method GET
+     * @route 404
+     */
+    public function notFoundAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $response = $di->get('router')->response();
+        $response->code(404);
+        $tpl = $di->get('template');
+        $tpl->display('404.tpl');
     }
 }
