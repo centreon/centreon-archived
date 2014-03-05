@@ -36,6 +36,7 @@ package centreon::script::centreontrapd;
 use strict;
 use warnings;
 use POSIX;
+use Socket;
 use Storable;
 use centreon::script;
 use centreon::common::db;

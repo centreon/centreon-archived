@@ -112,6 +112,7 @@ sub run {
             $self->{logger}->writeLogDebug($line);
         }
     }
+    chmod 0664, $spoolfile;
 
     exit(0);
 }

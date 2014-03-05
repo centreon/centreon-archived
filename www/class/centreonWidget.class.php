@@ -278,7 +278,9 @@ class CentreonWidget
             		  WHERE w.widget_id = wv.widget_id
             		  AND wv.custom_view_id = " .$this->db->escape($viewId) . "
             		  AND w.widget_model_id = wm.widget_model_id
-            		  ORDER BY widget_order";
+                      ORDER BY 
+                      CAST(SUBSTRING_INDEX(widget_order, '_', 1) AS SIGNED INTEGER), 
+                      CAST(SUBSTRING_INDEX(widget_order, '_', -1) AS SIGNED INTEGER)";
             $res = $this->db->query($query);
             while ($row = $res->fetchRow()) {
                 $this->widgets[$viewId][$row['widget_id']]['title'] = $row['title'];

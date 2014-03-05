@@ -1,0 +1,86 @@
+=============================================
+Architecture redondante + interface graphique
+=============================================
+
+**************
+Fonctionnement
+**************
+
+L'architecture distribuée redondante consiste à avoir deux types d'entités :
+
+* Le serveur central qui centralise les informations de supervision
+* Un ou plusieurs serveurs satellites qui sont chargés de la supervision des équipements
+
+Afin d'assurer une redondance, le serveur central est répliqué à l'identique. Ce type d'architecture permet également d'avoir une interface web Centreon minimaliste présente sur chaque serveur satellite.
+Il est alors possible de se connecter via cette interface web sur chaque serveur satellite afin de visualiser les éléments supervisés par celui-ci.
+
+Les serveurs centraux regroupe les éléments suivants :
+
+* L'interface web de Centreon
+* Le moteur de supervision
+* Le broker
+* Les bases de données (MySQL + RRD)
+
+Le serveur satellite contient les éléments suivants :
+
+* Le moteur de supervision
+* Une interface web de Centreon minimaliste
+* Les bases de données (MySQL + RRD)
+* Le module de broker qui permet l'envoi des informations de supervision vers le serveur central et vers le serveur satellite même
+
+Cette architecture a plusieurs intérets :
+
+* Possibilité de répartir la charge de supervision entre plusieurs serveurs de supervision permettant ainsi de disposer de collecteur dans des zones géographiques particulières ou par entité logique
+* Isolation des flux réseaux : si votre infrastructure de supervision est chargée de superviser une DMZ il est plus simple (et sécurisant) de placer un serveur satellite sur le réseau DMZ
+* Avoir une redondance au niveau des serveurs Centraux, si un serveur central tombe alors le second serveur central existe toujours et permet d'assurer une continuité de service
+* Disposer d'une interface web afin de pouvoir consulter les éléments supervisés par chaque serveur satellite
+
+*******
+Entités
+*******
+
+Serveur centraux
+================
+
+Il existe deux types de serveur central :
+
+* Un master qui fonctionne normalement
+* Un slave qui est configuré de la même manière que le serveur master mais qui n'a démarré que les services Centreon Broker RRD et MySQL
+
+Le serveur central master fonctionne normalement :
+
+* Le serveur Apache est chargé d'héberger l'interface web de Centreon
+* Plusieurs bases de données MySQL sont chargées de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
+* Le service CentCore est chargé d'exporter la configuration des moteurs de supervision vers le serveur central et satellites ainsi que du redémarrage des moteurs de supervision
+* Le moteur de supervision supervise le système d’information
+* Les informations de supervision sont envoyées via le module cbmod au composant Centreon Broker SQL
+* Le composant Centreon Broker SQL est chargé d’insérer les données de supervision en base de données et de transmettre les données de performances aux 2 services Centreon Broker RRD (le premier se situe sur le master et l’autre sur le slave
+* Le composant Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
+
+Une réplication MySQL bi-directionnelle permet de conserver la configuration de Centreon, les informations de supervision ainsi que les données de performances entre les deux serveurs centraux.
+
+Le serveur slave lui est uniquement chargé de générer les fichiers RRD.
+
+En cas de panne du master, on démarre les services : Apache, CentCore, Centreon Engine ainsi que Centreon Broker SQL sur le serveur slave.
+Le serveur slave remplace le serveur master.
+
+La bascule master/slave ainsi que le démarrage et l'arrêt des services sont gérés par le couple Corosync + Pacemaker.
+
+Serveur satellite
+=================
+
+Le serveur satellite fonctionne de la manière suivante :
+
+* Le moteur de supervision supervise le système d'information
+* Les informations de supervision sont envoyées via le module cbmod à l'adresse IP virtuel qui factorise les deux serveurs centraux. En fonction du serveur actif, ces informations sont envoyés à un des deux services Centreon Broker SQL. Les informations de supervision sont également envoyés au serveur satellite même qui les traite en utilisant également Centreon Broker SQL.
+* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données (du serveur central et du serveur satellite) et de transmettre les données de performances à tous les services Centreon Broker RRD (celui du serveur central master et slave ainsi que celui du serveur satellite)
+* Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
+
+************
+Architecture
+************
+
+Le schéma ci-dessous résume le fonctionnement de l'architecture :
+
+.. image :: /images/architecture/eschema.png
+   :align: center 

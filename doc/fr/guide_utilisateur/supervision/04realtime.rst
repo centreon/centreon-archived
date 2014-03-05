@@ -387,7 +387,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 |   Nom de la colonne          |   Description                                                                                                                        | 
 +==============================+======================================================================================================================================+
 | Hôtes ou Groupes d'hôtes     | Liste l'ensemble des hôtes ou hôtes séparés par des groupes d'hôtes ou hôtes séparées par des groupes de services                    |
-| Hôtes ou Groupes de services | L'icône |showservices| permet de visualiser l'ensemble des services liés à l'hôte                                            |
+| Hôtes ou Groupes de services | L'icône |showservices| permet de visualiser l'ensemble des services liés à l'hôte                                                    |
 | Hôtes                        | L'icône |graphperformances| permet de visualiser l'ensemble des graphiques de performances liés aux services appartenant à l'hôte    |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Statut                       | Affiche le statut de l'hôte                                                                                                          |

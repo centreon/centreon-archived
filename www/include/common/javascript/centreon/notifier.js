@@ -40,7 +40,7 @@
 
         var settings = $.extend({
             sid: "",
-            refresh_rate: 15000,
+            refresh_rate: 15000
         }, options);
         get_new_messages(this, settings);
     };

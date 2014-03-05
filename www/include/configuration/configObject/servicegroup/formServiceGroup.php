@@ -218,6 +218,17 @@ $hostFilter = ($hostFilter + $acl->getHostAclConf(null,
 
 $form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
 $form->addElement('header', 'relation', _("Relations"));
+if (isset($_REQUEST['sg_hServices']) && count($_REQUEST['sg_hServices'])) {
+   $sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
+           WHERE h.host_id = hsr.host_host_id
+           AND hsr.service_service_id = s.service_id
+           AND CONCAT_WS('-', h.host_id, s.service_id) IN ('".implode("','", $_REQUEST['sg_hServices'])."')";
+   $res = $pearDB->query($sql);
+   while ($row = $res->fetchRow()) {
+       $k = $row['host_id'] . '-' . $row['service_id'];
+       $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
+   }
+}
 $ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove")));

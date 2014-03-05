@@ -132,7 +132,7 @@ $form->addElement('header', 'Server_Informations', _("Server Information"));
 $form->addElement('header', 'SSH_Informations', _("SSH Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
-$form->addElement('header', 'SNMPTT', _("Centreon Trap Collector"));
+$form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
 $form->addElement('select', 'monitoring_engine', _("Engine"), array_map("monitoring_engine_names", $monitoring_engines));
 
 /*
@@ -195,9 +195,9 @@ $form->addElement('header', 'CentreonConnector', _("Centreon Connector"));
 $form->addElement('text', 'centreonconnector_path', _("Centreon Connector path"), $attrsText2);
 
 /*
- * SNMPTT
+ * Centreontrapd
  */
-$form->addElement('text', 'init_script_snmptt', _("Centreontrapd init script path"), $attrsText2);
+$form->addElement('text', 'init_script_centreontrapd', _("Centreontrapd init script path"), $attrsText2);
 $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database for traps'), $attrsText2);
 
 /*
@@ -221,7 +221,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
     "nagios_perfdata"  => $me["nagios_perfdata"],
     "centreonbroker_cfg_path" => "/etc/centreon-broker",
     "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
-    "init_script_snmptt" => "/etc/init.d/centreontrapd",
+    "init_script_centreontrapd" => "/etc/init.d/centreontrapd",
     "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"));
 } else {
     if (isset($cfg_server)) {

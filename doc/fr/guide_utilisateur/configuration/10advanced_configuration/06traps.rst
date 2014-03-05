@@ -280,7 +280,8 @@ Il est également possible de créer manuellement des définitions de trap SNMP 
    Il est possible de construire soit même le message de sortie. Pour cela, utilisez la MIB afin de connaitre les arguments qui seront présent dans le corps de l'évènement et récupérer les arguments avec les variables **$n**. Chaque argument étant identifié par un OID, il est possible d'utiliser directement cet OID afin de le placer dans le message de sortie sans connaitre sa position via la variable **@{OID}**.
 
 * Le champ **Statut par défaut** définit le statut "supervision" par défaut du service en cas de réception du trap.
-* Le Si la case **Envoyer le résultat** est cochée alors le résultat est soumis au moteur de supervision
+* Le champ **Criticité par défaut** définit la criticité qui sera associée au service.
+* Le Si la case **Envoyer le résultat** est cochée alors le résultat est soumis au moteur de supervision/
 * Le champ **Commentaires** (dernier champ) contient par défaut le commentaire constructeur du trap SNMP. La plupart du temps, ce commentaire indique la liste des variables contenus dans le trap SNMP (voir chapitre suivant sur la configuration avancée).
 
 Configuration avancée des traps
@@ -293,9 +294,10 @@ et donc son type via un ensemble de paramètre.
 Pour cela, il est possible de définir des **Règles de correspondance avancées** en cliquant sur le bouton "+" et de créer autant de règles que nécessaire.
 Pour chaque règle, définir les paramètres :
 
-*   **Chaine** définit l'élément sur lequel sera appliqué la recherche (@OUTPUT@ défini l'ensemble du **Message de sortie** traduit).
-*   **Expression régulière** définit la recherche de type REGEXP à appliquer
-*   **Statut** définit le statut du service en cas de concordance.
+* **Chaine** définit l'élément sur lequel sera appliqué la recherche (@OUTPUT@ défini l'ensemble du **Message de sortie** traduit).
+* **Expression régulière** définit la recherche de type REGEXP à appliquer.
+* **Statut** définit le statut du service en cas de concordance.
+* **Criticité** permet de modifier la criticité du service.
 
 .. note::
    L'ordre est important dans les règles de correspondance car le processus s'arrêtera à la première règle dont la correspondance est assurée.
@@ -305,21 +307,35 @@ Pour chaque règle, définir les paramètres :
 * Si la case **Reprogrammer les services associés** est cochée alors le prochain contrôle du service, qui doit être 'actif', sera reprogrammé au plus tôt après la réception du trap.
 * Si la case **Exécuter une commande spéciale** est cochée alors la commande définie dans **Commande spéciale** est exécutée.
 
-[TODO] Quid de la sévérité dans le formulaire et dans les règles ??? [/TODO]
-
 Configuration très avancée des traps
 ------------------------------------
-
+Transfère d'évènements
+~~~~~~~~~~~~~~~~~~~~~~
 L'onglet **Avancé** permet de configurer le comportement d'exécution du processus de traitement des traps SNMP lors de la réception de ce dernier.
 
-*   **Enable routing** permet de [TODO]
-*   **Route definition** permet de [TODO]
+* **Enable routing** permet d'activer le routage d'évènement à un autre supervisé par Centreon que celui ayant émis le trap SNMP
+* **Route definition** définit la commande de routage
 
+Voici un exemple de routage d'évènement :
+Un équipement réseau envoi un trap SNMP à un concentrateur d'évènement qui transfère ce dernier à Centreon.
+L'adresse de l'émetteur de l'évènement n'est plus l'équipement réseau d'origine mais celle du concentrateur.
+L'argument n°5 contient cependant l'adresse IP d'origine de l'éméteur.
 
+La commande de routage suivante permet de transférer l'évènement sur l'équipement réseau supervisé par Centreon
+
+::
+
+    @GETHOSTBYADDR($5)@
+
+.. note::
+    L'hôte sur lequel Centreon doit transférer l'évènement doit posséder un serivce passif afin de recueillir le **Message de sortie**
+
+Commandes pré-traitement
+~~~~~~~~~~~~~~~~~~~~~~~~
 Avant d'exécuter le traitement de l'évènement (traduction du **Message de sortie**), il est possible d'exécuter une commande appelée PREEXEC.
 Pour cela, il est possible de définir des **Commande PREEXEC (de type SNMPTT)** en cliquant sur le bouton "+" et de créer autant de règles que nécessaire.
 
-*   **Définition de la commande PREEXEC** définit la commande à exécuter.
+* **Définition de la commande PREEXEC** définit la commande à exécuter.
 
 Voici un exemple d'utilisation avec le trap linkUP :
 Pour un équipement Cisco, $2 == ifDescr contient le numéro de port de l'interface (GigabitEthernet0/1 par exemple). 
@@ -340,7 +356,7 @@ Exemple
 
 Le résultat sera de la forme : Interface GigabitEthernet0/1 ( SERVEUR NAS ) linkUP. State: up
 
-*   Le champ **Activer le journal d'évènement** permet de [TODO]
+*   Le champ **Activer le journal d'évènement** permet d'activer l'insertion en base de données de l'évènements reçu si le service centreontrapd est configuré pour.
 *   Le champ **Temps d'exécution maximum** exprimé en secondes, permet de définir le temps maximum de traitement de l'évènement y compris les commandes de prétraitement (PREEXEC) ainsi que celles de post-traitement (commande spéciale).
 *   Le champ **Intervalle d'exécution** exprimé en secondes, permet de définir le temps minimum d'attente entre deux traitements d'un évènement.
 *   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.

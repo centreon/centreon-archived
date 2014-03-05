@@ -150,6 +150,16 @@ class CentreonCustomView
     }
 
     /**
+     * Get default view id
+     *
+     * @return int
+     */
+    public function getDefaultViewId()
+    {
+        return $this->defaultView;
+    }
+
+    /**
      * Get Current View Id
      *
      * @return int
