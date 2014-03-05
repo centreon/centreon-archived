@@ -218,6 +218,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $objClass = $this->objectClass;
         foreach ($params['ids'] as $id) {
             $objClass::delete($id);
+	    $this->postSave($id, 'delete');
         }
 
         $di->get('router')->response()->json(array(
@@ -242,6 +243,6 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             'id' => $id,
             'params' => $params
         );
-        $event->emit($this->objectName '.' . $action, $eventParams);
+        $event->emit($this->objectName . '.' . $action, $eventParams);
     } 
 }
