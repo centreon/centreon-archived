@@ -31,78 +31,35 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
-namespace Controllers;
+
+
+namespace Models;
 
 /**
- * Validators controller
- *
- * @authors Lionel Assepo
+ * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
- * @subpackage Controllers
+ * @subpackage Models
  */
-class ImageController extends \Centreon\Core\Controller
+class Image extends File
 {
-    
-    /**
-     * Add a image
-     *
-     * @method get
-     * @route /administration/media/image/add
-     */
-    public function addAction()
+    public function __construct()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $config = $di->get('config');
-        $form = new \Centreon\Core\Form\Wizard(rtrim($config->get('global','base_url'), '/').'/administration/media/image/add', 0, array('id' => 0));
-        echo $form->generate();
+        ;
     }
     
     /**
      * 
-     * @method get
-     * @route /image/icon/centreon
+     * @param array $file
+     * @return int
+     * @throws Exception
      */
-    public function centreonIconAction()
+    public static function insert($file)
     {
         $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $iconList = array(
-            'fa-bolt',
-            'fa-camera',
-            'fa-hdd-o',
-            'fa-laptop',
-            'fa-gears',
-            'fa-mobile-phone',
-            'fa-tablet',
-            'fa-wrench'
-        );
-        
-        $finalIconList = array();
-        $finalIconList[] = array(
-            "text" => "Centreon icon",
-        );
-        foreach($iconList as $icon) {
-            $finalIconList[] = array(
-                "id" => md5($icon),
-                "text" => substr($icon, 3),
-                "theming" => '<i class="fa '.$icon.'"></i> '.substr($icon, 3)
-            );
-        }
-        
-        // Get User Images
         $dbconn = $di->get('db_centreon');
-        $query = 'SELECT img_name FROM view_img';
-        $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
-        $stmt->execute();
-        $row = $stmt->fetch();
-        if (false === $row) {
-            $this->notFoundAction();
-            return;
-        }
         
-        $router->response()->json($finalIconList);
+        $binaryId = parent::insert($file);
     }
 }

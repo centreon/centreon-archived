@@ -140,10 +140,19 @@ class ToolsController extends \Centreon\Core\Controller
         
         $uploadedFile = $_FILES['centreonUploadedFile'];
         
-        
-        // Check if file exists in DB by its checksum
-        $fileChecksum = sha1_file($uploadedFile['tmp_name']);
+        $fileChecksum = md5_file($uploadedFile['tmp_name']);
         $mimetype = mime_content_type($uploadedFile['tmp_name']);
+        
+        $fileType = "";
+        switch($mimetype) {
+            default:
+            case 'image/jpeg':
+            case 'image/jpg':
+            case 'image/png':
+                $fileType = 'images';
+                break;
+        }
+        
         $query = 'SELECT `checksum` 
             FROM `binaries`
 	        WHERE `checksum` = :checksum
@@ -157,29 +166,34 @@ class ToolsController extends \Centreon\Core\Controller
         if (false === $row) {
             $di = \Centreon\Core\Di::getDefault();
             $config = $di->get('config');
-            $baseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/images/';
-            $fileDestination = realpath(__DIR__.'/../../www/uploads/images/').'/'.$uploadedFile['name'];
+            $baseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/'.$fileType.'/';
+            $fileDestination = realpath(__DIR__.'/../../www/uploads/'.$fileType.'/').'/'.$uploadedFile['name'];
 
             if (move_uploaded_file($uploadedFile['tmp_name'], $fileDestination)) {
-                $query = 'INSERT INTO `binaries` (`filename`, `checksum`, `mimetype`, `filetype`, `binary_content`)
-                    VALUES (:filename, :checksum, :mimetype, :filetype, :binary_content)';
-                $stmt = $dbconn->prepare($query);
-                $stmt->bindParam(':filename', $uploadedFile['name'], \PDO::PARAM_STR);
-                $stmt->bindParam(':checksum', $fileChecksum, \PDO::PARAM_STR);
-                $stmt->bindParam(':mimetype', $mimetype, \PDO::PARAM_STR);
-                $stmt->bindParam(':filetype', 1, \PDO::PARAM_INT);
-                $stmt->bindParam(':binary_content', file_get_content($fileDestination), \PDO::PARAM_LOB);
+                $fileParam = array(
+                    'filename' => $uploadedFile['name'],
+                    'checksum' => $fileChecksum,
+                    'mimetype' => $mimetype,
+                    'filetype' => 1,
+                    'binary_content' => file_get_contents($fileDestination)
+                );
+                \Models\File::insert($fileParam);
                 
-                $router->response()->json(array(
-                    'success' => true,
-                    'filename' => $baseUrl.$uploadedFile['name']
-                ));
+                
+                $fileUploadResult = array(
+                    'url' => $baseUrl.$uploadedFile['name'],
+                    'thumbnailUrl' => $baseUrl.$uploadedFile['name'],
+                    'name' => $uploadedFile['name'],
+                    'type' => $mimetype,
+                    'size' => filesize($fileDestination),
+                    'deleteUrl' => '',
+                    'deleteType' => 'DELETE',
+                );
+
+                $router->response()->code(200)->json(array("files" => array($fileUploadResult)));
             }
         } else {
-            $router->response()->json(array(
-                'success' => false,
-                'message' => 'This file already exist on the server'
-            ));
+            $router->response()->code(403);
         }
     }
 }
