@@ -224,4 +224,23 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             'success' => true
         ));
     }
+
+    /**
+     * Action after save
+     *
+     * * Emit event objectName.action
+     *
+     * @param $action string The action (add, update, delete)
+     */
+    protected function postSave($action = 'add')
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $params = $di->get('router')->request()->getParams();
+        $event = $di->get('action_hooks');
+        $eventParams = array(
+            'id' => $id,
+            'params' => $params
+        );
+        $event->emit($this->objectName '.' . $action, $eventParams);
+    } 
 }
