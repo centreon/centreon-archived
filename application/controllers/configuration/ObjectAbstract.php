@@ -230,9 +230,10 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      *
      * * Emit event objectName.action
      *
+     * @param $id int The object id
      * @param $action string The action (add, update, delete)
      */
-    protected function postSave($action = 'add')
+    protected function postSave($id, $action = 'add')
     {
         $di = \Centreon\Core\Di::getDefault();
         $params = $di->get('router')->request()->getParams();
