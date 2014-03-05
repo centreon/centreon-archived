@@ -172,3 +172,15 @@
 	$tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>
+<script type="text/javascript">
+    jQuery(function() {
+        jQuery("select[name*='_notification_']").change(function() {
+            if (jQuery(this).val()) {
+  			    var snd = new buzz.sound("sounds/"+jQuery(this).val(), {
+                    formats: [ "ogg", "mp3" ]
+ 			    });
+			}
+            snd.play();
+        });
+    });
+</script>
