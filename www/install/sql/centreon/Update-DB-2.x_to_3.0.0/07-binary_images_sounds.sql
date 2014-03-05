@@ -1,40 +1,40 @@
 -- Table images
 CREATE TABLE `binaries` (
     `binary_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `filename` VARCHAR(255) NOT NULL,
     `checksum` VARCHAR(255) NOT NULL,
     `mimetype` VARCHAR(255) NOT NULL,
-    `binary` MEDIUMBLOB NOT NULL,
+    `filetype` TINYINT(1) NOT NULL DEFAULT 1,
+    `binary_content` MEDIUMBLOB NOT NULL,
     PRIMARY KEY(`binary_id`),
-    KEY `checksum` (`checksum`)
+    UNIQUE `binaries_idx01` (`checksum`, `mimetype`),
+    UNIQUE `binaries_idx02` (`filename`, `filetype`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `image_type` (
-    `image_type_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `binary_type` (
+    `binary_type_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `type_name` VARCHAR(255) NOT NULL,
     `module_id` INT NOT NULL,
-    PRIMARY KEY (`image_type_id`),
+    PRIMARY KEY (`binary_type_id`),
     UNIQUE (`type_name`),
     KEY (`module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `image_type` ADD FOREIGN KEY (`module_id`) REFERENCES `module_informations` (`id`) ON DELETE CASCADE;
+ALTER TABLE `binary_type` ADD FOREIGN KEY (`module_id`) REFERENCES `modules_informations` (`id`) ON DELETE CASCADE;
 
-INSERT INTO `image_type` (`image_type_id`, `type_name`, `module_id`) VALUES (1, 'Icons', 1);
+INSERT INTO `binary_type` (`binary_type_id`, `type_name`, `module_id`) VALUES (1, 'Icons', 1);
 
-CREATE TABLE `image_type_view_img_relation` (
-    `image_type_id` INT UNSIGNED NOT NULL,
-    `img_id` INT NOT NULL,
-    PRIMARY KEY (`image_type_id`, `img_id`),
-    FOREIGN KEY (`img_id`) REFERENCES `view_img` (`img_id`)
+CREATE TABLE `binary_type_binaries_relation` (
+    `binary_type_id` INT UNSIGNED NOT NULL,
+    `binary_id` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`binary_type_id`, `binary_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `image_type_view_img_relation`
-    ADD FOREIGN KEY (`image_type_id`) REFERENCES `image_type` (`image_type_id`) ON DELETE CASCADE,
-    ADD FOREIGN KEY (`img_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE;
+ALTER TABLE `binary_type_binaries_relation`
+    ADD FOREIGN KEY (`binary_type_id`) REFERENCES `binary_type` (`binary_type_id`) ON DELETE CASCADE,
+    ADD FOREIGN KEY (`binary_id`) REFERENCES `binaries` (`binary_id`) ON DELETE CASCADE;
 
 -- TODO for after migration
--- ALTER TABLE `view_img` ADD COLUMN `binary_id` INT UNSIGNED NOT NULL,
---    KEY (`binary_id`);
--- ALTER TABLE `view_img` ADD FOREIGN KEY (`binary_id`) REFERENCES `binaries` (`binary_id`) ON DELETE CASCADE;
 -- DROP TABLE `view_img_dir_relation`;
 -- DROP TABLE `view_img_dir`;
+-- DROP TABLE `view_img`;

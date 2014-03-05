@@ -87,10 +87,10 @@ class ToolsController extends \Centreon\Core\Controller
         $router = $di->get('router');
         $params = $router->request()->paramsNamed();
         $filename = $params['image'] . $params['format'];
-        $query = 'SELECT b.binary, b.mimetype
-            FROM binaries b, view_img i
-            WHERE i.img_name = :filename
-                AND i.binary_id = b.binary_id';
+        $query = 'SELECT binary_content, mimetype
+            FROM binaries
+            WHERE filename = :filename
+                AND filetype = 1';
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
         $stmt->execute();
@@ -104,10 +104,10 @@ class ToolsController extends \Centreon\Core\Controller
         $centreonPath = realpath(__DIR__ . '/../../www/');
         $filefs = $centreonPath . '/uploads/images/' . $filename;
         if (false === file_exists($filename)) {
-            file_put_contents($filefs, $row['binary']);
+            file_put_contents($filefs, $row['binary_content']);
         }
         $router->response()->header('Content-Type', $row['mimetype']);
-        $router->response()->body($row['binary']);
+        $router->response()->body($row['binary_content']);
         $router->response()->send();
     }
 
@@ -142,12 +142,15 @@ class ToolsController extends \Centreon\Core\Controller
         
         
         // Check if file exists in DB by its checksum
-        $fileChecksum = md5_file($uploadedFile['tmp_name']);
+        $fileChecksum = sha1_file($uploadedFile['tmp_name']);
+        $mimetype = mime_content_type($uploadedFile['tmp_name']);
         $query = 'SELECT `checksum` 
             FROM `binaries`
-            WHERE `checksum` = :checksum';
+	        WHERE `checksum` = :checksum
+	    	    AND `mimetype` = :mimetype';
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':checksum', $fileChecksum, \PDO::PARAM_STR);
+        $stmt->bindParam(':mimetype', $mimetype, \PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch();
         
@@ -158,12 +161,14 @@ class ToolsController extends \Centreon\Core\Controller
             $fileDestination = realpath(__DIR__.'/../../www/uploads/images/').'/'.$uploadedFile['name'];
 
             if (move_uploaded_file($uploadedFile['tmp_name'], $fileDestination)) {
-                
-                $query = 'INSERT INTO (binaries) `checksum` 
-                FROM `binaries`
-                WHERE `checksum` = :checksum';
-                
-                
+                $query = 'INSERT INTO `binaries` (`filename`, `checksum`, `mimetype`, `filetype`, `binary_content`)
+                    VALUES (:filename, :checksum, :mimetype, :filetype, :binary_content)';
+                $stmt = $dbconn->prepare($query);
+                $stmt->bindParam(':filename', $uploadedFile['name'], \PDO::PARAM_STR);
+                $stmt->bindParam(':checksum', $fileChecksum, \PDO::PARAM_STR);
+                $stmt->bindParam(':mimetype', $mimetype, \PDO::PARAM_STR);
+                $stmt->bindParam(':filetype', 1, \PDO::PARAM_INT);
+                $stmt->bindParam(':binary_content', file_get_content($fileDestination), \PDO::PARAM_LOB);
                 
                 $router->response()->json(array(
                     'success' => true,
