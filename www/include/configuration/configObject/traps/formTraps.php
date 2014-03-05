@@ -340,7 +340,7 @@
         $form->addElement(
                 'checkbox',
                 'traps_log',
-                _('Enable log')
+                _("Insert trap's information into database")
                 );
         
         $form->addElement(
