@@ -368,14 +368,17 @@ try {
             }
 
             // Insert direct services
+            $insertedServices = array();
             foreach ($result_host_services as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
-                    :service_id, :service_description, :service_template_model_stm_id)");
-                $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
-                $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
-                $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
-                $stmt->execute();
-
+                if (!isset($insertedServices[$value['service_id']])) {
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
+                        :service_id, :service_description, :service_template_model_stm_id)");
+                    $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
+                    $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
+                    $stmt->execute();
+                    $insertedServices[$value['service_id']] = true;
+                }
                 $stmt = $dbh_sqlite->prepare("INSERT INTO host_service_relation (service_service_id, host_host_id) VALUES (
                     :service_service_id, :host_host_id)");
                 $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
@@ -385,12 +388,15 @@ try {
 
             // Insert services by hostgroup
             foreach ($result_services_from_hg as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
-                    :service_id, :service_description, :service_template_model_stm_id)");
-                $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
-                $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
-                $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
-                $stmt->execute();
+                if (!isset($insertedServices[$value['service_id']])) {
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
+                        :service_id, :service_description, :service_template_model_stm_id)");
+                    $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
+                    $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
+                    $stmt->execute();
+                    $insertedServices[$value['service_id']] = true;
+                }
 
                 $stmt = $dbh_sqlite->prepare("INSERT INTO hostgroup_relation (host_host_id, hostgroup_hg_id) VALUES (
                     :host_host_id, :hostgroup_hg_id)");
