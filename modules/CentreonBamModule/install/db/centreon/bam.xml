@@ -26,7 +26,7 @@
         <column name="graph_id" phpName="GraphId" type="INTEGER" required="false"/>
         <column name="icon_id" phpName="IconId" type="INTEGER" required="false"/>
         <column name="graph_style" phpName="GraphStyle" type="VARCHAR" size="254" required="false"/>
-        <column name="activate" phpName="Activate" type="CHAR" required="false" devaultValue="1"/>
+        <column name="activate" phpName="Activate" type="CHAR" required="false" defaultValue="1"/>
         <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
         <foreign-key foreignTable="timeperiod" name="bam_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="id_notification_period" foreign="tp_id"/>

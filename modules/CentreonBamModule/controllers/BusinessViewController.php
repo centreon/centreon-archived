@@ -44,6 +44,7 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $objectClass = '\CentreonBam\Models\Businessview';
     
     public static $moduleName = 'CentreonBam';
+    public static $relationMap = array();
     
     /**
      * 
@@ -70,41 +71,13 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
      * @method get
      * @route /bam/business-view/formlist
      */
-    /*public function formListAction()
+    public function formListAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $pollerObj = new Poller();
-        $filters = array('name' => $requestParams['q'].'%');
-        $pollerList = $pollerObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalPollerList = array();
-        foreach ($pollerList as $poller) {
-            $finalPollerList[] = array(
-                "id" => $poller['id'],
-                "text" => $poller['name']
-            );
-        }
-        
-        $router->response()->json($finalPollerList);
-    }*/
-    
-    /**
-     * Create a new poller
-     *
-     * @method post
-     * @route /bam/business-view/add
-     */
-    public function createAction()
-    {
-        
+        parent::formListAction();
     }
     
     /**
-     * Update a poller
+     * Update a business view
      *
      *
      * @method post
@@ -116,7 +89,7 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     }
     
     /**
-     * Add a poller
+     * Add a business view
      *
      * @method get
      * @route /bam/business-view/add
@@ -129,7 +102,18 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     }
     
     /**
-     * Update a poller
+     * Create a new business view
+     *
+     * @method post
+     * @route /bam/business-view/add
+     */
+    public function createAction()
+    {
+        parent::createAction();
+    }
+    
+    /**
+     * Update a business view
      *
      * @method get
      * @route /bam/business-view/[i:id]
@@ -140,7 +124,7 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     }
     
     /**
-     * Duplicate a poller
+     * Duplicate a business view
      *
      * @method post
      * @route /bam/business-view/duplicate
@@ -184,7 +168,7 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     }
 
     /**
-     * Delete action for poller
+     * Delete action for business view
      *
      * @method post
      * @route /bam/business-view/delete

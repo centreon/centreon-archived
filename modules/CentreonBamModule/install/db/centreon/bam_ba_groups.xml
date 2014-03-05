@@ -4,7 +4,7 @@
         <column name="id_ba_group" phpName="IdBaGroup" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="ba_group_name" phpName="BaGroupName" type="VARCHAR" size="255" required="false"/>
         <column name="ba_group_description" phpName="BaGroupDescription" type="VARCHAR" size="255" required="false"/>
-        <column name="visible" phpName="Visible" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="visible" phpName="Visible" type="CHAR" required="false" defaultValue="1"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

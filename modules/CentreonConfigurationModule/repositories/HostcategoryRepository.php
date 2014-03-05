@@ -116,7 +116,7 @@ class HostcategoryRepository extends \CentreonConfiguration\Repository\Repositor
                 'routeParams' => array(
                     'id' => '::hc_id::'
                 ),
-                'linkName' => '::hc_alias::'
+                'linkName' => '::hc_name::'
             )
         )
     );

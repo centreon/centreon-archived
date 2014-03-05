@@ -81,12 +81,12 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
      * Update a hostcategory
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/hostcategory/update
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
@@ -94,6 +94,19 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
      *
      *
      * @method get
+     * @route /configuration/hostcategory/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/hostcategory/add');
+        parent::addAction();
+    }
+
+    /**
+     * Add a hostcategory
+     *
+     *
+     * @method post
      * @route /configuration/hostcategory/add
      */
     public function createAction()

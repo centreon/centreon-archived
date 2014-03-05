@@ -44,9 +44,40 @@ namespace CentreonRealtime\Controllers;
 class HostController extends \Centreon\Internal\Controller
 {
     /**
-     * The page structure for display
+     * Display services
      *
      * @method get
+     * @route /realtime/host
+     * @todo work on ajax refresh
+     */
+    public function displayHostsAction()
+    {
+        /* Load css */
+        $this->tpl->addCss('dataTables.css')
+        	->addCss('dataTables.bootstrap.css')
+        	->addCss('dataTables-TableTools.css');
+
+        /* Load js */
+        $this->tpl->addJs('jquery.min.js')
+        	->addJs('jquery.dataTables.min.js')
+        	->addJs('jquery.dataTables.TableTools.min.js')
+        	->addJs('bootstrap-dataTables-paging.js')
+        	->addJs('jquery.dataTables.columnFilter.js')
+        	->addJs('jquery.select2/select2.min.js')
+        	->addJs('jquery.validate.min.js')
+        	->addJs('additional-methods.min.js');
+
+        /* Datatable */
+        $this->tpl->assign('moduleName', 'CentreonRealtime');
+        $this->tpl->assign('objectName', 'Host');
+        $this->tpl->assign('objectListUrl', '/realtime/host/list');
+        $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
+    }
+
+    /**
+     * The page structure for display
+     *
+      * @method get
      * @route /realtime/host/list
      */
     public function listAction()
@@ -69,5 +100,6 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function hostDetailAction()
     {
+
     }
 }

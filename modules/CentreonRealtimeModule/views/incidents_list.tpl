@@ -10,10 +10,10 @@
       <th class="span-1">&nbsp;</th>
       <th class="span-2">{t}Host{/t}</th>
       <th class="span-2">{t}Service{/t}</th>
-      <th class="span-2">{t}Status{/t}</th>
+      <th class="span-1">{t}Status{/t}</th>
       <th class="span-2">{t}Start time{/t}</th>
-      <th class="span-2">{t}End time{/t}</th>
-      <th class="span-1">{t}Ticket{/t}</th>
+      <th class="span-2">{t}Duration{/t}</th>
+      <th class="span-2">{t}Output{/t}</th>
       <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
     </tr>
   </thead>
@@ -33,16 +33,14 @@ $(function() {
         <a href='#' class='ext_infos' data-id='<%issue_id%>'><i class='fa fa-plus-square-o'></i></a> \
         <a href='<%id%>'><i class='fa fa-list-alt'></i></a> \
         <a href='<%url_graph%>'><i class='fa fa-sitemap'></i></a> \
+        <a href='#'><i class='fa fa-ticket'></i></a> \
       </tb> \
       <td class='span-2'><%host_name%></td> \
       <td class='span-2'><%service_desc%></td> \
-      <td class='span-2 centreon-status-<%status_num%>'><%status%></td> \
+      <td class='span-1 centreon-status-<%status_num%>'><%status%></td> \
       <td class='span-2'><%start_time%></td> \
-      <td class='span-2'><%end_time%></td> \
-      <td class='span-1'> \
-        <%#ticket%><a href=''><%ticket%></a><%/ticket%> \
-        <%^ticket%><button class='btn btn-default btn-xs'>Open</button><%/ticket%> \
-      </td> \
+      <td class='span-2'><%duration%></td> \
+      <td class='span-2'><%output%></td> \
     </tr> \
     <tr style='display: none;' id='ext_infos_<%issue_id%>'> \
       <td class='span-12'>&nbsp;</td> \

@@ -271,7 +271,7 @@ class Form
         $classAdvanced = '';
         if ($inputElement['type'] !== 'submit') {
             $helpButton = $this->renderHelp($inputElement);
-            $classInput = 'col-sm-8';
+            $classInput = 'col-sm-9';
         }
         
         if (isset($inputElement['label_advanced']) && $inputElement['label_advanced'] == '1') {
@@ -279,7 +279,7 @@ class Form
         }
         
         return '<div class="form-group ' . $classAdvanced . '">'.
-                '<div class="col-sm-3" style="text-align:right">'.$inputElement['label'].'</div>'.
+                '<div class="col-sm-2" style="text-align:right">'.$inputElement['label'].'</div>'.
                 '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'.
                 $helpButton.
                 '</div>';

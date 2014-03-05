@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+    <form>
+        <route>/bam/business-view/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/bam/business-view</redirect_route>
+        <section name="Configuration">
+            <block name="Information">
+                <field name="ba_group_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <help>Name of business view</help>
+                </field>
+                <field name="ba_group_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <help>Description of this view</help>
+                </field>
+                <field name="visible" label="Displayed in Overview" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
+					</attributes>
+					<help>Whether or not this view is displayed in the monitoring dashboard</help>
+				</field>
+            </block>
+            <block name="Business Activity List">
+                <field name="bv_ba" label="Linked Business Activity" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/bam/business-activity/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
+					<help>List of business activities that belong to this view</help>
+				</field>
+            </block>
+            <block name="Access Control List">
+                <field name="bv_acl" label="Authorized Access Groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
+					<help>ACL groups that can access this view</help>
+				</field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_bv">
+        <route>/bam/business-view/add</route>
+		<step name="General">
+			<field name="ba_group_name" mandatory="1"></field>
+			<field name="ba_group_description" mandatory="0"></field>
+		</step>
+    </wizard>
+</forms>

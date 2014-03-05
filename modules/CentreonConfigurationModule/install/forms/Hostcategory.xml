@@ -6,7 +6,12 @@
 		<redirect_route>/configuration/hostcategory</redirect_route>
 		<section name="General">
 			<block name="General information">
-				<field name="hc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="hc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <validators>
+                        <validator events="blur">unique</validator>
+                        <validator events="blur">forbiddenChar</validator>
+                    </validators>
+                </field>
 				<field name="hc_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>
@@ -52,4 +57,11 @@
 			</block>
 		</section>
 	</form>
+	<wizard name="add_hostcategory">
+		<route>/configuration/hostcategory/add</route>
+		<step name="General">
+			<field name="hc_name" mandatory="1"></field>
+			<field name="hc_alias" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>
