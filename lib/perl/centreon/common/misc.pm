@@ -56,7 +56,7 @@ sub reload_db_config {
             $centreon_config->{db_host} ne $cdb->host() ||
             $centreon_config->{db_user} ne $cdb->user() ||
             $centreon_config->{db_passwd} ne $cdb->password() ||
-            $centreon_config->{db_port} ne $cdb->port()) {
+            (defined($centreon_config->{db_port}) && $centreon_config->{db_port} ne $cdb->port())) {
             $logger->writeLogInfo("Database centreon config had been modified");
             $cdb->db($centreon_config->{centreon_db});
             $cdb->host($centreon_config->{db_host});
@@ -72,7 +72,7 @@ sub reload_db_config {
             $centreon_config->{db_host} ne $csdb->host() ||
             $centreon_config->{db_user} ne $csdb->user() ||
             $centreon_config->{db_passwd} ne $csdb->password() ||
-            $centreon_config->{db_port} ne $csdb->port()) {
+            (defined($centreon_config->{db_port}) && $centreon_config->{db_port} ne $csdb->port())) {
             $logger->writeLogInfo("Database centstorage config had been modified");
             $csdb->db($centreon_config->{centstorage_db});
             $csdb->host($centreon_config->{db_host});
