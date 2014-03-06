@@ -30,7 +30,7 @@ Le serveur satellite contient les éléments suivants :
 
 Cette architecture a plusieurs intérets :
 
-* Possibilité de répartir la charge de supervision entre plusieurs serveurs de supervision permettant ainsi de disposer de collecteur dans des zones géographiques particulières ou par entité logique
+* Elle permet la répartition de la charge de supervision entre plusieurs serveurs de supervision
 * Isolation des flux réseaux : si votre infrastructure de supervision est chargée de superviser une DMZ il est plus simple (et sécurisant) de placer un serveur satellite sur le réseau DMZ
 * Avoir une redondance au niveau des serveurs Centraux, si un serveur central tombe alors le second serveur central existe toujours et permet d'assurer une continuité de service
 * Disposer d'une interface web afin de pouvoir consulter les éléments supervisés par chaque serveur satellite
@@ -50,12 +50,12 @@ Il existe deux types de serveur central :
 Le serveur central master fonctionne normalement :
 
 * Le serveur Apache est chargé d'héberger l'interface web de Centreon
-* Plusieurs bases de données MySQL sont chargées de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
+* Plusieurs base de données MySQL sont chargés de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
 * Le service CentCore est chargé d'exporter la configuration des moteurs de supervision vers le serveur central et satellites ainsi que du redémarrage des moteurs de supervision
-* Le moteur de supervision supervise le système d’information
-* Les informations de supervision sont envoyées via le module cbmod au composant Centreon Broker SQL
-* Le composant Centreon Broker SQL est chargé d’insérer les données de supervision en base de données et de transmettre les données de performances aux 2 services Centreon Broker RRD (le premier se situe sur le master et l’autre sur le slave
-* Le composant Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
+* Le moteur de supervision supervise le système d'informations
+* Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL
+* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances aux 2 services Centreon Broker RRD (le premier se situe sur le master et l'autre sur le slave)
+* Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
 Une réplication MySQL bi-directionnelle permet de conserver la configuration de Centreon, les informations de supervision ainsi que les données de performances entre les deux serveurs centraux.
 
@@ -71,8 +71,8 @@ Serveur satellite
 
 Le serveur satellite fonctionne de la manière suivante :
 
-* Le moteur de supervision supervise le système d'information
-* Les informations de supervision sont envoyées via le module cbmod à l'adresse IP virtuel qui factorise les deux serveurs centraux. En fonction du serveur actif, ces informations sont envoyés à un des deux services Centreon Broker SQL. Les informations de supervision sont également envoyés au serveur satellite même qui les traite en utilisant également Centreon Broker SQL.
+* Le moteur de supervision supervise le système d'informations
+* Les informations de supervision sont envoyées via cbmod à l'adresse IP virtuel qui factorise les deux serveurs centraux. En fonction du serveur actif, ces informations sont envoyés à un des deux services Centreon Broker SQL. Les informations de supervision sont également envoyés au serveur satellite même qui les traite en utilisant également Centreon Broker SQL.
 * Centreon Broker SQL est chargé d'insérer les données de supervision en base de données (du serveur central et du serveur satellite) et de transmettre les données de performances à tous les services Centreon Broker RRD (celui du serveur central master et slave ainsi que celui du serveur satellite)
 * Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 

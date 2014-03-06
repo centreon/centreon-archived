@@ -74,9 +74,10 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07brokerconf.png
    :align: center 
 
-* Dans l'onglet **Output**, modifiez le champ **Host to connect to** [ TODO Pas de traduction] en entrant l'adresse IP du serveur contenant votre base MySQL (dans notre cas le serveur central).
+* Dans l'onglet **Output**, modifiez le champ **Hôte distant** en entrant l'adresse IP du serveur contenant votre base MySQL (dans notre cas le serveur central).
 
-[ TODO Faire la capture car pas de traduction]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07brokerconfoutput.png
+   :align: center 
 
 Configuration de Centreontrapd
 ==============================

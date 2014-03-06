@@ -100,19 +100,20 @@ Il y a deux intérêts à lier les modèles de services aux modèles d'hôtes :
 * Les services générés automatiquement conserve leurs granularité : il est donc possible de modifier les attributs d'un service sans impacter les autres services issus de ce modèle
 * La création de nouveaux hôtes est grandement accélérée : vous n'avez qu'à définir l'hôte et les modèles d'hôtes associés à celui-ci
 
-Exemple : Je créé l'hôte webserver01.doccentreon.local selon le modèle ci-dessous :
+Exemple : Je créé l'hôte srvi-web-01 selon le modèle ci-dessous :
 
 .. image :: /images/guide_utilisateur/configuration/09hostexemple.png
    :align: center
 
-L'hôte webserver01.doccentreon.local aura automatiquement les services suivants générés :
+L'hôte srvi-web-01 aura automatiquement les services suivants générés :
 
-*	Le service Ping permettra de valider la présence de l'hôte sur le réseau via un PING
-*	Le service HTTP-Port permettra de vérifier la disponibilité du port 80
-*	Le service HTTPS-Port permettra de vérifier la disponibilité du  port 443
-*	Le service CPU permettra de vérifier la consommation CPU de la machine
-*	Le service RAM permettra de vérifier la consommation de la mémoire vive
-*	Le service Disk-C permettra de vérifier la consommation de la partition C:
+* Le service Load permettra de vérifier la charge du serveur
+* Le service CPU permettra de vérifier la consommation CPU de la machine
+* Le service Mémoire permettra de vérifier la consommation de la mémoire vive
+* Le service Disk-/ permettra de vérifier l'état de la partition /
+* Le service broken-jobs permet de vérifier les jobs en panne
+* Le service hit-ration permet de vérifier le ratio de hits
+* Les services tablespaces, listener, processus et connection permettent de vérifier l'état et les performances du serveur de base de données
 
 Lorsque les services d'un hôte sont générés à partir des modèles d'hôtes, il est possible que certains services générés ne soient plus ou pas vérifiés par l'outil de supervision.
 Dans ce cas, il est nécessaire de désactiver les services inutilisés (et non de les supprimer).

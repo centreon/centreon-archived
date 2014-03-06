@@ -1,3 +1,5 @@
+.. _notifications_escalation:
+
 ==============================
 Les escalades de notifications
 ==============================

@@ -47,9 +47,9 @@ Notification
 
 *	Le champ **Notification activée** permet d'activer ou de désactiver les notifications pour l'objet.
 *	Le champ **Utiliser les contacts définis sur l'hôte** : j'ai proposé une traduction sur la plateforme] permet de faire hériter les contacts depuis la configuration de l'hôte.
-*	Si la case **Contacts en complément de ceux héritésContacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
+*	Si la case **Contact additive inheritance** [ TODO PAS DE TRADUCTION DISPONIBLE] est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
 *	La liste **Contacts liés** indique les contacts qui recevront les notifications.
-*	Si la case **Groupes de contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent.
+*	Si la case **Contact group additive inheritance** [ TODO PAS DE TRADUCTION DISPONIBLE] est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent.
 *	Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications.
 *	Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification lorsque le statut est non-OK. Si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification par changement de statut.
 *	Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyée.
