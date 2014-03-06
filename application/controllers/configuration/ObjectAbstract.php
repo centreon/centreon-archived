@@ -217,13 +217,43 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
 
         $objClass = $this->objectClass;
         foreach ($params['ids'] as $id) {
+            $this->preSave($id, 'delete');
             $objClass::delete($id);
-	    $this->postSave($id, 'delete');
+            $this->postSave($id, 'delete');
         }
 
         $di->get('router')->response()->json(array(
             'success' => true
         ));
+    }
+
+    /**
+     * Action before save
+     *
+     * * Emit event objectName.action
+     *
+     * @param $id int The object id
+     * @param $action string The action (add, update, delete)
+     */
+    protected function preSave($id, $action = 'add')
+    {
+        $actionList = array(
+            'delete' => 'd'
+        );
+        if (false === in_array($action, array_keys($actionList))) {
+            return;
+        }
+        $objClass = $this->objectClass;
+        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
+        $name = $name[$objClass::getUniqueLabelField()];
+        /* Add change log */
+        \Models\Tools\LogAction::addLog(
+            $actionList[$action],
+            $this->objectName,
+            $id,
+            $name,
+            array()
+        );
     }
 
     /**
@@ -236,13 +266,31 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      */
     protected function postSave($id, $action = 'add')
     {
+        $actionList = array(
+            'add' => 'a',
+            'update' => 'c'
+        );
         $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->getParams();
+        $params = $di->get('router')->request()->params();
         $event = $di->get('action_hooks');
         $eventParams = array(
             'id' => $id,
             'params' => $params
         );
         $event->emit($this->objectName . '.' . $action, $eventParams);
+        /* Add change log */
+        if (false === in_array($action, array_keys($actionList))) {
+            return;
+        }
+        $objClass = $this->objectClass;
+        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
+        $name = $name[$objClass::getUniqueLabelField()];
+        \Models\Tools\LogAction::addLog(
+            $actionList[$action],
+            $this->objectName,
+            $id,
+            $name,
+            $params
+        );
     } 
 }
