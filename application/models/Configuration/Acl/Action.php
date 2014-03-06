@@ -44,7 +44,7 @@ namespace Models\Configuration\Acl;
  */
 class Action extends \Models\Configuration\Object
 {
-    protected $table = "acl_actions";
-    protected $primaryKey = "acl_action_id";
-    protected $uniqueLabelField = "acl_action_name";
+    protected static $table = "acl_actions";
+    protected static $primaryKey = "acl_action_id";
+    protected static $uniqueLabelField = "acl_action_name";
 }
