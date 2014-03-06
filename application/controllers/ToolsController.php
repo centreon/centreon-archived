@@ -140,10 +140,19 @@ class ToolsController extends \Centreon\Core\Controller
         
         $uploadedFile = $_FILES['centreonUploadedFile'];
         
-        
-        // Check if file exists in DB by its checksum
-        $fileChecksum = sha1_file($uploadedFile['tmp_name']);
+        $fileChecksum = md5_file($uploadedFile['tmp_name']);
         $mimetype = mime_content_type($uploadedFile['tmp_name']);
+        
+        $fileType = "";
+        switch($mimetype) {
+            default:
+            case 'image/jpeg':
+            case 'image/jpg':
+            case 'image/png':
+                $fileType = 'images';
+                break;
+        }
+        
         $query = 'SELECT `checksum` 
             FROM `binaries`
 	        WHERE `checksum` = :checksum
@@ -157,29 +166,81 @@ class ToolsController extends \Centreon\Core\Controller
         if (false === $row) {
             $di = \Centreon\Core\Di::getDefault();
             $config = $di->get('config');
-            $baseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/images/';
-            $fileDestination = realpath(__DIR__.'/../../www/uploads/images/').'/'.$uploadedFile['name'];
+            $baseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/'.$fileType.'/';
+            $fileDestination = realpath(__DIR__.'/../../www/uploads/'.$fileType.'/').'/'.$uploadedFile['name'];
 
             if (move_uploaded_file($uploadedFile['tmp_name'], $fileDestination)) {
-                $query = 'INSERT INTO `binaries` (`filename`, `checksum`, `mimetype`, `filetype`, `binary_content`)
-                    VALUES (:filename, :checksum, :mimetype, :filetype, :binary_content)';
-                $stmt = $dbconn->prepare($query);
-                $stmt->bindParam(':filename', $uploadedFile['name'], \PDO::PARAM_STR);
-                $stmt->bindParam(':checksum', $fileChecksum, \PDO::PARAM_STR);
-                $stmt->bindParam(':mimetype', $mimetype, \PDO::PARAM_STR);
-                $stmt->bindParam(':filetype', 1, \PDO::PARAM_INT);
-                $stmt->bindParam(':binary_content', file_get_content($fileDestination), \PDO::PARAM_LOB);
+                $fileParam = array(
+                    'filename' => $uploadedFile['name'],
+                    'checksum' => $fileChecksum,
+                    'mimetype' => $mimetype,
+                    'filetype' => 1,
+                    'binary_content' => file_get_contents($fileDestination)
+                );
+                \Models\File::insert($fileParam);
                 
-                $router->response()->json(array(
-                    'success' => true,
-                    'filename' => $baseUrl.$uploadedFile['name']
-                ));
+                $fileUploadResult = array(
+                    'url' => $baseUrl.$uploadedFile['name'],
+                    'name' => $uploadedFile['name'],
+                    'type' => $mimetype,
+                    'size' => filesize($fileDestination),
+                    'deleteUrl' => '',
+                    'deleteType' => 'DELETE',
+                );
+                
+                // If the file is an image, we need to produce a thumbnail
+                if ($fileType == "images") {
+                    
+                    switch($mimetype) {
+                        default:
+                        case 'image/jpeg':
+                            $imageCreateFunction = 'imagecreatefromjpeg';
+                            $imageGenerateFunction = 'imagejpeg';
+                            break;
+
+                        case 'image/png':
+                            $imageCreateFunction = 'imagecreatefrompng';
+                            $imageGenerateFunction = 'imagepng';
+                            break;
+
+                        case 'image/gif':
+                            $imageCreateFunction = 'imagecreatefromgif';
+                            $imageGenerateFunction = 'imagegif';
+                            break;
+                    }
+                    
+                    $thumbDestination = realpath(__DIR__.'/../../www/uploads/imagesthumb/').'/'.$uploadedFile['name'];
+                    $thumbBaseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/imagesthumb/';
+
+                    // Calcul des nouvelles dimensions
+                    list($width, $height) = getimagesize($fileDestination);
+                    if (($width > 80) || ($height > 80)) {
+                        $currentRatio = $width / $height;
+                        
+                        if ($currentRatio > 1) {
+                            $new_width = 80;
+                            $new_height = 80 / $currentRatio;
+                        } else {
+                            $new_width = 80 * $currentRatio;
+                            $new_height = 80;
+                        }
+
+                        // Redimensionnement
+                        $image_p = imagecreatetruecolor($new_width, $new_height);
+                        $image = $imageCreateFunction($fileDestination);
+                        imagecopyresampled($image_p, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+                        $imageGenerateFunction($image_p, $thumbDestination);
+                        
+                        $fileUploadResult['thumbnailUrl'] = $thumbBaseUrl.$uploadedFile['name'];
+                    } else {
+                        $fileUploadResult['thumbnailUrl'] = $baseUrl.$uploadedFile['name'];
+                    }
+                }
+
+                $router->response()->code(200)->json(array("files" => array($fileUploadResult)));
             }
         } else {
-            $router->response()->json(array(
-                'success' => false,
-                'message' => 'This file already exist on the server'
-            ));
+            $router->response()->code(403);
         }
     }
 }

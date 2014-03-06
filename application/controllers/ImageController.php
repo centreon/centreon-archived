@@ -81,7 +81,6 @@ class ImageController extends \Centreon\Core\Controller
         
         $finalIconList = array();
         $finalIconList[] = array(
-            "id" => "",
             "text" => "Centreon icon",
         );
         foreach($iconList as $icon) {
@@ -90,6 +89,18 @@ class ImageController extends \Centreon\Core\Controller
                 "text" => substr($icon, 3),
                 "theming" => '<i class="fa '.$icon.'"></i> '.substr($icon, 3)
             );
+        }
+        
+        // Get User Images
+        $dbconn = $di->get('db_centreon');
+        $query = 'SELECT img_name FROM view_img';
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if (false === $row) {
+            $this->notFoundAction();
+            return;
         }
         
         $router->response()->json($finalIconList);

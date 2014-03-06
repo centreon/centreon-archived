@@ -35,16 +35,31 @@
  */
 
 
-namespace Models\Configuration\Acl;
+namespace Models;
 
 /**
- * Used for interacting with Acl Resource
- *
- * @author sylvestre
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Models
  */
-class Resource extends \Models\Configuration\Object
+class Image extends File
 {
-    protected static $table = "acl_resources";
-    protected static $primaryKey = "acl_res_id";
-    protected static $uniqueLabelField = "acl_res_name";
+    public function __construct()
+    {
+        ;
+    }
+    
+    /**
+     * 
+     * @param array $file
+     * @return int
+     * @throws Exception
+     */
+    public static function insert($file)
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $binaryId = parent::insert($file);
+    }
 }

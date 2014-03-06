@@ -51,8 +51,11 @@ class File implements Custominterface
 
         // Load JsFile
         $tpl->addJs('tmpl.min.js')
+            ->addJs('load-image.min.js')
+            ->addJs('canvas-to-blob.min.js')
             ->addJs('jquery.fileupload.js')
             ->addJs('jquery.fileupload-process.js')
+            ->addJs('jquery.fileupload-image.js')
             ->addJs('jquery.fileupload-validate.js')
             ->addJs('jquery.fileupload-ui.js')
             ->addJs('centreon-wizard.js');
@@ -199,32 +202,7 @@ class File implements Custominterface
         
         $fileUploadJs = '$("#fileupload").fileupload({
 							url: "'.$uploadUrl.'",
-							maxFileSize: 5000000,
-							type: "POST",
-							dataType: "text",
-							autoUpload: false,
-							done: function (e, data) {
-                                uploadResult = $.parseJSON(data.result);
-							    if (uploadResult["success"] === true) {
-                                    alert(uploadResult["filename"]);
-                                } else {
-                                    alert(uploadResult["message"]);
-                                    $("#progress .bar").css(
-                                        "width",
-                                        0
-                                    );
-                                }
-							},
-                            progressall: function (e, data) {
-                                var progress = parseInt(data.loaded / data.total * 100, 10);
-                                $("#progress .bar").css(
-                                    "width",
-                                    progress + "%"
-                                );
-                            }
-						})
-                        .prop("disabled", !$.support.fileInput)
-                        .parent().addClass($.support.fileInput ? undefined : "disabled");
+						});
                         
                         $("#fileupload").fileupload("option", {
                             url: "'.$uploadUrl.'",

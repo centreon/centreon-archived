@@ -44,7 +44,7 @@ namespace Models\Configuration\Acl;
  */
 class Group extends \Models\Configuration\Object
 {
-    protected $table = "acl_groups";
-    protected $primaryKey = "acl_group_id";
-    protected $uniqueLabelField = "acl_group_name";
+    protected static $table = "acl_groups";
+    protected static $primaryKey = "acl_group_id";
+    protected static $uniqueLabelField = "acl_group_name";
 }
