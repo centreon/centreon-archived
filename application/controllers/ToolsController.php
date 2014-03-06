@@ -179,16 +179,63 @@ class ToolsController extends \Centreon\Core\Controller
                 );
                 \Models\File::insert($fileParam);
                 
-                
                 $fileUploadResult = array(
                     'url' => $baseUrl.$uploadedFile['name'],
-                    'thumbnailUrl' => $baseUrl.$uploadedFile['name'],
                     'name' => $uploadedFile['name'],
                     'type' => $mimetype,
                     'size' => filesize($fileDestination),
                     'deleteUrl' => '',
                     'deleteType' => 'DELETE',
                 );
+                
+                // If the file is an image, we need to produce a thumbnail
+                if ($fileType == "images") {
+                    
+                    switch($mimetype) {
+                        default:
+                        case 'image/jpeg':
+                            $imageCreateFunction = 'imagecreatefromjpeg';
+                            $imageGenerateFunction = 'imagejpeg';
+                            break;
+
+                        case 'image/png':
+                            $imageCreateFunction = 'imagecreatefrompng';
+                            $imageGenerateFunction = 'imagepng';
+                            break;
+
+                        case 'image/gif':
+                            $imageCreateFunction = 'imagecreatefromgif';
+                            $imageGenerateFunction = 'imagegif';
+                            break;
+                    }
+                    
+                    $thumbDestination = realpath(__DIR__.'/../../www/uploads/imagesthumb/').'/'.$uploadedFile['name'];
+                    $thumbBaseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/imagesthumb/';
+
+                    // Calcul des nouvelles dimensions
+                    list($width, $height) = getimagesize($fileDestination);
+                    if (($width > 80) || ($height > 80)) {
+                        $currentRatio = $width / $height;
+                        
+                        if ($currentRatio > 1) {
+                            $new_width = 80;
+                            $new_height = 80 / $currentRatio;
+                        } else {
+                            $new_width = 80 * $currentRatio;
+                            $new_height = 80;
+                        }
+
+                        // Redimensionnement
+                        $image_p = imagecreatetruecolor($new_width, $new_height);
+                        $image = $imageCreateFunction($fileDestination);
+                        imagecopyresampled($image_p, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+                        $imageGenerateFunction($image_p, $thumbDestination);
+                        
+                        $fileUploadResult['thumbnailUrl'] = $thumbBaseUrl.$uploadedFile['name'];
+                    } else {
+                        $fileUploadResult['thumbnailUrl'] = $baseUrl.$uploadedFile['name'];
+                    }
+                }
 
                 $router->response()->code(200)->json(array("files" => array($fileUploadResult)));
             }
