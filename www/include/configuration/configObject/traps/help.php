@@ -16,12 +16,15 @@ $help["command_enabled"] = dgettext("help", "Choose whether or not a special com
 $help["command_args"] = dgettext("help", "Define the command to execute by centreontrapd's trap handler. The command must be located in the PATH of the centreontrapd user.");
 $help["comments"] = dgettext("help", "Describe the situation in which this trap will be send. Additionally the format and the parameters of the trap can be described.");
 $help["traps_routing_mode"] = dgettext("help", "Enable/Disable routing definition");
-$help["traps_routing_value"] = dgettext("help", "Routing definition");
+$help["traps_routing_value"] = dgettext("help", "Routing definition to choose host(s)");
+$help["traps_routing_filter_services"] = dgettext("help", "Permits to filter services of host(s). Skip if service_description not equals to the value set.");
 $help["preexeccmd"] = dgettext("help", "PREXEC commands are executed after 'routing' and before 'matching', 'actions'");
 $help["traps_log"] = dgettext("help", "Whether or not traps will be inserted into database. Disabled by default");
 $help["traps_exec_interval"] = dgettext("help", "Minimum delay necessary for a trap to be processed after another one");
 $help["traps_exec_interval_type"] = dgettext("help", "Whether execution interval will be applied to identical OIDs or identical OIDs and hosts");
 $help["traps_exec_method"] = dgettext("help", "Defines the trap execution method");
+$help["traps_downtime"] = dgettext("help", "Skip trap if host or service is in downtime when centreontrapd proceeds. 'History' option is more accurate but needs more powers. The option works only with centreon-broker AND central mode.");
+$help["traps_output_transform"] = dgettext("help", "Regexp for removing or change some characters in output message (Example: s/\|/-/g).");
 $help["traps_advanced_treatment_default"] = dgettext("help", "Will not submit result in case no rules match");
 $help["traps_timeout"] = dgettext("help", "Maximum execution time of trap processing. This includes Preexec commands, submit command and special command");
 ?>

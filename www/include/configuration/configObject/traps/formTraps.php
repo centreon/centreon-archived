@@ -271,6 +271,12 @@
                 _('Route definition'), 
                 $attrsLongText
                 );
+        $form->addElement(
+                'text', 
+                'traps_routing_filter_services', 
+                _('Filter services'), 
+                $attrsLongText
+                );
         $form->addElement('checkbox', 'traps_routing_mode', _("Enable routing"));
         
         /*
@@ -342,6 +348,13 @@
                 'traps_log',
                 _("Insert trap's information into database")
                 );
+                
+        $form->addElement(
+                'text', 
+                'traps_output_transform', 
+                _('Output Transform'), 
+                $attrsLongText
+                );
         
         $form->addElement(
                 'checkbox',
@@ -357,6 +370,11 @@
         $excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
 	$excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Sequential"), '1');
 	$form->addGroup($excecution_method, 'traps_exec_method', _("Execution method"), '&nbsp;');
+        
+         $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("None"), '0');
+	$downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("Real-Time"), '1');
+	$downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("History"), '2');
+	$form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
         
         /*
          * Pre exec 

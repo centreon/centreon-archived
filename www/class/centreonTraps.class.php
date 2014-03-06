@@ -224,6 +224,9 @@ class Centreon_Traps {
             if (isset($ret['traps_exec_method']['traps_exec_method'])) {
                 $ret['traps_exec_method'] = $ret['traps_exec_method']['traps_exec_method'];
             }
+            if (isset($ret['traps_downtime']['traps_downtime'])) {
+                $ret['traps_downtime'] = $ret['traps_downtime']['traps_downtime'];
+            }
             if (!isset($ret['severity']) || $ret['severity'] == "") {
                 $ret['severity'] = "NULL";
             }
@@ -242,11 +245,14 @@ class Centreon_Traps {
             $rq .= "`traps_comments` = '".$this->_db->escape($ret["traps_comments"])."', ";
             $rq .= "`traps_routing_mode` = '".$this->_db->escape($ret["traps_routing_mode"])."', ";
             $rq .= "`traps_routing_value` = '".$this->_db->escape($ret["traps_routing_value"])."', ";
+            $rq .= "`traps_routing_filter_services` = '".$this->_db->escape($ret["traps_routing_filter_services"])."', ";
             $rq .= "`manufacturer_id` = '".$this->_db->escape($ret["manufacturer_id"])."', ";
             $rq .= "`traps_log` = '".$this->_db->escape($ret["traps_log"])."', ";
             $rq .= "`traps_exec_interval` = '".$this->_db->escape($ret["traps_exec_interval"])."', ";
             $rq .= "`traps_exec_interval_type` = '".$this->_db->escape($ret["traps_exec_interval_type"])."', ";
+            $rq .= "`traps_downtime` = '".$this->_db->escape($ret["traps_downtime"])."', ";
             $rq .= "`traps_exec_method` = '".$this->_db->escape($ret["traps_exec_method"])."', ";
+            $rq .= "`traps_output_transform` = '".$this->_db->escape($ret["traps_output_transform"])."', ";
             $rq .= "`traps_advanced_treatment_default` = '".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
             $rq .= "`traps_timeout` = '".$this->_db->escape($ret["traps_timeout"])."' ";
             $rq .= "WHERE `traps_id` = '".$traps_id."'";
@@ -400,6 +406,9 @@ class Centreon_Traps {
             if (isset($ret['traps_exec_method']['traps_exec_method'])) {
                 $ret['traps_exec_method'] = $ret['traps_exec_method']['traps_exec_method'];
             }
+            if (isset($ret['traps_downtime']['traps_downtime'])) {
+                $ret['traps_downtime'] = $ret['traps_downtime']['traps_downtime'];
+            }
             if (!isset($ret['severity']) || $ret['severity'] == "") {
                 $ret['severity'] = "NULL";
             }
@@ -408,8 +417,8 @@ class Centreon_Traps {
             $rq .= "(traps_name, traps_oid, traps_args, 
                 traps_status, severity_id, traps_submit_result_enable, 
                 traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
-                traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, manufacturer_id,
-                traps_log, traps_exec_interval, traps_exec_interval_type, traps_exec_method, traps_advanced_treatment_default,
+                traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, traps_routing_filter_services, manufacturer_id,
+                traps_log, traps_exec_interval, traps_exec_interval_type, traps_exec_method, traps_downtime, traps_output_transform, traps_advanced_treatment_default,
                 traps_timeout) ";
             $rq .= "VALUES ";
             $rq .= "('".$this->_db->escape($ret["traps_name"])."',";
@@ -425,11 +434,14 @@ class Centreon_Traps {
             $rq .= "'".$this->_db->escape($ret["traps_comments"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_routing_mode"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_routing_value"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_routing_filter_services"])."', ";
             $rq .= "'".$this->_db->escape($ret["manufacturer_id"])."',";
             $rq .= "'".$this->_db->escape($ret["traps_log"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_exec_interval"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_exec_interval_type"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_exec_method"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_downtime"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_output_transform"])."', ";
             $rq .= "'".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_timeout"])."') ";
             $this->_db->query($rq);

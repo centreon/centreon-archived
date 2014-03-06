@@ -112,8 +112,8 @@ sub get_oids {
     my ($dstatus, $sth) = $cdb->query("SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
                                         traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
                                         traps_timeout, traps_exec_interval, traps_exec_interval_type,
-                                        traps_routing_mode, traps_routing_value,
-                                        traps_exec_method, 
+                                        traps_routing_mode, traps_routing_value, traps_routing_filter_services,
+                                        traps_exec_method, traps_downtime, traps_output_transform,
                                         service_categories.level, service_categories.sc_name, service_categories.sc_id
                                         FROM traps
                                         LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
@@ -154,13 +154,14 @@ sub get_hosts {
     my $ref_result;
     my $request;
     
-    if ($args{trap_info}->{traps_routing_mode} == 1) {
+    if ($args{trap_info}->{traps_routing_mode} == 1 
+        && defined($args{trap_info}->{traps_routing_value}) && $args{trap_info}->{traps_routing_value} ne '') {
         my $search_str = $args{centreontrapd}->substitute_string($args{trap_info}->{traps_routing_value});
         $search_str = $args{centreontrapd}->substitute_centreon_functions($search_str);
         $request = "SELECT host_id, host_name FROM host WHERE host_address = " . $args{cdb}->quote($search_str);
     } else {
         # Default Mode
-        $request = "SELECT host_id, host_name FROM host WHERE host_address=" . $args{cdb}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cdb}->quote($args{ip_address});  
+        $request = "SELECT host_id, host_name FROM host WHERE host_address = " . $args{cdb}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cdb}->quote($args{ip_address});  
     }
     
     ($dstatus, $sth) = $args{cdb}->query($request);
@@ -228,6 +229,58 @@ sub get_services {
     }
     
     return (0, $services_do);
+}
+
+sub check_downtimes {
+    my ($csdb, $downtime, $trap_time, $host_id, $ref_services, $logger) = @_;
+    my $ref_result;
+    
+    # Only one request is $downtime == 2
+    if ($downtime == 2) {
+        my ($dstatus, $sth) = $csdb->query("SELECT DISTINCT IFNULL(service_id, 'host') as service_id FROM downtimes WHERE host_id = $host_id AND start_time <= $trap_time AND end_time >= $trap_time");
+        return -1 if ($dstatus == -1);
+        $ref_result = $sth->fetchall_hashref('service_id');
+    }
+    
+    # Check if host is in downtime - if yes: return 1
+    if ($downtime == 1) {
+        # Real-Time
+        my ($dstatus, $sth) = $csdb->query("SELECT host_id FROM hosts WHERE host_id = $host_id AND scheduled_downtime_depth = 1 LIMIT 1");
+        return -1 if ($dstatus == -1);
+        my $data = $sth->fetchrow_hashref();
+        if (defined($data)) {
+            # Go out. Downtime on host.
+            $logger->writeLogInfo("Skipping trap: host '$host_id' in downtime");
+            return 1;
+        }
+    } else {
+        # Check it
+        if (defined($ref_result->{host})) {
+            $logger->writeLogInfo("Skipping trap: host '$host_id' in downtime");
+            return 1;
+        }
+    }
+    
+    if (scalar(keys %{$ref_services}) == 0) {
+        return 0;
+    }
+    
+    if ($downtime == 1) {
+        # Check some services only
+        my ($dstatus, $sth) = $csdb->query("SELECT service_id FROM services WHERE service_id IN (" . join(',', keys %{$ref_services}) . ") AND scheduled_downtime_depth = 1");
+        return -1 if ($dstatus == -1);
+        $ref_result = $sth->fetchall_hashref('service_id');
+    }
+    
+    # Parse services
+    foreach my $service_id (keys %{$ref_services}) {
+        if (defined($ref_result->{$service_id})) {
+            $logger->writeLogInfo("Skipping trap: host '$host_id' and service $service_id in downtime");
+            delete $ref_services->{$service_id};
+        }
+    }
+    
+    return 0;
 }
 
 sub set_macro {

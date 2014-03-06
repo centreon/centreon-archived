@@ -119,7 +119,7 @@ try {
     // get trap info
     $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, severity_id, traps_submit_result_enable, 
         traps_execution_command, traps_reschedule_svc_enable, traps_execution_command_enable, traps_args, 
-        traps_routing_mode, traps_routing_value, traps_log, traps_name, traps_exec_method, traps_advanced_treatment, traps_advanced_treatment_default,
+        traps_routing_mode, traps_routing_value, traps_routing_filter_services, traps_log, traps_name, traps_exec_method, traps_downtime, traps_routing_filter_services, traps_advanced_treatment, traps_advanced_treatment_default,
         traps_timeout, traps_exec_interval, traps_exec_interval_type, manufacturer_id 
         FROM traps");
     $stmt->execute();
@@ -254,9 +254,12 @@ try {
                     `traps_timeout` int(11) DEFAULT NULL,
                     `traps_exec_interval` int(11) DEFAULT NULL,
                     `traps_exec_interval_type` int(11) DEFAULT '0',
+					`traps_downtime` int(11) DEFAULT '0',
                     `traps_log` int(11) DEFAULT '0',
                     `traps_routing_mode` int(11) DEFAULT '0',
                     `traps_routing_value` varchar(255) DEFAULT NULL,
+					`traps_routing_filter_services` varchar(255) DEFAULT NULL,
+					`traps_output_transform` varchar(255) DEFAULT NULL,
                     `traps_exec_method` int(11) DEFAULT '0'
                     );
 
@@ -426,13 +429,13 @@ try {
                                             traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, traps_submit_result_enable, 
                                             traps_advanced_treatment, traps_advanced_treatment_default, traps_timeout,
                                             traps_exec_interval, traps_exec_interval_type, traps_log,
-                                            traps_routing_mode, traps_routing_value, traps_exec_method) VALUES (
+                                            traps_routing_mode, traps_routing_value, traps_exec_method, traps_downtime, traps_output_transform, traps_routing_filter_services) VALUES (
                     :traps_id, :traps_name, :traps_oid, :traps_args, :traps_status, :severity_id, :manufacturer_id,
                     :traps_reschedule_svc_enable, :traps_execution_command, :traps_execution_command_enable, :traps_submit_result_enable,
                     :traps_advanced_treatment, :traps_advanced_treatment_default, :traps_timeout,
                     :traps_exec_interval, :traps_exec_interval_type, :traps_log,
                     :traps_routing_mode, :traps_routing_value,
-                    :traps_exec_method)");
+                    :traps_exec_method, :traps_downtime, :traps_output_transform, :traps_routing_filter_services)");
             foreach ($result_traps as $value) {
                 $stmt->bindParam(':traps_id', $value['traps_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_name', $value['traps_name'], PDO::PARAM_STR);
@@ -454,6 +457,9 @@ try {
                 $stmt->bindParam(':traps_routing_mode', $value['traps_routing_mode'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_routing_value', $value['traps_routing_value'], PDO::PARAM_STR);
                 $stmt->bindParam(':traps_exec_method', $value['traps_exec_method'], PDO::PARAM_INT);
+				$stmt->bindParam(':traps_output_transform', $value['traps_output_transform'], PDO::PARAM_STR);
+				$stmt->bindParam(':traps_routing_filter_services', $value['traps_routing_filter_services'], PDO::PARAM_STR);
+				$stmt->bindParam(':traps_downtime', $value['traps_downtime'], PDO::PARAM_INT);
                 $stmt->execute();
             }
 

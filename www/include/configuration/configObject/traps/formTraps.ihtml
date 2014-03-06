@@ -83,6 +83,10 @@
                         <td class="FormRowField"><img class="helpTooltip" name="traps_routing_value">&nbsp;{$form.traps_routing_value.label}</td>
                         <td class="FormRowValue">{$form.traps_routing_value.html}</td>
                     </tr>
+					<tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_routing_filter_services">&nbsp;{$form.traps_routing_filter_services.label}</td>
+                        <td class="FormRowValue">{$form.traps_routing_filter_services.html}</td>
+                    </tr>
                     <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$preexecTxt}</td></tr>
                     <tr class="list_two">
                         <td class="FormRowField">
@@ -112,6 +116,14 @@
                     <tr class="list_one">
                         <td class="FormRowField"><img class="helpTooltip" name="traps_exec_method">&nbsp;{$form.traps_exec_method.label}</td>
                         <td class="FormRowValue">{$form.traps_exec_method.html}</td>
+                    </tr>
+					<tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_downtime">&nbsp;{$form.traps_downtime.label}</td>
+                        <td class="FormRowValue">{$form.traps_downtime.html}</td>
+                    </tr>
+					<tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_output_transform">&nbsp;{$form.traps_output_transform.label}</td>
+                        <td class="FormRowValue">{$form.traps_output_transform.html}</td>
                     </tr>
                 </tbody>
             </table>
