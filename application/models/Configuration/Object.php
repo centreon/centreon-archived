@@ -128,7 +128,7 @@ abstract class Object
     public static function delete($objectId)
     {
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        $sql = "DELETE FROM  " . self::$table . " WHERE ". static::$primaryKey . " = ?";
+        $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
     }

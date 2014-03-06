@@ -49,7 +49,8 @@ class Selectimage implements Custominterface
             'name' => $element['name'],
             'label_defaultValuesRoute' => $element['label_defaultValuesRoute'],
             'label_listValuesRoute' => $element['label_listValuesRoute'],
-            'label_extra' => $element['label_extra']
+	    'label_extra' => $element['label_extra'],
+	    'label_object_type' => $element['label_object_type']
         );
         
         $addImageUrl = \Centreon\Core\Di::getDefault()
