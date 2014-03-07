@@ -17,7 +17,7 @@
 
 {block name="javascript-bottom" append}
     <script> 
-        $("#{$formName}").submit(function (event) {
+        $("#{$formName}").on('submit', function (event) {
             $.ajax({
                 url: "{url_for url=$validateUrl}",
                 type: "POST",

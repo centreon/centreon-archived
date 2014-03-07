@@ -240,7 +240,10 @@ class ToolsController extends \Centreon\Core\Controller
                 $router->response()->code(200)->json(array("files" => array($fileUploadResult)));
             }
         } else {
-            $router->response()->code(403);
+            $fileUploadResult = array(
+                'error' => _('This file already exist on the server')
+            );
+            $router->response()->code(409)->json(array('files' => array($fileUploadResult)));
         }
     }
 }

@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Selectimage implements Custominterface
+class Command implements Custominterface
 {
     /**
      * 
@@ -43,51 +43,43 @@ class Selectimage implements Custominterface
      */
     public static function renderHtmlInput(array $element)
     {
-        $selectImageParameters = array(
-            'label_label' => $element['label_label'],
-            'label_multiple' => false,
-            'name' => $element['name'],
-            'label_object_type' => $element['label_object_type'],
-            'label_defaultValuesRoute' => $element['label_defaultValuesRoute'],
-            'label_listValuesRoute' => $element['label_listValuesRoute'],
-	    'label_extra' => $element['label_extra'],
-	    'label_object_type' => $element['label_object_type']
-        );
+        // Select for Commands
+        $commandSelect = Select::renderHtmlInput($element);
         
-        $addImageUrl = \Centreon\Core\Di::getDefault()
-                        ->get('router')
-                        ->getPathFor($element['label_wizardRoute']);
+        $myHtml = '<div class="row"><div class="col-sm-12">'.$commandSelect['html'].'</div></div>';
+        $myJs = $commandSelect['js'];
         
-        $selectForImage = Select::renderHtmlInput($selectImageParameters);
-        $fileUploadForImage = File::renderHtmlInput($element);
+        $myHtml .='<div id="'.$element['name'].'_command_args" class="row"></div>';
         
-        $finalHtml = '<div class="row">'
-            . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
-            . '<div class="col-sm-2"><button class="btn btn-default" id="modalAdd_'.$element['name'].'" type="button">Add Files...</button></div>'
-            . '</div>';
+        $commandArgumentsUrl = \Centreon\Core\Di::getDefault()
+                            ->get('router')
+                            ->getPathFor('/configuration/command/[i:id]/arguments');
         
-        $finalJs = $selectForImage['js'].' '.$fileUploadForImage['js'].' ';
-        $finalJs .= '$("#modalAdd_'.$element['name'].'").on("click", function(e) {
-            $("#modal").removeData("bs.modal");
-            $("#modal").removeData("centreonWizard");
-            $("#modal .modal-content").text("");
-            $("#modal").one("loaded.bs.modal", function(e) {
-                $(this).centreonWizard();
-            });
-            $("#modal").modal({
-                "remote": "'.$addImageUrl.'"
-            });
-            $("#modal").on("finished", function(e) {
-                console.log("We got it dude");
-            });
-            $("#modal").on("hidden.bs.modal", function(e) {
-                console.log("Yata sugoiiiii");
-            });
-        });';
+        $myJs .= ' '
+            . '$("#'.$element['name'].'").on("change", function() { '
+                . '$("#'.$element['name'].'_command_args").empty(); '
+                . 'var commandId = $("#'.$element['name'].'").val(); '
+                . 'var realCommandArgumentsUrl = "'.$commandArgumentsUrl.'"; '
+                . 'var computedCommandArgumentsUrl = realCommandArgumentsUrl.replace("[i:id]", commandId);'
+                . '$.ajax({ '
+                    . 'url: computedCommandArgumentsUrl,'
+                    . 'type: "GET", '
+                    . 'dataType: "json" '
+                . '})'
+                . '.success(function(data, status, jqxhr) { '
+                    . 'var argumentsHtml = ""; '
+                    . '$.each(data, function(key, value){ '
+                        . 'argumentsHtml += "<div class=\"row\"><div class=\"col-sm-3\">"+value.name+"</div>'
+                                        . '<div class=\"col-sm-4\"><input class=\"form-control\" type=\"text\" value=\""+value.value+"\"></div>'
+                                        . '<div class=\"col-sm-3\">"+value.example+"</div></div>" '
+                    . '}); '
+                    . '$("#'.$element['name'].'_command_args").append(argumentsHtml); '
+                . '});'
+            . '});';
         
         return array(
-            'html' => $finalHtml,
-            'js' => $finalJs
+            'html' => $myHtml,
+            'js' => $myJs
         );
     }
     

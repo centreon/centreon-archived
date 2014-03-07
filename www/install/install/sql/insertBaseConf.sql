@@ -106,6 +106,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('AjaxFirstTimeReloadStatistic','0'),
 ('template','Centreon-2'),
 ('gmt','1'),
+('global_sort_type','host_name'),
+('global_sort_order','ASC'),
 ('problem_sort_type','last_state_change'),
 ('problem_sort_order','ASC'),
 ('nagios_path','@INSTALL_DIR_NAGIOS@'),

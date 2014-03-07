@@ -87,12 +87,28 @@ if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
  }
 $form->addElement('select', 'template', _("Display Template"), $templates);
 
+$global_sort_type = array(
+                        "host_name" => _("Hosts"),
+                        "last_state_change" => _("Duration"),
+						"service_description" => _("Services"),
+						"current_state" => _("Status"),
+						"last_check" => _("Last check"),
+						"output" => _("Output"),
+                        "criticality_id" => _("Criticality"),
+                        "current_attempt" => _("Attempt"),
+                    );
+
 $sort_type = array(	"last_state_change" => _("Duration"),
                     "host_name" => _("Hosts"),
                     "service_description" => _("Services"),
                     "current_state" => _("Status"),
                     "last_check" => _("Last check"),
                     "plugin_output" => _("Output"));
+
+$form->addElement('select', 'global_sort_type', _("Sort by  "), $global_sort_type);
+$global_sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
+
+$form->addElement('select', 'global_sort_order', _("Order sort "), $global_sort_order);
 
 $form->addElement('select', 'problem_sort_type', _("Sort problems by"), $sort_type);
 
@@ -197,12 +213,14 @@ $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:
  */
 
 $tpl->assign('o', $o);
+$tpl->assign("sorting", _("Sorting"));
 $tpl->assign("genOpt_max_page_size", _("Maximum page size"));
 $tpl->assign("genOpt_expiration_properties", _("Sessions Properties"));
 $tpl->assign("time_min", _("minutes"));
 $tpl->assign("genOpt_refresh_properties", _("Refresh Properties"));
 $tpl->assign("time_sec", _("seconds"));
 $tpl->assign("genOpt_display_options", _("Display Options"));
+$tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentification properties"));

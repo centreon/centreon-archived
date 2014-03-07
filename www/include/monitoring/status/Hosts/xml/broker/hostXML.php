@@ -84,7 +84,7 @@ include_once $centreon_path . "www/include/common/common-Func.php";
         if ($o == "hpb" || $o == "h_unhandled") {
             $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
         } else {
-            $sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
+            $sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
         }
 	}
     $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
