@@ -35,22 +35,15 @@
  */
 
 
-namespace Models\Configuration;
+namespace Models\Configuration\Relation\Host;
 
-class Relation\Host\Hosttemplate extends Centreon_Object_Relation
+class Hosttemplate extends \Models\Configuration\Relation
 {
     protected static $relationTable = "host_template_relation";
     protected static $firstKey = "host_tpl_id";
     protected static $secondKey = "host_host_id";
     public static $firstObject = "\\Models\\Configuration\\Host";
     public static $secondObject = "\\Models\\Configuration\\Host";
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->firstObj = new static::$firstObject();
-        $this->secondObj = new static::$secondObject();
-    }
 
     /**
      * Insert host template / host relation
@@ -60,10 +53,11 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
      * @param int $skey
      * @return void
      */
-    public function insert($fkey, $skey)
+    public static function insert($fkey, $skey)
     {
-        $sql = "SELECT MAX(`order`) as maxorder FROM " .$this->relationTable . " WHERE " .$this->secondKey . " = ?";
-        $stmt = $this->db->prepare($sql);
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $sql = "SELECT MAX(`order`) as maxorder FROM " .static::$relationTable . " WHERE " .static::$secondKey . " = ?";
+        $stmt = $db->prepare($sql);
         $stmt->execute(array($skey));
         $row = $stmt->fetch();
         $order = 1;
@@ -71,8 +65,8 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
             $order = $row['maxorder']+1;
         }
         unset($res);
-        $sql = "INSERT INTO $this->relationTable ($this->firstKey, $this->secondKey, `order`) VALUES (?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
+        $sql = "INSERT INTO ".static::$relationTable." (".static::$firstKey.", ".static::$secondKey.", `order`) VALUES (?, ?, ?)";
+        $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey, $skey, $order));
     }
 
@@ -84,13 +78,13 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
      * @param array $sourceId
      * @return array
      */
-    public function getTargetIdFromSourceId($targetKey, $sourceKey, $sourceId)
+    public static function getTargetIdFromSourceId($targetKey, $sourceKey, $sourceId)
     {
         if (!is_array($sourceId)) {
             $sourceId = array($sourceId);
         }
-        $sql = "SELECT $targetKey FROM $this->relationTable WHERE $sourceKey = ? ORDER BY `order`";
-        $result = $this->getResult($sql, $sourceId);
+        $sql = "SELECT $targetKey FROM ".static::$relationTable." WHERE $sourceKey = ? ORDER BY `order`";
+        $result = static::getResult($sql, $sourceId);
         $tab = array();
         foreach ($result as $rez) {
             $tab[] = $rez[$targetKey];
@@ -110,9 +104,9 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
      * @param string $filterType
      * @return array
      */
-    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
+    public static function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
     {
-        if (!isset($this->firstObj) || !isset($this->secondObj)) {
+        if (!isset(static::$firstObject) || !isset(static::$secondObject)) {
             throw new Exception('Unsupported method on this object');
         }
         $fString = "";
@@ -129,10 +123,12 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
             }
             $sString .= "h2.".$sparams;
         }
+        $firstObject = static::$firstObject;
+        $secondObject = static::$secondObject;
         $sql = "SELECT ".$fString.$sString."
-        		FROM ".$this->firstObj->getTableName()." h,".$this->relationTable."
-        		JOIN ".$this->secondObject->getTableName(). " h2 ON ".$this->relationTable.".".$this->firstKey." = h2.".$this->secondObj->getPrimaryKey() ."
-        		WHERE h.".$this->firstObj->getPrimaryKey()." = ".$this->relationTable.".".$this->secondKey;
+        		FROM ".$firstObject::getTableName()." h,".static::$relationTable."
+        		JOIN ".$secondObject::getTableName(). " h2 ON ".static::$relationTable.".".static::$firstKey." = h2.".$secondObject::getPrimaryKey() ."
+        		WHERE h.".$firstObject::getPrimaryKey()." = ".$this->relationTable.".".$this->secondKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
@@ -146,10 +142,11 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (isset($count) && $count != -1) {
-            $sql = $this->db->limit($sql, $count, $offset);
+            $sql = $db->limit($sql, $count, $offset);
         }
-        $result = $this->getResult($sql, $filterTab);
+        $result = static::getResult($sql, $filterTab);
         return $result;
     }
 }

@@ -45,6 +45,13 @@ namespace Controllers\Configuration;
 abstract class ObjectAbstract extends \Centreon\Core\Controller
 {
     /**
+     * Array of field names => relation class names
+     *
+     * @var array
+     */
+    protected $relationMap;
+
+    /**
      * List view for object
      */
     public function listAction()
@@ -78,6 +85,67 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $tpl->assign('objectDuplicateUrl', $this->objectBaseUrl . '/duplicate');
         $tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
         $tpl->display('configuration/list.tpl');
+    }
+
+    /**
+     * Generic update function
+     *
+     */
+    public function updateAction()
+    {
+        $givenParameters = $this->getParams('post');
+        
+        if (!\Centreon\Core\Form::validateSecurity($givenParameters['token'])) {
+            echo "fail";
+        }
+        unset($givenParameters['token']);
+        $class = $this->objectClass;
+        $pk = $class::getPrimaryKey();
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        if (isset($givenParameters[$pk])) {
+            $id = $givenParameters[$pk];
+            unset($givenParameters[$pk]);
+            foreach ($this->relationMap as $k => $rel) {
+                try {
+                    if ($rel::$firstObject == $this->objectClass) {
+                        $rel::delete($id);
+                    } else {
+                        $rel::delete(null, $id);    
+                    }
+                    $arr = explode(',', $givenParameters[$k]);
+                    $db->beginTransaction();
+                    foreach ($arr as $relId) {
+                        if (!is_numeric($relId)) {
+                            continue;
+                        }
+                        if ($rel::$firstObject == $this->objectClass) {
+                            $rel::insert($id, $relId);
+                        } else {
+                            $rel::insert($relId, $id);    
+                        }
+                    }
+                    $db->commit();
+                    unset($givenParameters[$k]);
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                }
+            }
+            try {
+                $columns = $class::getColumns();
+                foreach ($givenParameters as $key => $value) {
+                    if (!in_array($key, $columns)) {
+                        unset($givenParameters[$key]);
+                    }
+                }
+                $class::update($id, $givenParameters->all());
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
+        }
+        \Centreon\Core\Di::getDefault()
+            ->get('router')
+            ->response()
+            ->json(array('success' => true));
     }
 
     /**
@@ -217,13 +285,43 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
 
         $objClass = $this->objectClass;
         foreach ($params['ids'] as $id) {
+            $this->preSave($id, 'delete');
             $objClass::delete($id);
-	    $this->postSave($id, 'delete');
+            $this->postSave($id, 'delete');
         }
 
         $di->get('router')->response()->json(array(
             'success' => true
         ));
+    }
+
+    /**
+     * Action before save
+     *
+     * * Emit event objectName.action
+     *
+     * @param $id int The object id
+     * @param $action string The action (add, update, delete)
+     */
+    protected function preSave($id, $action = 'add')
+    {
+        $actionList = array(
+            'delete' => 'd'
+        );
+        if (false === in_array($action, array_keys($actionList))) {
+            return;
+        }
+        $objClass = $this->objectClass;
+        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
+        $name = $name[$objClass::getUniqueLabelField()];
+        /* Add change log */
+        \Models\Tools\LogAction::addLog(
+            $actionList[$action],
+            $this->objectName,
+            $id,
+            $name,
+            array()
+        );
     }
 
     /**
@@ -236,13 +334,31 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      */
     protected function postSave($id, $action = 'add')
     {
+        $actionList = array(
+            'add' => 'a',
+            'update' => 'c'
+        );
         $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->getParams();
+        $params = $di->get('router')->request()->params();
         $event = $di->get('action_hooks');
         $eventParams = array(
             'id' => $id,
             'params' => $params
         );
         $event->emit($this->objectName . '.' . $action, $eventParams);
+        /* Add change log */
+        if (false === in_array($action, array_keys($actionList))) {
+            return;
+        }
+        $objClass = $this->objectClass;
+        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
+        $name = $name[$objClass::getUniqueLabelField()];
+        \Models\Tools\LogAction::addLog(
+            $actionList[$action],
+            $this->objectName,
+            $id,
+            $name,
+            $params
+        );
     } 
 }
