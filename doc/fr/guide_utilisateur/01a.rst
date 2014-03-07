@@ -91,7 +91,7 @@ Etape 1 : Démarrage
 
 Afin d'installer Centreon, démarrez votre serveur sur le CD de Centreon Enterprise Server.
 
-Démarrez avec l'option Install or upgrade an existing system 
+Démarrez avec l'option **Install or upgrade an existing system** 
 
 .. image :: /images/guide_utilisateur/abootmenu.png
    :align: center
