@@ -186,7 +186,7 @@ if ($searchU) {
     $query .= " log_contact_id IN (".searchUserName($searchU).") ";
 }
 if (!is_null($otype)) {
-  if ($objects_type_tab[$otype] != 'All') {
+  if ($otype != 0) {
     if ($where_flag)  {
       $query .= " WHERE ";
       $where_flag = 0;
