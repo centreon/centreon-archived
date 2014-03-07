@@ -4,7 +4,7 @@
 		<td>{$search_object_str} : <input type='text' name='searchO' value='{$searchO}' /></td>
 		<td>{$search_user_str} : <input type='text' name='searchU' value='{$searchU}' /></td>
 		<td>&nbsp;&nbsp;&nbsp;{$obj_str} : <select name='otype' />{$obj_type}</select></td>
-		<td><input type='submit' name='SearchB' value='Search' /></td>
+		<td><input type='submit' name='SearchB' value='{$Search}' /></td>
 	</tr>
 </table>
 <br />

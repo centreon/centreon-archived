@@ -242,6 +242,7 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('search_object_str', _("Object"));
 $tpl->assign('search_user_str', _("User"));
+$tpl->assign('Search', _('Search'));
 $tpl->assign('searchO', $searchO);
 $tpl->assign('searchU', $searchU);
 $tpl->assign('obj_str', _("Object Type"));
