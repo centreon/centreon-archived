@@ -35,7 +35,8 @@ Une fois l'installation réalisée, il faut intégrer ce satellite dans la confi
 * Entrez l'adresse IP du collecteur dans le champ **Adresse IP**.
 * Activez le collecteur en cliquant sur **Activé** dans le champ **Statut**.
 
-[ TODO Faire capture d'écran car pas de traduction dispo]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07addpoller.png
+   :align: center
 
 Maintenant, il est nécessaire de générer un fichier de configuration pour l'ordonnanceur Centreon Engine :
 
@@ -82,7 +83,7 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 Configuration de Centreontrapd
 ==============================
 
-Il est nécessaire de modifier les fichiers de configuration de Centreontrapd afin que le service puisse interroger la base de données SQLLite [TODO ajouter référence chapitre des traps SNMP].
+Il est nécessaire de modifier les fichiers de configuration de Centreontrapd afin que le service puisse interroger la base de données SQLLite. Plus d'informations au chapitre :ref:`Les traps SNMP <trapsnmp>`.
 
 Synchronisation des sondes
 ==========================

@@ -26,7 +26,7 @@ Le serveur satellite a les éléments suivants :
 * Le moteur de supervision
 * Le module de broker qui permet l'envoi des informations de supervision vers le serveur central
 
-Cette architecture a plusieurs intérets :
+Cette architecture a plusieurs intérêts :
 
 * Elle permet la répartition de la charge de supervision entre plusieurs serveurs de supervision
 * Isolation des flux réseaux : si votre infrastructure de supervision est chargée de superviser une DMZ il est plus simple (et sécurisant) de placer un serveur satellite sur le réseau DMZ
