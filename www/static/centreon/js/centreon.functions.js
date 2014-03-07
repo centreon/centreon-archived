@@ -175,7 +175,7 @@ function alertClose() {
 function select2_formatResult(item) {
     if(!item.id) {
         // return `text` for optgroup
-        return item.text;
+        return '<b>' + item.text + '</b>'; 
     }
 
     if (item.theming) {
