@@ -1,4 +1,4 @@
-.. _configuration_advanced_traps:
+.. _configuration_advanced_snmptrapds:
 
 ==============
 Les traps SNMP

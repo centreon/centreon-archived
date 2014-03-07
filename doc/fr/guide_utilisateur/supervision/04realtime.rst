@@ -613,7 +613,7 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 * **Statut détaillé** : permet de filtrer par le statut détaillé des services.
 * **Auteur** : permet de filtrer par utilisateur ayant créé des commentaires.
 * **Afficher les temps d'arrêt terminés** : permet d'afficher en plus les temps d'arrêt terminés.
-* **Afficher le cycle de temps d'arrêt** : permet de [TODO]
+* **Afficher les temps d'arrêt récurrents** : permet d'afficher les temps d'arrêts récurrents.
 
 .. note::
     La recherche sur les champs texte ne commence qu'à partir de la saisie d'au moins 3 caractères.

@@ -55,9 +55,9 @@ Notification
 ============
 
 *	Le champ **Notification activée** permet d'activer ou de désactiver les notifications pour l'objet.
-*	Si la case **Contact additive inheritance** [ TODO PAS DE TRADUCTION DISPONIBLE] est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
+*	Si la case **Contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
 *	La liste **Contacts liés** indique les contacts qui recevront les notifications.
-*	Si la case **Contact group additive inheritance** [ TODO PAS DE TRADUCTION DISPONIBLE] : est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent.
+*	Si la case **Groupes de contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent.
 *	Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications.
 *	Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification lorsque le statut est non-OK. Si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification par changement de statut.
 *	Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activées.
@@ -112,7 +112,7 @@ Les champs présentés ci-dessous sont des champs utilisés uniquement par la CG
 Access groups
 =============
 
-*   Le champ **ACL Resource Groups**, visible que pour les utilisateurs non administreur, permet de lier l'hôte à un groupe afin de visualiser ce dernier. [TODO ajouter ref sur chapitre ACL].
+*   Le champ **ACL Resource Groups**, visible que pour les utilisateurs non administreur, permet de lier l'hôte à un groupe afin de visualiser ce dernier (voir chapitre :ref:`acl`).
 
 Informations supplémentaires
 ============================

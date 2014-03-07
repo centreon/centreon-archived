@@ -90,7 +90,7 @@ Synchronisation des sondes
 Vous pouvez synchroniser les sondes entre votre serveur Central et vos serveurs satellites en utilisant l'utilitaire **rsync**.
 
 .. warning::
-   Ne pas réaliser cette action si vos sondes ne dépendent de librairies tierces devant au préalable être installées.
+   Ne pas réaliser cette action si vos sondes dépendent de librairies tierces devant au préalable être installées.
 
 Echange de clés SSH
 ===================
