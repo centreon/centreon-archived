@@ -142,6 +142,10 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
                 echo $e->getMessage();
             }
         }
+        \Centreon\Core\Di::getDefault()
+            ->get('router')
+            ->response()
+            ->json(array('success' => true));
     }
 
     /**

@@ -249,6 +249,8 @@ class Generator
         $di = \Centreon\Core\Di::getDefault();
         $tpl = $di->get('template');
         $finalHtml = $this->generateHtml();
+        $tpl->assign('formRedirect', $this->formRedirect);
+        $tpl->assign('formRedirectRoute', $this->formRedirectRoute);
         $tpl->assign('customValuesGetter', $this->formHandler->getCustomValidator());
         return $finalHtml;
     }

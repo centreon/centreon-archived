@@ -21,12 +21,13 @@
             $.ajax({
                 url: "{url_for url=$validateUrl}",
                 type: "POST",
+                dataType: 'json',
                 data: $(this).serializeArray(),
                 context: document.body
             })
             .success(function(data, status, jqxhr) {
                 alertClose();
-                if (data === "success") {
+                if (data.success) {
                     {if isset($formRedirect) && $formRedirect}
                         window.location='{url_for url=$formRedirectRoute}';
                     {else}
