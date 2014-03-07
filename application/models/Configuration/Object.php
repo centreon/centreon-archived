@@ -173,16 +173,24 @@ abstract class Object
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
             }
-            $value = str_replace("<br/>", "\n", $value);
-            $sqlParams[] = $value;
+            $type = \PDO::PARAM_STR;
+            if (is_null($value)) {
+                $type = \PDO::PARAM_NULL;
+            }
+            $sqlParams[] = array('value' => $value, 'type' => $type);
         }
 
         if ($sqlUpdate) {
             $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-            $sqlParams[] = $objectId;
-            $sql .= $sqlUpdate . " WHERE " . static::$primaryKey . " = ?";
+            $sqlParams[] = array('value' => $objectId, 'type' => \PDO::PARAM_INT);
+            $sql .= $sqlUpdate . " WHERE " . static::$primaryKey . " =  ?";
             $stmt = $db->prepare($sql);
-            $stmt->execute($sqlParams);
+            $i = 1;
+            foreach ($sqlParams as $v) {
+                $stmt->bindValue($i, $v['value'], $v['type']);
+                $i++;
+            }
+            $stmt->execute();
         }
     }
 
