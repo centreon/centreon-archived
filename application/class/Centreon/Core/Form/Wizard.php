@@ -84,8 +84,8 @@ class Wizard extends Generator
             if (false === isset($this->formComponents[$row['step_name']])) {
                 $this->formComponents[$row['step_name']] = array();
                 $this->formComponents[$row['step_name']]['default'] = array();
-                $this->formDefaults[$row['name']] = $row['default_value'];
             }
+            $this->formDefaults[$row['name']] = $row['default_value'];
             $this->addFieldToForm($row);
             $this->formComponents[$row['step_name']]['default'][] = $row;
         }
@@ -97,7 +97,7 @@ class Wizard extends Generator
     protected function generateHtml()
     {
         /* Set default values to quickform */
-        $this->formHandler->setDefaults($this->formDefautls);
+        $this->formHandler->setDefaults($this->formDefaults);
         $formElements = $this->formHandler->toSmarty();
 
         $di = \Centreon\Core\Di::getDefault();

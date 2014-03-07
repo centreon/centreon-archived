@@ -117,11 +117,12 @@ class HostController extends ObjectAbstract
      *
      * @method post
      * @route /configuration/host/create
-     * @todo
      */
     public function createAction()
     {
-        
+        $givenParameters = $this->getParams('post');
+        $givenParameters['host_register'] = 1;
+        parent::createAction();   
     }
 
     /**
@@ -144,6 +145,8 @@ class HostController extends ObjectAbstract
      */
     public function addAction()
     {
+        $tpl = \Centreon\Core\Di::getDefault()->get('template');
+        $tpl->assign('validateUrl', '/configuration/host/create');
         parent::addAction();
     }
     

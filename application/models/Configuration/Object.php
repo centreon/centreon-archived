@@ -85,6 +85,28 @@ abstract class Object
     }
 
     /**
+     * Set attribute properties
+     *
+     * @param array $not_null_attributes attributes that cannot be set to null
+     * @param array $is_int_attribute attributes that are int based
+     */
+    protected static function setAttributeProps($params, &$not_null_attributes, &$is_int_attribute)
+    {
+        if (array_search("", $params)) {
+            $sql_attr = "SHOW FIELDS FROM " . static::$table;
+            $res = static::getResult($sql_attr, array(), "fetchAll");
+            foreach ($res as $tab) {
+                if ($tab['Null'] == 'No') {
+                    $not_null_attributes[$tab['Field']] = true;
+                }
+                if (strstr($tab['Type'], 'int')) {
+                    $is_int_attribute[$tab['Field']] = true;
+                }
+            }
+        }
+    }
+
+    /**
      * Used for inserting object into database
      *
      * @param array $params
@@ -97,6 +119,10 @@ abstract class Object
         $sqlFields = "";
         $sqlValues = "";
         $sqlParams = array();
+        $not_null_attributes = array();
+        $is_int_attribute = array();
+        static::setAttributeProps($params, $not_null_attributes, $is_int_attribute);
+
         foreach ($params as $key => $value) {
             if ($key == static::$primaryKey || is_null($value)) {
                 continue;
@@ -109,12 +135,26 @@ abstract class Object
             }
             $sqlFields .= $key;
             $sqlValues .= "?";
-            $sqlParams[] = trim($value);
+            if ($value == "" && !isset($not_null_attributes[$key])) {
+                $value = null;
+            } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
+                $value = null;
+            }
+            $type = \PDO::PARAM_STR;
+            if (is_null($value)) {
+                $type = \PDO::PARAM_NULL;
+            }
+            $sqlParams[] = array('value' => trim($value), 'type' => $type);
         }
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
             $stmt = $db->prepare($sql);
-            $stmt->execute($sqlParams);
+            $i = 1;
+            foreach ($sqlParams as $v) {
+                $stmt->bindValue($i, $v['value'], $v['type']);
+                $i++;
+            }
+            $stmt->execute();
             return $db->lastInsertId(static::$table, static::$primaryKey);
         }
         return null;
@@ -147,18 +187,7 @@ abstract class Object
         $sqlParams = array();
         $not_null_attributes = array();
         $is_int_attribute = array();
-        if (array_search("", $params)) {
-            $sql_attr = "SHOW FIELDS FROM " . static::$table;
-            $res = static::getResult($sql_attr, array(), "fetchAll");
-            foreach ($res as $tab) {
-                if ($tab['Null'] == 'No') {
-                    $not_null_attributes[$tab['Field']] = true;
-                }
-                if (strstr($tab['Type'], 'int')) {
-                    $is_int_attribute[$tab['Field']] = true;
-                }
-            }
-        }
+        static::setAttributeProps($params, $not_null_attributes, $is_int_attribute);
 
         foreach ($params as $key => $value) {
             if ($key == static::$primaryKey) {
