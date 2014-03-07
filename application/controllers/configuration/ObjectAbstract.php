@@ -45,6 +45,13 @@ namespace Controllers\Configuration;
 abstract class ObjectAbstract extends \Centreon\Core\Controller
 {
     /**
+     * Array of field names => relation class names
+     *
+     * @var array
+     */
+    protected $relationMap;
+
+    /**
      * List view for object
      */
     public function listAction()
@@ -78,6 +85,63 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $tpl->assign('objectDuplicateUrl', $this->objectBaseUrl . '/duplicate');
         $tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
         $tpl->display('configuration/list.tpl');
+    }
+
+    /**
+     * Generic update function
+     *
+     */
+    public function updateAction()
+    {
+        $givenParameters = $this->getParams('post');
+        
+        if (!\Centreon\Core\Form::validateSecurity($givenParameters['token'])) {
+            echo "fail";
+        }
+        unset($givenParameters['token']);
+        $class = $this->objectClass;
+        $pk = $class::getPrimaryKey();
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        if (isset($givenParameters[$pk])) {
+            $id = $givenParameters[$pk];
+            unset($givenParameters[$pk]);
+            foreach ($this->relationMap as $k => $rel) {
+                try {
+                    if ($rel::$firstObject == $this->objectClass) {
+                        $rel::delete($id);
+                    } else {
+                        $rel::delete(null, $id);    
+                    }
+                    $arr = explode(',', $givenParameters[$k]);
+                    $db->beginTransaction();
+                    foreach ($arr as $relId) {
+                        if (!is_numeric($relId)) {
+                            continue;
+                        }
+                        if ($rel::$firstObject == $this->objectClass) {
+                            $rel::insert($id, $relId);
+                        } else {
+                            $rel::insert($relId, $id);    
+                        }
+                    }
+                    $db->commit();
+                    unset($givenParameters[$k]);
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                }
+            }
+            try {
+                $columns = $class::getColumns();
+                foreach ($givenParameters as $key => $value) {
+                    if (!in_array($key, $columns)) {
+                        unset($givenParameters[$key]);
+                    }
+                }
+                $class::update($id, $givenParameters->all());
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
+        }
     }
 
     /**

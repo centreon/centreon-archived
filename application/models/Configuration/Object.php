@@ -146,13 +146,16 @@ abstract class Object
         $sqlUpdate = "";
         $sqlParams = array();
         $not_null_attributes = array();
-
+        $is_int_attribute = array();
         if (array_search("", $params)) {
             $sql_attr = "SHOW FIELDS FROM " . static::$table;
             $res = static::getResult($sql_attr, array(), "fetchAll");
             foreach ($res as $tab) {
-                if ($tab['Null'] == 'NO') {
+                if ($tab['Null'] == 'No') {
                     $not_null_attributes[$tab['Field']] = true;
+                }
+                if (strstr($tab['Type'], 'int')) {
+                    $is_int_attribute[$tab['Field']] = true;
                 }
             }
         }
@@ -166,6 +169,8 @@ abstract class Object
             }
             $sqlUpdate .= $key . " = ? ";
             if ($value == "" && !isset($not_null_attributes[$key])) {
+                $value = null;
+            } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
             }
             $value = str_replace("<br/>", "\n", $value);
@@ -380,6 +385,16 @@ abstract class Object
     {
         return static::$uniqueLabelField;
     }
+
+    /**
+     * Get relations
+     *
+     * @return array
+     */
+    public static function getRelations()
+    {
+        return static::$relations;
+    }
     
     /**
      * 
@@ -402,5 +417,23 @@ abstract class Object
     public static function getTableName()
     {
         return static::$table;
+    }
+
+    /**
+     * Get columns
+     *
+     * @return array
+     */
+    public static function getColumns()
+    {
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare("SHOW COLUMNS FROM " . static::$table);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $result = array();
+        foreach ($rows as $row) {
+            $result[] = $row['Field'];
+        }
+        return $result;
     }
 }
