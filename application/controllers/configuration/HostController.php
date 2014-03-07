@@ -54,6 +54,15 @@ class HostController extends ObjectAbstract
     protected $objectName = 'host';
     protected $objectBaseUrl = '/configuration/host';
     protected $objectClass = '\Models\Configuration\Host';
+    protected $relationMap = array(
+        'host_hostgroups' => '\Models\Configuration\Relation\Host\Hostgroup',
+        'host_categories' => '\Models\Configuration\Relation\Host\Hostcategory',
+        'host_parents' => '\Models\Configuration\Relation\Host\Hostparent',
+        'host_childs' => '\Models\Configuration\Relation\Host\Hostchild',
+        'host_contacts' => '\Models\Configuration\Relation\Host\Contact',
+        'host_contactgroups' => '\Models\Configuration\Relation\Host\Contactgroup',
+        'host_hosttemplates' => '\Models\Configuration\Relation\Host\Hosttemplate'
+    );
 
     /**
      * List hosts
@@ -124,14 +133,7 @@ class HostController extends ObjectAbstract
      */
     public function updateAction()
     {
-        $givenParameters = $this->getParams('post');
-        
-        if (!Form::validateSecurity($givenParameters['token'])) {
-            echo "fail";
-        }
-        unset($givenParameters['token']);
-        
-        echo '<pre>'; var_dump($givenParameters); echo '</pre>';
+        parent::updateAction();
     }
     
     /**
