@@ -79,8 +79,8 @@ Le tableau ci-dessous donne les pré-requis pour l'installation de CES 3.0 :
 |     10000 - 25000      | 1 central + 1 satellite  |          4 * 2,5 Ghz          |               8 Go              |           8 * 2,5 Ghz           |                4 Go               |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
 
-**Remarque** : ces informations tiennent comptes du fait que toutes les optimisations aient été réalisé pour l'ordonnanceur Centreon Engine, que les transactions aient été activé 
-dans Centreon Broker et que les optimisations aient été réalisé pour le SGBD MariaDB.  
+.. note:: 
+    Ces informations tiennent comptes du fait que toutes les optimisations aient été réalisé pour l'ordonnanceur Centreon Engine, que les transactions aient été activé dans Centreon Broker et que les optimisations aient été réalisé pour le SGBD MariaDB.  
 
 ************
 Installation
