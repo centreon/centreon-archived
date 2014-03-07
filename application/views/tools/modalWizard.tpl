@@ -46,6 +46,8 @@ $(function() {
         {else}
           alertMessage("The object has been successfully saved", "alert-success");
         {/if}
+        $('#modal').modal('hide');
+        $('.dataTable').dataTable().fnDraw();
       } else {
         alertMessage("An error occured", "alert-danger");
       }
