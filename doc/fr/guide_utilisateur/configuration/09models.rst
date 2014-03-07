@@ -142,4 +142,5 @@ Pour ajouter un modèle de contacts :
 #. Dans le menu de gauche, cliquez sur **Modèles de contacts**
 #. Cliquez sur **Ajouter**
 
-**Remarque** : les modèles de contacts sont utilisés pour l'import automatique de profils via un annuaire LDAP [TODO rajouter lien/reférence vers IMPORT LDAP].
+.. note::
+    Les modèles de contacts sont utilisés pour l'import automatique de profils via un annuaire :ref:`LDAP  <section-ldap_configuration>`.
