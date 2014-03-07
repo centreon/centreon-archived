@@ -77,12 +77,6 @@ class Selectimage implements Custominterface
             $("#modal").modal({
                 "remote": "'.$addImageUrl.'"
             });
-            $("#modal").on("finished", function(e) {
-                console.log("We got it dude");
-            });
-            $("#modal").on("hidden.bs.modal", function(e) {
-                console.log("Yata sugoiiiii");
-            });
         });';
         
         return array(
