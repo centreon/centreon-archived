@@ -82,7 +82,7 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 Configuration de Centreontrapd
 ==============================
 
-Il est nécessaire de modifier les fichiers de configuration de Centreontrapd afin que le service puisse interroger la base de données SQLLite [TODO ajouter référence chapitre des traps SNMP].
+Il est nécessaire de modifier les fichiers de configuration de Centreontrapd afin que le service puisse interroger la base de données SQLLite (voir chapitre :ref:`configuration_advanced_snmptrapds`).
 
 Synchronisation des sondes
 ==========================
