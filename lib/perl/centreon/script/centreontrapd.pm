@@ -260,7 +260,7 @@ sub handle_DIE {
     ###
     # Send -TERM signal
     ###
-    if (defined($self->{logdb_pipes}{'running'}) && $self->{logdb_pipes}{'running'} == 1) {
+    if (defined($self->{logdb_pipes}{running}) && $self->{logdb_pipes}{running} == 1) {
         $self->{logger}->writeLogInfo("Send -TERM signal to logdb process..");
         kill('TERM', $self->{pid_logdb_child});
     }
@@ -268,7 +268,7 @@ sub handle_DIE {
     # We're waiting n seconds
     for (my $i = 0; $i < $self->{centreontrapd_config}->{timeout_end}; $i++) {
         $self->manage_pool(0);
-        if (keys %{$self->{running_processes}} == 0 && $self->{logdb_pipes}{'running'} == 0) {
+        if (keys %{$self->{running_processes}} == 0 && $self->{logdb_pipes}{running} == 0) {
                 $self->{logger}->writeLogInfo("Main process exit.");
                 exit(0);
         }
@@ -324,7 +324,7 @@ sub reload {
     }
     $self->{logger}->redirect_output();
     
-    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb});
+    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb}, $self->{csdb});
     centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
 
     if ($self->{cdb}->type() =~ /SQLite/i) {
@@ -333,7 +333,7 @@ sub reload {
         $self->{cdb}->connect();
     }
     
-    if ($self->{logdb_pipes}{'running'} == 1) {
+    if ($self->{logdb_pipes}{running} == 1) {
         kill('HUP', $self->{pid_logdb_child});
         $self->{logger}->writeLogInfo("Send -HUP signal to logdb process..");
     }
@@ -358,8 +358,8 @@ sub create_logdb_child {
     pipe($reader_pipe, $writer_pipe);
     $writer_pipe->autoflush(1);
 
-    $self->{logdb_pipes}{'reader'} = \*$reader_pipe;
-    $self->{logdb_pipes}{'writer'} = \*$writer_pipe;
+    $self->{logdb_pipes}{reader} = \*$reader_pipe;
+    $self->{logdb_pipes}{writer} = \*$writer_pipe;
     
     $self->{logger}->writeLogInfo("Create logdb child");
     my $current_pid = fork();
@@ -369,7 +369,7 @@ sub create_logdb_child {
         $SIG{__DIE__} = 'IGNORE';
         $self->{cdb}->set_inactive_destroy();
 
-        close $self->{logdb_pipes}{'writer'};
+        close $self->{logdb_pipes}{writer};
         my $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
                                                         host => $self->{centreon_config}->{db_host},
                                                         port => $self->{centreon_config}->{db_port},
@@ -381,12 +381,12 @@ sub create_logdb_child {
         
         my $centreontrapd_log = centreon::trapd::Log->new($self->{logger});
         $centreontrapd_log->main($centreon_db_centstorage,
-                                 $self->{logdb_pipes}{'reader'}, $self->{config_file}, $self->{centreontrapd_config});
+                                 $self->{logdb_pipes}{reader}, $self->{config_file}, $self->{centreontrapd_config});
         exit(0);
     }
     $self->{pid_logdb_child} = $current_pid;
-    close $self->{logdb_pipes}{'reader'};
-    $self->{logdb_pipes}{'running'} = 1;
+    close $self->{logdb_pipes}{reader};
+    $self->{logdb_pipes}{running} = 1;
 }
 
 sub manage_pool {
@@ -407,7 +407,7 @@ sub manage_pool {
         
         if (defined($self->{pid_logdb_child}) && $child_pid == $self->{pid_logdb_child}) {
             $self->{logger}->writeLogInfo("Logdb child is dead");
-            $self->{logdb_pipes}{'running'} = 0;
+            $self->{logdb_pipes}{running} = 0;
             if ($self->{centreontrapd_config}->{log_trap_db} == 1 && defined($create_pool) && $create_pool == 1) {
                 $self->create_logdb_child();
             }
@@ -479,6 +479,14 @@ sub do_exec {
     $self->execute_preexec();
 
     $self->{traps_global_output} = $self->substitute_string($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_args});
+    # Check if a transform is needed
+    if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_output_transform}) &&
+        $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_output_transform} ne '') {
+        eval "\$self->{traps_global_output} =~ $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_output_transform};";
+        if ($@) {
+            $self->{logger}->writeLogError("Output transform not valid for " . $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_name});
+        }
+    }
     
     ######################################################################
     # Advanced matching rules
@@ -510,7 +518,7 @@ sub do_exec {
     }
     
     if ($self->{centreontrapd_config}->{log_trap_db} == 1 && $self->{current_trap_log} == 1) {
-        centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
+        centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{writer},
                                         id => $self->{id_logdb},
                                         cdb => $self->{cdb},
                                         trap_time => $self->{trap_data}->{trap_date_time_epoch},
@@ -569,6 +577,9 @@ sub manage_exec {
         $SIG{CHLD} = 'IGNORE';
         $SIG{__DIE__} = 'IGNORE';
         $self->{cdb}->set_inactive_destroy();
+        if (defined($self->{csdb})) {
+            $self->{csdb}->set_inactive_destroy();
+        }
         
         $self->{current_alarm_timeout} = $self->{centreontrapd_config}->{cmd_timeout};
         if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout}) && $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout} != 0) {
@@ -944,10 +955,24 @@ sub getTrapsInfos {
                 next;
             }
             $self->{trap_data}->{current_host_id} = $host_id;
-
+            
             #### Get Services ####
             ($fstatus, $self->{trap_data}->{ref_services}) = centreon::trapd::lib::get_services($self->{cdb}, $trap_id, $host_id);
             return 0 if ($fstatus == -1);
+            
+            #### Check Host and Services downtimes ###
+            if ($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} > 0 &&
+                $self->{centreontrapd_config}->{mode} == 0) {
+                ($fstatus) = centreon::trapd::lib::check_downtimes($self->{csdb}, 
+                                                                   $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime},
+                                                                   $self->{trap_data}->{trap_date_time_epoch},
+                                                                   $host_id,
+                                                                   $self->{trap_data}->{ref_services},
+                                                                   $self->{logger});
+                return 0 if ($fstatus == -1);
+                # Host in downtime - If no services anymore, condition will match it.
+                next if ($fstatus == 1);
+            }
             
             #### If none, we stop ####
             my $size = keys %{$self->{trap_data}->{ref_services}};
@@ -970,6 +995,19 @@ sub getTrapsInfos {
                                         $self->{trap_data}->{ref_services}->{$service_id}->{service_description} . 
                                         "' for host '" . 
                                         $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name} . "'.");
+                # Routing filter service
+                if ($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_routing_mode} == 1 &&
+                    defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_routing_filter_services}) && 
+                    $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_routing_filter_services} ne '') {
+                    my $search_str = $self->substitute_string($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_routing_filter_services});
+                    if ($self->{trap_data}->{ref_services}->{$service_id}->{service_description} ne $search_str) {
+                        $self->{logger}->writeLogDebug("Skipping trap for service '" . 
+                                                        $self->{trap_data}->{ref_services}->{$service_id}->{service_description} . 
+                                                        "' for host '" . 
+                                                        $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name} . "' (match: $search_str).");
+                        next;
+                    }
+                }
                 $self->manage_exec();
             }
         }
@@ -998,6 +1036,13 @@ sub run {
 
     if ($self->{centreontrapd_config}->{mode} == 0) {
         $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
+        $self->{csdb} = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
+                                                 host => $self->{centreon_config}->{db_host},
+                                                 port => $self->{centreon_config}->{db_port},
+                                                 user => $self->{centreon_config}->{db_user},
+                                                 password => $self->{centreon_config}->{db_passwd},
+                                                 force => 0,
+                                                 logger => $self->{logger});
     } else {
         # Dirty!!! Need to know the poller (not Dirty if you use SQLite database)
         my ($status, $sth) = $self->{cdb}->query("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
