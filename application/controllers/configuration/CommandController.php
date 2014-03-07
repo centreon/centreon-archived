@@ -233,4 +233,39 @@ class CommandController extends ObjectAbstract
         parent::deleteAction();
     }
 
+    /**
+     * Delete action for command
+     *
+     * @method get
+     * @route /configuration/command/[i:id]/arguments
+     */
+    public function getArgumentsAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        $connObj = new Command();
+        
+        $currentCommandLine = $connObj->getParameters($requestParam['id'], array('command_line'));
+        
+        $myArguments = array();
+        $myArguments[] = array(
+            'name' => 'Test',
+            "value" => 'My Value',
+            'example' => 'My Example'
+        );
+        $myArguments[] = array(
+            'name' => 'Test',
+            "value" => 'My Value',
+            'example' => 'My Example'
+        );
+        $myArguments[] = array(
+            'name' => 'Test',
+            "value" => 'My Value',
+            'example' => 'My Example'
+        );
+        
+        $router->response()->code(200)->json($myArguments);
+    }
 }

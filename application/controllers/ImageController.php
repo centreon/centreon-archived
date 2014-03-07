@@ -68,6 +68,37 @@ class ImageController extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
         
+        $finalIconList = array();
+
+        // Get User Images
+        $dbconn = $di->get('db_centreon');
+        $query = 'SELECT binary_id, filename FROM binaries';
+        $stmt = $dbconn->query($query);
+        $userImageExist = true;
+        while($row = $stmt->fetch()) {
+            
+            if ($userImageExist) {
+                $finalIconList[] = array(
+                    "text" => "User icon",
+                );
+                $userImageExist = false;
+            }
+            $filenameExploded = explode('.', $row['filename']);
+            $nbOfOccurence = count($filenameExploded);
+            $fileFormat = $filenameExploded[$nbOfOccurence-1];
+            $filenameLength = strlen($row['filename']);
+            $routeAttr = array(
+                'image' => substr($row['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                'format' => '.'.$fileFormat
+            );
+            $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+            $finalIconList[] = array(
+                "id" => $row['binary_id'],
+                "text" => $row['filename'],
+                "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$row['filename']
+            );
+        }
+        
         $iconList = array(
             'fa-bolt',
             'fa-camera',
@@ -79,7 +110,6 @@ class ImageController extends \Centreon\Core\Controller
             'fa-wrench'
         );
         
-        $finalIconList = array();
         $finalIconList[] = array(
             "text" => "Centreon icon",
         );
@@ -89,18 +119,6 @@ class ImageController extends \Centreon\Core\Controller
                 "text" => substr($icon, 3),
                 "theming" => '<i class="fa '.$icon.'"></i> '.substr($icon, 3)
             );
-        }
-        
-        // Get User Images
-        $dbconn = $di->get('db_centreon');
-        $query = 'SELECT img_name FROM view_img';
-        $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
-        $stmt->execute();
-        $row = $stmt->fetch();
-        if (false === $row) {
-            $this->notFoundAction();
-            return;
         }
         
         $router->response()->json($finalIconList);
