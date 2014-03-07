@@ -96,10 +96,15 @@ Démarrez avec l'option **Install or upgrade an existing system**
 .. image :: /images/guide_utilisateur/abootmenu.png
    :align: center
 
+Cliquez sur **Next**
+
+.. image :: /images/guide_utilisateur/adisplayicon.png
+   :align: center
+
 Etape 2 : Choix de la langue
 ============================
 
-Cliquez sur **Next**, choisissez votre langue et cliquez sur **Next**.
+Choisissez votre langue et cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/ainstalllanguage.png
    :align: center
@@ -171,6 +176,9 @@ Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Brok
    :align: center
 
 Une fois toutes ces options choisies, l'installation commence. Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
+
+.. image :: /images/guide_utilisateur/arestartserver.png
+   :align: center
 
 *************
 Configuration
