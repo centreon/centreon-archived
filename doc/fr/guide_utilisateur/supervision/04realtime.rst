@@ -1,3 +1,4 @@
+.. _realtime_monitoring:
 ======================
 Supervision Temps-réel
 ======================
