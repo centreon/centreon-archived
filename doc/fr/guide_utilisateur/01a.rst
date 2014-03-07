@@ -121,7 +121,9 @@ En fonction du type de stockage désiré, choisissez les options nécessaires po
 
 .. image :: /images/guide_utilisateur/adatastore1.png
    :align: center
-   
+
+Un message d'avertissement peut apparaître 
+
 .. image :: /images/guide_utilisateur/adatastore2.png
    :align: center
 
@@ -175,7 +177,12 @@ Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Brok
 .. image :: /images/guide_utilisateur/abrokertoinstall.png
    :align: center
 
-Une fois toutes ces options choisies, l'installation commence. Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
+Une fois toutes ces options choisies, l'installation commence. 
+
+.. image :: /images/guide_utilisateur/arpminstall.png
+   :align: center
+
+Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 
 .. image :: /images/guide_utilisateur/arestartserver.png
    :align: center
@@ -188,29 +195,46 @@ Découverte de l'interface web
 =============================
 
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
-L'assistant de fin d'installation de Centreon s'affiche. Cliquez sur **Next** jusqu'à arriver au choix du moteur de supervision.
+L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**. 
+
+.. image :: /images/guide_utilisateur/acentreonwelcome.png
+   :align: center
+
+L'assistant de fin d'installation de Centreon contrôle la disponibilité des modules, cliquez sur **Next**.
+
+.. image :: /images/guide_utilisateur/acentreoncheckmodules.png
+   :align: center
+
 Choisissez l'option **centreon-engine**. 
 
-.. image :: /images/guide_utilisateur/amonitoringengine.png
+.. image :: /images/guide_utilisateur/amonitoringengine1.png
    :align: center
 
-Cliquez sur **Next**. Lors du choix du broker, choisissez **centreon-broker**.
+Cliquez sur **Next**. 
 
-.. image :: /images/guide_utilisateur/abrokerinformation.png
+.. image :: /images/guide_utilisateur/amonitoringengine2.png
    :align: center
 
-Cliquez sur **Next**. Définissez les informations concernant l'utilisateur admin.
+Lors du choix du broker, choisissez **centreon-broker**.
+
+.. image :: /images/guide_utilisateur/abrokerinfo1.png
+   :align: center
+
+Cliquez sur **Next**.
+
+.. image :: /images/guide_utilisateur/abrokerinfo2.png
+   :align: center
+
+Définissez les informations concernant l'utilisateur admin, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/aadmininfo.png
    :align: center
 
-Cliquez sur **Next**. Par défaut, le serveur 'localhost' est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
-Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon, à savoir 'centreon'.
+Par défaut, le serveur 'localhost' est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
+Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon, à savoir 'centreon', cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/adbinfo.png
    :align: center
-
-Cliquez sur **Next**.
 
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
@@ -237,7 +261,20 @@ Effectuez l'opération ci-dessous :
 
 5.	Cliquez sur **Refresh**
 
-Cliquez sur **Next** jusqu'à arriver à l'étape **Installation finished**.
+L'assistant de fin d'installation configure les bases de données, cliquez sur **Next**.
+
+.. image :: /images/guide_utilisateur/adbconf.png
+   :align: center
+
+L'installation est terminée, cliquez sur **Finish**.
+
+.. image :: /images/guide_utilisateur/aendinstall.png
+   :align: center
+
+Vous pouvez maintenant vous connecter.
+
+.. image :: /images/guide_utilisateur/aconnection.png
+   :align: center
 
 Configuration de base
 =====================
