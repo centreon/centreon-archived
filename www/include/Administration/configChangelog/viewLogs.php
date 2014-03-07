@@ -186,7 +186,7 @@ if ($searchU) {
     $query .= " log_contact_id IN (".searchUserName($searchU).") ";
 }
 if (!is_null($otype)) {
-  if ($objects_type_tab[$otype] != 'All') {
+  if ($otype != 0) {
     if ($where_flag)  {
       $query .= " WHERE ";
       $where_flag = 0;
@@ -242,6 +242,7 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('search_object_str', _("Object"));
 $tpl->assign('search_user_str', _("User"));
+$tpl->assign('Search', _('Search'));
 $tpl->assign('searchO', $searchO);
 $tpl->assign('searchU', $searchU);
 $tpl->assign('obj_str', _("Object Type"));

@@ -46,7 +46,8 @@ Les graphiques d'historique
 ===========================
 
 Comme pour les graphiques de performances, il existe dufférentes façons d'accéder au graphique d'historique :
-* A partir de la page de détail d'un objet (voir le chapitre **Supervision en temps-réel** [TODO ref])
+
+* A partir de la page de détail d'un objet (voir le chapitre :ref:`Supervision temps-réelle <realtime_monitoring>`)
 * A partir du menu **Vues** ==> **Graphiques**, en sélectionnant au préalable un service spécifique puis en cochant la case **Affichage de l'état**.
 
 Visualiser plusieurs graphiques

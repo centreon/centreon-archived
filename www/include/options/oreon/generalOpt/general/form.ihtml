@@ -25,6 +25,10 @@
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_rich_colored.gif'>&nbsp;&nbsp;{$genOpt_display_options}</td></tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_template">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
  	
+    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;{$genOpt_global_display}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">{$form.global_sort_type.label}</td><td class="FormRowValue">{$form.global_sort_type.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">{$form.global_sort_order.label}</td><td class="FormRowValue">{$form.global_sort_order.html}</td></tr>
+    
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;{$genOpt_problem_display}</td></tr>
  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>

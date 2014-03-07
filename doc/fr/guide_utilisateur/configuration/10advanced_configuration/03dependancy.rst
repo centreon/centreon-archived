@@ -47,7 +47,7 @@ Dans le cas où les hôtes dépendants les uns des autres sont supervisés par d
 * D'empêcher l'établissement d'une relation de parentée entre deux hôtes supervisés par deux collecteurs différents.
 * D'autoriser l'établisement de cette relation de parentée : dans ce cas la dépendance ne sera pas gérée par les moteurs de supervision mais Centreon Broker prendra en compte cette relation au sein de son moteur de correlation.
 
-Pour empecher l'établissement de cette relation de parenté, il est nécessaire de cocher la case **Enable strict mode for host partnership management** [ TODO Traduction à faire] au sein de **Administration** ==> **Options**.
+Pour empecher l'établissement de cette relation de parenté, il est nécessaire de cocher la case **Activer le mode strict de gestion des relations de parentés** au sein du menu **Administration** ==> **Options**.
 A l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
 
 ************************

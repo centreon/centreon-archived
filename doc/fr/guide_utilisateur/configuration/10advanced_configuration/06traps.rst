@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 .. _trapsnmp:
+=======
+.. _configuration_advanced_snmptrapds:
+>>>>>>> ede72c57e910b4b8906a3beb171f14c137558ba7
 
 ==============
 Les traps SNMP

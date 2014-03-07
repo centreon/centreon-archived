@@ -79,15 +79,18 @@
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
-	if ($o == "hpb" || $o == "h_unhandled") {
-	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
-	} else {
-	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
-	}
-
-	$order 		= $obj->checkArgument("order", $_GET, "ASC");
+    $order 		= $obj->checkArgument("order", $_GET, "ASC");
+    if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
+        $sort_type = "name";
+    } else {
+        if ($o == "hpb" || $o == "h_unhandled") {
+            $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+        } else {
+            $sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+        }
+    }
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-        $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+    $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 
 	/*

@@ -83,7 +83,11 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 Configuration de Centreontrapd
 ==============================
 
+<<<<<<< HEAD
 Il est nécessaire de modifier les fichiers de configuration de Centreontrapd afin que le service puisse interroger la base de données SQLLite. Plus d'informations au chapitre :ref:`Les traps SNMP <trapsnmp>`.
+=======
+Il est nécessaire de modifier les fichiers de configuration de Centreontrapd afin que le service puisse interroger la base de données SQLLite (voir chapitre :ref:`configuration_advanced_snmptrapds`).
+>>>>>>> ede72c57e910b4b8906a3beb171f14c137558ba7
 
 Synchronisation des sondes
 ==========================
@@ -91,7 +95,7 @@ Synchronisation des sondes
 Vous pouvez synchroniser les sondes entre votre serveur Central et vos serveurs satellites en utilisant l'utilitaire **rsync**.
 
 .. warning::
-   Ne pas réaliser cette action si vos sondes ne dépendent de librairies tierces devant au préalable être installées.
+   Ne pas réaliser cette action si vos sondes dépendent de librairies tierces devant au préalable être installées.
 
 Echange de clés SSH
 ===================

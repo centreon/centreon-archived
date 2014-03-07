@@ -78,7 +78,8 @@ The next array show prerequisites to install CES 3.0 :
 |     10000 - 25000      | 1 central + 1 poller     |  4 * 2,5 Ghz   |  8 Go           | 8 * 2,5 Ghz | 4 Go          |
 +------------------------+--------------------------+----------------+-----------------+-------------+---------------+
 
-**Remark** : These informations take into account the fact that all optimisations are made for Centreon Engine, all transactions were activated on Centreon Broker and all MariaDB optimisations were made.
+.. note::
+   These informations take into account the fact that all optimisations are made for Centreon Engine, all transactions were activated on Centreon Broker and all MariaDB optimisations were made.
 
 ************
 Installation
