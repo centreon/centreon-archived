@@ -127,7 +127,7 @@
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$search_host	= $obj->checkArgument("search_host", $_GET, "");
 	$search_output 	= $obj->checkArgument("search_output", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
+	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
@@ -273,7 +273,7 @@
 	$tabOrder["last_hard_state_change"]     = " ORDER by nss.last_hard_state_change ". $order.", host_name, service_description";
 	$tabOrder["last_check"] 		= " ORDER BY nss.last_check ". $order.", host_name, service_description";
 	$tabOrder["current_attempt"]            = " ORDER BY nss.current_check_attempt ". $order.", host_name, service_description";
-	$tabOrder["default"] 			= $tabOrder["criticality_id"];
+	$tabOrder["default"] 			= $tabOrder["host_name"];
 	if (isset($tabOrder[$sort_type])) {
 		$rq_sorte = $tabOrder[$sort_type];
 	} else {
