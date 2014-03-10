@@ -27,6 +27,7 @@
 </form>
 <script>
 $(function() {
+  {if $validateUrl}
   $(document).on('finished', function (event) {
     $.ajax({
       url: "{url_for url=$validateUrl}",
@@ -51,6 +52,7 @@ $(function() {
     });
     return false;
     });
+    {/if}
     {$customJs}
 });
 </script>
