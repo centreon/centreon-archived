@@ -40,8 +40,8 @@ namespace Models\Configuration\Relation\Host;
 class Hosttemplate extends \Models\Configuration\Relation
 {
     protected static $relationTable = "host_template_relation";
-    protected static $firstKey = "host_tpl_id";
-    protected static $secondKey = "host_host_id";
+    protected static $firstKey = "host_host_id";
+    protected static $secondKey = "host_tpl_id";
     public static $firstObject = "\\Models\\Configuration\\Host";
     public static $secondObject = "\\Models\\Configuration\\Host";
 

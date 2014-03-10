@@ -57,4 +57,54 @@ class Host extends Object
         "\\Models\\Configuration\\Relation\\Host\\Hostparent",
         "\\Models\\Configuration\\Relation\\Host\\Hostchild"
     );
+
+    /**
+     * Deploy services by host templates
+     *
+     * @param int $hostId
+     * @param int $hostTemplateId
+     */
+    public static function deployServices($hostId, $hostTemplateId = null)
+    {
+        static $deployedServices = array();
+
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $hid = is_null($hostTemplateId) ? $hostId : $hostTemplateId;
+        $services = \Models\Configuration\Relation\Host\Service::getMergedParameters(
+            array(),
+            array('service_id', 'service_description', 'service_alias'),
+            -1,
+            0,
+            null,
+            'ASC',
+            array(
+                \Models\Configuration\Relation\Host\Service::getFirstKey() => $hid
+            ),
+            'AND'
+        );
+        foreach ($services as $service) {
+            if (is_null($hostTemplateId)) {
+                $deployedServices[$hostId][$service['service_description']] =  true;
+            } elseif (!isset($deployedServices[$hostId][$service['service_alias']])) {
+                $serviceId = \Models\Configuration\Service::insert(
+                    array(
+                        'service_description' => $service['service_alias'],
+                        'service_template_model_stm_id' => $service['service_id'],
+                        'service_register' => 1,
+                        'service_activate' => 1
+                    )
+                );
+                \Models\Configuration\Relation\Host\Service::insert($hostId, $serviceId);
+                $deployedServices[$hostId][$service['service_alias']] = true;
+            }
+        }
+        $templates = \Models\Configuration\Relation\Host\Hosttemplate::getTargetIdFromSourceId(
+            'host_tpl_id', 
+            'host_host_id',
+            $hid
+        );
+        foreach ($templates as $tplId) {
+            self::deployServices($hostId, $tplId);
+        }
+    }
 }

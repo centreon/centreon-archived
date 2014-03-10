@@ -122,7 +122,11 @@ class HostController extends ObjectAbstract
     {
         $givenParameters = $this->getParams('post');
         $givenParameters['host_register'] = 1;
-        parent::createAction();   
+        if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
+            $givenParameters['host_alias'] = $givenParameters['host_name'];
+        }
+        $id = parent::createAction();
+        \Models\Configuration\Host::deployServices($id);
     }
 
     /**
@@ -134,7 +138,9 @@ class HostController extends ObjectAbstract
      */
     public function updateAction()
     {
+        $givenParameters = $this->getParams('post');
         parent::updateAction();
+        \Models\Configuration\Host::deployServices($givenParameters['host_id']);
     }
     
     /**

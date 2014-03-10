@@ -91,6 +91,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      * Generic create action
      *
      * @todo handle token
+     * @return int id of created object
      */
     public function createAction()
     {
@@ -139,11 +140,12 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
                     echo $e->getMessage();
                 }
             }
+            \Centreon\Core\Di::getDefault()
+                ->get('router')
+                ->response()
+                ->json(array('success' => true));
+            return $id;
         }
-        \Centreon\Core\Di::getDefault()
-            ->get('router')
-            ->response()
-            ->json(array('success' => true));
     }
 
     /**
