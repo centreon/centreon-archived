@@ -27,10 +27,7 @@
 </form>
 <script>
 $(function() {
-  $("#wizard_submit").click(function (event) {
-    if ($(this).text() != "{t}Finish{/t}") {
-      return true;
-    }
+  $(document).on('finished', function (event) {
     $.ajax({
       url: "{url_for url=$validateUrl}",
       type: "POST",
