@@ -68,7 +68,7 @@ class HostTemplateController extends ObjectAbstract
         $requestParams = $this->getParams('get');
         
         $hostObj = new Host();
-        $filters = array('host_name' => $requestParams['q'].'%', 'host_register' => '0');
+        $filters = array('host_name' => '%' . $requestParams['q'] . '%', 'host_register' => '0');
         $hostList = $hostObj->getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
         
         $finalHostList = array();

@@ -87,7 +87,7 @@ class HostController extends ObjectAbstract
         
         $requestParams = $this->getParams('get');
         
-        $filters = array('host_name' => $requestParams['q'].'%', 'host_register' => '1');
+        $filters = array('host_name' => '%' . $requestParams['q'] . '%', 'host_register' => '1');
         $hostList = Host::getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
         
         $finalHostList = array();
