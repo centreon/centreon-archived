@@ -104,6 +104,9 @@ class Select implements Custominterface
                         }).done(function(data) {
                             callback(data); 
                             id = $(element).val();
+                            if (data.id) {
+                                $(element).val(data.id);
+                            }
                             if (id.match(/^,/)) {
                                 $(element).val(id.substring(1, id.length));
                             }
