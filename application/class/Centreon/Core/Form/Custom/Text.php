@@ -45,12 +45,9 @@ class Text implements Custominterface
     {
         (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
         
-        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
-            $element['label'] = $element['name'];
-        }
-        
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
+        $placeholder = 'placeholder="'.$element['name'].'" ';
+        if (isset($element['label_label']) && (!empty($element['label_label']))) {
+            $placeholder = 'placeholder="'.$element['label_label'].'" ';
         }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
@@ -64,14 +61,15 @@ class Text implements Custominterface
         
         $myJs = "";
         
-        $inputHtml = '<input '.
+        $inputHtml = '<span><input '.
                         'id="'.$element['id'].'" '.
                         'type="text" '.
                         'name="'.$element['name'].'" '.
                         $value.
                         'class="form-control '.$addClass.'" '.
                         $placeholder.
-                        '/>';
+                        '/><span>';
+        
         
         return array(
             'html' => $inputHtml,

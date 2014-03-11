@@ -165,7 +165,7 @@ class HostController extends ObjectAbstract
      * Update a host
      *
      * @method get
-     * @route /configuration/host/[i:id]
+     * @route /configuration/host/[i:id]/[i:advanced]
      */
     public function editAction()
     {
@@ -212,13 +212,25 @@ class HostController extends ObjectAbstract
             $currentHostValues['host_passive_checks_enabled'] = '2';
         }
         
-        $myForm = new Generator('/configuration/host/update', 0, array('id' => $requestParam['id']));
+        $myForm = new Generator('/configuration/host/update', $requestParam['advanced'], array('id' => $requestParam['id']));
         $myForm->setDefaultValues($currentHostValues);
         $myForm->addHiddenComponent('host_id', $requestParam['id']);
+        
+        $formModeUrl = \Centreon\Core\Di::getDefault()
+                        ->get('router')
+                        ->getPathFor(
+                            '/configuration/host/[i:id]/[i:advanced]',
+                            array(
+                                'id' => $requestParam['id'],
+                                'advanced' => (int)!$requestParam['advanced']
+                            )
+                        );
         
         // Display page
         $tpl->assign('pageTitle', "Host");
         $tpl->assign('form', $myForm->generate());
+        $tpl->assign('advanced', $requestParam['advanced']);
+        $tpl->assign('formModeUrl', $formModeUrl);
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('validateUrl', '/configuration/host/update');
         $tpl->display('configuration/edit.tpl');
