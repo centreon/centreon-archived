@@ -91,10 +91,11 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      * Generic create action
      *
      * @todo handle token
+     * @return int id of created object
      */
     public function createAction()
     {
-        $givenParameters = $this->getParams('post');
+        $givenParameters = clone $this->getParams('post');
         /*
         if (!\Centreon\Core\Form::validateSecurity($givenParameters['token'])) {
             echo "fail";
@@ -139,11 +140,13 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
                     echo $e->getMessage();
                 }
             }
+            \Centreon\Core\Di::getDefault()
+                ->get('router')
+                ->response()
+                ->json(array('success' => true));
+            $this->postSave($id, 'add');
+            return $id;
         }
-        \Centreon\Core\Di::getDefault()
-            ->get('router')
-            ->response()
-            ->json(array('success' => true));
     }
 
     /**
@@ -152,7 +155,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      */
     public function updateAction()
     {
-        $givenParameters = $this->getParams('post');
+        $givenParameters = clone $this->getParams('post');
         
         if (!\Centreon\Core\Form::validateSecurity($givenParameters['token'])) {
             echo "fail";
@@ -208,6 +211,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             ->get('router')
             ->response()
             ->json(array('success' => true));
+        $this->postSave($id, 'update');
     }
 
     /**
