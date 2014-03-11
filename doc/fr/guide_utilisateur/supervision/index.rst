@@ -3,6 +3,8 @@ Supervision
 ===========
 
 .. toctree::
+   :maxdepth: 2
+   :glob:
 
    01customview
    02home

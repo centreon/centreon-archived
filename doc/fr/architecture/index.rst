@@ -3,6 +3,7 @@ Architectures proposées
 =======================
 
 .. toctree::
+   :maxdepth: 2
    :glob:
 
    03a

@@ -3,6 +3,7 @@ Guide utilisateur
 #################
 
 .. toctree::
+   :maxdepth: 2
    :glob:
 
    01a
