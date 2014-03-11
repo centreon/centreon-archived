@@ -4,6 +4,13 @@
 
 {block name="content"}
     <div class="content-container">
+        <div class="row">
+            {if $advanced}
+                <a href="{$formModeUrl}" class="btn">{t}Switch to simple mode{/t}</a>
+            {else}
+                <a href="{$formModeUrl}" class="btn">{t}Switch to advanced mode{/t}</a>
+            {/if}
+        </div>
         {$form}
     </div>
         
@@ -16,8 +23,8 @@
 {/block}
 
 {block name="javascript-bottom" append}
-    <script> 
-        $("#{$formName}").on('submit', function (event) {
+    <script>
+        $("#{$formName}").on("submit", function (event) {
             $.ajax({
                 url: "{url_for url=$validateUrl}",
                 type: "POST",
@@ -29,7 +36,7 @@
                 alertClose();
                 if (data.success) {
                     {if isset($formRedirect) && $formRedirect}
-                        window.location='{url_for url=$formRedirectRoute}';
+                        window.location="{url_for url=$formRedirectRoute}";
                     {else}
                         alertMessage("The object has been successfully saved", "alert-success");
                     {/if}
@@ -42,6 +49,14 @@
         
         $(function () {
             $('#formHeader a:first').tab('show');
+        });
+        
+        $(".mandatory-field").on("blur", function (event) {
+            if ($(this).val().trim() === "") {
+                $(this).addClass("has-error has-feedback");
+            } else {
+                $(this).removeClass("has-error has-feedback");
+            }
         });
     </script>
 {/block}
