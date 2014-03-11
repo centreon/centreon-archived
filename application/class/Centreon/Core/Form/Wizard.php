@@ -65,8 +65,8 @@ class Wizard extends Generator
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $route = str_replace($baseUrl, '/', $route);
 
-        $query = "SELECT w.name as wizard_name, s.name as step_name, s.rank as step_rank,  sf.rank as field_pos,
-                f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
+        $query = "SELECT w.name as wizard_name, s.name as step_name, s.rank as step_rank, sf.mandatory as mandatory,
+            sf.rank as field_pos, f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
             FROM form_wizard w, form_step s, form_step_field_relation sf, form_field f
             WHERE w.route = :route
                 AND w.wizard_id = s.wizard_id

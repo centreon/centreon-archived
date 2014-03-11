@@ -20,39 +20,54 @@
    </div>
    {/foreach}
   </div>
-<div class="modal-footer">
-  <button class="btn btn-default btn-prev" disabled>{t}Prev{/t}</button>
-  <button class="btn btn-default btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
-</div>
+  <div class="modal-footer">
+    <button class="btn btn-default btn-prev" disabled>{t}Prev{/t}</button>
+    <button class="btn btn-default btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
+  </div>
 </form>
 <script>
 $(function() {
   {if isset($validateUrl)}
   $(document).on('finished', function (event) {
-    $.ajax({
-      url: "{url_for url=$validateUrl}",
-      type: "POST",
-      dataType: 'json',
-      data: $("#wizard_form").serializeArray(),
-      context: document.body
-    })
-    .success(function(data, status, jqxhr) {
-      alertClose();
-      if (data.success) {
-        {if isset($formRedirect) && $formRedirect}
-          window.location='{url_for url=$formRedirectRoute}';
-        {else}
-          alertMessage("The object has been successfully saved", "alert-success");
-        {/if}
-        $('#modal').modal('hide');
-        $('.dataTable').dataTable().fnDraw();
-      } else {
-        alertMessage("An error occured", "alert-danger");
-      }
-    });
-    return false;
-    });
-    {/if}
-    {$customJs}
+    var validateMandatory = true;
+    var errorText = "";
+    $("input.mandatory-field").each(function(index) {
+      if ($(this).val().trim() === "") {
+        validateMandatory = false;
+        $(this).parent().addClass("has-error has-feedback");
+        errorText += $(this).attr("placeholder") + " is required<br/>";
+    }
+  });
+
+  if (!validateMandatory) {
+      alertMessage(errorText, "alert-danger");
+      return false;
+  }
+
+  $.ajax({
+    url: "{url_for url=$validateUrl}",
+    type: "POST",
+    dataType: 'json',
+    data: $("#wizard_form").serializeArray(),
+    context: document.body
+  })
+  .success(function(data, status, jqxhr) {
+    alertClose();
+    if (data.success) {
+      {if isset($formRedirect) && $formRedirect}
+        window.location='{url_for url=$formRedirectRoute}';
+      {else}
+        alertMessage("The object has been successfully saved", "alert-success");
+      {/if}
+      $('#modal').modal('hide');
+      $('.dataTable').dataTable().fnDraw();
+    } else {
+      alertMessage("An error occured", "alert-danger");
+    }
+  });
+  return false;
+  });
+  {/if}
+  {$customJs}
 });
 </script>

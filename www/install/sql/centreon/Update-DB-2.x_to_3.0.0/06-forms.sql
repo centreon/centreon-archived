@@ -73,6 +73,7 @@ CREATE TABLE `form_step` (
   `name` VARCHAR(45) NOT NULL,
   `wizard_id` INT NOT NULL,
   `rank` INT UNSIGNED NOT NULL,
+  `mandatory` char(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`step_id`,`wizard_id`),
   KEY `fk_step_wizard_idx` (`wizard_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
