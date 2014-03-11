@@ -127,7 +127,9 @@ class HostController extends ObjectAbstract
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         $id = parent::createAction();
-        \Models\Configuration\Host::deployServices($id);
+        if ($givenParameters['host_create_services_from_template']) {
+            \Models\Configuration\Host::deployServices($id);
+        }
     }
 
     /**
@@ -141,7 +143,9 @@ class HostController extends ObjectAbstract
     {
         $givenParameters = $this->getParams('post');
         parent::updateAction();
-        \Models\Configuration\Host::deployServices($givenParameters['host_id']);
+        if ($givenParameters['host_create_services_from_template']) {
+            \Models\Configuration\Host::deployServices($givenParameters['host_id']);
+        }
     }
     
     /**
