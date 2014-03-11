@@ -43,7 +43,7 @@ class Text implements Custominterface
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
+        (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
         
         if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
             $element['label'] = $element['name'];
@@ -57,6 +57,11 @@ class Text implements Custominterface
             $element['id'] = $element['name'];
         }
         
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
+        
         $myJs = "";
         
         $inputHtml = '<input '.
@@ -64,7 +69,7 @@ class Text implements Custominterface
                         'type="text" '.
                         'name="'.$element['name'].'" '.
                         $value.
-                        'class="form-control" '.
+                        'class="form-control '.$addClass.'" '.
                         $placeholder.
                         '/>';
         

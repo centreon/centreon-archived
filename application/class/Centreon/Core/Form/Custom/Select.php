@@ -60,6 +60,11 @@ class Select implements Custominterface
                             ->getPathFor($element['label_listValuesRoute'], $element['label_extra']);
         }
         
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
+        
         $addJs = '';
         if (isset($element['label_ordered']) && $element['label_ordered']) {
             $addJs = '$("#'.$element['name'].'").on("change", function() { $("#'.$element['name'].'_val").html($("#'.$element['name'].'").val());});';
@@ -71,7 +76,7 @@ class Select implements Custominterface
                   });'."\n";
         }
         
-        $myHtml = '<input class="form-control" id="'.$element['name'].'" name="' . $element['name'] . '" style="width: 100%;" value=" " />';
+        $myHtml = '<input class="form-control '.$addClass.'" id="'.$element['name'].'" name="' . $element['name'] . '" style="width: 100%;" value=" " />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
