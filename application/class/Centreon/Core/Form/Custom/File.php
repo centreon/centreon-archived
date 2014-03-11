@@ -65,7 +65,6 @@ class File implements Custominterface
                             ->getPathFor('/file/upload');
         
         $fileInputHtml = '
-
             <div id="fileupload">
                 <div class="row fileupload-buttonbar">
                     <div class="col-sm-3">
@@ -213,8 +212,7 @@ class File implements Custominterface
                                 .test(window.navigator.userAgent),
                             maxFileSize: 5000000,
                             acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
-                        });
-            ';
+                        });';
         
         return array(
             'html' => $fileInputHtml,
