@@ -94,11 +94,16 @@ class Select implements Custominterface
                 .'initSelection: function(element, callback) { '
                     .'var id=$(element).val();'
                     .'if (id == " ") {
-                        $(element).val("");
                         $.ajax("'.$element['label_listValuesRoute'].'", {
                             dataType: "json"
-                        }).done(function(data) {callback(data); });
-                    }
+                        }).done(function(data) {
+                            callback(data); 
+                            id = $(element).val();
+                            if (id.match(/^,/)) {
+                                $(element).val(id.substring(1, id.length));
+                            }
+                        });
+                     }
                 },'
             .'});'."\n";
         
