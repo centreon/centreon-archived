@@ -56,9 +56,9 @@ class Hosttemplate extends \Models\Configuration\Relation
     public static function insert($fkey, $skey)
     {
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        $sql = "SELECT MAX(`order`) as maxorder FROM " .static::$relationTable . " WHERE " .static::$secondKey . " = ?";
+        $sql = "SELECT MAX(`order`) as maxorder FROM " .static::$relationTable . " WHERE " .static::$firstKey . " = ?";
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($skey));
+        $stmt->execute(array($fkey));
         $row = $stmt->fetch();
         $order = 1;
         if (isset($row['maxorder'])) {
@@ -127,8 +127,8 @@ class Hosttemplate extends \Models\Configuration\Relation
         $secondObject = static::$secondObject;
         $sql = "SELECT ".$fString.$sString."
         		FROM ".$firstObject::getTableName()." h,".static::$relationTable."
-        		JOIN ".$secondObject::getTableName(). " h2 ON ".static::$relationTable.".".static::$firstKey." = h2.".$secondObject::getPrimaryKey() ."
-        		WHERE h.".$firstObject::getPrimaryKey()." = ".$this->relationTable.".".$this->secondKey;
+        		JOIN ".$secondObject::getTableName(). " h2 ON ".static::$relationTable.".".static::$secondKey." = h2.".$secondObject::getPrimaryKey() ."
+        		WHERE h.".$firstObject::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {

@@ -42,6 +42,7 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Hostchild,
     \Models\Configuration\Relation\Host\Hostparent,
     \Models\Configuration\Relation\Host\Hostcategory,
+    \Models\Configuration\Relation\Host\Hosttemplate,
     \Models\Configuration\Relation\Host\Poller,
     \Models\Configuration\Timeperiod,
     \Models\Configuration\Command,
@@ -333,7 +334,40 @@ class HostController extends ObjectAbstract
         
         $router->response()->json($finalHostcategoryList);
     }
-    
+
+    /**
+     * Get host template for a specific host
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/hosttemplate
+     */
+    public function hostTemplateForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+
+        $hostTemplateList = Hosttemplate::getMergedParameters(
+            array(),
+            array('host_id', 'host_name'),
+            -1,
+            0,
+            "`order`",
+            "ASC",
+            array("h.host_id" => $requestParam['id']),
+            "AND"
+        );
+        $finalHostTemplateList = array();
+        foreach ($hostTemplateList as $hosttemplate) {
+            $finalHostTemplateList[] = array(
+                'id' => $hosttemplate['host_id'],
+                'text' => $hosttemplate['host_name']
+            );
+        }
+        $router->response()->json($finalHostTemplateList);
+    }
+
     /**
      * 
      * @method get
