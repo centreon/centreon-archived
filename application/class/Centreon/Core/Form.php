@@ -197,7 +197,6 @@ class Form
     private function renderAsHtml(&$element)
     {
         switch ($element['type']) {
-            case 'text':
             case 'password':
             default:
                 $element['input'] = $this->renderHtmlInput($element);
@@ -689,6 +688,7 @@ class Form
         }
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
+        $params['mandatory'] = $field['mandatory'];
         $params['extra'] = $extraParams;
         $elem = $this->formProcessor->addElement('static', $field['name'], $params);
     }
