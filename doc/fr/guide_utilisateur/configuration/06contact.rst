@@ -45,7 +45,7 @@ Authentification Centreon
 *	Le champ **Groupes de liste d'accès** permet de définir un groupe d'accès pour un utilisateur, groupe utilisé pour les contrôles d'accès (ACL).
 
 .. note::
-    Un utilisateur **Administrateur** ne peu souffrir de contrôle d'accès même placé" dans un groupe d'accès.
+    Un utilisateur **Administrateur** ne peut souffrir de contrôle d'accès même placé" dans un groupe d'accès.
 
 ****************************
 Informations supplémentaires
