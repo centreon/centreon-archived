@@ -158,12 +158,18 @@ class Generator
             
             foreach($blockList as $block) {
                 
+                if ($advanced) {
+                    $advancedRequest = "AND (advanced = '0' OR advanced = '1' )";
+                } else {
+                    $advancedRequest = "AND advanced = '0' ";
+                }
+                
                 $fieldQuery = 'SELECT '
                     . 'name, label, default_value, attributes, type, help, mandatory, parent_field, child_actions '
                     . 'FROM form_field f, form_block_field_relation bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
-                    . 'AND advanced = \''.$advanced.'\' '
+                    . $advancedRequest
                     . 'ORDER BY rank ASC';
                 
                 $this->formComponents[$section['name']][$block['name']] = array();
@@ -175,6 +181,13 @@ class Generator
                     $this->formComponents[$section['name']][$block['name']][] = $field;
                     $this->formDefaults[$field['name']] = $field['default_value'];
                 }
+                
+                if (count($this->formComponents[$section['name']][$block['name']]) == 0) {
+                    unset($this->formComponents[$section['name']][$block['name']]);
+                }
+            }
+            if (count($this->formComponents[$section['name']]) == 0) {
+                unset($this->formComponents[$section['name']]);
             }
         }
         $this->formHandler->addSubmit('save_form', _("Save"));
@@ -189,9 +202,6 @@ class Generator
         switch ($field['type']) {
             default:
                 $this->formHandler->addStatic($field, $this->extraParams);
-                break;
-            case 'text':
-                $this->formHandler->addText($field['name'], $field['label']);
                 break;
             case 'textarea':
                 $this->formHandler->addTextarea($field['name'], $field['label']);
