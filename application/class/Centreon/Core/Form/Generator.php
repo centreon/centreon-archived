@@ -165,9 +165,10 @@ class Generator
                 }
                 
                 $fieldQuery = 'SELECT '
-                    . 'name, label, default_value, attributes, type, help, mandatory, parent_field, child_actions, v.action as validator_action'
+                    . 'f.name, label, default_value, attributes, type, help, mandatory, parent_field, child_actions, v.action as validator_action '
                     . 'FROM form_field f, form_block_field_relation bfr '
-                    . 'LEFT JOIN field_validator_relation v on v.field_id = bfr.field_id '
+                    . 'LEFT JOIN form_field_validator_relation vr ON vr.field_id = bfr.field_id '
+                    . 'LEFT JOIN form_validator v ON v.validator_id = vr.validator_id '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
                     . $advancedRequest
