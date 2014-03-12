@@ -439,10 +439,11 @@ abstract class Object
      */
     public static function isUnique($value)
     {
-        if (count($this->getList($value, 1)) > 0) {
-            return true;
-        } else {
+        $resultUnique = getList(static::$uniqueLabelField, -1, 0, null, "ASC", array(static::$uniqueLabelField => $value));
+        if ($resultUnique > 0) {
             return false;
+        } else {
+            return true;
         }
     }
 

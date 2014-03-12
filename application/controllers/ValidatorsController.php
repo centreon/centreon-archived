@@ -51,12 +51,16 @@ class ValidatorsController extends \Centreon\Core\Controller
     public function emailAction()
     {
         $params = $this->getParams('post');
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
         
         if (filter_var($params['email'], FILTER_VALIDATE_EMAIL)) {
-            echo "success";
+            $jsonResponse = array('success' => true);
         } else {
-            echo "fail";
+            $jsonResponse = array('success' => false, 'error' => _("The email is not valid"));
         }
+        
+        $router->response()->code('200')->json($jsonResponse);
     }
     
     /**
@@ -67,14 +71,18 @@ class ValidatorsController extends \Centreon\Core\Controller
     public function resolveDnsAction()
     {
         $params = $this->getParams('post');
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
         
         $ipAddress = gethostbyname($params['dnsname']);
         
         if (filter_var($ipAddress, FILTER_VALIDATE_IP)) {
-            echo $ipAddress;
+            $jsonResponse = array('success' => true, 'value' =>  $ipAddress);
         } else {
-            echo "fail";
+            $jsonResponse = array('success' => false, 'error' => _("Can't resolve the given dns name"));
         }
+        
+        $router->response()->code('200')->json($jsonResponse);
     }
     
     /**
@@ -85,12 +93,16 @@ class ValidatorsController extends \Centreon\Core\Controller
     public function ipAddressAction()
     {
         $params = $this->getParams('post');
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
         
         if (filter_var($params['ipaddress'], FILTER_VALIDATE_IP)) {
-            echo "success";
+            $jsonResponse = array('success' => true);
         } else {
-            echo "fail";
+            $jsonResponse = array('success' => false, 'error' => _("The ip address is not valid"));
         }
+        
+        $router->response()->code('200')->json($jsonResponse);
     }
     
     /**
@@ -101,12 +113,16 @@ class ValidatorsController extends \Centreon\Core\Controller
     public function uniqueAction()
     {
         $params = $this->getParams('post');
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
         
         $callableObject = '\\Models\\Configuration\\Relation\\'.ucwords($params['object']);
         if ($callableObject::isUnique($params['value'])) {
-            echo "unique";
+            $jsonResponse = array('success' => true);
         } else {
-            echo "not unique";
+            $jsonResponse = array('success' => false, 'error' => _("This $params[fieldName] is already in use"));
         }
+        
+        $router->response()->code('200')->json($jsonResponse);
     }
 }
