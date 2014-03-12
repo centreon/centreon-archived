@@ -95,13 +95,7 @@ class ValidatorsController extends \Centreon\Core\Controller
         $params = $this->getParams('post');
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
-        
-        if (filter_var($params['ipaddress'], FILTER_VALIDATE_IP)) {
-            $jsonResponse = array('success' => true);
-        } else {
-            $jsonResponse = array('success' => false, 'error' => _("The ip address is not valid"));
-        }
-        
+        $jsonResponse = \Centreon\Core\Form\Validator\Ipaddress::validate($params['ipaddress']);
         $router->response()->code('200')->json($jsonResponse);
     }
     
@@ -115,14 +109,7 @@ class ValidatorsController extends \Centreon\Core\Controller
         $params = $this->getParams('post');
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
-        
-        $callableObject = '\\Models\\Configuration\\Relation\\'.ucwords($params['object']);
-        if ($callableObject::isUnique($params['value'])) {
-            $jsonResponse = array('success' => true);
-        } else {
-            $jsonResponse = array('success' => false, 'error' => _("This $params[fieldName] is already in use"));
-        }
-        
+        $jsonResponse = \Centreon\Core\Form\Validator\Unique::validate($params['value'], $params['object']);
         $router->response()->code('200')->json($jsonResponse);
     }
 
