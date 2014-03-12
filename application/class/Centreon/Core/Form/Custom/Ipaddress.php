@@ -43,11 +43,7 @@ class Ipaddress implements Custominterface
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
-        
-        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
-            $element['label'] = $element['name'];
-        }
+        (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
         
         if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
             $placeholder = 'placeholder="'.$element['name'].'" ';
@@ -84,12 +80,16 @@ class Ipaddress implements Custominterface
                     url: "'.$resolveUrl.'",
                     type: "POST",
                     data: {"dnsname":$("#'.$element['name'].'").val()},
+                    dataType: "json",
                     context: document.body
                 })
                 .success(function(data, status, jqxhr) {
-                    if (data !== "fail") {
-                        $("#'.$element['name'].'").val(data);
+                    alertClose();
+                    if (data["success"]) {
+                        $("#'.$element['name'].'").val(data["value"]);
                         $("#'.$element['name'].'").trigger("blur");
+                    } else {
+                        alertMessage(data["error"], "alert-danger");
                     }
                 });
             });';
@@ -105,15 +105,18 @@ class Ipaddress implements Custominterface
                         url: "'.$ipAddressValidationUrl.'",
                         type: "POST",
                         data: {"ipaddress":$("#'.$element['name'].'").val()},
+                        dataType: "json",
                         context: document.body
                     })
                     .success(function(data, status, jqxhr) {
-                        if (data === "success") {
+                        alertClose();
+                        if (data["success"]) {
                             $("#'.$element['name'].'_ipaddress").removeClass("has-error has-feedback");
                             $("#'.$element['name'].'_ipaddress_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
                             $("#'.$element['name'].'_ipaddress").addClass("has-success has-feedback");
                             $("#'.$element['name'].'_ipaddress_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
                         } else {
+                            alertMessage(data["error"], "alert-danger");
                             $("#'.$element['name'].'_ipaddress").removeClass("has-error has-feedback");
                             $("#'.$element['name'].'_ipaddress_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
                             $("#'.$element['name'].'_ipaddress").addClass("has-error has-feedback");

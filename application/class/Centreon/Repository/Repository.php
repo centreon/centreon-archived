@@ -35,6 +35,8 @@
 
 namespace Centreon\Repository;
 
+use Models\Configuration\Host;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
