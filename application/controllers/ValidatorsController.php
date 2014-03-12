@@ -125,4 +125,21 @@ class ValidatorsController extends \Centreon\Core\Controller
         
         $router->response()->code('200')->json($jsonResponse);
     }
+
+    /**
+     * Looks for circular definitions
+     *
+     * @method post
+     * @route /validator/circular
+     */
+    public function circularDependencyAction()
+    {
+        $params = $this->getParams('post');
+
+        $result = \Centreon\Core\Form\Validator\Circular::validate(
+            $params['value'],
+            $params['object'],
+            $params['id']
+        );
+    }
 }
