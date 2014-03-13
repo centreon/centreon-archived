@@ -48,7 +48,70 @@
 			<block name="Additional information">
 				<field name="hg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{\"Enabled\":1, \"Disabled\":0}</attributes>
+					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+				</field>
+			</block>
+		</section>
+		<section name="Relations">
+			<block name="Host group relations">
+				<field name="host_hostgroups" label="Parent host groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostgroup/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/hostgroup","multiple":true}</attributes>
+				</field>
+			</block>
+			<block name="Host category relations">
+				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostcategory/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/hostcategory","multiple":true}</attributes>
+				</field>
+			</block>
+		</section>
+		<section name="Data processing">
+			<block name="Data processing">
+				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+			</block>
+			<block name="Freshness control options">
+				<field name="host_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+			<block name="Flapping options">
+				<field name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+			<block name="Perfdata options">
+				<field name="host_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+			</block>
+			<block name="History options">
+				<field name="host_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+				<field name="host_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+				<field name="host_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Up":1, "Down":1, "Unreachable":1}</attributes>
+				</field>
+			</block>
+			<block name="Event handler">
+				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+				<field name="host_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/command/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/eventhandler","multiple":false}</attributes>
+				</field>
+			</block>
+		</section>
+		<section name="Extended information">
+			<block name="Extended information">
+				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/image/icon/centreon","multiple":false,"wizardRoute":"/administration/media/image/add"}</attributes>
 				</field>
 			</block>
 		</section>
