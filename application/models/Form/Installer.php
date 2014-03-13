@@ -57,17 +57,23 @@ class Installer
     public static function insertForm($data)
     {
         $key = $data['name'];
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (!isset(self::$forms[$key])) {
-            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('INSERT INTO form (name, route, redirect, redirect_route) 
-                VALUES (:name, :route, :redirect, :redirect_route)');
-            $stmt->bindParam(':name', $data['name']);
-            $stmt->bindParam(':route', $data['route']);
-            $stmt->bindParam(':redirect', $data['redirect']);
-            $stmt->bindParam(':redirect_route', $data['redirect_route']);
-            $stmt->execute();
-            self::$forms[$key] = $db->lastInsertId('form', 'form_id');
+            $sql = 'INSERT INTO form (name, route, redirect, redirect_route) 
+              VALUES (:name, :route, :redirect, :redirect_route)';
+        } else {
+            $sql = 'UPDATE form SET route = :route,
+                redirect = :redirect,
+                redirect_route = :redirect_route
+                WHERE name = :name';
         }
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':route', $data['route']);
+        $stmt->bindParam(':redirect', $data['redirect']);
+        $stmt->bindParam(':redirect_route', $data['redirect_route']);
+        $stmt->execute();
+        self::$forms[$key] = $db->lastInsertId('form', 'form_id');
     }
 
     /**
@@ -78,16 +84,21 @@ class Installer
     public static function insertSection($data)
     {
         $key = $data['form_name'] . ';' . $data['name'];
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (!isset(self::$sections[$key])) {
-            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('INSERT INTO form_section (name, rank, form_id) 
-                VALUES (:name, :rank, :form_id)');
-            $stmt->bindParam(':name', $data['name']);
-            $stmt->bindParam(':rank', $data['rank'], \PDO::PARAM_INT);
-            $stmt->bindParam(':form_id', self::$forms[$data['form_name']], \PDO::PARAM_INT);
-            $stmt->execute();
-            self::$sections[$key] = $db->lastInsertId('form_section', 'section_id');
+            $sql = 'INSERT INTO form_section (name, rank, form_id) 
+                VALUES (:name, :rank, :form_id)';
+        } else {
+            $sql = 'UPDATE form_section SET rank = :rank,
+                form_id = :form_id
+                WHERE name = :name';
         }
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':rank', $data['rank'], \PDO::PARAM_INT);
+        $stmt->bindParam(':form_id', self::$forms[$data['form_name']], \PDO::PARAM_INT);
+        $stmt->execute();
+        self::$sections[$key] = $db->lastInsertId('form_section', 'section_id');
     }
 
     /**
@@ -99,16 +110,21 @@ class Installer
     {
         $sectionKey = $data['form_name'] . ';' . $data['section_name'];
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['name']));
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (!isset(self::$blocks[$key])) {
-            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('INSERT INTO form_block (name, rank, section_id) 
-                VALUES (:name, :rank, :section_id)');
-            $stmt->bindParam(':name', $data['name']);
-            $stmt->bindParam(':rank', $data['rank'], \PDO::PARAM_INT);
-            $stmt->bindParam(':section_id', self::$sections[$sectionKey], \PDO::PARAM_INT);
-            $stmt->execute();
-            self::$blocks[$key] = $db->lastInsertId('form_block', 'block_id');
+            $sql = 'INSERT INTO form_block (name, rank, section_id) 
+                VALUES (:name, :rank, :section_id)';
+        } else {
+            $sql = 'UPDATE form_block SET rank = :rank,
+                section_id = :section_id
+                WHERE name = :name'; 
         }
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':rank', $data['rank'], \PDO::PARAM_INT);
+        $stmt->bindParam(':section_id', self::$sections[$sectionKey], \PDO::PARAM_INT);
+        $stmt->execute();
+        self::$blocks[$key] = $db->lastInsertId('form_block', 'block_id');
     }
 
     /**
@@ -119,23 +135,35 @@ class Installer
     public static function insertField($data)
     {
         $key = $data['name'];
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (!isset(self::$fields[$key])) {
-            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('INSERT INTO form_field (name, label, default_value, attributes, advanced, type, help, module_id, parent_field, child_actions) 
-                VALUES (:name, :label, :default_value, :attributes, :advanced, :type, :help, :module_id, :parent_field, :child_actions)');
-            $stmt->bindParam(':name', $data['name']);
-            $stmt->bindParam(':label', $data['label']);
-            $stmt->bindParam(':default_value', $data['default_value']);
-            $stmt->bindParam(':attributes', $data['attributes']);
-            $stmt->bindParam(':advanced', $data['advanced']);
-            $stmt->bindParam(':type', $data['type']);
-            $stmt->bindParam(':help', $data['help']);
-            $stmt->bindParam(':module_id', $data['module_id']);
-            $stmt->bindParam(':parent_field', $data['parent_field']);
-            $stmt->bindParam(':child_actions', $data['child_actions']);
-            $stmt->execute();
-            self::$fields[$key] = $db->lastInsertId('form_field', 'field_id');
+            $sql = 'INSERT INTO form_field (name, label, default_value, attributes, advanced, type, help, module_id, parent_field, child_actions) 
+                VALUES (:name, :label, :default_value, :attributes, :advanced, :type, :help, :module_id, :parent_field, :child_actions)';
+        } else {
+            $sql = 'UPDATE form_field SET label = :label,
+                default_value = :default_value,
+                attributes = :attributes,
+                advanced = :advanced,
+                type = :type,
+                help = :help,
+                module_id = :module_id,
+                parent_fields = :parant_field,
+                child_actions = :child_actions
+                WHERE name = :name';
         }
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':label', $data['label']);
+        $stmt->bindParam(':default_value', $data['default_value']);
+        $stmt->bindParam(':attributes', $data['attributes']);
+        $stmt->bindParam(':advanced', $data['advanced']);
+        $stmt->bindParam(':type', $data['type']);
+        $stmt->bindParam(':help', $data['help']);
+        $stmt->bindParam(':module_id', $data['module_id']);
+        $stmt->bindParam(':parent_field', $data['parent_field']);
+        $stmt->bindParam(':child_actions', $data['child_actions']);
+        $stmt->execute();
+        self::$fields[$key] = $db->lastInsertId('form_field', 'field_id');
     }
 
     /**
@@ -149,7 +177,7 @@ class Installer
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['block_name']));
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('INSERT INTO form_block_field_relation (block_id, field_id, rank, mandatory) 
+            $stmt = $db->prepare('REPLACE INTO form_block_field_relation (block_id, field_id, rank, mandatory) 
                 VALUES (:block_id, :field_id, :rank, :mandatory)');
             $stmt->bindParam(':block_id', self::$blocks[$key]);
             $stmt->bindParam(':field_id', self::$fields[$fname]);
