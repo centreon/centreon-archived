@@ -32,7 +32,7 @@ class Installer
             $form_key = $row['form_name'];
             $section_key = $form_key . ';' . $row['section_name'];
             $block_key = $section_key . ';' . $row['block_name'];
-            $field_key = $block_key . ';' . $row['field_name'];
+            $field_key = $row['field_name'];
             if (!isset(self::$forms[$form_key])) {
                 self::$forms[$form_key] = $row['form_id'];
             }
@@ -147,7 +147,7 @@ class Installer
                 type = :type,
                 help = :help,
                 module_id = :module_id,
-                parent_fields = :parant_field,
+                parent_field = :parent_field,
                 child_actions = :child_actions
                 WHERE name = :name';
         }
