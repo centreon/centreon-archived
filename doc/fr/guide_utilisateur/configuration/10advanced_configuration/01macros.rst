@@ -19,7 +19,8 @@ Exemple :
 * La macro **$HOSTADDRESS$** permet de récupérer l'adresse IP d'un hôte
 * La macro **$CONTACTEMAIL$** permet de récupérer l'adresse mail du contact
 
-La liste complète des macros est disponible à l'adresse suivante : `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_
+.. seealso::
+    La liste complète des macros est disponible à l'adresse suivante : `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_
 
 .. _custommacros:
 
@@ -102,7 +103,8 @@ Elles sont complémentaires aux macros standards. Exemple :
 
 La documentation complète des macros à la demande est disponible à cette adresse `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_.
 
-**Remarque** : L'utilisation de ces macros n'est pas recommandé car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommateur en termes de ressources.
+.. note::
+    L'utilisation de ces macros n'est pas recommandé car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommateur en termes de ressources.
 
 .. warning::
 

@@ -22,9 +22,9 @@ Entités
 Plusieurs entités servent à mettre en place cette architecture :
 
 * Le serveur Apache est chargé d'héberger l'interface web de Centreon
-* Plusieurs base de données MySQL sont chargés de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
+* Plusieurs bases de données MySQL sont chargées de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
 * Le moteur de supervision supervise le système d'informations
-* Les informations de supervision sont envoyés via cbmod à Centreon Broker SQL
+* Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL
 * Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD
 * Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 

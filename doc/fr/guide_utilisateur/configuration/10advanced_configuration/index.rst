@@ -3,6 +3,7 @@ Configuration avancée
 =====================
 
 .. toctree::
+   :maxdepth: 2
 
    01macros
    02metaservices

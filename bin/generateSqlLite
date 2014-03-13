@@ -125,7 +125,7 @@ try {
     $stmt->execute();
     $result_traps = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $db_centreon->prepare("SELECT trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status, severity_id 
+    $stmt = $db_centreon->prepare("SELECT tmo_id, trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status, severity_id 
         FROM traps_matching_properties");
     $stmt->execute();
     $result_traps_matching = $stmt->fetchAll(PDO::FETCH_ASSOC);

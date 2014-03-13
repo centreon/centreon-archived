@@ -3,6 +3,8 @@ Configuration
 =============
 
 .. toctree::
+   :maxdepth: 2
+   :glob:
 
    01actions
    02hosts
