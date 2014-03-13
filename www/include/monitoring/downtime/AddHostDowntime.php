@@ -251,7 +251,15 @@
 			        $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
 			        foreach ($hostlist as $host_id) {
 			            if ($oreon->user->access->admin || in_array($host_id, $host_acl_id)) {
-			                $ecObj->AddHostDowntime($host_id, $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"], $duration, $dt_w_services);
+							$ecObj->AddHostDowntime(
+								$host_id, 
+								$_POST["comment"], 
+								$_POST["start"] . ' '. $_POST["start_time"], 
+								$_POST["end"] . ' ' . $_POST["end_time"], 
+								$_POST["persistant"], 
+								$duration, 
+								$dt_w_services
+							);
 			            }
 			        }
 			    }
