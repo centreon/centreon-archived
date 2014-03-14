@@ -109,7 +109,25 @@ class ValidatorsController extends \Centreon\Core\Controller
         $params = $this->getParams('post');
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
-        $jsonResponse = \Centreon\Core\Form\Validator\Unique::validate($params['value'], $params['object']);
+        $jsonResponse = \Centreon\Core\Form\Validator\Unique::validate(
+            $params['value'],
+            $params['object'],
+            $params['object_id']
+        );
+        $router->response()->code('200')->json($jsonResponse);
+    }
+    
+    /**
+     * 
+     * @method post
+     * @route /validator/forbiddenchar
+     */
+    public function forbiddenCharAction()
+    {
+        $params = $this->getParams('post');
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $jsonResponse = \Centreon\Core\Form\Validator\Forbiddenchar::validate($params['value']);
         $router->response()->code('200')->json($jsonResponse);
     }
 

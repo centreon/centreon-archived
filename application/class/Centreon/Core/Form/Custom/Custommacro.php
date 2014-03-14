@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Custommacro implements Custominterface
+class Custommacro extends Customobject
 {
     /**
      * 
@@ -98,5 +98,4 @@ class Custommacro implements Custominterface
             'js' => $myJs
         );
     }
-    
 }

@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Command implements Custominterface
+class Command extends Customobject
 {
     /**
      * 
@@ -82,5 +82,4 @@ class Command implements Custominterface
             'js' => $myJs
         );
     }
-    
 }

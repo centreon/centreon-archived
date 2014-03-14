@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Customarguments implements Custominterface
+class Customarguments extends Customobject
 {
     /**
      * 
@@ -70,5 +70,4 @@ class Customarguments implements Custominterface
             'js' => $myJs
         );
     }
-    
 }

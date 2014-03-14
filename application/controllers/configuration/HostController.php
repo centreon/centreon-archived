@@ -144,7 +144,7 @@ class HostController extends ObjectAbstract
         $givenParameters = $this->getParams('post');
         parent::updateAction();
         if ($givenParameters['host_create_services_from_template']) {
-            \Models\Configuration\Host::deployServices($givenParameters['host_id']);
+            \Models\Configuration\Host::deployServices($givenParameters['object_id']);
         }
     }
     
@@ -214,7 +214,7 @@ class HostController extends ObjectAbstract
         
         $myForm = new Generator('/configuration/host/update', $requestParam['advanced'], array('id' => $requestParam['id']));
         $myForm->setDefaultValues($currentHostValues);
-        $myForm->addHiddenComponent('host_id', $requestParam['id']);
+        $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', 'host');
         
         $formModeUrl = \Centreon\Core\Di::getDefault()

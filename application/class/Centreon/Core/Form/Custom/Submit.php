@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Submit implements Custominterface
+class Submit extends Customobject
 {
     /**
      * 
@@ -58,5 +58,4 @@ class Submit implements Custominterface
                     '/>';
         return $inputHtml;
     }
-    
 }

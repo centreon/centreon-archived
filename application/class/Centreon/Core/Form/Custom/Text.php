@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Text implements Custominterface
+class Text extends Customobject
 {
     /**
      * 
@@ -59,8 +59,8 @@ class Text implements Custominterface
             $addClass .= 'mandatory-field ';
         }
         
-        $myJs = "";
-        
+        $myJs = '';
+
         $inputHtml = '<span><input '.
                         'id="'.$element['id'].'" '.
                         'type="text" '.
@@ -76,5 +76,4 @@ class Text implements Custominterface
             'js' => $myJs
         );
     }
-    
 }

@@ -165,10 +165,8 @@ class Generator
                 }
                 
                 $fieldQuery = 'SELECT '
-                    . 'f.name, label, default_value, attributes, type, help, mandatory, parent_field, child_actions, v.action as validator_action '
+                    . 'f.field_id, f.name, label, default_value, attributes, type, help, mandatory, parent_field, child_actions '
                     . 'FROM form_field f, form_block_field_relation bfr '
-                    . 'LEFT JOIN form_field_validator_relation vr ON vr.field_id = bfr.field_id '
-                    . 'LEFT JOIN form_validator v ON v.validator_id = vr.validator_id '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
                     . $advancedRequest
@@ -179,6 +177,14 @@ class Generator
                 $fieldList = $fieldStmt->fetchAll(\PDO::FETCH_ASSOC);
                 
                 foreach ($fieldList as $field) {
+                    
+                    $validatorQuery = "SELECT v.action as validator_action, vr.client_side_event as events "
+                        . "FROM form_validator v, form_field_validator_relation vr "
+                        . "WHERE vr.field_id = $field[field_id] "
+                        . "AND vr.validator_id = v.validator_id";
+                    $validatorStmt = $dbconn->query($validatorQuery);
+                    $field['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;
                     $this->formDefaults[$field['name']] = $field['default_value'];

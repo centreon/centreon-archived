@@ -435,16 +435,28 @@ abstract class Object
     
     /**
      * 
-     * @param string $value
+     * @param string $uniqueFieldvalue
+     * @param integer $id
+     * @return boolean
      */
-    public static function isUnique($value)
+    public static function isUnique($uniqueFieldvalue, $id)
     {
-        $resultUnique = getList(static::$uniqueLabelField, -1, 0, null, "ASC", array(static::$uniqueLabelField => $value));
-        if ($resultUnique > 0) {
-            return false;
-        } else {
-            return true;
+        $isUnique = true;
+        $dbconn = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $unicityRequest = "SELECT ".static::$uniqueLabelField.", ".static::$primaryKey
+            ." FROM ".static::$table
+            ." WHERE ".static::$uniqueLabelField."='$uniqueFieldvalue'";
+        $stmt = $dbconn->query($unicityRequest);
+        $resultUnique = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (count($resultUnique) > 0) {
+            if ($resultUnique[static::$primaryKey] == $id) {
+                $isUnique = true;
+            } else {
+                $isUnique = false;
+            }
         }
+        
+        return $isUnique;
     }
 
     /**

@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Select implements Custominterface
+class Select extends Customobject
 {
     /**
      * 
@@ -76,7 +76,7 @@ class Select implements Custominterface
                   });'."\n";
         }
         
-        $myHtml = '<input class="form-control '.$addClass.'" id="'.$element['name'].'" name="' . $element['name'] . '" style="width: 100%;" value=" " />';
+        $myHtml = '<input class="form-control '.$addClass.'" id="'.$element['name'].'" name="' . $element['name'] . '" style="width: 100%;" type="hidden" value=" " />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
