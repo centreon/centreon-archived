@@ -72,27 +72,29 @@ abstract class Customobject
                         ->get('router')
                         ->getPathFor('/validator/'.$validator['validator_action']);
 
-                     $ajaxCall = '$.ajax({
+                    $ajaxCall = '$.ajax({
                             url: "'.$validatorRoute.'",
                             type: "POST",
                             data: {"value":$(this).val(), "object":$("[name=\'object\']").val(), "object_id":$("[name=\'object_id\']").val()},
                             dataType: "json",
                             context: document.body
                         })';
-                     $eventList = explode(',', $validator['events']);
-                     foreach($eventList as $event) {
-                         $eventValidation .= '$("#'.$element['name'].'").on ("'.$event.'" , function(){ '.
-                            $ajaxCall.
-                            '.success(function(data, status, jqxhr) {
-                                if (data["success"]) {
-                                    $(this).val(data["value"]);
-                                } else {
-                                    alertClose();
-                                    alertMessage("<b>'.$label.'</b> " + data["error"], "alert-danger");
-                                }
-                            });
-                        });';
-                     }
+                    $eventList = explode(',', trim($validator['events']));
+                    foreach($eventList as $event) {
+                        if (!empty($event)) {
+                            $eventValidation .= '$("#'.$element['name'].'").on ("'.$event.'" , function(){ '.
+                               $ajaxCall.
+                               '.success(function(data, status, jqxhr) {
+                                   if (data["success"]) {
+                                       $(this).val(data["value"]);
+                                   } else {
+                                       alertClose();
+                                       alertMessage("<b>'.$label.'</b> " + data["error"], "alert-danger");
+                                   }
+                               });
+                            });';
+                        }
+                    }
                 }
             }
         }
