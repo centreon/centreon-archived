@@ -122,9 +122,21 @@ class Form
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     private $customValidator = array();
+    
+    /**
+     *
+     * @var string 
+     */
+    private $eventValidation = '';
+    
+    /**
+     *
+     * @var string 
+     */
+    private $submitValidation = '';
     
     /**
      * Constructor
@@ -144,7 +156,7 @@ class Form
     
     /**
      * 
-     * @return \HTML_QuickForm
+     * @return array
      */
     public function toSmarty()
     {
@@ -152,12 +164,28 @@ class Form
         $this->formRenderer->setRequiredTemplate('{label}<font color="red" size="1">*</font>');
         $this->formRenderer->setErrorTemplate('<font color="red">{error}</font><br />{html}');
         $this->formProcessor->accept($this->formRenderer);
-        return $this->formatForSmarty();
+        $smartyArrayFormat = $this->formatForSmarty();
+        $this->tpl->addCustomJs($this->eventValidation);
+        $this->tpl->assign('submitValidation', $this->submitValidation);
+        return $smartyArrayFormat;
     }
     
+    /**
+     * 
+     * @return array
+     */
     public function getCustomValidator()
     {
         return $this->customValidator;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getAjaxValidator()
+    {
+        return $this->ajaxValidator;
     }
     
     /**
@@ -223,6 +251,7 @@ class Form
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
                     $element['label'] = $element['label_label'];
                     $in = $className::renderHtmlInput($element);
+                    $inVal = $className::addValidation($element);
                     if (isset($in['html'])) {
                         $element['input'] = $in['html'];
                     }
@@ -234,6 +263,14 @@ class Form
                     
                     if (isset($in['customGetter'])) {
                         $this->customValidator[$in['customGetter']['name']] = $in['customGetter']['getter'];
+                    }
+                    
+                    if (isset($inVal['eventValidation'])) {
+                        $this->eventValidation .= $inVal['eventValidation'];
+                    }
+                    
+                    if (isset($inVal['submitValidation'])) {
+                        $this->submitValidation .= $inVal['submitValidation'];
                     }
                 }
                 break;
@@ -274,10 +311,16 @@ class Form
     
     public function renderFinalHtml($inputElement)
     {
+        $helpButton = '';
+        $classInput = 'col-sm-9';
+        if ($inputElement['type'] !== 'submit') {
+            $helpButton = '<div class="col-sm-1"><button type="button" class="btn btn-info">?</button></div>';
+            $classInput = 'col-sm-8';
+        }
         return '<div class="form-group">'.
                 '<div class="col-sm-3" style="text-align:right">'.$inputElement['label'].'</div>'.
-                '<div class="col-sm-9">'.$inputElement['input'].'</div>'.
-                //'<div class="col-sm-3"><input type="text" disabled="disabled" value="inherited" /></div>'.
+                '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'.
+                $helpButton.
                 '</div>';
     }
     
@@ -689,6 +732,10 @@ class Form
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
+        
+        if ($field['validators'] != null) {
+            $params['validators'] = $field['validators'];
+        }
         $params['extra'] = $extraParams;
         $elem = $this->formProcessor->addElement('static', $field['name'], $params);
     }

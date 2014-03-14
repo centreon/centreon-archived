@@ -32,15 +32,42 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Core\Form\Custom;
 
-interface Custominterface
+namespace Centreon\Core\Form\Validator;
+
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
+class Forbiddenchar implements Ivalidator
 {
     /**
-     * Render Html for input field
-     *
-     * @param array
-     * @return array array('html' => string, 'js' => string)
+     * 
      */
-    public static function renderHtmlInput(array $element);
+    public static function validate($value, $objectName = "", $id = null)
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $stmt = $dbconn->query('SELECT illegal_object_name_chars FROM cfg_nagios');
+        $charsFromDb = $stmt->fetch();
+        $illegalChars = str_split(html_entity_decode($charsFromDb['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+        
+        $forbiddenCharDetected = false;
+        $forbiddenCharsList = '';
+        foreach ($illegalChars as $char) {
+            if (strpos($value, $char) !== false) {
+                $forbiddenCharDetected = true;
+                $forbiddenCharsList .= $char.' ';
+            }
+        }
+        
+        if (!$forbiddenCharDetected) {
+            $result = array('success' => true);
+        } else {
+            $result = array('success' => false, 'error' => _('One of these illegal chars ('.$forbiddenCharsList.') have been found'));
+        }
+        return $result;
+    }
 }

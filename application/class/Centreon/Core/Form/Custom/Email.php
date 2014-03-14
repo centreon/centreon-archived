@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Email implements Custominterface
+class Email extends Customobject
 {
     /**
      * 
@@ -103,5 +103,4 @@ class Email implements Custominterface
             'js' => $myJs
         );
     }
-    
 }

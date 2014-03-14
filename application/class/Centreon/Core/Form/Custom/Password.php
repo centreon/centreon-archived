@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Password implements Custominterface
+class Password extends Customobject
 {
     /**
      * 
@@ -67,5 +67,4 @@ class Password implements Custominterface
                         '/>';
         return $inputHtml;
     }
-    
 }

@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Selectimage implements Custominterface
+class Selectimage extends Customobject
 {
     /**
      * 
@@ -84,5 +84,4 @@ class Selectimage implements Custominterface
             'js' => $finalJs
         );
     }
-    
 }

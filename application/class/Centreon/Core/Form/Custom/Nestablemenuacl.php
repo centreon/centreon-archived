@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Nestablemenuacl implements Custominterface
+class Nestablemenuacl extends Customobject
 {
     private static $aclmenudata = array();
 

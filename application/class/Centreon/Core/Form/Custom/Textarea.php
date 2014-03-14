@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Textarea implements Custominterface
+class Textarea extends Customobject
 {
     /**
      * 

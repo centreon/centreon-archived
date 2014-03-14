@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class File implements Custominterface
+class File extends Customobject
 {
     /**
      * 
@@ -219,5 +219,4 @@ class File implements Custominterface
             'js' => $fileUploadJs
         );
     }
-    
 }

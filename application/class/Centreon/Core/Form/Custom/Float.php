@@ -32,27 +32,48 @@
  * For more information : contact@centreon.com
  *
  */
+namespace Centreon\Core\Form\Custom;
 
-namespace Centreon\Core\Form\Validator;
-
-/**
- * @author Lionel Assepo <lassepo@merethis.com>
- * @package Centreon
- * @subpackage Core
- */
-class Unique implements Ivalidator
+class Float extends Customobject
 {
     /**
      * 
+     * @param array $element
+     * @return array
      */
-    public static function validate($value, $objectName = "", $id = null)
+    public static function renderHtmlInput(array $element)
     {
-        $callableObject = '\\Models\\Configuration\\'.ucwords($objectName);
-        if ($callableObject::isUnique($value, $id)) {
-            $result = array('success' => true);
-        } else {
-            $result = array('success' => false, 'error' => _("This $objectName is not unique"));
+        (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
+        
+        $placeholder = 'placeholder="'.$element['name'].'" ';
+        if (isset($element['label_label']) && (!empty($element['label_label']))) {
+            $placeholder = 'placeholder="'.$element['label_label'].'" ';
         }
-        return $result;
+        
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
+        }
+        
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
+        
+        $myJs = "";
+        
+        $inputHtml = '<span><input '.
+                        'id="'.$element['id'].'" '.
+                        'type="text" '.
+                        'name="'.$element['name'].'" '.
+                        $value.
+                        'class="form-control '.$addClass.'" '.
+                        $placeholder.
+                        '/><span>';
+        
+        
+        return array(
+            'html' => $inputHtml,
+            'js' => $myJs
+        );
     }
 }

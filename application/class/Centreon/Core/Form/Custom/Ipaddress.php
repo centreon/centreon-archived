@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Ipaddress implements Custominterface
+class Ipaddress extends Customobject
 {
     /**
      * 
@@ -130,5 +130,4 @@ class Ipaddress implements Custominterface
             'js' => $myJs
         );
     }
-    
 }
