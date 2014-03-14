@@ -4,16 +4,17 @@ namespace Models\Form;
 
 class Installer
 {
-    protected static $forms = array();
-    protected static $sections = array();
-    protected static $blocks = array();
-    protected static $fields = array();
+    protected static $forms;
+    protected static $sections;
+    protected static $blocks;
+    protected static $fields;
+    protected static $blockFields;
 
     /**
      * Init arrays
      *
      */
-    public static function init()
+    public static function init($formName)
     {
         $sql = "SELECT f.form_id, f.name as form_name, 
             s.section_id, s.name as section_name, 
@@ -23,16 +24,23 @@ class Installer
             WHERE f.form_id = s.form_id
             AND s.section_id = b.section_id
             AND b.block_id = r.block_id
-            AND r.field_id = d.field_id";
+            AND r.field_id = d.field_id
+            AND f.name = ?";
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(array($formName));
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        self::$forms = array();
+        self::$sections = array();
+        self::$blocks = array();
+        self::$fields = array();
+        self::$blockFields = array();
         foreach ($rows as $row) {
             $form_key = $row['form_name'];
             $section_key = $form_key . ';' . $row['section_name'];
             $block_key = $section_key . ';' . $row['block_name'];
             $field_key = $row['field_name'];
+            $block_field_key = $block_key . ';' . $row['field_name'];
             if (!isset(self::$forms[$form_key])) {
                 self::$forms[$form_key] = $row['form_id'];
             }
@@ -44,6 +52,9 @@ class Installer
             }
             if (!isset(self::$fields[$field_key])) {
                 self::$fields[$field_key] = $row['field_id'];
+            }
+            if (!isset(self::$blockFields[$block_field_key])) {
+                self::$blockFields[$block_field_key] = $row['block_id'] . ';' . $row['field_id'];
             }
         }
     }
@@ -185,6 +196,8 @@ class Installer
             $stmt->bindParam(':mandatory', $data['mandatory']);
             $stmt->execute();
         }
+        $tmp = $key . ';' . $fname;
+        self::$blockFields[$tmp] = self::$blocks[$key] . ';' . self::$fields[$fname];
     }
 
     /**
@@ -195,8 +208,11 @@ class Installer
     public static function installFromXml($xmlFile = "")
     {
         $xml = simplexml_load_file($xmlFile);
-        self::init();
         foreach ($xml as $form) {
+            $insertedSections = array();
+            $insertedBlocks = array();
+            $insertedFields = array();
+            self::init($form['name']);
             $formData = array(
                 'name' => $form['name'],
                 'route' => $form->route,
@@ -237,23 +253,80 @@ class Installer
                             'attributes' => $field->attributes
                         );
                         self::insertField(array_map('strval', $fieldData));
-                        self::addFieldToBlock(
-                            array_map(
-                                'strval', 
-                                array(
-                                    'form_name' => $form['name'],
-                                    'section_name' => $section['name'],
-                                    'block_name' => $block['name'], 
-                                    'field_name' => $field['name'],
-                                    'mandatory' => $field['mandatory'],
-                                    'rank' => $fieldRank
-                                )
-                            )
+                        $blockFieldData = array(
+                            'form_name' => $form['name'],
+                            'section_name' => $section['name'],
+                            'block_name' => $block['name'], 
+                            'field_name' => $field['name'],
+                            'mandatory' => $field['mandatory'],
+                            'rank' => $fieldRank
                         );
+                        self::addFieldToBlock(array_map('strval', $blockFieldData));
                         $fieldRank++;
+                        $insertedFields[] = implode(';', array($form['name'], $section['name'], $block['name'], $field['name']));
                     }
+                    $insertedBlocks[] = implode(';', array($form['name'], $section['name'], $block['name']));
                 }
+                $insertedSections[] = implode(';', array($form['name'], $section['name']));
+            }
+            self::purgeFields($insertedFields);
+            self::purgeBlocks($insertedBlocks);
+            self::purgeSections($insertedSections);
+        }
+    }
+
+    /**
+     * Purge fields
+     *
+     */
+    protected static function purgeFields($insertedFields)
+    {
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $db->beginTransaction();
+        $stmt = $db->prepare("DELETE FROM form_block_field_relation WHERE CONCAT_WS(';', block_id, field_id) = ?");
+        foreach (self::$blockFields as $key => $value) {
+            if (!in_array($key, $insertedFields)) {
+                $stmt->execute(array($value));
             }
         }
+        $db->commit();
+        $stmt = $db->prepare("DELETE FROM form_field 
+            WHERE NOT EXISTS
+            (SELECT field_id FROM form_block_field_relation r WHERE r.field_id = form_field.field_id)");
+        $stmt->execute();
+    }
+
+    /**
+     * Purge blocks
+     *
+     */
+    protected static function purgeBlocks($insertedBlocks)
+    {
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $db->beginTransaction();
+        $stmt = $db->prepare("DELETE FROM form_block WHERE block_id = ?");
+        foreach (self::$blocks as $key => $value) {
+            if (!in_array($key, $insertedBlocks)) {
+                $stmt->execute(array($value));
+            }
+        }
+        $db->commit();
+    }
+
+    /**
+     * Purge sections
+     *
+     */
+    protected static function purgeSections($insertedSections)
+    {
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $db->beginTransaction();
+        $stmt = $db->prepare("DELETE FROM form_section WHERE section_id = ?");
+        foreach (self::$sections as $key => $value) {
+            if (!in_array($key, $insertedSections)) {
+                $stmt->execute(array($value));
+            }
+        }
+        $db->commit();
     }
 }
