@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="contact_form">
+		<route>/configuration/user/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/configuration/user</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="contact_alias" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="contact_name" label="Full name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="contact_email" label="E-mail address" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="contact_template_id" label="Template" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/contacttemplate/formlist","listValuesRoute":"/configuration/user/[i:id]/contacttemplate","multiple":false}</attributes>
+				</field>
+			</block>
+			<block name="Relations">
+				<field name="contact_contactgroups" label="Contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/contactgroup/formlist","listValuesRoute":"/configuration/user/[i:id]/contactgroup","multiple":true,"ordered":false}</attribute>
+				</field>
+			</block>
+			<block name="Notification">
+				<field name="contact_enable_notifications" label="Enable notifications" default_value="2" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+				</field>
+				<field name="contact_host_notification_options" label="Host notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Down":1, "Unreachable":1, "Recovery":1, "Flapping":1, "Downtime Scheduled":1, "None":1}</attributes>
+				</field>
+				<field name="timeperiod_tp_id" label="Host notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/user/[i:id]/hostnotifperiod","multiple":false}</attributes>
+				</field>
+				<field name="contact_host_notif_command" label="Host notification command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/notificationcommand/formlist","listValuesRoute":"/configuration/user/[i:id]/hostnotifcommand","multiple":true,"ordered":false}</attribute>
+				</field>
+				<field name="contact_service_notification_options" label="Service notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Warning":1, "Unknown":1, "Critical":1, "Recovery":1, "Flapping":1, "Downtime scheduled":1, "None":1}</attributes>
+				</field>
+				<field name="timeperiod_tp_id2" label="Service notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/user/[i:id]/servicenotifperiod","multiple":false}</attributes>
+				</field>
+				<field name="contact_service_notif_command" label="Service notification command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/notificationcommand/formlist","listValuesRoute":"/configuration/user/[i:id]/servicenotifcommand","multiple":true,"ordered":false}</attribute>
+				</field>
+			</block>
+		</section>
+		<section name="Access">
+			<block name="Authentication">
+				<field name="contact_oreon" label="Enable UI access" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{"Yes":1, "No":0}</attributes>
+				</field>
+				<field name="contact_passwd" label="Password" default_value="" advanced="0" type="password" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="contact_passwd_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="contact_autologin_key" label="Autologin key" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="contact_auth_type" label="Authentication type" default_value="local" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Default":"local", "LDAP":"ldap"}</attributes>
+				</field>
+			</block>
+			<block name="ACL">
+				<field name="contact_admin" label="Admin role" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{"Yes":1, "No":0}</attributes>
+				</field>
+				<field name="contact_aclgroups" label="ACL groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/administration/aclgroup/formlist","listValuesRoute":"/configuration/user/[i:id]/aclgroup","multiple":true,"ordered":false}</attributes>
+				</field>
+			</block>
+		</section>
+		<section name="Extended information">
+			<block name="Locale settings">
+				<field name="contact_lang" label="Language" default_value="en_US.UTF-8" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"file","defaultValuesFolder":"/locale/","listValuesRoute":"/configuration/user/[i:id]/lang","multiple":false}</attributes>
+				</field>
+			</block>
+			<block name="Additional information">
+				<field name="contact_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+				</field>
+				<field name="contact_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+		</section>
+	</form>
+</forms>
