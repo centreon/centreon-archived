@@ -558,7 +558,39 @@ class Form
         $_SESSION['form_token_time'] = time();
         return $token;
     }
-
+    
+    public static function getValidators($uri)
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $validatorsQuery = "SELECT `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+            FROM form_validator fv, form_field_validator_relation ffv, form_field ff
+            WHERE ffv.validator_id = fv.validator_id
+            AND ff.field_id = ffv.field_id
+            AND ffv.field_id IN (
+                SELECT fi.field_id FROM form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
+                WHERE fi.field_id = fbf.field_id
+                AND fbf.block_id = fb.block_id
+                AND fb.section_id = fs.section_id
+                AND fs.form_id = f.form_id
+                AND f.route = '$uri'
+            );";
+        
+        $stmt = $dbconn->query($validatorsQuery);
+        $validatorsRawList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $validatorsFinalList = array();
+        foreach($validatorsRawList as $validator) {
+            $validatorsFinalList[$validator['field_name']] = array(
+                'call' => $validator['validator'],
+                'label' => $validator['field_label']
+            );
+        }
+        
+        return $validatorsFinalList;
+    }
+    
     /**
      * 
      * @param string $name
@@ -1188,10 +1220,32 @@ class Form
      * 
      * @return type
      */
-    public function validate()
+    public static function validate($uri, &$submittedValues)
     {
-        $this->checkSecurity();
-        return $this->formProcessor->validate();
+        $isValidate = true;
+        $errorMessage = '';
+        try {
+            self::validateSecurity($submittedValues['token']);
+            unset($submittedValues['token']);
+            $validatorsList = self::getValidators($uri);
+            foreach ($validatorsList as $validatorKey=>$validatorParam) {
+                $validatorCall = '\\Centreon\\Core\\Form\\Validator\\'.ucfirst($validatorParam['call']);
+                $resultValidate = $validatorCall::validate(
+                    $submittedValues[$validatorKey],
+                    $submittedValues['object'],
+                    $submittedValues['object_id'],
+                    $validatorKey
+                );
+                if (!$resultValidate['success']) {
+                    $isValidate = false;
+                    $errorMessage .= '<b>' .$validatorParam['label'] . '</b> : ' . $resultValidate['error'] . '<br />';
+                }
+            }
+        } catch(Exception $e) {
+            $isValidate = false;
+        }
+        
+        return array('success' => $isValidate, 'error' => $errorMessage);
     }
 
     /**

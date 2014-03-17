@@ -45,7 +45,7 @@ class Forbiddenchar implements Ivalidator
     /**
      * 
      */
-    public static function validate($value, $objectName = "", $id = null)
+    public static function validate($value, $objectName = "", $id = null, $fieldname = '')
     {
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');

@@ -12,5 +12,5 @@ interface Ivalidator
      * @param int $id
      * @return bool
      */
-    public static function validate($value, $objectName = "", $id = null);
+    public static function validate($value, $objectName = '', $id = null, $fieldname = '');
 }
