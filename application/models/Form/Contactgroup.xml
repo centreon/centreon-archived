@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-	<form name="contact_form">
+	<form name="contactgroup_form">
 		<route>/configuration/usergroup/update</route>
 		<redirect>1</redirect>
 		<redirect_route>/configuration/usergroup</redirect_route>
