@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="trap_form">
+		<route>/configuration/trap/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/configuration/trap</redirect_route>
+		<section name="Host configuration">
+			<block name="General information">
+				<field name="traps_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="traps_oid" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/manufacturer/formlist","listValuesRoute":"/configuration/trap/[i:id]/manufacturer","multiple":true,"ordered":true}</attributes>
+				</field>
+			</block>
+			<block name="Trap translation">
+				<field name="traps_args" label="Output message" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="traps_status" label="Default status" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				    <attributes>{"Ok":0, "Warning":1, "Critical":2, "Unknown":3}</attributes>
+				</field>
+				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				    <attributes>{"Enabled":1, "Disabled":0}</attributes>
+				</field>
+				<field name="traps_advanced_treatment_default" label="If no matched rules" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				    <attributes>{"Submit result":0, "Do not submit result":1}</attributes>
+				</field>
+			</block>
+			<block name="Submit result to monitoring engine">
+				<field name="traps_submit_result_enable" label="Submit result" default_value="1" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				    <attributes>{"Yes":1, "No":0}</attributes>
+				</field>
+			</block>
+			<block name="Force service check rescheduling">
+				<field name="traps_reschedule_svc_enable" label="Reschedule service check" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				    <attributes>{"Yes":1, "No":0}</attributes>
+				</field>
+			</block>
+			<block name="Command execution">
+				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+				</field>
+				<field name="traps_execution_command" label="Special command" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+			<block name="Additional information">
+				<field name="traps_comments" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+		</section>
+		<section name="Relations">
+			<block name="Resources">
+				<field name="trap_services" label="Linked services" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/service/formlist","listValuesRoute":"/configuration/trap/[i:id]/service","multiple":true}</attributes>
+				</field>
+				<field name="trap_servicetemplates" label="Linked service templates" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/servicetemplate/formlist","listValuesRoute":"/configuration/trap/[i:id]/servicetemplate","multiple":true}</attributes>
+				</field>
+			</block>
+		</section>
+		<section name="Advanced settings">
+			<block name="Route parameters">
+				<field name="traps_routing_mode" label="Routing mode" default_value="0" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+				</field>
+				<field name="traps_routing_value" label="Route definition" default_value="" advanced="1" type="text" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+			<block name="Misc">
+				<field name="traps_log" label="Log" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+				</field>
+				<field name="traps_timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="traps_exec_interval" label="Execution interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="traps_exec_interval_type" label="Execution type" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{"None":0, "By OID":1, "By OID and host":2}</attributes>
+				</field>
+				<field name="traps_exec_method" label="Execution method" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{"Parallel":0, "Sequential":1}</attributes>
+				</field>
+			</block>
+		</section>
+	</form>
+</forms>
