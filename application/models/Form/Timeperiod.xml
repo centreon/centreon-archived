@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="timeperiod_form">
+		<route>/configuration/timeperiod/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/configuration/timeperiod</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="tp_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="tp_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+			</block>
+			<block name="Time range">
+				<field name="tp_sunday" label="Sunday" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="tp_monday" label="Monday" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="tp_tuesday" label="Tuesday" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="tp_wednesday" label="Wednesday" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="tp_thursday" label="Thursday" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="tp_friday" label="Friday" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="tp_saturday" label="Saturday" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+			<block name="Extended settings">
+				<field name="tp_include" label="Include timeperiod" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/timeperiod/[i:id]/include","multiple":true,"ordered":false}</attribute>
+				</field>
+				<field name="tp_exclude" label="Exclude timeperiod" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/timeperiod/[i:id]/exclude","multiple":true,"ordered":false}</attribute>
+				</field>
+			</block>
+		</section>
+	</form>
+</forms>
