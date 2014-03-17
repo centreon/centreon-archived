@@ -10,9 +10,6 @@ class Circular implements Ivalidator
     public static function validate($value, $objectName = '', $id = null, $fieldname = '')
     {
         $controller = '\\Controllers\\Configuration\\' . ucfirst($objectName) . 'Controller';
-        if (!is_null($id)) {
-            $value = $value . ',' . $id;
-        }
         $result = true;
         $resultError = 'Redondance circulaire détectée';
         
@@ -22,18 +19,18 @@ class Circular implements Ivalidator
         
         while (count($objectStack) > 0) {
             $currentObject = array_pop($objectStack);
+            if (!is_null($id)) {
+                if ($currentObject == $id) {
+                    $result = false;
+                    break;
+                }
+            }
             $enlistedObject[$currentObject] = true;
             $relations = $object::getTargetIdFromSourceId(
                 $object::getSecondKey(),
                 $object::getFirstKey(),
                 $currentObject
             );
-            
-            if (isset($enlistedObject[$currentObject])) {
-                $result = false;
-                break;
-            }
-            
             foreach($relations as $relation) {
                 $objectStack[] = $relation;
             }
