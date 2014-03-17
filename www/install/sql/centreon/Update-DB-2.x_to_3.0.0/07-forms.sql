@@ -66,8 +66,8 @@ CREATE TABLE `form_validator` (
   `validator_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `action` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`validator_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `form_massive_change` (
   `massive_change_id` INT UNSIGNED NOT NULL,
@@ -109,9 +109,9 @@ CREATE TABLE `form_step_field_relation` (
 CREATE TABLE `form_field_validator_relation` (
   `field_id` INT UNSIGNED NOT NULL,
   `validator_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`form_field_id`,`form_validator_id`),
-  KEY `fk_new_table_1_idx` (`form_field_id`),
-  KEY `fk_form_field_validator_relation_2_idx` (`form_validator_id`),
-  CONSTRAINT `fk_form_field_validator_relation_1` FOREIGN KEY (`form_field_id`) REFERENCES `form_field` (`field_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_form_field_validator_relation_2` FOREIGN KEY (`form_validator_id`) REFERENCES `form_validator` (`validator_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`field_id`,`validator_id`),
+  KEY `fk_new_table_1_idx` (`field_id`),
+  KEY `fk_form_field_validator_relation_2_idx` (`validator_id`),
+  CONSTRAINT `fk_form_field_validator_relation_1` FOREIGN KEY (`field_id`) REFERENCES `form_field` (`field_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_form_field_validator_relation_2` FOREIGN KEY (`validator_id`) REFERENCES `form_validator` (`validator_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
