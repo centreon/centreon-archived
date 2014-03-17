@@ -57,7 +57,7 @@
                         alertMessage("The object has been successfully saved", "alert-success");
                     {/if}
                 } else {
-                    alertMessage("An error occured", "alert-danger");
+                    alertMessage(data.error, "alert-danger");
                 }
             });
             return false;

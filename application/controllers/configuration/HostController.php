@@ -55,7 +55,7 @@ class HostController extends ObjectAbstract
     protected $objectName = 'host';
     protected $objectBaseUrl = '/configuration/host';
     protected $objectClass = '\Models\Configuration\Host';
-    protected $relationMap = array(
+    public static $relationMap = array(
         'host_hostgroups' => '\Models\Configuration\Relation\Host\Hostgroup',
         'host_categories' => '\Models\Configuration\Relation\Host\Hostcategory',
         'host_parents' => '\Models\Configuration\Relation\Host\Hostparent',

@@ -7,46 +7,38 @@ class Circular implements Ivalidator
     /**
      * 
      */
-    public static function validate($value, $objectName, $id = null)
+    public static function validate($value, $objectName = '', $id = null, $fieldname = '')
     {
-        if (!is_null($id)) {
-            $value = $id . ',' . $value;
-        }
-        $result = self::recursiveCircular(
-            $objectName, 
-            explode(',', $value)
-        );
-        return $result;
-    }
-
-    /**
-     * Recursive method
-     *
-     * @param string $object
-     * @param array $values
-     * @return bool
-     */
-    protected function recursiveCircular($object, $values)
-    {
-        static $stored = array();
-
-        foreach ($values as $value) {
-            if (isset($stored[$value])) {
-                return false;
-            }
-            $stored[$value] = true;
-            $relations = $object::getTargetIdFromSourceId(
-                $object::getSecondKey(), 
-                $object::getFirstKey(), 
-                $value
-            );
-            if (count($relations)) {
-                $res = $this->recursiveCircular($object, $relations);
-                if ($res === false) {
-                    return false;
+        $controller = '\\Controllers\\Configuration\\' . ucfirst($objectName) . 'Controller';
+        $result = true;
+        $resultError = 'Redondance circulaire détectée';
+        
+        $object = $controller::$relationMap[$fieldname];
+        $objectStack = explode(',', trim($value));
+        $enlistedObject = array();
+        
+        while (count($objectStack) > 0) {
+            $currentObject = array_pop($objectStack);
+            if (!is_null($id)) {
+                if ($currentObject == $id) {
+                    $result = false;
+                    break;
                 }
             }
+            $enlistedObject[$currentObject] = true;
+            $relations = $object::getTargetIdFromSourceId(
+                $object::getSecondKey(),
+                $object::getFirstKey(),
+                $currentObject
+            );
+            foreach($relations as $relation) {
+                $objectStack[] = $relation;
+            }
         }
-        return true;
+        
+        return array(
+            'success' => $result,
+            'error' => $resultError
+        );
     }
 }

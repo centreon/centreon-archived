@@ -49,7 +49,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      *
      * @var array
      */
-    protected $relationMap;
+    public static $relationMap;
 
     /**
      * List view for object
@@ -96,11 +96,6 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     public function createAction()
     {
         $givenParameters = clone $this->getParams('post');
-        /*
-        if (!\Centreon\Core\Form::validateSecurity($givenParameters['token'])) {
-            echo "fail";
-        }
-        unset($givenParameters['token']);*/
         $class = $this->objectClass;
         $pk = $class::getPrimaryKey();
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
@@ -117,7 +112,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             echo $e->getMessage();
         }
         if (isset($id)) {
-            foreach ($this->relationMap as $k => $rel) {
+            foreach (static::$relationMap as $k => $rel) {
                 try {
                     if (!isset($givenParameters[$k])) {
                         continue;
@@ -148,7 +143,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             return $id;
         }
     }
-
+    
     /**
      * Generic update function
      *
@@ -156,62 +151,70 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     public function updateAction()
     {
         $givenParameters = clone $this->getParams('post');
+        $updateSuccessful = true;
+        $updateErrorMessage = '';
         
-        if (!\Centreon\Core\Form::validateSecurity($givenParameters['token'])) {
-            echo "fail";
-        }
-        unset($givenParameters['token']);
-        $class = $this->objectClass;
-        $pk = $class::getPrimaryKey();
-        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        if (isset($givenParameters[$pk])) {
-            $id = $givenParameters[$pk];
-            unset($givenParameters[$pk]);
-            foreach ($this->relationMap as $k => $rel) {
-                try {
-                    if (!isset($givenParameters[$k])) {
-                        continue;
-                    }
-                    if ($rel::$firstObject == $this->objectClass) {
-                        $rel::delete($id);
-                    } else {
-                        $rel::delete(null, $id);    
-                    }
-                    $arr = explode(',', $givenParameters[$k]);
-                    $db->beginTransaction();
-                    foreach ($arr as $relId) {
-                        if (!is_numeric($relId)) {
+        $validationResult = \Centreon\Core\Form::validate($this->getUri(), $givenParameters);
+        if ($validationResult['success']) {
+            $class = $this->objectClass;
+            $pk = $class::getPrimaryKey();
+            $givenParameters[$pk] = $givenParameters['object_id'];
+            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+            if (isset($givenParameters[$pk])) {
+                $id = $givenParameters[$pk];
+                unset($givenParameters[$pk]);
+                foreach (static::$relationMap as $k => $rel) {
+                    try {
+                        if (!isset($givenParameters[$k])) {
                             continue;
                         }
                         if ($rel::$firstObject == $this->objectClass) {
-                            $rel::insert($id, $relId);
+                            $rel::delete($id);
                         } else {
-                            $rel::insert($relId, $id);    
+                            $rel::delete(null, $id);    
+                        }
+                        $arr = explode(',', $givenParameters[$k]);
+                        $db->beginTransaction();
+                        foreach ($arr as $relId) {
+                            if (!is_numeric($relId)) {
+                                continue;
+                            }
+                            if ($rel::$firstObject == $this->objectClass) {
+                                $rel::insert($id, $relId);
+                            } else {
+                                $rel::insert($relId, $id);    
+                            }
+                        }
+                        $db->commit();
+                        unset($givenParameters[$k]);
+                    } catch (Exception $e) {
+                        $updateErrorMessage = $e->getMessage();
+                    }
+                }
+                try {
+                    $columns = $class::getColumns();
+                    foreach ($givenParameters as $key => $value) {
+                        if (!in_array($key, $columns)) {
+                            unset($givenParameters[$key]);
                         }
                     }
-                    $db->commit();
-                    unset($givenParameters[$k]);
+                    $class::update($id, $givenParameters->all());
                 } catch (Exception $e) {
-                    echo $e->getMessage();
+                    $updateErrorMessage = $e->getMessage();
                 }
             }
-            try {
-                $columns = $class::getColumns();
-                foreach ($givenParameters as $key => $value) {
-                    if (!in_array($key, $columns)) {
-                        unset($givenParameters[$key]);
-                    }
-                }
-                $class::update($id, $givenParameters->all());
-            } catch (Exception $e) {
-                echo $e->getMessage();
-            }
+        } else {
+            $updateSuccessful = false;
+            $updateErrorMessage = $validationResult['error'];
         }
-        \Centreon\Core\Di::getDefault()
-            ->get('router')
-            ->response()
-            ->json(array('success' => true));
-        $this->postSave($id, 'update');
+        
+        $router = \Centreon\Core\Di::getDefault()->get('router');
+        if ($updateSuccessful) {
+            $router->response()->json(array('success' => true));
+            $this->postSave($id, 'update');
+        } else {
+            $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+        }
     }
 
     /**

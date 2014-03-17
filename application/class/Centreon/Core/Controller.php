@@ -54,6 +54,11 @@ abstract class Controller
         $this->init();
         $this->request = $request;
     }
+    
+    protected function getUri()
+    {
+        return $this->request->uri();
+    }
 
     /**
      * Get params
