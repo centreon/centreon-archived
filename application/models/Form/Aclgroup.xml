@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="aclgroup_form">
+		<route>/administration/aclgroup/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/administration/aclgroup</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="acl_group_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="acl_group_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+			</block>
+			<block name="Relations">
+				<field name="acl_group_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/user/formlist","listValuesRoute":"/administration/aclgroup/[i:id]/contact","multiple":true,"ordered":false}</attributes>
+				</field>
+				<field name="acl_group_contact_groups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/usergroup/formlist","listValuesRoute":"/administration/aclgroup/[i:id]/contactgroup","multiple":true,"ordered":false}</attributes>
+				</field>
+			</block>
+			<block name="Additional information">
+				<field name="acl_group_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>{\"Enabled\":1, \"Disabled\":0}</attributes>
+				</field>
+			</block>
+		</section>
+		<section name="Access">
+			<block name="Resource access">
+				<field name="acl_group_resources" label="Resource access" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/administration/aclresource/formlist","listValuesRoute":"/administration/aclgroup/[i:id]/aclresource","multiple":true,"ordered":false}</attributes>
+				</field>
+			</block>
+			<block name="Menu access">
+				<field name="acl_group_menus" label="Menu access" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/administration/aclmenu/formlist","listValuesRoute":"/administration/aclgroup/[i:id]/aclmenu","multiple":true,"ordered":false}</attributes>
+				</field>
+			</block>
+			<block name="Action access">
+				<field name="acl_group_access" label="Action access" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>{"object_type":"object","defaultValuesRoute":"/administration/aclaction/formlist","listValuesRoute":"/administration/aclgroup/[i:id]/aclaction","multiple":true,"ordered":false}</attributes>
+				</field>
+			</block>
+		</section>
+	</form>
+</forms>
