@@ -37,7 +37,7 @@
 				<field name="host_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/user/formlist","listValuesRoute":"/configuration/host/[i:id]/contact","multiple":true}</attributes>
 				</field>
-				<field name="host_contactgroups" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="host_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/usergroup/formlist","listValuesRoute":"/configuration/host/[i:id]/contactgroup","multiple":true}</attributes>
 				</field>
 				<field name="host_notification_interval" label="Notification interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="1"></field>
