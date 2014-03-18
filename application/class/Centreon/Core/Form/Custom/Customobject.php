@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 abstract class Customobject
 {
     /**
@@ -49,8 +54,8 @@ abstract class Customobject
     
     /**
      * 
-     * @param type $element
-     * @return type
+     * @param array $element
+     * @return array
      */
     public static function addValidation($element)
     {

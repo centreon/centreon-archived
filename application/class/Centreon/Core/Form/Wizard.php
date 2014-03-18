@@ -45,7 +45,7 @@ namespace Centreon\Core\Form;
 class Wizard extends Generator
 {
     /**
-     * Contructor
+     * Constructor
      *
      * @see \Centreon\Core\Form\Generator::__construct
      */
@@ -93,6 +93,7 @@ class Wizard extends Generator
 
     /**
      * Return the wizard HTML
+     * @return string
      */
     protected function generateHtml()
     {

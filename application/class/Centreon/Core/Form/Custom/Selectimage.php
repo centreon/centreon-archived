@@ -50,8 +50,8 @@ class Selectimage extends Customobject
             'label_object_type' => $element['label_object_type'],
             'label_defaultValuesRoute' => $element['label_defaultValuesRoute'],
             'label_listValuesRoute' => $element['label_listValuesRoute'],
-	    'label_extra' => $element['label_extra'],
-	    'label_object_type' => $element['label_object_type']
+            'label_extra' => $element['label_extra'],
+            'label_object_type' => $element['label_object_type']
         );
         
         $addImageUrl = \Centreon\Core\Di::getDefault()
@@ -62,8 +62,15 @@ class Selectimage extends Customobject
         $fileUploadForImage = File::renderHtmlInput($element);
         
         $finalHtml = '<div class="row">'
-            . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
-            . '<div class="col-sm-2"><button class="btn btn-default" id="modalAdd_'.$element['name'].'" type="button">Add Files...</button></div>'
+                . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
+                . '<div class="col-sm-2">'
+                    . '<button '
+                        . 'class="btn btn-default" '
+                        . 'id="modalAdd_'.$element['name'].'" '
+                        . 'type="button">'
+                        . 'Add Files...'
+                    . '</button>'
+                . '</div>'
             . '</div>';
         
         $finalJs = $selectForImage['js'].' '.$fileUploadForImage['js'].' ';
