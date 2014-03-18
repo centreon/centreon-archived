@@ -28,7 +28,7 @@ function switchTheme(theme) {
 function resizeContent()
 {
     var navbarHeight = $('.topbar').height();
-    navbarHeight += $('.bottombar').height();
+    //navbarHeight += $('.bottombar').height();
     var contentHeight = $(window).height() - navbarHeight - 3;
     $('#main').css('min-height', contentHeight);
 }
@@ -39,7 +39,7 @@ function resizeContent()
 function leftPanelHeight() {
     var mainHeight = $('#main').height();
     var navbarHeight = $('.topbar').height();
-    navbarHeight += $('.bottombar').height();
+    //navbarHeight += $('.bottombar').height();
     var contentHeight = $(window).height() - navbarHeight;
     if (mainHeight > contentHeight) {
         $('#left-panel').css('min-height', mainHeight + 'px');
@@ -60,25 +60,25 @@ function displayEnvironmentMenu() {
 
 /* Display full footer */
 function toggleFooter() {
-    var footerHeight = $('.footer').height();
+    var footerHeight = $('.bottombar > div.label-button').height();
     var footerAll = footerHeight + $('.footer-extended').height();
     if ($('#footer-button i').hasClass('fa-chevron-circle-down')) {
         $('.bottombar').one('webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd', function() {
             $('.bottombar').removeAttr('style');
+            $('.bottombar > div.label-button').removeClass('label-button-active');
             $('#footer-button i').removeClass('fa-chevron-circle-down').addClass('fa-chevron-circle-up');
         });
         $('.bottombar').height(footerHeight);
         if (ie != undefined && ie <= 9) {
             $('.bottombar').removeAttr('style');
+            $('.bottombar > div.label-button').removeClass('label-button-active');
             $('#footer-button i').removeClass('fa-chevron-circle-down').addClass('fa-chevron-circle-up');
         }
     } else {
         /* @todo fix bottom 0 */
         $('.bottombar').css('position', 'absolute')
-            .css('bottom', 0)
-            .css('left', 0)
-            .css('width', '100%')
             .css('height', footerAll);
+        $('.bottombar > div.label-button').addClass('label-button-active');
         $('#footer-button i').removeClass('fa-chevron-circle-up').addClass('fa-chevron-circle-down');
     }
 }
@@ -117,7 +117,9 @@ function generateMenu($elParent, menu, subLevelId, childId) {
             $childList.addClass('collapse').addClass('nav').addClass('submenu').appendTo($li);
             $childList.collapse({ toggle: false });
             generateMenu($childList, menu[i].children, subLevelId, childId);
-        }
+        } else if (childId === 0 && menu[i].menu_id == subLevelId) {
+            $li.addClass('active');
+	    }
     }
 }
 

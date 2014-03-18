@@ -48,7 +48,7 @@ class WriteConfigFileRepository
         /* Remove configuration file if the file exists */
         if (file_exists($filename)) {
             if (!unlink($filename)) {
-                return array("status" => false, "message" => "Can't remove $filname.");
+                return array("status" => false, "message" => "Can't remove $filename.");
             }
         } 
 
@@ -149,7 +149,21 @@ class WriteConfigFileRepository
             preg_match('/\/([a-zA-Z0-9\_\-\.]*\.cfg)/', $newFile, $matches);
             $newFile = str_replace($matches[1], "", $newFile); 
         }
-        $filesList[$type][] = $newFile;
+
+        if ($type == "cfg_dir") {
+            $flag = 0;
+            foreach ($filesList[$type] as $key => $value) {
+                if ($value == $newFile) {
+                    $flag = 1;
+                }
+            } 
+            if (!$flag) {
+                $filesList[$type][] = $newFile;
+            }
+        } else if ($type != "cfg_dir") {
+            $filesList[$type][] = $newFile;
+        }
+        
     }
     
     /**

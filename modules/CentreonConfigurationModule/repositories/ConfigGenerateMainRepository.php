@@ -51,7 +51,7 @@ class ConfigGenerateMainRepository
     public static function generateMainFile(& $filesList, $poller_id, $path, $filename, $testing = 0) 
     {
         /* Get Content */
-        $content = static::getContent($poller_id, $filesList);
+        $content = static::getContent($poller_id, $filesList, $testing);
         
         /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
@@ -62,14 +62,19 @@ class ConfigGenerateMainRepository
      * 
      *
      */
-    private static function getFilesList(& $filesList, $content)
+    private static function getFilesList(& $filesList, $content, $testing)
     {
         foreach ($filesList as $category => $data) {
-            foreach ($data as $path) {
-                if (!isset($content[$category])) {
-                    $content[$category] = array();
+            if ($category != 'main_file') {
+                foreach ($data as $path) {
+                    if (!isset($content[$category])) {
+                        $content[$category] = array();
+                    }
+                    if (!$testing) {
+                        $path = str_replace("/var/lib/centreon/tmp/1/", "/etc/centreon-engine/", $path);
+                    }
+                    $content[$category][] = $path;
                 }
-                $content[$category][] = $path;
             }
         } 
         return $content;
@@ -79,7 +84,7 @@ class ConfigGenerateMainRepository
      * 
      *
      */
-    private static function getContent($poller_id, & $filesList) 
+    private static function getContent($poller_id, & $filesList, $testing) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -95,7 +100,7 @@ class ConfigGenerateMainRepository
         $getCmd = static::getCommandIdField();
         
         /* get configuration files */
-        $content = static::getFilesList($filesList, $content);
+        $content = static::getFilesList($filesList, $content, $testing);
 
         /* Get information into the database. */
         $query = "SELECT * FROM cfg_nagios WHERE nagios_server_id = '$poller_id'";
@@ -159,6 +164,13 @@ class ConfigGenerateMainRepository
             }
         }
 
+        /* Check that Ressources directory exists */
+        if (!file_exists($path.$poller_id."/resources/")) {
+            if (!is_dir($path.$poller_id."/resources/")) {
+                mkdir($path.$poller_id."/resources/");
+            }
+        }
+
         /* Add fixed path files */
         $resList[] = $path."$poller_id/resources.cfg";
         $pathList[] = $path."$poller_id/misc-command.cfg";
@@ -167,6 +179,7 @@ class ConfigGenerateMainRepository
         $pathList[] = $path."$poller_id/connectors.cfg";
         
         $dirList[] = $path."$poller_id/objects/";
+        $dirList[] = $path."$poller_id/resources/";
 
         return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList);
     }

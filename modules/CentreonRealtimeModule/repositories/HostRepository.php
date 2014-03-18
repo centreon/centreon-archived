@@ -53,7 +53,19 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
      * @var string
      */
     public static $objectName = 'Host';
-    
+
+    /**
+     *
+     * @var string
+     */
+    public static $objectId = 'host_id';
+
+    /**
+     *
+     * @var string
+     */
+    public static $hook = 'displayHostRtColumn'; 
+
     /**
      *
      * @var array Default column for datatable
@@ -65,7 +77,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         'Status' => 'state',
         'Last Update' => 'last_check',
         'Duration' => '[SPECFIELD](unix_timestamp(NOW())-last_hard_state) AS duration',
-        'Retry' => 'max_check_attempts',
+        'Retry' => "CONCAT(check_attempt, ' / ', max_check_attempts) AS retry",
         'Output' => 'output'
     );
     
@@ -86,7 +98,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         'state',
         'last_check',
         '[SPECFIELD](unix_timestamp(NOW())-last_hard_state) AS duration',
-        'max_check_attempts',
+        "CONCAT(check_attempt, ' / ', max_check_attempts) AS retry",
         'output'
     );
     
@@ -150,7 +162,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
             'parameters' => array(
                 'route' => '/realtime/host/[i:id]',
                 'routeParams' => array(
-                    'id' => '::shost_id::'
+                    'id' => '::host_id::'
                 ),
                 'linkName' => '::address::'
             )

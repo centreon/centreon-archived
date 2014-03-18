@@ -65,29 +65,4 @@ class ConfigGenerateApi extends \Centreon\Internal\Controller
                                         )
                                   );
     }
-
-    /**
-     * Action for Move configuration files
-     *
-     * @method GET
-     * @route /api/configuration/[a:version]/movecfg/[i:id]
-     */
-    public function moveAction()
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-    }
-
-    /**
-     * Action for testting configuration files
-     *
-     * @method GET
-     * @route /api/1.0/testcfg/[i:id]
-     */
-    public function testAction()
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-    }
 }

@@ -144,4 +144,59 @@ class TimeperiodRepository extends \CentreonConfiguration\Repository\Repository
         'none',
         'none'
     );
+
+    public static function getPeriodName($tp_id)
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        $contactList = "";
+
+        $query = "SELECT tp_name FROM timeperiod WHERE tp_id = '$tp_id'";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return $row["tp_name"];
+        }
+        return "";
+    }
+
+    public function generateTimeperiod(& $filesList, $poller_id, $path, $filename) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        $enableField = array("tp_id" => 1);
+        
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT * FROM timeperiod ORDER BY tp_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "timeperiod");
+            $tmpData = array();
+            foreach ($row as $key => $value) {
+                if ($key == 'tp_name') {
+                    $key = "timeperiod_name";
+                }
+                if (!isset($enableField[$key]) && $value != "") {
+                    $key = str_replace("tp_", "", $key);
+                    $tmpData[$key] = $value;
+                }
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */    
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        unset($content);
+    }
 }

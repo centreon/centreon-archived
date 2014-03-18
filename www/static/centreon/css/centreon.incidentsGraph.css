@@ -4,7 +4,7 @@
 
 .service-box {
   width: 400px;
-  height: 160px;
+  height: 130px;
   position: absolute;
   overflow: hidden;
 }
@@ -28,6 +28,11 @@
 
 .service-box .extended-info {
   margin-top: 5px;
+}
+
+.service-box .extended-info .list-status {
+  max-height: 70px;
+  overflow: auto;
 }
 
 .incidentsMinimap {

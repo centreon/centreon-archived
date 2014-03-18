@@ -47,6 +47,8 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
         'sc_services' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
         'sc_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List servicecategories
@@ -187,6 +189,28 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for service category
+     * 
+     * @method post
+     * @route /configuration/servicecategory/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('sc_activate');
+    }
+    
+    /**
+     * Disable action for service category
+     * 
+     * @method post
+     * @route /configuration/servicecategory/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('sc_activate');
     }
 
     /**

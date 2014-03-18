@@ -32,35 +32,38 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonCustomview;
 
-class DisplayLeftMenuHook
+namespace CentreonConfiguration\Api\Rest;
+
+/**
+ * @authors Julien Mathis
+ * @package Centreon
+ * @subpackage Controllers                                   
+ */
+class ConfigMoveApi extends \Centreon\Internal\Controller
 {
     /**
-     * Execute hook
+     * Action for Testing configuration files
      *
-     * @param array $params
+     * @method GET
+     * @route /api/configuration/[a:version]/movecfg/[i:id]
      */
-    public static function execute($params)
+    public static function moveAction() 
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
-        if (!preg_match("/^\/customview/", $router->getCurrentUri())) {
-            return;
-        }
-        $user = $_SESSION['user'];
-        $bookmarkedViews = \CentreonCustomview\Repository\CustomviewRepository::getCustomViewsOfUser($user->getId());
-        $publicViews = \CentreonCustomview\Repository\CustomviewRepository::getPublicViews();
-        foreach ($publicViews as $viewId => $view) {
-            if (isset($bookmarkedViews[$viewId])) {
-                unset($publicViews[$viewId]);
-            }
-        }
-        return array(
-            'displayLeftMenu.tpl',
-            array(
-                'bookmarkedViews' => $bookmarkedViews,
-                'publicViews' => $publicViews
-            )
-        );
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+
+        $param = $router->request()->paramsNamed();
+
+        $obj = new \CentreonConfiguration\Repository\ConfigMoveRepository($param["id"]);
+
+        $router->response()->json(
+                                  array(
+                                        "api-version" => $param["version"],
+                                        "status" => true,
+                                        "data" => $obj->moveConfig($param["id"])
+                                        )
+                                  );
     }
+    
 }

@@ -43,6 +43,8 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectName = 'connector';
     protected $objectBaseUrl = '/configuration/connector';
     protected $objectClass = '\CentreonConfiguration\Models\Connector';
+    
+    public static $isDisableable = true;
 
     /**
      * List connectors
@@ -182,6 +184,28 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for connector
+     * 
+     * @method post
+     * @route /configuration/connector/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('enabled');
+    }
+    
+    /**
+     * Disable action for host
+     * 
+     * @method post
+     * @route /configuration/connector/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('enabled');
     }
 
     /**

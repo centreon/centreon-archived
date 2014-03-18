@@ -54,6 +54,8 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     public static $relationMap;
     
     public static $moduleName = 'CentreonConfiguration';
+    
+    public static $isDisableable = false;
 
     /**
      * List view for object
@@ -93,6 +95,11 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
         $tpl->assign('objectMcUrl', $this->objectBaseUrl . '/massive_change');
         $tpl->assign('objectMcFieldsUrl', $this->objectBaseUrl . '/mc_fields');
+        $tpl->assign('isDisableable', static::$isDisableable);
+        if (static::$isDisableable) {
+            $tpl->assign('objectEnableUrl', $this->objectBaseUrl . '/enable');
+            $tpl->assign('objectDisableUrl', $this->objectBaseUrl . '/disable');
+        }
         $tpl->assign('objectDuplicateUrl', $this->objectBaseUrl . '/duplicate');
         $tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
         $tpl->display('file:[CentreonConfigurationModule]list.tpl');
@@ -490,23 +497,71 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     /**
      * 
      */
-    public function enableAction()
+    public function enableAction($field)
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
+        $enableSuccess = true;
+        $errorMessage = '';
         
-        $requestParam = $this->getParams('named');
+        try {
+            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            $params = $router->request()->paramsPost();
+
+            $objClass = $this->objectClass;
+            foreach ($params['ids'] as $id) {
+                $objClass::update($id, array($field => '1'));
+            }
+            
+            /* Set Cookie */
+            $token = \Centreon\Internal\Form::getSecurityToken();
+            setcookie("ajaxToken", $token, time()+15, '/');
+        } catch (\Centreon\Internal\Exception $e) {
+            $enableSuccess = false;
+            $errorMessage = $e->getMessage();
+        }
+        
+        $router->response()->json(
+            array(
+                'success' => $enableSuccess,
+                'errorMessage' => $errorMessage
+            )
+        );
     }
     
     /**
      * 
      */
-    public function disableAction()
+    public function disableAction($field)
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
+        $enableSuccess = true;
+        $errorMessage = '';
         
-        $requestParam = $this->getParams('named');
+        try {
+            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            $params = $router->request()->paramsPost();
+
+            $objClass = $this->objectClass;
+            foreach ($params['ids'] as $id) {
+                $objClass::update($id, array($field => '0'));
+            }
+            
+            /* Set Cookie */
+            $token = \Centreon\Internal\Form::getSecurityToken();
+            setcookie("ajaxToken", $token, time()+15, '/');
+        } catch (\Centreon\Internal\Exception $e) {
+            $enableSuccess = false;
+            $errorMessage = $e->getMessage();
+        }
+        
+        $router->response()->json(
+            array(
+                'success' => $enableSuccess,
+                'errorMessage' => $errorMessage
+            )
+        );
     }
 
     /**

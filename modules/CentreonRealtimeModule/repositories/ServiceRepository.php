@@ -35,6 +35,10 @@
 
 namespace CentreonRealtime\Repository;
 
+use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
+    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository,
+    \Centreon\Internal\Utils\Datetime;
+
 /**
  * @author Sylvestre Ho <sho@merethis.com>
  * @package CentreonRealtime
@@ -53,7 +57,19 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      * @var string
      */
     public static $objectName = 'Service';
-    
+
+    /**
+     *
+     * @var string
+     */
+    public static $objectId = 'service_id';
+
+    /**
+     *
+     * @var string
+     */
+    public static $hook = 'displayServiceRtColumn';
+
     /**
      *
      * @var array Default column for datatable
@@ -61,8 +77,12 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
     public static $datatableColumn = array(
         '<input id="allService" class="allService" type="checkbox">' => 'service_id',
         'Host Name' => 'name',
-        'Name' => 'description',
+        'Service Name' => 'description',
+        'Ico' => "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
         'Status' => 'services.state',
+        'Last Check' => 'services.last_check',
+        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state_change) AS duration',
+        'Retry' => "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
         'Output' => 'services.output'
     );
     
@@ -70,7 +90,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      *
      * @var type 
      */
-    public static $additionalColumn = array();
+    public static $additionalColumn = array('h.host_id');
     
     /**
      *
@@ -80,7 +100,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         'service_id',
         'name',
         'description',
+        "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
+        'services.last_check',
         'services.state',
+        '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state_change) AS duration',
+        "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
         'services.output'
     );
     
@@ -104,6 +128,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         'none',
         'text',
         'text',
+        'none',
         array('select' => array(
                 'OK' => 0,
                 'Warning' => 1,
@@ -112,6 +137,9 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 'Pending' => 4
             )
         ),
+        'text',
+        'text',
+        'text',
         'text'
     );
     
@@ -166,6 +194,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         'none',
         'text',
         'text',
+        'text',
         array('select' => array(
                 'OK' => 0,
                 'Warning' => 1,
@@ -174,6 +203,10 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 'Pending' => 4
             )
         ),
+        'text', 
+        'text',
+        'text',
+        'text'
     );
     
     /**
@@ -190,10 +223,20 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 $myServiceSet['name'] = '';
             } else {
                 $previousHost = $myServiceSet['name'];
-                $myServiceSet['name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
-                    $myServiceSet['name']
-                ).'&nbsp;'.$myServiceSet['name'];
+                $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
+                $myServiceSet['name'] = '<span class="rt-tooltip">'.
+                    $icon.
+                    '&nbsp;'.$myServiceSet['name'].'</span>';
             }
+            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
+            $myServiceSet['description'] = '<span class="rt-tooltip">'.
+                $icon.
+                '&nbsp;'.$myServiceSet['description'].'</span>';
+            $myServiceSet['duration'] = Datetime::humanReadable(
+                                                                $myServiceSet['duration'],
+                                                                Datetime::PRECISION_FORMAT,
+                                                                2
+                                                                ); 
         }
     }
 }

@@ -55,14 +55,14 @@
   CentreonIncidentsGraph.prototype = {
     drawIncident: function( incident ) {
       var $incidentBox, $content,
-          $header = $( "<div></div>" ).addClass( "panel-heading" ).text( incident.name );
+          $header = $( "<div></div>" ).addClass( "panel-heading" ).text( incident.name )
+            .append(
+              $( "<div></div>" ).addClass( "pull-right" ).addClass( "last-update" ).text( "Since : " + incident.last_update )
+            );
 
       /* Create content */
       $content = $( "<div></div>" )
         .addClass( "panel-body" )
-        .append(
-          $( "<div></div>" ).addClass( "pull-right" ).addClass( "last-update" ).text( "Since : " + incident.last_update )
-        )
         .append(
           $( "<i></i>" ).addClass( "expand" ).addClass( "fa" ).addClass( "fa-plus-circle" )
         )
@@ -256,8 +256,20 @@
             incident_id: id
           },
           success: function( data, textStatus, jqXHR ) {
-            var fullsize,
+            var fullsize, $listStatus,
                 $extInfo = $elem.find( ".extended-info" );
+            $listStatus = $( "<tbody></tbody>");
+	    /* Create a list of status for an instance */
+            $.each( data.status, function( idx, status ) {
+              var $rowStatus = $( "<tr></tr>" )
+                .append(
+                  $( "<td></td>" ).addClass( "centreon-status-" + status.id ).text( status.text )
+                )
+                .append(
+                  $( "<td></td>" ).text( status.datetime )
+                );
+              $listStatus.append( $rowStatus );
+            });
             $extInfo
               .append(
                 $( "<div></div>")
@@ -267,31 +279,25 @@
               .append( 
                 $( "<div></div>" )
                   .addClass( "col-md-8" )
-                  .html( data.extended_text )
-              )
-              .append(
+                  .addClass( "list-status" )
+                  .append(
+                    $( "<table></table>" )
+                      .addClass( "table" )
+                      .addClass( "table-condensed" )
+                      .append( $listStatus )
+                  )
+              );
+              /*.append(
                 $( "<div></div>" )
                   .attr( "id", "chart-" + id )
                   .addClass( "col-md-4" )
                   .addClass( ".chart-uptime" )
-              );
+              );*/
             $extInfo.show();
-            c3.generate({
-              bindto: "#chart-" + id,
-              size: {
-                height: 100,
-                width: 100
-              },
-              legend: {
-                show: false
-              },
-              data: {
-                type: "pie",
-                columns: data.status
-              }
-            });
+
             /* Resize */
             fullsize = $elem.find( ".panel-heading" ).height() + $elem.find( ".panel-body" ).height() + 15;
+            console.log($extInfo.height());
             if ( $elem.hasClass( "service-box-child" )) {
               $elem.nextAll( ".service-box" ).each( function( idx, elem ) {
                 thisObj.moveArrow( elem, "+=" + ( fullsize - thisObj.settings.boxHeight ) );
@@ -304,6 +310,7 @@
             thisObj.jsPlumbInstance.animate( $elem[0], { 
               height: fullsize
             });
+            console.log($elem.find( ".panel-body" ).height());
           }
         });
       } else {
@@ -448,7 +455,7 @@
   $.fn.centreonIncidentsGraph.defaults = {
     offset: 20,
     marginHeight: 30,
-    boxHeight: 160,
+    boxHeight: 130,
     endPointForm: "Dot",
     endPointColor: "#456",
     endPointSize: 6,

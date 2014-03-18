@@ -8,6 +8,10 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
+            {if $isDisableable}
+                <li><a href="#" id="modalEnable">{t}Enable{/t}</a></li>
+                <li><a href="#" id="modalDisable">{t}Disable{/t}</a></li>
+            {/if}
             <li><a href="#" id="modalDelete">{t}Delete{/t}</a></li>
             <li><a href="#" id="modalDuplicate">{t}Duplicate{/t}</a></li>
             <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>

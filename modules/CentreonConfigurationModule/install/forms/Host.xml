@@ -95,8 +95,24 @@
             <block name="Macros">
                 <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
             </block>
+			<block name="Additional information">
+				<field name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0">
+					<help></help>
+				</field>
+				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
+					<attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+					</attributes>
+					<help></help>
+				</field>
+			</block>
+        </section>
+   		<section name="Notification">
 			<block name="Notification">
-				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -124,8 +140,8 @@
 					</attributes>
 					<help></help>
 				</field>
-				<field name="host_notification_interval" label="Notification interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="1">
-					<help></help>
+				<field name="host_notification_interval" label="Notification interval" default_value="0" advanced="0" type="integer" parent_field="" mandatory="1">
+					<help>If this value is set to 0, the notification will be sent only one time.</help>
 				</field>
 				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
@@ -136,7 +152,7 @@
 					</attributes>
 					<help></help>
 				</field>
-				<field name="host_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
+				<field name="host_notification_options" label="Notification options" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Down>1</Down>
@@ -149,20 +165,6 @@
 					<help></help>
 				</field>
 				<field name="host_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
-					<help></help>
-				</field>
-			</block>
-			<block name="Additional information">
-				<field name="host_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0">
-					<help></help>
-				</field>
-				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
-					<attributes>
-                        <choices>
-                            <Enabled>1</Enabled>
-                            <Disabled>0</Disabled>
-                        </choices>
-					</attributes>
 					<help></help>
 				</field>
 			</block>
@@ -192,14 +194,23 @@
 			</block>
 		</section>
 		<section name="Data processing">
-			<block name="Data processing">
-				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+			<block name="Event handler">
+				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
                             <No>0</No>
                             <Default>2</Default>
                         </choices>
+					</attributes>
+					<help></help>
+				</field>
+				<field name="host_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
+						<multiple>false</multiple>
 					</attributes>
 					<help></help>
 				</field>
@@ -215,7 +226,7 @@
 					</attributes>
 					<help></help>
 				</field>
-				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
 					<help></help>
 				</field>
 			</block>
@@ -230,22 +241,10 @@
 					</attributes>
 					<help></help>
 				</field>
-				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
 					<help></help>
 				</field>
-				<field name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
-					<help></help>
-				</field>
-			</block>
-			<block name="Perfdata options">
-				<field name="host_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
+				<field name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
 					<help></help>
 				</field>
 			</block>
@@ -281,23 +280,14 @@
 					<help></help>
 				</field>
 			</block>
-			<block name="Event handler">
-				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+			<block name="Data processing">
+				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
                             <No>0</No>
                             <Default>2</Default>
                         </choices>
-					</attributes>
-					<help></help>
-				</field>
-				<field name="host_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
-						<multiple>false</multiple>
 					</attributes>
 					<help></help>
 				</field>

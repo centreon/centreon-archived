@@ -485,7 +485,6 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
 
     public static function getTripleChoice() {
         $content = array();
-        $content["service_max_check_attempts"] = 1;
         $content["service_active_checks_enabled"] = 1;
         $content["service_passive_checks_enabled"] = 1;
         $content["service_obsess_over_host"] = 1;
@@ -529,6 +528,9 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                 if ($key == "service_id" || $key == "host_id") {
                     $host_id = $row["host_id"];
                     $service_id = $row["service_id"];
+
+                    /* Add service_id macro for broker - This is mandatory*/
+                    $tmpData["_SERVICE_ID"] = $service_id;
                 } else if ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
@@ -544,6 +546,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                             $args = "";
                         } 
                         if ($key == "template_model_stm_id") {
+                            $key = "use";
                             $value = ServicetemplateRepository::getTemplateName($value);
                         } 
                         if ($key == "contact_additive_inheritance") {
@@ -585,14 +588,14 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         $contactList = "";
 
-        $query = "SELECT contact_alias FROM contact c, contact_service_relation cs WHERE service_service_id = '$service_id' AND c.contact_id = cs.contact_id ORDER BY contact_alias";
+        $query = "SELECT contact_name FROM contact c, contact_service_relation cs WHERE service_service_id = '$service_id' AND c.contact_id = cs.contact_id ORDER BY contact_alias";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($contactList != "") {
                 $contactList .= ","; 
             }
-            $contactList .= $row["contact_alias"];
+            $contactList .= $row["contact_name"];
         }
         return $contactList;
     }

@@ -95,8 +95,13 @@ class Datatable
     {
         $objectToCall = '\\' . $module . '\\Repository\\'.ucwords(strtolower($object)).'Repository';
         foreach ($objectToCall::$additionalColumn as $c) {
-            foreach ($resultSet as &$oneSet) {
-                unset($oneSet[$c]);
+            if (preg_match('/^[a-zA-Z1-9_-]+\.([a-zA-Z1-9_-]+)/', $c, $matches)) {
+                $c = $matches[1];
+            }
+            foreach ($resultSet as &$set) {
+                if (isset($set[$c])) {
+                    unset($set[$c]);
+                }    
             }
         }
         return $resultSet;

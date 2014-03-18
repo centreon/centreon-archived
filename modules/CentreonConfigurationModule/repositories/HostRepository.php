@@ -224,7 +224,6 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
 
     public static function getTripleChoice() {
         $content = array();
-        $content["host_max_check_attempts"] = 1;
         $content["host_active_checks_enabled"] = 1;
         $content["host_passive_checks_enabled"] = 1;
         $content["host_obsess_over_host"] = 1;
@@ -248,7 +247,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
 
         /* Field to not display */
         $disableField = static::getTripleChoice();
-        $field = "host_id, host_name, host_alias, host_address, display_name, host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, host_notification_interval, host_notification_options, timeperiod_tp_id2 AS notification_period, host_stalking_options, host_register ";
+        $field = "host_id, host_name, host_alias, host_address, display_name, host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, host_notification_interval, cg_additive_inheritance, contact_additive_inheritance, host_notification_options, timeperiod_tp_id2 AS notification_period, host_stalking_options, host_register ";
         
         /* Init Content Array */
         $content = array();
@@ -267,6 +266,9 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             foreach ($row as $key => $value) {
                 if ($key == "host_id") {
                     $host_id = $row["host_id"];
+                    
+                    /* Add host_id macro for broker - This is mandatory*/
+                    $tmpData["_HOST_ID"] = $host_id;
                     $host_name = "";
                 } else if ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
@@ -277,7 +279,6 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                         } else {
                             $host_name = $value;
                         }
-
                         if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
                             $args = $value;
                         }
@@ -285,7 +286,9 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                             $value = CommandRepository::getCommandName($value).$args;
                             $args = "";
                         }
-
+                        if ($key == 'check_period' || $key == 'notification_period') {
+                            $value = TimeperiodRepository::getPeriodName($value);
+                        } 
                         if ($key == "contact_additive_inheritance") {
                             $tmpContact = static::getContacts($host_id);
                             if ($tmpContact != "") {
@@ -298,9 +301,9 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                             $tmpContact = static::getContactGroups($host_id);
                             if ($tmpContact != "") {
                                 if ($value = 1) {
-                                    $tmpData["contactgroups"] = "+";
+                                    $tmpData["contact_groups"] = "+";
                                 }
-                                $tmpData["contactgroups"] .= $tmpContact; 
+                                $tmpData["contact_groups"] .= $tmpContact; 
                             }
                         } else if ($key == "name") {
                             $tmpData[$key] = $value;
@@ -310,6 +313,10 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                             }
                         } else {
                             $tmpData[$key] = $value;
+                            if ($key == "host_name") {
+                                /* Get Template List */
+                                $tmpData["use"] = "generic-host";
+                            }
                         }
                     }
                 }                
@@ -324,7 +331,8 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             }
             
             /* Write Check-Command configuration file */
-            print "Write : ".$path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg \n<br>";
+            print "Write : " . $path . $poller_id . "/".$filename . $host_name . "-" . $host_id . ".cfg \n<br>";
+
             WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg", $filesList, $user = "API");
            
         }

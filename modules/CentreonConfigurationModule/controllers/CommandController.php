@@ -138,7 +138,7 @@ class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     }
 
     /**
-     * Duplicate a hosts
+     * Duplicate a command
      *
      * @method POST
      * @route /configuration/command/duplicate

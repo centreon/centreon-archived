@@ -35,6 +35,8 @@
 
 namespace CentreonRealtime\Repository\EventlogsRepository;
 
+use \Centreon\Internal\Utils\Datetime;
+
 /**
  * Factory for Eventlogs
  *
@@ -97,6 +99,8 @@ class Database
             $query .= ' WHERE ' . join(' AND ', $wheres);
         }
         $query .= ' ORDER BY ctime DESC';
+        file_put_contents("/tmp/request.sql", $query);
+
         if (false === is_null($limit)) {
             $query .= ' LIMIT ' . $limit;
         }
@@ -109,6 +113,8 @@ class Database
                 $value = '%' . $value . '%';
             }
             $stmt->bindValue(':' . $key, $value); // @TODO Better param type
+            file_put_contents("/tmp/request.sql", "$key => $value");
+                                          
         }
         $stmt->execute();
 
@@ -116,7 +122,7 @@ class Database
         $data = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $data[] = array(
-                'datetime' => date('Y-m-d H:i:s', $row['ctime']),
+                'datetime' => Datetime::format($row['ctime']),
                 'host_id' => $row['host_id'],
                 'host' => $row['host_name'],
                 'service_id' => $row['service_id'],

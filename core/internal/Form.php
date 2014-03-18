@@ -309,7 +309,7 @@ class Form
                                     solo: "true"
                                 },
                                 style: {
-                                    classes: "qtip-shadow qtip-rounded qtip-bootstrap"
+                                    classes: "qtip-bootstrap"
                                 },
                                 hide: {
                                     event: "unfocus"
@@ -337,7 +337,13 @@ class Form
             $inputElement['id'] = $inputElement['name'];
         }
         
-        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
+        $mandatorySign = "";
+        if (isset($inputElement['label_mandatory']) && $inputElement['label_mandatory'] == "1") {
+            $mandatorySign .= ' <span style="color:red">*</span>';
+        }
+        
+        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>'.
+            $mandatorySign;
         
         return $inputHtml;
     }

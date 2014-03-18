@@ -128,6 +128,19 @@ aside {
     .nav > li > a:hover {
         color: @navbar-default-link-hover-color;
     }
+
+    .nav > li.active {
+        border-left: @left-cursor-width solid #428bca;
+        font-weight: bold;
+
+        a {
+            color: #428bca;
+
+            span {
+                margin-left: 5px - @left-cursor-width;
+            }
+        }
+    }
 }
 
 .submenu {
@@ -166,19 +179,19 @@ aside {
     }
 }
 
-.submenu-active {
+.submenu-active a {
      border-left: @left-cursor-width solid #428bca;
      font-weight: bold;
-}
-
-.submenu-active a {
      color: #428bca !important;
-     margin-left: -@left-cursor-width;
+
+     span {
+         margin-left: 5px - @left-cursor-width !important;
+     }
 }
 
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+/* .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
      background-color: #000;
-}
+}*/
 
 /* Menu environment */
 .environment {
@@ -271,32 +284,45 @@ aside {
 
 /* Bottombar */
 .bottombar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
     margin-bottom: 0;
-    min-height: 40px;
-    height: 40px;
+    width: 100%;
+    min-height: 20px;
+    height: 20px;
     overflow: hidden;
     transition: height 1s;
     z-index: 10;
 
-    a {
+    .label-button {
+        height: 20px;
+        background-color: fade(@navbar-default-bg, 20%);
         color: @text-color;
-        font: 14px;
+        font-size: 12px;
+        line-height: 20px;
+        padding: 0 3px;
+        border-top: 1px solid @navbar-default-border;
+        border-left: 1px solid @navbar-default-border;
+        border-right: 1px solid @navbar-default-border;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
     }
 
-    .footer {
-        height: 40px;
+    .label-button-active {
+        background-color: @navbar-default-bg;
+    }
 
-        div {
-            color: @text-color;
-            font: 14px;
-        }
-        div, a {
-            padding: 12px 15px;
-            line-height: 16px;
-        }
+    a {
+        color: @text-color;
+        font-size: 10px;
     }
 
     .footer-extended {
+        margin-top: 20px;
+        background-color: @navbar-default-bg;
+        border-top: 1px solid @navbar-default-border;
+
         div:last-child {
             padding-bottom: 5px;
         }
@@ -308,7 +334,7 @@ aside {
 
             li + li:before {
                 color: @text-color;
-                font: 14px;
+                font-size: 12px;
                 content: "-";
                 padding-right: 10px;
             }
@@ -429,6 +455,7 @@ aside {
     thead th,
     tbody td {
         float: left;
+        font-size: 12px;
         line-height: 30px;
         min-height: 30px;
     }
@@ -482,6 +509,19 @@ aside {
     }
 }
 
+/* Incidents */
+td.incident-extended-info {
+    padding: 0 !important;
+
+    table {
+        margin-bottom: 0;
+
+        tbody {
+            height: auto;
+        }
+    }
+}
+
 /* Form Advanced Mode */
 .advanced {
     display: none;
@@ -489,4 +529,9 @@ aside {
 
 .advanced-display {
     display: block;
+}
+
+/* Perfdata */
+.perfdata {
+    margin: 2px;
 }

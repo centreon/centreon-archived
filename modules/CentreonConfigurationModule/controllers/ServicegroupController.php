@@ -46,6 +46,8 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
     public static $relationMap = array(
         'sg_services' => '\CentreonConfiguration\Models\Relation\Servicegroup\Service'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List servicegroups
@@ -182,6 +184,28 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for service group
+     * 
+     * @method post
+     * @route /configuration/servicegroup/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('sg_activate');
+    }
+    
+    /**
+     * Disable action for service group
+     * 
+     * @method post
+     * @route /configuration/servicegroup/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('sg_activate');
     }
 
     /**

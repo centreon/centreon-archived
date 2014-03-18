@@ -278,4 +278,103 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         
         return $name;
     }
+
+    public static function generateUser(& $filesList, $poller_id, $path, $filename) 
+    {
+        
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Field to not display */
+        //$disableField = static::getTripleChoice();
+        $field = "contact_id, contact_name, contact_alias as alias, contact_email as email, contact_pager as pager, contact_host_notification_options as host_notification_options, contact_service_notification_options as service_notification_options, contact_enable_notifications as host_notifications_enabled, contact_enable_notifications as service_notifications_enabled, timeperiod_tp_id as host_notification_period, timeperiod_tp_id2 as service_notification_period ";
+        
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT $field FROM contact WHERE contact_activate = '1' ORDER BY contact_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "contact");
+            $tmpData = array();
+            $args = "";
+            foreach ($row as $key => $value) {
+                if ($key == "contact_id") {
+                    $contact_id = $row["contact_id"];
+                } else {
+                    if ($key == "host_notification_period" || $key == "service_notification_period") {
+                        $value = TimeperiodRepository::getPeriodName($value);
+                    }
+                    if ($value != "") {
+                        $tmpData[$key] = $value;
+                    }
+                }
+            }
+
+            /* Get contactgroups */
+            $tmpData["contactgroups"] = static::getContactContactGroup($contact_id);
+            
+            /* Get commands */
+            $tmpData["host_notification_commands"] = static::getNotificationCommand($contact_id, "host");
+            $tmpData["service_notification_commands"] = static::getNotificationCommand($contact_id, "service");;
+
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */    
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        unset($content);
+    } 
+
+    public static function getNotificationCommand($contact_id, $type)  
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        if ($type != "host" && $type != "service") {
+            return "";
+        }
+
+        /* Launch Request */
+        $query = "SELECT command_name FROM contact_".$type."commands_relation, command WHERE contact_contact_id = $contact_id AND command_command_id = command_id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        $cmd = "";
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($cmd != "") {
+                $cmd .= ",";
+            }
+            $cmd .= $row["command_name"];
+        }
+        return $cmd;
+    }
+    
+    public static function getContactContactGroup($contact_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Launch Request */
+        $query = "SELECT cg_name FROM contactgroup_contact_relation cgr, contactgroup cg WHERE contact_contact_id = ".$contact_id." AND cgr.contactgroup_cg_id = cg.cg_id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        $cg = "";
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($cg != "") {
+                $cg .= ",";
+            }
+            $cg .= $row["cg_name"];
+        }
+        return $cg;
+    }
+
 }
