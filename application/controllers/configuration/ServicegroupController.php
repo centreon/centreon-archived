@@ -55,8 +55,15 @@ class ServicegroupController extends ObjectAbstract
         parent::listAction();
     }
 
+    /**
+     * List service groups 
+     *
+     * @method get
+     * @route /configuration/servicegroup/formlist
+     */
     public function formListAction()
     {
+        parent::formListAction();
     }
 
     /**
