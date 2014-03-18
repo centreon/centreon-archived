@@ -88,6 +88,33 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
         $tpl->display('configuration/list.tpl');
     }
+    
+    /**
+     * Action for getting list of objects
+     *
+     * JSON response
+     */
+    public function formListAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $class = $this->objectClass;
+        $requestParams = $this->getParams('get');
+        $idField = $class::getPrimaryKey();
+        $uniqueField = $class::getUniqueLabelField();
+        $filters = array(
+            $uniqueField => '%'.$requestParams['q'].'%'
+        );
+        $list = $class::getList($idField, $uniqueField, -1, 0, null, "ASC", $filters, "AND");
+        $finalList = array();
+        foreach($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$idField],
+                "text" => $obj[$uniqueField]
+            );
+        }
+        $router->response()->json($finalList);
+    }
 
     /**
      * Generic create action
@@ -218,13 +245,6 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
-
-    /**
-     * Action for getting list of objects
-     *
-     * Response JSON
-     */
-    abstract public function formListAction();
 
     public function datatableAction()
     {
