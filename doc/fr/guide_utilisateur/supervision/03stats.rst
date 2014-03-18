@@ -63,7 +63,7 @@ Chaque performance contient plusieurs informations :
    :align: center 
 
 * Le champ **Statut** contient le statut de l'entrée, de la sortie ou l'état du module lui même
-* Le champ **Temporary recovery mode** [TODO traduction ] indique si le fichier tampon du module est en cours d'utilisation
+* Le champ **Mode de récupération** indique si le fichier tampon du module est en cours d'utilisation
 * Le champ **accepted events** [TODO traduction ] indique les évènements que le broker accepte de recevoir
 * Le champ **Dernier évènement à** indique la date et l'heure du dernier évènement survenu
 * Le champ **Vitesse de traitement des évènements** indique le nombre d'évènement traités à la seconde

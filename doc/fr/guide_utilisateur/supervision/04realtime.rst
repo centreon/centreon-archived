@@ -87,7 +87,7 @@ Imaginons le scénario suivant :
  * Instant t + 8 : Le service retrouve le statut OK. Il passe directement en état HARD. Le processus de notification est enclenché.
  * Instant t + 13 : Le service a le statut WARNING. Il passe en état SOFT (essai 1/3).
  * Instant t + 14 : Le service a toujours le statut WARNING (essai 2/3).
- * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut [TODO vérifier]
+ * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut
 
 ******************
 Actions génériques

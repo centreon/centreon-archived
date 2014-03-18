@@ -67,7 +67,8 @@ Pour configurer une dépendance logique :
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Hôtes**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_exploitation/03hostdependance.png
+   :align: center
 
 Dans ce cas, nous avons deux types d'hôtes qui entrent en jeu : un ou des hôtes (appelé hôtes maitres) dont le statut contrôle l'exécution et les notifications d'autres hôtes (appelés hôtes dépendants).
 Si vous utilisez Centreon Broker, il est également possible à partir des hôtes maitres de contrôler l'exécution et les notifications de services (appelés services dépendants)
@@ -90,7 +91,8 @@ Pour ajouter une dépendance au niveau des services :
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Services**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_exploitation/03servicedependance.png
+   :align: center
 
 Dans ce cas, nous avons deux entités qui entrent en jeu : les services (dits maitres) qui contrôlent l'exécution et les notifications d'autres services (dits dépendants).
 Si vous utilisez Centreon Broker, il est également possible de contrôler l'exécution et les notifications d'autres hôtes.
@@ -113,7 +115,8 @@ Pour ajouter une dépendance au niveau des groupes d'hôtes :
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Groupes d'hôtes**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_exploitation/03hostgroupdependance.png
+   :align: center
 
 Deux types de groupes d'hôtes : Un groupe d'hôtes est dit maitre s'il contrôle l'exécution et la notification d'autres groupes d'hôtes (dit dépendants).
 
@@ -134,7 +137,8 @@ Pour ajouter une dépendance au niveau des groupes de services :
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Groupes de services**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_exploitation/03servicegroupdependance.png
+   :align: center
 
 Deux types de groupes de services : Un groupe de services est dit maitre s'il contrôle l'exécution et la notification d'autres groupes de services (dit dépendants).
 
@@ -154,8 +158,6 @@ Pour ajouter une dépendance au niveau des méta-services :
 #. Rendez-vous dans **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Méta-services**
 #. Cliquez sur **Ajouter**
-
-[ TODO Mettre une capture d'écran]
 
 Deux types de méta-services : Un méta-service est dit maitre s'il contrôle l'exécution et la notification d'autres méta-services (dit dépendants).
 

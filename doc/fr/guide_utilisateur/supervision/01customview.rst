@@ -79,8 +79,6 @@ Détail des widgets
 
 Les paragraphes ci-dessous détaillent les attributs de chaque widget après avoir cliqué sur |configurewidget|.
 
-[ TODO Pas de traduction pour les widgets ?]
-
 Le widget d'hôtes
 =================
 
