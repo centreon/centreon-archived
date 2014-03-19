@@ -119,8 +119,6 @@ Pour visualiser le statut des hôtes, rendez-vous dans le menu **Supervision** =
 .. image :: images/01.png
    :align: center
 
-[TODO refaire capture car il manque la colonne et le filtre de criticité]
-
 La barre de recherche grise permet de filtrer les résultats affichés.
 Le menu de gauche permet de modifier les hôtes visibles au sein du tableau :
 
