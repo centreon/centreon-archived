@@ -38,7 +38,7 @@ namespace Controllers\Configuration;
 use \Models\Configuration\Servicecategory,
     \Centreon\Core\Form;;
 
-class ServicecategoryController extends ObjectAbstract
+class ServicecategoryController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Servicecategory';
     protected $objectName = 'servicecategory';

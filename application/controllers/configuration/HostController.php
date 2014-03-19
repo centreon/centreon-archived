@@ -49,7 +49,7 @@ use \Models\Configuration\Host,
     \Centreon\Core\Form,
     \Centreon\Core\Form\Generator;
 
-class HostController extends ObjectAbstract
+class HostController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Host';
     protected $objectName = 'host';

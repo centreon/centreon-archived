@@ -37,7 +37,7 @@ namespace Controllers\Configuration;
 
 use \Models\Configuration\Host;
 
-class HostTemplateController extends ObjectAbstract
+class HostTemplateController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Hosttemplate';
     protected $objectName = 'hosttemplate';

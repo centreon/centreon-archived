@@ -37,7 +37,7 @@ namespace Controllers\Configuration;
 
 use Models\Configuration\Hostcategory;
 
-class HostcategoryController extends ObjectAbstract
+class HostcategoryController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Hostcategory';
     protected $objectName = 'hostcategory';

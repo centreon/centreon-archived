@@ -37,7 +37,7 @@ namespace Controllers\Configuration;
 
 use \Centreon\Core\Form;
 
-class ServicegroupController extends ObjectAbstract
+class ServicegroupController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Servicegroup';
     protected $objectName = 'servicegroup';

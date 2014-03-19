@@ -37,7 +37,7 @@ namespace Controllers\Configuration;
 
 use \Models\Configuration\Contact;
 
-class UserController extends ObjectAbstract
+class UserController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'User';
     protected $objectName = 'user';

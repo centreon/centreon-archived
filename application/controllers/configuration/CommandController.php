@@ -35,11 +35,9 @@
 
 namespace Controllers\Configuration;
 
-use \Models\Configuration\Command,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Models\Configuration\Command;
 
-class CommandController extends ObjectAbstract
+class CommandController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Command';
     protected $objectName = 'command';

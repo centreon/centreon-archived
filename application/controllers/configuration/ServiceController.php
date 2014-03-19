@@ -35,7 +35,7 @@
 
 namespace Controllers\Configuration;
 
-class ServiceController extends ObjectAbstract
+class ServiceController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Service';
     protected $objectName = 'service';

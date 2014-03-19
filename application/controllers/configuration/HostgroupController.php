@@ -37,7 +37,7 @@ namespace Controllers\Configuration;
 
 use Models\Configuration\Hostgroup;
 
-class HostgroupController extends ObjectAbstract
+class HostgroupController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Hostgroup';
     protected $objectName = 'hostgroup';

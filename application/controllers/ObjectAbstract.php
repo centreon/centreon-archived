@@ -33,7 +33,7 @@
  *
  */
 
-namespace Controllers\Configuration;
+namespace Controllers;
 
 use \Centreon\Core\Form\Generator;
 /**
