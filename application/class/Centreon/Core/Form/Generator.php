@@ -44,43 +44,43 @@ class Generator
 {
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $formName = '';
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $formRoute;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     private $formRedirect;
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     private $formRedirectRoute;
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     protected $formComponents = array();
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     protected $formDefautls = array();
     
     /**
      *
-     * @var type 
+     * @var \Centreon\Core\Form 
      */
     protected $formHandler;
     
@@ -92,14 +92,14 @@ class Generator
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     protected $extraParams;
 
 
     /**
      * 
-     * @param sring $formRoute
+     * @param string $formRoute
      * @param boolean $advanced
      * @param array $extraParams
      */

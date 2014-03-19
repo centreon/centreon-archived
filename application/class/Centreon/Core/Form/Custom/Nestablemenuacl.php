@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Nestablemenuacl extends Customobject
 {
     private static $aclmenudata = array();

@@ -74,6 +74,8 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('jquery.select2/select2.min.js')
+            ->addJs('jquery.validate.min.js')
+            ->addJs('additional-methods.min.js')
             ->addJs('centreon-wizard.js');
 
         /* Display variable */

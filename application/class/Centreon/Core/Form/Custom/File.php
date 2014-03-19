@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class File extends Customobject
 {
     /**
@@ -103,8 +108,10 @@ class File extends Customobject
                     <div class="col-sm-12">
                         <div class="fileupload-progress fade">
                             <!-- The global progress bar -->
-                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <div id="progress" class="progress-bar progress-bar-success bar" style="width:0%;"></div>
+                            <div class="progress progress-striped active" 
+                                role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <div id="progress" class="progress-bar progress-bar-success bar" style="width:0%;">
+                                </div>
                             </div>
                             <!-- The extended global progress state -->
                             <div class="progress-extended">&nbsp;</div>
@@ -135,7 +142,14 @@ class File extends Customobject
                     </td>
                     <td>
                         <p class="size">Processing...</p>
-                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+                        <div 
+                            class="progress progress-striped active" 
+                            role="progressbar" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100" 
+                            aria-valuenow="0">
+                            <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                        </div>
                     </td>
                     <td>
                         {% if (!i && !o.options.autoUpload) { %}
