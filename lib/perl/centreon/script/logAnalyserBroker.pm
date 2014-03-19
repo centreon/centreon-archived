@@ -329,7 +329,7 @@ sub run {
             if ($limit >  $self->{retention_time}) {
                 $self->{retention_time} = $limit;
             }
-            $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $self->{current_time}");
+            $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $self->{current_time} AND instance_name = " . $self->{csdb}->quote($self->{opt_p}));
         }
         $self->parseArchive($instanceId);
     } else {
@@ -339,13 +339,13 @@ sub run {
         }
         while (my $ns_server = $sth->fetchrow_hashref()) {
             if (!defined($self->{opt_s})) {
-                $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` < $self->{current_time}");
+                $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` < $self->{current_time} AND instance_name = " . $self->{csdb}->quote($ns_server->{'name'}));
             } else {
                 my $limit = date_to_time($self->{opt_s});
                 if ($limit > $self->{retention_time}) {
                     $self->{retention_time} = $limit;
                 }
-                $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $self->{current_time}");
+                $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $self->{current_time} AND instance_name = " . $self->{csdb}->quote($ns_server->{'name'}));
             }
             $self->parseArchive($ns_server->{'id'});
         }
