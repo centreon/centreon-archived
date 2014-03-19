@@ -69,7 +69,7 @@ Chaque performance contient plusieurs informations :
 * Le champ **Dernier essai de connexion** contient la date et l'heure du dernier essai de connexion
 * Le champ **Dernière connexion réalisée** contient la date et l'heure de la dernière connexion réussie
 * Le champ **Pairs** décrit les entités connectées
-* Le champ **one peer retention mode** [ TODO traduction ] indique l'activation ou non du mode
+* Le champ **Rétention des données pour connexion depuis serveur Central** indique l'activation ou non du mode de connexion à sens unique entre le serveur Centreon et le collecteur
 * Le champ **File d'évènements** indique le nombre d'évènements à traiter
 * Le champ **Fichier en cours de lecture** indique le fichier de failover en cours de lecture
 * Le champ **Emplacement de lecture (offset)** indique l'emplacement de lecture associée au fichier de fialover
