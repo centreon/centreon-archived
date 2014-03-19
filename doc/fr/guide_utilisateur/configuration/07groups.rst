@@ -20,8 +20,6 @@ Pour ajouter un groupe d'hôtes :
 .. image :: /images/guide_utilisateur/configuration/07hostgroup.png
    :align: center 
 
-[TODO : refaire capture car "RRD retention" non traduit ]
-
 *	Les champs **Nom du groupe d'hôtes** et **Alias** regroupent le nom et l'alias du groupe d'hôte.
 *	La liste **Hôtes liés** permet d'ajouter des hôtes au sein du nouveau groupe d'hôtes.
 *	Le champ **Notes** permet d'ajouter des notes optionnelles concernant le groupe d'hôtes.
