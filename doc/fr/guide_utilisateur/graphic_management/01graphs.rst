@@ -38,7 +38,7 @@ Les graphiques de performances
 
 Il existe plusieurs manières de visualiser les graphiques de performances :
 
-* Visualiser le graphique dans la liste des services (Menu **Supervision** ==> **Services**) en survolant l'icône [ TODO Mettre l'image]
+* Visualiser le graphique dans la liste des services (Menu **Supervision** ==> **Services**) en survolant l'icône |column-chart| 
 * Visualiser le graphique dans le détail d'un service
 * Se rendre dans le menu **Vues** ==> **Graphiques** pour visualiser un à plusieurs graphiques
 
@@ -71,14 +71,15 @@ Plusieurs actions sont possibles sur les graphiques :
 Pour exploiter les données des graphiques, il est possible de :
 
 * Visualiser le graphique de performance sur un jour, une semaine, un mois et une année en cliquant sur le graphique de performances de votre choix
-* De zoomer sur le graphique en cliquant sur l'icône [ TODO Mettre l'icône]
-* De sauvegarder le graphique en cliquant sur l'icône [ TODO Mettre l'icône]
-* De télécharger l'ensemble des données qui composent le graphique au format .csv en cliquant sur l'icône [ TODO Mettre l'icône]
+* De zoomer sur le graphique en cliquant sur l'icône |zoom|
+* De sauvegarder le graphique en cliquant sur l'icône |save|
+* De télécharger l'ensemble des données qui composent le graphique au format .csv en cliquant sur l'icône |text_binary_csv|
 
 Filtres
 -------
 
 Il est possible de filtrer la sélection des ressources via :
+
 * La barre de recherche rapide en recherchant par **hôte** ou **service**
 * En parcourant l'arbre de sélection (menu de gauche) par groupe d'hôtes, puis par hôte puis par service dont afficher le graphique
 * En parcourant l'arbre de sélection (menu de gauche) par groupe de services puis par service dont afficher le graphique
@@ -86,4 +87,8 @@ Il est possible de filtrer la sélection des ressources via :
 .. note::
     Les hôtes non liés à un groupe d'hôte sont ajoutés au conteneur **Hôtes orphelins**.
 
+.. |column-chart|    image:: /images/column-chart.gif
+.. |zoom|	image:: /images/zoom.gif
+.. |save|	image:: /images/save.gif
+.. |text_binary_csv| image:: /images/text_binary_csv.gif
 
