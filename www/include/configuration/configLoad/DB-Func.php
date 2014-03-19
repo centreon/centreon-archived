@@ -65,7 +65,7 @@
 
 	function deleteAllConfCFG()	{
 		global $pearDB;
-		global $centreon;
+		global $centreon, $oreon;
 
 		$rq = "DELETE FROM command";
 		$DBRESULT = $pearDB->query($rq);
@@ -213,7 +213,7 @@
          * @return int
          */
 	function insertResourceCFG($buf, $pollerId = null, $db)	{
-		global $centreon, $debug_nagios_import, $debug_path;
+		global $centreon, $oreon, $debug_nagios_import, $debug_path;
 
 		$i = 0;
 		foreach ($buf as $str)	{
@@ -371,7 +371,7 @@
 
 	function insertCFG(& $buf, & $ret)	{
 		$typeDef = NULL;
-		global $nbr,$centreon,$debug_nagios_import,$debug_path, $pearDB;
+		global $nbr,$centreon,$oreon,$debug_nagios_import,$debug_path, $pearDB;
 		$nbr = array("cmd"=>0, "tp"=>0, "cct"=>0, "cg"=>0, "h"=>0, "hg"=>0, "hd"=>0, "sv"=>0, "svd"=>0, "sg"=>0, "sgd"=>0, "hei"=>0, "sei"=>0);
 		$tmpConf = array();
 		$get = false;
@@ -638,7 +638,7 @@
          */
 	function insertContactCFG($tmpConf = array(), $prefix = null) {
 		global $nbr;
-		global $centreon;
+		global $centreon, $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
 		require_once("./include/configuration/configObject/contact/DB-Func.php");
@@ -712,7 +712,7 @@
          * @return bool
          */
 	function insertContactGroupCFG($tmpConf = array(), $prefix = null) {
-		global $nbr, $centreon, $pearDB, $debug_nagios_import, $debug_path;
+		global $nbr, $centreon, $oreon, $pearDB, $debug_nagios_import, $debug_path;
 
 		require_once("./include/configuration/configObject/contactgroup/DB-Func.php");
 
@@ -760,7 +760,7 @@
          * @return void
          */
 	function insertHostCFG($tmpConf = array(), $prefix = null) {
-		global $nbr, $centreon, $pearDB, $debug_nagios_import, $debug_path;
+		global $nbr, $centreon, $oreon, $pearDB, $debug_nagios_import, $debug_path;
 
 		$use = NULL;
 		$useTpl = array();
@@ -990,7 +990,7 @@
 	}
 
 	function insertHostExtInfoCFG($tmpConf = array())	{
-		global $nbr, $centreon, $debug_nagios_import, $debug_path;
+		global $nbr, $centreon, $oreon, $debug_nagios_import, $debug_path;
 
 		/*
 		 * Include host Tools
@@ -1033,7 +1033,7 @@
 
 
 	function insertServiceExtInfoCFG($tmpConf = array())	{
-		global $nbr, $centreon, $debug_nagios_import, $debug_path;
+		global $nbr, $centreon, $oreon, $debug_nagios_import, $debug_path;
 
 		/*
 		 * Include host Tools
@@ -1099,7 +1099,7 @@
          * @return bool
          */
 	function insertHostGroupCFG($tmpConf = array(), $opt, $prefix = null) {
-		global $nbr, $centreon, $pearDB, $debug_nagios_import, $debug_path;
+		global $nbr, $centreon, $oreon, $pearDB, $debug_nagios_import, $debug_path;
 
 		/*
 		 * REquire Hostgroups tools
@@ -1160,7 +1160,7 @@
 	}
 
 	function insertHostDependencyCFG($tmpConf = array())	{
-		global $nbr, $centreon, $debug_nagios_import, $debug_path;
+		global $nbr, $centreon, $oreon, $debug_nagios_import, $debug_path;
 
 		require_once("./include/configuration/configObject/host_dependency/DB-Func.php");
 		require_once("./include/configuration/configObject/hostgroup_dependency/DB-Func.php");
@@ -1226,7 +1226,7 @@
 
 	function insertServiceDependencyCFG($tmpConf = array())	{
 		global $nbr;
-		global $centreon;
+		global $centreon, $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
 		require_once("./include/configuration/configObject/service_dependency/DB-Func.php");
@@ -1386,7 +1386,7 @@
 		$useTpl = array();
 		$tmpConf["service_hPars"] = array();
 		$tmpConf["service_hgPars"] = array();
-		global $nbr, $centreon, $debug_nagios_import, $debug_path, $pearDB;
+		global $nbr, $centreon, $oreon, $debug_nagios_import, $debug_path, $pearDB;
 
 		# For loading template link
 		$cpt_tpl = 0;
@@ -1592,7 +1592,7 @@
          */
 	function insertServiceGroupCFG($tmpConf = array(), $opt, $prefix = null) {
 	    global $nbr;
-	    global $centreon;
+	    global $centreon, $oreon;
 	    global $debug_nagios_import;
 	    global $debug_path;
 	    global $pearDB;
@@ -1650,7 +1650,7 @@
          */
 	function insertTimePeriodCFG($tmpConf = array(), $prefix = null) {
 		global $nbr;
-		global $centreon;
+		global $centreon, $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
 		require_once("./include/configuration/configObject/timeperiod/DB-Func.php");
@@ -1704,7 +1704,7 @@
          */
 	function insertCommandCFG($tmpConf = array(), $ret = array(), $prefix = null) {
 		global $nbr;
-		global $centreon;
+		global $centreon, $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
 		require_once("./include/configuration/configObject/command/DB-Func.php");
