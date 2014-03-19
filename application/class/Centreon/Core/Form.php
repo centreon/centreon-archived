@@ -1227,6 +1227,7 @@ class Form
         try {
             self::validateSecurity($submittedValues['token']);
             unset($submittedValues['token']);
+            
             $validatorsList = self::getValidators($uri);
             foreach ($validatorsList as $validatorKey=>$validatorParam) {
                 $validatorCall = '\\Centreon\\Core\\Form\\Validator\\'.ucfirst($validatorParam['call']);

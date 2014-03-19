@@ -90,7 +90,7 @@ class Ipaddress extends Customobject
      * @param array $element
      * @return array
      */
-    public function addValidation($element)
+    public static function addValidation($element)
     {
         $validations = parent::addValidation($element);
         

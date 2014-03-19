@@ -102,21 +102,25 @@ class Datatable
      */
     public static function castResult($element, $object)
     {
-        $elementField = array_keys($element);
-        $originalElement = $element;
-        $object = ucwords(strtolower($object));
-        $objectToCall = '\\Centreon\\Repository\\'.$object.'Repository';
-        foreach ($objectToCall::$columnCast as $castField=>$castParameters) {
-            $subCaster = 'add'.ucwords($castParameters['type']);
-            $element[$castField] = self::$subCaster(
-                $object,
-                $castField,
-                $castParameters['parameters'],
-                $elementField,
-                $originalElement
-            );
+        try {
+            $elementField = array_keys($element);
+            $originalElement = $element;
+            $object = ucwords(strtolower($object));
+            $objectToCall = '\\Centreon\\Repository\\'.$object.'Repository';
+            foreach ($objectToCall::$columnCast as $castField=>$castParameters) {
+                $subCaster = 'add'.ucwords($castParameters['type']);
+                $element[$castField] = self::$subCaster(
+                    $object,
+                    $castField,
+                    $castParameters['parameters'],
+                    $elementField,
+                    $originalElement
+                );
+            }
+            return $element;
+        } catch (\Exception $e) {
+            var_dump($e);
         }
-        return $element;
     }
 
     /**

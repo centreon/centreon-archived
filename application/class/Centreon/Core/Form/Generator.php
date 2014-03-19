@@ -76,7 +76,7 @@ class Generator
      *
      * @var array 
      */
-    protected $formDefautls = array();
+    protected $formDefaults = array();
     
     /**
      *
@@ -187,7 +187,9 @@ class Generator
                     
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;
-                    $this->formDefaults[$field['name']] = $field['default_value'];
+                    if (strstr($field['type'], 'select') === false) {
+                        $this->formDefaults[$field['name']] = $field['default_value'];
+                    }
                 }
                 
                 if (count($this->formComponents[$section['name']][$block['name']]) == 0) {
@@ -279,7 +281,6 @@ class Generator
      */
     protected function generateHtml()
     {
-        $this->formHandler->setDefaults($this->formDefautls);
         $formElements = $this->formHandler->toSmarty();
         
         $htmlRendering = '<div class="row">';
@@ -368,8 +369,25 @@ class Generator
      * 
      * @param array $defaultValues
      */
-    public function setDefaultValues($defaultValues)
+    public function setDefaultValues($defaultValues, $objectId="")
     {
-        $this->formHandler->setDefaults($defaultValues);
+        if (is_string($defaultValues)) {
+            // Get the mapped columns for the object
+            $objectColumns = $defaultValues::getColumns();
+            $fields = implode(',', array_intersect($objectColumns, array_keys($this->formDefaults)));
+            
+            // Get the mapped values and if no value saved for the field, the default one is set
+            $myValues = $defaultValues::getParameters($objectId, $fields);
+            foreach ($myValues as $key=>&$value) {
+                if (is_null($value)) { 
+                    $value = $this->formDefaults[$key];
+                }
+            }
+            
+            // Merging with non-mapped form field and returend the values combined
+            $this->formHandler->setDefaults(array_merge($myValues, array_diff_key($this->formDefaults, $myValues)));
+        } elseif (is_array($defaultValues)) {
+            $this->formHandler->setDefaults($defaultValues);
+        }
     }
 }

@@ -138,44 +138,12 @@ class CommandController extends ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/command/[i:id]
+     * @route /configuration/command/[i:id]/[i:advanced]
      * @acl update
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $connObj = new Command();
-        $currentCommandValues = $connObj->getParameters($requestParam['id'], array(
-            'command_id',
-            'command_name',
-            'command_example',
-            'command_type',
-            'command_line',
-            'command_comment',
-            'enable_shell'
-            )
-        );
-        
-        if (isset($currentCommandValues['enable_shell']) && is_numeric($currentCommandValues['enable_shell'])) {
-            $currentCommandValues['enable_shell'] = $currentCommandValues['enable_shell'];
-        } else {
-            $currentCommandValues['enable_shell'] = '0';
-        }
-        
-        $myForm = new Generator('/configuration/command/update');
-        $myForm->setDefaultValues($currentCommandValues);
-        $myForm->addHiddenComponent('command_id', $requestParam['id']);
-        
-        // Display page
-        $tpl->assign('pageTitle', "Command");
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/configuration/command/update');
-        $tpl->display('configuration/edit.tpl');
+        parent::editAction();
     }
 
     /**

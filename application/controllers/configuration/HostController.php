@@ -169,72 +169,7 @@ class HostController extends ObjectAbstract
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $currentHostValues = Host::getParameters($requestParam['id'], array(
-            'host_id',
-            'host_name',
-            'host_alias',
-            'host_address',
-            'host_active_checks_enabled',
-            'host_passive_checks_enabled',
-            'host_obsess_over_host',
-            'host_check_freshness',
-            'host_freshness_threshold',
-            'host_flap_detection_enabled',
-            'host_process_perf_data',
-            'host_retain_status_information',
-            'host_retain_nonstatus_information',
-            'host_stalking_options',
-            'host_activate',
-            'host_comment'
-            )
-        );
-        
-        if (isset($currentHostValues['host_activate']) && is_numeric($currentHostValues['host_activate'])) {
-            $currentHostValues['host_activate'] = $currentHostValues['host_activate'];
-        } else {
-            $currentHostValues['host_activate'] = '0';
-        }
-        
-        if (isset($currentHostValues['host_active_checks_enabled']) && is_numeric($currentHostValues['host_active_checks_enabled'])) {
-            $currentHostValues['host_active_checks_enabled'] = $currentHostValues['host_active_checks_enabled'];
-        } else {
-            $currentHostValues['host_active_checks_enabled'] = '2';
-        }
-        
-        if (isset($currentHostValues['host_passive_checks_enabled']) && is_numeric($currentHostValues['host_passive_checks_enabled'])) {
-            $currentHostValues['host_passive_checks_enabled'] = $currentHostValues['host_passive_checks_enabled'];
-        } else {
-            $currentHostValues['host_passive_checks_enabled'] = '2';
-        }
-        
-        $myForm = new Generator('/configuration/host/update', $requestParam['advanced'], array('id' => $requestParam['id']));
-        $myForm->setDefaultValues($currentHostValues);
-        $myForm->addHiddenComponent('object_id', $requestParam['id']);
-        $myForm->addHiddenComponent('object', 'host');
-        
-        $formModeUrl = \Centreon\Core\Di::getDefault()
-                        ->get('router')
-                        ->getPathFor(
-                            '/configuration/host/[i:id]/[i:advanced]',
-                            array(
-                                'id' => $requestParam['id'],
-                                'advanced' => (int)!$requestParam['advanced']
-                            )
-                        );
-        
-        // Display page
-        $tpl->assign('pageTitle', "Host");
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('advanced', $requestParam['advanced']);
-        $tpl->assign('formModeUrl', $formModeUrl);
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/configuration/host/update');
-        $tpl->display('configuration/edit.tpl');
+        parent::editAction();
     }
     
     /**
