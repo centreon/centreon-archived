@@ -64,16 +64,19 @@ Chaque performance contient plusieurs informations :
 
 * Le champ **Statut** contient le statut de l'entrée, de la sortie ou l'état du module lui même
 * Le champ **Mode de récupération** indique si le fichier tampon du module est en cours d'utilisation
-* Le champ **accepted events** [TODO traduction ] indique les évènements que le broker accepte de recevoir
 * Le champ **Dernier évènement à** indique la date et l'heure du dernier évènement survenu
 * Le champ **Vitesse de traitement des évènements** indique le nombre d'évènement traités à la seconde
 * Le champ **Dernier essai de connexion** contient la date et l'heure du dernier essai de connexion
 * Le champ **Dernière connexion réalisée** contient la date et l'heure de la dernière connexion réussie
-* Le champ **Pairs** [ TODO traduction ] décrit les entités connectées
-* Le champ **Failover** indique le nom du failover de la sortie
+* Le champ **Pairs** décrit les entités connectées
 * Le champ **one peer retention mode** [ TODO traduction ] indique l'activation ou non du mode
-* Le champ **queued events** [ TODO traduction ] indique le nombre d'évènements à traiter
-* Le champ **Failover** [ TODO traduction ] indique le fichier temporaire de secours associé
+* Le champ **File d'évènements** indique le nombre d'évènements à traiter
+* Le champ **Fichier en cours de lecture** indique le fichier de failover en cours de lecture
+* Le champ **Emplacement de lecture (offset)** indique l'emplacement de lecture associée au fichier de fialover
+* Le champ **Fichier en cours d'écriture** indique que le failover est activé en précisant le nom du fichier de failover
+* Le champ **Emplacement d'écriture (offset)** indique l'emplacement de d'écriture associée au fichier de failover
+* Le champ **Taille maximale du fichier** indique la taille maximale du fihier de failover
+* Le champ **Failover** indique le fichier temporaire de secours associé
 
 **************
 Les graphiques
