@@ -39,6 +39,10 @@ use Models\Configuration\Contactgroup;
 
 class UsergroupController extends \Centreon\Core\Controller
 {
+    protected $objectDisplayName = 'User group';
+    protected $objectName = 'usergroup';
+    protected $objectBaseUrl = '/configuration/usergroup';
+    protected $objectClass = '\Models\Configuration\Contactgroup';
 
     /**
      * List usergroups
@@ -94,24 +98,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $contactgroupObj = new Contactgroup();
-        $filters = array('cg_name' => $requestParams['q'].'%');
-        $contactgroupList = $contactgroupObj->getList('cg_id, cg_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalContactgroupList = array();
-        foreach($contactgroupList as $contactgroup) {
-            $finalContactgroupList[] = array(
-                "id" => $contactgroup['cg_id'],
-                "text" => $contactgroup['cg_name']
-            );
-        }
-        
-        $router->response()->json($finalContactgroupList);
+        parent::formListAction();
     }
     
     /**

@@ -59,6 +59,7 @@ class ServicecategoryController extends ObjectAbstract
 
     public function formListAction()
     {
+        parent::formListAction();
     }
 
     /**

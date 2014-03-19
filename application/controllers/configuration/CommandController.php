@@ -65,24 +65,7 @@ class CommandController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $commandObj = new Command();
-        $filters = array('command_type' => '2');
-        $commandList = $commandObj->getList('command_id, command_name', -1, 0, 'command_name', "ASC", $filters, "OR");
-        
-        $finalCommandList = array();
-        foreach($commandList as $command) {
-            $finalCommandList[] = array(
-                "id" => $command['command_id'],
-                "text" => $command['command_name']
-            );
-        }
-        
-        $router->response()->json($finalCommandList);
+        parent::formListAction();
     }
 
     /**

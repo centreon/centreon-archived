@@ -72,25 +72,7 @@ class UserController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $contactObj = new Contact();
-        $filters = array('contact_name' => $requestParams['q'].'%');
-        $contactList = $contactObj->getList('contact_id, contact_name, contact_email', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalContactList = array();
-        foreach($contactList as $contact) {
-            $finalContactList[] = array(
-                "id" => $contact['contact_id'],
-                "text" => $contact['contact_name'],
-                "theming" => \Centreon\Repository\UserRepository::getUserIcon($contact['contact_name'], $contact['contact_email'])
-            );
-        }
-        
-        $router->response()->json($finalContactList);
+        parent::formListAction();
     }
     
     /**

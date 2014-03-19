@@ -62,24 +62,7 @@ class HostcategoryController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $hostCategoryObj = new Hostcategory();
-        $filters = array('hc_name' => $requestParams['q'].'%');
-        $hostCategoryList = $hostCategoryObj->getList('hc_id, hc_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalHostCategoryList = array();
-        foreach($hostCategoryList as $hostCategory) {
-            $finalHostCategoryList[] = array(
-                "id" => $hostCategory['hc_id'],
-                "text" => $hostCategory['hc_name']
-            );
-        }
-        
-        $router->response()->json($finalHostCategoryList);
+        parent::formListAction();
     }
 
     /**
