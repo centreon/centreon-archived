@@ -215,25 +215,29 @@ class CentreonAuthLDAP {
              * Replace space by underscore
              */
             $userDisplay = str_replace(array(' ', ','), '_', $userDisplay);
-            $userEmail = "NULL";
+            $userEmail = $this->contactInfos['contact_email'];
             if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
                     /*
                      * Get the first if there are multiple entries
                      */
-                    $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')][0] . "'";
-                } else {
+                    if ($userInfos[$this->ldap->getAttrName('user', 'email')][0]) {
+                        $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')][0] . "'";
+                    }
+                } elseif ($userInfos[$this->ldap->getAttrName('user', 'email')]) {
                     $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')] . "'";
                 }
             }
-            $userPager = "NULL";
+            $userPager = $this->contactInfos['contact_pager'];
             if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
                     /*
                      * Get the first if there are multiple entries
                      */
-                    $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')][0] . "'";
-                } else {
+                    if ($userInfos[$this->ldap->getAttrName('user', 'pager')][0]) {
+                        $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')][0] . "'";
+                    }
+                } elseif ($userInfos[$this->ldap->getAttrName('user', 'pager')]) {
                     $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
                 }
             }
