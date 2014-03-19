@@ -39,8 +39,8 @@ La partie **Macros** permet d'ajouter des macros personnalisées.
 Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
 La case **Mot de passe** permet de cacher la valeur de la macro.
 
-Pour supprimer la macro, cliquez sur |deletelist|.
-Pour déplacer l'ordre des macros, cliquez sur |movelist|.
+Pour supprimer la macro, cliquez sur |delete|.
+Pour déplacer l'ordre des macros, cliquez sur |move|.
 
 Notification
 ============
@@ -124,5 +124,5 @@ C'est pourquoi il est possible de transformer ce service lié à plusieurs hôte
 
 Il existe maintenant un service unique par hôte.
 
-.. |deletelist|    image:: /images/deletelist.png
-.. |movelist|    image:: /images/movelist.png
+.. |delete|    image:: /images/delete.gif
+.. |move|    image:: /images/move.png
