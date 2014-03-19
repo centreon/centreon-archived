@@ -111,7 +111,7 @@ while ($row = $res->fetchRow()) {
             );
             $obj->XML->writeAttribute("class", $service_class_label[$row['state']]);
         }
-        if (isset($notification_preferences['monitoring_sound_svc_notification_'.$row['state']]) && 
+        if (!isset($_SESSION['disable_sound']) && isset($notification_preferences['monitoring_sound_svc_notification_'.$row['state']]) && 
             $notification_preferences['monitoring_sound_svc_notification_'.$row['state']]) {
             $obj->XML->writeAttribute("sound", $notification_preferences['monitoring_sound_svc_notification_'.$row['state']]);
         }
@@ -127,7 +127,7 @@ while ($row = $res->fetchRow()) {
             );
             $obj->XML->writeAttribute("class", $host_class_label[$row['state']]);
         }
-        if (isset($notification_preferences['monitoring_sound_host_notification_'.$row['state']]) && 
+        if (!isset($_SESSION['disable_sound']) && isset($notification_preferences['monitoring_sound_host_notification_'.$row['state']]) && 
             $notification_preferences['monitoring_sound_host_notification_'.$row['state']]) {
             $obj->XML->writeAttribute("sound", $notification_preferences['monitoring_sound_host_notification_'.$row['state']]);
         }

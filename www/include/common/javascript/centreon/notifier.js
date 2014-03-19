@@ -34,6 +34,29 @@
         timeout = setTimeout(function() { get_new_messages(element, settings); }, settings.refresh_rate);
     }
 
+    $.fn.centreon_notify_stop = function() {
+        jQuery.ajax({
+            url: "./include/monitoring/status/Notifications/notifications_action.php",
+            data: {
+                action: "stop"
+            }
+        }).done(function() {
+            jQuery("#sound_status").attr("src", "./img/icones/24x24/speaker_off.png");
+            jQuery("#sound_status").attr("onClick", "jQuery().centreon_notify_start();");
+        });
+    }
+
+    $.fn.centreon_notify_start = function() {
+        jQuery.ajax({
+            url: "./include/monitoring/status/Notifications/notifications_action.php",
+            data: {
+                action: "start"
+            }
+        }).done(function() {
+            jQuery("#sound_status").attr("src", "./img/icones/24x24/speaker_on.png");
+            jQuery("#sound_status").attr("onClick", "jQuery().centreon_notify_stop();");
+        });
+    }
 
     $.fn.centreon_notify = function(options) {
         var $this = $(this);
