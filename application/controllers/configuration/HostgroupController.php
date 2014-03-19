@@ -62,24 +62,7 @@ class HostgroupController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $hostgroupObj = new Hostgroup();
-        $filters = array('hg_name' => $requestParams['q'].'%');
-        $hostgroupList = $hostgroupObj->getList('hg_id, hg_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalHostgroupList = array();
-        foreach($hostgroupList as $hostgroup) {
-            $finalHostgroupList[] = array(
-                "id" => $hostgroup['hg_id'],
-                "text" => $hostgroup['hg_name']
-            );
-        }
-        
-        $router->response()->json($finalHostgroupList);
+        parent::formListAction();
     }
 
     /**

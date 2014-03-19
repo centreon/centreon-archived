@@ -83,24 +83,7 @@ class HostController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $filters = array('host_name' => '%' . $requestParams['q'] . '%', 'host_register' => '1');
-        $hostList = Host::getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalHostList = array();
-        foreach($hostList as $host) {
-            $finalHostList[] = array(
-                "id" => $host['host_id'],
-                "text" => $host['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage($host['host_name']).' '.$host['host_name']
-            );
-        }
-        
-        $router->response()->json($finalHostList);
+        parent::formListAction();
     }
 
     /**
@@ -236,19 +219,7 @@ class HostController extends ObjectAbstract
      */
     public function hostgroupForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $hostgroupList = Hostgroup::getMergedParameters(array('hg_id', 'hg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
-        
-        $finalHostgroupList = array();
-        foreach($hostgroupList as $hostgroup) {
-            $finalHostgroupList[] = array("id" => $hostgroup['hg_id'], "text" => $hostgroup['hg_name']);
-        }
-        
-        $router->response()->json($finalHostgroupList);
+        parent::getRelations(static::$relationMap['host_hostgroups']);
     }
     
     /**
@@ -260,19 +231,7 @@ class HostController extends ObjectAbstract
      */
     public function hostcategoryForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $hostcategoryList = Hostcategory::getMergedParameters(array('hc_id', 'hc_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
-        
-        $finalHostcategoryList = array();
-        foreach($hostcategoryList as $hostcategory) {
-            $finalHostcategoryList[] = array("id" => $hostcategory['hc_id'], "text" => $hostcategory['hc_name']);
-        }
-        
-        $router->response()->json($finalHostcategoryList);
+        parent::getRelations(static::$relationMap['host_hostcategories']);
     }
 
     /**
@@ -283,29 +242,7 @@ class HostController extends ObjectAbstract
      */
     public function hostTemplateForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-
-        $requestParam = $this->getParams('named');
-
-        $hostTemplateList = Hosttemplate::getMergedParameters(
-            array(),
-            array('host_id', 'host_name'),
-            -1,
-            0,
-            "`order`",
-            "ASC",
-            array("h.host_id" => $requestParam['id']),
-            "AND"
-        );
-        $finalHostTemplateList = array();
-        foreach ($hostTemplateList as $hosttemplate) {
-            $finalHostTemplateList[] = array(
-                'id' => $hosttemplate['host_id'],
-                'text' => $hosttemplate['host_name']
-            );
-        }
-        $router->response()->json($finalHostTemplateList);
+        parent::getRelations(static::$relationMap['host_hosttemplates']);
     }
 
     /**

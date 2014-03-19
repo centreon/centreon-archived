@@ -105,7 +105,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $filters = array(
             $uniqueField => '%'.$requestParams['q'].'%'
         );
-        $list = $class::getList($idField, $uniqueField, -1, 0, null, "ASC", $filters, "AND");
+        $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");
         $finalList = array();
         foreach($list as $obj) {
             $finalList[] = array(
@@ -428,6 +428,48 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     }
 
     /**
+     * Get relations 
+     *
+     * @param string $relClass
+     */
+    protected function getRelations($relClass)
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        $curObj = $this->objectClass;
+        if ($relClass::$firstObject == $curObj) {
+            $tmp = $relClass::$secondObject;
+            $fArr = array();
+            $sArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
+        } else {
+            $tmp = $relClass::$firstObject;
+            $fArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
+            $sArr = array();
+        }
+        $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
+        $list = $relClass::getMergedParameters(
+            $fArr, 
+            $sArr, 
+            -1, 
+            0, 
+            null, 
+            "ASC", 
+            array($cmp => $requestParam['id']), 
+            "AND"
+        );
+        $finalList = array();
+        foreach($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$tmp::getPrimaryKey()],
+                "text" => $obj[$tmp::getUniqueLabelField()]
+            );
+        }
+        $router->response()->json($finalList);
+    }
+
+    /**
      * Action before save
      *
      * * Emit event objectName.action
@@ -492,5 +534,5 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $name,
             $params
         );
-    } 
+    }
 }
