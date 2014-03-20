@@ -214,7 +214,6 @@ class Form
                 $this->renderAsHtml($finalArray[$element['name']]);
             }
         }
-        
         return $finalArray;
     }
     
@@ -314,14 +313,50 @@ class Form
         $helpButton = '';
         $classInput = 'col-sm-9';
         if ($inputElement['type'] !== 'submit') {
-            $helpButton = '<div class="col-sm-1"><button type="button" class="btn btn-info">?</button></div>';
+            $helpButton = $this->renderHelp($inputElement);
             $classInput = 'col-sm-8';
         }
+        
         return '<div class="form-group">'.
                 '<div class="col-sm-3" style="text-align:right">'.$inputElement['label'].'</div>'.
                 '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'.
                 $helpButton.
                 '</div>';
+    }
+    
+    private function renderHelp($inputElement)
+    {
+        $helpButton = '';
+        
+        if (isset($inputElement['label_help'])) {
+            $helpButton = '<div class="col-sm-1"><button id="' . $inputElement['name'] . '_help" type="button" class="btn btn-info">?</button>'
+                . '</div>';
+            $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
+                                content: {
+                                    text: "'.str_replace('"', '\"', $inputElement['label_help']['text']).'",
+                                    title: "'.$inputElement['label_label'].' Help",
+                                    button: true
+                                },
+                                position: {
+                                    my: "top right",
+                                    at: "bottom left",
+                                    target: $("#' . $inputElement['name'] . '_help") // my target
+                                },
+                                show: {
+                                    event: "click",
+                                    solo: "true"
+                                },
+                                style: {
+                                    classes: "qtip-shadow qtip-rounded qtip-bootstrap"
+                                },
+                                hide: {
+                                    event: "click"
+                                }
+                            });';
+            $this->tpl->addCustomJs($helpBubble);
+        }
+        
+        return $helpButton;
     }
     
     
@@ -603,9 +638,7 @@ class Form
             default:
                 $this->addStatic($field, $extraParams);
                 break;
-            case 'text':
-                $this->addText($field['name'], $field['label']);
-                break;
+                
             case 'textarea':
                 $this->addTextarea($field['name'], $field['label']);
                 break;
@@ -679,77 +712,6 @@ class Form
     }
     
     /**
-     * Add a input text element
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param string|null $style The input style (prefix by input-)
-     *                           if null the style is medium
-     * @return \HTML_QuickForm_Element_InputText
-     */
-    public function addText($name, $label, $style = null, $placeholder = null, $help = null)
-    {
-        if (is_null($style)) {
-            $style = "medium";
-        }
-        $param = array();
-        if (!is_null($placeholder)) {
-            $param['placeholder'] = $placeholder;
-        }
-        if (!is_null($help)) {
-            $param['_help'] = $help;
-        }
-        $elem = $this->formProcessor
-            ->addElement('text', $name, $label ,$param)
-            ->updateAttributes(
-                array(
-                    'id'=>$name,
-                    'class' => "input-".$style,
-                    'label' => $label
-                )
-            );
-        return $elem;
-    }
-
-    /**
-     * Add a select
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param array $data The list for options
-     * @param string|null $style The input style (prefix by input-)
-     *                           if null the style is medium
-     * @return \HTML_QuickForm_Element_Select
-     */
-    public function addSelect($name, $label, $datas, $urlCastParemeter)
-    {
-        $selectParameters = json_decode($datas, true);
-        
-        if (isset($selectParameters['type']) && $selectParameters['type'] == 'object') {
-            if (isset($selectParameters['defaultValuesRouteParams'])) {
-                
-            }
-            $selectParameters['defaultValuesRoute'] = \Centreon\Core\Di::getDefault()
-                            ->get('router')
-                            ->getPathFor($selectParameters['defaultValuesRoute'], $urlCastParemeter);
-            
-            if (isset($selectParameters['listValuesRouteParams'])) {
-                
-            }
-            $selectParameters['listValuesRoute'] = \Centreon\Core\Di::getDefault()
-                            ->get('router')
-                            ->getPathFor($selectParameters['listValuesRoute'], $urlCastParemeter);
-        }
-        
-        $selectParameters['label'] = $label;
-        
-        $elem = $this->formProcessor->addElement('static', $name, $selectParameters);
-        $elem->setValue($selectParameters);
-        
-        return $elem;
-    }
-    
-    /**
      * Add custom inputs
      *
      * @param array $field
@@ -761,42 +723,17 @@ class Form
         if (isset($field['attributes']) && $field['attributes']) {
             $params = json_decode($field['attributes'], true);
         }
+        
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
+        $params['help'] = json_decode($field['help'], true);
         
         if (isset($field['validators']) && $field['validators'] != null) {
             $params['validators'] = $field['validators'];
         }
         $params['extra'] = $extraParams;
         $elem = $this->formProcessor->addElement('static', $field['name'], $params);
-    }
-
-    /**
-     * Add a multiselect
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param array $data The list for options
-     * @param string|null $style The input style (prefix by input-)
-     *                           if null the style is medium
-     * @return \HTML_QuickForm_Element_Select
-     */
-    public function addMultiSelect($name, $label, $data)
-    {
-        $this->tpl->addCss('jquery-chosen.css');
-        $this->tpl->addJs('jquery/chosen/chosen.jquery.min.js');
-        $this->tpl->addJs('centreon/formMultiSelect.js');
-        $elem = $this->formProcessor
-                    ->addElement('select', $name, array('multiple' => 'multiple'))
-                    ->updateAttributes(
-                        array(
-                            'id'=>$name,
-                            'class'=>'chzn-select',
-                            'label'=>$label
-                        )
-                    );
-        return $elem;
     }
     
     /**
@@ -986,20 +923,6 @@ class Form
     }
     
     /**
-     * Add a tab into the form
-     *
-     * @param string $id The tab id
-     * @param string $label The tab label
-     * @return QuickForm_Container_Tab
-     */
-    public function addTab($id, $label)
-    {
-        return $this->formProcessor
-                    ->addElement('tabs', $label)
-                    ->updateAttributes(array('id'=>$id, 'label'=>$label));
-    }
-    
-    /**
      * 
      * @param type $title
      * @param type $label
@@ -1122,24 +1045,7 @@ class Form
                       ->addJs('centreon/formRules.js');
         }
     }
-
-    /**************************************/
-
-    public function addMassiveChangeUpdateOption($name, $defaultValue, $o)
-    {
-        if ($o == "mc") {
-            $this->formProcessor->addElementRadio(
-                $name,
-                _("Update mode"),
-                array(
-                    0 => _("Incremental"),
-                    1 => _("Replacement")
-                ),
-                $defaultValue
-            );
-        }
-    }
-
+    
     public function applyFilter($field, $function)
     {
         //$this->formProcessor->applyFilter($field, array($this, $function));
