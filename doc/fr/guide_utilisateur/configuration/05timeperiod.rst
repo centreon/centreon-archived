@@ -84,7 +84,7 @@ Options avancées
 Au sein des options avancées, il est possible d'**inclure** ou d'**exclure** des périodes à la période temporelle.
 Exemple d'application. Prenons deux périodes temporelles :
 
-*	Une qui est définie 24 heures sur 24 / 7 jours sur 7 appelé **24x7**
+*	Une période est définie 24 heures sur 24 / 7 jours sur 7 appelé **24x7**
 *	Une autre qui regroupe les horaires d'ouvertures du bureau appelé **working_hours**
 
 Pour obtenir les horaires de fermeture du bureau, je n'ai qu'à créer une période temporelle dans laquelle j'inclus la plage **24x7** et pour laquelle j'exclus la plage **working_hours**.
