@@ -294,7 +294,7 @@ Il est possible de détermine le statut d'un service à partir de la valeur d'un
 un trap SNMP (OID racine) par type d'évènement à envoyer (linkUp / linkDown). Aujourd'hui, la tendance est de définir un OID racine par catégorie d'évènements et de définir l'évènement 
 et donc son type via un ensemble de paramètre.
 
-Pour cela, il est possible de définir des **Règles de correspondance avancées** en cliquant sur le bouton "+" et de créer autant de règles que nécessaire.
+Pour cela, il est possible de définir des **Règles de correspondance avancées** en cliquant sur le bouton |navigate_plus| et de créer autant de règles que nécessaire.
 Pour chaque règle, définir les paramètres :
 
 *   **Chaine** définit l'élément sur lequel sera appliqué la recherche (@OUTPUT@ défini l'ensemble du **Message de sortie** traduit).
@@ -321,7 +321,7 @@ L'onglet **Avancé** permet de configurer le comportement d'exécution du proces
 *   **Commande de routage** permet de définir la commande à utiliser pour le routage
 
 Avant d'exécuter le traitement de l'évènement (traduction du **Message de sortie**), il est possible d'exécuter une commande appelée PREEXEC.
-Pour cela, il est possible de définir des **Commande PREEXEC (de type SNMPTT)** en cliquant sur le bouton "+" et de créer autant de règles que nécessaire.
+Pour cela, il est possible de définir des **Commande PREEXEC (de type SNMPTT)** en cliquant sur le bouton |navigate_plus| et de créer autant de règles que nécessaire.
 
 *   **Définition de la commande PREEXEC** définit la commande à exécuter.
 
@@ -417,3 +417,4 @@ Pour pouvoir exporter les OID présents en base de données en fichier de config
 #. Dans la liste déroulante **Envoyer le signal** (préférez l'option **Recharger**)
 #. Cliquez sur le bouton **Générer**
 
+.. |navigate_plus|	image:: /images/navigate_plus.png

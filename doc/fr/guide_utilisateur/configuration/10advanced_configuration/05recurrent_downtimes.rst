@@ -40,7 +40,7 @@ Configuration des temps d'arrêts
 
 * Les champs **Nom** et **Description** permettent de donner un nom et de décrire le temps d'arrêt récurrent.
 * Le champ **Activer** permet d'activer ou de désactiver le temps d'arrêt.
-* Le champ **Période** permet de définir une ou plusieurs période de temps d'arrêts récurrents. Pour ajouter une période, cliquez sur le symbole "+" bleu.
+* Le champ **Période** permet de définir une ou plusieurs période de temps d'arrêts récurrents. Pour ajouter une période, cliquez sur le symbole |navigate_plus|.
 
 Il est possible de choisir trois types de périodes :
 
@@ -62,3 +62,5 @@ Relations
 * Si un groupe d'hôte est choisi avec la liste **Lié avec le groupe d'hôtes** tous les hôtes appartenant à ce groupe sont concernés par le temps d'arrêt récurrent.
 * La liste **Lié avec les services** permet de choisir le ou les services concernés par le temps d'arrêt récurrent.
 * Si un groupe de service est choisi avec la liste **Linked with Service Groups** tous les services appartenant à ce groupe sont concernés par le temps d'arrêt récurrent.
+
+.. |navigate_plus|  image:: /images/navigate_plus.png
