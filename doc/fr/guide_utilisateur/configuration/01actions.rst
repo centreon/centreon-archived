@@ -2,7 +2,7 @@
 Actions génériques
 ==================
 
-Au sein du menu **Configuration** il est possible d'effectuer certaines actions sur les différents objets.
+Au sein du menu **Configuration** il est possible d'effectuer certaines actions "génériques" sur les différents objets.
 
 *****************
 Ajouter/Supprimer
@@ -96,8 +96,7 @@ Pour activer/désactiver un objet :
 #.	Sélectionnez les objets que vous souhaitez modifier
 #.	Dans le menu **More actions...** cliquez sur **Activer/Désactiver**
 
-Il est également possible d'activer ou de désactiver un hôte via le champ "Statut" de l'objet (voir la fiche de l'objet).
-Ou en utilisant les icônes suivantes :
+Il est également possible d'activer ou de désactiver un objet via le champ "Statut" de la fiche de détails de l'objet ou en utilisant les icônes suivantes :
 
 *	|enabled| pour activer
 *	|disabled| pour désactiver
