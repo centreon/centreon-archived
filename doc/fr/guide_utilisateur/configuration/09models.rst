@@ -1,3 +1,5 @@
+.. _hosttemplates:
+
 ===========
 Les modèles
 ===========
