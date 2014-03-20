@@ -19,8 +19,8 @@ Informations générales
 
 *	Le champ **Nom de l'hôte** définit le nom d'hôte qui sera utilisé par le moteur de supervision.
 *	Le champ **Alias** indique l'alias de l'hôte.
-*	Le champ **Adresse IP/DNS** : Adresse IP ou nom DNS de l'hôte. Le bouton **Resolve** permet de résoudre le nom de domaine en interrogeant le serveur DNS configuré sur le serveur central.
-*	Les champs **Communauté SNMP & Version** contiennent respectivement le nom de la communauté ainsi que la version de SNMP.
+*	Le champ **Adresse IP/DNS** : Adresse IP ou nom DNS de l'hôte. Le bouton **Résoudre** permet de résoudre le nom de domaine en interrogeant le serveur DNS configuré sur le serveur central.
+*	Les champs **Communauté SNMP & Version** contiennent respectivement le nom de la communauté ainsi que la version SNMP.
 *	Le champ **Surveillé depuis le collecteur** indique quel est le serveur de supervision chargé de superviser cet hôte.
 *	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à l'hôte. Pour ajouter un modèle d'hôte, cliquer sur le bouton |navigate_plus|.
  
