@@ -132,6 +132,7 @@ class Hosttemplate extends \Models\Configuration\Relation
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
+                $key = str_replace('host.', 'h.', $key);
                 $sql .= " $filterType $key LIKE ? ";
                 $value = trim($rawvalue);
                 $value = str_replace("_", "\_", $value);

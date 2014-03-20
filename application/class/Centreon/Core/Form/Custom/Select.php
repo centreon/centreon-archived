@@ -107,13 +107,15 @@ class Select extends Customobject
                         $.ajax("'.$element['label_listValuesRoute'].'", {
                             dataType: "json"
                         }).done(function(data) {
-                            callback(data); 
-                            id = $(element).val();
-                            if (data.id) {
-                                $(element).val(data.id);
-                            }
-                            if (id.match(/^,/)) {
-                                $(element).val(id.substring(1, id.length));
+                            if (data.length > 0 || data.id) {
+                                callback(data);
+                                id = $(element).val();
+                                if (data.id) {
+                                    $(element).val(data.id);
+                                }
+                                if (id.match(/^,/)) {
+                                    $(element).val(id.substring(1, id.length));
+                                }
                             }
                         });
                      }

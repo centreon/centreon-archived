@@ -765,7 +765,7 @@ class Form
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
         
-        if ($field['validators'] != null) {
+        if (isset($field['validators']) && $field['validators'] != null) {
             $params['validators'] = $field['validators'];
         }
         $params['extra'] = $extraParams;

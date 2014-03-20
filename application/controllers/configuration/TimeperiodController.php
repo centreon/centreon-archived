@@ -37,7 +37,7 @@ namespace Controllers\Configuration;
 
 use Models\Configuration\Timeperiod;
 
-class TimeperiodController extends \Centreon\Core\Controller
+class TimeperiodController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Timeperiod';
     protected $objectName = 'timeperiod';

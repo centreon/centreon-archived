@@ -339,13 +339,11 @@ class HostController extends \Controllers\ObjectAbstract
         
         $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id']);
         $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
-
+        
         $finalTimeperiodList = array();
-        if (count($timeperiodList)) { 
-            $finalTimeperiodList = array(
-                "id" => $timeperiodList[0]['tp_id'],
-                "text" => $timeperiodList[0]['tp_name']
-            );
+        if (count($timeperiodList) > 0) {
+            $finalTimeperiodList["id"] = $timeperiodList[0]['tp_id'];
+            $finalTimeperiodList["text"] = $timeperiodList[0]['tp_name'];
         }
         $router->response()->json($finalTimeperiodList);
     }
@@ -370,10 +368,11 @@ class HostController extends \Controllers\ObjectAbstract
         $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id2']);
         $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
         
-        $finalTimeperiodList = array(
-            "id" => $timeperiodList[0]['tp_id'],
-                "text" => $timeperiodList[0]['tp_name']
-        );
+        $finalTimeperiodList = array();
+        if (count($timeperiodList) > 0) {
+            $finalTimeperiodList["id"] = $timeperiodList[0]['tp_id'];
+            $finalTimeperiodList["text"] = $timeperiodList[0]['tp_name'];
+        }
         
         $router->response()->json($finalTimeperiodList);
     }
@@ -400,10 +399,8 @@ class HostController extends \Controllers\ObjectAbstract
         
         $finalCommandList = array();
         if (count($commandList) > 0) {
-            $finalCommandList = array(
-                "id" => $commandList[0]['command_id'],
-                "text" => $commandList[0]['command_name']
-            );
+            $finalCommandList["id"] = $commandList[0]['command_id'];
+            $finalCommandList["text"] = $commandList[0]['command_name'];
         }
         
         $router->response()->json($finalCommandList);
@@ -449,10 +446,8 @@ class HostController extends \Controllers\ObjectAbstract
         
         $finalPollerList = array();
         if (count($pollerList) > 0) {
-            $finalPollerList = array(
-                "id" => $pollerList[0]['id'],
-                "text" => $pollerList[0]['name']
-            );
+            $finalPollerList["id"] = $pollerList[0]['id'];
+            $finalPollerList["text"] = $pollerList[0]['name'];
         }
         
         $router->response()->json($finalPollerList);
