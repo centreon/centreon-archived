@@ -120,6 +120,6 @@ Informations supplémentaires
 *	Le champ **Statut** permet d'activer ou de désactiver l'hôte.
 *	Le champ **Commentaires** permet d'ajouter un commentaire concernant l'hôte.
 
-.. |delete|    image:: /images/delete.gif
+.. |delete|    image:: /images/delete.png
 .. |move|    image:: /images/move.png
-.. |navigate_plus|    image:: /images/navigate_plus.gif
+.. |navigate_plus|    image:: /images/navigate_plus.png

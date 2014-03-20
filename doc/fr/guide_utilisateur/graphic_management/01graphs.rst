@@ -87,8 +87,8 @@ Il est possible de filtrer la sélection des ressources via :
 .. note::
     Les hôtes non liés à un groupe d'hôte sont ajoutés au conteneur **Hôtes orphelins**.
 
-.. |column-chart|    image:: /images/column-chart.gif
-.. |zoom|	image:: /images/zoom.gif
-.. |save|	image:: /images/save.gif
-.. |text_binary_csv| image:: /images/text_binary_csv.gif
+.. |column-chart|    image:: /images/column-chart.png
+.. |zoom|	image:: /images/zoom.png
+.. |save|	image:: /images/save.png
+.. |text_binary_csv| image:: /images/text_binary_csv.png
 

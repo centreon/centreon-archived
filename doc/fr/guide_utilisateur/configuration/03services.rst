@@ -124,5 +124,5 @@ C'est pourquoi il est possible de transformer ce service lié à plusieurs hôte
 
 Il existe maintenant un service unique par hôte.
 
-.. |delete|    image:: /images/delete.gif
+.. |delete|    image:: /images/delete.png
 .. |move|    image:: /images/move.png
