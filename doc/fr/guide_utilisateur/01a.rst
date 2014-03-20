@@ -55,7 +55,7 @@ Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker
 *	Possibilité de compresser les données de supervision afin de ne pas surcharger la bande passante
 *	Utilisation d'un nouveau protocole d'encodage des données (Le protocole BBDO) plus performant que le protocole NDO
 *   Possibilité de filtrer le type de flux entre les composants de Centreon Broker pour diminuer la charge et la bande passante
-*   Possibilité de flux unidirectionnels entre le serveur Centreon et ses collecteurs (uniquement des flux LAN vers DMZ)
+*   Possibilité de flux unidirectionnels entre le serveur Centreon et ses collecteurs (uniquement des flux LAN vers DMZ par exemple)
  
 **********
 Pré-requis
@@ -89,7 +89,7 @@ Installation
 Etape 1 : Démarrage
 ====================
 
-Afin d'installer Centreon, démarrez votre serveur sur le CD de Centreon Enterprise Server.
+Afin d'installer Centreon, démarrez votre serveur sur le DVD de Centreon Enterprise Server.
 
 Démarrez avec l'option **Install or upgrade an existing system** 
 
@@ -130,7 +130,7 @@ Un message d'avertissement peut apparaître
 Choisissez le nom d'hôte de votre machine et cliquez sur **Configurer le réseau** afin de pouvoir modifier les paramètres de votre carte réseau.
 
 Sélectionnez la carte réseau que vous souhaitez configurer et rendez-vous dans l'onglet "Paramètres IPv4" ou "Paramètres IPv6" (en fonction du besoin) 
-afin de configurer vos adresses IP. Cliquez sur **Appliquer...** afin d'enregistrer les modifications.
+afin de configurer l'adresse IP des interfaces. Cliquez sur **Appliquer...** afin d'enregistrer les modifications.
 
 .. image :: /images/guide_utilisateur/anetworkconfig.png
    :align: center
@@ -142,7 +142,7 @@ Sélectionnez votre fuseau horaire puis cliquez sur **Suivant**.
 .. image :: /images/guide_utilisateur/afuseauhoraire.png
    :align: center
 
-Entrez le mot de passe root voulu, puis cliquez sur **Suivant**.
+Entrez le mot de passe désiré du compte 'root', puis cliquez sur **Suivant**.
 
 Sélectionnez les options de partitionnement qui vous conviennent le mieux. Puis validez.
 
@@ -177,7 +177,7 @@ Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Brok
 .. image :: /images/guide_utilisateur/abrokertoinstall.png
    :align: center
 
-Une fois toutes ces options choisies, l'installation commence. 
+Une fois toutes ces options choisies, l'installation démarre. 
 
 .. image :: /images/guide_utilisateur/arpminstall.png
    :align: center
@@ -300,17 +300,16 @@ Démarrer la supervision
 =======================
 
 Pour démarrer l'ordonnanceur de supervision :
-
- 1.  Connectez-vous avec l'utilisateur 'root' sur votre serveur
- 2.	Démarrez le composant Centreon Broker::
+ 
+ 1.	Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
+ 2.	Laissez les options par défaut, et cliquez sur **Exporter**
+ 3.	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
+ 4.	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
+ 5.	Cliquez à nouveau sur **Exporter**
+ 6. Connectez-vous avec l'utilisateur 'root' sur votre serveur
+ 7.	Démarrez le composant Centreon Broker::
  
 	/etc/init.d/cbd start
- 
- 3.	Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
- 4.	Laissez les options par défaut, et cliquez sur **Exporter**
- 5.	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
- 6.	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
- 7.	Cliquez à nouveau sur **Exporter**
 
 La supervision est maintenant opérationnelle.
 
@@ -342,4 +341,4 @@ Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur
     yum -y update
 
 
-Laissez la mise à jour se faire.
+Laissez la mise à jour se faire puis redémarrer le serveur dans le cas d'une mise à jour du noyau.

@@ -1,3 +1,5 @@
+.. _serviceconfiguration:
+
 ============
 Les services
 ============
@@ -27,7 +29,7 @@ Etat du service
 *	Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut du service.
 *	Le champ **Commande de vérification** indique la commande utilisée pour vérifier la disponibilité du service.
 *	Le tableau **Arguments** définit les arguments donnés à la commande de vérification (le nombre d'arguments varie en fonction de la commande de vérification choisie).
-*	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôles à effectuer avant de valider le statut du service. Lorsque le statut est validé, une notification est envoyée.
+*	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôles à effectuer avant de valider le statut du service. Lorsque le statut est validé, le processus de notification est enclenché.
 *	Le champ **Intervalle normal de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut du service est OK.
 *	Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l'intervalle de validation du statut non-OK du service.
 *	Les champs **Contrôle actif activé** et **Contrôle passif activé** activent/désactivent le type de contrôle du service.
@@ -39,8 +41,8 @@ La partie **Macros** permet d'ajouter des macros personnalisées.
 Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
 La case **Mot de passe** permet de cacher la valeur de la macro.
 
-Pour supprimer la macro, cliquez sur |deletelist|.
-Pour déplacer l'ordre des macros, cliquez sur |movelist|.
+Pour supprimer la macro, cliquez sur |delete|.
+Pour déplacer l'ordre des macros, cliquez sur |move|.
 
 Notification
 ============
@@ -62,13 +64,13 @@ Onglet Relations
 Relations
 =========
 
-*	La liste **Lié aux hôtes** permet de définir le ou les hôtes liés à ce service.
+*	La liste **Lié aux hôtes** permet de définir le ou les hôtes auxquels est liés à ce service.
 *	La liste **Lié aux groupes de services** permet de lier le service à un ou plusieurs groupes de services.
 
 Traps SNMP
 ==========
 
-Le champ **Traps SNMP reliés au service** permet de définir les traps SNMP qui seront affichés par le service.
+Le champ **Traps SNMP reliés au service** permet de définir les traps SNMP qui pourront modifier le comportement du service.
 
 **********************
 Traitement des données
@@ -124,5 +126,5 @@ C'est pourquoi il est possible de transformer ce service lié à plusieurs hôte
 
 Il existe maintenant un service unique par hôte.
 
-.. |deletelist|    image:: /images/deletelist.png
-.. |movelist|    image:: /images/movelist.png
+.. |delete|    image:: /images/delete.png
+.. |move|    image:: /images/move.png

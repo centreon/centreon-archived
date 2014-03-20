@@ -92,7 +92,7 @@ sub run {
         eval {
             my $lock = undef;
             if ($self->{broker} eq "ndo") {
-                $lock = centreon::common::lock::sql("logAnalyser", dbc => $self->{cdb});
+                $lock = centreon::common::lock::sql->new("logAnalyser", dbc => $self->{cdb});
                 $lock->set();
             }
             $self->{csdb}->do("DELETE FROM `$table` WHERE `ctime` < '$last_log'");

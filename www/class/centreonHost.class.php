@@ -67,20 +67,20 @@ class CentreonHost
         if ($template) {
             $hostType = 0;
         }
-        $queryList = "SELECT host_id, host_alias
+        $queryList = "SELECT host_id, host_name
  	    	FROM host
  	    	WHERE host_register = '$hostType'";
  	    if ($enable) {
  	        $queryList .= " AND host_activate = '1'";
  	    }
-        $queryList .= " ORDER BY host_alias";
+        $queryList .= " ORDER BY host_name";
  	    $res = $this->db->query($queryList);
  	    if (PEAR::isError($res)) {
  	        return array();
  	    }
  	    $listHost = array();
  	    while ($row = $res->fetchRow()) {
- 	        $listHost[$row['host_id']] = $row['host_alias'];
+ 	        $listHost[$row['host_id']] = $row['host_name'];
  	    }
  	    return $listHost;
  	}

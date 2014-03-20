@@ -87,7 +87,7 @@ Imaginons le scénario suivant :
  * Instant t + 8 : Le service retrouve le statut OK. Il passe directement en état HARD. Le processus de notification est enclenché.
  * Instant t + 13 : Le service a le statut WARNING. Il passe en état SOFT (essai 1/3).
  * Instant t + 14 : Le service a toujours le statut WARNING (essai 2/3).
- * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut [TODO vérifier]
+ * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut
 
 ******************
 Actions génériques
@@ -118,8 +118,6 @@ Pour visualiser le statut des hôtes, rendez-vous dans le menu **Supervision** =
 
 .. image :: images/01.png
    :align: center
-
-[TODO refaire capture car il manque la colonne et le filtre de criticité]
 
 La barre de recherche grise permet de filtrer les résultats affichés.
 Le menu de gauche permet de modifier les hôtes visibles au sein du tableau :
