@@ -1,3 +1,5 @@
+.. _serviceconfiguration:
+
 ============
 Les services
 ============

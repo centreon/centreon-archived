@@ -1,3 +1,5 @@
+.. _hostconfiguration:
+
 =========
 Les hôtes
 =========

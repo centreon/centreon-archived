@@ -68,6 +68,9 @@ Pour ajouter un modèle d'hôtes :
 #. Dans le menu de gauche, cliquez sur **Modèles**
 #. Cliquez sur **Ajouter**
 
+.. note::
+    Se rapporter au chapitre de configuration des :ref:`hôtes<hostconfiguration>` pour configurer un modèle car le formulaire est identique.
+
 ***********************
 Les modèles de services
 ***********************
@@ -89,6 +92,9 @@ Pour ajouter un modèle de services :
 #. Dans le menu de gauche, cliquez sur **Modèles**
 #. Cliquez sur **Ajouter**
 
+.. note::
+    Se rapporter au chapitre de configuration des :ref:`services<serviceconfiguration>` pour configurer un modèle car le formulaire est identique.
+
 ********************
 Les bonnes pratiques
 ********************
@@ -107,19 +113,15 @@ Exemple : Je créé l'hôte srvi-web-01 selon le modèle ci-dessous :
 .. image :: /images/guide_utilisateur/configuration/09hostexemple.png
    :align: center
 
-L'hôte srvi-web-01 aura automatiquement les services suivants générés :
+L'hôte srvi-web-01 possèdera automatiquement les services suivants :
 
-* Le service Load permettra de vérifier la charge du serveur
-* Le service CPU permettra de vérifier la consommation CPU de la machine
-* Le service Mémoire permettra de vérifier la consommation de la mémoire vive
-* Le service Disk-/ permettra de vérifier l'état de la partition /
-* Le service broken-jobs permet de vérifier les jobs en panne
-* Le service hit-ration permet de vérifier le ratio de hits
-* Les services tablespaces, listener, processus et connection permettent de vérifier l'état et les performances du serveur de base de données
+* Load, CPU, Memoiry, disk-/ à partir des modèles de serices issus du modèle d'hôte "Linux-Server-RedHat-5"
+* broken-jobs, hit-ratio, tablespaces, listener à partir des modèles de serices issus du modèle d'hôte "DB-MySQL"
+* processus et connection à partir des modèles de serices issus du modèle d'hôte "Web-Server-Apache"
 
 Lorsque les services d'un hôte sont générés à partir des modèles d'hôtes, il est possible que certains services générés ne soient plus ou pas vérifiés par l'outil de supervision.
 Dans ce cas, il est nécessaire de désactiver les services inutilisés (et non de les supprimer).
-En cas de suppression des services, la regénération des services de l'hôte à partir des modèles d'hôtes recréera les services supprimés.
+En cas de suppression des services, la regénération des services de l'hôte à partir des modèles d'hôtes va recréer les services supprimés.
 
 Configuration
 =============
@@ -130,7 +132,7 @@ La liaison des modèles de services avec les modèles d'hôtes a lieu dans l'ong
 Les modèles de contacts
 ***********************
 
-Un contact ou un modèle de contact peut hériter d'un seul modèle de contacts.
+Un contact ou un modèle de contact peut hériter d'un seul modèle de contact.
 
 .. image :: /images/guide_utilisateur/configuration/09contactmodel.png
    :align: center
@@ -145,4 +147,4 @@ Pour ajouter un modèle de contacts :
 #. Cliquez sur **Ajouter**
 
 .. note::
-    Les modèles de contacts sont utilisés pour l'import automatique de profils via un annuaire :ref:`LDAP  <section-ldap_configuration>`.
+     Se rapporter au chapitre de configuration des :ref:`contacts<contactconfiguration>`. De plus, les modèles de contacts sont utilisés pour l'import automatique de profils via un annuaire :ref:`LDAP<ldapconfiguration>`.

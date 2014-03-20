@@ -1,3 +1,5 @@
+.. _contactconfiguration:
+
 ============
 Les contacts
 ============
