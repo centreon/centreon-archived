@@ -26,7 +26,7 @@ Pour ajouter une catégorie d'hôtes :
 *	Si un modèle d'hôte est ajouté à **Lié au modèle d'hôte** alors tous les hôtes qui héritent de ce modèle appartiennent à cette catégorie.
 *	La case **Est de type criticité** signifie que la catégorie d'hôtes a un niveau de criticité.
 *	Les champs **Niveau** et **Icônes** définissent respectivement un niveau de criticité et une icône associée.
-*	Les champs **Statuts** et **Commentaires** permettent d'activer ou de désactiver la catégorie d'hôte et de commenter celle-ci.
+*	Les champs **Statut** et **Commentaires** permettent d'activer ou de désactiver la catégorie d'hôte et de commenter celle-ci.
 
 **************************
 Les catégories de services
@@ -45,5 +45,5 @@ Pour ajouter une catégorie de services :
 *	Si un modèle de service appartient à **Liée aux modèles de services** alors tous les services appartenant à ce modèle de services font partie de cette catégorie.
 *	La case **Est de type criticité** signifie que la catégorie de service a un niveau de criticité.
 *	Les champs **Niveau** et **Icônes** définissent respectivement un niveau de criticité et une icône associée.
-*	Le champ **Statuts** permet d'activer ou de désactiver la catégorie de services.
+*	Le champ **Statut** permet d'activer ou de désactiver la catégorie de services.
  

@@ -60,5 +60,5 @@ Informations supplémentaires
 ****************************
 
 *	Les champs d'adresses permettent de spécifier des informations de contacts supplémentaires (autre mail, autre numéro de téléphone...).
-*	Les champs **Statuts** et **Commentaires** permettent d'activer ou de désactiver le contact et de commenter celui-ci.
+*	Les champs **Statut** et **Commentaires** permettent d'activer ou de désactiver le contact et de commenter celui-ci.
 
