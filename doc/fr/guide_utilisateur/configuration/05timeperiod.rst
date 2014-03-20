@@ -57,7 +57,7 @@ Exemple : Un administrateur souhaite définir une période temporelle qui regrou
 
 Afin de pouvoir définir les jours fériés ainsi que les jours de fermeture exceptionnelle, il est nécessaire d'utiliser les exceptions.
 
-Pour ajouter une exception, cliquez sur le bouton "+" bleu.
+Pour ajouter une exception, cliquez sur le bouton |navigate_plus|.
 Par journée exceptionnelle, vous devez définir une plage horaire. Le tableau ci-dessous présente quelques exemples possibles :
 
 +-----------------------+-------------------------+-----------------------------------------------------------------+
@@ -84,7 +84,9 @@ Options avancées
 Au sein des options avancées, il est possible d'**inclure** ou d'**exclure** des périodes à la période temporelle.
 Exemple d'application. Prenons deux périodes temporelles :
 
-*	Une qui est définie 24 heures sur 24 / 7 jours sur 7 appelé **24x7**
+*	Une période est définie 24 heures sur 24 / 7 jours sur 7 appelé **24x7**
 *	Une autre qui regroupe les horaires d'ouvertures du bureau appelé **working_hours**
 
 Pour obtenir les horaires de fermeture du bureau, je n'ai qu'à créer une période temporelle dans laquelle j'inclus la plage **24x7** et pour laquelle j'exclus la plage **working_hours**.
+
+.. |navigate_plus|	image:: /images/navigate_plus.png

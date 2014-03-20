@@ -24,10 +24,3 @@ Ressources en ligne supplémentaires:
 * `Demo <http://demo.centreon.com>`_
 * `Captures d'écran <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-

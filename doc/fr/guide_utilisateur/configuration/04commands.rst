@@ -6,13 +6,13 @@ Les commandes
 Définition
 **********
 
-Une commande est une ligne de commande qui utilise un script ou une application afin de réaliser une action.
-Il est possible d'exécuter cette commande en ajoutant des arguments.
+Une commande est la définiion d'une ligne de commande qui utilise un script ou une application afin de réaliser une action.
+Il est possible d'exécuter cette commande en précisant des arguments.
 
 Il existe trois types de commandes :
 
 *	Les commandes de **vérification** sont utilisées par les ordonnanceurs afin de vérifier le statut d'un hôte ou d'un service.
-*	Les commandes de **notification** sont utilisées par les ordonnanceurs pour alerter les contacts (via email, SMS...).
+*	Les commandes de **notification** sont utilisées par les ordonnanceurs pour alerter les contacts (via mail, SMS...).
 *	Des commandes **diverses** sont utilisées par les modules complémentaires (pour effectuer certaines actions), par l'ordonnanceur pour le traitement des données...
 
 Toutes les commandes peuvent être configurées au sein du menu **Configuration** ==> **Commandes**.
@@ -36,7 +36,8 @@ Avant d'ajouter une commande :
 .. image :: /images/guide_utilisateur/configuration/04command.png
    :align: center 
 
-Notez bien : Les champs de configuration d'une commande sont les mêmes qu'importe le type de commande choisi.
+.. note::
+    Les champs de configuration d'une commande sont les mêmes qu'importe le type de commande choisi.
 
 ***************************
 Les champs de configuration
@@ -65,7 +66,7 @@ Arguments et macros
 Au sein du champ **Ligne de commande**, il est possible de faire appel à des :ref:`macros<macros>` ainsi qu'à des arguments.
 
 Les arguments sont utilisés afin de pouvoir passer différents paramètres aux scripts appelés par les commandes. 
-Lors de l'exécution de la commande par l'ordonnanceur, chacun des arguments et macros sont remplacées par leur valeur respective.
+Lors de l'exécution de la commande par l'ordonnanceur, chacun des arguments et macros sont remplacés par leur valeur respective.
 Chaque argument se présente sous la forme **$ARGn$** où n est un entier naturel supérieur à 0.
 
 Exemple de ligne de commande utilisant les arguments : $USER1$/check-bench-process-DB -w $ARG1$ -c $ARG2$ -n $ARG3$
