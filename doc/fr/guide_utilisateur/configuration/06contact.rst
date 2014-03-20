@@ -30,7 +30,7 @@ Informations générales
 *	Le champ **Activer les notifications** permet d'activer l'envoi de notifications pour l'utilisateur.
 *	Le champ **Options de notifications d'hôte/de service** permet de définir les statuts pour lesquels il y a envoi de notifications.
 *	Le champ **Période de notification d'hôte/de service** permet de choisir la période temporelle pour laquelle il y a envoi de notification.
-*	Le champ **Commande de notification d'hôte/de service*** permet de choisir la commande de notification pour un hôte ou pour un service.
+*	Le champ **Commande de notification d'hôte/de service** permet de choisir la commande de notification pour un hôte ou pour un service.
 
 *************************
 Authentification Centreon
@@ -40,12 +40,20 @@ Authentification Centreon
 *	Les champs **Mot de passe** et **Confirmation du mot de passe** contiennent le mot de passe utilisateur.
 *	Le champ **Langue par défaut** permet de définir la langue de l'interface Centreon pour cet utilisateur.
 *	Le champ **Administrateur** définit si cet utilisateur est administrateur de la plateforme de supervision ou non.
-*	Le champ **Clé d'auto-connexion** permet de définir une clé de connexion pour l'utilisateur. L'utilisateur n'aura plus besoin d'entrer son login et mot de passe mais utilisera directement cette clé pour se connecter. Syntaxe de connexion : http://[IP_DU_SERVEUR_CENTRAL]/index.php&autologin=1&useralias=[login_utilisateur]&token=[valeur_autologin]. Notez bien que la possibilité de connexion automatique (auto login) doit être activée dans le menu **Administration** ==> **Options**.
+*	Le champ **Clé d'auto-connexion** permet de définir une clé de connexion pour l'utilisateur. L'utilisateur n'aura plus besoin d'entrer son login et mot de passe mais utilisera directement cette clé pour se connecter. Syntaxe de connexion : 
+
+  ::
+
+      http://[IP_DU_SERVEUR_CENTRAL]/index.php&autologin=1&useralias=[login_utilisateur]&token=[valeur_autologin]
+
+.. note:: 
+    La possibilité de connexion automatique (auto login) doit être activée dans le menu **Administration** ==> **Options**.
+
 *	Le champ **Source d'authentification** spécifie si les informations de connexion proviennent d'un annuaire LDAP ou d'informations stockées localement sur le serveur.
 *	Le champ **Groupes de liste d'accès** permet de définir un groupe d'accès pour un utilisateur, groupe utilisé pour les contrôles d'accès (ACL).
 
 .. note::
-    Un utilisateur **Administrateur** ne peut souffrir de contrôle d'accès même placé" dans un groupe d'accès.
+    Un utilisateur **Administrateur** ne peut souffrir de contrôle d'accès même lié dans un groupe d'accès.
 
 ****************************
 Informations supplémentaires
