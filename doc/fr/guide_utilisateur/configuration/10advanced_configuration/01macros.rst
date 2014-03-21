@@ -19,7 +19,7 @@ Exemple :
 * La macro **$HOSTADDRESS$** permet de récupérer l'adresse IP d'un hôte
 * La macro **$CONTACTEMAIL$** permet de récupérer l'adresse mail du contact
 
-.. seealso::
+.. note::
     La liste complète des macros est disponible à l'adresse suivante : `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_
 
 .. _custommacros:
@@ -64,17 +64,17 @@ Pour faire appel à ces macros dans une commande de vérification, il faudra les
 Cas particulier
 ===============
 
-Le champ **Communauté SNMP et version** présent au sein d'une fiche d'hôte génèrent automatiquement les macros personnalisées suivantes : **$_HOSTSNMPCOMMUNITY$** et **$_HOSTSNMPVERSION$**.
+Le champ **Communauté SNMP & Version** présent au sein d'une fiche d'hôte génèrent automatiquement les macros personnalisées suivantes : **$_HOSTSNMPCOMMUNITY$** et **$_HOSTSNMPVERSION$**.
 
 ************************
 Les macros de ressources
 ************************
 
-Les macros de ressources sont des macros générales qui sont utilisées par le moteur de supervision.
-Ces macros peuvent être invoquées par n'importe quel type de commande. Elles se présentent sous cette forme $USERn$ où n est compris entre 1 et 256.
+Les macros de ressources sont des macros globales qui sont utilisées par le moteur de supervision.
+Ces macros peuvent être invoquées par n'importe quel type de commande. Elles se présentent sous la forme $USERn$ où 'n' est compris entre 1 et 256.
 
-D'une manière générale, cette macro est utilisée pour faire référence aux chemins contenant les sondes de supervision.
-Par défaut, la macro $USER1$ est créé sa valeur est la suivante : /usr/lib/nagios/plugins.
+D'une manière générale, ces macros sont utilisées pour faire référence aux chemins contenant les sondes de supervision.
+Par défaut, la macro $USER1$ est créée et sa valeur est la suivante : /usr/lib/nagios/plugins.
 
 Pour ajouter une macro de ressources :
 
@@ -86,20 +86,20 @@ Pour ajouter une macro de ressources :
 
 * Le champ **Nom de la ressource** définit le nom de la macro de ressources. Exemple : $USER3$
 * Le champ **Valeur de la ressource** définit la valeur de la macro.
-* La liste **Lié au collecteur** permet de définir quels seront les moteurs de supervision qui utiliseront cette macro.
+* La liste **Lié au collecteur** permet de définir quels seront les moteurs de supervision qui pourront acceder à cette macro.
 * Les champs **Statut** et **Commentaire** permettent d'activer/désactiver la macro ou de la commenter.
 
 ***************************
 Les macros d'environnements
 ***************************
 
-Les macros d'environnement (aussi appelées macros à la demande) permettent de récupérer des informations à partir de tous les objets de Centreon.
+Les macros d'environnement (aussi appelées macros "à la demande" ou "on demand" en anglais) permettent de récupérer des informations à partir de tous les objets issus de la supervision.
 Elles sont utilisées afin de pouvoir récupérer à un instant "t" la valeur d'un objet.
 
 Elles sont complémentaires aux macros standards. Exemple :
 
 * La macro standard $CONTACTEMAIL$ fait référence à l'adresse email du contact qui utilisera la commande de notification
-* La macro d'environnement $CONTACTEMAIL:merethis$ retournera l'adresse email de l'utilisateur merethis
+* La macro d'environnement $CONTACTEMAIL:merethis$ retournera l'adresse email de l'utilisateur "merethis"
 
 La documentation complète des macros à la demande est disponible à cette adresse `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_.
 
@@ -107,5 +107,4 @@ La documentation complète des macros à la demande est disponible à cette adre
     L'utilisation de ces macros n'est pas recommandé car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommateur en termes de ressources.
 
 .. warning::
-
-   L'activation du paramètre "Activation des optimisations pour les installations de grandes tailles" rend impossible l'utilisation des macros d'environnements.
+    L'activation du paramètre **Activation des optimisations pour les installations de grandes tailles** rend impossible l'utilisation des macros d'environnements.

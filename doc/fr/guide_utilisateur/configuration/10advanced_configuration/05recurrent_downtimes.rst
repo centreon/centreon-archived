@@ -22,8 +22,8 @@ Les types de temps d'arrêts
 
 Il existe deux types de temps d'arrêts :
 
-* Les temps d'arrêts fixe : C'est à dire que le temps d'arrêt a lieu exactement pendant la période de temps définie.
-* Les temps d'arrêts flexible : C'est à dire que si pendant la période de temps définie le service ou l'hôte retourne un statut non-OK alors le temps d'arrêt dure un certain nombre de secondes (à définir dans le formulaire) à partir du moment où l'hôte ou le statut a retourné un statut non-OK.
+* Les temps d'arrêts **fixe** : C'est à dire que le temps d'arrêt a lieu exactement pendant la période de temps définie.
+* Les temps d'arrêts **flexible** : C'est à dire que si pendant la période de temps définie le service ou l'hôte retourne un statut non-OK alors le temps d'arrêt dure un certain nombre de secondes (à définir dans le formulaire) à partir du moment où l'hôte ou le statut a retourné un statut non-OK.
 
 *************
 Configuration
@@ -34,6 +34,9 @@ Pour ajouter un temps d'arrêt récurrent :
 #. Rendez-vous dans le menu **Configuration** ==> **Hôtes** (ou **Services** suivant le type d'objet sur lequel réaliser le temps d'arrêt)
 #. Dans le menu de gauche, cliquez sur **Temps d'arrêt**
 #. Cliquez sur **Ajouter**
+
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/05recurrentdowntimes.png
+   :align: center 
 
 Configuration des temps d'arrêts
 ================================

@@ -6,6 +6,9 @@ Les dépendances
 Principe
 ********
 
+.. todo::
+    revoir ce chapitre
+
 Les dépendances sont utilisées afin de répondre à deux besoins :
 
 *  Limiter l'envoi de notifications
@@ -34,7 +37,9 @@ Les dépendances physiques
 Les hôtes
 =========
 
-Les dépendances physiques consistent à prendre en compte les liens physiques entre les équipements. La configuration d'une dépendance physique se déroule au sein de l'onglet **Relations** d'une fiche de configuration d'hôte (**Configuration** ==> **Hôtes** ==> **Ajouter**) il est possible de définir deux paramètres :
+Les dépendances physiques consistent à prendre en compte les liens physiques entre les équipements.
+La configuration d'une dépendance physique se déroule au sein de l'onglet **Relations** d'une fiche de configuration d'un hôte (**Configuration** ==> **Hôtes** ==> **Ajouter**).
+Il est possible de définir deux paramètres :
 
 * Les hôtes parents : signifie que les hôtes sélectionnés sont parents de l'hôte. Si tous les hôtes parents sélectionnés deviennent indisponible ou injoignable alors l'hôte sera injoignable.
 
@@ -56,7 +61,7 @@ Les dépendances logiques
 
 Les dépendances logiques consistent à mettre en place des liens logiques entre les objets.
 
-Par exemple : Un service est chargé de superviser l'accès à une page web à travers un serveur LDAP. Il est logique que si le serveur LDAP est en panne alors le service n'a pas lieu de lever une alerte.
+Par exemple : Un service est chargé de superviser l'accès à une page web requérant une authentification basée sur un serveur LDAP. Il est logique que si le serveur LDAP est en panne, l'accès à la page web sera impossible et l'alerte associée ne doit pas être levée.
 
 Les hôtes
 =========
@@ -77,9 +82,9 @@ Si vous utilisez Centreon Broker, il est également possible à partir des hôte
 * Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances de l'hôte maitre deviennent indisponibles, la dépendance en cours de création n'est plus pris en compte.
 * Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des hôtes maitres qui empêcheront la vérification des hôtes ou des services dépendants
 * Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maitres qui empêcheront l'envoi de notifications pour les hôtes ou les services dépendants
-* La liste **Nom d'hôtes** définie le ou les hôtes maitres
-* La liste **Nom d'hôtes liés** définie les hôtes dépendants
-* La liste **Services dépendants** définie les services dépendants
+* La liste **Nom d'hôtes** défini le ou les hôtes maitres
+* La liste **Nom d'hôtes liés** défini les hôtes dépendants
+* La liste **Services dépendants** défini les services dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
 
 Les services
