@@ -100,7 +100,7 @@ class HostController extends \Controllers\ObjectAbstract
      * Create a new host
      *
      * @method post
-     * @route /configuration/host/create
+     * @route /configuration/host/add
      */
     public function createAction()
     {
@@ -140,7 +140,7 @@ class HostController extends \Controllers\ObjectAbstract
     public function addAction()
     {
         $tpl = \Centreon\Core\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/host/create');
+        $tpl->assign('validateUrl', '/configuration/host/add');
         parent::addAction();
     }
     

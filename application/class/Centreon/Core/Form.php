@@ -350,7 +350,7 @@ class Form
                                     classes: "qtip-shadow qtip-rounded qtip-bootstrap"
                                 },
                                 hide: {
-                                    event: "click"
+                                    event: "unfocus"
                                 }
                             });';
             $this->tpl->addCustomJs($helpBubble);
@@ -594,30 +594,61 @@ class Form
         return $token;
     }
     
-    public static function getValidators($uri)
+    /**
+     * 
+     * @param string $uri
+     * @return string
+     */
+    public static function getValidatorsQuery($origin, $uri)
+    {
+        switch ($origin) {
+            default:
+            case 'form':
+                $validatorsQuery = "SELECT `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                    FROM form_validator fv, form_field_validator_relation ffv, form_field ff
+                    WHERE ffv.validator_id = fv.validator_id
+                    AND ff.field_id = ffv.field_id
+                    AND ffv.field_id IN (
+                        SELECT fi.field_id FROM form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
+                        WHERE fi.field_id = fbf.field_id
+                        AND fbf.block_id = fb.block_id
+                        AND fb.section_id = fs.section_id
+                        AND fs.form_id = f.form_id
+                        AND f.route = '$uri'
+                    );";
+                break;
+
+            case 'wizard':
+                $validatorsQuery = "SELECT `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                    FROM form_validator fv, form_field_validator_relation ffv, form_field ff
+                    WHERE ffv.validator_id = fv.validator_id
+                    AND ff.field_id = ffv.field_id
+                    AND ffv.field_id IN (
+                        SELECT fi.field_id FROM form_field fi, form_step fs, form_step_field_relation fsf, form_wizard fw
+                        WHERE fi.field_id = fsf.field_id
+                        AND fsf.step_id = fs.step_id
+                        AND fs.wizard_id = fw.wizard_id
+                        AND fw.route = '$uri'
+                    );";
+                break;
+        }
+        return $validatorsQuery;
+    }
+    
+    public static function getValidators($origin, $uri)
     {
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $validatorsQuery = "SELECT `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
-            FROM form_validator fv, form_field_validator_relation ffv, form_field ff
-            WHERE ffv.validator_id = fv.validator_id
-            AND ff.field_id = ffv.field_id
-            AND ffv.field_id IN (
-                SELECT fi.field_id FROM form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
-                WHERE fi.field_id = fbf.field_id
-                AND fbf.block_id = fb.block_id
-                AND fb.section_id = fs.section_id
-                AND fs.form_id = f.form_id
-                AND f.route = '$uri'
-            );";
+        // Check if we are in form or wizard
+        $validatorsQuery = self::getValidatorsQuery($origin, $uri);
         
         $stmt = $dbconn->query($validatorsQuery);
         $validatorsRawList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         $validatorsFinalList = array();
         foreach($validatorsRawList as $validator) {
-            $validatorsFinalList[$validator['field_name']] = array(
+            $validatorsFinalList[$validator['field_name']][] = array(
                 'call' => $validator['validator'],
                 'label' => $validator['field_label']
             );
@@ -1126,30 +1157,38 @@ class Form
      * 
      * @return type
      */
-    public static function validate($uri, &$submittedValues)
+    public static function validate($origin, $uri, &$submittedValues)
     {
         $isValidate = true;
         $errorMessage = '';
         try {
             self::validateSecurity($submittedValues['token']);
             unset($submittedValues['token']);
+            if (!isset($submittedValues['object_id'])) {
+                $submittedValues['object_id'] = null;
+            }
             
-            $validatorsList = self::getValidators($uri);
-            foreach ($validatorsList as $validatorKey=>$validatorParam) {
-                $validatorCall = '\\Centreon\\Core\\Form\\Validator\\'.ucfirst($validatorParam['call']);
-                $resultValidate = $validatorCall::validate(
-                    $submittedValues[$validatorKey],
-                    $submittedValues['object'],
-                    $submittedValues['object_id'],
-                    $validatorKey
-                );
-                if (!$resultValidate['success']) {
-                    $isValidate = false;
-                    $errorMessage .= '<b>' .$validatorParam['label'] . '</b> : ' . $resultValidate['error'] . '<br />';
+            $validatorsList = self::getValidators($origin, $uri);
+            foreach ($validatorsList as $validatorKey=>$validatorsForField) {
+                $nbOfValidators = count($validatorsForField);
+                for ($i=0;$i<$nbOfValidators; $i++) {
+                    $validatorCall = '\\Centreon\\Core\\Form\\Validator\\'.ucfirst($validatorsForField[$i]['call']);
+                    $resultValidate = $validatorCall::validate(
+                        $submittedValues[$validatorKey],
+                        $submittedValues['object'],
+                        $submittedValues['object_id'],
+                        $validatorKey
+                    );
+                    if (!$resultValidate['success']) {
+                        $isValidate = false;
+                        $errorMessage .= '<b>' .$validatorsForField[$i]['label'] . '</b> : ' . $resultValidate['error'] . '<br />';
+                        break;
+                    }
                 }
             }
         } catch(Exception $e) {
             $isValidate = false;
+            $errorMessage = $e->getMessage();
         }
         
         return array('success' => $isValidate, 'error' => $errorMessage);

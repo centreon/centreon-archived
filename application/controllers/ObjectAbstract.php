@@ -164,51 +164,68 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     public function createAction()
     {
         $givenParameters = clone $this->getParams('post');
-        $class = $this->objectClass;
-        $pk = $class::getPrimaryKey();
-        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        try {
-            $columns = $class::getColumns();
-            $insertParams = array();
-            foreach ($givenParameters as $key => $value) {
-                if (in_array($key, $columns)) {
-                    $insertParams[$key] = $value;
-                }
-            }
-            $id = $class::insert($insertParams);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-        if (isset($id)) {
-            foreach (static::$relationMap as $k => $rel) {
-                try {
-                    if (!isset($givenParameters[$k])) {
-                        continue;
+        $createSuccessful = true;
+        $createErrorMessage = '';
+        
+        $validationResult = \Centreon\Core\Form::validate("wizard", $this->getUri(), $givenParameters);
+        if ($validationResult['success']) {
+            $class = $this->objectClass;
+            $pk = $class::getPrimaryKey();
+            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+            try {
+                $columns = $class::getColumns();
+                $insertParams = array();
+                foreach ($givenParameters as $key => $value) {
+                    if (in_array($key, $columns)) {
+                        $insertParams[$key] = $value;
                     }
-                    $arr = explode(',', $givenParameters[$k]);
-                    $db->beginTransaction();
-                    foreach ($arr as $relId) {
-                        if (!is_numeric($relId)) {
+                }
+                $id = $class::insert($insertParams);
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
+            if (isset($id)) {
+                foreach (static::$relationMap as $k => $rel) {
+                    try {
+                        if (!isset($givenParameters[$k])) {
                             continue;
                         }
-                        if ($rel::$firstObject == $this->objectClass) {
-                            $rel::insert($id, $relId);
-                        } else {
-                            $rel::insert($relId, $id);    
+                        $arr = explode(',', $givenParameters[$k]);
+                        $db->beginTransaction();
+                        foreach ($arr as $relId) {
+                            if (!is_numeric($relId)) {
+                                continue;
+                            }
+                            if ($rel::$firstObject == $this->objectClass) {
+                                $rel::insert($id, $relId);
+                            } else {
+                                $rel::insert($relId, $id);    
+                            }
                         }
+                        $db->commit();
+                        unset($givenParameters[$k]);
+                    } catch (Exception $e) {
+                        echo $e->getMessage();
                     }
-                    $db->commit();
-                    unset($givenParameters[$k]);
-                } catch (Exception $e) {
-                    echo $e->getMessage();
                 }
+                \Centreon\Core\Di::getDefault()
+                    ->get('router')
+                    ->response()
+                    ->json(array('success' => true));
+                $this->postSave($id, 'add');
+                return $id;
             }
-            \Centreon\Core\Di::getDefault()
-                ->get('router')
-                ->response()
-                ->json(array('success' => true));
-            $this->postSave($id, 'add');
-            return $id;
+        } else {
+            $createSuccessful = false;
+            $createErrorMessage = $validationResult['error'];
+        }
+        
+        $router = \Centreon\Core\Di::getDefault()->get('router');
+        if ($createSuccessful) {
+            $router->response()->json(array('success' => true));
+            $this->postSave($id, 'update');
+        } else {
+            $router->response()->json(array('success' => false,'error' => $createErrorMessage));
         }
     }
     
@@ -222,7 +239,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = \Centreon\Core\Form::validate($this->getUri(), $givenParameters);
+        $validationResult = \Centreon\Core\Form::validate("form", $this->getUri(), $givenParameters);
         if ($validationResult['success']) {
             $class = $this->objectClass;
             $pk = $class::getPrimaryKey();
@@ -304,9 +321,10 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/create', 0, array('id' => 0));
+        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/add', 0, array('id' => 0));
+        $form->addHiddenComponent('object', $this->objectName);
         $tpl = \Centreon\Core\Di::getDefault()->get('template');
-        $tpl->assign('formName', $form->getName());   
+        $tpl->assign('formName', $form->getName());
         echo $form->generate();
     }
 
