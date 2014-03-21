@@ -11,12 +11,21 @@
 			</block>
 			<block name="Relations">
 				<field name="contactgroup_contacts" label="Contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/contact/formlist","listValuesRoute":"/configuration/usergroup/[i:id]/contact","multiple":true,"ordered":false}</attribute>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/contact/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/usergroup/[i:id]/contact</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attributes>
 				</field>
 			</block>
 			<block name="Additional information">
 				<field name="cg_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+					<attributes>
+						<Enabled>1</Enabled>
+						<Disabled>0</Disabled>
+					</attributes>
 				</field>
 				<field name="cg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
 			</block>

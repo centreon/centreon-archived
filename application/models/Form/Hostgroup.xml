@@ -11,13 +11,22 @@
 			</block>
 			<block name="Relations">
 				<field name="hg_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/host/formlist","listValuesRoute":"/configuration/hostgroup/[i:id]/host","multiple":true,"ordered":false}</attribute>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hostgroup/[i:id]/host</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attributes>
 				</field>
 			</block>
 			<block name="Additional information">
 				<field name="hg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{\"Enabled\":1, \"Disabled\":0}</attributes>
+					<attributes>
+						<Enabled>1</Enabled>
+						<Disabled>0</Disabled>
+					</attributes>
 				</field>
 			</block>
 		</section>

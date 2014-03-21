@@ -241,6 +241,13 @@ class Installer
                     $blockRank++;
                     $fieldRank = 1;
                     foreach ($block->field as $field) {
+                        $attributes = array();
+                        if (isset($field->attributes)) {
+                            foreach($field->attributes->children() as $attr) {
+                                $attributes[$attr->getName()] = $attr->__toString();
+                            }
+                        }
+                        $attributes = json_encode($attributes);
                         $fieldData = array(
                             'name' => $field['name'],
                             'label' => $field['label'],
@@ -250,7 +257,8 @@ class Installer
                             'parent_field' => $field['parent_field'],
                             'module_id' => $field['module_id'],
                             'child_actions' => $field->child_actions,
-                            'attributes' => $field->attributes
+                            'attributes' => $attributes,
+                            'help' => $field->help
                         );
                         self::insertField(array_map('strval', $fieldData));
                         $blockFieldData = array(
