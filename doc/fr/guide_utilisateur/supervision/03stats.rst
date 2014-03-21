@@ -21,15 +21,16 @@ Plusieurs tableaux permettent de visualiser les performances de vos ordonnanceur
 
 * Le tableau **Actuellement contrôlés** permet de visualiser le nombre d'hôtes et de services contrôlés depuis la dernière minute, les cinq dernières minutes, le dernier quart d'heure ou la dernière heure.
 * Le tableau **Temps de latence des contrôles** permet de visualiser les temps de latence minimum, maximum et moyen des contrôles effectués sur les hôtes et les services.
-* Le tableau **Utilisation du buffer** permet de visualiser le nombre de commandes externes en attente de traitements par l'ordonnanceur.
-* Le tableau **Statut** donne un bref aperçu des statuts pour les hôtes et les services
-* Le tableau **Temps d'exécution des contrôles** permet de visualiser le temps d'exécution d'une sonde c'est à dire le temps entre son lancement et le moment où elle transmet l'information à l'ordonnanceur.
-
 .. warning::
     Plus le temps de latence est élevée, plus les contrôles sont exécutés en retard via à vis de l'heure initiale programmée par l'ordonnanceur. Cela implique une potentielle charge élevée du serveur.
 
+* Le tableau **Utilisation du buffer** permet de visualiser le nombre de commandes externes en attente de traitements par l'ordonnanceur.
+
 .. warning::
     Dans le cas d'une supervision passive injectant de nombreuses commandes externes à l'ordonnanceur, il est nécessaire de contrôler cette valeur. En effet, si celle-ci est trop proche de la taille limite, il est possible de perdre des commandes, il faut donc augmenter la taille du buffer.
+
+* Le tableau **Statut** donne un bref aperçu des statuts pour les hôtes et les services
+* Le tableau **Temps d'exécution des contrôles** permet de visualiser le temps d'exécution d'une sonde c'est à dire le temps entre son lancement et le moment où elle transmet l'information à l'ordonnanceur.
 
 .. warning::
     Plus le temps d'exécution est élevé, plus cela est pénalisant pour l'exécution des autres processus en file d'attente et génère de la latence. Les plugins doivent être performants pour ne pas engendrer de latence.

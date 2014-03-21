@@ -29,8 +29,8 @@ Vérifier qu'aucune erreur n'apparait lors de la génération :
 
 Deuxième étape
 ==============
- #.	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
- #.	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
+ #.	Décochez les cases **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
+ #.	Puis cochez les cases **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
  #.	Cliquez sur **Exporter**
  
 .. image :: /images/guide_utilisateur/configuration/11step2.png
