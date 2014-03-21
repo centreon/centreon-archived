@@ -98,7 +98,7 @@
 	    if (isset($command->localhost_tab[$poller])) {
             shell_exec("sudo " . $nagios_init_script . " start");
 		} else {
-			shell_exec("echo 'START:".$poller."' >> $centcore_pipe", $return);
+			shell_exec("echo 'START:".$poller."' >> $centcore_pipe");
 		}
 	} else {
     	$cmd_tab = $command->getExternalCommandList();
