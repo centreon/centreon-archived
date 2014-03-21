@@ -38,11 +38,8 @@ namespace Controllers\Configuration;
 use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Contact,
     \Models\Configuration\Relation\Host\Contactgroup,
-    \Models\Configuration\Relation\Host\Hostgroup,
     \Models\Configuration\Relation\Host\Hostchild,
     \Models\Configuration\Relation\Host\Hostparent,
-    \Models\Configuration\Relation\Host\Hostcategory,
-    \Models\Configuration\Relation\Host\Hosttemplate,
     \Models\Configuration\Relation\Host\Poller,
     \Models\Configuration\Timeperiod,
     \Models\Configuration\Command,
@@ -452,11 +449,11 @@ class HostController extends \Controllers\ObjectAbstract
         
         $router->response()->json($finalPollerList);
     }
-
+    
     /**
      * Duplicate a hosts
      *
-     * @method POST
+     * @method post
      * @route /configuration/host/duplicate
      */
     public function duplicateAction()

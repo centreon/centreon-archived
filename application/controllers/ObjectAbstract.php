@@ -117,44 +117,24 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     }
     
     /**
-     * 
+     * Get wizard for add a object
+     *
+     * Response HTML
      */
-    public function editAction()
+    public function addAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
-        
-        $myForm = new Generator($objectFormUpdateUrl, $requestParam['advanced'], array('id' => $requestParam['id']));
-        $myForm->addHiddenComponent('object_id', $requestParam['id']);
-        $myForm->addHiddenComponent('object', $this->objectName);
-        
-        // get object Current Values
-        $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
-        
-        $formModeUrl = \Centreon\Core\Di::getDefault()
-                        ->get('router')
-                        ->getPathFor(
-                            $this->objectBaseUrl.'/[i:id]/[i:advanced]',
-                            array(
-                                'id' => $requestParam['id'],
-                                'advanced' => (int)!$requestParam['advanced']
-                            )
-                        );
-        
-        // Display page
-        $tpl->assign('pageTitle', $this->objectDisplayName);
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('advanced', $requestParam['advanced']);
-        $tpl->assign('formModeUrl', $formModeUrl);
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $tpl->display('configuration/edit.tpl');
+        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/add', 0, array('id' => 0));
+        $form->addHiddenComponent('object', $this->objectName);
+        $tpl = \Centreon\Core\Di::getDefault()->get('template');
+        $tpl->assign('formName', $form->getName());
+        $formGen = str_replace(
+            array('alertMessage', 'alertClose'),
+            array('alertModalMessage', 'alertModalClose'),
+            $form->generate()
+        );
+        echo $formGen;
     }
-
+    
     /**
      * Generic create action
      *
@@ -230,6 +210,45 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     }
     
     /**
+     * 
+     */
+    public function editAction()
+    {
+        // Init template
+        $di = \Centreon\Core\Di::getDefault();
+        $tpl = $di->get('template');
+        
+        $requestParam = $this->getParams('named');
+        $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
+        
+        $myForm = new Generator($objectFormUpdateUrl, $requestParam['advanced'], array('id' => $requestParam['id']));
+        $myForm->addHiddenComponent('object_id', $requestParam['id']);
+        $myForm->addHiddenComponent('object', $this->objectName);
+        
+        // get object Current Values
+        $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
+        
+        $formModeUrl = \Centreon\Core\Di::getDefault()
+                        ->get('router')
+                        ->getPathFor(
+                            $this->objectBaseUrl.'/[i:id]/[i:advanced]',
+                            array(
+                                'id' => $requestParam['id'],
+                                'advanced' => (int)!$requestParam['advanced']
+                            )
+                        );
+        
+        // Display page
+        $tpl->assign('pageTitle', $this->objectDisplayName);
+        $tpl->assign('form', $myForm->generate());
+        $tpl->assign('advanced', $requestParam['advanced']);
+        $tpl->assign('formModeUrl', $formModeUrl);
+        $tpl->assign('formName', $myForm->getName());
+        $tpl->assign('validateUrl', $objectFormUpdateUrl);
+        $tpl->display('configuration/edit.tpl');
+    }
+    
+    /**
      * Generic update function
      *
      */
@@ -301,7 +320,32 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
+    
+    /**
+     * Delete a object
+     *
+     * Response JSON
+     */
+    public function deleteAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $params = $di->get('router')->request()->paramsPost();
 
+        $objClass = $this->objectClass;
+        foreach ($params['ids'] as $id) {
+            $this->preSave($id, 'delete');
+            $objClass::delete($id);
+            $this->postSave($id, 'delete');
+        }
+
+        $di->get('router')->response()->json(array(
+            'success' => true
+        ));
+    }
+
+    /**
+     * 
+     */
     public function datatableAction()
     {
         $di = \Centreon\Core\Di::getDefault();
@@ -312,20 +356,6 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $this->getParams('get')
             )
         );
-    }
-
-    /**
-     * Get wizard for add a object
-     *
-     * Response HTML
-     */
-    public function addAction()
-    {
-        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/add', 0, array('id' => 0));
-        $form->addHiddenComponent('object', $this->objectName);
-        $tpl = \Centreon\Core\Di::getDefault()->get('template');
-        $tpl->assign('formName', $form->getName());
-        echo $form->generate();
     }
 
     /**
@@ -422,29 +452,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             'success' => true
         ));
     }
-
-    /**
-     * Delete a object
-     *
-     * Response JSON
-     */
-    public function deleteAction()
-    {
-        $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->paramsPost();
-
-        $objClass = $this->objectClass;
-        foreach ($params['ids'] as $id) {
-            $this->preSave($id, 'delete');
-            $objClass::delete($id);
-            $this->postSave($id, 'delete');
-        }
-
-        $di->get('router')->response()->json(array(
-            'success' => true
-        ));
-    }
-
+    
     /**
      * Get relations 
      *
