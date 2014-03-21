@@ -165,7 +165,7 @@ class Generator
                 }
                 
                 $fieldQuery = 'SELECT '
-                    . 'f.field_id, f.name, f.label, f.default_value, f.attributes, f.type, f.help, mandatory, parent_field, child_actions '
+                    . 'f.field_id, f.name, f.label, f.default_value, f.attributes, f.type, f.help, f.help_url, mandatory, parent_field, child_actions '
                     . 'FROM form_field f, form_block_field_relation bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '

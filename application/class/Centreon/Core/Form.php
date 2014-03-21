@@ -333,7 +333,7 @@ class Form
                 . '</div>';
             $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
                                 content: {
-                                    text: "'.str_replace('"', '\"', $inputElement['label_help']['text']).'",
+                                    text: "'.str_replace('"', '\"', $inputElement['label_help']).'",
                                     title: "'.$inputElement['label_label'].' Help",
                                     button: true
                                 },
@@ -758,7 +758,14 @@ class Form
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
-        $params['help'] = json_decode($field['help'], true);
+        
+        if (isset($field['help']) && $field['help'] != null) {
+            $params['help'] = $field['help'];
+        }
+        
+        if (isset($field['help_url']) && $field['help_url'] != null) {
+            $params['help_url'] = $field['help_url'];
+        }
         
         if (isset($field['validators']) && $field['validators'] != null) {
             $params['validators'] = $field['validators'];
@@ -777,7 +784,6 @@ class Form
      */
     public function addCheckBox($name, $label, $separators = '&nbsp;', $params = array())
     {
-        
         if (isset($params['list']) && count($params['list'])) {
             $cbList = array();
             foreach ($params['list'] as $cb) {
@@ -953,29 +959,6 @@ class Form
         return $elem;
     }
     
-    /**
-     * 
-     * @param type $title
-     * @param type $label
-     */
-    public function addHeader($title, $label)
-    {
-        $this->formProcessor->addElement('header', $title, $label);
-    }
-
-    /**
-     * Add a fieldset into the form
-     *
-     * @param string $label The legend
-     * @return \HTML_QuickForm_Container_Fieldset
-     */
-    public function addFieldSet($label)
-    {
-        return $this->formProcessor
-                    ->addElement('fieldset', $label)
-                    ->setLabel($label);
-    }
-
     /**
      * Return the array for smarty
      * 
