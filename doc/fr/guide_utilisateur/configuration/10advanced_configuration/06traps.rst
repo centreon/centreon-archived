@@ -217,6 +217,8 @@ Il est possible de configurer le fichier **/etc/centreon/conf.pm** de deux mani�
 Configuration Centreon
 **********************
 
+.. _configuration_advanced_snmptrapds_manufacturer:
+
 Ajouter un constructeur
 =======================
 
@@ -231,6 +233,8 @@ Au sein de Centreon, les OIDs racines des traps SNMP sont classés par construct
 
 * Les champs **Nom du constructeur** et **Alias** définissent le nom et l'alias du constructeur
 * Le champ **Description** fournit une indication sur le constructeur
+
+.. _configuration_advanced_snmptrapds_mibimport:
 
 Importation des MIB
 ===================
@@ -392,8 +396,7 @@ Lors de l'ajout d'une règle de correspondance ou de l'exécution d'une commande
 | @CMDFILE@                | Chemin vers le fichier de commande de CentCore (central) ou de Centreon Engine (collecteur)                                               |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 
-De plus, il existe des variables spéciales pouvant être utilisées dans la section **Paramètres de routage** au niveau de la **Commande de routage** 
-si l'option **Activer le routage** est sélectionnée : 
+De plus, il existe des variables spéciales pouvant être utilisées dans la section **Paramètres de routage** au niveau de la **Commande de routage** si l'option **Activer le routage** est sélectionnée : 
 
 +----------------------+-------------------------------------------------------------------------------------------------------------+
 |   Nom de la variable |   Description                                                                                               |
@@ -402,6 +405,8 @@ si l'option **Activer le routage** est sélectionnée :
 +----------------------+-------------------------------------------------------------------------------------------------------------+
 | @GETHOSTBYNAME($1)@  | Résolution DNS permettant de connaitre l'adresse IP à partir du nom DNS (localhost -> 127.0.0.1)            |
 +----------------------+-------------------------------------------------------------------------------------------------------------+
+
+.. _configuration_advanced_snmptrapds_generate_configuration:
 
 *************************
 Appliquer les changements

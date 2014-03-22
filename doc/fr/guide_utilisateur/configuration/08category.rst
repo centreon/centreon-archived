@@ -8,6 +8,8 @@ Centeon 2.4 avait intégré une nouvelle fonctionnalité appelée "Criticité". 
 Un niveau de criticité est un indicateur permettant de définir la criticité d'un hôte ou d'un service. Le but est de pouvoir traiter les problèmes des hôtes ou des services par ordre de priorité.
 Grâce à ce système, il est ainsi possible de filtrer les objets dans les vues "Supervision" par criticité.
 
+.. _hostcategory:
+
 **********************
 Les catégories d'hôtes
 **********************
@@ -27,6 +29,8 @@ Pour ajouter une catégorie d'hôtes :
 *	La case **Est de type criticité** signifie que la catégorie d'hôtes a un niveau de criticité.
 *	Les champs **Niveau** et **Icônes** définissent respectivement un niveau de criticité et une icône associée.
 *	Les champs **Statut** et **Commentaires** permettent d'activer ou de désactiver la catégorie d'hôte et de commenter celle-ci.
+
+.. _servicecategory:
 
 **************************
 Les catégories de services
