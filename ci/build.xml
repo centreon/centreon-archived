@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="centreon" default="build">
+  <target name="build" depends="prepare" />
+
+  <target name="clean" description="Clean the builds environment">
+    <delete dir="${basedir}/build/api"/>
+    <delete dir="${basedir}/build/coverage"/>
+    <delete dir="${basedir}/build/logs"/>
+    <delete dir="${basedir}/build/pdepend"/>
+  </target>
+
+  <target name="prepare" description="Prepare for builds">
+    <mkdir dir="${basedir}/build/api"/>
+    <mkdir dir="${basedir}/build/coverage"/>
+    <mkdir dir="${basedir}/build/logs"/>
+    <mkdir dir="${basedir}/build/pdepend"/>
+    <mkdir dir="${basedir}/build/phpdox"/>
+    <exec executable="composer">
+      <arg value="update">
+    </exec>
+  </target>
+
+  <target name="phpunit" description="Unit tests">
+    <exec executable="vendor/bin/phpunit" failonerror="true">
+      <arg value="-c"/>
+      <arg value="tests/phpunit.xml"/>
+    </exec>
+  </target>
+</project>

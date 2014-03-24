@@ -16,7 +16,13 @@
 					<help></help>
 				</field>
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hosttemplate/formlist","listValuesRoute":"/configuration/host/[i:id]/hosttemplate","multiple":true,"ordered":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/hosttemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/hosttemplate</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>true</ordered>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
@@ -32,7 +38,7 @@
 				</field>
 				<field name="host_check_command" label="Check command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<object_type>object</obect_type>
+						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/checkcommand</listValuesRoute>
 						<multiple>false</multiple>
@@ -257,6 +263,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+						<listValuesRoute></listValuesRoute>
 						<multiple>false</multiple>
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
@@ -265,4 +272,12 @@
 			</block>
 		</section>
 	</form>
+	<wizard name="add_host">
+		<route>/configuration/host/add</route>
+		<step name="General">
+			<field name="host_name" mandatory="1"></field>
+			<field name="host_address" mandatory="0"></field>
+			<field name="host_hosttemplates" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>
