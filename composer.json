@@ -14,7 +14,9 @@
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "phpunit/dbunit": "1.3.*",
-	"squizlabs/php_codesniffer": "1.5.*"
+        "squizlabs/php_codesniffer": "1.5.*",
+        "sebastian/phpcpd": "2.0.*",
+        "phpmd/phpmd": "1.5.*"
     },
     "license": "GPLv2",
     "authors": [

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="centreon" default="build">
-  <target name="build" depends="prepare" />
+<project name="centreon" default="build" basedir="..">
+  <target name="build" depends="prepare,phpcs-ci,phpcpd,phpunit" />
 
   <target name="clean" description="Clean the builds environment">
     <delete dir="${basedir}/build/api"/>
@@ -16,14 +16,41 @@
     <mkdir dir="${basedir}/build/pdepend"/>
     <mkdir dir="${basedir}/build/phpdox"/>
     <exec executable="composer">
-      <arg value="update">
+	    <arg value="update"/>
+    </exec>
+  </target>
+
+  <target name="phpcs-ci" description="Code coverage">
+    <exec executable="vendor/bin/phpcs" output="/dev/null">
+      <arg value="--report=checkstyle" />
+      <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+      <arg value="--standard=PSR2" />
+      <arg value="${basedir}/application" />
+    </exec>
+  </target>
+
+  <target name="phpcpd" description="Find duplicate code using PHPCPD">
+    <exec executable="vendor/bin/phpcpd">
+      <arg value="--log-pmd" />
+      <arg value="${basedir}/build/logs/pmd-cpd.xml" />
+      <arg value="${basedir}/application" />
+    </exec>
+  </target>
+
+  <target name="phpmd-ci" description="Perform project mess detection">
+    <exec executable="vendor/bin/phpmd">
+      <arg value="${basedir}/application" />
+      <arg value="xml" />
+      <arg value="${basedir}/ci/phpmd.xml" />
+      <arg value="--reportfile" />
+      <arg value="${basedir}/build/logs/pmd.xml" />
     </exec>
   </target>
 
   <target name="phpunit" description="Unit tests">
     <exec executable="vendor/bin/phpunit" failonerror="true">
       <arg value="-c"/>
-      <arg value="tests/phpunit.xml"/>
+      <arg value="${basedir}/tests/phpunit.xml"/>
     </exec>
   </target>
 </project>
