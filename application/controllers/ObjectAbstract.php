@@ -78,6 +78,10 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             ->addJs('additional-methods.min.js')
             ->addJs('centreon-wizard.js');
 
+        /* Set Cookie */
+        $token = \Centreon\Core\Form::getSecurityToken();
+        setcookie("ajaxToken", $token, time()+15);
+        
         /* Display variable */
         $tpl->assign('objectName', $this->objectDisplayName);
         $tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
@@ -329,17 +333,32 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     public function deleteAction()
     {
         $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->paramsPost();
-
-        $objClass = $this->objectClass;
-        foreach ($params['ids'] as $id) {
-            $this->preSave($id, 'delete');
-            $objClass::delete($id);
-            $this->postSave($id, 'delete');
+        $router = $di->get('router');
+        $deleteSuccess = true;
+        $errorMessage = '';
+        
+        try {
+            \Centreon\Core\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            $params = $router->request()->paramsPost();
+            
+            $objClass = $this->objectClass;
+            foreach ($params['ids'] as $id) {
+                $this->preSave($id, 'delete');
+                $objClass::delete($id);
+                $this->postSave($id, 'delete');
+            }
+            
+            /* Set Cookie */
+            $token = \Centreon\Core\Form::getSecurityToken();
+            setcookie("ajaxToken", $token, time()+15);
+        } catch (\Centreon\Core\Exception $e) {
+            $deleteSuccess = false;
+            $errorMessage = $e->getMessage();
         }
-
-        $di->get('router')->response()->json(array(
-            'success' => true
+        
+        $router->response()->json(array(
+            'success' => $deleteSuccess,
+            'errorMessage' => $errorMessage
         ));
     }
 
@@ -422,14 +441,30 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     public function duplicateAction()
     {
         $di = \Centreon\Core\Di::getDefault();
-        $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
+        $router = $di->get('router');
+        $duplicateSuccess = true;
+        $errorMessage = '';
+        
+        try {
+            \Centreon\Core\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
 
-        $objClass = $this->objectClass;
-        foreach ($listDuplicate as $id => $nb) {
-            $objClass::duplicate($id, $nb);
+            $objClass = $this->objectClass;
+            foreach ($listDuplicate as $id => $nb) {
+                $objClass::duplicate($id, $nb);
+            }
+            
+            /* Set Cookie */
+            $token = \Centreon\Core\Form::getSecurityToken();
+            setcookie("ajaxToken", $token, time()+15);
+        } catch (\Centreon\Core\Exception $e) {
+            $duplicateSuccess = false;
+            $errorMessage = $e->getMessage();
         }
-        $di->get('router')->response()->json(array(
-            'success' => true
+        
+        $router->response()->json(array(
+            'success' => $duplicateSuccess,
+            'errorMessage' => $errorMessage
         ));
     }
 
@@ -441,15 +476,30 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     public function massiveChangeAction()
     {
         $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->paramsPost();
+        $router = $di->get('router');
+        $massiveChangeSuccess = true;
+        $errorMessage = '';
+        
+        try {
+            \Centreon\Core\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            $params = $router->request()->paramsPost();
 
-        $objClass = $this->objectClass;
-        foreach ($params['ids'] as $id) {
-            $objClass::update($id, $params['values']);
+            $objClass = $this->objectClass;
+            foreach ($params['ids'] as $id) {
+                $objClass::update($id, $params['values']);
+            }
+            
+            /* Set Cookie */
+            $token = \Centreon\Core\Form::getSecurityToken();
+            setcookie("ajaxToken", $token, time()+15);
+        } catch (\Centreon\Core\Exception $e) {
+            $massiveChangeSuccess = false;
+            $errorMessage = $e->getMessage();
         }
-
-        $di->get('router')->response()->json(array(
-            'success' => true
+        
+        $router->response()->json(array(
+            'success' => $massiveChangeSuccess,
+            'errorMessage' => $errorMessage
         ));
     }
     

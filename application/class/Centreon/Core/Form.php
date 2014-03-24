@@ -559,15 +559,17 @@ class Form
             if ($token == $_SESSION['form_token']) {
                 $oldTimestamp = time() - (15*60);
                 if ($_SESSION['form_token_time'] < $oldTimestamp) {
-                    throw new Exception;
+                    throw new Exception(_('The validation is impossible due to expire form token'));
                 }
             } else {
-                throw new Exception;
+                throw new Exception(_('The validation is impossible due to wrong form token'));
             }
         } else {
-            throw new Exception;
+            throw new Exception(_('The validation is impossible due to missing form token'));
         }
         
+        unset($_SESSION['form_token']);
+        unset($_SESSION['form_token_time']);
         return true;
     }
 
