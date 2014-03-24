@@ -141,7 +141,7 @@ class Generator
         
         $firstSectionDetected = false;
         
-        foreach($sectionList as $section) {
+        foreach ($sectionList as $section) {
             if (!$firstSectionDetected) {
                 $this->firstSection = $section['name'];
                 $firstSectionDetected = true;
@@ -156,7 +156,7 @@ class Generator
             $blockList = $blockStmt->fetchAll(\PDO::FETCH_ASSOC);
             $this->formComponents[$section['name']] = array();
             
-            foreach($blockList as $block) {
+            foreach ($blockList as $block) {
                 
                 if ($advanced) {
                     $advancedRequest = "AND (advanced = '0' OR advanced = '1' )";
@@ -165,7 +165,8 @@ class Generator
                 }
                 
                 $fieldQuery = 'SELECT '
-                    . 'f.field_id, f.name, f.label, f.default_value, f.attributes, f.type, f.help, f.help_url, mandatory, parent_field, child_actions '
+                    . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
+                    . 'f.type, f.help, f.help_url, mandatory, parent_field, child_actions '
                     . 'FROM form_field f, form_block_field_relation bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
@@ -216,11 +217,10 @@ class Generator
             case 'textarea':
                 $this->formHandler->addTextarea($field['name'], $field['label']);
                 break;
-            
             case 'radio':
                 $values = json_decode($field['attributes']);
                 $radioValues = array();
-                foreach ($values as $label=>$value) {
+                foreach ($values as $label => $value) {
                     $radioValues['list'][] = array(
                         'name' => $label,
                         'label' => $label,
@@ -235,12 +235,11 @@ class Generator
                     $radioValues
                 );
                 break;
-                
             case 'checkbox':
                 $values = json_decode($field['attributes']);
                 if (is_array($values) || is_object($values)) {
                     $checkboxValues = array();
-                    foreach ($values as $label=>$value) {
+                    foreach ($values as $label => $value) {
                         $checkboxValues['list'][] = array(
                             'name' => $label,
                             'label' => $label,
@@ -253,7 +252,7 @@ class Generator
                         '&nbsp;',
                         $checkboxValues
                     );
-                } else { 
+                } else {
                     $this->formHandler->addCheckbox($field['name'], $field['label']);
                 }
                 break;
@@ -285,8 +284,18 @@ class Generator
         
         $htmlRendering = '<div class="row">';
         
-        $htmlRendering .= '<div class="bs-callout bs-callout-success" id="formSuccess" style="display: none;">The object has been successfully updated</div>';
-        $htmlRendering .= '<div class="bs-callout bs-callout-danger" id="formError" style="display: none;">An error occured</div>';
+        $htmlRendering .= '<div '
+            . 'class="bs-callout bs-callout-success" '
+            . 'id="formSuccess" '
+            . 'style="display: none;">'
+            . 'The object has been successfully updated'
+            . '</div>';
+        $htmlRendering .= '<div '
+            . 'class="bs-callout bs-callout-danger" '
+            . 'id="formError" '
+            . 'style="display: none;">'
+            . 'An error occured'
+            . '</div>';
         
         $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].'>';
         
@@ -294,21 +303,27 @@ class Generator
         
         $tabRendering = '<ul class="nav nav-tabs" id="formHeader">';
         
-        foreach ($this->formComponents as $sectionLabel=>$sectionComponents) {
-            $tabRendering .= '<li><a href="#'.str_replace(' ', '', $sectionLabel).'" data-toggle="tab">'.$sectionLabel.'</a></li>';
+        foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
+            $tabRendering .= '<li>'
+                . '<a '
+                . 'href="#'.str_replace(' ', '', $sectionLabel).'" '
+                . 'data-toggle="tab">'
+                .$sectionLabel
+                .'</a>'
+                . '</li>';
         }
         $formRendering .= '</ul>';
         
         $formRendering .= '<div class="tab-content">';
-        foreach ($this->formComponents as $sectionLabel=>$sectionComponents) {
+        foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
             $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
-            foreach ($sectionComponents as $blockLabel=>$blockComponents) {
+            foreach ($sectionComponents as $blockLabel => $blockComponents) {
                 $formRendering .= '<div class="panel panel-default">';
                 $formRendering .= '<div class="panel-heading">';
                 $formRendering .= '<h3 class="panel-title">'.$blockLabel.'</h3>';
                 $formRendering .= '</div>';
                 $formRendering .= '<div class="panel-body">';
-                foreach($blockComponents as $component) {
+                foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
                         $formRendering .= $formElements[$component['name']]['html'];
                     }
@@ -369,7 +384,7 @@ class Generator
      * 
      * @param array $defaultValues
      */
-    public function setDefaultValues($defaultValues, $objectId="")
+    public function setDefaultValues($defaultValues, $objectId = "")
     {
         if (is_string($defaultValues)) {
             // Get the mapped columns for the object
@@ -378,8 +393,8 @@ class Generator
             
             // Get the mapped values and if no value saved for the field, the default one is set
             $myValues = $defaultValues::getParameters($objectId, $fields);
-            foreach ($myValues as $key=>&$value) {
-                if (is_null($value)) { 
+            foreach ($myValues as $key => &$value) {
+                if (is_null($value)) {
                     $value = $this->formDefaults[$key];
                 }
             }

@@ -57,7 +57,7 @@ class Menu
      * @param int $parentId
      * @return array
      */
-    private function buildTree(array $elements, $parentId = 0) 
+    private function buildTree(array $elements, $parentId = 0)
     {
         $branch = array();
         $router = \Centreon\Core\Di::getDefault()->get('router');
@@ -91,8 +91,8 @@ class Menu
         }
         $db = Di::getDefault()->get('db_centreon');
         $this->tree = array();
-        $stmt = $db->prepare("
-            SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order
+        $stmt = $db->prepare(
+            "SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order
             FROM menus
             ORDER BY menu_order ASC"
         );

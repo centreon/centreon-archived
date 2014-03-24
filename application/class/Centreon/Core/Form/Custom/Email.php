@@ -112,15 +112,31 @@ class Email extends Customobject
                     })
                     .success(function(data, status, jqxhr) {
                         if (data === "success") {
-                            $("#'.$element['name'].'_email").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_email_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
-                            $("#'.$element['name'].'_email").addClass("has-success has-feedback");
-                            $("#'.$element['name'].'_email_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
+                            $("#'
+                            .$element['name']
+                            .'_email").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email").addClass("has-success has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
                         } else {
-                            $("#'.$element['name'].'_email").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_email_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
-                            $("#'.$element['name'].'_email").addClass("has-error has-feedback");
-                            $("#'.$element['name'].'_email_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
+                            $("#'
+                            .$element['name']
+                            .'_email").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email").addClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
                         }
                     });
                 });';

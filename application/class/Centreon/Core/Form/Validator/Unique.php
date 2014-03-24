@@ -51,7 +51,10 @@ class Unique implements Ivalidator
         if ($callableObject::isUnique($value, $id)) {
             $result = array('success' => true);
         } else {
-            $result = array('success' => false, 'error' => _("\"<i>$value</i>\" is already in use for another $objectName"));
+            $result = array(
+                'success' => false,
+                'error' => _("\"<i>$value</i>\" is already in use for another $objectName")
+            );
         }
         return $result;
     }

@@ -52,15 +52,25 @@ class EventlogsRepository
      * @param $filters array The list of fitlers for event
      * @return array
      */
-    static public function getEventLogs($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
+    public static function getEventLogs($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
         $di = \Centreon\Core\Di::getDefault();
         /* Get configuration */
         $storageType = 'db';
         if ($storageType == 'db') {
-            return \Centreon\Repository\EventlogsRepository\Database::getEventLogs($fromTime, $order, $limit, $filters);
+            return \Centreon\Repository\EventlogsRepository\Database::getEventLogs(
+                $fromTime,
+                $order,
+                $limit,
+                $filters
+            );
         } elseif ($storageType == 'es') {
-            return \Centreon\Repository\EventlogsRepository\ElasticSearch::getEventLogs($fromTime, $order, $limit, $filters);
+            return \Centreon\Repository\EventlogsRepository\ElasticSearch::getEventLogs(
+                $fromTime,
+                $order,
+                $limit,
+                $filters
+            );
         }
         throw new \Exception("The eventlogs storage does not exists");
     }

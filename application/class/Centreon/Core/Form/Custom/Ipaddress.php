@@ -132,16 +132,32 @@ class Ipaddress extends Customobject
                     .success(function(data, status, jqxhr) {
                         alertClose();
                         if (data["success"]) {
-                            $("#'.$element['name'].'_ipaddress").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
-                            $("#'.$element['name'].'_ipaddress").addClass("has-success has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").addClass("has-success has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
                         } else {
                             alertMessage(data["error"], "alert-danger");
-                            $("#'.$element['name'].'_ipaddress").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
-                            $("#'.$element['name'].'_ipaddress").addClass("has-error has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").addClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
                         }
                     });
                 });';
