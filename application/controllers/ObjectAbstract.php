@@ -80,7 +80,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
 
         /* Set Cookie */
         $token = \Centreon\Core\Form::getSecurityToken();
-        setcookie("ajaxToken", $token, time()+15);
+        setcookie("ajaxToken", $token, time()+15, '/');
         
         /* Display variable */
         $tpl->assign('objectName', $this->objectDisplayName);
@@ -350,7 +350,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             
             /* Set Cookie */
             $token = \Centreon\Core\Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15);
+            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (\Centreon\Core\Exception $e) {
             $deleteSuccess = false;
             $errorMessage = $e->getMessage();
@@ -456,7 +456,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             
             /* Set Cookie */
             $token = \Centreon\Core\Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15);
+            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (\Centreon\Core\Exception $e) {
             $duplicateSuccess = false;
             $errorMessage = $e->getMessage();
@@ -491,7 +491,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             
             /* Set Cookie */
             $token = \Centreon\Core\Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15);
+            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (\Centreon\Core\Exception $e) {
             $massiveChangeSuccess = false;
             $errorMessage = $e->getMessage();
