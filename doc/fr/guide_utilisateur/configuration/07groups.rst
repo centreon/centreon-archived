@@ -72,3 +72,5 @@ Pour ajouter un groupe de contacts :
 *	La liste **Contacts liés** permet d'ajouter les contacts au groupe de contacts.
 *	Les champs **Statut** et **Commentaires** permettent d'activer ou de désactiver le groupe de contacts et de commenter celui-ci.
 
+.. note::
+    Pour plus d'information se référer au chapitre associé sur les :ref:`groupes<categoriesandgroups>`.

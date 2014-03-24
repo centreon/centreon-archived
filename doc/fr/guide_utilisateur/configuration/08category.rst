@@ -4,7 +4,7 @@ Les catégories
 
 Les catégories sont utilisées afin de pouvoir définir des ACLs sur les hôtes et les services. Le but est de pouvoir classer les hôtes ou les services au sein d'une même catégorie.
 
-Centeon 2.4 avait intégré une nouvelle fonctionnalité appelée "Criticité". A parti de la version 2.5, les niveaux de criticité sont liés à une catégorie, ils sont devenus un type de catégorie.
+Centreon 2.4 avait intégré une nouvelle fonctionnalité appelée "Criticité". A partir de la version 2.5, les niveaux de criticité sont liés à une catégorie, ils sont devenus un type de catégorie.
 Un niveau de criticité est un indicateur permettant de définir la criticité d'un hôte ou d'un service. Le but est de pouvoir traiter les problèmes des hôtes ou des services par ordre de priorité.
 Grâce à ce système, il est ainsi possible de filtrer les objets dans les vues "Supervision" par criticité.
 
@@ -50,4 +50,6 @@ Pour ajouter une catégorie de services :
 *	La case **Est de type criticité** signifie que la catégorie de service a un niveau de criticité.
 *	Les champs **Niveau** et **Icônes** définissent respectivement un niveau de criticité et une icône associée.
 *	Le champ **Statut** permet d'activer ou de désactiver la catégorie de services.
- 
+
+.. note::
+    Pour plus d'information se référer au chapitre associé sur les :ref:`catégories<categoriesandgroups>`.
