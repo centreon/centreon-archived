@@ -149,7 +149,7 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
      */
     public static function getDatasForDatatable($params)
     {
-       // Init vars
+        // Init vars
         $additionalTables = '';
         $conditions = '';
         $limitations = '';
@@ -189,7 +189,7 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         }
         
         // Conditions (Recherche)
-        foreach ($params as $paramName=>$paramValue) {
+        foreach ($params as $paramName => $paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
@@ -209,7 +209,9 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
         
         // Building the final request
-        $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
+        $finalRequest = "SELECT "
+            . "SQL_CALC_FOUND_ROWS $field_list "
+            . "FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
         
         try {
@@ -223,19 +225,21 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $countTab = count($resultSet);
         $objectTab = array();
-        for($i=0; $i<$countTab; $i++) {
+        for ($i=0; $i<$countTab; $i++) {
             $objectTab[] = static::$objectName;
         }
         
         foreach ($resultSet as &$mySC) {
-            $stmt = $dbconn->query("SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$mySC['sc_id']."'");
+            $stmt = $dbconn->query(
+                "SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$mySC['sc_id']."'"
+            );
             $nb_svc = $stmt->fetch();
             $save = array_pop($mySC);
             $mySC['sc_linked_svc'] = $nb_svc[0];
             $mySC['sc_activate'] = $save;
         }
         
-        return self::array_values_recursive(
+        return self::arrayValuesRecursive(
             \array_values(
                 \array_map(
                     "\\Centreon\\Core\\Datatable::castResult",

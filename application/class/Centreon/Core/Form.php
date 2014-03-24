@@ -230,13 +230,11 @@ class Form
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'textarea':
                 $element['input'] = $this->renderHtmlTextarea($element);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'button':
             case 'submit':
             case 'reset':
@@ -244,7 +242,6 @@ class Form
                 $element['label'] = "";
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'static':
                 $className = "\\Centreon\\Core\\Form\\Custom\\".ucfirst($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
@@ -273,32 +270,33 @@ class Form
                     }
                 }
                 break;
-            
             case 'checkbox':
                 $element['input'] = $this->renderHtmlCheckbox($element);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'radio':
                 $element['input'] = $this->renderHtmlRadio($element, $element['name']);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'group':
                 $selectedValues = array();
                 if (is_array($element['value'])) {
                     $selectedValues = array_keys($element['value']);
                 }
                 $element['input'] = '<div class="input-group">';
-                foreach($element['elements'] as $groupElement) {
+                foreach ($element['elements'] as $groupElement) {
                     if ($groupElement['type'] == 'checkbox') {
                         $element['input'] .= $this->renderHtmlCheckbox($groupElement);
                     } else {
                         $currentElementName = substr($groupElement['name'], strlen($element['name'])+1, -1);
                         $selected = in_array($currentElementName, $selectedValues);
-                        $element['input'] .= $this->renderHtmlRadio($groupElement, $element['name'], $selected).'&nbsp;&nbsp;';
+                        $element['input'] .= $this->renderHtmlRadio(
+                            $groupElement,
+                            $element['name'],
+                            $selected
+                        ).'&nbsp;&nbsp;';
                     }
                 }
                 $element['input'] .= '</div>';
@@ -329,7 +327,8 @@ class Form
         $helpButton = '';
         
         if (isset($inputElement['label_help'])) {
-            $helpButton = '<div class="col-sm-1"><button id="' . $inputElement['name'] . '_help" type="button" class="btn btn-info">?</button>'
+            $helpButton = '<div class="col-sm-1"><button id="'
+                . $inputElement['name'] . '_help" type="button" class="btn btn-info">?</button>'
                 . '</div>';
             $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
                                 content: {
@@ -449,7 +448,9 @@ class Form
             $inputElement['label'] = $inputElement['name'];
         }
         
-        if (!isset($inputElement['placeholder']) || (isset($inputElement['placeholder']) && empty($inputElement['placeholder']))) {
+        if (!isset($inputElement['placeholder'])
+            || (isset($inputElement['placeholder'])
+            && empty($inputElement['placeholder']))) {
             $placeholder = 'placeholder="'.$inputElement['name'].'" ';
         }
         
@@ -516,7 +517,9 @@ class Form
         }
         
         if ($usePlaceholder) {
-            if (!isset($inputElement['placeholder']) || (isset($inputElement['placeholder']) && empty($inputElement['placeholder']))) {
+            if (!isset($inputElement['placeholder'])
+                || (isset($inputElement['placeholder'])
+                && empty($inputElement['placeholder']))) {
                 $placeholder = 'placeholder="'.$inputElement['name'].'" ';
             }
         } else {
@@ -559,15 +562,17 @@ class Form
             if ($token == $_SESSION['form_token']) {
                 $oldTimestamp = time() - (15*60);
                 if ($_SESSION['form_token_time'] < $oldTimestamp) {
-                    throw new Exception;
+                    throw new Exception(_('The validation is impossible due to expire form token'));
                 }
             } else {
-                throw new Exception;
+                throw new Exception(_('The validation is impossible due to wrong form token'));
             }
         } else {
-            throw new Exception;
+            throw new Exception(_('The validation is impossible due to missing form token'));
         }
         
+        unset($_SESSION['form_token']);
+        unset($_SESSION['form_token_time']);
         return true;
     }
 
@@ -604,31 +609,55 @@ class Form
         switch ($origin) {
             default:
             case 'form':
-                $validatorsQuery = "SELECT `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
-                    FROM form_validator fv, form_field_validator_relation ffv, form_field ff
-                    WHERE ffv.validator_id = fv.validator_id
-                    AND ff.field_id = ffv.field_id
-                    AND ffv.field_id IN (
-                        SELECT fi.field_id FROM form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
-                        WHERE fi.field_id = fbf.field_id
-                        AND fbf.block_id = fb.block_id
-                        AND fb.section_id = fs.section_id
-                        AND fs.form_id = f.form_id
-                        AND f.route = '$uri'
+                $validatorsQuery = "SELECT
+                        `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                    FROM
+                        form_validator fv, form_field_validator_relation ffv, form_field ff
+                    WHERE
+                        ffv.validator_id = fv.validator_id
+                    AND
+                        ff.field_id = ffv.field_id
+                    AND
+                        ffv.field_id IN (
+                            SELECT
+                                fi.field_id
+                            FROM
+                                form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
+                            WHERE
+                                fi.field_id = fbf.field_id
+                            AND
+                                fbf.block_id = fb.block_id
+                            AND
+                                fb.section_id = fs.section_id
+                            AND
+                                fs.form_id = f.form_id
+                            AND
+                                f.route = '$uri'
                     );";
                 break;
-
             case 'wizard':
-                $validatorsQuery = "SELECT `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
-                    FROM form_validator fv, form_field_validator_relation ffv, form_field ff
-                    WHERE ffv.validator_id = fv.validator_id
-                    AND ff.field_id = ffv.field_id
-                    AND ffv.field_id IN (
-                        SELECT fi.field_id FROM form_field fi, form_step fs, form_step_field_relation fsf, form_wizard fw
-                        WHERE fi.field_id = fsf.field_id
-                        AND fsf.step_id = fs.step_id
-                        AND fs.wizard_id = fw.wizard_id
-                        AND fw.route = '$uri'
+                $validatorsQuery = "SELECT
+                        `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                    FROM
+                        form_validator fv, form_field_validator_relation ffv, form_field ff
+                    WHERE
+                        ffv.validator_id = fv.validator_id
+                    AND
+                        ff.field_id = ffv.field_id
+                    AND
+                        ffv.field_id IN (
+                            SELECT
+                                fi.field_id
+                            FROM
+                                form_field fi, form_step fs, form_step_field_relation fsf, form_wizard fw
+                            WHERE
+                                fi.field_id = fsf.field_id
+                            AND
+                                fsf.step_id = fs.step_id
+                            AND
+                                fs.wizard_id = fw.wizard_id
+                            AND
+                                fw.route = '$uri'
                     );";
                 break;
         }
@@ -647,7 +676,7 @@ class Form
         $validatorsRawList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         $validatorsFinalList = array();
-        foreach($validatorsRawList as $validator) {
+        foreach ($validatorsRawList as $validator) {
             $validatorsFinalList[$validator['field_name']][] = array(
                 'call' => $validator['validator'],
                 'label' => $validator['field_label']
@@ -669,15 +698,13 @@ class Form
             default:
                 $this->addStatic($field, $extraParams);
                 break;
-                
             case 'textarea':
                 $this->addTextarea($field['name'], $field['label']);
                 break;
-            
             case 'radio':
                 $values = json_decode($field['attributes']);
                 $radioValues = array();
-                foreach ($values as $label=>$value) {
+                foreach ($values as $label => $value) {
                     $radioValues['list'][] = array(
                         'name' => $label,
                         'label' => $label,
@@ -692,12 +719,11 @@ class Form
                     $radioValues
                 );
                 break;
-                
             case 'checkbox':
                 $values = json_decode($field['attributes']);
                 if (is_array($values) || is_object($values)) {
                     $checkboxValues = array();
-                    foreach ($values as $label=>$value) {
+                    foreach ($values as $label => $value) {
                         $checkboxValues['list'][] = array(
                             'name' => $label,
                             'label' => $label,
@@ -710,7 +736,7 @@ class Form
                         '&nbsp;',
                         $checkboxValues
                     );
-                } else { 
+                } else {
                     $this->addCheckbox($field['name'], $field['label']);
                 }
                 break;
@@ -1068,7 +1094,7 @@ class Form
      
     public function setDefaults($defaultValues = null, $filter = null)
     {
-       $this->formProcessor->setDefaults($defaultValues, $filter);
+        $this->formProcessor->setDefaults($defaultValues, $filter);
     }
 
     /**
@@ -1152,9 +1178,9 @@ class Form
             }
             
             $validatorsList = self::getValidators($origin, $uri);
-            foreach ($validatorsList as $validatorKey=>$validatorsForField) {
+            foreach ($validatorsList as $validatorKey => $validatorsForField) {
                 $nbOfValidators = count($validatorsForField);
-                for ($i=0;$i<$nbOfValidators; $i++) {
+                for ($i=0; $i<$nbOfValidators; $i++) {
                     $validatorCall = '\\Centreon\\Core\\Form\\Validator\\'.ucfirst($validatorsForField[$i]['call']);
                     $resultValidate = $validatorCall::validate(
                         $submittedValues[$validatorKey],
@@ -1164,12 +1190,16 @@ class Form
                     );
                     if (!$resultValidate['success']) {
                         $isValidate = false;
-                        $errorMessage .= '<b>' .$validatorsForField[$i]['label'] . '</b> : ' . $resultValidate['error'] . '<br />';
+                        $errorMessage .= '<b>'
+                            .$validatorsForField[$i]['label']
+                            . '</b> : '
+                            . $resultValidate['error']
+                            . '<br />';
                         break;
                     }
                 }
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $isValidate = false;
             $errorMessage = $e->getMessage();
         }

@@ -52,7 +52,7 @@ class Database
      * @param $filters array The list of fitlers for event
      * @return array
      */
-    static public function getEventLogs($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
+    public static function getEventLogs($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
         $listFullsearch = array('output');
 

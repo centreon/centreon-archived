@@ -99,11 +99,11 @@ class Router extends \Klein\Klein
                             } else {
                                 $routeName = $baseUrl.$data['route'];
                             }
-                            if (isset($_SESSION['acl']) && 
+                            if (isset($_SESSION['acl']) &&
                                 false === $_SESSION['acl']->routeAllowed($data['route'])) {
                                 $this->respond(
-                                    $routeName, 
-                                    function($request, $response) {
+                                    $routeName,
+                                    function ($request, $response) {
                                         $response->code(403);
                                     }
                                 );
@@ -112,7 +112,7 @@ class Router extends \Klein\Klein
                                     $data['method_type'],
                                     $routeName,
                                     function ($request, $response) use ($controllerName, $action, $routeName) {
-                                        if (!isset($_SESSION['user']) && !strstr($routeName, ".css") && 
+                                        if (!isset($_SESSION['user']) && !strstr($routeName, ".css") &&
                                             !strstr($controllerName, "LoginController")) {
                                             $obj = new \Controllers\LoginController($request);
                                             $obj->loginAction();

@@ -84,14 +84,17 @@
     },
 
     loadData: function() {
-      var $this = this;
+      var $this = this,
+          data;
       if ( this.settings.ajaxUrlGetScroll === "" ) {
         return;
       }
+      data = this.prepareData();
+      data.startTime = this.lastTime;
       $.ajax({
         url: this.settings.ajaxUrlGetScroll,
         type: "POST",
-        data: { startTime: this.lastTime },
+        data: data,
         dataType: "json",
         success: function( data, statusText, jqXHR ) {
           if (data.data.length === 0) {
@@ -138,16 +141,18 @@
       });
     },
     loadNewData: function() {
-      var $this = this;
+      var $this = this,
+          data;
       if ( this.settings.ajaxUrlGetNew === "" ||
         this.recentTime === null ) {
         return;
       }
-
+      data = this.prepareData();
+      data.startTime = this.recentTime;
       $.ajax({
         url: this.settings.ajaxUrlGetNew,
         type: "POST",
-        data: { startTime: this.recentTime },
+        data: data,
         dataType: "json",
         success: function( data, statusText, jqXHR ) {
           var nbEl = data.data.length - 1,
@@ -181,6 +186,30 @@
           }
         }
       });
+    },
+    prepareData: function() {
+      var data = {};
+      /* Get filter form */
+      if ( this.settings.formFilter !== "" ) {
+        $.each( $( this.settings.formFilter ).serializeArray(), function( i, field ) {
+          var tmpValue;
+          if ( field.value !== "" ) {
+            if ( field.name in data ) {
+              if ( data[field.name] instanceof Array ) {
+                data[field.name].push( field.value );
+              } else {
+                tmpValue = data[field.name];
+                data[field.name] = [];
+                data[field.name].push( tmpValue );
+                data[field.name].push( field.value );
+              }
+            } else {
+              data[field.name] = field.value;
+            }
+          }
+        } );
+      }
+      return data;
     }
   };
 
@@ -211,6 +240,7 @@
     ajaxUrlGetScroll: "",
     ajaxUrlGetNew: "",
     refresh: 10000,
-    limit: 20
+    limit: 20,
+    formFilter: ""
   };
 })( jQuery );

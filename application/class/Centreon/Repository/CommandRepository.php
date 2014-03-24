@@ -139,5 +139,4 @@ class CommandRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

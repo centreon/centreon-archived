@@ -145,5 +145,4 @@ class ServicetemplateRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

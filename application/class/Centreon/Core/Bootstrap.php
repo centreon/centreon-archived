@@ -165,8 +165,8 @@ class Bootstrap
     private function initMenus()
     {
         $this->di->set(
-            'menu', 
-            function() {
+            'menu',
+            function () {
                 return new Menu();
             }
         );
@@ -177,13 +177,16 @@ class Bootstrap
      */
     private function initRoutes()
     {
-        $this->di->set('router', function() {
-            $router = new \Centreon\Core\Router();
-            $router->parseRoutes(
-                '\\Controllers',
-                realpath(__DIR__ . '/../../..//controllers/')
-            );
-        return $router;
-        });
+        $this->di->set(
+            'router',
+            function () {
+                $router = new \Centreon\Core\Router();
+                $router->parseRoutes(
+                    '\\Controllers',
+                    realpath(__DIR__ . '/../../..//controllers/')
+                );
+                return $router;
+            }
+        );
     }
 }

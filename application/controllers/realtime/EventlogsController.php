@@ -54,7 +54,13 @@ class EventlogsController extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
 
         $tmpl = $di->get('template');
+        $tmpl->addJs('moment-with-langs.min.js');
+        $tmpl->addJs('daterangepicker.js');
+        $tmpl->addJs('jquery.select2/select2.min.js');
         $tmpl->addJs('centreon-table-infinite-scroll.js');
+        $tmpl->addCss('select2.css');
+        $tmpl->addCss('select2-bootstrap.css');
+        $tmpl->addCss('daterangepicker-bs3.css');
         $tmpl->display('realtime/eventlogs.tpl');
     }
 

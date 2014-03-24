@@ -152,8 +152,12 @@
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR) {
                     $('#modal').modal('hide');
+                    alertClose();
                     if (data.success) {
                         $('.dataTable').dataTable().fnDraw();
+                        alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success');
+                    } else {
+                        alertMessage(data.errorMessage, 'alert-danger');
                     }
                 }
             });
@@ -234,8 +238,12 @@
                 },
                 success: function(data, textStatus, jqXHR) {
                     $('#modal').modal('hide');
+                    alertClose();
                     if (data.success) {
                         $('.dataTable').dataTable().fnDraw();
+                        alertMessage('{t}The objects have been successfully duplicated{/t}', 'alert-success');
+                    } else {
+                        alertMessage(data.errorMessage, 'alert-danger');
                     }
                 }
             });
@@ -325,7 +333,12 @@
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR) {
                     $('#modal').modal('hide');
+                    alertClose();
                     if (data.success) {
+                        $('.dataTable').dataTable().fnDraw();
+                        alertMessage('{t}The changes have been applied{/t}', 'alert-success');
+                    } else {
+                        alertMessage(data.errorMessage, 'alert-danger');
                     }
                 }
             });

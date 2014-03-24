@@ -69,7 +69,7 @@ abstract class Customobject
         }
         
         if (isset($element['label_validators'])) {
-            foreach($element['label_validators'] as $validator) {
+            foreach ($element['label_validators'] as $validator) {
                 if (strstr(strtolower($validator['validator_action']), 'jquery') !== false) {
 
                 } else {
@@ -80,12 +80,16 @@ abstract class Customobject
                     $ajaxCall = '$.ajax({
                             url: "'.$validatorRoute.'",
                             type: "POST",
-                            data: {"value":$(this).val(), "object":$("[name=\'object\']").val(), "object_id":$("[name=\'object_id\']").val()},
+                            data: {
+                                "value":$(this).val(),
+                                "object":$("[name=\'object\']").val(),
+                                "object_id":$("[name=\'object_id\']").val()
+                            },
                             dataType: "json",
                             context: document.body
                         })';
                     $eventList = explode(',', trim($validator['events']));
-                    foreach($eventList as $event) {
+                    foreach ($eventList as $event) {
                         if (!empty($event)) {
                             $eventValidation .= '$("#'.$element['name'].'").on ("'.$event.'" , function(){ '.
                                $ajaxCall.

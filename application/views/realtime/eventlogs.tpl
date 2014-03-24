@@ -5,6 +5,48 @@
 {block name="content"}
 <div class="content-container">
   <div class="row search">
+    <form role="form" id="filters">
+      <div class="form-group col-md-4">
+        <input type="text" name="period" class="form-control" placeholder="{t}Period{/t}">
+      </div>
+      <div class="form-group col-md-4">
+        <select name="status" multiple style="width: 100%">
+          <option value="0">{t}OK/Up{/t}</option>
+          <option value="1">{t}Warning/Down{/t}</option>
+          <option value="2">{t}Critical/Unreachable{/t}</option>
+          <option value="3">{t}Unknown{/t}</option>
+          <option value="4">{t}Pending{/t}</option>
+          <option value="5">{t}Information{/t}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <select name="msg_type" multiple style="width: 100%">
+          <option value="0">{t}Service alert{/t}</option>
+          <option value="1">{t}Host Alert{/t}</option>
+          <option value="2">{t}Service Notification{/t}</option>
+          <option value="3">{t}Host Notification{/t}</option>
+          <option value="4">{t}Warning{/t}</option>
+          <option value="5">{t}External command{/t}</option>
+          <option value="6">{t}Current service state{/t}</option>
+          <option value="7">{t}Current host state{/t}</option>
+          <option value="8">{t}Initial service state{/t}</option>
+          <option value="9">{t}Initial host state{/t}</option>
+          <option value="10">{t}Aclknownledge service{/t}</option>
+          <option value="11">{t}Aclknownledge host{/t}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <!-- @TODO dynamic load -->
+        <select name="instance_name" multiple style="width: 100%">
+          <option>Central</option>
+        </select>
+      </div>
+      <div class="form-group col-md-8">
+        <input type="text" name="output" class="form-control" placeholder="{t}Filter message{/t}">
+      </div>
+    </form>
+  </div>
+  <div class="row facets" style="display: none">
   </div>
   <table class="table table-striped table-condensed" id="eventlogs">
   <thead>
@@ -28,7 +70,27 @@
 $(function() {
   $('#eventlogs').centreonTableInfiniteScroll({
     ajaxUrlGetScroll: "{url_for url="/realtime/eventlogs"}",
-    ajaxUrlGetNew: "{url_for url="/realtime/eventlogs/refresh"}"
+    ajaxUrlGetNew: "{url_for url="/realtime/eventlogs/refresh"}",
+    formFilter: "#filters"
+  });
+
+  $("input[name='period']").daterangepicker({
+    timePicker: true,
+    timePickerIncrement: 5,
+    timePicker12Hour: false,
+    format: 'YYYY-MM-DD HH:mm'
+  });
+
+  $("select[name='status']").select2({
+    placeholder: "{t}Status{/t}"
+  });
+
+  $("select[name='msg_type']").select2({
+    placeholder: "{t}Message type{/t}"
+  });
+
+  $("select[name='instance_name']").select2({
+    placeholder: "{t}Instance{/t}"
   });
 });
 </script>

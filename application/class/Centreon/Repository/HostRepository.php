@@ -181,20 +181,24 @@ class HostRepository extends \Centreon\Repository\Repository
         $dbconn = $di->get('db_centreon');
         
         $config = \Centreon\Core\Di::getDefault()->get('config');
-        $finalRoute = rtrim($config->get('global','base_url'), '/');
+        $finalRoute = rtrim($config->get('global', 'base_url'), '/');
         
         while (1) {
-            $stmt = $dbconn->query("SELECT ehi_icon_image, host_id "
+            $stmt = $dbconn->query(
+                "SELECT ehi_icon_image, host_id "
                 . "FROM host, extended_host_information "
                 . "WHERE host_name = '$host_name' "
-                . "AND host_id = host_host_id");
+                . "AND host_id = host_host_id"
+            );
             $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            $stmtTpl = $dbconn->query("SELECT host_tpl_id, host_name "
+            $stmtTpl = $dbconn->query(
+                "SELECT host_tpl_id, host_name "
                 . "FROM host, host_template_relation "
                 . "WHERE host_host_id = '$ehiResult[host_id]' "
                 . "AND host_id = host_host_id "
-                . "LIMIT 1");
+                . "LIMIT 1"
+            );
             $tplResult = $stmtTpl->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($ehiResult['ehi_icon_image'])) {
@@ -210,5 +214,4 @@ class HostRepository extends \Centreon\Repository\Repository
         
         return $finalRoute;
     }
-    
 }
