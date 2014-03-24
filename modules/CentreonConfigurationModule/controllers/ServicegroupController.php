@@ -43,6 +43,7 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $objectName = 'servicegroup';
     protected $objectBaseUrl = '/configuration/servicegroup';
     protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ServiceGroupDatatable';
     public static $relationMap = array(
         'sg_services' => '\CentreonConfiguration\Models\Relation\Servicegroup\Service'
     );
@@ -123,7 +124,7 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
      *
      *
      * @method get
-     * @route /configuration/servicegroup/[i:id]/[i:advanced]
+     * @route /configuration/servicegroup/[i:id]
      */
     public function editAction()
     {

@@ -540,8 +540,8 @@ class Form
             throw new Exception(_('The validation is impossible due to missing form token'));
         }
         
-        unset($_SESSION['form_token']);
-        unset($_SESSION['form_token_time']);
+        /*unset($_SESSION['form_token']);
+        unset($_SESSION['form_token_time']);*/
         return true;
     }
 

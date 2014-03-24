@@ -41,9 +41,10 @@ namespace CentreonRealtime\Models;
  *
  * @author sylvestre
  */
-class Service extends \Centreon\Models\CentreonBaseModel
+class Service extends \Centreon\Models\CentreonStorageBaseModel
 {
-    protected static $table = "services";
+    protected static $table = "services s";
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "description";
+    protected static $simpleRelation = array('host_id' => '\CentreonRealtime\Models\Host');
 }

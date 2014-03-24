@@ -37,8 +37,7 @@ namespace Centreon\Internal\Utils;
  * Class for funtions to manipulate date and time
  *
  * @authors Maximilien Bersoult
- * @package CentreonRealtime
- * @subpackage Controllers
+ * @package Centreon
  */
 class Datetime
 {

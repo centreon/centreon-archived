@@ -71,6 +71,12 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      * @var string 
      */
     protected $secondaryObjectClass = '\CentreonConfiguration\Models\Hosttemplate';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $datatableObject = '\CentreonConfiguration\Internal\HostTemplateDatatable';
 
 
     /**

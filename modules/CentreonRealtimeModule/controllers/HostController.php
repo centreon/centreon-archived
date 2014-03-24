@@ -48,6 +48,10 @@ use \CentreonRealtime\Repository\HostdetailRepository,
  */
 class HostController extends \Centreon\Internal\Controller
 {
+    protected $datatableObject = '\CentreonRealtime\Internal\HostDatatable';
+    
+    protected $objectClass = '\CentreonRealtime\Models\Host';
+    
     /**
      * Display services
      *
@@ -56,6 +60,60 @@ class HostController extends \Centreon\Internal\Controller
      * @todo work on ajax refresh
      */
     public function displayHostsAction()
+    {
+        /* Load css */
+        $this->tpl->addCss('dataTables.tableTools.min.css')
+            ->addCss('dataTables.colVis.min.css')
+            ->addCss('dataTables.colReorder.min.css')
+            ->addCss('dataTables.fixedHeader.min.css')
+            ->addCss('dataTables.bootstrap.css');
+
+        /* Load js */
+        $this->tpl->addJs('jquery.min.js')
+        	->addJs('jquery.dataTables.min.js')
+            ->addJs('dataTables.tableTools.min.js')
+            ->addJs('dataTables.colVis.min.js')
+            ->addJs('dataTables.colReorder.min.js')
+            ->addJs('dataTables.fixedHeader.min.js')
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js')
+        	->addJs('jquery.select2/select2.min.js')
+        	->addJs('jquery.validate.min.js')
+        	->addJs('additional-methods.min.js');
+
+        /* Datatable */
+        $this->tpl->assign('moduleName', 'CentreonRealtime');
+        $this->tpl->assign('datatableObject', $this->datatableObject);
+        $this->tpl->assign('objectName', 'Host');
+        $this->tpl->assign('consoleType', 0); // host console
+        $this->tpl->assign('objectListUrl', '/realtime/host/list');
+        $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
+    }
+
+    /**
+     * The page structure for display
+     *
+      * @method get
+     * @route /realtime/host/list
+     */
+    public function listAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+        
+        $router->response()->json($myDataForDatatable);
+    }
+
+    /**
+     * Host detail page
+     *
+     * @method get
+     * @route /realtime/host/[i:id]
+     */
+    public function hostDetailAction()
     {
         /* Load css */
         $this->tpl->addCss('dataTables.css')
@@ -75,37 +133,8 @@ class HostController extends \Centreon\Internal\Controller
         /* Datatable */
         $this->tpl->assign('moduleName', 'CentreonRealtime');
         $this->tpl->assign('objectName', 'Host');
-        $this->tpl->assign('objectListUrl', '/realtime/host/list');
-        $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
-    }
 
-    /**
-     * The page structure for display
-     *
-      * @method get
-     * @route /realtime/host/list
-     */
-    public function listAction()
-    {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
-        $router->response()->json(
-            \Centreon\Internal\Datatable::getDatas(
-                'CentreonRealtime',
-                'host',
-                $this->getParams('get')
-            )
-        );
-    }
-
-    /**
-     * Host detail page
-     *
-     * @method get
-     * @route /realtime/host/[i:id]
-     */
-    public function hostDetailAction()
-    {
-
+        $this->tpl->display('file:[CentreonRealtimeModule]host_detail.tpl');
     }
 
     /**

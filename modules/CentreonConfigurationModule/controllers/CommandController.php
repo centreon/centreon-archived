@@ -43,6 +43,7 @@ class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     protected $objectName = 'command';
     protected $objectBaseUrl = '/configuration/command';
     protected $objectClass = '\CentreonConfiguration\Models\Command';
+    protected $datatableObject = '\CentreonConfiguration\Internal\CommandDatatable';
 
     /**
      * List commands

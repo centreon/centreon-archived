@@ -40,6 +40,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     protected $objectDisplayName = 'Service';
     protected $objectName = 'service';
     protected $objectBaseUrl = '/configuration/service';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ServiceDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Service';
     public static $relationMap = array(
         'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',

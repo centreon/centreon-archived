@@ -35,6 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
+use     \Centreon\Internal\Utils\Datetime;
+
 /**
  * @author Julien Mathis <jmathis@merethis.com>
  * @package CentreonRealtime
@@ -76,7 +78,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         'Address' => 'address',
         'Status' => 'state',
         'Last Update' => 'last_check',
-        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-last_hard_state) AS duration',
+        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-last_hard_state_change) AS duration',
         'Retry' => "CONCAT(check_attempt, ' / ', max_check_attempts) AS retry",
         'Output' => 'output'
     );
@@ -97,7 +99,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         'address',
         'state',
         'last_check',
-        '[SPECFIELD](unix_timestamp(NOW())-last_hard_state) AS duration',
+        '[SPECFIELD](unix_timestamp(NOW())-last_hard_state_change) AS duration',
         "CONCAT(check_attempt, ' / ', max_check_attempts) AS retry",
         'output'
     );
@@ -149,7 +151,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         ),
         'state' => array(
             'type' => 'select',
-            'parameters' =>array(
+            'parameters' => array(
                 '0' => '<span class="label label-success">OK</span>',
                 '1' => '<span class="label label-warning">Warning</span>',
                 '2' => '<span class="label label-danger">Critical</span>',
@@ -204,19 +206,24 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
      */
     public static function formatDatas(&$resultSet)
     {
-        /*
+        
         $previousHost = '';
-        foreach ($resultSet as &$myServiceSet) {
+        foreach ($resultSet as &$myHostSet) {
             // Set host_name
-            if ($myServiceSet['name'] === $previousHost) {
-                $myServiceSet['name'] = '';
+            if ($myHostSet['name'] === $previousHost) {
+                $myHostSet['name'] = '';
             } else {
-                $previousHost = $myServiceSet['name'];
-                $myServiceSet['name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
-                    $myServiceSet['name']
-                ).'&nbsp;'.$myServiceSet['name'];
+                $previousHost = $myHostSet['name'];
+                $myHostSet['name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
+                    $myHostSet['name']
+                ).'&nbsp;&nbsp;'.$myHostSet['name'];
             }
+            $myHostSet['duration'] = Datetime::humanReadable($myHostSet['duration'],
+                                                             Datetime::PRECISION_FORMAT,
+                                                             2
+                                                             ); 
+            
         }
-        */
+        
     }
 }

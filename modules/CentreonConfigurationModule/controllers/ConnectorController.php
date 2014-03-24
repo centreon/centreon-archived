@@ -42,6 +42,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectDisplayName = 'Connector';
     protected $objectName = 'connector';
     protected $objectBaseUrl = '/configuration/connector';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ConnectorDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Connector';
     
     public static $isDisableable = true;

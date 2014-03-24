@@ -40,6 +40,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $objectDisplayName = 'Manufacturer';
     protected $objectName = 'manufacturer';
     protected $objectBaseUrl = '/configuration/manufacturer';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ManufacturerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Manufacturer';
 
     /**
