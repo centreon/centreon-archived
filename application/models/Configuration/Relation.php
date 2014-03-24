@@ -96,7 +96,7 @@ abstract class Relation
     public static function delete($fkey, $skey = null)
     {
         if (isset($fkey) && isset($skey)) {
-            $sql = "DELETE FROM " . static::$relationTable . 
+            $sql = "DELETE FROM " . static::$relationTable .
                 "WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
             $args = array($fkey, $skey);
         } elseif (isset($skey)) {
@@ -140,10 +140,17 @@ abstract class Relation
      * @param array $relationTableParams
      * @return array
      */
-    public static function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, 
-        $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR", 
-        $relationTableParams = array())
-    {
+    public static function getMergedParameters(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR",
+        $relationTableParams = array()
+    ) {
         $fString = "";
         $sString = "";
         $rString = "";
@@ -169,13 +176,15 @@ abstract class Relation
         }
         $sql = "SELECT $fString $sString $rString
         		FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
-        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey."
-        		AND ".static::$relationTable.".".static::$secondKey." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey();
+        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
+                    ." = ".static::$relationTable.".".static::$firstKey."
+        		AND ".static::$relationTable.".".static::$secondKey
+                    ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey();
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 $sql .= " $filterType $key LIKE ? ";
-                $value = trim ($rawvalue);
+                $value = trim($rawvalue);
                 $value = str_replace("\\", "\\\\", $value);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);

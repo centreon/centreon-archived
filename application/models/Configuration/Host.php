@@ -99,7 +99,7 @@ class Host extends Object
             }
         }
         $templates = \Models\Configuration\Relation\Host\Hosttemplate::getTargetIdFromSourceId(
-            'host_tpl_id', 
+            'host_tpl_id',
             'host_host_id',
             $hid
         );
