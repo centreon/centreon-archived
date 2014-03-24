@@ -132,5 +132,4 @@ class HostgroupRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

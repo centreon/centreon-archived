@@ -256,7 +256,7 @@ class Auth
                 $this->checkPassword($password, $token);
 
                 if ($this->passwdOk == 1) {
-                    /* 
+                    /*
                      * @todo see CentreonLog
                      * $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                      */
@@ -312,15 +312,12 @@ class Auth
     {
         if (isset($this->cryptEngine)) {
             switch ($this->cryptEngine) {
-                case 1 :
+                case 1:
                     return "MD5";
-                    break;
-                case 2 :
+                case 2:
                     return "SHA1";
-                    break;
-                default :
+                default:
                     return "MD5";
-                    break;
             }
         } else {
             return "MD5";
@@ -336,15 +333,12 @@ class Auth
     protected function myCrypt($str)
     {
         switch ($this->cryptEngine) {
-            case 1 :
+            case 1:
                 return md5($str);
-                break;
-            case 2 :
+            case 2:
                 return sha1($str);
-                break;
-            default :
+            default:
                 return md5($str);
-                break;
         }
     }
 
@@ -397,8 +391,8 @@ class Auth
      * @return string
      * @todo Valid if used
      */
-    protected function getAuthType() {
+    protected function getAuthType()
+    {
         return $this->authType;
     }
-
 }

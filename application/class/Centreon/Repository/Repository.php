@@ -124,7 +124,7 @@ abstract class Repository
      * 
      * @return array
      */
-    public static function  getParametersForDatatable()
+    public static function getParametersForDatatable()
     {
         return array(
             'column' => static::$datatableColumn,
@@ -187,7 +187,7 @@ abstract class Repository
         }
         
         // Conditions (Recherche)
-        foreach ($params as $paramName=>$paramValue) {
+        foreach ($params as $paramName => $paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
@@ -218,7 +218,9 @@ abstract class Repository
         }
         
         // Building the final request
-        $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
+        $finalRequest = "SELECT "
+            . "SQL_CALC_FOUND_ROWS $field_list "
+            . "FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
         
         $stmt = $dbconn->query($finalRequest);
@@ -227,13 +229,13 @@ abstract class Repository
         $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $countTab = count($resultSet);
         $objectTab = array();
-        for($i=0; $i<$countTab; $i++) {
+        for ($i=0; $i<$countTab; $i++) {
             $objectTab[] = static::$objectName;
         }
         
         static::formatDatas($resultSet);
         
-        return self::array_values_recursive(
+        return self::arrayValuesRecursive(
             \array_values(
                 \Centreon\Core\Datatable::removeUnwantedFields(
                     static::$objectName,
@@ -300,7 +302,7 @@ abstract class Repository
         }
         
         // Conditions (Recherche)
-        foreach ($params as $paramName=>$paramValue) {
+        foreach ($params as $paramName => $paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
@@ -365,13 +367,18 @@ abstract class Repository
     {
         $elementField = array_keys($element);
         $originalElement = $element;
-        foreach (static::$columnCast as $castField=>$castValues) {
+        foreach (static::$columnCast as $castField => $castValues) {
             if (is_array($castValues)) {
                 if (\in_array($castField, $elementField)) {
                     $element[$castField] = $castValues[$element[$castField]];
                 }
             } else {
-                $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
+                $castedElement = \array_map(
+                    function ($n) {
+                        return "::$n::";
+                    },
+                    $elementField
+                );
                 $element[$castField] = str_replace($castedElement, $originalElement, $castValues);
             }
         }
@@ -383,13 +390,13 @@ abstract class Repository
      * @param type $array
      * @return type
      */
-    public static function array_values_recursive($array)
+    public static function arrayValuesRecursive($array)
     {
-        $array = array_values( $array );
-        for ( $i = 0, $n = count( $array ); $i < $n; $i++ ) {
+        $array = array_values($array);
+        for ($i = 0, $n = count($array); $i < $n; $i++) {
             $element = $array[$i];
-            if ( is_array( $element ) ) {
-                $array[$i] = self::array_values_recursive( $element );
+            if (is_array($element)) {
+                $array[$i] = self::arrayValuesRecursive($element);
             }
         }
         return $array;

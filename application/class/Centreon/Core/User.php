@@ -87,7 +87,14 @@ class User
     public function init($userId)
     {
         $contactObj = new \Models\Configuration\Contact();
-        $paramArr = array('contact_id', 'contact_name', 'contact_alias', 'contact_lang', 'contact_admin', 'contact_email'); 
+        $paramArr = array(
+            'contact_id',
+            'contact_name',
+            'contact_alias',
+            'contact_lang',
+            'contact_admin',
+            'contact_email'
+        );
         $params = $contactObj->getParameters($userId, $paramArr);
         if (!is_array($params) || !count($params)) {
             throw new Exception(_('Unknown user id'));

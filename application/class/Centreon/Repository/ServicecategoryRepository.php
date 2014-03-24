@@ -235,7 +235,7 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
             $mySC['sc_activate'] = $save;
         }
         
-        return self::array_values_recursive(
+        return self::arrayValuesRecursive(
             \array_values(
                 \array_map(
                     "\\Centreon\\Core\\Datatable::castResult",
