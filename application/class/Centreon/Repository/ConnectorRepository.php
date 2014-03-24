@@ -137,5 +137,4 @@ class ConnectorRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

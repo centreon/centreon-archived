@@ -133,5 +133,4 @@ class AclgroupRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

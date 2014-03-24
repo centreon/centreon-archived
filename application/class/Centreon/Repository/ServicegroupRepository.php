@@ -136,5 +136,4 @@ class ServicegroupRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

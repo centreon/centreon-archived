@@ -136,5 +136,4 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }
