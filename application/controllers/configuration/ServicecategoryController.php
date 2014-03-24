@@ -35,8 +35,7 @@
 
 namespace Controllers\Configuration;
 
-use \Models\Configuration\Servicecategory,
-    \Centreon\Core\Form;;
+use \Centreon\Core\Form;
 
 class ServicecategoryController extends \Controllers\ObjectAbstract
 {

@@ -50,7 +50,7 @@ class LogAction
      * @param $objName string The object name
      * @param $objValues array The list of changed values
      */
-    static public function addLog($actionType, $objType, $objId, $objName, $objValues)
+    public static function addLog($actionType, $objType, $objId, $objName, $objValues)
     {
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_storage');

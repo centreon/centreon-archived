@@ -36,6 +36,7 @@
 namespace Controllers;
 
 use \Centreon\Core\Form\Generator;
+
 /**
  * Abstact class for configuration controller
  *
@@ -111,7 +112,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         );
         $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");
         $finalList = array();
-        foreach($list as $obj) {
+        foreach ($list as $obj) {
             $finalList[] = array(
                 "id" => $obj[$idField],
                 "text" => $obj[$uniqueField]
@@ -183,7 +184,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
                             if ($rel::$firstObject == $this->objectClass) {
                                 $rel::insert($id, $relId);
                             } else {
-                                $rel::insert($relId, $id);    
+                                $rel::insert($relId, $id);
                             }
                         }
                         $db->commit();
@@ -279,7 +280,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
                         if ($rel::$firstObject == $this->objectClass) {
                             $rel::delete($id);
                         } else {
-                            $rel::delete(null, $id);    
+                            $rel::delete(null, $id);
                         }
                         $arr = explode(',', $givenParameters[$k]);
                         $db->beginTransaction();
@@ -290,7 +291,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
                             if ($rel::$firstObject == $this->objectClass) {
                                 $rel::insert($id, $relId);
                             } else {
-                                $rel::insert($relId, $id);    
+                                $rel::insert($relId, $id);
                             }
                         }
                         $db->commit();
@@ -356,10 +357,12 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(array(
-            'success' => $deleteSuccess,
-            'errorMessage' => $errorMessage
-        ));
+        $router->response()->json(
+            array(
+                'success' => $deleteSuccess,
+                'errorMessage' => $errorMessage
+            )
+        );
     }
 
     /**
@@ -370,9 +373,10 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
         
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            $this->objectName,
-            $this->getParams('get')
+        $router->response()->json(
+            \Centreon\Core\Datatable::getDatas(
+                $this->objectName,
+                $this->getParams('get')
             )
         );
     }
@@ -392,11 +396,13 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             'listMc' => array()
         );
 
-        $stmt = $dbconn->prepare("SELECT f.field_id, f.label
+        $stmt = $dbconn->prepare(
+            "SELECT f.field_id, f.label
             FROM form_field f, form_massive_change_field_relation mcfr, form_massive_change mc
             WHERE mc.route = :route
                 AND mc.massive_change_id = mcfr.massive_change_id
-                AND f.field_id = mcfr.field_id");
+                AND f.field_id = mcfr.field_id"
+        );
         $stmt->bindValue(':route', $this->objectBaseUrl . '/mc_fields', \PDO::PARAM_STR);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
@@ -420,9 +426,11 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         
         $requestParam = $this->getParams('named');
 
-        $stmt = $dbconn->prepare("SELECT name, label, default_value, attributes, type, help
+        $stmt = $dbconn->prepare(
+            "SELECT name, label, default_value, attributes, type, help
             FROM form_field
-            WHERE field_id = :id");
+            WHERE field_id = :id"
+        );
         $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
@@ -462,10 +470,12 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(array(
-            'success' => $duplicateSuccess,
-            'errorMessage' => $errorMessage
-        ));
+        $router->response()->json(
+            array(
+                'success' => $duplicateSuccess,
+                'errorMessage' => $errorMessage
+            )
+        );
     }
 
     /**
@@ -497,10 +507,12 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(array(
-            'success' => $massiveChangeSuccess,
-            'errorMessage' => $errorMessage
-        ));
+        $router->response()->json(
+            array(
+                'success' => $massiveChangeSuccess,
+                'errorMessage' => $errorMessage
+            )
+        );
     }
     
     /**
@@ -526,17 +538,17 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         }
         $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
         $list = $relClass::getMergedParameters(
-            $fArr, 
-            $sArr, 
-            -1, 
-            0, 
-            null, 
-            "ASC", 
-            array($cmp => $requestParam['id']), 
+            $fArr,
+            $sArr,
+            -1,
+            0,
+            null,
+            "ASC",
+            array($cmp => $requestParam['id']),
             "AND"
         );
         $finalList = array();
-        foreach($list as $obj) {
+        foreach ($list as $obj) {
             $finalList[] = array(
                 "id" => $obj[$tmp::getPrimaryKey()],
                 "text" => $obj[$tmp::getUniqueLabelField()]

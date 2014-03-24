@@ -68,7 +68,10 @@ class File
         $dbconn = $di->get('db_centreon');
         
         // Get the id of the brand new file that has been insert in the DB
-        $queryRetrieveBinaryId = "SELECT $fields FROM binary_type WHERE `type_name` = :typename AND `module_id` = :moduleid";
+        $queryRetrieveBinaryId = "SELECT $fields "
+            . "FROM binary_type "
+            . "WHERE `type_name` = :typename "
+            . "AND `module_id` = :moduleid";
         $stmt = $dbconn->prepare($queryRetrieveBinaryId);
         $stmt->bindParam(':typename', $binaryParam['typename'], \PDO::PARAM_STR);
         $stmt->bindParam(':moduleid', $binaryParam['moduleid'], \PDO::PARAM_STR);
@@ -88,7 +91,10 @@ class File
         $dbconn = $di->get('db_centreon');
         
         // Get the id of the brand new file that has been insert in the DB
-        $queryRetrieveBinaryId = "SELECT `binary_type_id` FROM binary_type WHERE `type_name` = :typename AND `module_id` = :moduleid";
+        $queryRetrieveBinaryId = "SELECT `binary_type_id` "
+            . "FROM binary_type "
+            . "WHERE `type_name` = :typename "
+            . "AND `module_id` = :moduleid";
         $stmt = $dbconn->prepare($queryRetrieveBinaryId);
         $stmt->bindParam(':typename', $typeParam['typename'], \PDO::PARAM_STR);
         $stmt->bindParam(':moduleid', $typeParam['moduleid'], \PDO::PARAM_STR);

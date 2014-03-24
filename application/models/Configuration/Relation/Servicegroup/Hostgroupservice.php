@@ -35,10 +35,10 @@
  */
 
 
-namespace Models\Configuration;
+namespace Models\Configuration\Relation\Servicegroup;
 
 
-class Relation\Servicegroup\Hostgroupservice extends Relation
+class Hostgroupservice extends \Models\Configuration\Relation
 {
     protected static $relationTable = "servicegroup_relation";
     protected static $firstKey = "servicegroup_sg_id";
@@ -55,7 +55,9 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
     public static function insert($fkey, $hgId, $serviceId)
     {
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        $sql = "INSERT INTO ".static::$relationTable." (".static::$firstKey.", hostgroup_hg_id, ".static::$secondKey.") VALUES (?, ?, ?)";
+        $sql = "INSERT INTO ".static::$relationTable
+            ." (".static::$firstKey.", hostgroup_hg_id, ".static::$secondKey.") "
+            . "VALUES (?, ?, ?)";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey, $hgId, $serviceId));
     }
@@ -72,13 +74,19 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
     {
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (isset($fkey) && isset($hgId) && isset($serviceId)) {
-            $sql = "DELETE FROM ".static::$relationTable." WHERE ".static::$firstKey." = ? AND hostgroup_hg_id = ? AND ".static::$secondKey." = ?";
+            $sql = "DELETE FROM ".static::$relationTable." "
+                . "WHERE ".static::$firstKey." = ? "
+                . "AND hostgroup_hg_id = ? "
+                . "AND ".static::$secondKey." = ?";
             $args = array($fkey, $hgId, $serviceId);
         } elseif (isset($hgId) && isset($serviceId)) {
-            $sql = "DELETE FROM ".static::$relationTable." WHERE hostgroup_hg_id = ? AND ".static::$secondKey." = ?";
+            $sql = "DELETE FROM ".static::$relationTable." "
+                . "WHERE hostgroup_hg_id = ? "
+                . "AND ".static::$secondKey." = ?";
             $args = array($hgId, $serviceId);
         } else {
-            $sql = "DELETE FROM ".static::$relationTable." WHERE ".static::$firstKey." = ?";
+            $sql = "DELETE FROM ".static::$relationTable." "
+                . "WHERE ".static::$firstKey." = ?";
             $args = array($fkey);
         }
         $stmt = $db->prepare($sql);
@@ -94,7 +102,10 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
      */
     public static function getServicegroupIdFromHostIdServiceId($hgId, $serviceId)
     {
-        $sql = "SELECT ".static::$firstKey." FROM ".static::$relationTable." WHERE hostgroup_hg_id = ? AND ".static::$secondKey." = ?";
+        $sql = "SELECT ".static::$firstKey." "
+            . "FROM ".static::$relationTable." "
+            . "WHERE hostgroup_hg_id = ? "
+            . "AND ".static::$secondKey." = ?";
         $result = self::getResult($sql, array($hgId, $serviceId));
         $tab = array();
         foreach ($result as $rez) {
@@ -111,7 +122,9 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
      */
     public static function getHostGroupIdServiceIdFromServicegroupId($servicegroupId)
     {
-        $sql = "SELECT hostgroup_hg_id, ".static::$secondKey." FROM ".static::$relationTable." WHERE ".static::$firstKey." = ?";
+        $sql = "SELECT hostgroup_hg_id, ".static::$secondKey." "
+            . "FROM ".static::$relationTable." "
+            . "WHERE ".static::$firstKey." = ?";
         $result = self::getResult($sql, array($servicegroupId));
         $tab = array();
         $i = 0;
@@ -132,6 +145,6 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
      */
     public function __call($name, $arg)
     {
-       throw new Exception('Unknown method');
+        throw new Exception('Unknown method');
     }
 }
