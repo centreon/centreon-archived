@@ -43,6 +43,9 @@ class UsergroupController extends \Centreon\Core\Controller
     protected $objectName = 'usergroup';
     protected $objectBaseUrl = '/configuration/usergroup';
     protected $objectClass = '\Models\Configuration\Contactgroup';
+    public static $relationMap = array(
+        'cg_contacts' => '\Models\Configuration\Relation\Contact\Contactgroup'
+    );
 
     /**
      * List usergroups
@@ -146,5 +149,16 @@ class UsergroupController extends \Centreon\Core\Controller
     public function editAction()
     {
         
+    }
+
+    /**
+     * Get list of contacts for a specific contact group
+     *
+     * @method get
+     * @route /configuration/usergroup/[i:id]/contact
+     */
+    public function contactForContactgroupAction()
+    {
+        parent::getRelations(static::$relationMap['cg_contacts']);
     }
 }
