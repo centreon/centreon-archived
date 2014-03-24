@@ -35,8 +35,6 @@
 
 namespace Controllers\Configuration;
 
-use Models\Configuration\Hostgroup;
-
 class HostgroupController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Hostgroup';
@@ -107,7 +105,7 @@ class HostgroupController extends \Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        parent::addAction();  
+        parent::addAction();
     }
     
     /**

@@ -35,8 +35,7 @@
 
 namespace Controllers\Configuration;
 
-use \Models\Configuration\Connector,
-    \Centreon\Core\Form;
+use \Centreon\Core\Form;
 
 class ConnectorController extends \Controllers\ObjectAbstract
 {

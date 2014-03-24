@@ -35,9 +35,8 @@
 
 namespace Controllers\Administration;
 
-use \Models\Configuration\Acl\Menu,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Centreon\Core\Form;
+use \Centreon\Core\Form\Generator;
 
 class AclmenuController extends \Centreon\Core\Controller
 {
@@ -115,7 +114,7 @@ class AclmenuController extends \Centreon\Core\Controller
                 foreach ($params[$aclType] as $menuId => $on) {
                     if (!isset($aclData[$menuId])) {
                         $aclData[$menuId] = 0;
-                    } 
+                    }
                     switch ($aclType) {
                         case 'acl_create':
                             $flag = \Centreon\Core\Acl::ADD;
@@ -221,7 +220,7 @@ class AclmenuController extends \Centreon\Core\Controller
         );
         $form->addRadio('enabled', _("Status"), 'status', '&nbsp;', $radios);
         
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
         
         // Display page
@@ -243,11 +242,13 @@ class AclmenuController extends \Centreon\Core\Controller
         
         $requestParam = $this->getParams('named');
         $aclmenuObj = new \Models\Configuration\Acl\Menu();
-        $currentaclmenuValues = $aclmenuObj->getParameters($requestParam['id'], array(
-            'acl_menu_id',
-            'name',
-            'description',
-            'enabled'
+        $currentaclmenuValues = $aclmenuObj->getParameters(
+            $requestParam['id'],
+            array(
+                'acl_menu_id',
+                'name',
+                'description',
+                'enabled'
             )
         );
 
@@ -256,8 +257,8 @@ class AclmenuController extends \Centreon\Core\Controller
         }
         
         $myForm = new Generator(
-            "/administration/aclmenu/update", 
-            0, 
+            "/administration/aclmenu/update",
+            0,
             array(
                 'id' => $requestParam['id']
             )
