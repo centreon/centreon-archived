@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="centreon" default="build" basedir="..">
-  <target name="build" depends="prepare,phpcs-ci,phpcpd,phpunit" />
+  <target name="build" depends="prepare,phpcs-ci,phpcpd,phpmd-ci,phpunit" />
 
   <target name="clean" description="Clean the builds environment">
     <delete dir="${basedir}/build/api"/>
