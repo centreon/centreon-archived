@@ -35,8 +35,6 @@
 
 namespace Controllers\Configuration;
 
-use Models\Configuration\Contactgroup;
-
 class UsergroupController extends \Centreon\Core\Controller
 {
     protected $objectDisplayName = 'User group';
@@ -84,9 +82,10 @@ class UsergroupController extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
         
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'usergroup',
-            $this->getParams('get')
+        $router->response()->json(
+            \Centreon\Core\Datatable::getDatas(
+                'usergroup',
+                $this->getParams('get')
             )
         );
     }

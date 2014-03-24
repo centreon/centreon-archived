@@ -36,9 +36,7 @@
 
 namespace Controllers\Administration;
 
-use \Models\Configuration\Acl\Group,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Centreon\Core\Form;
 
 class AclgroupController extends \Controllers\ObjectAbstract
 {
@@ -170,7 +168,7 @@ class AclgroupController extends \Controllers\ObjectAbstract
         );
         $form->addRadio('status', _("Status"), 'status', '&nbsp;', $radios);
         
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
         
         // Display page

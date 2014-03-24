@@ -68,7 +68,7 @@ class PollerController extends \Centreon\Core\Controller
         $pollerList = $pollerObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
         
         $finalPollerList = array();
-        foreach($pollerList as $poller) {
+        foreach ($pollerList as $poller) {
             $finalPollerList[] = array(
                 "id" => $poller['id'],
                 "text" => $poller['name']

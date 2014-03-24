@@ -141,7 +141,7 @@ class ServicegroupController extends \Controllers\ObjectAbstract
         );
         $form->addRadio('servicegroup_status', _("Status"), 'servicegroup_type', '&nbsp;', $radios);
         $form->addTextarea('comments', _('Comments'));
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
         
         // Display page
