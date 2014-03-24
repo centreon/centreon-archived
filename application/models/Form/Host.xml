@@ -22,11 +22,21 @@
 			</block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/host/[i:id]/checkperiod","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/checkperiod</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_check_command" label="Check command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/command/formlist","listValuesRoute":"/configuration/host/[i:id]/checkcommand","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</obect_type>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/checkcommand</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="1">
@@ -39,36 +49,69 @@
 					<help></help>
 				</field>
 				<field name="host_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
 			<block name="Notification">
 				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/user/formlist","listValuesRoute":"/configuration/host/[i:id]/contact","multiple":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/contact</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/usergroup/formlist","listValuesRoute":"/configuration/host/[i:id]/contactgroup","multiple":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/contactgroup</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_notification_interval" label="Notification interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="1">
 					<help></help>
 				</field>
 				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/host/[i:id]/notificationperiod","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Down":1, "Unreachable":1, "Recovery":1, "Flapping":1, "Downtime Scheduled":1}</attributes>
+					<attributes>
+						<Down>1</Down>
+						<Unreachable>1</Unreachable>
+						<Recovery>1</Recovery>
+						<Flapping>1</Flapping>
+						<Downtime_Scheduled>1</Downtime_Scheduled>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0">
@@ -80,7 +123,10 @@
 					<help></help>
 				</field>
 				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+					<attributes>
+						<Enabled>1</Enabled>
+						<Disabled>0</Disabled>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
@@ -88,13 +134,23 @@
 		<section name="Relations">
 			<block name="Host group relations">
 				<field name="host_hostgroups" label="Parent host groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostgroup/formlist","listValuesRoute":"/configuration/host/[i:id]/hostgroup","multiple":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/hostgroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/hostgroup</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
 			<block name="Host category relations">
 				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostcategory/formlist","listValuesRoute":"/configuration/host/[i:id]/hostcategory","multiple":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
@@ -102,13 +158,21 @@
 		<section name="Data processing">
 			<block name="Data processing">
 				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
 			<block name="Freshness control options">
 				<field name="host_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0">
@@ -117,7 +181,11 @@
 			</block>
 			<block name="Flapping options">
 				<field name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0">
@@ -129,31 +197,56 @@
 			</block>
 			<block name="Perfdata options">
 				<field name="host_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
 			<block name="History options">
 				<field name="host_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Up":1, "Down":1, "Unreachable":1}</attributes>
+					<attributes>
+						<Up>1</Up>
+						<Down>1</Down>
+						<Unreachable>1</Unreachable>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
 			<block name="Event handler">
 				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+						<Default>2</Default>
+					</attributes>
 					<help></help>
 				</field>
 				<field name="host_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/command/formlist","listValuesRoute":"/configuration/host/[i:id]/eventhandler","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
@@ -161,7 +254,12 @@
 		<section name="Extended information">
 			<block name="Extended information">
 				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/image/icon/centreon","multiple":false,"wizardRoute":"/administration/media/image/add"}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+						<multiple>false</multiple>
+						<wizardRoute>/administration/media/image/add</wizardRoute>
+					</attributes>
 					<help></help>
 				</field>
 			</block>
