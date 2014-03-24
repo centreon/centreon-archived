@@ -77,5 +77,4 @@ class Textarea extends Customobject
         
         return $inputHtml;
     }
-    
 }

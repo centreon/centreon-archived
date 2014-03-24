@@ -145,7 +145,7 @@ class Acl
         $flag = 0;
         foreach ($aclFlags as $flag) {
             switch (strtolower($flag)) {
-                case "add": 
+                case "add":
                     $f = self::ADD;
                     break;
                 case "delete":

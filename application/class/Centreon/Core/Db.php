@@ -107,7 +107,7 @@ class Db extends \PDO
      */
     public function limit($sql, $count, $offset)
     {
-       return $sql . " LIMIT {$count} OFFSET {$offset}"; 
+        return $sql . " LIMIT {$count} OFFSET {$offset}";
     }
 
     /**

@@ -72,7 +72,13 @@ class Select extends Customobject
         
         $addJs = '';
         if (isset($element['label_ordered']) && $element['label_ordered']) {
-            $addJs = '$("#'.$element['name'].'").on("change", function() { $("#'.$element['name'].'_val").html($("#'.$element['name'].'").val());});';
+            $addJs = '$("#'
+                .$element['name']
+                .'").on("change", function() { $("#'
+                .$element['name']
+                .'_val").html($("#'
+                .$element['name']
+                .'").val());});';
 
             $addJs .= '$("#'.$element['name'].'").select2("container").find("ul.select2-choices").sortable({
                     containment: "parent",
@@ -81,7 +87,12 @@ class Select extends Customobject
                   });'."\n";
         }
         
-        $myHtml = '<input class="form-control '.$addClass.'" id="'.$element['name'].'" name="' . $element['name'] . '" style="width: 100%;" type="hidden" value=" " />';
+        $myHtml = '<input '
+            . 'class="form-control '
+            . $addClass
+            . '" id="'.$element['name']
+            . '" name="' . $element['name']
+            . '" style="width: 100%;" type="hidden" value=" " />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '

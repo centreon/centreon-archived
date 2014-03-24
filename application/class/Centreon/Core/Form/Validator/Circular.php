@@ -68,7 +68,7 @@ class Circular implements Ivalidator
                 $object::getFirstKey(),
                 $currentObject
             );
-            foreach($relations as $relation) {
+            foreach ($relations as $relation) {
                 $objectStack[] = $relation;
             }
         }
