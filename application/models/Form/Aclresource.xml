@@ -11,7 +11,13 @@
 			</block>
 			<block name="Relations">
 				<field name="acl_resource_groups" label="ACL groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attribute>{"object_type":"object","defaultValuesRoute":"/administration/aclgroup/formlist","listValuesRoute":"/administration/aclresource/[i:id]/aclgroup","multiple":true,"ordered":false}</attribute>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/administration/aclresource/[i:id]/aclgroup</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attribute>
 				</field>
 			</block>
 			<block name="Additional information">

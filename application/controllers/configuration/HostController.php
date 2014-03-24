@@ -38,11 +38,8 @@ namespace Controllers\Configuration;
 use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Contact,
     \Models\Configuration\Relation\Host\Contactgroup,
-    \Models\Configuration\Relation\Host\Hostgroup,
     \Models\Configuration\Relation\Host\Hostchild,
     \Models\Configuration\Relation\Host\Hostparent,
-    \Models\Configuration\Relation\Host\Hostcategory,
-    \Models\Configuration\Relation\Host\Hosttemplate,
     \Models\Configuration\Relation\Host\Poller,
     \Models\Configuration\Timeperiod,
     \Models\Configuration\Command,
@@ -100,7 +97,7 @@ class HostController extends \Controllers\ObjectAbstract
      * Create a new host
      *
      * @method post
-     * @route /configuration/host/create
+     * @route /configuration/host/add
      */
     public function createAction()
     {
@@ -140,7 +137,7 @@ class HostController extends \Controllers\ObjectAbstract
     public function addAction()
     {
         $tpl = \Centreon\Core\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/host/create');
+        $tpl->assign('validateUrl', '/configuration/host/add');
         parent::addAction();
     }
     
@@ -452,11 +449,11 @@ class HostController extends \Controllers\ObjectAbstract
         
         $router->response()->json($finalPollerList);
     }
-
+    
     /**
      * Duplicate a hosts
      *
-     * @method POST
+     * @method post
      * @route /configuration/host/duplicate
      */
     public function duplicateAction()

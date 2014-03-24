@@ -448,6 +448,7 @@ abstract class Object
             ." WHERE ".static::$uniqueLabelField."='$uniqueFieldvalue'";
         $stmt = $dbconn->query($unicityRequest);
         $resultUnique = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
         if (count($resultUnique) > 0) {
             if ($resultUnique[static::$primaryKey] == $id) {
                 $isUnique = true;

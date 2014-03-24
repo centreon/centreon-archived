@@ -2,6 +2,9 @@
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 <h4>Add</h4>
 </div>
+<div class="flash alert fade in" id="modal-flash-message" style="display: none;">
+  <button type="button" class="close" aria-hidden="true">&times;</button>
+</div>
 <div class="wizard" id="{$name}">
   <ul class="steps">
     {foreach $steps as $step}
@@ -21,6 +24,7 @@
    {/foreach}
   </div>
   <div class="modal-footer">
+    {$formElements.hidden}
     <button class="btn btn-default btn-prev" disabled>{t}Prev{/t}</button>
     <button class="btn btn-default btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
   </div>
@@ -52,17 +56,17 @@ $(function() {
     context: document.body
   })
   .success(function(data, status, jqxhr) {
-    alertClose();
+    alertModalClose();
     if (data.success) {
       {if isset($formRedirect) && $formRedirect}
         window.location='{url_for url=$formRedirectRoute}';
       {else}
-        alertMessage("The object has been successfully saved", "alert-success");
+        alertModalMessage("The object has been successfully saved", "alert-success");
       {/if}
       $('#modal').modal('hide');
       $('.dataTable').dataTable().fnDraw();
     } else {
-      alertMessage("An error occured", "alert-danger");
+      alertModalMessage(data.error, "alert-danger");
     }
   });
   return false;

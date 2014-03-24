@@ -14,7 +14,10 @@
 			</block>
 			<block name="Additional information">
 				<field name="enabled" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{\"Enabled\":1, \"Disabled\":0}</attributes>
+					<attributes>
+						<Enabled>1</Enabled>
+						<Disabled>0</Disabled>
+					</attributes>
 				</field>
 			</block>
 		</section>

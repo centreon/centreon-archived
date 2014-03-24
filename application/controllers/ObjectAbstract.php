@@ -117,6 +117,99 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     }
     
     /**
+     * Get wizard for add a object
+     *
+     * Response HTML
+     */
+    public function addAction()
+    {
+        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/add', 0, array('id' => 0));
+        $form->addHiddenComponent('object', $this->objectName);
+        $tpl = \Centreon\Core\Di::getDefault()->get('template');
+        $tpl->assign('formName', $form->getName());
+        $formGen = str_replace(
+            array('alertMessage', 'alertClose'),
+            array('alertModalMessage', 'alertModalClose'),
+            $form->generate()
+        );
+        echo $formGen;
+    }
+    
+    /**
+     * Generic create action
+     *
+     * @todo handle token
+     * @return int id of created object
+     */
+    public function createAction()
+    {
+        $givenParameters = clone $this->getParams('post');
+        $createSuccessful = true;
+        $createErrorMessage = '';
+        
+        $validationResult = \Centreon\Core\Form::validate("wizard", $this->getUri(), $givenParameters);
+        if ($validationResult['success']) {
+            $class = $this->objectClass;
+            $pk = $class::getPrimaryKey();
+            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+            try {
+                $columns = $class::getColumns();
+                $insertParams = array();
+                foreach ($givenParameters as $key => $value) {
+                    if (in_array($key, $columns)) {
+                        $insertParams[$key] = $value;
+                    }
+                }
+                $id = $class::insert($insertParams);
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
+            if (isset($id)) {
+                foreach (static::$relationMap as $k => $rel) {
+                    try {
+                        if (!isset($givenParameters[$k])) {
+                            continue;
+                        }
+                        $arr = explode(',', $givenParameters[$k]);
+                        $db->beginTransaction();
+                        foreach ($arr as $relId) {
+                            if (!is_numeric($relId)) {
+                                continue;
+                            }
+                            if ($rel::$firstObject == $this->objectClass) {
+                                $rel::insert($id, $relId);
+                            } else {
+                                $rel::insert($relId, $id);    
+                            }
+                        }
+                        $db->commit();
+                        unset($givenParameters[$k]);
+                    } catch (Exception $e) {
+                        echo $e->getMessage();
+                    }
+                }
+                \Centreon\Core\Di::getDefault()
+                    ->get('router')
+                    ->response()
+                    ->json(array('success' => true));
+                $this->postSave($id, 'add');
+                return $id;
+            }
+        } else {
+            $createSuccessful = false;
+            $createErrorMessage = $validationResult['error'];
+        }
+        
+        $router = \Centreon\Core\Di::getDefault()->get('router');
+        if ($createSuccessful) {
+            $router->response()->json(array('success' => true));
+            $this->postSave($id, 'update');
+        } else {
+            $router->response()->json(array('success' => false,'error' => $createErrorMessage));
+        }
+    }
+    
+    /**
      * 
      */
     public function editAction()
@@ -154,63 +247,6 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $tpl->assign('validateUrl', $objectFormUpdateUrl);
         $tpl->display('configuration/edit.tpl');
     }
-
-    /**
-     * Generic create action
-     *
-     * @todo handle token
-     * @return int id of created object
-     */
-    public function createAction()
-    {
-        $givenParameters = clone $this->getParams('post');
-        $class = $this->objectClass;
-        $pk = $class::getPrimaryKey();
-        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        try {
-            $columns = $class::getColumns();
-            $insertParams = array();
-            foreach ($givenParameters as $key => $value) {
-                if (in_array($key, $columns)) {
-                    $insertParams[$key] = $value;
-                }
-            }
-            $id = $class::insert($insertParams);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-        if (isset($id)) {
-            foreach (static::$relationMap as $k => $rel) {
-                try {
-                    if (!isset($givenParameters[$k])) {
-                        continue;
-                    }
-                    $arr = explode(',', $givenParameters[$k]);
-                    $db->beginTransaction();
-                    foreach ($arr as $relId) {
-                        if (!is_numeric($relId)) {
-                            continue;
-                        }
-                        if ($rel::$firstObject == $this->objectClass) {
-                            $rel::insert($id, $relId);
-                        } else {
-                            $rel::insert($relId, $id);    
-                        }
-                    }
-                    $db->commit();
-                    unset($givenParameters[$k]);
-                } catch (Exception $e) {
-                    echo $e->getMessage();
-                }
-            }
-            \Centreon\Core\Di::getDefault()
-                ->get('router')
-                ->response()
-                ->json(array('success' => true));
-            $this->postSave($id, 'add');
-            return $id;
-        }
-    }
     
     /**
      * Generic update function
@@ -222,7 +258,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = \Centreon\Core\Form::validate($this->getUri(), $givenParameters);
+        $validationResult = \Centreon\Core\Form::validate("form", $this->getUri(), $givenParameters);
         if ($validationResult['success']) {
             $class = $this->objectClass;
             $pk = $class::getPrimaryKey();
@@ -284,7 +320,32 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
+    
+    /**
+     * Delete a object
+     *
+     * Response JSON
+     */
+    public function deleteAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $params = $di->get('router')->request()->paramsPost();
 
+        $objClass = $this->objectClass;
+        foreach ($params['ids'] as $id) {
+            $this->preSave($id, 'delete');
+            $objClass::delete($id);
+            $this->postSave($id, 'delete');
+        }
+
+        $di->get('router')->response()->json(array(
+            'success' => true
+        ));
+    }
+
+    /**
+     * 
+     */
     public function datatableAction()
     {
         $di = \Centreon\Core\Di::getDefault();
@@ -295,19 +356,6 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             $this->getParams('get')
             )
         );
-    }
-
-    /**
-     * Get wizard for add a object
-     *
-     * Response HTML
-     */
-    public function addAction()
-    {
-        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/create', 0, array('id' => 0));
-        $tpl = \Centreon\Core\Di::getDefault()->get('template');
-        $tpl->assign('formName', $form->getName());   
-        echo $form->generate();
     }
 
     /**
@@ -404,29 +452,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
             'success' => true
         ));
     }
-
-    /**
-     * Delete a object
-     *
-     * Response JSON
-     */
-    public function deleteAction()
-    {
-        $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->paramsPost();
-
-        $objClass = $this->objectClass;
-        foreach ($params['ids'] as $id) {
-            $this->preSave($id, 'delete');
-            $objClass::delete($id);
-            $this->postSave($id, 'delete');
-        }
-
-        $di->get('router')->response()->json(array(
-            'success' => true
-        ));
-    }
-
+    
     /**
      * Get relations 
      *
