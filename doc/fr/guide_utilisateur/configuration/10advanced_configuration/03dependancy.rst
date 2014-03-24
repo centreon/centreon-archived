@@ -1,3 +1,5 @@
+.. _dependancy:
+
 ===============
 Les dépendances
 ===============
@@ -68,7 +70,7 @@ Les hôtes
 
 Pour configurer une dépendance logique :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Hôtes**
 #. Cliquez sur **Ajouter**
 
@@ -92,7 +94,7 @@ Les services
 
 Pour ajouter une dépendance au niveau des services :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Services**
 #. Cliquez sur **Ajouter**
 
@@ -116,7 +118,7 @@ Les groupes d'hôtes
 
 Pour ajouter une dépendance au niveau des groupes d'hôtes :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Groupes d'hôtes**
 #. Cliquez sur **Ajouter**
 
@@ -138,7 +140,7 @@ Les groupes de services
 
 Pour ajouter une dépendance au niveau des groupes de services :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Groupes de services**
 #. Cliquez sur **Ajouter**
 
@@ -160,7 +162,7 @@ Les méta-services
 
 Pour ajouter une dépendance au niveau des méta-services :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Méta-services**
 #. Cliquez sur **Ajouter**
 

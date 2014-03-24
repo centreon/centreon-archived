@@ -288,7 +288,7 @@ Dans un premier temps, il est nÃ©cessaire de passer l'interface en version franÃ
 
 	yum -y install centreon-lang-fr_FR
 
-3.	Rendez-vous dans **Administration** ==> **Options**
+3.	Rendez-vous dans le menu **Administration** ==> **Options**
 4.	Dans le menu de gauche cliquez sur **My Account**
 5.	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
 6.	Cliquez sur **Save**
