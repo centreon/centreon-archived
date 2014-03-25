@@ -32,7 +32,8 @@ Il est possible de définir deux paramètres :
 * Les hôtes parents : signifie que les hôtes sélectionnés sont parents de cet hôte (situé en amont). Si tous les hôtes parents sélectionnés deviennent indisponibles ou injoignable alors l'hôte sera considéré par l’ordonnanceur comme injoignable lui-même.
 * Les hôtes enfants : signifie que l'hôte devient parent de tous les hôtes enfants sélectionnés.
 
-.. note :: Tous les parents d’un hôte doivent être dans un état non-OK pour que l’hôte lui-même soit considéré comme injoignable. A partir du moment où au moins un chemin d’accès (liaison de dépendance physique, alors l’ordonnanceur continuera de surveiller cet hôte.
+.. note:: 
+    Tous les parents d’un hôte doivent être dans un état non-OK pour que l’hôte lui-même soit considéré comme injoignable. A partir du moment où au moins un chemin d’accès (liaison de dépendance physique, alors l’ordonnanceur continuera de surveiller cet hôte.
 
 Dans le cas où des relations de parentés ont été définies entre hôtes supervisés par des ordonnanceurs différents,  il est possible :
 
@@ -42,6 +43,9 @@ Dans le cas où des relations de parentés ont été définies entre hôtes supe
 Pour empêcher l'établissement de cette relation de parenté, il est nécessaire de cocher la case **Activer le mode strict de gestion des relations de parentés** au sein du menu **Administration** ==> **Options**.
 
 A l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
+
+.. note::
+    Ne cochez pas le filtre de notification "Injoignable" sur les hôtes ainsi que sur les contacts pour ne pas recevoir ce type de notification.
 
 ************************
 Les dépendances logiques
