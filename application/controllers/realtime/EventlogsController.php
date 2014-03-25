@@ -116,7 +116,16 @@ class EventlogsController extends \Centreon\Core\Controller
     {
         $router = \Centreon\Core\Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
-        $listEvents = \Centreon\Repository\EventlogsRepository::getEventLogs($params['startTime'], 'ASC');
+        $filters = $params->all();
+        if (isset($params['startTime'])) {
+            unset($filters['startTime']);
+        }
+        $listEvents = \Centreon\Repository\EventlogsRepository::getEventLogs(
+            $params['startTime'],
+            'ASC',
+            null,
+            $filters
+        );
         $router->response()->json($listEvents);
     }
 }
