@@ -61,7 +61,7 @@ class Password extends Customobject
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
-        
+        $myJs = '';
         $inputHtml = '<input '.
                         'id="'.$element['id'].'" '.
                         'type="password" '.
@@ -70,6 +70,10 @@ class Password extends Customobject
                         'class="form-control" '.
                         $placeholder.
                         '/>';
-        return $inputHtml;
+        
+        return array(
+            'html' => $inputHtml,
+            'js' => $myJs
+        );
     }
 }
