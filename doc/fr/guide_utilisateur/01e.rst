@@ -28,14 +28,32 @@ Pour visualiser le rapport de disponibilité d'un 'hôte :
 * Le tableau **Statuts des éléments du rapport** permettent de visualiser la disponibilité des services associées à l'hôte suivant leurs status  
 * La frise chronologique permet de visualiser de manière intuitive le statut de l'objet au court du temps
 
+.. image :: /images/guide_utilisateur/ehistoricalstatus.png
+   :align: center
+
+De plus, en cliquant sur une journée de la frise chronologique, vous obtenez le rapport de la journée :
+
+.. image :: /images/guide_utilisateur/edayavailability.png
+   :align: center
+
 Il est également possible de visualiser des rapports web pour :
 
 * Les groupes d'hôtes : Cliquez sur **Groupes d'hôtes** dans le menu de gauche
+
+.. image :: /images/guide_utilisateur/ehostgroupdashboard.png
+   :align: center
+
 * Les groupes de services : Cliquez sur **Groupes de services** dans le menu de gauche
+
+.. image :: /images/guide_utilisateur/eservicegroupdashboard.png
+   :align: center
 
 L'icône |export| permet d'exporter les données du rapport au format CSV.
 
 .. note::
     Cliquez sur le service d'un hôte dans le rapport de disponibilité de l'hôte pour obtenir un rapport détaillé du service.
 	
+.. image :: /images/guide_utilisateur/eservicedashboard.png
+   :align: center
+
 .. |export|    image:: /images/export.png

@@ -7,6 +7,8 @@ Un groupe permet de regrouper un ou plusieurs objets. Il existe trois types de g
 Les groupes d'hôtes et de services servent principalement lors de la visualisation des graphiques ou pour regrouper les objets.
 Les groupes de contacts sont utilisés principalement pour la mise en place de LCAs (ou ACL)..
 
+.. _hostgroups:
+
 *******************
 Les groupes d'hôtes
 *******************
@@ -30,6 +32,8 @@ Pour ajouter un groupe d'hôtes :
 *	Le champ **Rétention des fichiers RRD** est exprimé en jours, il permet de définir la durée de rétention des services appartenant à ce groupe d'hôte au sein de la base de données RRD. Si cette valeur est vide, la valeur sera celle par défaut définie dans le menu "**Administration** ==> **Options** ==> **CentStorage**" pour le champ **Durée de rétention des données dans les bases RRD**.
 *	Les champs **Statut** et **Commentaires** permettent d'activer ou de désactiver le groupe d'hôtes et de commenter celui-ci.
 
+.. _servicegroups:
+
 ***********************
 Les groupes de services
 ***********************
@@ -49,6 +53,8 @@ Pour ajouter un groupe de services :
 *	Si un modèle de service appartient à la liste **Modèles de service liés** alors tous les services qui héritent de ce modèle appartiennent à ce groupe.
 *	Les champs **Statut** et **Commentaires** permettent d'activer ou de désactiver le groupe de services et de commenter celui-ci.
 
+.. _contactgroups:
+
 ***********************
 Les groupes de contacts
 ***********************
@@ -66,3 +72,5 @@ Pour ajouter un groupe de contacts :
 *	La liste **Contacts liés** permet d'ajouter les contacts au groupe de contacts.
 *	Les champs **Statut** et **Commentaires** permettent d'activer ou de désactiver le groupe de contacts et de commenter celui-ci.
 
+.. note::
+    Pour plus d'information se référer au chapitre associé sur les :ref:`groupes<categoriesandgroups>`.

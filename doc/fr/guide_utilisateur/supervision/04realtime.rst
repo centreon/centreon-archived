@@ -48,11 +48,12 @@ Le tableau ci-dessous résume l'ensemble des statuts possibles pour un service.
 Statuts avancés
 ===============
 
-Le statut PENDING est un statut qui est affiché pour un service ou un hôte qui est fraîchement configuré mais n'a pas encore été contrôlé par l'ordonnanceur.
-Le statut UNREACHABLE est un statut indiquant que l'hôte est situé (relation de parenté) en aval d'un hôte dans un statut DOWN.
-Le statut FLAPPING (bagotant) est un statut indiquant que le pourcentage de changement de statut de l'objet est très élevé. Ce pourcentage est obtenu à partir de calculs effectués par le moteur de supervision.
-Le statut ACKNOWLEDGED est un statut indiquant que l'incident du service ou de l'hôte est pris en compte par un utilisateur.
-Le statut DOWNTIME est un statut indiquant que l'incident du service ou de l'hôte est survenu durant une période de temps d'arrêt programmé.
+En plus des statuts standard, de nouveaux statuts  permettent d'ajouter des informations complémentaires :
+* Le statut PENDING est un statut qui est affiché pour un service ou un hôte qui est fraîchement configuré mais n'a pas encore été contrôlé par l'ordonnanceur.
+* Le statut UNREACHABLE est un statut indiquant que l'hôte est situé (relation de parenté) en aval d'un hôte dans un statut DOWN.
+* Le statut FLAPPING (bagotant) est un statut indiquant que le pourcentage de changement de statut de l'objet est très élevé. Ce pourcentage est obtenu à partir de calculs effectués par le moteur de supervision.
+* Le statut ACKNOWLEDGED est un statut indiquant que l'incident du service ou de l'hôte est pris en compte par un utilisateur.
+* Le statut DOWNTIME est un statut indiquant que l'incident du service ou de l'hôte est survenu durant une période de temps d'arrêt programmé.
 
 ******************
 Etats SOFT et HARD
@@ -68,7 +69,7 @@ Confirmation d'un statut
 
 Un incident (statut non-OK) est confirmé à partir du moment ou le nombre d'essai de validation est arrivé à son terme.
 La configuration d'un objet (hôte ou service) implique un intervalle de contrôle régulier, un nombre d'essai pour valider un état non-OK ainsi qu'un intervalle non-régulier de contrôle.
-A la détection du premier incident, le statut est dans un état "SOFT" jusqu'à sa validation en état "HARD" déclenchant le processus de notification.
+Dès la détection du premier incident, le statut est dans un état "SOFT" jusqu'à sa validation en état "HARD" déclenchant le processus de notification.
 
 Exemple :
 
@@ -254,7 +255,9 @@ Options et Commandes disponibles
 --------------------------------
 
 Les options ainsi que les commandes permettent d'effectuer un certain nombre d'actions sur l'hôte.
-Ces différentes options sont traitées au sein du :ref:`Guide d'exploitation<exploitationguide>`.
+Ces différentes options sont traitées au sein du :ref:`guide d'exploitation<exploitationguide>`.
+
+.. _shorthostlinks:
 
 Raccourcis d'hôtes
 ------------------
@@ -309,10 +312,10 @@ Pour visualiser le statut des services, rendez-vous dans le menu **Supervision**
 La barre de recherche grise permet de filtrer les résultats affichés.
 Le menu de gauche permet de modifier les services visibles au sein du tableau :
 
-* Pour visualiser les services rencontrant un problème mais étant non acquittés, cliquez sur **Problèmes non acquittés**
-* Pour visualiser tous les services rencontrant un problème, cliquez sur **Problèmes en cours**
+* Pour visualiser les services rencontrant un problème validé (état "HARD") mais étant non acquittés, cliquez sur **Problèmes non acquittés**
+* Pour visualiser tous les services rencontrant un problème (validé ou non, acquittés ou non), cliquez sur **Problèmes en cours**
 * Pour visualiser tous les services, cliquez sur **Tous les services**
-* Pour visualiser tous les services (classés par hôtes), cliquez sur **Détails** (en dessous d'hôtes)
+* Pour visualiser tous les services (classés par hôtes), quelque soit le statut, cliquez sur **Détails** (en dessous d'hôtes)
 
 .. image :: /images/guide_utilisateur/supervision/04servicelistbyhostdetail.png
    :align: center
@@ -376,12 +379,12 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
     La colonne criticité ainsi que le filtre associé apparaissent si au moins un objet affiché possède un niveau de criticité.
 
 .. note::
-    La colonne **Validé depuis** n'apparait pas lors de la sélection du menu contextuel **"Tous les services**.
+    La colonne **Validé depuis** n'apparait pas lors de la sélection du menu contextuel **Tous les services**.
 
 Tableaux des groupes
 ====================
 
-Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation des services classées par groupes.
+Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation des services classés par groupes.
 
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 |   Nom de la colonne          |   Description                                                                                                                        | 
@@ -392,7 +395,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Statut                       | Affiche le statut de l'hôte                                                                                                          |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-| Informations sur les services| Affiche le statut des services (Mode détaillé) ou le nombre de services classées par statut (Mode résumé)                            |
+| Informations sur les services| Affiche le statut des services (Mode détaillé) ou le nombre de services classés par statut (Mode résumé)                            |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 Tableaux des méta-services
@@ -436,9 +439,9 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Statut détaillé                           | Affiche le message associé au statut du service                                                     |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Informations d'état étendues              | Affiche le message long (plus de 255 caractères) associé au statut du service                       |
+| Informations d'état étendues              | Affiche le message long ("long output") associé au statut du service                                |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Données de performance                    | Affiche les données de performances renvoyée par la sonde                                           |
+| Données de performance                    | Affiche les données de performances renvoyées par la sonde                                          |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Tentative                                 | Affiche le nombre de tentative en cours pour valider l'état                                         |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -448,11 +451,11 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Prochain contrôle                         | Affiche la date et l'heure du prochain contrôle effectué sur le service                             |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Latence                                   | Affiche le temps de latence entre la programmation de l'exécution et l'exécution réelle de la sonde |
+| Latence                                   | Affiche le temps de latence entre la programmation de l'exécution et son exécution réelle           |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Temps d'exécution                         | Affiche le temps d'éxécution de la sonde                                                            |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Changement du dernier état                | Affiche la date et l'heure depuis laquelle le servicee est dans l'état actuel                       |
+| Changement du dernier état                | Affiche la date et l'heure depuis laquelle le service est dans l'état actuel                        |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Durée de l'état actuel                    | Affiche la durée depuis laquelle le service est dans l'état actuel                                  |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -460,7 +463,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Numéro de notification actuel             | Affiche le nombre de notifications déjà envoyées                                                    |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Est\-ce que le statut du service bagote ? | Indique si le service bagotte (a le statut FLAPPING)                                                |
+| Est\-ce que le statut du service bagote ? | Indique si le service bagotte (statut FLAPPING)                                                     |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Pourcentage de changement de statut       | Affiche le pourcentage de changement d'état                                                         |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -473,18 +476,18 @@ Options et commandes du service
 -------------------------------
 
 Les options ainsi que les commandes du service permettent d'effectuer un certain nombre d'actions sur le service.
-Ces différentes options sont traitées au sein du :ref:`Guide d'exploitation<exploitationguide>`.
+Ces différentes options sont traitées au sein du :ref:`guide d'exploitation<exploitationguide>`.
 
 Graphique détaillé et graphiques des statuts
 --------------------------------------------
 
 Les parties **Graphique détaillé** et **Graphique des statuts** permettent respectivement de visualiser le graphique de performance 
-ainsi que le graphique d'historique de statut pour ce service.
+ainsi que le graphique d'historique de statuts pour ce service.
 
 Raccourcis d'hôte
 -----------------
 
-Les raccourcis d'hôtes sont les mêmes que ceux de la fiche d'hôte.
+Les raccourcis d'hôtes sont les mêmes que ceux de la fiche :ref:`d'hôte<shorthostlinks>`.
 
 Raccourcis de service
 ---------------------
@@ -526,8 +529,7 @@ Ce menu contextuel permet de visualiser des informations complémentaires telles
 par l'ordonnanceur, les commentaires ou les temps d'arrêt ajoutés aux objets .
 
 .. note::
-	Pour plus d'informations sur les commentaires, rendez-vous dans le :ref:`Guide d'exploitation<exploitationguide>`.
-	Pour plus d'informations sur les temps d'arrêt, rendez-vous dans le :ref:`Guide d'exploitation<exploitationguide>`.
+	Pour plus d'informations sur les commentaires ou sur les les temps d'arrêt, rendez-vous dans le :ref:`guide d'exploitation<exploitationguide>`.
 
 File d'attente
 ==============
@@ -536,7 +538,7 @@ La file d'attente présente l'ordonnancement prévu des contrôles à réaliser 
 
 Pour visualiser la file d'attente :
 
-#. Rendez-vous dans le menu **Supervision  ==> **Hôtes** ou **Services**
+#. Rendez-vous dans le menu **Supervision  ==> Hôtes** ou **Services**
 #. Dans le menu de gauche, sous **Moteur de supervision** cliquez sur **File d'attente**
 
 .. image :: /images/guide_utilisateur/supervision/04waitingqueue.png
@@ -565,10 +567,10 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 
 * **Hôte** : permet de filtrer par nom d'hôte via une recherche de type SQL LIKE.
 * **Service** : permet de filtrer par le nom du service.
-* **Collecteur** : permet de filtrer par ordonnanceur. Seules les ressources supervisées par cet ordonnanceur seront affichés.
+* **Collecteur** : permet de filtrer par ordonnanceur. Seules les ressources supervisées par cet ordonnanceur seront affichées.
 
 .. note::
-    La recherche sur les champs texte ne commence qu'à partir de la saisie d'au moins 3 caractères.
+    La recherche sur les champs texte ne commence qu'à partir de la saisie du troisième caractère.
 
 Les temps d'arrêts
 ==================
@@ -616,7 +618,7 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 * **Afficher les temps d'arrêt récurrents** : permet d'afficher les temps d'arrêts récurrents.
 
 .. note::
-    La recherche sur les champs texte ne commence qu'à partir de la saisie d'au moins 3 caractères.
+    La recherche sur les champs texte ne commence qu'à partir de la saisie du troisième caractère.
 
 Les commentaires
 ================
@@ -657,7 +659,7 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 * **Statut détaillé** : permet de filtrer par le statut détaillé des services.
 
 .. note::
-    La recherche sur les champs texte ne commence qu'à partir de la saisie d'au moins 3 caractères.
+    La recherche sur les champs texte ne commence qu'à partir de la saisie du troisième caractère.
 
 .. |pause|    image:: /images/pause.png
 .. |refresh|    image:: /images/refresh.png
