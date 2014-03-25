@@ -53,6 +53,15 @@
       $this.lastScroll = $( this ).scrollTop();
     });
 
+    /* Add event when filters change */
+    if ( this.settings.formFilter !== "" ) {
+      $( this.settings.formFilter ).on( "change", function( e ) {
+        $this.$elem.children( "tbody" ).text( "" );
+        $this.loading = true;
+        $this.loadData();
+      });
+    }
+
     this.resize();
     this.loadData();
     setTimeout( function() { $this.loadNewData(); }, this.settings.refresh );

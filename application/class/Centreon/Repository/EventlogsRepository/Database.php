@@ -55,6 +55,7 @@ class Database
     public static function getEventLogs($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
         $listFullsearch = array('output');
+        $timeField = array('period');
 
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_storage');
@@ -76,6 +77,7 @@ class Database
             $clause = $key;
             if (in_array($key, $listFullsearch)) {
                 $clause .= ' LIKE ';
+            } elseif (in_array($key, $timeField)) {
             } else {
                 $clause .= ' = ';
             }

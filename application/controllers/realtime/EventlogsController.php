@@ -74,15 +74,20 @@ class EventlogsController extends \Centreon\Core\Controller
     {
         $router = \Centreon\Core\Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
+        $filters = $params->all();
 
         $fromTime = null;
         if (isset($params['startTime']) && !is_null($params['startTime']) && $params['startTime'] !== '') {
             $fromTime = $params['startTime'];
         }
+        if (isset($params['startTime'])) {
+            unset($filters['startTime']);
+        }
         $listEvents = \Centreon\Repository\EventlogsRepository::getEventLogs(
             $fromTime,
             'DESC',
-            20
+            20,
+            $filters
         );
         /* Purge data */
         if (isset($_SESSION['eventlogs_lasttime'])
