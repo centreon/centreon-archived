@@ -27,6 +27,8 @@ Le dernier format disponible est orienté pour les développeurs ou les
 bêta-testeurs. Aucun support officiel ne pourra être délivré sur ces
 versions logicielles considérées comme en cours de développement.
 
+.. note::
+    Merethis recommande l'utilisation de la version packagée Centreon Enterprise Server. L'instlalation est détaillé au chapitre :ref:`Premier pas avec CES 3.0<firststepsces3>`
 
 .. _download_web_src:
 
