@@ -98,7 +98,7 @@ ${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 check_result $? "$(gettext "Replace CentreonTrapd init script Macro")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centreontrapd.default > $TMP_DIR/work/centreontrapd.default
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_LOG@|$CENTREON_LOG|g" -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centreontrapd.default > $TMP_DIR/work/centreontrapd.default
 	check_result $? "$(gettext "Replace CentreonTrapd default script Macro")"
 	cp $TMP_DIR/work/centreontrapd.default $TMP_DIR/final/centreontrapd.default
 	cp $TMP_DIR/final/centreontrapd.default $INSTALL_DIR_CENTREON/examples/centreontrapd.default
