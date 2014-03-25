@@ -188,7 +188,8 @@ class Generator
                     
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;
-                    if (strstr($field['type'], 'select') === false) {
+                    if (strstr($field['type'], 'select') === false ||
+                        strstr($field['type'], 'deprecated') === false) {
                         $this->formDefaults[$field['name']] = $field['default_value'];
                     }
                 }

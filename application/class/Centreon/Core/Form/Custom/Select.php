@@ -136,8 +136,7 @@ class Select extends Customobject
         $myJs .= $addJs;
         return array(
             'html' => $myHtml,
-            'js' => $myJs,
-            'customGetter' => array('name' => $element['name'], 'getter' => '$("#'.$element['name'].'").select2("val")')
+            'js' => $myJs
         );
     }
 }

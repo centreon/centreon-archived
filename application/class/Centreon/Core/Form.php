@@ -257,10 +257,6 @@ class Form
                         $this->tpl->addCustomJs($in['js']);
                     }
                     
-                    if (isset($in['customGetter']) && isset($in['customGetter']['name'])) {
-                        $this->customValidator[$in['customGetter']['name']] = $in['customGetter']['getter'];
-                    }
-                    
                     if (isset($inVal['eventValidation'])) {
                         $this->eventValidation .= $inVal['eventValidation'];
                     }
