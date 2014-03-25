@@ -121,7 +121,7 @@ class UserController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/user/[i:id]
+     * @route /configuration/user/[i:id]/[i:advanced]
      */
     public function editAction()
     {
