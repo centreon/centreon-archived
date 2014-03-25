@@ -434,6 +434,11 @@ class Installer
                                 $attrName = $attr['name'];
                             }
                             $attributes[$attrName] = $attr->__toString();
+                            if ($attributes[$attrName] == "true") {
+                                $attributes[$attrName] = true;
+                            } elseif ($attributes[$attrName] == "false") {
+                                $attributes[$attrName] = false;
+                            }
                         }
                     }
                     $attributes = json_encode($attributes);
