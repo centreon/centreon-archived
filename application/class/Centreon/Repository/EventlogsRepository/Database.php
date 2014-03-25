@@ -73,15 +73,20 @@ class Database
             $clause .= ':ctime';
             $wheres[] = $clause;
         }
+        $values = array();
         foreach ($filters as $key => $value) {
-            $clause = $key;
             if (in_array($key, $listFullsearch)) {
-                $clause .= ' LIKE ';
+                $clause = $key . ' LIKE :' . $key;
+                $values[$key] = $value;
             } elseif (in_array($key, $timeField)) {
+                list($timeStart, $timeEnd) = explode(' - ', $value);
+                $clause = 'ctime >= :timeStart AND ctime <= :timeEnd';
+                $values['timeStart'] = strtotime($timeStart);
+                $values['timeEnd'] = strtotime($timeEnd);
             } else {
-                $clause .= ' = ';
+                $clause = $key . ' = :' . $key;
+                $values[$key] = $value;
             }
-            $clause .= ':' . $key;
             $wheres[] = $clause;
         }
         if (count($wheres) > 0) {
@@ -95,7 +100,7 @@ class Database
         if (false === is_null($fromTime)) {
             $stmt->bindValue(':ctime', $fromTime, \PDO::PARAM_INT);
         }
-        foreach ($filters as $key => $value) {
+        foreach ($values as $key => $value) {
             if (in_array($key, $listFullsearch)) {
                 $value = '%' . $value . '%';
             }
