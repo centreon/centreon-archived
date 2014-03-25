@@ -151,7 +151,7 @@ class UserController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Duplicate a hosts
+     * Duplicate contact
      *
      * @method POST
      * @route /configuration/user/duplicate
@@ -173,7 +173,7 @@ class UserController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Delete action for hosttemplate
+     * Delete action for contact
      *
      * @method post
      * @route /configuration/user/delete
