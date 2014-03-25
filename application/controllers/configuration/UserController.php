@@ -44,7 +44,7 @@ class UserController extends \Controllers\ObjectAbstract
     protected $objectBaseUrl = '/configuration/user';
     protected $objectClass = '\Models\Configuration\Contact';
     public static $relationMap = array(
-        'contact_contactgroups' => '\Models\Configuraton\Relation\Contact\Contactgroup';
+        'contact_contactgroups' => '\Models\Configuraton\Relation\Contact\Contactgroup',
         'contact_hostcommands' => '\Models\Configuration\Relation\Contact\Hostcommand',
         'contact_servicecommands' => '\Models\Configuration\Relation\Contact\Servicecommand',
         'contact_aclgroups' => '\Models\Configuration\Relation\Aclgroup\Contact'
