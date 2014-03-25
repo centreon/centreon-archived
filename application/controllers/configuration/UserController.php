@@ -43,7 +43,12 @@ class UserController extends \Controllers\ObjectAbstract
     protected $objectName = 'user';
     protected $objectBaseUrl = '/configuration/user';
     protected $objectClass = '\Models\Configuration\Contact';
-    public static $relationMap = array();
+    public static $relationMap = array(
+        'contact_contactgroups' => '\Models\Configuraton\Relation\Contact\Contactgroup';
+        'contact_hostcommands' => '\Models\Configuration\Relation\Contact\Hostcommand',
+        'contact_servicecommands' => '\Models\Configuration\Relation\Contact\Servicecommand',
+        'contact_aclgroups' => '\Models\Configuration\Relation\Aclgroup\Contact'
+    );
 
     /**
      * List users
@@ -84,7 +89,7 @@ class UserController extends \Controllers\ObjectAbstract
      */
     public function createAction()
     {
-        
+        parent::createAction();   
     }
 
     /**
@@ -96,7 +101,7 @@ class UserController extends \Controllers\ObjectAbstract
      */
     public function updateAction()
     {
-        
+        parent::updateAction();    
     }
     
     /**
@@ -120,7 +125,7 @@ class UserController extends \Controllers\ObjectAbstract
      */
     public function editAction()
     {
-        
+        parent::editAction();
     }
 
     /**
@@ -186,6 +191,72 @@ class UserController extends \Controllers\ObjectAbstract
      */
     public function contactTemplateForContactAction()
     {
+        parent::getSimpleRelation('contact_template_id', '\Models\Configuration\Contact');
+    }
+   
+    /**
+     * Get host notification period for a specific contact
+     *
+     * @method get
+     * @route /configuration/user/[i:id]/hostnotifperiod
+     */
+    public function hostNotifPeriodForContactAction()
+    {
+        parent::getSimpleRelation('timeperiod_tp_id', '\Models\Configuration\Timeperiod');
+    }
 
+    /**
+     * Get host notification command for a specific contact
+     *
+     * @method get
+     * @route /configuration/user/[i:id]/hostnotifcommand
+     */
+    public function hostNotifCommandForContactAction()
+    {
+        parent::getRelations(static::$relationMap['contact_hostcommands']);
+    }
+
+    /**
+     * Get service notification period for a specific contact
+     *
+     * @method get
+     * @route /configuration/user/[i:id]/servicenotifperiod
+     */
+    public function serviceNotifPeriodForContactAction()
+    {
+        parent::getSimpleRelation('timeperiod_tp_id2', '\Models\Configuration\Timeperiod');
+    }
+
+    /**
+     * Get service notification command for a specific contact
+     *
+     * @method get
+     * @route /configuration/user/[i:id]/servicenotifcommand
+     */
+    public function serviceNotifCommandForContactAction()
+    {
+        parent::getRelations(static::$relationMap['contact_servicecommands']);
+    }
+
+    /**
+     * Get contact group for a specific contact
+     *
+     * @method get
+     * @route /configuration/user/[i:id]/contactgroup
+     */
+    public function contactGroupForContactAction()
+    {
+        parent::getRelations(static::$relationMap['contact_contactgroups']);
+    }
+
+    /**
+     * Get acl group for a specific contact
+     *
+     * @method get
+     * @route /configuration/user/[i:id]/aclgroup
+     */
+    public function aclGroupForContactAction()
+    {
+        parent::getRelations(static::$relationMap['contact_aclgroups']);
     }
 }
