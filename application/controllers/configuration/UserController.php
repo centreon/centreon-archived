@@ -43,6 +43,7 @@ class UserController extends \Controllers\ObjectAbstract
     protected $objectName = 'user';
     protected $objectBaseUrl = '/configuration/user';
     protected $objectClass = '\Models\Configuration\Contact';
+    public static $relationMap = array();
 
     /**
      * List users
@@ -175,5 +176,16 @@ class UserController extends \Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Get contact template for a specific contact
+     *
+     * @method get
+     * @route /configuration/user/[i:id]/contacttemplate
+     */
+    public function contactTemplateForContactAction()
+    {
+
     }
 }
