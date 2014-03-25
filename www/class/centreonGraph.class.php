@@ -566,7 +566,7 @@ class CentreonGraph {
                         }
 
                         # Check regular
-                        if (is_null($ds_data_regular) && preg_match('/' . $ds_val['ds_name'] . '/', $metric["metric_name"])) {
+                        if (is_null($ds_data_regular) && preg_match('/' . preg_quote($ds_val['ds_name'], '/') . '/', $metric["metric_name"])) {
                                 $ds_data_regular = $ds_val;
                         }
                     }
