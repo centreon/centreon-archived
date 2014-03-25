@@ -64,6 +64,9 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_poller.png
    :align: center
 
+.. note::
+    Le processus Centcore à la charge, comme pour l'export de configuration de la supervsiion, de copier la base SQLite sur le collecteur distant.
+
 **************************
 Configuration des services
 **************************
