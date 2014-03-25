@@ -80,6 +80,9 @@ $(function() {
     timePicker12Hour: false,
     format: 'YYYY-MM-DD HH:mm'
   });
+  $("input[name='period']").on( "apply.daterangepicker", function( e, $picker ) {
+    $($picker.element[0]).trigger('change');
+  });
 
   $("select[name='status']").select2({
     placeholder: "{t}Status{/t}"

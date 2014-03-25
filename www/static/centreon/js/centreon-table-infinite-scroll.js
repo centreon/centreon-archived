@@ -14,8 +14,8 @@
     this.loading = true;
     this.hasEvent = true;
     this.lastScroll = 0;
-    this.trHeading = "";
     this.newNotSee = 0;
+    this.trHeading = "";
     
     this.$elem.addClass( this.settings.cls );
 
@@ -57,7 +57,12 @@
     if ( this.settings.formFilter !== "" ) {
       $( this.settings.formFilter ).on( "change", function( e ) {
         $this.$elem.children( "tbody" ).text( "" );
+        $this.lastTime = null;
+        $this.recentTime = null;
         $this.loading = true;
+        $this.hasEvent = true;
+        $this.lastScroll = 0;
+        $this.newNotSee = 0;
         $this.loadData();
       });
     }
@@ -108,6 +113,7 @@
         success: function( data, statusText, jqXHR ) {
           if (data.data.length === 0) {
             $this.hasEvent = false;
+            $this.loading = false;
             return;
           }
           $.each( data.data, function( idx, values ) {
