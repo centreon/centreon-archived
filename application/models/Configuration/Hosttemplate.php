@@ -42,7 +42,7 @@ namespace Models\Configuration;
  *
  * @author sylvestre
  */
-class Host extends Object
+class Hosttemplate extends Object
 {
     protected static $table = "host";
     protected static $primaryKey = "host_id";
@@ -117,7 +117,7 @@ class Host extends Object
         $filters = array(),
         $filterType = "OR"
     ) {
-        $filters['host_register'] = '1';
+        $filters['host_register'] = '0';
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 }

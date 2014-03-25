@@ -53,26 +53,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Usergroup');
-        $tpl->assign('objectAddUrl', '/configuration/usergroup/add');
-        $tpl->assign('objectListUrl', '/configuration/usergroup/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
 
     /**
@@ -82,15 +63,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(
-            \Centreon\Core\Datatable::getDatas(
-                'usergroup',
-                $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -111,7 +84,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function createAction()
     {
-        
+        parent::createAction();
     }
 
     /**
@@ -123,7 +96,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
@@ -135,7 +108,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        
+        parent::addAction();    
     }
     
     /**
@@ -147,7 +120,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function editAction()
     {
-        
+        parent::editAction(); 
     }
 
     /**

@@ -108,16 +108,6 @@
 			</block>
 		</section>
 		<section name="Relations">
-			<block name="Host group relations">
-				<field name="host_hostgroups" label="Parent host groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostgroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/hostgroup</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
-			</block>
 			<block name="Host category relations">
 				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>
@@ -212,10 +202,11 @@
 		</section>
 		<section name="Extended information">
 			<block name="Extended information">
-				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
+				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+                        <listValuesRoute>/configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
