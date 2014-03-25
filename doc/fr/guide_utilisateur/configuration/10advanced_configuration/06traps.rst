@@ -99,6 +99,8 @@ Il est également possible de placer le dossier tampon snmptrapd en mémoire viv
 
 	tmpfs /var/run/snmpd                     tmpfs defaults,size=128m 0 0
 
+.. _configuration_advanced_centreontrapdforward:
+
 Centreontrapdforward
 ====================
 
@@ -117,6 +119,8 @@ Vous pouvez également mapper le dossier dans le cache en mémoire vive, en ajou
 ::
 
 	tmpfs /var/spool/centreontrapd            tmpfs defaults,size=512m 0 0
+
+.. _configuration_advanced_centreontrapd:
 
 Centreontrapd
 =============

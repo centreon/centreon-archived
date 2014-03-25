@@ -33,17 +33,20 @@ Système 64-bits :
 Utilisez votre éditeur de texte favori et supprimez la première
 ligne du fichier *RPM-GPG-KEY.dag.txt*. La première ligne doit
 contenir :
+
   ::
   
     "-----BEGIN PGP PUBLIC KEY BLOCK-----"
 
 Puis exécutez les commandes suivantes :
+
   ::
 
     $ rpm --import RPM-GPG-KEY.dag.txt
     $ rpm -Uvh rpmforge-release-0.5.1-1.el5.rf.i386.rpm
 
 Vous pouvez maintenant installer les dépendances nécessaires :
+
   ::
 
     $ yum update
@@ -56,17 +59,20 @@ Vous pouvez maintenant installer les dépendances nécessaires :
         php-pear
 
 Des commandes additionnelles sont nécessaires pour configurer correctement l'environnement :
+
   :: 
 
     $ usermod -U apache
     $ pear channel-update pear.php.net
 
 Si vous ne pouvez pas accéder directement à Internet directement mais passer par un proxy, exécutez la commande suivante :
+
   ::
 
     $ pear config-set http_proxy http://my_proxy.com:port
 
 Puis exécutez :
+
   ::
 
     $ pear upgrade-all 
@@ -75,6 +81,7 @@ Debian / Ubuntu
 ===============
 
 Installez les dépendances nécessaires :
+
   ::
 
     $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev \
@@ -107,6 +114,7 @@ Installez les dépendances nécessaires :
 Sur certaines distributions OpenSuse, le paramétrage par défaut des
 type **mine** n'est pas valide pour fonctionner avec l'interface web
 Centreon. Editez le fichier */etc/mime.types* et rechercher les lignes :
+
   ::
 
     text/x-xsl xsl
@@ -331,7 +339,8 @@ Définition des chemins d'installation
 
 Le fichier **RRDs.pm** peut être localisé n'importe où sur le serveur. 
 Utilisez les commandes suivantes :
-  ::
+
+::
 
     $ updatedb
     $ locate RRDs.pm

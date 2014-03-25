@@ -1,7 +1,6 @@
 .. _dependancy:
 
 ===============
-i l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
 Les dépendances
 ===============
 
