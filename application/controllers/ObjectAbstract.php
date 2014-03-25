@@ -103,7 +103,12 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     {
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
-        $class = $this->objectClass;
+        
+        if (!empty($this->secondaryObjectClass)) {
+            $class = $this->secondaryObjectClass;
+        } else {
+            $class = $this->objectClass;
+        }
         $requestParams = $this->getParams('get');
         $idField = $class::getPrimaryKey();
         $uniqueField = $class::getUniqueLabelField();

@@ -48,10 +48,41 @@ use \Centreon\Core\Form\Generator;
 
 class HostTemplateController extends \Controllers\ObjectAbstract
 {
+    /**
+     *
+     * @var string 
+     */
     protected $objectDisplayName = 'Hosttemplate';
+    
+    /**
+     *
+     * @var string 
+     */
     protected $objectName = 'hosttemplate';
+    
+    /**
+     *
+     * @var string 
+     */
     protected $objectBaseUrl = '/configuration/hosttemplate';
+    
+    /**
+     *
+     * @var string 
+     */
     protected $objectClass = '\Models\Configuration\Host';
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $secondaryObjectClass = '\Models\Configuration\Hosttemplate';
+
+
+    /**
+     *
+     * @var array 
+     */
     public static $relationMap = array(
         'host_hostgroups' => '\Models\Configuration\Relation\Host\Hostgroup',
         'host_categories' => '\Models\Configuration\Relation\Host\Hostcategory',

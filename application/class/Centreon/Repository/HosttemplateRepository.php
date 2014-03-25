@@ -123,9 +123,10 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
         'host_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/host/update',
+                'route' => '/configuration/hosttemplate/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::host_id::'
+                    'id' => '::host_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::host_name::'
             )
