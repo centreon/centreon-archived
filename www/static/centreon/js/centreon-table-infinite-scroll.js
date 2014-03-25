@@ -108,6 +108,7 @@
         success: function( data, statusText, jqXHR ) {
           if (data.data.length === 0) {
             $this.hasEvent = false;
+            return;
           }
           $.each( data.data, function( idx, values ) {
             var $tr = $( "<tr></tr>" ),
