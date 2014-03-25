@@ -15,6 +15,7 @@ Sommaire :
    :maxdepth: 2
 
    a_propos/index
+   installation/index
    guide_utilisateur/index
    guide_exploitation/index
    architecture/index
