@@ -91,6 +91,7 @@ class EventlogsController extends \Centreon\Core\Controller
         );
         /* Purge data */
         if (isset($_SESSION['eventlogs_lasttime'])
+            && count($listEvents['data']) > 0
             && date('Y-m-d H:i:s', $_SESSION['eventlogs_lasttime'][0]) == $listEvents['data'][0]['datetime']) {
             for ($i = 0; $i < $_SESSION['eventlogs_lasttime'][1]; $i++) {
                 array_shift($listEvents['data']);
@@ -115,7 +116,16 @@ class EventlogsController extends \Centreon\Core\Controller
     {
         $router = \Centreon\Core\Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
-        $listEvents = \Centreon\Repository\EventlogsRepository::getEventLogs($params['startTime'], 'ASC');
+        $filters = $params->all();
+        if (isset($params['startTime'])) {
+            unset($filters['startTime']);
+        }
+        $listEvents = \Centreon\Repository\EventlogsRepository::getEventLogs(
+            $params['startTime'],
+            'ASC',
+            null,
+            $filters
+        );
         $router->response()->json($listEvents);
     }
 }
