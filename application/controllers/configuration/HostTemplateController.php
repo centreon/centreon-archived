@@ -35,16 +35,16 @@
 
 namespace Controllers\Configuration;
 
-use \Models\Configuration\Host,
-    \Models\Configuration\Relation\Host\Contact,
-    \Models\Configuration\Relation\Host\Contactgroup,
-    \Models\Configuration\Relation\Host\Hostchild,
-    \Models\Configuration\Relation\Host\Hostparent,
-    \Models\Configuration\Relation\Host\Poller,
-    \Models\Configuration\Timeperiod,
-    \Models\Configuration\Command,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Models\Configuration\Host;
+use \Models\Configuration\Relation\Host\Contact;
+use \Models\Configuration\Relation\Host\Contactgroup;
+use \Models\Configuration\Relation\Host\Hostchild;
+use \Models\Configuration\Relation\Host\Hostparent;
+use \Models\Configuration\Relation\Host\Poller;
+use \Models\Configuration\Timeperiod;
+use \Models\Configuration\Command;
+use \Centreon\Core\Form;
+use \Centreon\Core\Form\Generator;
 
 class HostTemplateController extends \Controllers\ObjectAbstract
 {
@@ -166,14 +166,26 @@ class HostTemplateController extends \Controllers\ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $contactList = Contact::getMergedParameters(array('contact_id', 'contact_name', 'contact_email'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $contactList = Contact::getMergedParameters(
+            array('contact_id', 'contact_name', 'contact_email'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host.host_id' => $requestParam['id']),
+            "AND"
+        );
         
         $finalContactList = array();
-        foreach($contactList as $contact) {
+        foreach ($contactList as $contact) {
             $finalContactList[] = array(
                 "id" => $contact['contact_id'],
                 "text" => $contact['contact_name'],
-                "theming" => \Centreon\Repository\UserRepository::getUserIcon($contact['contact_name'], $contact['contact_email'])
+                "theming" => \Centreon\Repository\UserRepository::getUserIcon(
+                    $contact['contact_name'],
+                    $contact['contact_email']
+                )
             );
         }
         
@@ -194,10 +206,19 @@ class HostTemplateController extends \Controllers\ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $contactgroupList = Contactgroup::getMergedParameters(array('cg_id', 'cg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $contactgroupList = Contactgroup::getMergedParameters(
+            array('cg_id', 'cg_name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host.host_id' => $requestParam['id']),
+            "AND"
+        );
         
         $finalContactgroupList = array();
-        foreach($contactgroupList as $contactgroup) {
+        foreach ($contactgroupList as $contactgroup) {
             $finalContactgroupList[] = array(
                 "id" => $contactgroup['cg_id'],
                 "text" => $contactgroup['cg_name']
@@ -266,11 +287,13 @@ class HostTemplateController extends \Controllers\ObjectAbstract
         );
 
         $finalHostList = array();
-        foreach($hostparentList as $hostparent) {
+        foreach ($hostparentList as $hostparent) {
             $finalHostList[] = array(
                 "id" => $hostparent['host_id'],
                 "text" => $hostparent['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage($hostparent['host_name']).' '.$hostparent['host_name']
+                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                    $hostparent['host_name']
+                ).' '.$hostparent['host_name']
             );
         }
         
@@ -301,11 +324,13 @@ class HostTemplateController extends \Controllers\ObjectAbstract
         );
 
         $finalHostList = array();
-        foreach($hostchildList as $hostchild) {
+        foreach ($hostchildList as $hostchild) {
             $finalHostList[] = array(
                 "id" => $hostchild['host_id'],
                 "text" => $hostchild['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage($hostchild['host_name']).' '.$hostchild['host_name']
+                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                    $hostchild['host_name']
+                ).' '.$hostchild['host_name']
             );
         }
         
