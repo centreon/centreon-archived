@@ -6,7 +6,7 @@ Les vues personnalisées
 Présentation
 ************
 
-Les vues personnalisées permettent à chaque utilisateur d'avoir sa propre vue de sa supervision.
+Les vues personnalisées permettent à chaque utilisateur d'avoir sa propre vue de la supervision.
 Une vue peut contenir de 1 à 3 colonnes. Chaque colonne peut contenir des widgets.
 
 Un widget est un module permettant de visualiser certaines informations sur certains objets.
@@ -33,7 +33,9 @@ Pour ajouter une vue, cliquez sur **Ajouter une vue**.
 * Le champ **Mise en page** permet de choisir le nombre de colonne de la vue
 
 Pour modifier une vue existante, cliquez sur **Editer une vue**.
-Notez-bien : la diminution du nombre de colonnes enlève les widgets associées à la colonne.
+
+.. note::
+    La diminution du nombre de colonnes enlève les widgets associées à la colonne.
 
 Partager une vue
 ================
@@ -42,8 +44,8 @@ Il est possible de partager une vue existante avec un ou plusieurs utilisateurs.
 Pour cela, cliquez sur **Partager la vue**.
 
 * Si le champ **Vérrouillée** est définit à **Oui** alors les autres utilisateurs ne pourront pas modifier la vue
-* La liste **Liste des utilisateurs** permet de définir les utilisateurs avec lesquels est partagée la vue
-* La liste **Liste des groupes utilisateur** permet de définir les groupes d'utilisateurs avec lesquels est partagée la vue
+* Le champ **Liste des utilisateurs** permet de définir les utilisateurs avec lesquels est partagée la vue
+* Le champ **Liste des groupes utilisateur** permet de définir les groupes d'utilisateurs avec lesquels est partagée la vue
 
 .. _leswidgets:
 
@@ -153,8 +155,8 @@ Misc
 
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
-Le widget de graphes
-====================
+Le widget de graphique de performance
+=====================================
 
 * Le champ **Service** permet de choisir le service pour lequel le graphe sera affiché
 * La liste **Graph period** permet de choisir la période de temps que le graphe doit afficher

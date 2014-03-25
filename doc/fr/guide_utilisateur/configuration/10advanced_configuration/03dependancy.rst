@@ -1,4 +1,7 @@
+.. _dependancy:
+
 ===============
+i l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
 Les dépendances
 ===============
 
@@ -6,64 +9,53 @@ Les dépendances
 Principe
 ********
 
-Les dépendances sont utilisées afin de répondre à deux besoins :
+Les dépendances sont utilisées afin de répondre à deux principaux besoins :
 
-*  Limiter l'envoi de notifications
+* Limiter l'envoi de notifications
+* Cibler les alertes
 
-Exemples :
+Les dépendances d’objets sont de deux types :
 
-Si un hôte est indisponible, il est nécessaire d'envoyer une notification pour l'hôte indisponible mais l'envoi de notifications pour les services liés à cette hôte est automatiquement désactivé (étant donné que l'hôte ne peut pas être interrogé).
-
-Si un service est vérifié via le protocole SNMP, si l'agent SNMP de la machine cible est indisponible alors ce service ne peut pas être joint. Une seule notification doit être envoyée : celle pour l'agent SNMP indisponible.
-
-* Mettre en place une hiérarchie entre les hôtes et les services. Un switch est connecté à un hôte. Par conséquent, l'hôte est dépendant de ce switch. Si le switch devient indisponible, alors l'hôte lié à celui-ci est injoignable.
-
-* Limiter la vérification et l'envoi de notifications nécessaires
-
-Exemple :
-Prenons le cas d'un cluster d'hôtes actif/passif. L'hôte A est actif et l'hôte B est passif.
-Les services sont démarrés sur l'hôte A, si l'hôte A devient indisponible alors les services sont démarrés sur l'hôte B.
-
-Notre outil de supervision doit être capable de raisonner de la manière suivante : si l'hôte A est disponible alors l'hôte B n'est pas vérifié (il est également possible de laisser la vérification de l'hôte B tout en désactivant les notifications liés à cet hôte). 
-Si l'hôte A devient indisponible alors l'hôte B est vérifié.
+* Dépendance **physique** entre objet : un switch de répartition est situé en amont d’un ensemble de serveurs et en aval d’un routeur
+* Dépendance **logique** entre objet : l’accès à un site web avec authentification LDAP dépend de l’état de l’annuaire LDAP lui-même
 
 *************************
 Les dépendances physiques
 *************************
 
-Les hôtes
-=========
+Les dépendances physiques consistent à prendre en compte les liens physiques entre les équipements. Ce lien ne peut être défini que pour les objets de type "Hôte".
 
-Les dépendances physiques consistent à prendre en compte les liens physiques entre les équipements. La configuration d'une dépendance physique se déroule au sein de l'onglet **Relations** d'une fiche de configuration d'hôte (**Configuration** ==> **Hôtes** ==> **Ajouter**) il est possible de définir deux paramètres :
+La configuration d'une dépendance physique se déroule au sein de l'onglet **Relations** d'une fiche de configuration d'un hôte (**Configuration** ==> **Hôtes** ==> **Ajouter**).
 
-* Les hôtes parents : signifie que les hôtes sélectionnés sont parents de l'hôte. Si tous les hôtes parents sélectionnés deviennent indisponible ou injoignable alors l'hôte sera injoignable.
+Il est possible de définir deux paramètres :
 
-Exemple : Un hôte est connecté à un switch. Si ce switch tombe en panne, l'hôte n'est plus joignable.
+* Les hôtes parents : signifie que les hôtes sélectionnés sont parents de cet hôte (situé en amont). Si tous les hôtes parents sélectionnés deviennent indisponibles ou injoignable alors l'hôte sera considéré par l’ordonnanceur comme injoignable lui-même.
+* Les hôtes enfants : signifie que l'hôte devient parent de tous les hôtes enfants sélectionnés.
 
-* Les hôtes enfants : signifie que l'hôte devient parent de tous les hôtes enfants sélectionnés
+.. note :: Tous les parents d’un hôte doivent être dans un état non-OK pour que l’hôte lui-même soit considéré comme injoignable. A partir du moment où au moins un chemin d’accès (liaison de dépendance physique, alors l’ordonnanceur continuera de surveiller cet hôte.
 
-Dans le cas où les hôtes dépendants les uns des autres sont supervisés par deux collecteurs différents. Il est possible :
+Dans le cas où des relations de parentés ont été définies entre hôtes supervisés par des ordonnanceurs différents,  il est possible :
 
-* D'empêcher l'établissement d'une relation de parentée entre deux hôtes supervisés par deux collecteurs différents.
-* D'autoriser l'établisement de cette relation de parentée : dans ce cas la dépendance ne sera pas gérée par les moteurs de supervision mais Centreon Broker prendra en compte cette relation au sein de son moteur de correlation.
+* D'empêcher l'établissement d'une relation de parenté, lors de la modification du formulaire d’hôte, entre deux hôtes supervisés par deux collecteurs différents.
+* D'autoriser l'établissement de cette relation de parenté. Dans ce cas la dépendance ne sera pas gérée par les moteurs de supervision mais par Centreon Broker qui prendra en compte cette relation au sein de son moteur de corrélation.
 
-Pour empecher l'établissement de cette relation de parenté, il est nécessaire de cocher la case **Activer le mode strict de gestion des relations de parentés** au sein du menu **Administration** ==> **Options**.
+Pour empêcher l'établissement de cette relation de parenté, il est nécessaire de cocher la case **Activer le mode strict de gestion des relations de parentés** au sein du menu **Administration** ==> **Options**.
+
 A l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
 
 ************************
 Les dépendances logiques
 ************************
 
-Les dépendances logiques consistent à mettre en place des liens logiques entre les objets.
-
-Par exemple : Un service est chargé de superviser l'accès à une page web à travers un serveur LDAP. Il est logique que si le serveur LDAP est en panne alors le service n'a pas lieu de lever une alerte.
+Les dépendances logiques consistent à mettre en place des liens logiques entre plusieurs objets de différents types ou non.
+Par exemple : Un service est chargé de superviser l'accès à une page web requérant une authentification basée sur un annuaire LDAP. Il est logique que si le serveur LDAP est en panne, l'accès à la page web sera limité voire impossible. Dans cette situation, la notification émise ne doit l'être que pour l'annuaire LDAP et non le site web.
 
 Les hôtes
 =========
 
 Pour configurer une dépendance logique :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Hôtes**
 #. Cliquez sur **Ajouter**
 
@@ -74,12 +66,12 @@ Dans ce cas, nous avons deux types d'hôtes qui entrent en jeu : un ou des hôte
 Si vous utilisez Centreon Broker, il est également possible à partir des hôtes maitres de contrôler l'exécution et les notifications de services (appelés services dépendants)
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances de l'hôte maitre deviennent indisponibles, la dépendance en cours de création n'est plus pris en compte.
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances de l'hôte maitre deviennent indisponibles, la dépendance en cours de création n'est plus prise en compte.
 * Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des hôtes maitres qui empêcheront la vérification des hôtes ou des services dépendants
 * Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maitres qui empêcheront l'envoi de notifications pour les hôtes ou les services dépendants
-* La liste **Nom d'hôtes** définie le ou les hôtes maitres
-* La liste **Nom d'hôtes liés** définie les hôtes dépendants
-* La liste **Services dépendants** définie les services dépendants
+* La liste **Nom d'hôtes** défini le ou les hôtes maitres
+* La liste **Nom d'hôtes liés** défini les hôtes dépendants
+* La liste **Services dépendants** défini les services dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
 
 Les services
@@ -87,7 +79,7 @@ Les services
 
 Pour ajouter une dépendance au niveau des services :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Services**
 #. Cliquez sur **Ajouter**
 
@@ -98,7 +90,7 @@ Dans ce cas, nous avons deux entités qui entrent en jeu : les services (dits ma
 Si vous utilisez Centreon Broker, il est également possible de contrôler l'exécution et les notifications d'autres hôtes.
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du service maitre deviennent indisponibles la dépendance en cours de création n'est plus pris en compte.
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du service maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
 * Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des services maitres qui empêcheront la vérification des hôtes ou des services dépendants
 * Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des services maitres qui empêcheront l'envoi de notifications pour les hôtes ou les services dépendants
 * La liste **Services** définie le ou les services maitres
@@ -111,7 +103,7 @@ Les groupes d'hôtes
 
 Pour ajouter une dépendance au niveau des groupes d'hôtes :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Groupes d'hôtes**
 #. Cliquez sur **Ajouter**
 
@@ -121,7 +113,7 @@ Pour ajouter une dépendance au niveau des groupes d'hôtes :
 Deux types de groupes d'hôtes : Un groupe d'hôtes est dit maitre s'il contrôle l'exécution et la notification d'autres groupes d'hôtes (dit dépendants).
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe d'hôte maitre deviennent indisponibles la dépendance en cours de création n'est plus pris en compte.
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe d'hôte maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
 * Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des groupes d'hôtes maitres qui empêcheront la vérification des groupes d'hôtes dépendants
 * Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maitres qui empêcheront l'envoi de notifications pour des groupes d'hôtes dépendants
 * La liste **Nom du groupe d'hôte** définie le ou les groupes d'hôtes maitres
@@ -133,7 +125,7 @@ Les groupes de services
 
 Pour ajouter une dépendance au niveau des groupes de services :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Groupes de services**
 #. Cliquez sur **Ajouter**
 
@@ -143,7 +135,7 @@ Pour ajouter une dépendance au niveau des groupes de services :
 Deux types de groupes de services : Un groupe de services est dit maitre s'il contrôle l'exécution et la notification d'autres groupes de services (dit dépendants).
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe de service maitre deviennent indisponibles la dépendance en cours de création n'est plus pris en compte.
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe de service maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
 * Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des groupes de services maitres qui empêcheront la vérification des groupes de services dépendants
 * Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maitres qui empêcheront l'envoi de notifications pour des groupes de services dépendants
 * La liste **Nom des groupes de services** définie le ou les groupes de services maitres
@@ -155,14 +147,14 @@ Les méta-services
 
 Pour ajouter une dépendance au niveau des méta-services :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Méta-services**
 #. Cliquez sur **Ajouter**
 
 Deux types de méta-services : Un méta-service est dit maitre s'il contrôle l'exécution et la notification d'autres méta-services (dit dépendants).
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du méta-service maitre deviennent indisponibles la dépendance en cours de création n'est plus pris en compte.
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du méta-service maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
 * Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des méta-services maitres qui empêcheront la vérification des méta-services dépendants
 * Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des méta-services qui empêcheront l'envoi de notifications pour des méta-services dépendants
 * La liste **Nom du méta-service** définie le ou les méta-services maitres

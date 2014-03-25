@@ -104,7 +104,7 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 check_result $? "$(gettext "Replace CentCore init script Macro")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_LOG@|$CENTREON_LOG|g" -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
 	check_result $? "$(gettext "Replace CentCore default script Macro")"
 	cp $TMP_DIR/work/centcore.default $TMP_DIR/final/centcore.default
 	cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/examples/centcore.default

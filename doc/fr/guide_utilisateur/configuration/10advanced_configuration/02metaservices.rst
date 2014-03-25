@@ -6,7 +6,7 @@ Les méta-services
 Définition
 **********
 
-Un méta-service est un service virtuel permettant l'agrégation de métriques issues de différents services au travers d'une opération mathématique..
+Un méta-service est un service virtuel permettant l'agrégation de métriques issues de différents services au travers d'une opération mathématique.
 Les méta-services sont gérés de la même manière qu'un service c'est à dire qu'ils possèdent des seuils, un processus de notification, génèrent un graphique de performance...
 
 Exemple : Il est possible de déterminer la consommation totale de trafic WAN en additionnant au sein d'un méta-service l'ensemble des services supervisant le trafic WAN unitairement.
@@ -16,10 +16,10 @@ Les types de calcul
 
 Plusieurs types de calculs sont possibles sur les métriques récupérées :
 
-* **Moyenne** : Centreon fait la moyenne des données de performances
-* **Somme** : Centreon fait la somme des données de performances
-* **Minimum** : Centreon récupère le minimum des données de performances
-* **Maximum** : Centreon récupère le maximum des données de performances
+* **Moyenne** : réalise la moyenne des données de performances
+* **Somme** : réalise la somme des données de performances
+* **Minimum** : récupère le minimum de l'ensemble des données de performances
+* **Maximum** : récupère le maximum de l'ensemble des données de performances
 
 Les types de sources de données
 ===============================
@@ -33,7 +33,7 @@ Les types de source de données disponibles sont :
 * Le type **DERIVE** stockera la dérivée de la ligne allant de la dernière à la valeur courante de la source de données. Cela peut être utile pour des jauges, par exemple, de mesurer le taux de personnes entrant ou quittant une pièce.
 * Le type **ABSOLUTE** est pour les compteurs qui se réinitialisent à la lecture. Il est utilisé pour les compteurs rapides qui ont tendance à déborder.
 
-.. seealso::
+.. note::
     Plus d'informations sur le site de `RRDTools <http://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html>`_
 
 *************
@@ -58,12 +58,12 @@ Informations générales
 * Les champs **Type de calcul** et **Type de source de données** correspondent respectivement aux calculs et à la description de la source de données
 * Le champ **Mode de sélection** permet de sélectionner les services contenant les métriques qui entreront dans le calcul du méta-service.
 
-Si l'option **Sélectionner les services manuellement** est sélectionné alors les métriques choisies seront issues de services sélectionnés manuellement.
+Si l'option **Sélectionner les services manuellement** est sélectionnée alors les métriques choisies seront issues de services sélectionnés manuellement.
 
 Si l'option **Recherche SQL** est sélectionnée alors les services utilisés seront sélectionnés automatiquement par Centreon via une recherche à partir du champ **Expression SQL à rechercher de type LIKE**.
 La métrique à utiliser sera dans ce cas à sélectionner dans la liste déroulante **Métrique**.
 
-.. seealso::
+.. note::
     Plus d'informations sur le formatage `PRINTF <http://en.wikipedia.org/wiki/Printf_format_string>`_
 
 Etat du Meta Service
