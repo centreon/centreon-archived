@@ -563,6 +563,52 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
     }
 
     /**
+     * Get simple relation (1-N)
+     *
+     * @param string $fieldName
+     * @param string $targetObj
+     */
+    public function getSimpleRelation($fieldName, $targetObj)
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+
+        $obj = $this->objectClass;
+        $obj::getTableName();
+        $filters = array(
+            $obj::getTableName().'.'.$obj::getPrimaryKey() => $requestParam['id']
+        );
+        $list = $obj::getList($fieldName, -1, 0, null, "ASC", $filters, "AND");
+        
+        if (count($list) == 0) {
+            $router->response()->json(array('id' => null, 'text' => null));
+            return;
+        }
+        
+        $filters = array($targetObj::getPrimaryKey() => $list[0][$fieldName]);
+        $targetPrimaryKey = $targetObj::getPrimaryKey();
+        $targetName = $targetObj::getUniqueLabelField();
+        $targetList = $targetObj::getList(
+            $targetPrimaryKey.','.$targetName,
+            -1, 
+            0, 
+            null, 
+            "ASC", 
+            $filters, 
+            "AND"
+        );
+        
+        $finalList = array();
+        if (count($targetList) > 0) {
+            $finalList["id"] = $targetList[0][$targetPrimaryKey];
+            $finalList["text"] = $targetList[0][$targetName];
+        }
+        $router->response()->json($finalList);
+    }
+
+    /**
      * Action before save
      *
      * * Emit event objectName.action

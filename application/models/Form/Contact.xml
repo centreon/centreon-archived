@@ -22,7 +22,7 @@
 				<field name="contact_contactgroups" label="Contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/contactgroup/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/user/[i:id]/contactgroup</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
@@ -58,7 +58,7 @@
 				<field name="contact_host_notif_command" label="Host notification command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/notificationcommand/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/user/[i:id]/hostnotifcommand</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
@@ -86,7 +86,7 @@
 				<field name="contact_service_notif_command" label="Service notification command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/notificationcommand/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/user/[i:id]/servicenotifcommand</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
