@@ -8,6 +8,11 @@ UPDATE nagios_server SET init_script_centreontrapd = "/etc/init.d/centreontrapd"
 -- #5374
 UPDATE topology SET readonly = '0' WHERE topology_page = 60104;
 
+-- #5399
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (601,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (601,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (602,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (602,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.5.1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.5.0' LIMIT 1;
