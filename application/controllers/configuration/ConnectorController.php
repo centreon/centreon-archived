@@ -200,4 +200,15 @@ class ConnectorController extends \Controllers\ObjectAbstract
     {
         parent::deleteAction();
     }
+
+    /**
+     * Commands for specific connector
+     *
+     * @method get
+     * @route /configuration/connector/[i:id]/command
+     */
+    public function commandsForConnectorAction()
+    {
+        parent::getSimpleRelation('connector_id', '\Models\Configuration\Command', true);
+    }
 }

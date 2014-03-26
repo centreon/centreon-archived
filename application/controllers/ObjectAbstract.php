@@ -567,24 +567,42 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      *
      * @param string $fieldName
      * @param string $targetObj
+     * @param bool $reverse
      */
-    public function getSimpleRelation($fieldName, $targetObj)
+    public function getSimpleRelation($fieldName, $targetObj, $reverse = false)
     {
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
 
-        $obj = $this->objectClass;
-        $obj::getTableName();
+        if ($reverse === false) {
+            $obj = $this->objectClass;
+            $id = $obj::getPrimaryKey();
+            $fields = $fieldName;
+        } else {
+            $obj = $targetObj;
+            $id = $fieldName;
+            $fields = $targetObj::getPrimaryKey().','.$targetObj::getUniqueLabelField();
+        }
         $filters = array(
-            $obj::getTableName().'.'.$obj::getPrimaryKey() => $requestParam['id']
+            $obj::getTableName().'.'.$id => $requestParam['id']
         );
-        $list = $obj::getList($fieldName, -1, 0, null, "ASC", $filters, "AND");
+        $list = $obj::getList($fields, -1, 0, null, "ASC", $filters, "AND");
         
         if (count($list) == 0) {
             $router->response()->json(array('id' => null, 'text' => null));
             return;
+        } elseif ($reverse === true) {
+           $finalList = array();
+            foreach ($list as $obj) {
+                $finalList[] = array(
+                    "id" => $obj[$targetObj::getPrimaryKey()],
+                    "text" => $obj[$targetObj::getUniqueLabelField()]
+                );
+            }
+           $router->response()->json($finalList);
+           return;
         }
         
         $filters = array($targetObj::getPrimaryKey() => $list[0][$fieldName]);
