@@ -44,7 +44,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/administration/aclresource/formlist</defaultValuesRoute>
-						<listValuesRoute>/administration/aclgroup/[i:id]/aclresource</default>
+						<listValuesRoute>/administration/aclgroup/[i:id]/aclresource</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>

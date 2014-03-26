@@ -38,25 +38,20 @@ namespace Controllers\Administration;
 
 use \Centreon\Core\Form;
 
-class AclgroupController extends \Controllers\ObjectAbstract
+class aclresourceController extends \Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'AclGroup';
-    protected $objectName = 'aclgroup';
-    protected $objectBaseUrl = '/administration/aclgroup';
-    protected $objectClass = '\Models\Configuration\Acl\Group';
+    protected $objectDisplayName = 'AclResource';
+    protected $objectName = 'aclresource';
+    protected $objectBaseUrl = '/administration/aclresource';
+    protected $objectClass = '\Models\Configuration\Acl\Resource';
     public static $relationMap = array(
-        'aclgroup_contacts' => '\Models\Configuration\Relation\Aclgroup\Contact',
-        'aclgroup_contactgroups' => '\Models\Configuration\Relation\Aclgroup\Contactgroup',
-        'aclgroup_aclresources' => '\Models\Configuration\Relation\Aclgroup\Aclresource',
-        'aclgroup_aclmenus' => '\Models\Configuration\Relation\Aclgroup\Aclmenu',
-        'aclgroup_aclactions' => '\Models\Configuration\Relation\Aclgroup\Aclaction'
     );
     
     /**
-     * List aclgroups
+     * List aclresources
      *
      * @method get
-     * @route /administration/aclgroup
+     * @route /administration/aclresource
      */
     public function listAction()
     {
@@ -66,7 +61,7 @@ class AclgroupController extends \Controllers\ObjectAbstract
     /**
      * 
      * @method get
-     * @route /administration/aclgroup/list
+     * @route /administration/aclresource/list
      */
     public function datatableAction()
     {
@@ -74,10 +69,10 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Create a new ACL group
+     * Create a new acl resource
      *
      * @method post
-     * @route /administration/aclgroup/create
+     * @route /administration/aclresource/create
      */
     public function createAction()
     {
@@ -85,11 +80,11 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Update an ACL group
+     * Update an acl resource
      *
      *
      * @method post
-     * @route /administration/aclgroup/update
+     * @route /administration/aclresource/update
      */
     public function updateAction()
     {
@@ -97,11 +92,11 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Add a aclgroup
+     * Add a aclresource
      *
      *
      * @method get
-     * @route /administration/aclgroup/add
+     * @route /administration/aclresource/add
      */
     public function addAction()
     {
@@ -109,7 +104,7 @@ class AclgroupController extends \Controllers\ObjectAbstract
         $di = \Centreon\Core\Di::getDefault();
         $tpl = $di->get('template');
         
-        $form = new Form('aclgroupForm');
+        $form = new Form('aclresourceForm');
         $form->addText('name', _('Name'));
         $form->addText('description', _('Description'));
         $form->addTextarea('command_line', _('Commande Line'));
@@ -132,15 +127,15 @@ class AclgroupController extends \Controllers\ObjectAbstract
         $tpl->assign('form', $form->toSmarty());
         
         // Display page
-        $tpl->display('configuration/aclgroup/edit.tpl');
+        $tpl->display('configuration/aclresource/edit.tpl');
     }
     
     /**
-     * Update a aclgroup
+     * Update a aclresource
      *
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]/[i:advanced]
+     * @route /administration/aclresource/[i:id]/[i:advanced]
      */
     public function editAction()
     {
@@ -148,10 +143,10 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Retrieve list of acl groups for a form
+     * Retrieve list of acl resources for a form
      *
      * @method get
-     * @route /administration/aclgroup/formlist
+     * @route /administration/aclresource/formlist
      */
     public function formListAction()
     {
@@ -159,10 +154,10 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Duplicate action for aclgroup
+     * Duplicate action for aclresource
      *
      * @method post
-     * @route /administration/aclgroup/duplicate
+     * @route /administration/aclresource/duplicate
      */
     public function duplicateAction()
     {
@@ -170,10 +165,10 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Massive Change action for aclgroup
+     * Massive Change action for aclresource
      *
      * @method post
-     * @route /administration/aclgroup/massive_change
+     * @route /administration/aclresource/massive_change
      */
     public function massiveChangeAction()
     {
@@ -181,10 +176,10 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * MC Field action for aclgroup
+     * MC Field action for aclresource
      *
      * @method post
-     * @route /administration/aclgroup/mc_fields
+     * @route /administration/aclresource/mc_fields
      */
     public function getMcFieldAction()
     {
@@ -192,68 +187,13 @@ class AclgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Delete action for aclgroup
+     * Delete action for aclresource
      *
      * @method post
-     * @route /administration/aclgroup/delete
+     * @route /administration/aclresource/delete
      */
     public function deleteAction()
     {
         parent::deleteAction();
-    }
-
-    /**
-     * Contacts for a specific acl group
-     *
-     * @method get
-     * @route /administration/aclgroup/[i:id]/contact
-     */
-    public function contactForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_contacts']);
-    }
-
-    /**
-     * Contact groups for a specific acl group
-     *
-     * @method get
-     * @route /administration/aclgroup/[i:id]/contactgroup
-     */
-    public function contactgroupForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_contactgroups']);
-    }
-
-    /**
-     * Acl resource for a specific acl group
-     *
-     * @method get
-     * @route /administration/aclgroup/[i:id]/aclresource
-     */
-    public function aclresourceForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_aclresources']);
-    }
-
-    /**
-     * Acl menu for a specific acl group
-     *
-     * @method get
-     * @route /administration/aclgroup/[i:id]/aclmenu
-     */
-    public function aclmenuForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_aclmenus']);
-    }
-
-    /**
-     * Acl action for a specific acl group
-     *
-     * @method get
-     * @route /administration/aclgroup/[i:id]/aclaction
-     */
-    public function aclactionForAclgroupAction()
-    {
-        parent::getRelations(static::$relationMap['aclgroup_aclactions']);
     }
 }

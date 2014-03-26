@@ -33,23 +33,26 @@
  *
  */
 
-namespace Controllers\Configuration;
+namespace Controllers\Administration;
 
-class UsergroupController extends \Controllers\ObjectAbstract
+use \Centreon\Core\Form;
+use \Centreon\Core\Form\Generator;
+
+class AclactionController extends \Centreon\Core\Controller
 {
-    protected $objectDisplayName = 'User group';
-    protected $objectName = 'usergroup';
-    protected $objectBaseUrl = '/configuration/usergroup';
-    protected $objectClass = '\Models\Configuration\Contactgroup';
+    protected $objectDisplayName = 'AclAction';
+    protected $objectName = 'aclaction';
+    protected $objectBaseUrl = '/administration/aclaction';
+    protected $objectClass = '\Models\Configuration\Acl\Action';
     public static $relationMap = array(
-        'cg_contacts' => '\Models\Configuration\Relation\Contact\Contactgroup'
+        'aclaction_aclgroups' => '\Models\Configuration\Relation\Aclgroup\Aclaction'
     );
 
     /**
-     * List usergroups
+     * List aclaction
      *
      * @method get
-     * @route /configuration/usergroup
+     * @route /administration/aclaction
      */
     public function listAction()
     {
@@ -59,7 +62,7 @@ class UsergroupController extends \Controllers\ObjectAbstract
     /**
      * 
      * @method get
-     * @route /configuration/usergroup/list
+     * @route /administration/aclaction/list
      */
     public function datatableAction()
     {
@@ -67,20 +70,10 @@ class UsergroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * 
-     * @method get
-     * @route /configuration/usergroup/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-    
-    /**
-     * Create a new usergroup
+     * Create a new acl action
      *
      * @method post
-     * @route /configuration/usergroup/create
+     * @route /administration/aclaction/create
      */
     public function createAction()
     {
@@ -88,11 +81,11 @@ class UsergroupController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Update a usergroup
+     * Update an acl action
      *
      *
-     * @method put
-     * @route /configuration/usergroup/update
+     * @method post
+     * @route /administration/aclaction/update
      */
     public function updateAction()
     {
@@ -100,37 +93,74 @@ class UsergroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Add a usergroup
+     * Add a aclaction
      *
      *
      * @method get
-     * @route /configuration/usergroup/add
+     * @route /administration/aclaction/add
      */
     public function addAction()
     {
-        parent::addAction();    
+        // Init template
+        $di = \Centreon\Core\Di::getDefault();
+        $tpl = $di->get('template');
+        
+        $form = new Form('aclactionForm');
+        $form->addText('name', _('Name'));
+        $form->addText('description', _('Description'));
+        
+        $radios['list'] = array(
+          array(
+              'name' => 'Enabled',
+              'label' => 'Enabled',
+              'value' => '1'
+          ),
+          array(
+              'name' => 'Disabled',
+              'label' => 'Disabled',
+              'value' => '0'
+          )
+        );
+        $form->addRadio('enabled', _("Status"), 'status', '&nbsp;', $radios);
+        
+        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
+        $tpl->assign('form', $form->toSmarty());
+        
+        // Display page
+        $tpl->display('administration/aclaction/edit.tpl');
     }
     
     /**
-     * Update a usergroup
+     * Update a aclaction
      *
      *
      * @method get
-     * @route /configuration/usergroup/[i:id]
+     * @route /administration/aclaction/[i:id]
      */
     public function editAction()
     {
-        parent::editAction(); 
+        parent::editAction();
     }
 
     /**
-     * Get list of contacts for a specific contact group
+     * Retrieve list of acl action for a form
      *
      * @method get
-     * @route /configuration/usergroup/[i:id]/contact
+     * @route /administration/aclaction/formlist
      */
-    public function contactForContactgroupAction()
+    public function formListAction()
     {
-        parent::getRelations(static::$relationMap['cg_contacts']);
+        parent::formListAction();
+    }
+
+    /**
+     * Get default list of Acl groups
+     *
+     * @method get
+     * @route /administration/aclaction/[i:id]/aclgroup
+     */
+    public function aclgroupAction()
+    {
+        parent::getRelations($this->relationMap['aclaction_aclgroups']);
     }
 }
