@@ -23,7 +23,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/timeperiod/[i:id]/include</defaultValuesRoute>
+						<listValuesRoute>/configuration/timeperiod/[i:id]/include</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>

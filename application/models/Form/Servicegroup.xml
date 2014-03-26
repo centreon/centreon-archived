@@ -17,7 +17,7 @@
 						<listValuesRoute>/configuration/servicegroup/[i:id]/service</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
-					</attribute>
+					</attributes>
 				</field>
 			</block>
 			<block name="Additional information">

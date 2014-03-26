@@ -134,9 +134,9 @@
 			<block name="Locale settings">
 				<field name="contact_lang" label="Language" default_value="en_US.UTF-8" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<object_type>file</object_type>
-						<defaultValuesFolder>/locale/</defaultValuesFolder>
-						<listValuesRoute>/configuration/user/[i:id]/lang</listValuesRoute>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/user/[i:id]/aclgroup</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>

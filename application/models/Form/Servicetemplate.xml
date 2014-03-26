@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-	<form name="service_form">
+	<form name="servicetemplate_form">
 		<route>/configuration/servicetemplate/update</route>
 		<redirect>1</redirect>
 		<redirect_route>/configuration/service</redirect_route>
@@ -106,7 +106,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/servicetemplate/[i:id]/notificationperiod</defaultValuesRoute>
+						<listValuesRoute>/configuration/servicetemplate/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -115,7 +115,7 @@
 						<Warning>1</Warning>
 						<Unknown>1</Unknown>
 						<Critical>1</Critical>
-						<Recovery>1</Critical>
+						<Recovery>1</Recovery>
 						<Flapping>1</Flapping>
 						<Downtime_scheduled>1</Downtime_scheduled>
 					</attributes>

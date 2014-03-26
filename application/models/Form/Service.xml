@@ -105,7 +105,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/service/[i:id]/notificationperiod</defaultValuesRoute>
+						<listValuesRoute>/configuration/service/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -114,7 +114,7 @@
 						<Warning>1</Warning>
 						<Unknown>1</Unknown>
 						<Critical>1</Critical>
-						<Recovery>1</Critical>
+						<Recovery>1</Recovery>
 						<Flapping>1</Flapping>
 						<Downtime_scheduled>1</Downtime_scheduled>
 					</attributes>
