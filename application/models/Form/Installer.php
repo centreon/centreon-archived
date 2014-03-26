@@ -148,11 +148,15 @@ class Installer
         } else {
             $sql = 'UPDATE form_section SET rank = :rank,
                 form_id = :form_id
-                WHERE name = :name';
+                WHERE name = :name
+                AND section_id = :section_id';
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':rank', $data['rank'], \PDO::PARAM_INT);
+        if (isset(self::$sections[$key])) {
+            $stmt->bindParam(':section_id', $sections[$key]);
+        }
         $stmt->bindParam(':form_id', self::$forms[$data['form_name']], \PDO::PARAM_INT);
         $stmt->execute();
         if (!isset(self::$sections[$key])) {
@@ -176,11 +180,15 @@ class Installer
         } else {
             $sql = 'UPDATE form_block SET rank = :rank,
                 section_id = :section_id
-                WHERE name = :name'; 
+                WHERE name = :name
+                AND block_id = :block_id'; 
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':rank', $data['rank'], \PDO::PARAM_INT);
+        if (isset(self::$blocks[$key])) {
+            $stmt->bindParam(':block_id', self::$blocks[$key]);
+        }
         $stmt->bindParam(':section_id', self::$sections[$sectionKey], \PDO::PARAM_INT);
         $stmt->execute();
         if (!isset(self::$blocks[$key])) {
@@ -240,6 +248,11 @@ class Installer
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['block_name']));
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+            $stmt = $db->prepare('DELETE FROM form_block_field_relation WHERE block_id = :block_id AND field_id = :field_id');
+            $stmt->bindParam(':block_id', self::$blocks[$key]);
+            $stmt->bindParam(':field_id', self::$fields[$fname]);
+            $stmt->execute();
+
             $stmt = $db->prepare('REPLACE INTO form_block_field_relation (block_id, field_id, rank, mandatory) 
                 VALUES (:block_id, :field_id, :rank, :mandatory)');
             $stmt->bindParam(':block_id', self::$blocks[$key]);
