@@ -19,6 +19,7 @@ Sommaire :
    guide_utilisateur/index
    guide_exploitation/index
    architecture/index
+   faq/index
 
 Ressources en ligne supplémentaires:
 
