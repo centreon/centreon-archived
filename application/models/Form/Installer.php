@@ -218,9 +218,13 @@ class Installer
                 module_id = :module_id,
                 parent_field = :parent_field,
                 child_actions = :child_actions
-                WHERE name = :name';
+                WHERE name = :name
+                AND field_id = :field_id';
         }
         $stmt = $db->prepare($sql);
+        if (isset(self::$fields[$key]) {
+            $stmt->bindParam(':field_id', self::$fields[$key]);
+        }
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':label', $data['label']);
         $stmt->bindParam(':default_value', $data['default_value']);
