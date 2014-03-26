@@ -395,7 +395,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Statut                       | Affiche le statut de l'hôte                                                                                                          |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-| Informations sur les services| Affiche le statut des services (Mode détaillé) ou le nombre de services classés par statut (Mode résumé)                            |
+| Informations sur les services| Affiche le statut des services (Mode détaillé) ou le nombre de services classés par statut (Mode résumé)                             |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 Tableaux des méta-services

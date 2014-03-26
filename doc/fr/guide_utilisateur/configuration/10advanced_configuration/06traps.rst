@@ -64,6 +64,9 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_poller.png
    :align: center
 
+.. note::
+    Le processus Centcore à la charge, comme pour l'export de configuration de la supervsiion, de copier la base SQLite sur le collecteur distant.
+
 **************************
 Configuration des services
 **************************
@@ -96,6 +99,8 @@ Il est également possible de placer le dossier tampon snmptrapd en mémoire viv
 
 	tmpfs /var/run/snmpd                     tmpfs defaults,size=128m 0 0
 
+.. _configuration_advanced_centreontrapdforward:
+
 Centreontrapdforward
 ====================
 
@@ -114,6 +119,8 @@ Vous pouvez également mapper le dossier dans le cache en mémoire vive, en ajou
 ::
 
 	tmpfs /var/spool/centreontrapd            tmpfs defaults,size=512m 0 0
+
+.. _configuration_advanced_centreontrapd:
 
 Centreontrapd
 =============

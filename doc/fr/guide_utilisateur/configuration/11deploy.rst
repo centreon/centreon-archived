@@ -1,3 +1,5 @@
+.. _deployconfiguration:
+
 ==========================
 Déployer une configuration
 ==========================
