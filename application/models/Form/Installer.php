@@ -222,7 +222,7 @@ class Installer
                 AND field_id = :field_id';
         }
         $stmt = $db->prepare($sql);
-        if (isset(self::$fields[$key]) {
+        if (isset(self::$fields[$key])) {
             $stmt->bindParam(':field_id', self::$fields[$key]);
         }
         $stmt->bindParam(':name', $data['name']);
