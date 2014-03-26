@@ -8,16 +8,29 @@
 			<block name="General information">
 				<field name="command_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="command_type" label="Type" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{"Notification":1, "Check":2, "Misc":3}</attributes>
+					<attributes>
+						<Notification>1</Notification>
+						<Check>2</Check>
+						<Misc>3</Misc>
+					</attributes>
 				</field>
 				<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{"Yes":1, "No":0}</attributes>
+					<attributes>
+						<Yes>1</Yes>
+						<No>0</No>
+					</attributes>
 				</field>
 			</block>
 			<block name="Additional information">
 				<field name="connector_id" label="Connector" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/connector/formlist","listValuesRoute":"/configuration/command/[i:id]/connector","multiple":true,"ordered":false}</attribute>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/connector/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/command/[i:id]/connector</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attributes>
 				</field>
 				<field name="command_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
 			</block>

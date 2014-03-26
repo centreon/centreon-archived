@@ -85,7 +85,7 @@ class CommandController extends \Controllers\ObjectAbstract
      */
     public function createAction()
     {
-        
+        parent::createAction();     
     }
 
     /**
@@ -98,7 +98,7 @@ class CommandController extends \Controllers\ObjectAbstract
      */
     public function updateAction()
     {
-        
+        parent::updateAction();    
     }
     
     /**
@@ -180,6 +180,17 @@ class CommandController extends \Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Connector for a specific command
+     *
+     * @method get
+     * @route /configuration/command/[i:id]/connector
+     */
+    public function connectorForCommandAction()
+    {
+        parent::getSimpleRelation('connector_id', '\Models\Configuration\Connector');
     }
 
     /**
