@@ -218,45 +218,6 @@ class Generator
             case 'textarea':
                 $this->formHandler->addTextarea($field['name'], $field['label']);
                 break;
-            case 'radio':
-                $values = json_decode($field['attributes']);
-                $radioValues = array();
-                foreach ($values as $label => $value) {
-                    $radioValues['list'][] = array(
-                        'name' => $label,
-                        'label' => $label,
-                        'value' => $value
-                    );
-                }
-                $this->formHandler->addRadio(
-                    $field['name'],
-                    $field['label'],
-                    $field['name'],
-                    '&nbsp;',
-                    $radioValues
-                );
-                break;
-            case 'checkbox':
-                $values = json_decode($field['attributes']);
-                if (is_array($values) || is_object($values)) {
-                    $checkboxValues = array();
-                    foreach ($values as $label => $value) {
-                        $checkboxValues['list'][] = array(
-                            'name' => $label,
-                            'label' => $label,
-                            'value' => $value
-                        );
-                    }
-                    $this->formHandler->addCheckBox(
-                        $field['name'],
-                        $field['label'],
-                        '&nbsp;',
-                        $checkboxValues
-                    );
-                } else {
-                    $this->formHandler->addCheckbox($field['name'], $field['label']);
-                }
-                break;
         }
     }
     
