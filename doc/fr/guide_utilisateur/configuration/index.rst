@@ -16,4 +16,5 @@ Configuration
    08category
    09models
    10advanced_configuration/index
+   10poller/index 
    11deploy
