@@ -108,8 +108,9 @@ CREATE TABLE `form_step_field_relation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `form_field_validator_relation` (
-  `field_id` INT UNSIGNED NOT NULL,
-  `validator_id` INT UNSIGNED NOT NULL,
+  `field_id` int(10) unsigned NOT NULL,
+  `validator_id` int(10) unsigned NOT NULL,
+  `client_side_event` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`field_id`,`validator_id`),
   KEY `fk_new_table_1_idx` (`field_id`),
   KEY `fk_form_field_validator_relation_2_idx` (`validator_id`),
