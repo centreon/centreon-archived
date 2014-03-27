@@ -45,7 +45,7 @@ namespace Centreon\Core\Form;
 class Wizard extends Generator
 {
     /**
-     * Contructor
+     * Constructor
      *
      * @see \Centreon\Core\Form\Generator::__construct
      */
@@ -79,7 +79,7 @@ class Wizard extends Generator
         while ($row = $stmt->fetch()) {
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
-		$this->formHandler = new \Centreon\Core\Form($this->formName);
+                $this->formHandler = new \Centreon\Core\Form($this->formName);
             }
             if (false === isset($this->formComponents[$row['step_name']])) {
                 $this->formComponents[$row['step_name']] = array();
@@ -93,6 +93,7 @@ class Wizard extends Generator
 
     /**
      * Return the wizard HTML
+     * @return string
      */
     protected function generateHtml()
     {

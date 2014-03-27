@@ -37,8 +37,13 @@ namespace Controllers\Configuration;
 
 use Models\Configuration\Timeperiod;
 
-class TimeperiodController extends \Centreon\Core\Controller
+class TimeperiodController extends \Controllers\ObjectAbstract
 {
+    protected $objectDisplayName = 'Timeperiod';
+    protected $objectName = 'timeperiod';
+    protected $objectBaseUrl = '/configuration/timeperiod';
+    protected $objectClass = '\Models\Configuration\Timeperiod';
+
     /**
      * 
      * @method get
@@ -46,23 +51,6 @@ class TimeperiodController extends \Centreon\Core\Controller
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $timeperiodObj = new Timeperiod();
-        $filters = array('tp_name' => $requestParams['q'].'%');
-        $timeperiodList = $timeperiodObj->getList('tp_id, tp_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalTimeperiodList = array();
-        foreach($timeperiodList as $timeperiod) {
-            $finalTimeperiodList[] = array(
-                "id" => $timeperiod['tp_id'],
-                "text" => $timeperiod['tp_name']
-            );
-        }
-        
-        $router->response()->json($finalTimeperiodList);
+        parent::formListAction();
     }
 }

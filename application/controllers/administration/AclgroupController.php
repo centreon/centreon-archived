@@ -36,13 +36,22 @@
 
 namespace Controllers\Administration;
 
-use \Models\Configuration\Acl\Group,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Centreon\Core\Form;
 
-class AclgroupController extends \Centreon\Core\Controller
+class AclgroupController extends \Controllers\ObjectAbstract
 {
-
+    protected $objectDisplayName = 'AclGroup';
+    protected $objectName = 'aclgroup';
+    protected $objectBaseUrl = '/administration/aclgroup';
+    protected $objectClass = '\Models\Configuration\Acl\Group';
+    public static $relationMap = array(
+        'aclgroup_contacts' => '\Models\Configuration\Relation\Aclgroup\Contact',
+        'aclgroup_contactgroups' => '\Models\Configuration\Relation\Aclgroup\Contactgroup',
+        'aclgroup_aclresources' => '\Models\Configuration\Relation\Aclgroup\Aclresource',
+        'aclgroup_aclmenus' => '\Models\Configuration\Relation\Aclgroup\Aclmenu',
+        'aclgroup_aclactions' => '\Models\Configuration\Relation\Aclgroup\Aclaction'
+    );
+    
     /**
      * List aclgroups
      *
@@ -51,26 +60,7 @@ class AclgroupController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'aclgroup');
-        $tpl->assign('objectAddUrl', '/administration/aclgroup/add');
-        $tpl->assign('objectListUrl', '/administration/aclgroup/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
 
     /**
@@ -80,15 +70,7 @@ class AclgroupController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(
-            \Centreon\Core\Datatable::getDatas(
-                'aclgroup',
-                $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -99,7 +81,7 @@ class AclgroupController extends \Centreon\Core\Controller
      */
     public function createAction()
     {
-        var_dump($this->getParams());
+        parent::createAction();
     }
 
     /**
@@ -111,25 +93,7 @@ class AclgroupController extends \Centreon\Core\Controller
      */
     public function updateAction()
     {
-        $givenParameters = $this->getParams('post');
-        
-        if (Form::validateSecurity($givenParameters['token'])) {
-            $aclgroup = array(
-                'acl_group_name' => $givenParameters['acl_group_name'],
-                'acl_group_alias' => $givenParameters['acl_group_alias'],
-                'acl_group_activate' => $givenParameters['acl_group_activate'],
-            );
-            
-            $aclgroupObj = new \Models\Configuration\Acl\Group();
-            try {
-                $aclgroupObj->update($givenParameters['acl_group_id'], $aclgroup);
-            } catch (Exception $e) {
-                echo "fail";
-            }
-            echo 'success';
-        } else {
-            echo "fail";
-        }
+        parent::updateAction();
     }
     
     /**
@@ -164,7 +128,7 @@ class AclgroupController extends \Centreon\Core\Controller
         );
         $form->addRadio('status', _("Status"), 'status', '&nbsp;', $radios);
         
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
         
         // Display page
@@ -176,37 +140,11 @@ class AclgroupController extends \Centreon\Core\Controller
      *
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]
+     * @route /administration/aclgroup/[i:id]/[i:advanced]
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $aclgroupObj = new \Models\Configuration\Acl\Group();
-        $currentaclgroupValues = $aclgroupObj->getParameters($requestParam['id'], array(
-            'acl_group_id',
-            'acl_group_name',
-            'acl_group_alias',
-            'acl_group_activate'
-            )
-        );
-
-        if (!isset($currentaclgroupValues['acl_group_activate']) || !is_numeric($currentaclgroupValues['acl_group_activate'])) {
-            $currentaclgroupValues['enabled'] = '0';
-        }
-        
-        $myForm = new Generator("/administration/aclgroup/update");
-        $myForm->setDefaultValues($currentaclgroupValues);
-        $myForm->addHiddenComponent('acl_group_id', $requestParam['id']);
-        
-        // Display page
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/administration/aclgroup/update');
-        $tpl->display('configuration/edit.tpl');
+        parent::editAction();
     }
 
     /**
@@ -217,22 +155,105 @@ class AclgroupController extends \Centreon\Core\Controller
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $aclgroupObj = new Group();
-        $filters = array();
-        $aclgroupList = $aclgroupObj->getList('acl_group_id, acl_group_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalAclgroupList = array();
-        foreach($aclgroupList as $aclgroup) {
-            $finalAclgroupList[] = array(
-                "id" => $aclgroup['acl_group_id'],
-                "text" => $aclgroup['acl_group_name']
-            );
-        }
-         $router->response()->json($finalAclgroupList);
+        parent::formListAction();
+    }
+    
+    /**
+     * Duplicate action for aclgroup
+     *
+     * @method post
+     * @route /administration/aclgroup/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+    
+    /**
+     * Massive Change action for aclgroup
+     *
+     * @method post
+     * @route /administration/aclgroup/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+    
+    /**
+     * MC Field action for aclgroup
+     *
+     * @method post
+     * @route /administration/aclgroup/mc_fields
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+    
+    /**
+     * Delete action for aclgroup
+     *
+     * @method post
+     * @route /administration/aclgroup/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
+    }
+
+    /**
+     * Contacts for a specific acl group
+     *
+     * @method get
+     * @route /administration/aclgroup/[i:id]/contact
+     */
+    public function contactForAclgroupAction()
+    {
+        parent::getRelations(static::$relationMap['aclgroup_contacts']);
+    }
+
+    /**
+     * Contact groups for a specific acl group
+     *
+     * @method get
+     * @route /administration/aclgroup/[i:id]/contactgroup
+     */
+    public function contactgroupForAclgroupAction()
+    {
+        parent::getRelations(static::$relationMap['aclgroup_contactgroups']);
+    }
+
+    /**
+     * Acl resource for a specific acl group
+     *
+     * @method get
+     * @route /administration/aclgroup/[i:id]/aclresource
+     */
+    public function aclresourceForAclgroupAction()
+    {
+        parent::getRelations(static::$relationMap['aclgroup_aclresources']);
+    }
+
+    /**
+     * Acl menu for a specific acl group
+     *
+     * @method get
+     * @route /administration/aclgroup/[i:id]/aclmenu
+     */
+    public function aclmenuForAclgroupAction()
+    {
+        parent::getRelations(static::$relationMap['aclgroup_aclmenus']);
+    }
+
+    /**
+     * Acl action for a specific acl group
+     *
+     * @method get
+     * @route /administration/aclgroup/[i:id]/aclaction
+     */
+    public function aclactionForAclgroupAction()
+    {
+        parent::getRelations(static::$relationMap['aclgroup_aclactions']);
     }
 }

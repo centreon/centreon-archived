@@ -51,7 +51,7 @@ class Module
      *
      * @todo inserts module into database
      */
-    public function install()
+    public static function install()
     {
 
     }
@@ -62,8 +62,9 @@ class Module
      * @todo remove module from database
      * @todo remove hooks from database
      */
-    public function uninstall()
+    public static function uninstall()
     {
+
     }
 
     /**
@@ -73,7 +74,7 @@ class Module
      * @param string $blockName
      * @param string $blockDescription
      */
-    public function registerHook($hookName, $blockName, $blockDescription)
+    public static function registerHook($hookName, $blockName, $blockDescription)
     {
         Hook::register(
             $this->moduleId,
@@ -88,8 +89,85 @@ class Module
      *
      * @param string $blockName
      */
-    public function unregisterHook($blockName)
+    public static function unregisterHook($blockName)
     {
         Hook::unregister($this->moduleId, $blockName);
+    }
+
+    /**
+     * Set menu entry
+     * Inserts into database if short_name does not exist, otherwise it just updates entry
+     *
+     * @param array $data (name, short_name, parent, route, icon_class, icon, bgcolor, order, module)
+     */
+    public static function setMenu($data)
+    {
+        static $menus = null;
+
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        if (is_null($menus)) {
+            $sql = "SELECT menu_id, short_name FROM menus";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $menus[$row['short_name']] = $row['menu_id'];
+            }
+        }
+        $mandatoryKeys = array('name', 'short_name');
+        foreach ($mandatoryKeys as $k) {
+            if (!isset($data[$k])) {
+                throw new Exception(sprintf('Missing mandatory key %s', $k));
+            }
+        }
+        if (isset($data['parent']) && !isset($menus[$data['parent']])) {
+            throw new Exception(sprintf('Parent %s does not exist', $data['parent']));
+        }
+
+        if (!isset($menus[$data['short_name']])) {
+            $sql = "INSERT INTO menus 
+                (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, is_module) VALUES
+                (:name, :short_name, :parent, :route, :icon_class, :icon, :bgcolor, :order, :module)";
+        } else {
+            $menuOrder = "";
+            if (isset($data['order'])) {
+                $menuOrder = " menu_order = :order, ";
+            }
+            $sql = "UPDATE menus SET name = :name, parent_id = :parent, url = :route, icon_class = :icon_class,
+                icon = :icon, bgcolor = :bgcolor, $menuOrder is_module = :module
+                WHERE short_name = :short_name";
+        }
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':short_name', $data['short_name']);
+        $parent = isset($data['parent']) && isset($menus[$data['parent']])? $menus[$data['parent']] : null;
+        $stmt->bindParam(':parent', $parent);
+        $stmt->bindParam(':route', $data['route']);
+        $icon_class = isset($data['icon_class']) ? $data['icon_class'] : null;
+        $stmt->bindParam(':icon_class', $icon_class);
+        $icon = isset($data['icon']) ? $data['icon'] : null;
+        $stmt->bindParam(':icon', $icon);
+        $bgcolor = isset($data['bgcolor']) ? $data['bgcolor'] : null;
+        $stmt->bindParam(':bgcolor', $bgcolor);
+        if (isset($data['order'])) {
+            $stmt->bindParam(':order', $order);
+        }
+        $module = isset($data['module']) ? $data['module'] : 0;
+        $stmt->bindParam(':module', $module);
+        $stmt->execute();
+        if (!isset($menus[$data['short_name']])) {
+            $menus[$data['short_name']] = $db->lastInsertId('menus', 'menu_id');
+            if (!isset($data['order']) && isset($data['parent'])) {
+                $stmt = $db->prepare("SELECT (MAX(menu_order) + 1) as max_order 
+                    FROM menus WHERE parent_id = :parent_id");
+                $stmt->bindParam(':parent_id', $menus[$data['parent']]);
+                $stmt->execute();
+                $row = $stmt->fetch();
+                $stmt = $db->prepare("UPDATE menus SET menu_order = :menu_order WHERE menu_id = :menu_id");
+                $stmt->bindParam(':menu_order', $row['max_order']);
+                $stmt->bindParam(':menu_id', $menus[$data['short_name']]);
+                $stmt->execute();
+            }
+        }
     }
 }

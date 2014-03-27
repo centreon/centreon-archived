@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Textarea extends Customobject
 {
     /**
@@ -43,7 +48,7 @@ class Textarea extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['value']) ? $value = $element['value']:  $value = '');
+        (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
         
         if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
             $element['label'] = $element['name'];
@@ -57,14 +62,19 @@ class Textarea extends Customobject
             $element['id'] = $element['name'];
         }
         
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
+        
         $inputHtml = '<textarea '.
                     'id="'.$element['id'].'" '.
                     'name="'.$element['name'].'" '.
-                    'class="form-control" '.
+                    'class="form-control '.$addClass.'" '.
                     'rows="3" '.
                     $placeholder.
                     '>'.$value.'</textarea>';
+        
         return $inputHtml;
     }
-    
 }

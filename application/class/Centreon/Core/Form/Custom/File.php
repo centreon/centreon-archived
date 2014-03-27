@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class File extends Customobject
 {
     /**
@@ -103,8 +108,10 @@ class File extends Customobject
                     <div class="col-sm-12">
                         <div class="fileupload-progress fade">
                             <!-- The global progress bar -->
-                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                <div id="progress" class="progress-bar progress-bar-success bar" style="width:0%;"></div>
+                            <div class="progress progress-striped active" 
+                                role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <div id="progress" class="progress-bar progress-bar-success bar" style="width:0%;">
+                                </div>
                             </div>
                             <!-- The extended global progress state -->
                             <div class="progress-extended">&nbsp;</div>
@@ -135,7 +142,14 @@ class File extends Customobject
                     </td>
                     <td>
                         <p class="size">Processing...</p>
-                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+                        <div 
+                            class="progress progress-striped active" 
+                            role="progressbar" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100" 
+                            aria-valuenow="0">
+                            <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                        </div>
                     </td>
                     <td>
                         {% if (!i && !o.options.autoUpload) { %}
@@ -162,14 +176,28 @@ class File extends Customobject
                     <td>
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
-                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
+                                <a 
+                                    href="{%=file.url%}" 
+                                    title="{%=file.name%}" 
+                                    download="{%=file.name%}" 
+                                    data-gallery
+                                >
+                                    <img src="{%=file.thumbnailUrl%}">
+                                </a>
                             {% } %}
                         </span>
                     </td>
                     <td>
                         <p class="name">
                             {% if (file.url) { %}
-                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?\'data-gallery\':\'\'%}>{%=file.name%}</a>
+                                <a 
+                                    href="{%=file.url%}" 
+                                    title="{%=file.name%}" 
+                                    download="{%=file.name%}" 
+                                    {%=file.thumbnailUrl?\'data-gallery\':\'\'%}
+                                >
+                                    {%=file.name%}
+                                </a>
                             {% } else { %}
                                 <span>{%=file.name%}</span>
                             {% } %}
@@ -183,7 +211,14 @@ class File extends Customobject
                     </td>
                     <td>
                         {% if (file.deleteUrl) { %}
-                            <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields=\'{"withCredentials":true}\'{% } %}>
+                            <button 
+                                class="btn btn-danger delete" 
+                                data-type="{%=file.deleteType%}" 
+                                data-url="{%=file.deleteUrl%}"
+                                {% if (file.deleteWithCredentials) {
+                                    %} data-xhr-fields=\'{"withCredentials":true}\'{% } 
+                                %}
+                            >
                                 <i class="glyphicon glyphicon-trash"></i>
                                 <span>Delete</span>
                             </button>

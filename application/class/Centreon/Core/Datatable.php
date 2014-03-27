@@ -102,21 +102,25 @@ class Datatable
      */
     public static function castResult($element, $object)
     {
-        $elementField = array_keys($element);
-        $originalElement = $element;
-        $object = ucwords(strtolower($object));
-        $objectToCall = '\\Centreon\\Repository\\'.$object.'Repository';
-        foreach ($objectToCall::$columnCast as $castField=>$castParameters) {
-            $subCaster = 'add'.ucwords($castParameters['type']);
-            $element[$castField] = self::$subCaster(
-                $object,
-                $castField,
-                $castParameters['parameters'],
-                $elementField,
-                $originalElement
-            );
+        try {
+            $elementField = array_keys($element);
+            $originalElement = $element;
+            $object = ucwords(strtolower($object));
+            $objectToCall = '\\Centreon\\Repository\\'.$object.'Repository';
+            foreach ($objectToCall::$columnCast as $castField => $castParameters) {
+                $subCaster = 'add'.ucwords($castParameters['type']);
+                $element[$castField] = self::$subCaster(
+                    $object,
+                    $castField,
+                    $castParameters['parameters'],
+                    $elementField,
+                    $originalElement
+                );
+            }
+            return $element;
+        } catch (\Exception $e) {
+            var_dump($e);
         }
-        return $element;
     }
 
     /**
@@ -130,7 +134,12 @@ class Datatable
      */
     public static function addUrl($object, $fields, $values, $elementField, $element)
     {
-        $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
+        $castedElement = \array_map(
+            function ($n) {
+                return "::$n::";
+            },
+            $elementField
+        );
         
         $routeParams = array();
         if (isset($values['routeParams']) && is_array($values['routeParams'])) {
@@ -168,7 +177,12 @@ class Datatable
             . 'value="::'. $fields .'::" '
             . 'data-name="' . $values['displayName'] . '" '
             . '/>';
-        $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
+        $castedElement = \array_map(
+            function ($n) {
+                return "::$n::";
+            },
+            $elementField
+        );
         return str_replace($castedElement, $element, $input);
     }
     

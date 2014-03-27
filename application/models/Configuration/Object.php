@@ -316,8 +316,15 @@ abstract class Object
      * @return array
      * @throws Exception
      */
-    public static function getList($parameterNames = "*", $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         if ($filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         }
@@ -448,6 +455,7 @@ abstract class Object
             ." WHERE ".static::$uniqueLabelField."='$uniqueFieldvalue'";
         $stmt = $dbconn->query($unicityRequest);
         $resultUnique = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
         if (count($resultUnique) > 0) {
             if ($resultUnique[static::$primaryKey] == $id) {
                 $isUnique = true;

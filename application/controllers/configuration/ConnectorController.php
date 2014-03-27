@@ -35,11 +35,9 @@
 
 namespace Controllers\Configuration;
 
-use \Models\Configuration\Connector,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Centreon\Core\Form;
 
-class ConnectorController extends ObjectAbstract
+class ConnectorController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Connector';
     protected $objectName = 'connector';
@@ -65,24 +63,7 @@ class ConnectorController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $connectorObj = new Connector();
-        $filters = array('name' => $requestParams['q'].'%');
-        $connectorList = $connectorObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalConnectorList = array();
-        foreach($connectorList as $connector) {
-            $finalConnectorList[] = array(
-                "id" => $connector['id'],
-                "text" => $connector['name']
-            );
-        }
-        
-        $router->response()->json($finalConnectorList);
+        parent::formListAction();
     }
 
     /**
@@ -157,42 +138,12 @@ class ConnectorController extends ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/connector/[i:id]
+     * @route /configuration/connector/[i:id]/[i:advanced]
      * @acl update
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $connObj = new Connector();
-        $currentConnectorValues = $connObj->getParameters($requestParam['id'], array(
-            'id',
-            'name',
-            'description',
-            'command_line',
-            'enabled'
-            )
-        );
-        
-        if (isset($currentConnectorValues['enabled']) && is_numeric($currentConnectorValues['enabled'])) {
-            $currentConnectorValues['enabled'] = $currentConnectorValues['enabled'];
-        } else {
-            $currentConnectorValues['enabled'] = '0';
-        }
-        
-        $myForm = new Generator("/configuration/connector/update");
-        $myForm->setDefaultValues($currentConnectorValues);
-        $myForm->addHiddenComponent('id', $requestParam['id']);
-        
-        // Display page
-        $tpl->assign('pageTitle', "Connector");
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/configuration/connector/update');
-        $tpl->display('configuration/edit.tpl');
+        parent::editAction();
     }
 
     /**
@@ -248,5 +199,16 @@ class ConnectorController extends ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Commands for specific connector
+     *
+     * @method get
+     * @route /configuration/connector/[i:id]/command
+     */
+    public function commandsForConnectorAction()
+    {
+        parent::getSimpleRelation('connector_id', '\Models\Configuration\Command', true);
     }
 }

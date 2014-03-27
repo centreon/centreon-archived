@@ -37,7 +37,8 @@ CREATE TABLE `form_field` (
   `attributes` varchar(255) DEFAULT NULL,
   `advanced` char(1) NOT NULL DEFAULT '0',
   `type` varchar(45) NOT NULL,
-  `help` varchar(45) DEFAULT NULL,
+  `help` text,
+  `help_url` varchar(255) DEFAULT NULL,
   `module_id` INT UNSIGNED NOT NULL,
   `parent_field` varchar(45) DEFAULT NULL,
   `child_actions` varchar(45) DEFAULT NULL,
@@ -54,7 +55,7 @@ CREATE TABLE `form_wizard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `form_step` (
-  `step_id` INT UNSIGNED NOT NULL,
+  `step_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `wizard_id` INT UNSIGNED NOT NULL,
   `rank` INT UNSIGNED NOT NULL,
@@ -70,7 +71,7 @@ CREATE TABLE `form_validator` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `form_massive_change` (
-  `massive_change_id` INT UNSIGNED NOT NULL,
+  `massive_change_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `route` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`massive_change_id`)
@@ -107,8 +108,9 @@ CREATE TABLE `form_step_field_relation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `form_field_validator_relation` (
-  `field_id` INT UNSIGNED NOT NULL,
-  `validator_id` INT UNSIGNED NOT NULL,
+  `field_id` int(10) unsigned NOT NULL,
+  `validator_id` int(10) unsigned NOT NULL,
+  `client_side_event` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`field_id`,`validator_id`),
   KEY `fk_new_table_1_idx` (`field_id`),
   KEY `fk_form_field_validator_relation_2_idx` (`validator_id`),

@@ -53,6 +53,11 @@ class Ipaddress extends Customobject
             $element['id'] = $element['name'];
         }
         
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
+        
         $myJs = "";
         
         $myHtml = '<div id="'.$element['name'].'_ipaddress" class="input-group">';
@@ -62,7 +67,7 @@ class Ipaddress extends Customobject
                 'type="text" '.
                 'name="'.$element['name'].'" '.
                 $value.
-                'class="form-control" '.
+                'class="form-control '.$addClass.'" '.
                 $placeholder.
                 '/>';
                     
@@ -71,11 +76,33 @@ class Ipaddress extends Customobject
         $myHtml .= '<span id="'.$element['name'].'_resolve_dns_span" class="input-group-btn">'
             . '<button id="'.$element['name'].'_resolve_dns" class="btn btn-default" type="button">Resolve</button>'
             . '</span>';
+        
+        $myHtml .= '</div>';
+        
+        return array(
+            'html' => $myHtml,
+            'js' => $myJs
+        );
+    }
+    
+    /**
+     * 
+     * @param array $element
+     * @return array
+     */
+    public static function addValidation($element)
+    {
+        $validations = parent::addValidation($element);
+        
         $resolveUrl = \Centreon\Core\Di::getDefault()
                         ->get('router')
                         ->getPathFor('/validator/resolvedns');
-
-        $myJs .= '$("#'.$element['name'].'_resolve_dns").click(function(){
+        
+        $ipAddressValidationUrl = \Centreon\Core\Di::getDefault()
+                            ->get('router')
+                            ->getPathFor('/validator/ipaddress');
+        
+        $validations['eventValidation'] .= '$("#'.$element['name'].'_resolve_dns").on("click", function(){
                 $.ajax({
                     url: "'.$resolveUrl.'",
                     type: "POST",
@@ -94,13 +121,7 @@ class Ipaddress extends Customobject
                 });
             });';
         
-        $myHtml .= '</div>';
-        
-        $ipAddressValidationUrl = \Centreon\Core\Di::getDefault()
-                            ->get('router')
-                            ->getPathFor('/validator/ipaddress');
-        
-        $myJs .= '$("#'.$element['name'].'").blur(function(){
+        $validations['eventValidation'] = '$("#'.$element['name'].'").on("blur", function() {
                     $.ajax({
                         url: "'.$ipAddressValidationUrl.'",
                         type: "POST",
@@ -111,23 +132,36 @@ class Ipaddress extends Customobject
                     .success(function(data, status, jqxhr) {
                         alertClose();
                         if (data["success"]) {
-                            $("#'.$element['name'].'_ipaddress").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
-                            $("#'.$element['name'].'_ipaddress").addClass("has-success has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").addClass("has-success has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
                         } else {
                             alertMessage(data["error"], "alert-danger");
-                            $("#'.$element['name'].'_ipaddress").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
-                            $("#'.$element['name'].'_ipaddress").addClass("has-error has-feedback");
-                            $("#'.$element['name'].'_ipaddress_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress").addClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_ipaddress_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
                         }
                     });
                 });';
         
-        return array(
-            'html' => $myHtml,
-            'js' => $myJs
-        );
+        return $validations;
     }
 }

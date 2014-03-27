@@ -10,10 +10,21 @@
 				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="connector_command" label="Commands" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attribute>{"object_type":"object","defaultValuesRoute":"/configuration/command/formlist","listValuesRoute":"/configuration/connector/[i:id]/command","multiple":true,"ordered":false}</attribute>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/connector/[i:id]/command</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attributes>
 				</field>
 				<field name="enabled" label="Status" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+					<attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+					</attributes>
 				</field>
 			</block>
 		</section>

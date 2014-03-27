@@ -99,12 +99,36 @@ class Host extends Object
             }
         }
         $templates = \Models\Configuration\Relation\Host\Hosttemplate::getTargetIdFromSourceId(
-            'host_tpl_id', 
+            'host_tpl_id',
             'host_host_id',
             $hid
         );
         foreach ($templates as $tplId) {
             self::deployServices($hostId, $tplId);
         }
+    }
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $filters['host_register'] = '1';
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 }

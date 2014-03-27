@@ -354,3 +354,114 @@ aside {
 .content-container {
     margin: 15px 25px;
 }
+
+/* Infinite Scroll Table */
+.table-infinitescroll {
+    thead,
+    tbody,
+    tr,
+    td,
+    th {
+        display: block;
+    }
+
+    th.badge-new-events {
+        position: absolute;
+        top: 2px;
+        right: 20px;
+        font-size: 12px;
+        font-weight: normal;
+        background: lightgreen;
+        line-height: 20px;
+        height: 20px;
+        border: 0;
+        padding: 1px 3px;
+
+        a {
+            color: black;
+            
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+
+    thead {
+        position: relative;
+    }
+
+    thead > tr {
+        display: block;
+        width: 97%;
+        width: ~"calc(100% - 16px)";
+    }
+
+    tr:after {
+        content: ' ';
+        display: block;
+        visibility: hidden;
+        clear: both;
+    }
+
+    tbody {
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: 100%;
+        height: 200px;
+    }
+
+    thead th,
+    tbody td {
+        float: left;
+        line-height: 30px;
+        min-height: 30px;
+    }
+
+    .span-1 {
+        width: percentage(1 / 12);
+    }
+
+    .span-2 {
+        width: percentage(2 / 12);
+    }
+
+    .span-3 {
+        width: percentage(3 / 12);
+    }
+
+    .span-4 {
+        width: percentage(4 / 12);
+    }
+
+    .span-5 {
+        width: percentage(5 / 12);
+    }
+
+    .span-6 {
+        width: percentage(6 / 12);
+    }
+
+    .span-7 {
+        width: percentage(7 / 12);
+    }
+
+    .span-8 {
+        width: percentage(8 / 12);
+    }
+
+    .span-9 {
+        width: percentage(9 / 12);
+    }
+
+    .span-10 {
+        width: percentage(10 / 12);
+    }
+
+    .span-11 {
+        width: percentage(11 / 12);
+    }
+
+    .span-12 {
+        width: percentage(12 / 12);
+    }
+}

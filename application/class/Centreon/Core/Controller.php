@@ -70,13 +70,10 @@ abstract class Controller
         switch(strtolower($type)) {
             default:
                 return $this->request->params();
-                
             case 'get':
                 return $this->request->paramsGet();
-            
             case 'post':
                 return $this->request->paramsPost();
-                
             case 'named':
                 return $this->request->paramsNamed();
         }
@@ -98,7 +95,7 @@ abstract class Controller
         }
         /*
          * Set md5Email for Gravatar
-         */ 
+         */
         $tpl->assign("md5Email", $md5Email);
     }
 
@@ -123,7 +120,7 @@ abstract class Controller
                         $method_type = strtoupper(substr($str, 7));
                         $tempo[$methodName]['method_type'] = trim($method_type);
                     } elseif (substr($str, 0, 4) == '@acl') {
-                        $aclFlags = explode(",", trim(substr($str,4)));
+                        $aclFlags = explode(",", trim(substr($str, 4)));
                         $tempo[$methodName]['acl'] = Acl::convertAclFlags($aclFlags);
                     }
                 }

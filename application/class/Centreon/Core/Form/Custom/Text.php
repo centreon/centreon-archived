@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Text extends Customobject
 {
     /**
@@ -69,7 +74,6 @@ class Text extends Customobject
                         'class="form-control '.$addClass.'" '.
                         $placeholder.
                         '/><span>';
-        
         
         return array(
             'html' => $inputHtml,

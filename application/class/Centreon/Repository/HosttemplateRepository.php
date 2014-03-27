@@ -123,9 +123,10 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
         'host_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/host/update',
+                'route' => '/configuration/hosttemplate/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::host_id::'
+                    'id' => '::host_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::host_name::'
             )
@@ -157,8 +158,9 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
     public static function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myHostTemplateSet) {
-            $myHostTemplateSet['host_name'] = \Centreon\Repository\HostRepository::getIconImage($myHostTemplateSet['host_name']).
-                '&nbsp;'.$myHostTemplateSet['host_name'];
+            $myHostTemplateSet['host_name'] = \Centreon\Repository\HostRepository::getIconImage(
+                $myHostTemplateSet['host_name']
+            ).'&nbsp;'.$myHostTemplateSet['host_name'];
         }
     }*/
 }

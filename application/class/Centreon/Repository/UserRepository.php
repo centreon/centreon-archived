@@ -131,9 +131,10 @@ class UserRepository extends \Centreon\Repository\Repository
         'contact_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/user/[i:id]',
+                'route' => '/configuration/user/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::contact_id::'
+                    'id' => '::contact_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::contact_name::'
             )

@@ -9,112 +9,233 @@
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hosttemplate/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/hosttemplate","multiple":true,"ordered":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/hosttemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/hosttemplate</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>true</ordered>
+					</attributes>
 				</field>			
 			</block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/checkperiod","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/checkperiod</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 				</field>
 				<field name="host_check_command" label="Check command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/command/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/checkcommand","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/checkcommand</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 				</field>
 				<field name="host_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="host_check_interval" label="Normal check interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="host_retry_check_interval" label="Retry check interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="host_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 			</block>
 			<block name="Notification">
 				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/user/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/contact","multiple":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/contact</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
 				</field>
 				<field name="host_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/usergroup/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/contactgroup","multiple":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/contactgroup</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
 				</field>
 				<field name="host_notification_interval" label="Notification interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/timeperiod/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/notificationperiod","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/notificationperiod</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 				</field>
 				<field name="host_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Down":1, "Unreachable":1, "Recovery":1, "Flapping":1, "Downtime Scheduled":1}</attributes>
+					<attributes>
+                        <choices>
+                            <Down>1</Down>
+                            <Unreachable>1</Unreachable>
+                            <Recovery>1</Recovery>
+                            <Flapping>1</Flapping>
+                            <Downtime_Scheduled>1</Downtime_Scheduled>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
 			</block>
 			<block name="Additional information">
-				<field name="hg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
-					<attributes>{"Enabled":1, "Disabled":0}</attributes>
+				<field name="host_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+					</attributes>
 				</field>
 			</block>
 		</section>
 		<section name="Relations">
-			<block name="Host group relations">
-				<field name="host_hostgroups" label="Parent host groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostgroup/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/hostgroup","multiple":true}</attributes>
-				</field>
-			</block>
 			<block name="Host category relations">
 				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostcategory/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/hostcategory","multiple":true}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/hostcategory</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
 				</field>
 			</block>
 		</section>
 		<section name="Data processing">
 			<block name="Data processing">
 				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 			</block>
 			<block name="Freshness control options">
 				<field name="host_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
 			</block>
 			<block name="Flapping options">
 				<field name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
 			</block>
 			<block name="Perfdata options">
 				<field name="host_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 			</block>
 			<block name="History options">
 				<field name="host_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Up":1, "Down":1, "Unreachable":1}</attributes>
+					<attributes>
+                        <choices>
+                            <Up>1</Up>
+                            <Down>1</Down>
+                            <Unreachable>1</Unreachable>
+                        </choices>
+					</attributes>
 				</field>
 			</block>
 			<block name="Event handler">
 				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"Yes":1, "No":0, "Default":2}</attributes>
+					<attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
+					</attributes>
 				</field>
 				<field name="host_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/command/formlist","listValuesRoute":"/configuration/hosttemplate/[i:id]/eventhandler","multiple":false}</attributes>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
 				</field>
 			</block>
 		</section>
 		<section name="Extended information">
 			<block name="Extended information">
-				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/image/icon/centreon","multiple":false,"wizardRoute":"/administration/media/image/add"}</attributes>
+				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+                        <listValuesRoute>/configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
+						<multiple>false</multiple>
+						<wizardRoute>/administration/media/image/add</wizardRoute>
+					</attributes>
 				</field>
 			</block>
 		</section>

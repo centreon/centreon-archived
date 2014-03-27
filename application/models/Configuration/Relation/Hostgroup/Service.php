@@ -35,9 +35,9 @@
  */
 
 
-namespace Models\Configuration;
+namespace Models\Configuration\Relation\Hostgroup;
 
-class Relation\Hostgroup\Service extends Relation
+class Service extends \Models\Configuration\Relation
 {
     protected static $relationTable = "host_service_relation";
     protected static $firstKey = "hostgroup_hg_id";

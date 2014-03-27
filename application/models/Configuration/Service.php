@@ -47,4 +47,28 @@ class Service extends Object
     protected static $table = "service";
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "service_description";
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $filters['service_register'] = '1';
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+    }
 }

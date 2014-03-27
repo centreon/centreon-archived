@@ -95,9 +95,10 @@ class CommandRepository extends \Centreon\Repository\Repository
         'command_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/command/[i:id]',
+                'route' => '/configuration/command/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::command_id::'
+                    'id' => '::command_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::command_name::'
             )
@@ -138,5 +139,4 @@ class CommandRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

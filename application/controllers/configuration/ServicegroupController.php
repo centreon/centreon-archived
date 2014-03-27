@@ -37,7 +37,7 @@ namespace Controllers\Configuration;
 
 use \Centreon\Core\Form;
 
-class ServicegroupController extends ObjectAbstract
+class ServicegroupController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Servicegroup';
     protected $objectName = 'servicegroup';
@@ -55,8 +55,15 @@ class ServicegroupController extends ObjectAbstract
         parent::listAction();
     }
 
+    /**
+     * List service groups 
+     *
+     * @method get
+     * @route /configuration/servicegroup/formlist
+     */
     public function formListAction()
     {
+        parent::formListAction();
     }
 
     /**
@@ -134,7 +141,7 @@ class ServicegroupController extends ObjectAbstract
         );
         $form->addRadio('servicegroup_status', _("Status"), 'servicegroup_type', '&nbsp;', $radios);
         $form->addTextarea('comments', _('Comments'));
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
         
         // Display page

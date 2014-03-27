@@ -65,7 +65,9 @@ class Hosttemplate extends \Models\Configuration\Relation
             $order = $row['maxorder']+1;
         }
         unset($res);
-        $sql = "INSERT INTO ".static::$relationTable." (".static::$firstKey.", ".static::$secondKey.", `order`) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO ".static::$relationTable
+            ." (".static::$firstKey.", ".static::$secondKey.", `order`) "
+            . "VALUES (?, ?, ?)";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey, $skey, $order));
     }
@@ -104,8 +106,16 @@ class Hosttemplate extends \Models\Configuration\Relation
      * @param string $filterType
      * @return array
      */
-    public static function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public static function getMergedParameters(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         if (!isset(static::$firstObject) || !isset(static::$secondObject)) {
             throw new Exception('Unsupported method on this object');
         }
@@ -127,11 +137,14 @@ class Hosttemplate extends \Models\Configuration\Relation
         $secondObject = static::$secondObject;
         $sql = "SELECT ".$fString.$sString."
         		FROM ".$firstObject::getTableName()." h,".static::$relationTable."
-        		JOIN ".$secondObject::getTableName(). " h2 ON ".static::$relationTable.".".static::$secondKey." = h2.".$secondObject::getPrimaryKey() ."
+        		JOIN ".$secondObject::getTableName()
+                ." h2 ON ".static::$relationTable.".".static::$secondKey
+                ." = h2.".$secondObject::getPrimaryKey() ."
         		WHERE h.".$firstObject::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
+                $key = str_replace('host.', 'h.', $key);
                 $sql .= " $filterType $key LIKE ? ";
                 $value = trim($rawvalue);
                 $value = str_replace("_", "\_", $value);

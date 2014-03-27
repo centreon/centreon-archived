@@ -35,9 +35,9 @@
  */
 
 
-namespace Models\Configuration;
+namespace Models\Configuration\Relation\Service;
 
-class Relation\Service\Servicecategory extends Relation
+class Servicecategory extends \Models\Configuration\Relation
 {
     protected static $relationTable = "service_categories_relation";
     protected static $firstKey = "sc_id";

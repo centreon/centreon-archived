@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Command extends Customobject
 {
     /**
@@ -70,8 +75,10 @@ class Command extends Customobject
                     . 'var argumentsHtml = ""; '
                     . '$.each(data, function(key, value){ '
                         . 'argumentsHtml += "<div class=\"row\"><div class=\"col-sm-3\">"+value.name+"</div>'
-                                        . '<div class=\"col-sm-4\"><input class=\"form-control\" type=\"text\" value=\""+value.value+"\"></div>'
-                                        . '<div class=\"col-sm-3\">"+value.example+"</div></div>" '
+                        . '<div class=\"col-sm-4\">'
+                            . '<input class=\"form-control\" type=\"text\" value=\""+value.value+"\">'
+                            . '</div>'
+                        . '<div class=\"col-sm-3\">"+value.example+"</div></div>" '
                     . '}); '
                     . '$("#'.$element['name'].'_command_args").append(argumentsHtml); '
                 . '});'

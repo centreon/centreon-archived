@@ -59,8 +59,16 @@ class Hostparent extends Relation
      * @param string $filterType
      * @return array
      */
-    public static function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public static function getMergedParameters(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         $fString = "";
         $sString = "";
         $firstObj = static::$firstObject;
@@ -80,12 +88,13 @@ class Hostparent extends Relation
         
         $sql = "SELECT ".$fString.$sString."
         		FROM host, ".static::$relationTable."
-        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey;
+        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
+                ." = ".static::$relationTable.".".static::$firstKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 $sql .= " $filterType $key LIKE ? ";
-                $value = trim ($rawvalue);
+                $value = trim($rawvalue);
                 $value = str_replace("\\", "\\\\", $value);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);

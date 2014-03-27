@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Select extends Customobject
 {
     /**
@@ -67,7 +72,13 @@ class Select extends Customobject
         
         $addJs = '';
         if (isset($element['label_ordered']) && $element['label_ordered']) {
-            $addJs = '$("#'.$element['name'].'").on("change", function() { $("#'.$element['name'].'_val").html($("#'.$element['name'].'").val());});';
+            $addJs = '$("#'
+                .$element['name']
+                .'").on("change", function() { $("#'
+                .$element['name']
+                .'_val").html($("#'
+                .$element['name']
+                .'").val());});';
 
             $addJs .= '$("#'.$element['name'].'").select2("container").find("ul.select2-choices").sortable({
                     containment: "parent",
@@ -76,7 +87,12 @@ class Select extends Customobject
                   });'."\n";
         }
         
-        $myHtml = '<input class="form-control '.$addClass.'" id="'.$element['name'].'" name="' . $element['name'] . '" style="width: 100%;" type="hidden" value=" " />';
+        $myHtml = '<input '
+            . 'class="form-control '
+            . $addClass
+            . '" id="'.$element['name']
+            . '" name="' . $element['name']
+            . '" style="width: 100%;" type="hidden" value=" " />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
@@ -102,13 +118,15 @@ class Select extends Customobject
                         $.ajax("'.$element['label_listValuesRoute'].'", {
                             dataType: "json"
                         }).done(function(data) {
-                            callback(data); 
-                            id = $(element).val();
-                            if (data.id) {
-                                $(element).val(data.id);
-                            }
-                            if (id.match(/^,/)) {
-                                $(element).val(id.substring(1, id.length));
+                            if (data.length > 0 || data.id) {
+                                callback(data);
+                                id = $(element).val();
+                                if (data.id) {
+                                    $(element).val(data.id);
+                                }
+                                if (id.match(/^,/)) {
+                                    $(element).val(id.substring(1, id.length));
+                                }
                             }
                         });
                      }
@@ -118,8 +136,7 @@ class Select extends Customobject
         $myJs .= $addJs;
         return array(
             'html' => $myHtml,
-            'js' => $myJs,
-            'customGetter' => array('name' => $element['name'], 'getter' => '$("#'.$element['name'].'").select2("val")')
+            'js' => $myJs
         );
     }
 }

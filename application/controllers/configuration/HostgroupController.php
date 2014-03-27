@@ -35,14 +35,16 @@
 
 namespace Controllers\Configuration;
 
-use Models\Configuration\Hostgroup;
-
-class HostgroupController extends ObjectAbstract
+class HostgroupController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Hostgroup';
     protected $objectName = 'hostgroup';
     protected $objectBaseUrl = '/configuration/hostgroup';
     protected $objectClass = '\Models\Configuration\Hostgroup';
+    
+    public static $relationMap = array(
+        'host_hostgroups' => '\Models\Configuration\Relation\Host\Hostgroup',
+    );
 
     /**
      * List hostgroups
@@ -62,24 +64,7 @@ class HostgroupController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $hostgroupObj = new Hostgroup();
-        $filters = array('hg_name' => $requestParams['q'].'%');
-        $hostgroupList = $hostgroupObj->getList('hg_id, hg_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalHostgroupList = array();
-        foreach($hostgroupList as $hostgroup) {
-            $finalHostgroupList[] = array(
-                "id" => $hostgroup['hg_id'],
-                "text" => $hostgroup['hg_name']
-            );
-        }
-        
-        $router->response()->json($finalHostgroupList);
+        parent::formListAction();
     }
 
     /**
@@ -124,7 +109,7 @@ class HostgroupController extends ObjectAbstract
      */
     public function addAction()
     {
-        parent::addAction();  
+        parent::addAction();
     }
     
     /**
@@ -132,11 +117,11 @@ class HostgroupController extends ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/hostgroup/[i:id]
+     * @route /configuration/hostgroup/[i:id]/[i:advanced]
      */
     public function editAction()
     {
-        
+        parent::editAction();
     }
 
     /**
@@ -192,5 +177,17 @@ class HostgroupController extends ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Get list of hostgroups for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/hostgroup/[i:id]/host
+     */
+    public function hostForHostGroupAction()
+    {
+        parent::getRelations(static::$relationMap['host_hostgroups']);
     }
 }

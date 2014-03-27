@@ -155,8 +155,8 @@ class ToolsController extends \Centreon\Core\Controller
         
         $query = 'SELECT `checksum` 
             FROM `binaries`
-	        WHERE `checksum` = :checksum
-	    	    AND `mimetype` = :mimetype';
+            WHERE `checksum` = :checksum
+            AND `mimetype` = :mimetype';
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':checksum', $fileChecksum, \PDO::PARAM_STR);
         $stmt->bindParam(':mimetype', $mimetype, \PDO::PARAM_STR);
@@ -166,7 +166,7 @@ class ToolsController extends \Centreon\Core\Controller
         if (false === $row) {
             $di = \Centreon\Core\Di::getDefault();
             $config = $di->get('config');
-            $baseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/'.$fileType.'/';
+            $baseUrl = rtrim($config->get('global', 'base_url'), '/').'/uploads/'.$fileType.'/';
             $fileDestination = realpath(__DIR__.'/../../www/uploads/'.$fileType.'/').'/'.$uploadedFile['name'];
 
             if (move_uploaded_file($uploadedFile['tmp_name'], $fileDestination)) {
@@ -197,12 +197,10 @@ class ToolsController extends \Centreon\Core\Controller
                             $imageCreateFunction = 'imagecreatefromjpeg';
                             $imageGenerateFunction = 'imagejpeg';
                             break;
-
                         case 'image/png':
                             $imageCreateFunction = 'imagecreatefrompng';
                             $imageGenerateFunction = 'imagepng';
                             break;
-
                         case 'image/gif':
                             $imageCreateFunction = 'imagecreatefromgif';
                             $imageGenerateFunction = 'imagegif';
@@ -210,7 +208,7 @@ class ToolsController extends \Centreon\Core\Controller
                     }
                     
                     $thumbDestination = realpath(__DIR__.'/../../www/uploads/imagesthumb/').'/'.$uploadedFile['name'];
-                    $thumbBaseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/imagesthumb/';
+                    $thumbBaseUrl = rtrim($config->get('global', 'base_url'), '/').'/uploads/imagesthumb/';
 
                     // Calcul des nouvelles dimensions
                     list($width, $height) = getimagesize($fileDestination);

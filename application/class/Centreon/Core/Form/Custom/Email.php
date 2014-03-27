@@ -34,6 +34,11 @@
  */
 namespace Centreon\Core\Form\Custom;
 
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Email extends Customobject
 {
     /**
@@ -43,7 +48,7 @@ class Email extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
+        (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
         
         if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
             $element['label'] = $element['name'];
@@ -57,6 +62,13 @@ class Email extends Customobject
             $element['id'] = $element['name'];
         }
         
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
+        
+        $myJs = "";
+        
         $myHtml = '<div id="'.$element['name'].'_email" class="input-group">
                 <span class="input-group-addon">@</span>';
         
@@ -65,18 +77,33 @@ class Email extends Customobject
                 'type="text" '.
                 'name="'.$element['name'].'" '.
                 $value.
-                'class="form-control" '.
+                'class="form-control '.$addClass.'" '.
                 $placeholder.
                 '/>';
                     
         $myHtml .= '<span id="'.$element['name'].'_email_span" class=""></span>'
             . '</div>';
+        
+        return array(
+            'html' => $myHtml,
+            'js' => $myJs
+        );
+    }
+    
+    /**
+     * 
+     * @param array $element
+     * @return array
+     */
+    public static function addValidation($element)
+    {
+        $validations = parent::addValidation($element);
+        
         $validationUrl = \Centreon\Core\Di::getDefault()
                             ->get('router')
                             ->getPathFor('/validator/email');
-            
-            
-        $myJs = '$("#'.$element['name'].'").blur(function(){
+        
+        $validations['eventValidation'] .= ' $("#'.$element['name'].'").on("blur", function() {
                     $.ajax({
                         url: "'.$validationUrl.'",
                         type: "POST",
@@ -84,23 +111,36 @@ class Email extends Customobject
                         context: document.body
                     })
                     .success(function(data, status, jqxhr) {
-                        if (data === "success") {
-                            $("#'.$element['name'].'_email").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_email_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
-                            $("#'.$element['name'].'_email").addClass("has-success has-feedback");
-                            $("#'.$element['name'].'_email_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
+                        if (data.success) {
+                            $("#'
+                            .$element['name']
+                            .'_email").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").removeClass("glyphicon glyphicon-remove form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email").addClass("has-success has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").addClass("glyphicon glyphicon-ok form-control-feedback");    
                         } else {
-                            $("#'.$element['name'].'_email").removeClass("has-error has-feedback");
-                            $("#'.$element['name'].'_email_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
-                            $("#'.$element['name'].'_email").addClass("has-error has-feedback");
-                            $("#'.$element['name'].'_email_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
+                            $("#'
+                            .$element['name']
+                            .'_email").removeClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").removeClass("glyphicon glyphicon-ok form-control-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email").addClass("has-error has-feedback");
+                            $("#'
+                            .$element['name']
+                            .'_email_span").addClass("glyphicon glyphicon-remove form-control-feedback"); 
                         }
                     });
                 });';
         
-        return array(
-            'html' => $myHtml,
-            'js' => $myJs
-        );
+        return $validations;
     }
 }

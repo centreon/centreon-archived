@@ -86,14 +86,17 @@ class AclgroupRepository extends \Centreon\Repository\Repository
         ),
         'acl_group_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::acl_group_name::'
+            )
         ),
         'acl_group_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/administration/aclgroup/[i:id]',
+                'route' => '/administration/aclgroup/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::acl_group_id::'
+                    'id' => '::acl_group_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::acl_group_name::'
             )
@@ -130,5 +133,4 @@ class AclgroupRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

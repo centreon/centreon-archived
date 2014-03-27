@@ -95,9 +95,10 @@ class ConnectorRepository extends \Centreon\Repository\Repository
         'name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/connector/[i:id]',
+                'route' => '/configuration/connector/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::id::'
+                    'id' => '::id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::name::'
             )
@@ -136,5 +137,4 @@ class ConnectorRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
 }

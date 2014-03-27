@@ -35,16 +35,18 @@
 
 namespace Controllers\Configuration;
 
-use \Models\Configuration\Servicecategory,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Centreon\Core\Form;
 
-class ServicecategoryController extends ObjectAbstract
+class ServicecategoryController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Servicecategory';
     protected $objectName = 'servicecategory';
     protected $objectBaseUrl = '/configuration/servicecategory';
     protected $objectClass = '\Models\Configuration\Servicecategory';
+    public static $relationMap = array(
+        'sc_services' => '\Models\Configuration\Relation\Service\Servicecategory',
+        'sc_servicetemplates' => '\Models\Configuration\Relation\Service\Servicecategory'
+    );
 
     /**
      * List servicecategories
@@ -57,8 +59,12 @@ class ServicecategoryController extends ObjectAbstract
         parent::listAction();
     }
 
+    /**
+     * 
+     */
     public function formListAction()
     {
+        parent::formListAction();
     }
 
     /**
@@ -129,42 +135,11 @@ class ServicecategoryController extends ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/servicecategory/[i:id]
+     * @route /configuration/servicecategory/[i:id]/[i:advanced]
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $scObj = new Servicecategory();
-        $currentServicecategoryValues = $scObj->getParameters($requestParam['id'], array(
-            'sc_id',
-            'sc_name',
-            'sc_description',
-            'sc_activate'
-            )
-        );
-        
-        if (isset($currentServicecategoryValues['sc_activate']) && is_numeric($currentServicecategoryValues['sc_activate'])) {
-            $currentServicecategoryValues['sc_activate'] = $currentServicecategoryValues['sc_activate'];
-        } else {
-            $currentServicecategoryValues['sc_activate'] = '0';
-        }
-        
-        $myForm = new Generator("/configuration/servicecategory/update");
-        $myForm->setDefaultValues($currentServicecategoryValues);
-        $myForm->addHiddenComponent('sc_id', $requestParam['id']);
-        
-        // Display page
-        $tpl->assign('pageTitle', "Service Category");
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('formRedirect', $myForm->getRedirect());
-        $tpl->assign('formRedirectRoute', $myForm->getRedirectRoute());
-        $tpl->assign('validateUrl', '/configuration/servicecategory/update');
-        $tpl->display('configuration/edit.tpl');
+        parent::editAction();
     }
 
     /**
@@ -220,5 +195,27 @@ class ServicecategoryController extends ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Services for a specific category
+     *
+     * @method get
+     * @route /configuration/servicecategory/[i:id]/service
+     */
+    public function serviceForServicecategoryAction()
+    {
+        parent::getRelations(static::$relationMap['sc_services']);
+    }
+
+    /**
+     * Service templates for a specific category
+     *
+     * @method get
+     * @route /configuration/servicecategory/[i:id]/servicetemplate
+     */
+    public function servicetemplateForServicecategoryAction()
+    {
+        parent::getRelations(static::$relationMap['sc_servicetemplates']);
     }
 }

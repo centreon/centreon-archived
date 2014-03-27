@@ -35,10 +35,15 @@
 
 namespace Controllers\Configuration;
 
-use Models\Configuration\Contactgroup;
-
-class UsergroupController extends \Centreon\Core\Controller
+class UsergroupController extends \Controllers\ObjectAbstract
 {
+    protected $objectDisplayName = 'User group';
+    protected $objectName = 'usergroup';
+    protected $objectBaseUrl = '/configuration/usergroup';
+    protected $objectClass = '\Models\Configuration\Contactgroup';
+    public static $relationMap = array(
+        'cg_contacts' => '\Models\Configuration\Relation\Contact\Contactgroup'
+    );
 
     /**
      * List usergroups
@@ -48,26 +53,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Usergroup');
-        $tpl->assign('objectAddUrl', '/configuration/usergroup/add');
-        $tpl->assign('objectListUrl', '/configuration/usergroup/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
 
     /**
@@ -77,14 +63,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'usergroup',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -94,24 +73,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $contactgroupObj = new Contactgroup();
-        $filters = array('cg_name' => $requestParams['q'].'%');
-        $contactgroupList = $contactgroupObj->getList('cg_id, cg_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalContactgroupList = array();
-        foreach($contactgroupList as $contactgroup) {
-            $finalContactgroupList[] = array(
-                "id" => $contactgroup['cg_id'],
-                "text" => $contactgroup['cg_name']
-            );
-        }
-        
-        $router->response()->json($finalContactgroupList);
+        parent::formListAction();
     }
     
     /**
@@ -122,7 +84,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function createAction()
     {
-        
+        parent::createAction();
     }
 
     /**
@@ -134,7 +96,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
@@ -146,7 +108,7 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        
+        parent::addAction();    
     }
     
     /**
@@ -158,6 +120,17 @@ class UsergroupController extends \Centreon\Core\Controller
      */
     public function editAction()
     {
-        
+        parent::editAction(); 
+    }
+
+    /**
+     * Get list of contacts for a specific contact group
+     *
+     * @method get
+     * @route /configuration/usergroup/[i:id]/contact
+     */
+    public function contactForContactgroupAction()
+    {
+        parent::getRelations(static::$relationMap['cg_contacts']);
     }
 }

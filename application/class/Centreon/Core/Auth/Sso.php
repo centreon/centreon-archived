@@ -72,7 +72,7 @@ class Sso extends \Centreon\Core\Auth
             if ('' !== $config->get('default', 'sso_header_username', '')) {
                 $this->sso_username = $_SERVER[$config->get('default', 'sso_header_username', '')];
                 $this->enable = true;
-                if ($this->check_sso_client()) {
+                if ($this->checkSsoClient()) {
                     $self->sso_mandatory = 1;
                     $username = $this->sso_username;
                 }
@@ -91,12 +91,15 @@ class Sso extends \Centreon\Core\Auth
      *
      * return bool
      */
-    protected function check_sso_client()
+    protected function checkSsoClient()
     {
         $config = \Centreon\Core\Di::getDefault()->get('config');
         if (1 === $config->get('default', 'sso_mode', 0)) {
             /* Mixed. Only trusted site for sso. */
-            if (preg_match('/' . $_SERVER['REMOTE_ADDR'] . '(\s|,|$)/', $config->get('default', 'sso_trusted_clients'))) {
+            if (preg_match(
+                '/' . filter_input(INPUT_SERVER, 'REMOTE_ADDR') . '(\s|,|$)/',
+                $config->get('default', 'sso_trusted_clients')
+            )) {
                 /* SSO */
                 return true;
             }
@@ -116,7 +119,7 @@ class Sso extends \Centreon\Core\Auth
     protected function checkPassword($password, $token)
     {
         if ($this->enable && $this->login) {
-           $this->passwdOk = 1;
+            $this->passwdOk = 1;
         } else {
             /* local connect (when sso not enabled and 'sso_mode' == 1 */
             parent::checkPassword($password, $token);

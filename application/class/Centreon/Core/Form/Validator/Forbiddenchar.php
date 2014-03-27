@@ -66,7 +66,10 @@ class Forbiddenchar implements Ivalidator
         if (!$forbiddenCharDetected) {
             $result = array('success' => true);
         } else {
-            $result = array('success' => false, 'error' => _('One of these illegal chars ('.$forbiddenCharsList.') have been found'));
+            $result = array(
+                'success' => false,
+                'error' => _('One of these illegal chars ('.$forbiddenCharsList.') have been found')
+            );
         }
         return $result;
     }

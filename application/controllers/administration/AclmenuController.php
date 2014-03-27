@@ -35,12 +35,18 @@
 
 namespace Controllers\Administration;
 
-use \Models\Configuration\Acl\Menu,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Centreon\Core\Form;
+use \Centreon\Core\Form\Generator;
 
 class AclmenuController extends \Centreon\Core\Controller
 {
+    protected $objectDisplayName = 'AclMenu';
+    protected $objectName = 'aclmenu';
+    protected $objectBaseUrl = '/administration/aclmenu';
+    protected $objectClass = '\Models\Configuration\Acl\Menu';
+    public static $relationMap = array(
+        'aclmenu_aclgroups' => '\Models\Configuration\Relation\Aclgroup\Aclmenu'
+    );
 
     /**
      * List aclmenu
@@ -50,26 +56,7 @@ class AclmenuController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'aclmenu');
-        $tpl->assign('objectAddUrl', '/administration/aclmenu/add');
-        $tpl->assign('objectListUrl', '/administration/aclmenu/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
 
     /**
@@ -79,15 +66,7 @@ class AclmenuController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(
-            \Centreon\Core\Datatable::getDatas(
-                'aclmenu',
-                $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -98,7 +77,7 @@ class AclmenuController extends \Centreon\Core\Controller
      */
     public function createAction()
     {
-        var_dump($this->getParams());
+        parent::createAction();
     }
 
     /**
@@ -115,7 +94,7 @@ class AclmenuController extends \Centreon\Core\Controller
                 foreach ($params[$aclType] as $menuId => $on) {
                     if (!isset($aclData[$menuId])) {
                         $aclData[$menuId] = 0;
-                    } 
+                    }
                     switch ($aclType) {
                         case 'acl_create':
                             $flag = \Centreon\Core\Acl::ADD;
@@ -221,7 +200,7 @@ class AclmenuController extends \Centreon\Core\Controller
         );
         $form->addRadio('enabled', _("Status"), 'status', '&nbsp;', $radios);
         
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
         
         // Display page
@@ -237,39 +216,18 @@ class AclmenuController extends \Centreon\Core\Controller
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $aclmenuObj = new \Models\Configuration\Acl\Menu();
-        $currentaclmenuValues = $aclmenuObj->getParameters($requestParam['id'], array(
-            'acl_menu_id',
-            'name',
-            'description',
-            'enabled'
-            )
-        );
+        parent::editAction();
+    }
 
-        if (!isset($currentaclmenuValues['enabled']) || !is_numeric($currentaclmenuValues['enabled'])) {
-            $currentaclmenuValues['enabled'] = '0';
-        }
-        
-        $myForm = new Generator(
-            "/administration/aclmenu/update", 
-            0, 
-            array(
-                'id' => $requestParam['id']
-            )
-        );
-        $myForm->setDefaultValues($currentaclmenuValues);
-        $myForm->addHiddenComponent('acl_menu_id', $requestParam['id']);
-        
-        // Display page
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/administration/aclmenu/update');
-        $tpl->display('configuration/edit.tpl');
+    /**
+     * Retrieve list of acl menu for a form
+     *
+     * @method get
+     * @route /administration/aclmenu/formlist
+     */
+    public function formListAction()
+    {
+        parent::formListAction();
     }
 
     /**
@@ -280,27 +238,6 @@ class AclmenuController extends \Centreon\Core\Controller
      */
     public function aclgroupAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        $requestParam = $this->getParams('named');
-        
-        $relObj = new \Models\Configuration\Relation\Aclgroup\Aclmenu();
-        $list = $relObj->getMergedParameters(
-            array('acl_group_id', 'acl_group_name'),
-            array(),
-            -1,
-            0,
-            "acl_groups.acl_group_name",
-            "ASC",
-            array('acl_menus.acl_menu_id' => $requestParam['id'])
-        );
-        $finalList = array();
-        foreach ($list as $elem) {
-            $finalList[] = array(
-                "id" => $elem['acl_group_id'],
-                "text" => $elem['acl_group_name']
-            );
-        }
-        $router->response()->json($finalList);
+        parent::getRelations($this->relationMAp['aclmenu_aclgroups']);
     }
 }

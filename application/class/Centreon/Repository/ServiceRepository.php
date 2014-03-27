@@ -160,9 +160,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'service_description' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/service/[i:id]',
+                'route' => '/configuration/service/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::service_id::'
+                    'id' => '::service_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::service_description::'
             )
@@ -170,9 +171,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'host_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/host/[i:id]',
+                'route' => '/configuration/host/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::host_id::'
+                    'id' => '::host_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::host_name::'
             )
@@ -218,8 +220,9 @@ class ServiceRepository extends \Centreon\Repository\Repository
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = \Centreon\Repository\HostRepository::getIconImage($myServiceSet['host_name']).
-                    '&nbsp;'.$myServiceSet['host_name'];
+                $myServiceSet['host_name'] = \Centreon\Repository\HostRepository::getIconImage(
+                    $myServiceSet['host_name']
+                ).'&nbsp;'.$myServiceSet['host_name'];
             }
             
             // Set Scheduling
@@ -237,10 +240,20 @@ class ServiceRepository extends \Centreon\Repository\Repository
             
             // Get Real Service Description
             if (!$myServiceSet["service_description"]) {
-                $myServiceSet["service_description"] = self::getMyServiceAlias($myServiceSet['service_template_model_stm_id']);
+                $myServiceSet["service_description"] = self::getMyServiceAlias(
+                    $myServiceSet['service_template_model_stm_id']
+                );
             } else {
-                $myServiceSet["service_description"] = str_replace('#S#', "/", $myServiceSet["service_description"]);
-                $myServiceSet["service_description"] = str_replace('#BS#', "\\", $myServiceSet["service_description"]);
+                $myServiceSet["service_description"] = str_replace(
+                    '#S#',
+                    "/",
+                    $myServiceSet["service_description"]
+                );
+                $myServiceSet["service_description"] = str_replace(
+                    '#BS#',
+                    "\\",
+                    $myServiceSet["service_description"]
+                );
             }
             
             // Set Tpl Chain
@@ -253,7 +266,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
                 "/",
                 \Centreon\Core\Di::getDefault()
                     ->get('router')
-                    ->getPathFor('/configuration/servicetemplate/[i:id]', array('id' => $tplArr['id']))
+                    ->getPathFor(
+                        '/configuration/servicetemplate/[i:id]/[i:advanced]',
+                        array('id' => $tplArr['id'], 'advanced' => '0')
+                    )
             );
             
             $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";
@@ -277,12 +293,12 @@ class ServiceRepository extends \Centreon\Repository\Repository
         $intervalLength = \Centreon\Core\Di::getDefault()->get('config')->get('default', 'interval_length');
         $interval *= $intervalLength;
         
-		if ($interval % 60 == 0) {
-			$units = "min";
-			$interval /= 60;
-		} else {
-			$units = "sec";
-		}
+        if ($interval % 60 == 0) {
+            $units = "min";
+            $interval /= 60;
+        } else {
+            $units = "sec";
+        }
         
         $scheduling = $interval.' '.$units;
         
@@ -302,24 +318,31 @@ class ServiceRepository extends \Centreon\Repository\Repository
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-		$tab = array();
-		while (1) {
-			$stmt = $dbconn->query("SELECT `".$field."`, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row = $stmt->fetchAll();
-			if ($row[0][$field]) {
-				return $row[0][$field];
-			} elseif ($row[0]['service_template_model_stm_id']) {
-				if (isset($tab[$row[0]['service_template_model_stm_id']])) {
-			        break;
-				}
-				$service_id = $row[0]["service_template_model_stm_id"];
-				$tab[$service_id] = 1;
-			} else {
-				break;
-			}
-		}
-	}
-    
+        $tab = array();
+        while (1) {
+            $stmt = $dbconn->query(
+                "SELECT "
+                . "`".$field."`, "
+                . "service_template_model_stm_id "
+                . "FROM service "
+                . "WHERE "
+                . "service_id = '".$service_id."' LIMIT 1"
+            );
+            $row = $stmt->fetchAll();
+            if ($row[0][$field]) {
+                return $row[0][$field];
+            } elseif ($row[0]['service_template_model_stm_id']) {
+                if (isset($tab[$row[0]['service_template_model_stm_id']])) {
+                    break;
+                }
+                $service_id = $row[0]["service_template_model_stm_id"];
+                $tab[$service_id] = 1;
+            } else {
+                break;
+            }
+        }
+    }
+
     /**
      * 
      * @param integer $service_id
@@ -331,16 +354,23 @@ class ServiceRepository extends \Centreon\Repository\Repository
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        while(1) {
-			$stmt = $dbconn->query("SELECT service_notifications_enabled, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row = $stmt->fetchAll();
+        while (1) {
+            $stmt = $dbconn->query(
+                "SELECT "
+                . "service_notifications_enabled, "
+                . "service_template_model_stm_id "
+                . "FROM service "
+                . "WHERE "
+                . "service_id = '".$service_id."' LIMIT 1"
+            );
+            $row = $stmt->fetchAll();
             
             if (($row[0]['service_notifications_enabled'] != 2) || (!$row[0]['service_template_model_stm_id'])) {
                 return $row[0]['service_notifications_enabled'];
             }
             
             $service_id = $row[0]['service_template_model_stm_id'];
-		}
+        }
         
     }
     
@@ -356,14 +386,16 @@ class ServiceRepository extends \Centreon\Repository\Repository
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $stmt = $dbconn->query("SELECT service_description FROM service WHERE service_id = '".$service_template_id."' LIMIT 1");
+        $stmt = $dbconn->query(
+            "SELECT service_description FROM service WHERE service_id = '".$service_template_id."' LIMIT 1"
+        );
         $row = $stmt->fetchAll();
         $tplArr = array(
             'id' => $service_template_id,
             'description' => \html_entity_decode(self::db2str($row[0]["service_description"]), ENT_QUOTES, "UTF-8")
         );
-		return $tplArr;
-	}
+        return $tplArr;
+    }
     
     /**
      * 
@@ -372,13 +404,13 @@ class ServiceRepository extends \Centreon\Repository\Repository
      */
     public static function db2str($string)
     {
-		$string = str_replace('#BR#', "\\n", $string);
-		$string = str_replace('#T#', "\\t", $string);
-		$string = str_replace('#R#', "\\r", $string);
-		$string = str_replace('#S#', "/", $string);
-		$string = str_replace('#BS#', "\\", $string);
-		return $string;
-	}
+        $string = str_replace('#BR#', "\\n", $string);
+        $string = str_replace('#T#', "\\t", $string);
+        $string = str_replace('#R#', "\\r", $string);
+        $string = str_replace('#S#', "/", $string);
+        $string = str_replace('#BS#', "\\", $string);
+        return $string;
+    }
     
     /**
      * 
@@ -391,23 +423,29 @@ class ServiceRepository extends \Centreon\Repository\Repository
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
-		$tab = array();
-		while(1) {
-			$stmt = $dbconn->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row = $stmt->fetchRow();
-			if ($row["service_alias"])	{
-				return html_entity_decode(db2str($row["service_alias"]), ENT_QUOTES, "UTF-8");
-			} elseif ($row["service_template_model_stm_id"]) {
-				if (isset($tab[$row['service_template_model_stm_id']])) {
-				    break;
-				}
-			    $service_id = $row["service_template_model_stm_id"];
-				$tab[$service_id] = 1;
-			} else {
-				break;
-			}
-		}
-	}
+        $tab = array();
+        while (1) {
+            $stmt = $dbconn->query(
+                "SELECT "
+                . "service_alias, service_template_model_stm_id "
+                . "FROM service "
+                . "WHERE "
+                . "service_id = '".$service_id."' LIMIT 1"
+            );
+            $row = $stmt->fetchRow();
+            if ($row["service_alias"]) {
+                return html_entity_decode(db2str($row["service_alias"]), ENT_QUOTES, "UTF-8");
+            } elseif ($row["service_template_model_stm_id"]) {
+                if (isset($tab[$row['service_template_model_stm_id']])) {
+                    break;
+                }
+                $service_id = $row["service_template_model_stm_id"];
+                $tab[$service_id] = 1;
+            } else {
+                break;
+            }
+        }
+    }
     
     /**
      * 
@@ -421,13 +459,15 @@ class ServiceRepository extends \Centreon\Repository\Repository
         $dbconn = $di->get('db_centreon');
         
         $config = \Centreon\Core\Di::getDefault()->get('config');
-        $finalRoute = rtrim($config->get('global','base_url'), '/');
+        $finalRoute = rtrim($config->get('global', 'base_url'), '/');
         
         while (1) {
-            $stmt = $dbconn->query("SELECT esi_icon_image, service_template_model_stm_id "
+            $stmt = $dbconn->query(
+                "SELECT esi_icon_image, service_template_model_stm_id "
                 . "FROM service, extended_service_information "
                 . "WHERE service_service_id = '$service_id' "
-                . "AND service_id = service_service_id");
+                . "AND service_id = service_service_id"
+            );
             $esiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($esiResult['esi_icon_image'])) {

@@ -54,7 +54,11 @@ class ImageController extends \Centreon\Core\Controller
     {
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
-        $form = new \Centreon\Core\Form\Wizard(rtrim($config->get('global','base_url'), '/').'/administration/media/image/add', 0, array('id' => 0));
+        $form = new \Centreon\Core\Form\Wizard(
+            rtrim($config->get('global', 'base_url'), '/').'/administration/media/image/add',
+            0,
+            array('id' => 0)
+        );
         echo $form->generate();
     }
     
@@ -75,7 +79,7 @@ class ImageController extends \Centreon\Core\Controller
         $query = 'SELECT binary_id, filename FROM binaries';
         $stmt = $dbconn->query($query);
         $userImageExist = true;
-        while($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch()) {
             
             if ($userImageExist) {
                 $finalIconList[] = array(
@@ -113,7 +117,8 @@ class ImageController extends \Centreon\Core\Controller
         $finalIconList[] = array(
             "text" => "Centreon icon",
         );
-        foreach($iconList as $icon) {
+        
+        foreach ($iconList as $icon) {
             $finalIconList[] = array(
                 "id" => md5($icon),
                 "text" => substr($icon, 3),

@@ -35,21 +35,16 @@
 
 namespace Controllers\Configuration;
 
-use \Models\Configuration\Host,
-    \Models\Configuration\Relation\Host\Contact,
-    \Models\Configuration\Relation\Host\Contactgroup,
-    \Models\Configuration\Relation\Host\Hostgroup,
-    \Models\Configuration\Relation\Host\Hostchild,
-    \Models\Configuration\Relation\Host\Hostparent,
-    \Models\Configuration\Relation\Host\Hostcategory,
-    \Models\Configuration\Relation\Host\Hosttemplate,
-    \Models\Configuration\Relation\Host\Poller,
-    \Models\Configuration\Timeperiod,
-    \Models\Configuration\Command,
-    \Centreon\Core\Form,
-    \Centreon\Core\Form\Generator;
+use \Models\Configuration\Host;
+use \Models\Configuration\Relation\Host\Contact;
+use \Models\Configuration\Relation\Host\Contactgroup;
+use \Models\Configuration\Relation\Host\Hostchild;
+use \Models\Configuration\Relation\Host\Hostparent;
+use \Models\Configuration\Relation\Host\Poller;
+use \Models\Configuration\Timeperiod;
+use \Models\Configuration\Command;
 
-class HostController extends ObjectAbstract
+class HostController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Host';
     protected $objectName = 'host';
@@ -83,24 +78,7 @@ class HostController extends ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $filters = array('host_name' => '%' . $requestParams['q'] . '%', 'host_register' => '1');
-        $hostList = Host::getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalHostList = array();
-        foreach($hostList as $host) {
-            $finalHostList[] = array(
-                "id" => $host['host_id'],
-                "text" => $host['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage($host['host_name']).' '.$host['host_name']
-            );
-        }
-        
-        $router->response()->json($finalHostList);
+        parent::formListAction();
     }
 
     /**
@@ -117,7 +95,7 @@ class HostController extends ObjectAbstract
      * Create a new host
      *
      * @method post
-     * @route /configuration/host/create
+     * @route /configuration/host/add
      */
     public function createAction()
     {
@@ -157,7 +135,7 @@ class HostController extends ObjectAbstract
     public function addAction()
     {
         $tpl = \Centreon\Core\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/host/create');
+        $tpl->assign('validateUrl', '/configuration/host/add');
         parent::addAction();
     }
     
@@ -169,72 +147,7 @@ class HostController extends ObjectAbstract
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-        $currentHostValues = Host::getParameters($requestParam['id'], array(
-            'host_id',
-            'host_name',
-            'host_alias',
-            'host_address',
-            'host_active_checks_enabled',
-            'host_passive_checks_enabled',
-            'host_obsess_over_host',
-            'host_check_freshness',
-            'host_freshness_threshold',
-            'host_flap_detection_enabled',
-            'host_process_perf_data',
-            'host_retain_status_information',
-            'host_retain_nonstatus_information',
-            'host_stalking_options',
-            'host_activate',
-            'host_comment'
-            )
-        );
-        
-        if (isset($currentHostValues['host_activate']) && is_numeric($currentHostValues['host_activate'])) {
-            $currentHostValues['host_activate'] = $currentHostValues['host_activate'];
-        } else {
-            $currentHostValues['host_activate'] = '0';
-        }
-        
-        if (isset($currentHostValues['host_active_checks_enabled']) && is_numeric($currentHostValues['host_active_checks_enabled'])) {
-            $currentHostValues['host_active_checks_enabled'] = $currentHostValues['host_active_checks_enabled'];
-        } else {
-            $currentHostValues['host_active_checks_enabled'] = '2';
-        }
-        
-        if (isset($currentHostValues['host_passive_checks_enabled']) && is_numeric($currentHostValues['host_passive_checks_enabled'])) {
-            $currentHostValues['host_passive_checks_enabled'] = $currentHostValues['host_passive_checks_enabled'];
-        } else {
-            $currentHostValues['host_passive_checks_enabled'] = '2';
-        }
-        
-        $myForm = new Generator('/configuration/host/update', $requestParam['advanced'], array('id' => $requestParam['id']));
-        $myForm->setDefaultValues($currentHostValues);
-        $myForm->addHiddenComponent('object_id', $requestParam['id']);
-        $myForm->addHiddenComponent('object', 'host');
-        
-        $formModeUrl = \Centreon\Core\Di::getDefault()
-                        ->get('router')
-                        ->getPathFor(
-                            '/configuration/host/[i:id]/[i:advanced]',
-                            array(
-                                'id' => $requestParam['id'],
-                                'advanced' => (int)!$requestParam['advanced']
-                            )
-                        );
-        
-        // Display page
-        $tpl->assign('pageTitle', "Host");
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('advanced', $requestParam['advanced']);
-        $tpl->assign('formModeUrl', $formModeUrl);
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/configuration/host/update');
-        $tpl->display('configuration/edit.tpl');
+        parent::editAction();
     }
     
     /**
@@ -246,23 +159,7 @@ class HostController extends ObjectAbstract
      */
     public function contactForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $contactList = Contact::getMergedParameters(array('contact_id', 'contact_name', 'contact_email'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
-        
-        $finalContactList = array();
-        foreach($contactList as $contact) {
-            $finalContactList[] = array(
-                "id" => $contact['contact_id'],
-                "text" => $contact['contact_name'],
-                "theming" => \Centreon\Repository\UserRepository::getUserIcon($contact['contact_name'], $contact['contact_email'])
-            );
-        }
-        
-        $router->response()->json($finalContactList);
+        parent::getRelations(static::$relationMap['host_contacts']);
     }
     
     /**
@@ -274,22 +171,7 @@ class HostController extends ObjectAbstract
      */
     public function contactgroupForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $contactgroupList = Contactgroup::getMergedParameters(array('cg_id', 'cg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
-        
-        $finalContactgroupList = array();
-        foreach($contactgroupList as $contactgroup) {
-            $finalContactgroupList[] = array(
-                "id" => $contactgroup['cg_id'],
-                "text" => $contactgroup['cg_name']
-            );
-        }
-        
-        $router->response()->json($finalContactgroupList);
+        parent::getRelations(static::$relationMap['host_contactgroups']);
     }
     
     /**
@@ -301,19 +183,7 @@ class HostController extends ObjectAbstract
      */
     public function hostgroupForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $hostgroupList = Hostgroup::getMergedParameters(array('hg_id', 'hg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
-        
-        $finalHostgroupList = array();
-        foreach($hostgroupList as $hostgroup) {
-            $finalHostgroupList[] = array("id" => $hostgroup['hg_id'], "text" => $hostgroup['hg_name']);
-        }
-        
-        $router->response()->json($finalHostgroupList);
+        parent::getRelations(static::$relationMap['host_hostgroups']);
     }
     
     /**
@@ -325,19 +195,7 @@ class HostController extends ObjectAbstract
      */
     public function hostcategoryForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $hostcategoryList = Hostcategory::getMergedParameters(array('hc_id', 'hc_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
-        
-        $finalHostcategoryList = array();
-        foreach($hostcategoryList as $hostcategory) {
-            $finalHostcategoryList[] = array("id" => $hostcategory['hc_id'], "text" => $hostcategory['hc_name']);
-        }
-        
-        $router->response()->json($finalHostcategoryList);
+        parent::getRelations(static::$relationMap['host_hostcategories']);
     }
 
     /**
@@ -348,29 +206,7 @@ class HostController extends ObjectAbstract
      */
     public function hostTemplateForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-
-        $requestParam = $this->getParams('named');
-
-        $hostTemplateList = Hosttemplate::getMergedParameters(
-            array(),
-            array('host_id', 'host_name'),
-            -1,
-            0,
-            "`order`",
-            "ASC",
-            array("h.host_id" => $requestParam['id']),
-            "AND"
-        );
-        $finalHostTemplateList = array();
-        foreach ($hostTemplateList as $hosttemplate) {
-            $finalHostTemplateList[] = array(
-                'id' => $hosttemplate['host_id'],
-                'text' => $hosttemplate['host_name']
-            );
-        }
-        $router->response()->json($finalHostTemplateList);
+        parent::getRelations(static::$relationMap['host_hosttemplates']);
     }
 
     /**
@@ -397,11 +233,13 @@ class HostController extends ObjectAbstract
         );
 
         $finalHostList = array();
-        foreach($hostparentList as $hostparent) {
+        foreach ($hostparentList as $hostparent) {
             $finalHostList[] = array(
                 "id" => $hostparent['host_id'],
                 "text" => $hostparent['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage($hostparent['host_name']).' '.$hostparent['host_name']
+                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                    $hostparent['host_name']
+                ).' '.$hostparent['host_name']
             );
         }
         
@@ -432,11 +270,13 @@ class HostController extends ObjectAbstract
         );
 
         $finalHostList = array();
-        foreach($hostchildList as $hostchild) {
+        foreach ($hostchildList as $hostchild) {
             $finalHostList[] = array(
                 "id" => $hostchild['host_id'],
                 "text" => $hostchild['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage($hostchild['host_name']).' '.$hostchild['host_name']
+                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                    $hostchild['host_name']
+                ).' '.$hostchild['host_name']
             );
         }
         
@@ -452,30 +292,7 @@ class HostController extends ObjectAbstract
      */
     public function checkPeriodForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = Host::getList('timeperiod_tp_id', -1, 0, null, "ASC", $filters, "AND");
-        
-        if (count($hostList) == 0) {
-            $router->response()->json(array('id' => null, 'text' => null));
-            return;
-        }
-        
-        $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id']);
-        $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
-
-        $finalTimeperiodList = array();
-        if (count($timeperiodList)) { 
-            $finalTimeperiodList = array(
-                "id" => $timeperiodList[0]['tp_id'],
-                "text" => $timeperiodList[0]['tp_name']
-            );
-        }
-        $router->response()->json($finalTimeperiodList);
+        parent::getSimpleRelation('timeperiod_tp_id', '\Models\Configuration\Timeperiod');
     }
     
     /**
@@ -487,25 +304,20 @@ class HostController extends ObjectAbstract
      */
     public function notificationPeriodForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = Host::getList('timeperiod_tp_id2', -1, 0, null, "ASC", $filters, "AND");
-        
-        $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id2']);
-        $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
-        
-        $finalTimeperiodList = array(
-            "id" => $timeperiodList[0]['tp_id'],
-                "text" => $timeperiodList[0]['tp_name']
-        );
-        
-        $router->response()->json($finalTimeperiodList);
+        parent::getSimpleRelation('timeperiod_tp_id2', '\Models\Configuration\Timeperiod');
     }
-    
+
+    /**
+     * Get check command for a specific host
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/checkcommand
+     */
+    public function checkcommandForHostAction()
+    {
+        parent::getSimpleRelation('command_command_id', '\Models\Configuration\Command');
+    }
+
     /**
      * Get list of Commands for a specific host
      *
@@ -515,26 +327,7 @@ class HostController extends ObjectAbstract
      */
     public function eventHandlerForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = Host::getList('command_command_id2', -1, 0, null, "ASC", $filters, "AND");
-        
-        $filtersCommand = array('command_id' => $hostList[0]['command_command_id2']);
-        $commandList = Command::getList('command_id, command_name', -1, 0, null, "ASC", $filtersCommand, "AND");
-        
-        $finalCommandList = array();
-        if (count($commandList) > 0) {
-            $finalCommandList = array(
-                "id" => $commandList[0]['command_id'],
-                "text" => $commandList[0]['command_name']
-            );
-        }
-        
-        $router->response()->json($finalCommandList);
+        parent::getSimpleRelation('command_command_id2', '\Models\Configuration\Command');
     }
 
     /**
@@ -573,23 +366,30 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $pollerList = Poller::getMergedParameters(array('id', 'name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $pollerList = Poller::getMergedParameters(
+            array('id', 'name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host.host_id' => $requestParam['id']),
+            "AND"
+        );
         
         $finalPollerList = array();
         if (count($pollerList) > 0) {
-            $finalPollerList = array(
-                "id" => $pollerList[0]['id'],
-                "text" => $pollerList[0]['name']
-            );
+            $finalPollerList["id"] = $pollerList[0]['id'];
+            $finalPollerList["text"] = $pollerList[0]['name'];
         }
         
         $router->response()->json($finalPollerList);
     }
-
+    
     /**
      * Duplicate a hosts
      *
-     * @method POST
+     * @method post
      * @route /configuration/host/duplicate
      */
     public function duplicateAction()

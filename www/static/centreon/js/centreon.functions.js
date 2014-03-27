@@ -155,8 +155,29 @@ function alertMessage(msg, cls) {
     $alertBox.show();
 }
 
+function alertModalMessage(msg, cls) {
+    var $alertBox = $('#modal-flash-message'); 
+    $alertBox.addClass(cls);
+    $alertBox.append(msg);
+    $alertBox.show();
+}
+
 function alertClose() {
     var $alertBox = $('#flash-message'); 
+    var $button = $alertBox.find('button.close');
+    var listClass = ['flash', 'alert', 'in', 'fade'];
+    $alertBox.hide();
+    $alertBox.text('');
+    $alertBox.append($button);
+    $.each($alertBox[0].classList, function(k, v) {
+    	if (-1 === $.inArray(v, listClass)) {
+            $alertBox.removeClass(v);
+        }
+    });
+}
+
+function alertModalClose() {
+    var $alertBox = $('#modal-flash-message'); 
     var $button = $alertBox.find('button.close');
     var listClass = ['flash', 'alert', 'in', 'fade'];
     $alertBox.hide();

@@ -214,7 +214,6 @@ class Form
                 $this->renderAsHtml($finalArray[$element['name']]);
             }
         }
-        
         return $finalArray;
     }
     
@@ -231,13 +230,11 @@ class Form
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'textarea':
                 $element['input'] = $this->renderHtmlTextarea($element);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'button':
             case 'submit':
             case 'reset':
@@ -245,7 +242,6 @@ class Form
                 $element['label'] = "";
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'static':
                 $className = "\\Centreon\\Core\\Form\\Custom\\".ucfirst($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
@@ -261,10 +257,6 @@ class Form
                         $this->tpl->addCustomJs($in['js']);
                     }
                     
-                    if (isset($in['customGetter'])) {
-                        $this->customValidator[$in['customGetter']['name']] = $in['customGetter']['getter'];
-                    }
-                    
                     if (isset($inVal['eventValidation'])) {
                         $this->eventValidation .= $inVal['eventValidation'];
                     }
@@ -274,32 +266,33 @@ class Form
                     }
                 }
                 break;
-            
             case 'checkbox':
                 $element['input'] = $this->renderHtmlCheckbox($element);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'radio':
                 $element['input'] = $this->renderHtmlRadio($element, $element['name']);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
-            
             case 'group':
                 $selectedValues = array();
                 if (is_array($element['value'])) {
                     $selectedValues = array_keys($element['value']);
                 }
                 $element['input'] = '<div class="input-group">';
-                foreach($element['elements'] as $groupElement) {
+                foreach ($element['elements'] as $groupElement) {
                     if ($groupElement['type'] == 'checkbox') {
                         $element['input'] .= $this->renderHtmlCheckbox($groupElement);
                     } else {
                         $currentElementName = substr($groupElement['name'], strlen($element['name'])+1, -1);
                         $selected = in_array($currentElementName, $selectedValues);
-                        $element['input'] .= $this->renderHtmlRadio($groupElement, $element['name'], $selected).'&nbsp;&nbsp;';
+                        $element['input'] .= $this->renderHtmlRadio(
+                            $groupElement,
+                            $element['name'],
+                            $selected
+                        ).'&nbsp;&nbsp;';
                     }
                 }
                 $element['input'] .= '</div>';
@@ -314,14 +307,51 @@ class Form
         $helpButton = '';
         $classInput = 'col-sm-9';
         if ($inputElement['type'] !== 'submit') {
-            $helpButton = '<div class="col-sm-1"><button type="button" class="btn btn-info">?</button></div>';
+            $helpButton = $this->renderHelp($inputElement);
             $classInput = 'col-sm-8';
         }
+        
         return '<div class="form-group">'.
                 '<div class="col-sm-3" style="text-align:right">'.$inputElement['label'].'</div>'.
                 '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'.
                 $helpButton.
                 '</div>';
+    }
+    
+    private function renderHelp($inputElement)
+    {
+        $helpButton = '';
+        
+        if (isset($inputElement['label_help'])) {
+            $helpButton = '<div class="col-sm-1"><button id="'
+                . $inputElement['name'] . '_help" type="button" class="btn btn-info">?</button>'
+                . '</div>';
+            $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
+                                content: {
+                                    text: "'.str_replace('"', '\"', $inputElement['label_help']).'",
+                                    title: "'.$inputElement['label_label'].' Help",
+                                    button: true
+                                },
+                                position: {
+                                    my: "top right",
+                                    at: "bottom left",
+                                    target: $("#' . $inputElement['name'] . '_help") // my target
+                                },
+                                show: {
+                                    event: "click",
+                                    solo: "true"
+                                },
+                                style: {
+                                    classes: "qtip-shadow qtip-rounded qtip-bootstrap"
+                                },
+                                hide: {
+                                    event: "unfocus"
+                                }
+                            });';
+            $this->tpl->addCustomJs($helpBubble);
+        }
+        
+        return $helpButton;
     }
     
     
@@ -414,7 +444,9 @@ class Form
             $inputElement['label'] = $inputElement['name'];
         }
         
-        if (!isset($inputElement['placeholder']) || (isset($inputElement['placeholder']) && empty($inputElement['placeholder']))) {
+        if (!isset($inputElement['placeholder'])
+            || (isset($inputElement['placeholder'])
+            && empty($inputElement['placeholder']))) {
             $placeholder = 'placeholder="'.$inputElement['name'].'" ';
         }
         
@@ -481,7 +513,9 @@ class Form
         }
         
         if ($usePlaceholder) {
-            if (!isset($inputElement['placeholder']) || (isset($inputElement['placeholder']) && empty($inputElement['placeholder']))) {
+            if (!isset($inputElement['placeholder'])
+                || (isset($inputElement['placeholder'])
+                && empty($inputElement['placeholder']))) {
                 $placeholder = 'placeholder="'.$inputElement['name'].'" ';
             }
         } else {
@@ -524,15 +558,17 @@ class Form
             if ($token == $_SESSION['form_token']) {
                 $oldTimestamp = time() - (15*60);
                 if ($_SESSION['form_token_time'] < $oldTimestamp) {
-                    throw new Exception;
+                    throw new Exception(_('The validation is impossible due to expire form token'));
                 }
             } else {
-                throw new Exception;
+                throw new Exception(_('The validation is impossible due to wrong form token'));
             }
         } else {
-            throw new Exception;
+            throw new Exception(_('The validation is impossible due to missing form token'));
         }
         
+        unset($_SESSION['form_token']);
+        unset($_SESSION['form_token_time']);
         return true;
     }
 
@@ -559,30 +595,85 @@ class Form
         return $token;
     }
     
-    public static function getValidators($uri)
+    /**
+     * 
+     * @param string $uri
+     * @return string
+     */
+    public static function getValidatorsQuery($origin, $uri)
+    {
+        switch ($origin) {
+            default:
+            case 'form':
+                $validatorsQuery = "SELECT
+                        `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                    FROM
+                        form_validator fv, form_field_validator_relation ffv, form_field ff
+                    WHERE
+                        ffv.validator_id = fv.validator_id
+                    AND
+                        ff.field_id = ffv.field_id
+                    AND
+                        ffv.field_id IN (
+                            SELECT
+                                fi.field_id
+                            FROM
+                                form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
+                            WHERE
+                                fi.field_id = fbf.field_id
+                            AND
+                                fbf.block_id = fb.block_id
+                            AND
+                                fb.section_id = fs.section_id
+                            AND
+                                fs.form_id = f.form_id
+                            AND
+                                f.route = '$uri'
+                    );";
+                break;
+            case 'wizard':
+                $validatorsQuery = "SELECT
+                        `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                    FROM
+                        form_validator fv, form_field_validator_relation ffv, form_field ff
+                    WHERE
+                        ffv.validator_id = fv.validator_id
+                    AND
+                        ff.field_id = ffv.field_id
+                    AND
+                        ffv.field_id IN (
+                            SELECT
+                                fi.field_id
+                            FROM
+                                form_field fi, form_step fs, form_step_field_relation fsf, form_wizard fw
+                            WHERE
+                                fi.field_id = fsf.field_id
+                            AND
+                                fsf.step_id = fs.step_id
+                            AND
+                                fs.wizard_id = fw.wizard_id
+                            AND
+                                fw.route = '$uri'
+                    );";
+                break;
+        }
+        return $validatorsQuery;
+    }
+    
+    public static function getValidators($origin, $uri)
     {
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $validatorsQuery = "SELECT `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
-            FROM form_validator fv, form_field_validator_relation ffv, form_field ff
-            WHERE ffv.validator_id = fv.validator_id
-            AND ff.field_id = ffv.field_id
-            AND ffv.field_id IN (
-                SELECT fi.field_id FROM form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
-                WHERE fi.field_id = fbf.field_id
-                AND fbf.block_id = fb.block_id
-                AND fb.section_id = fs.section_id
-                AND fs.form_id = f.form_id
-                AND f.route = '$uri'
-            );";
+        // Check if we are in form or wizard
+        $validatorsQuery = self::getValidatorsQuery($origin, $uri);
         
         $stmt = $dbconn->query($validatorsQuery);
         $validatorsRawList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         $validatorsFinalList = array();
-        foreach($validatorsRawList as $validator) {
-            $validatorsFinalList[$validator['field_name']] = array(
+        foreach ($validatorsRawList as $validator) {
+            $validatorsFinalList[$validator['field_name']][] = array(
                 'call' => $validator['validator'],
                 'label' => $validator['field_label']
             );
@@ -603,17 +694,13 @@ class Form
             default:
                 $this->addStatic($field, $extraParams);
                 break;
-            case 'text':
-                $this->addText($field['name'], $field['label']);
-                break;
             case 'textarea':
                 $this->addTextarea($field['name'], $field['label']);
                 break;
-            
             case 'radio':
                 $values = json_decode($field['attributes']);
                 $radioValues = array();
-                foreach ($values as $label=>$value) {
+                foreach ($values as $label => $value) {
                     $radioValues['list'][] = array(
                         'name' => $label,
                         'label' => $label,
@@ -628,12 +715,11 @@ class Form
                     $radioValues
                 );
                 break;
-                
             case 'checkbox':
                 $values = json_decode($field['attributes']);
                 if (is_array($values) || is_object($values)) {
                     $checkboxValues = array();
-                    foreach ($values as $label=>$value) {
+                    foreach ($values as $label => $value) {
                         $checkboxValues['list'][] = array(
                             'name' => $label,
                             'label' => $label,
@@ -646,7 +732,7 @@ class Form
                         '&nbsp;',
                         $checkboxValues
                     );
-                } else { 
+                } else {
                     $this->addCheckbox($field['name'], $field['label']);
                 }
                 break;
@@ -679,77 +765,6 @@ class Form
     }
     
     /**
-     * Add a input text element
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param string|null $style The input style (prefix by input-)
-     *                           if null the style is medium
-     * @return \HTML_QuickForm_Element_InputText
-     */
-    public function addText($name, $label, $style = null, $placeholder = null, $help = null)
-    {
-        if (is_null($style)) {
-            $style = "medium";
-        }
-        $param = array();
-        if (!is_null($placeholder)) {
-            $param['placeholder'] = $placeholder;
-        }
-        if (!is_null($help)) {
-            $param['_help'] = $help;
-        }
-        $elem = $this->formProcessor
-            ->addElement('text', $name, $label ,$param)
-            ->updateAttributes(
-                array(
-                    'id'=>$name,
-                    'class' => "input-".$style,
-                    'label' => $label
-                )
-            );
-        return $elem;
-    }
-
-    /**
-     * Add a select
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param array $data The list for options
-     * @param string|null $style The input style (prefix by input-)
-     *                           if null the style is medium
-     * @return \HTML_QuickForm_Element_Select
-     */
-    public function addSelect($name, $label, $datas, $urlCastParemeter)
-    {
-        $selectParameters = json_decode($datas, true);
-        
-        if (isset($selectParameters['type']) && $selectParameters['type'] == 'object') {
-            if (isset($selectParameters['defaultValuesRouteParams'])) {
-                
-            }
-            $selectParameters['defaultValuesRoute'] = \Centreon\Core\Di::getDefault()
-                            ->get('router')
-                            ->getPathFor($selectParameters['defaultValuesRoute'], $urlCastParemeter);
-            
-            if (isset($selectParameters['listValuesRouteParams'])) {
-                
-            }
-            $selectParameters['listValuesRoute'] = \Centreon\Core\Di::getDefault()
-                            ->get('router')
-                            ->getPathFor($selectParameters['listValuesRoute'], $urlCastParemeter);
-        }
-        
-        $selectParameters['label'] = $label;
-        
-        $elem = $this->formProcessor->addElement('static', $name, $selectParameters);
-        $elem->setValue($selectParameters);
-        
-        return $elem;
-    }
-    
-    /**
      * Add custom inputs
      *
      * @param array $field
@@ -761,42 +776,24 @@ class Form
         if (isset($field['attributes']) && $field['attributes']) {
             $params = json_decode($field['attributes'], true);
         }
+        
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
         
-        if ($field['validators'] != null) {
+        if (isset($field['help']) && $field['help'] != null) {
+            $params['help'] = $field['help'];
+        }
+        
+        if (isset($field['help_url']) && $field['help_url'] != null) {
+            $params['help_url'] = $field['help_url'];
+        }
+        
+        if (isset($field['validators']) && $field['validators'] != null) {
             $params['validators'] = $field['validators'];
         }
         $params['extra'] = $extraParams;
         $elem = $this->formProcessor->addElement('static', $field['name'], $params);
-    }
-
-    /**
-     * Add a multiselect
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param array $data The list for options
-     * @param string|null $style The input style (prefix by input-)
-     *                           if null the style is medium
-     * @return \HTML_QuickForm_Element_Select
-     */
-    public function addMultiSelect($name, $label, $data)
-    {
-        $this->tpl->addCss('jquery-chosen.css');
-        $this->tpl->addJs('jquery/chosen/chosen.jquery.min.js');
-        $this->tpl->addJs('centreon/formMultiSelect.js');
-        $elem = $this->formProcessor
-                    ->addElement('select', $name, array('multiple' => 'multiple'))
-                    ->updateAttributes(
-                        array(
-                            'id'=>$name,
-                            'class'=>'chzn-select',
-                            'label'=>$label
-                        )
-                    );
-        return $elem;
     }
     
     /**
@@ -809,7 +806,6 @@ class Form
      */
     public function addCheckBox($name, $label, $separators = '&nbsp;', $params = array())
     {
-        
         if (isset($params['list']) && count($params['list'])) {
             $cbList = array();
             foreach ($params['list'] as $cb) {
@@ -986,43 +982,6 @@ class Form
     }
     
     /**
-     * Add a tab into the form
-     *
-     * @param string $id The tab id
-     * @param string $label The tab label
-     * @return QuickForm_Container_Tab
-     */
-    public function addTab($id, $label)
-    {
-        return $this->formProcessor
-                    ->addElement('tabs', $label)
-                    ->updateAttributes(array('id'=>$id, 'label'=>$label));
-    }
-    
-    /**
-     * 
-     * @param type $title
-     * @param type $label
-     */
-    public function addHeader($title, $label)
-    {
-        $this->formProcessor->addElement('header', $title, $label);
-    }
-
-    /**
-     * Add a fieldset into the form
-     *
-     * @param string $label The legend
-     * @return \HTML_QuickForm_Container_Fieldset
-     */
-    public function addFieldSet($label)
-    {
-        return $this->formProcessor
-                    ->addElement('fieldset', $label)
-                    ->setLabel($label);
-    }
-
-    /**
      * Return the array for smarty
      * 
      * @return type
@@ -1122,24 +1081,7 @@ class Form
                       ->addJs('centreon/formRules.js');
         }
     }
-
-    /**************************************/
-
-    public function addMassiveChangeUpdateOption($name, $defaultValue, $o)
-    {
-        if ($o == "mc") {
-            $this->formProcessor->addElementRadio(
-                $name,
-                _("Update mode"),
-                array(
-                    0 => _("Incremental"),
-                    1 => _("Replacement")
-                ),
-                $defaultValue
-            );
-        }
-    }
-
+    
     public function applyFilter($field, $function)
     {
         //$this->formProcessor->applyFilter($field, array($this, $function));
@@ -1148,7 +1090,7 @@ class Form
      
     public function setDefaults($defaultValues = null, $filter = null)
     {
-       $this->formProcessor->setDefaults($defaultValues, $filter);
+        $this->formProcessor->setDefaults($defaultValues, $filter);
     }
 
     /**
@@ -1220,29 +1162,42 @@ class Form
      * 
      * @return type
      */
-    public static function validate($uri, &$submittedValues)
+    public static function validate($origin, $uri, &$submittedValues)
     {
         $isValidate = true;
         $errorMessage = '';
         try {
             self::validateSecurity($submittedValues['token']);
             unset($submittedValues['token']);
-            $validatorsList = self::getValidators($uri);
-            foreach ($validatorsList as $validatorKey=>$validatorParam) {
-                $validatorCall = '\\Centreon\\Core\\Form\\Validator\\'.ucfirst($validatorParam['call']);
-                $resultValidate = $validatorCall::validate(
-                    $submittedValues[$validatorKey],
-                    $submittedValues['object'],
-                    $submittedValues['object_id'],
-                    $validatorKey
-                );
-                if (!$resultValidate['success']) {
-                    $isValidate = false;
-                    $errorMessage .= '<b>' .$validatorParam['label'] . '</b> : ' . $resultValidate['error'] . '<br />';
+            if (!isset($submittedValues['object_id'])) {
+                $submittedValues['object_id'] = null;
+            }
+            
+            $validatorsList = self::getValidators($origin, $uri);
+            foreach ($validatorsList as $validatorKey => $validatorsForField) {
+                $nbOfValidators = count($validatorsForField);
+                for ($i=0; $i<$nbOfValidators; $i++) {
+                    $validatorCall = '\\Centreon\\Core\\Form\\Validator\\'.ucfirst($validatorsForField[$i]['call']);
+                    $resultValidate = $validatorCall::validate(
+                        $submittedValues[$validatorKey],
+                        $submittedValues['object'],
+                        $submittedValues['object_id'],
+                        $validatorKey
+                    );
+                    if (!$resultValidate['success']) {
+                        $isValidate = false;
+                        $errorMessage .= '<b>'
+                            .$validatorsForField[$i]['label']
+                            . '</b> : '
+                            . $resultValidate['error']
+                            . '<br />';
+                        break;
+                    }
                 }
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $isValidate = false;
+            $errorMessage = $e->getMessage();
         }
         
         return array('success' => $isValidate, 'error' => $errorMessage);
