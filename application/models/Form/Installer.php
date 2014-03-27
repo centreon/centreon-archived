@@ -449,18 +449,7 @@ class Installer
                 foreach ($block->field as $field) {
                     $attributes = array();
                     if (isset($field->attributes)) {
-                        foreach($field->attributes->children() as $attr) {
-                            $attrName = $attr->getName();
-                            if (isset($attr['name']) && $attr['name']) {
-                                $attrName = $attr['name'];
-                            }
-                            $attributes[$attrName] = $attr->__toString();
-                            if ($attributes[$attrName] == "true") {
-                                $attributes[$attrName] = true;
-                            } elseif ($attributes[$attrName] == "false") {
-                                $attributes[$attrName] = false;
-                            }
-                        }
+                        $attributes = self::parseAttributes($field->attributes);
                     }
                     $attributes = json_encode($attributes);
                     $fieldData = array(
@@ -498,6 +487,31 @@ class Installer
         self::purgeFields($insertedFields);
         self::purgeBlocks($insertedBlocks);
         self::purgeSections($insertedSections);
+    }
+    
+    
+    protected static function parseAttributes($attributes)
+    {
+        $finalAttributes = array();
+        foreach($attributes->children() as $attr) {
+            
+            $attrName = $attr->getName();
+            if (isset($attr['name']) && $attr['name']) {
+                $attrName = $attr['name'];
+            }
+            
+            if (count($attr->children()) > 0) {
+                $finalAttributes[$attrName] = self::parseAttributes($attr);
+            } else {
+                $finalAttributes[$attrName] = $attr->__toString();
+                if ($finalAttributes[$attrName] == "true") {
+                    $finalAttributes[$attrName] = true;
+                } elseif ($finalAttributes[$attrName] == "false") {
+                    $finalAttributes[$attrName] = false;
+                }
+            }
+        }
+        return $finalAttributes;
     }
 
     /**

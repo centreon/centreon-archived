@@ -23,8 +23,10 @@
 			<block name="Additional information">
 				<field name="cg_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="cg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>

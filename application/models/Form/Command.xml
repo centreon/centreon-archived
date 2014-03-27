@@ -9,16 +9,20 @@
 				<field name="command_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="command_type" label="Type" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Notification>1</Notification>
-						<Check>2</Check>
-						<Misc>3</Misc>
+                        <choices>
+                            <Notification>1</Notification>
+                            <Check>2</Check>
+                            <Misc>3</Misc>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
 					</attributes>
 				</field>
 			</block>
