@@ -43,6 +43,10 @@ class ServicecategoryController extends \Controllers\ObjectAbstract
     protected $objectName = 'servicecategory';
     protected $objectBaseUrl = '/configuration/servicecategory';
     protected $objectClass = '\Models\Configuration\Servicecategory';
+    public static $relationMap = array(
+        'sc_services' => '\Models\Configuration\Relation\Service\Servicecategory',
+        'sc_servicetemplates' => '\Models\Configuration\Relation\Service\Servicecategory'
+    );
 
     /**
      * List servicecategories
@@ -191,5 +195,27 @@ class ServicecategoryController extends \Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Services for a specific category
+     *
+     * @method get
+     * @route /configuration/servicecategory/[i:id]/service
+     */
+    public function serviceForServicecategoryAction()
+    {
+        parent::getRelations(static::$relationMap['sc_services']);
+    }
+
+    /**
+     * Service templates for a specific category
+     *
+     * @method get
+     * @route /configuration/servicecategory/[i:id]/servicetemplate
+     */
+    public function servicetemplateForServicecategoryAction()
+    {
+        parent::getRelations(static::$relationMap['sc_servicetemplates']);
     }
 }
