@@ -160,9 +160,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'service_description' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/service/[i:id]',
+                'route' => '/configuration/service/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::service_id::'
+                    'id' => '::service_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::service_description::'
             )
@@ -170,9 +171,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'host_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/host/[i:id]',
+                'route' => '/configuration/host/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::host_id::'
+                    'id' => '::host_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::host_name::'
             )
@@ -264,7 +266,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
                 "/",
                 \Centreon\Core\Di::getDefault()
                     ->get('router')
-                    ->getPathFor('/configuration/servicetemplate/[i:id]', array('id' => $tplArr['id']))
+                    ->getPathFor(
+                        '/configuration/servicetemplate/[i:id]/[i:advanced]',
+                        array('id' => $tplArr['id'], 'advanced' => '0')
+                    )
             );
             
             $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";

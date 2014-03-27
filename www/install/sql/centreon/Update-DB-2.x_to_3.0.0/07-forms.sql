@@ -55,7 +55,7 @@ CREATE TABLE `form_wizard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `form_step` (
-  `step_id` INT UNSIGNED NOT NULL,
+  `step_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `wizard_id` INT UNSIGNED NOT NULL,
   `rank` INT UNSIGNED NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `form_validator` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `form_massive_change` (
-  `massive_change_id` INT UNSIGNED NOT NULL,
+  `massive_change_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `route` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`massive_change_id`)

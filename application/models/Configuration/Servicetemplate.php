@@ -42,7 +42,7 @@ namespace Models\Configuration;
  *
  * @author sylvestre
  */
-class Service extends Object
+class Servicetemplate extends Object
 {
     protected static $table = "service";
     protected static $primaryKey = "service_id";
@@ -68,7 +68,7 @@ class Service extends Object
         $filters = array(),
         $filterType = "OR"
     ) {
-        $filters['service_register'] = '1';
+        $filters['service_register'] = '0';
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 }

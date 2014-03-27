@@ -159,7 +159,7 @@
 				</field>
 			</block>
 			<block name="SNMP traps">
-				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="0" type="deprecated" parent_field="" module_id="1" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/snmptraps/formlist</defaultValuesRoute>
@@ -273,8 +273,9 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+						<listValuesRoute>/configuration/servicetemplate/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add"</wizardRoute>
+						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
 				</field>
 			</block>

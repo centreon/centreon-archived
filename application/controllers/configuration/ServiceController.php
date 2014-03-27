@@ -41,6 +41,16 @@ class ServiceController extends \Controllers\ObjectAbstract
     protected $objectName = 'service';
     protected $objectBaseUrl = '/configuration/service';
     protected $objectClass = '\Models\Configuration\Service';
+    public static $relationMap = array(
+        'service_servicegroups' => '\Models\Configuration\Relation\service\servicegroup',
+        'service_hosts' => '\Models\Configuration\Relation\Service\Host',
+        'service_categories' => '\Models\Configuration\Relation\service\servicecategory',
+        'service_parents' => '\Models\Configuration\Relation\service\serviceparent',
+        'service_childs' => '\Models\Configuration\Relation\service\servicechild',
+        'service_contacts' => '\Models\Configuration\Relation\service\Contact',
+        'service_contactgroups' => '\Models\Configuration\Relation\service\Contactgroup',
+        'service_servicetemplates' => '\Models\Configuration\Relation\service\servicetemplate'
+    );
 
     /**
      * List services
@@ -53,8 +63,14 @@ class ServiceController extends \Controllers\ObjectAbstract
         parent::listAction();
     }
 
+    /**
+     * 
+     * @method get
+     * @route /configuration/service/formlist
+     */
     public function formListAction()
     {
+        parent::formListAction();
     }
 
     /**
@@ -107,11 +123,11 @@ class ServiceController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/service/[i:id]
+     * @route /configuration/service/[i:id]/[i:advanced]
      */
     public function editAction()
     {
-        
+        parent::editAction();
     }
 
     /**
@@ -167,5 +183,112 @@ class ServiceController extends \Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Get list of Timeperiods for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/checkperiod
+     */
+    public function checkPeriodForServiceAction()
+    {
+        parent::getSimpleRelation('timeperiod_tp_id', '\Models\Configuration\Timeperiod');
+    }
+    
+    /**
+     * Get list of Timeperiods for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/notificationperiod
+     */
+    public function notificationPeriodForServiceAction()
+    {
+        parent::getSimpleRelation('timeperiod_tp_id2', '\Models\Configuration\Timeperiod');
+    }
+    
+    /**
+     * Get check command for a specific service
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/checkcommand
+     */
+    public function checkCommandForServiceAction()
+    {
+        parent::getSimpleRelation('command_command_id', '\Models\Configuration\Command');
+    }
+
+    /**
+     * Get list of Commands for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/eventhandler
+     */
+    public function eventHandlerForServiceAction()
+    {
+        parent::getSimpleRelation('command_command_id2', '\Models\Configuration\Command');
+    }
+    
+    /**
+     * Get list of contacts for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/contact
+     */
+    public function contactForServiceAction()
+    {
+        parent::getRelations(static::$relationMap['service_contacts']);
+    }
+    
+    /**
+     * Get list of contact groups for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/contactgroup
+     */
+    public function contactgroupForServiceAction()
+    {
+        parent::getRelations(static::$relationMap['service_contactgroups']);
+    }
+    
+    /**
+     * Get list of contact hosts for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/host
+     */
+    public function hostForServiceAction()
+    {
+        parent::getRelations(static::$relationMap['service_hosts']);
+    }
+    
+    /**
+     * Get list of service group for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/servicegroup
+     */
+    public function serviceGroupForServiceAction()
+    {
+        parent::getRelations(static::$relationMap['service_servicegroups']);
+    }
+    
+    /**
+     * Get list of service for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/servicetemplate
+     */
+    public function serviceTemplateForServiceAction()
+    {
+        parent::getSimpleRelation('service_template_model_stm_id', '\Models\Configuration\Servicetemplate');
     }
 }

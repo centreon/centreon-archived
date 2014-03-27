@@ -95,7 +95,7 @@ class Email extends Customobject
      * @param array $element
      * @return array
      */
-    public function addValidation($element)
+    public static function addValidation($element)
     {
         $validations = parent::addValidation($element);
         
@@ -111,7 +111,7 @@ class Email extends Customobject
                         context: document.body
                     })
                     .success(function(data, status, jqxhr) {
-                        if (data === "success") {
+                        if (data.success) {
                             $("#'
                             .$element['name']
                             .'_email").removeClass("has-error has-feedback");

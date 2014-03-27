@@ -8,7 +8,7 @@
 			<block name="General information">
 				<field name="sc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="sc_description" label="Description" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="icon_id" label="Icon" default_value="" advanced="0" type="deprecated" parent_field="" module_id="1" mandatory="0"></field>
 			</block>
 			<block name="Relations">
 				<field name="sc_services" label="Services" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">

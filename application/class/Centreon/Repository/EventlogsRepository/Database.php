@@ -84,8 +84,12 @@ class Database
                 $values['timeStart'] = strtotime($timeStart);
                 $values['timeEnd'] = strtotime($timeEnd);
             } else {
-                $clause = $key . ' = :' . $key;
-                $values[$key] = $value;
+                if (is_array($value)) {
+                    $clause = $key . ' IN (' . join(', ', $value) . ')';
+                } else {
+                    $clause = $key . ' = :' . $key;
+                    $values[$key] = $value;
+                }
             }
             $wheres[] = $clause;
         }
