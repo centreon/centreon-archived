@@ -14,13 +14,13 @@ CREATE TABLE `binaries` (
 CREATE TABLE `binary_type` (
     `binary_type_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `type_name` VARCHAR(255) NOT NULL,
-    `module_id` INT NOT NULL,
+    `module_id` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`binary_type_id`),
     UNIQUE (`type_name`),
     KEY (`module_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `binary_type` ADD FOREIGN KEY (`module_id`) REFERENCES `modules_informations` (`id`) ON DELETE CASCADE;
+ALTER TABLE `binary_type` ADD FOREIGN KEY (`module_id`) REFERENCES `module` (`id`) ON DELETE CASCADE;
 
 INSERT INTO `binary_type` (`binary_type_id`, `type_name`, `module_id`) VALUES (1, 'Icons', 1);
 
