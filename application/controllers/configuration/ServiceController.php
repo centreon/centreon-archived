@@ -279,4 +279,16 @@ class ServiceController extends \Controllers\ObjectAbstract
     {
         parent::getRelations(static::$relationMap['service_servicegroups']);
     }
+    
+    /**
+     * Get list of service for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/servicetemplate
+     */
+    public function serviceTemplateForServiceAction()
+    {
+        parent::getSimpleRelation('service_template_model_stm_id', '\Models\Configuration\Servicetemplate');
+    }
 }

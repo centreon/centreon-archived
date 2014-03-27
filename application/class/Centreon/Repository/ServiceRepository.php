@@ -266,7 +266,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
                 "/",
                 \Centreon\Core\Di::getDefault()
                     ->get('router')
-                    ->getPathFor('/configuration/servicetemplate/[i:id]', array('id' => $tplArr['id']))
+                    ->getPathFor(
+                        '/configuration/servicetemplate/[i:id]/[i:advanced]',
+                        array('id' => $tplArr['id'], 'advanced' => '0')
+                    )
             );
             
             $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";

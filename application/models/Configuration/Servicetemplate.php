@@ -42,7 +42,7 @@ namespace Models\Configuration;
  *
  * @author sylvestre
  */
-class Service extends Object
+class Servicetemplate extends Object
 {
     protected static $table = "service";
     protected static $primaryKey = "service_id";

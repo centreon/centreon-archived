@@ -120,9 +120,10 @@ class ServicetemplateRepository extends \Centreon\Repository\Repository
         'service_description' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/service/update',
+                'route' => '/configuration/servicetemplate/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::service_id::'
+                    'id' => '::service_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::service_description::'
             )
