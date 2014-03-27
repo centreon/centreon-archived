@@ -60,8 +60,10 @@
 			<block name="Command execution">
 				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="traps_execution_command" label="Special command" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
@@ -94,8 +96,10 @@
 			<block name="Route parameters">
 				<field name="traps_routing_mode" label="Routing mode" default_value="0" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="traps_routing_value" label="Route definition" default_value="" advanced="1" type="text" parent_field="" module_id="1" mandatory="0"></field>
@@ -103,23 +107,29 @@
 			<block name="Misc">
 				<field name="traps_log" label="Log" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="traps_timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="traps_exec_interval" label="Execution interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="traps_exec_interval_type" label="Execution type" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<None>0</None>
-						<By_OID>1</By_OID>
-						<By_OID_and_host>2</By_OID_and_host>
+                        <choices>
+                            <None>0</None>
+                            <By_OID>1</By_OID>
+                            <By_OID_and_host>2</By_OID_and_host>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="traps_exec_method" label="Execution method" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Parallel>0</Parallel>
-						<Sequential>1</Sequential>
+                        <choices>
+                            <Parallel>0</Parallel>
+                            <Sequential>1</Sequential>
+                        </choices>
 					</attributes>
 				</field>
 			</block>

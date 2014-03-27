@@ -20,8 +20,10 @@
 				</field>
 				<field name="enabled" label="Status" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
 					</attributes>
 				</field>
 			</block>

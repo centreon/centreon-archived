@@ -32,19 +32,23 @@
 			<block name="Notification">
 				<field name="contact_enable_notifications" label="Enable notifications" default_value="2" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="contact_host_notification_options" label="Host notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Down>1</Down>
-						<Unreachable>1</Unreachable>
-						<Recovery>1</Recovery>
-						<Flapping>1</Flapping>
-						<Downtime_Scheduled>1</Downtime_Scheduled>
-						<None>1</None>"
+                        <choices>
+                            <Down>1</Down>
+                            <Unreachable>1</Unreachable>
+                            <Recovery>1</Recovery>
+                            <Flapping>1</Flapping>
+                            <Downtime_Scheduled>1</Downtime_Scheduled>
+                            <None>1</None>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="timeperiod_tp_id" label="Host notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
@@ -66,13 +70,15 @@
 				</field>
 				<field name="contact_service_notification_options" label="Service notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Warning>1</Warning>
-						<Unknown>1</Unknown>
-						<Critical>1</Critical>
-						<Recovery>1</Recovery>
-						<Flapping>1</Flapping>
-						<Downtime_scheduled>1</Downtime_scheduled>
-						<None>1</None>
+                        <choices>
+                            <Warning>1</Warning>
+                            <Unknown>1</Unknown>
+                            <Critical>1</Critical>
+                            <Recovery>1</Recovery>
+                            <Flapping>1</Flapping>
+                            <Downtime_scheduled>1</Downtime_scheduled>
+                            <None>1</None>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="timeperiod_tp_id2" label="Service notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
@@ -98,8 +104,10 @@
 			<block name="Authentication">
 				<field name="contact_oreon" label="Enable UI access" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="contact_passwd" label="Password" default_value="" advanced="0" type="password" parent_field="" module_id="1" mandatory="0"></field>
@@ -107,16 +115,20 @@
 				<field name="contact_autologin_key" label="Autologin key" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
 				<field name="contact_auth_type" label="Authentication type" default_value="local" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Default>local</Default>
-						<LDAP>ldap</LDAP>
+                        <choices>
+                            <Default>local</Default>
+                            <LDAP>ldap</LDAP>
+                        </choices>
 					</attributes>
 				</field>
 			</block>
 			<block name="ACL">
 				<field name="contact_admin" label="Admin role" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="contact_aclgroups" label="ACL groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
@@ -144,8 +156,10 @@
 			<block name="Additional information">
 				<field name="contact_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
 					</attributes>
 				</field>
 				<field name="contact_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>

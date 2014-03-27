@@ -56,17 +56,21 @@
 				</field>
 				<field name="host_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
 				<field name="host_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -74,9 +78,11 @@
 			<block name="Notification">
 				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -112,11 +118,13 @@
 				</field>
 				<field name="host_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Down>1</Down>
-						<Unreachable>1</Unreachable>
-						<Recovery>1</Recovery>
-						<Flapping>1</Flapping>
-						<Downtime_Scheduled>1</Downtime_Scheduled>
+                        <choices>
+                            <Down>1</Down>
+                            <Unreachable>1</Unreachable>
+                            <Recovery>1</Recovery>
+                            <Flapping>1</Flapping>
+                            <Downtime_Scheduled>1</Downtime_Scheduled>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -125,13 +133,15 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="hg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0">
+				<field name="host_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0">
 					<help></help>
 				</field>
-				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -165,9 +175,11 @@
 			<block name="Data processing">
 				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -175,9 +187,11 @@
 			<block name="Freshness control options">
 				<field name="host_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -188,9 +202,11 @@
 			<block name="Flapping options">
 				<field name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -204,9 +220,11 @@
 			<block name="Perfdata options">
 				<field name="host_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -214,25 +232,31 @@
 			<block name="History options">
 				<field name="host_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
 				<field name="host_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
 				<field name="host_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Up>1</Up>
-						<Down>1</Down>
-						<Unreachable>1</Unreachable>
+                        <choices>
+                            <Up>1</Up>
+                            <Down>1</Down>
+                            <Unreachable>1</Unreachable>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -240,9 +264,11 @@
 			<block name="Event handler">
 				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
-						<Default>2</Default>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                            <Default>2</Default>
+                        </choices>
 					</attributes>
 					<help></help>
 				</field>
@@ -263,7 +289,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-						<listValuesRoute></listValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
