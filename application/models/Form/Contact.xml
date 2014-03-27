@@ -8,7 +8,7 @@
 			<block name="General information">
 				<field name="contact_alias" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="contact_name" label="Full name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="contact_email" label="E-mail address" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="contact_email" label="E-mail address" default_value="" advanced="0" type="email" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="contact_template_id" label="Template" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>

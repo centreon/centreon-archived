@@ -108,6 +108,17 @@ class Host extends Object
         }
     }
     
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
     public static function getList(
         $parameterNames = "*",
         $count = -1,

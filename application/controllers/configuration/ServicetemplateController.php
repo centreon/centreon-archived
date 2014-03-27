@@ -53,8 +53,14 @@ class ServicetemplateController extends \Controllers\ObjectAbstract
         parent::listAction();
     }
 
+    /**
+     * 
+     * @method get
+     * @route /configuration/servicetemplate/formlist
+     */
     public function formListAction()
     {
+        parent::formListAction();
     }
 
     /**
@@ -167,5 +173,17 @@ class ServicetemplateController extends \Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Get list of service templates for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/servicetemplate
+     */
+    public function hostForHostGroupAction()
+    {
+        parent::getRelations(static::$relationMap['host_hostgroups']);
     }
 }
