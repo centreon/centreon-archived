@@ -38,7 +38,7 @@ namespace Controllers\Administration;
 use \Centreon\Core\Form;
 use \Centreon\Core\Form\Generator;
 
-class AclactionController extends \Centreon\Core\Controller
+class AclactionController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'AclAction';
     protected $objectName = 'aclaction';
