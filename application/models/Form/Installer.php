@@ -181,7 +181,7 @@ class Installer
             $sql = 'UPDATE form_block SET rank = :rank,
                 section_id = :section_id
                 WHERE name = :name
-                AND block_id = :block_id'; 
+                AND block_id = :block_id';
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
@@ -206,8 +206,11 @@ class Installer
         $key = $data['name'];
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (!isset(self::$fields[$key])) {
-            $sql = 'INSERT INTO form_field (name, label, default_value, attributes, advanced, type, help, module_id, parent_field, child_actions) 
-                VALUES (:name, :label, :default_value, :attributes, :advanced, :type, :help, :module_id, :parent_field, :child_actions)';
+            $sql = 'INSERT INTO form_field 
+                (name, label, default_value, attributes, advanced, type, 
+                help, module_id, parent_field, child_actions) VALUES 
+                (:name, :label, :default_value, :attributes, :advanced, 
+                :type, :help, :module_id, :parent_field, :child_actions)';
         } else {
             $sql = 'UPDATE form_field SET label = :label,
                 default_value = :default_value,
@@ -252,7 +255,8 @@ class Installer
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['block_name']));
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('DELETE FROM form_block_field_relation WHERE block_id = :block_id AND field_id = :field_id');
+            $stmt = $db->prepare('DELETE FROM form_block_field_relation 
+                WHERE block_id = :block_id AND field_id = :field_id');
             $stmt->bindParam(':block_id', self::$blocks[$key]);
             $stmt->bindParam(':field_id', self::$fields[$fname]);
             $stmt->execute();
@@ -482,7 +486,10 @@ class Installer
                     );
                     self::addFieldToBlock(array_map('strval', $blockFieldData));
                     $fieldRank++;
-                    $insertedFields[] = implode(';', array($form['name'], $section['name'], $block['name'], $field['name']));
+                    $insertedFields[] = implode(
+                        ';', 
+                        array($form['name'], $section['name'], $block['name'], $field['name'])
+                    );
                 }
                 $insertedBlocks[] = implode(';', array($form['name'], $section['name'], $block['name']));
             }
