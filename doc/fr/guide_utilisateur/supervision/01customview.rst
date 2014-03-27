@@ -43,7 +43,7 @@ Partager une vue
 Il est possible de partager une vue existante avec un ou plusieurs utilisateurs.
 Pour cela, cliquez sur **Partager la vue**.
 
-* Si le champ **Vérrouillée** est définit à **Oui** alors les autres utilisateurs ne pourront pas modifier la vue
+* Si le champ **Verrouillée** est définit à **Oui**, alors les autres utilisateurs ne pourront pas modifier la vue
 * Le champ **Liste des utilisateurs** permet de définir les utilisateurs avec lesquels est partagée la vue
 * Le champ **Liste des groupes utilisateur** permet de définir les groupes d'utilisateurs avec lesquels est partagée la vue
 
@@ -65,8 +65,8 @@ Personnaliser son widget
 
 Il est possible de déplacer un widget en faisant un drag-and-drop depuis la barre de titre.
 Pour réduire un widget, cliquez sur |reducewidget|.
-Par défaut les informations contenues au sein du widget sont rafraichies de manière régulière.
-Pour les rafraîchir manuellement cliquez sur |refreshwidget|.
+Par défaut, les informations contenues au sein du widget sont rafraîchis de manière régulière.
+Pour les rafraîchir manuellement, cliquez sur |refreshwidget|.
 
 Pour personnaliser son widget, cliquez sur |configurewidget|.
 
@@ -91,30 +91,30 @@ Filters
 * Si la case **Display Up** est cochée, les hôtes en statut UP seront affichés
 * Si la case **Display Down** est cochée, les hôtes en statut DOWN seront affichés
 * Si la case **Display Unreachable** est cochée, les hôtes en statut UNREACHABLE seront affichés
-* La liste **Acknowledgement Filter** permet d'afficher les hôtes acquittés ou non acquittés (si la liste est vide les deux types d'hôtes seront affichés)
-* La liste **Downtime Filter** permet d'afficher les hôtes qui subissent un temps d'arrêt ou non (si la liste est vide les deux types d'hôtes seront affichés)
-* La liste **State Type** permet d'afficher les hôtes en état SOFT ou HARD (si la liste est vide les deux types d'hôtes seront affichés)
-* La liste **Hostgroup** permet d'afficher les hôtes appartenant à un certain groupe d'hôtes (si la liste est vide tous les hôtes seront affichés)
+* La liste **Acknowledgement Filter** permet d'afficher les hôtes acquittés ou non acquittés (si la liste est vide, les deux types d'hôtes seront affichés)
+* La liste **Downtime Filter** permet d'afficher les hôtes qui subissent un temps d'arrêt ou non (si la liste est vide, les deux types d'hôtes seront affichés)
+* La liste **State Type** permet d'afficher les hôtes en état SOFT ou HARD (si la liste est vide, les deux types d'hôtes seront affichés)
+* La liste **Hostgroup** permet d'afficher les hôtes appartenant à un certain groupe d'hôtes (si la liste est vide, tous les hôtes seront affichés)
 * La liste **Results** limite le nombre de résultats
 
 Columns
 -------
 
-* Si la case **Display Host Name** est cochée alors le nom d'hôte sera affiché
-* Si la case **Display Output** est cochée alors le message associé au statut de l'hôte sera affiché
+* Si la case **Display Host Name** est cochée, alors le nom d'hôte sera affiché
+* Si la case **Display Output** est cochée, alors le message associé au statut de l'hôte sera affiché
 * La liste **Output Length** permet de limiter la longueur du message affiché
-* Si la case **Display Status** est cochée alors le statut de l'hôte est affiché
-* Si la case **Display IP** est cochée alors l'adresse IP de l'hôte est affiché
-* Si la case **Display Last Check** est cochée alors la date et l'horaire de la dernière vérification est affichée
-* Si la case **Display Duration** est cochée alors la durée durant laquelle l'hôte a conservé son statut est affichée
-* Si la case **Display Hard State Duration** est cochée alors la durant laquelle l'hôte a conservé son état HARD est affichée
-* Si la case **Display Tries** est cochée alors le nombre d'essais avant la validation de l'état est affichée
+* Si la case **Display Status** est cochée, alors le statut de l'hôte est affiché
+* Si la case **Display IP** est cochée, alors l'adresse IP de l'hôte est affiché
+* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification est affichée
+* Si la case **Display Duration** est cochée, alors la durée durant laquelle l'hôte a conservé son statut est affichée
+* Si la case **Display Hard State Duration** est cochée, alors la durée durant laquelle l'hôte a conservé son état HARD est affichée
+* Si la case **Display Tries** est cochée, alors le nombre d'essais avant la validation de l'état est affichée
 * La liste **Order By** permet de classer les hôtes par ordre alphabétique suivant plusieurs paramètres
 
 Misc
 ----
 
-* Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
+* Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraîchissement des données
 
 Le widget de services
 =====================
@@ -129,25 +129,25 @@ Filters
 * Si la case **Display Critical** est cochée, les services en statut CRITICAL seront affichés
 * Si la case **Display Unknown** est cochée, les services en statut UNKNOWN seront affichés
 * Si la case **Display Pending** est cochée, les services en statut PENDING seront affichés
-* La liste **Acknowledgement Filter** permet d'afficher les services acquittés ou non acquittés (si la liste est vide les deux types d'hôtes seront affichés)
-* La liste **Downtime Filter** permet d'afficher les services qui subissent un temps d'arrêt ou non (si la liste est vide les deux types d'hôtes seront affichés)
-* La liste **State Type** permet d'afficher les services en état SOFT ou HARD (si la liste est vide les deux types d'hôtes seront affichés)
-* La liste **Hostgroup** permet d'afficher les services appartenant à des hotes faisant partie d'un certain groupe d'hôtes (si la liste est vide tous les services seront affichés)
-* La liste **Servicegroup** permet d'afficher les services appartenant à un certain groupe de services (si la liste est vide tous les services seront affichés)
+* La liste **Acknowledgement Filter** permet d'afficher les services acquittés ou non acquittés (si la liste est vide, les deux types d'hôtes seront affichés)
+* La liste **Downtime Filter** permet d'afficher les services qui subissent un temps d'arrêt ou non (si la liste est vide, les deux types d'hôtes seront affichés)
+* La liste **State Type** permet d'afficher les services en état SOFT ou HARD (si la liste est vide, les deux types d'hôtes seront affichés)
+* La liste **Hostgroup** permet d'afficher les services appartenant à des hotes faisant partie d'un certain groupe d'hôtes (si la liste est vide, tous les services seront affichés)
+* La liste **Servicegroup** permet d'afficher les services appartenant à un certain groupe de services (si la liste est vide, tous les services seront affichés)
 * La liste **Results** limite le nombre de résultats
 
 Columns
 -------
 
-* Si la case **Display Host Name** est cochée alors le nom d'hôte sera affiché
-* Si la case **Display Service Description** est cochée alors le nom du service sera affiché
-* Si la case **Display Output** est cochée alors le message associé au statut du service sera affiché
+* Si la case **Display Host Name** est cochée, alors le nom d'hôte sera affiché
+* Si la case **Display Service Description** est cochée, alors le nom du service sera affiché
+* Si la case **Display Output** est cochée, alors le message associé au statut du service sera affiché
 * La liste **Output Length** permet de limiter la longueur du message affiché
-* Si la case **Display Status** est cochée alors le statut du service est affiché
-* Si la case **Display Last Check** est cochée alors la date et l'horaire de la dernière vérification est affichée
-* Si la case **Display Duration** est cochée alors la durée durant laquelle le service a conservé son statut est affichée
-* Si la case **Display Hard State Duration** est cochée alors la durant laquelle le service a conservé son état HARD est affichée
-* Si la case **Display Tries** est cochée alors le nombre d'essais avant la validation de l'état est affichée
+* Si la case **Display Status** est cochée, alors le statut du service est affiché
+* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification sont affichées
+* Si la case **Display Duration** est cochée, alors la durée durant laquelle le service a conservé son statut est affichée
+* Si la case **Display Hard State Duration** est cochée, alors la durée durant laquelle le service a conservé son état HARD est affichée
+* Si la case **Display Tries** est cochée, alors le nombre d'essais avant la validation de l'état est affiché
 * La liste **Order By** permet de classer les services par ordre alphabétique suivant plusieurs paramètres
 
 Misc
@@ -168,7 +168,7 @@ Le widget de groupe d'hôtes
 * Le champ **Hostgroup Name Search** permet de choisir les groupes d'hôtes affichés
 * Si la case **Enable Detailed Mode** est cochée, alors tous les noms d'hôtes ainsi que les services associés à ces hôtes seront affichés pour les groupes d'hôtes sélectionnés
 * La liste **Results** permet de limiter le nombre de résultats
-* La liste **Order By** permet de classer les groupes d'hôtes par ordre alphabétique suivant plusieus paramètres
+* La liste **Order By** permet de classer les groupes d'hôtes par ordre alphabétique suivant plusieurs paramètres
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
 Le widget de groupes de services
@@ -177,7 +177,7 @@ Le widget de groupes de services
 * Le champ **Servicegroup Name Search** permet de choisir les groupes de services affichés
 * Si la case **Enable Detailed Mode** est cochée, alors tous les noms d'hôtes ainsi que les services associés à ces hôtes seront affichés pour les groupes de services sélectionnés
 * La liste **Results** permet de limiter le nombre de résultats
-* La liste **Order By** permet de classer les groupes de services par ordre alphabétique suivant plusieus paramètres
+* La liste **Order By** permet de classer les groupes de services par ordre alphabétique suivant plusieurs paramètres
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
 .. |deletewidget|    image:: /images/guide_utilisateur/supervision/deletewidget.png

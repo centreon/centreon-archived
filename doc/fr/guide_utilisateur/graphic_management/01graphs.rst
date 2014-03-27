@@ -9,7 +9,7 @@ Définition
 Centreon permet de générer des graphiques à partir des informations de supervision. Il existe deux types de graphiques :
 
 * Les graphiques de performances permettent de visualiser l'évolution des services de manière intuitive. Exemples : niveau de remplissage d'un disque dur, trafic réseau...
-* Les graphiques d'historique (ou graphique des statuts) permettent de visualiser l'évolution des statuts d'un service.
+* Les graphiques d'historique (ou graphiques des statuts) permettent de visualiser l'évolution des statuts d'un service.
 
 Les graphiques de performances ont toujours comme abscisse une période de temps et comme ordonnée une unité (Volts, Octets...).
 Les graphiques d'historique ont toujours comme abscisse une période de temps, leurs ordonnées ne varient pas. Uniquement la couleur du graphique permet de visualiser le statut de l'objet :
@@ -48,7 +48,7 @@ Les graphiques d'historique
 Comme pour les graphiques de performances, il existe diférentes façons d'accéder au graphique d'historique :
 
 * A partir de la page de détail d'un objet (voir le chapitre :ref:`supervision temps-réelle <realtime_monitoring>`)
-* A partir du menu **Vues** ==> **Graphiques**, en sélectionnant au préalable un service spécifique puis en cochant la case **Affichage de l'état**.
+* A partir du menu **Vues** ==> **Graphiques**, en sélectionnant au préalable un service spécifique puis, en cochant la case **Affichage de l'état**.
 
 Visualiser plusieurs graphiques
 ===============================
@@ -81,7 +81,7 @@ Filtres
 Il est possible de filtrer la sélection des ressources via :
 
 * La barre de recherche rapide en recherchant par **hôte** ou **service**
-* En parcourant l'arbre de sélection (menu de gauche) par groupe d'hôtes, puis par hôte puis par service dont afficher le graphique
+* En parcourant l'arbre de sélection (menu de gauche) par groupe d'hôtes, puis par hôte, puis par service dont afficher le graphique
 * En parcourant l'arbre de sélection (menu de gauche) par groupe de services puis par service dont afficher le graphique
 
 .. note::

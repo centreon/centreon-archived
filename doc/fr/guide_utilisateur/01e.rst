@@ -9,7 +9,9 @@ Les rapports
 Définition
 ==========
 
-Les rapports de disponibilités des objets accessibles via l'interface web Centreon permettent de visualiser de manière intuitive le taux de disponibilité d'un hôte, d'un groupe d'hôtes ou d'un groupe de services sur une période de temps données.
+Les rapports de disponibilités des objets accessibles via l'interface web Centreon 
+permettent de visualiser de manière intuitive le taux de disponibilité d'un hôte, 
+d'un groupe d'hôtes ou d'un groupe de services sur une période de temps donnée.
 
 Visualisation
 =============
