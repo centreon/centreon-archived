@@ -3,7 +3,7 @@
 CREATE TABLE `menus` (
     `menu_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `parent_id` INT,
+    `parent_id` INT UNSIGNED,
     `url` VARCHAR(255) DEFAULT NULL,
     `icon_class` VARCHAR(100),
     `icon` VARCHAR(255),
