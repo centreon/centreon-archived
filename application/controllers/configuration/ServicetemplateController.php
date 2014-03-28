@@ -279,6 +279,18 @@ class ServicetemplateController extends \Controllers\ObjectAbstract
     {
         parent::getRelations(static::$relationMap['service_servicegroups']);
     }
+
+    /**
+     * Get list of service categories for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/servicetemplate/[i:id]/servicecategory
+     */
+    public function serviceCategoryForServiceAction()
+    {
+        parent::getRelations(static::$relationMap['service_servicecategories']);
+    }
     
     /**
      * Get list of service template for a specific service template

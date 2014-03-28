@@ -114,6 +114,7 @@
           if (data.data.length === 0) {
             $this.hasEvent = false;
             $this.loading = false;
+	    $this.recentTime = new Date().getTime() / 1000; /* @todo better */
             return;
           }
           $.each( data.data, function( idx, values ) {
@@ -161,6 +162,7 @@
           data;
       if ( this.settings.ajaxUrlGetNew === "" ||
         this.recentTime === null ) {
+        setTimeout( function() { $this.loadNewData(); }, $this.settings.refresh );
         return;
       }
       data = this.prepareData();

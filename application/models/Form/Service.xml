@@ -156,6 +156,14 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
+				<field name="service_servicecategories" label="Linked with service categories" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/servicecategory/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/service/[i:id]/servicecategory</listValuesRoute>
+						<multiple>true</multiple>
+					</attributes>
+				</field>
 			</block>
 			<block name="SNMP traps">
 				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="0" type="deprecated" parent_field="" module_id="1" mandatory="0">
