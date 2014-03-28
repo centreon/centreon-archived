@@ -158,19 +158,12 @@ class Generator
             
             foreach ($blockList as $block) {
                 
-                if ($advanced) {
-                    $advancedRequest = "AND (advanced = '0' OR advanced = '1' )";
-                } else {
-                    $advancedRequest = "AND advanced = '0' ";
-                }
-                
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
-                    . 'f.type, f.help, f.help_url, mandatory, parent_field, child_actions '
+                    . 'f.type, f.help, f.help_url, f.advanced, mandatory, parent_field, child_actions '
                     . 'FROM form_field f, form_block_field_relation bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
-                    . $advancedRequest
                     . 'ORDER BY rank ASC';
                 
                 $this->formComponents[$section['name']][$block['name']] = array();

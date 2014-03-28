@@ -304,9 +304,13 @@ class Installer
               VALUES (:name, :route)';
         } else {
             $sql = 'UPDATE form_wizard SET route = :route
-                WHERE name = :name';
+                WHERE name = :name 
+                AND wizard_id = :wizard_id';
         }
         $stmt = $db->prepare($sql);
+        if (isset(self::$wizards[$key])) {
+            $stmt->bindParam(':wizard_id', self::$wizards[$key]);
+        }
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':route', $data['route']);
         $stmt->execute();
@@ -330,9 +334,13 @@ class Installer
         } else {
             $sql = 'UPDATE form_step SET rank = :rank,
                 wizard_id = :wizard_id
-                WHERE name = :name'; 
+                WHERE name = :name
+                AND step_id = :step_id'; 
         }
         $stmt = $db->prepare($sql);
+        if (isset(self::$steps[$key])) {
+            $stmt->bindParam(':step_id', self::$steps[$key]);
+        }
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':rank', $data['rank'], \PDO::PARAM_INT);
         $stmt->bindParam(':wizard_id', self::$wizards[$data['wizard_name']], \PDO::PARAM_INT);

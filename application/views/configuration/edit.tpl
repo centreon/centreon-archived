@@ -5,11 +5,7 @@
 {block name="content"}
     <div class="content-container">
         <div class="row">
-            {if $advanced}
-                <a href="{$formModeUrl}" class="btn btn-default">{t}Switch to simple mode{/t}</a>
-            {else}
-                <a href="{$formModeUrl}" class="btn btn-default">{t}Switch to advanced mode{/t}</a>
-            {/if}
+            <a id="advanced_mode_switcher" href="#" class="btn btn-default">{t}Switch to advanced mode{/t}</a>
         </div>
         {$form}
     </div>
@@ -24,6 +20,16 @@
 
 {block name="javascript-bottom" append}
     <script>
+        $("#advanced_mode_switcher").on("click", function (event) {
+            if ($(".advanced").hasClass('advanced-display')) {
+                $(".advanced").removeClass("advanced-display");
+                $(this).text("{t}Switch to advanced mode{/t}");
+            } else {
+                $(".advanced").addClass("advanced-display");
+                $(this).text("{t}Switch to simple mode{/t}");
+            }
+        });
+        
         $("#{$formName}").on("submit", function (event) {
             
             var validateMandatory = true;
