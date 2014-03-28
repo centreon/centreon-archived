@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="centreon" default="build" basedir="..">
-  <target name="build" depends="prepare,phpcs-ci,phpcpd,phpmd-ci,phpunit" />
+  <target name="build" depends="prepare,lint,phploc,pdepend,phpcs-ci,phpcpd,phpmd-ci,phpunit" />
 
   <target name="clean" description="Clean the builds environment">
     <delete dir="${basedir}/build/api"/>
@@ -16,7 +16,35 @@
     <mkdir dir="${basedir}/build/pdepend"/>
     <mkdir dir="${basedir}/build/phpdox"/>
     <exec executable="composer">
-	    <arg value="update"/>
+      <arg value="update"/>
+    </exec>
+  </target>
+
+  <target name="lint" description="Perform syntax check of sourcecode files">
+    <apply executable="php" failonerror="true">
+      <arg value="-l" />
+      <fileset dir="${basedir}/application">
+        <include name="**/*.php"/>
+        <modified/>
+      </fileset>
+    </apply>
+  </target>
+  
+  <target name="phploc" description="Measure project size using PHPLOC">
+    <exec executable="vendor/bin/phploc">
+      <arg value="--count-tests" />
+      <arg value="--log-csv" />
+      <arg value="${basedir}/build/logs/phploc.csv" />
+      <arg path="${basedir}/application" />
+    </exec>
+  </target>
+  
+  <target name="pdepend" description="Calculate software metrics using PHP_Depend">
+    <exec executable="vendor/bin/pdepend">
+      <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+      <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+      <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+      <arg path="${basedir}/application" />
     </exec>
   </target>
 
