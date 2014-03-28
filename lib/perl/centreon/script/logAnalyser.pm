@@ -192,10 +192,9 @@ EOQ
 INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 EOQ
+        my $cur_ctime = undef;
 
         while (<FILE>) {
-            my $cur_ctime;
-
             if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
@@ -260,12 +259,14 @@ EOQ
             $counter++;
             $nbqueries++;
             if ($nbqueries == $self->{queries_per_transaction}) {
-                $self->commit_to_log($sth, \@log_table_rows, $instance, $ctime, $counter);
+                $self->commit_to_log($sth, \@log_table_rows, $instance, $cur_ctime, $counter);
                 $nbqueries = 0;
                 @log_table_rows = ();
             }
         }
-        $self->commit_to_log($sth, \@log_table_rows, $instance, $ctime, $counter);
+        if (defined $cur_ctime) {
+            $self->commit_to_log($sth, \@log_table_rows, $instance, $cur_ctime, $counter);
+        }
     };
     close FILE;
     if ($@) {
