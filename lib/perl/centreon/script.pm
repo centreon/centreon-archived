@@ -102,9 +102,6 @@ sub init {
            password => $self->{centreon_config}->{db_passwd},
            logger => $self->{logger});
         $self->{lock} = centreon::common::lock::sql->new($self->{name}, dbc => $self->{cdb});
-        if ($self->{lock}->is_set()) {
-            die($self->{name} . " is already running.");
-        }
         $self->{lock}->set();
     }
     if ($self->{centstorage_db_conn}) {
