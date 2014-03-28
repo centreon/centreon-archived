@@ -130,6 +130,41 @@
     "route": "/configuration/user"
   },
   {
+    "name": "Users",
+    "short_name": "conf_users_list",
+    "parent": "conf_users",
+    "order": 1,
+    "route": "/configuration/user"
+  },
+  {
+    "name": "User groups",
+    "short_name": "conf_usergroups_list",
+    "parent": "conf_users",
+    "order": 2,
+    "route": "/configuration/usergroup"
+  },
+  {
+    "name": "Traps",
+    "short_name": "conf_traps",
+    "parent": "configuration",
+    "order": 5,
+    "route": "/configuration/trap"
+  },
+  {
+    "name": "Traps",
+    "short_name": "conf_traps_list",
+    "parent": "conf_traps",
+    "order": 1,
+    "route": "/configuration/trap"
+  },
+  {
+    "name": "Manufacturers",
+    "short_name": "conf_manufacturers_list",
+    "parent": "conf_traps",
+    "order": 2,
+    "route": "/configuration/manufacturer"
+  },
+  {
     "name": "Administration",
     "short_name": "administration",
     "icon_class": "fa fa-folder-open",
