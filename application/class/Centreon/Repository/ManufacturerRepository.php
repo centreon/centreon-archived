@@ -36,33 +36,33 @@
 namespace Centreon\Repository;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Sylvestre Ho <sho@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class HostcategoryRepository extends \Centreon\Repository\Repository
+class ManufacturerRepository extends \Centreon\Repository\Repository
 {
     /**
      *
      * @var string
      */
-    public static $tableName = 'hostcategories';
+    public static $tableName = 'traps_vendor';
     
     /**
      *
      * @var string
      */
-    public static $objectName = 'Hostcategory';
+    public static $objectName = 'Manufacturer';
     
     /**
      *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allHostcategory" class="allHostcategory" type="checkbox">' => 'hc_id',
-        'Name' => 'hc_name',
-        'Alias' => 'hc_alias',
-        'Status' => 'hc_activate'
+        '<input id="allManufacturer" class="allManufacturer" type="checkbox">' => 'id',
+        'Name' => 'name',
+        'Alias' => 'alias',
+        'Description' => 'description'
     );
     
     /**
@@ -70,10 +70,10 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $researchIndex = array(
-        'hc_id',
-        'hc_name',
-        'hc_alias',
-        'hc_activate'
+        'id',
+        'name',
+        'alias',
+        'description'
     );
     
     /**
@@ -84,11 +84,7 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
         'none',
         'search_name',
         'search_alias',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
+        'search_description'
     );
     
     /**
@@ -96,28 +92,21 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $columnCast = array(
-        'hc_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
-            )
-        ),
-        'hc_id' => array(
+        'id' => array(
             'type' => 'checkbox',
             'parameters' => array(
-                'displayName' => '::hc_name::'
+                'displayName' => '::name::'
             )
         ),
-        'hc_name' => array(
+        'name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/host/[i:id]/[i:advanced]',
+                'route' => '/configuration/manufacturer/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::hc_id::',
+                    'id' => '::id::',
                     'advanced' => 0
                 ),
-                'linkName' => '::hc_alias::'
+                'linkName' => '::alias::'
             )
         )
     );
@@ -130,11 +119,6 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
         'none',
         'search_name',
         'search_alias',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
+        'search_description'
     );
 }

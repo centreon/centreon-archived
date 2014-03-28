@@ -35,22 +35,18 @@
 
 namespace Controllers\Configuration;
 
-class TrapController extends \Controllers\ObjectAbstract
+class ManufacturerController extends \Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'Trap';
-    protected $objectName = 'trap';
-    protected $objectBaseUrl = '/configuration/trap';
-    protected $objectClass = '\Models\Configuration\Trap';
-    public static $relationMap = array(
-        'trap_services' => '\Models\Configuration\Relation\Trap\Service',
-        'trap_servicetemplates' => '\Models\Configuration\Relation\Trap\Servicetemplate'
-    );
+    protected $objectDisplayName = 'Manufacturer';
+    protected $objectName = 'manufacturer';
+    protected $objectBaseUrl = '/configuration/manufacturer';
+    protected $objectClass = '\Models\Configuration\Manufacturer';
 
     /**
-     * List traps
+     * List manufacturers
      *
      * @method get
-     * @route /configuration/trap
+     * @route /configuration/manufacturer
      */
     public function listAction()
     {
@@ -60,7 +56,7 @@ class TrapController extends \Controllers\ObjectAbstract
     /**
      * 
      * @method get
-     * @route /configuration/trap/formlist
+     * @route /configuration/manufacturer/formlist
      */
     public function formListAction()
     {
@@ -70,7 +66,7 @@ class TrapController extends \Controllers\ObjectAbstract
     /**
      * 
      * @method get
-     * @route /configuration/trap/list
+     * @route /configuration/manufacturer/list
      */
     public function datatableAction()
     {
@@ -78,10 +74,10 @@ class TrapController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Create a new trap
+     * Create a new manufacturer
      *
      * @method post
-     * @route /configuration/trap/create
+     * @route /configuration/manufacturer/create
      */
     public function createAction()
     {
@@ -89,11 +85,11 @@ class TrapController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Update a trap
+     * Update a manufacturer
      *
      *
      * @method put
-     * @route /configuration/trap/update
+     * @route /configuration/manufacturer/update
      */
     public function updateAction()
     {
@@ -101,11 +97,11 @@ class TrapController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Add a trap
+     * Add a manufacturer
      *
      *
      * @method get
-     * @route /configuration/trap/add
+     * @route /configuration/manufacturer/add
      */
     public function addAction()
     {
@@ -113,11 +109,11 @@ class TrapController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Update a trap
+     * Update a manufacturer
      *
      *
      * @method get
-     * @route /configuration/trap/[i:id]/[i:advanced]
+     * @route /configuration/manufacturer/[i:id]/[i:advanced]
      */
     public function editAction()
     {
@@ -128,7 +124,7 @@ class TrapController extends \Controllers\ObjectAbstract
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/trap/mc_fields
+     * @route /configuration/manufacturer/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -139,7 +135,7 @@ class TrapController extends \Controllers\ObjectAbstract
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/trap/mc_fields/[i:id]
+     * @route /configuration/manufacturer/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -150,7 +146,7 @@ class TrapController extends \Controllers\ObjectAbstract
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/trap/duplicate
+     * @route /configuration/manufacturer/duplicate
      */
     public function duplicateAction()
     {
@@ -161,7 +157,7 @@ class TrapController extends \Controllers\ObjectAbstract
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/trap/massive_change
+     * @route /configuration/manufacturer/massive_change
      */
     public function massiveChangeAction()
     {
@@ -172,43 +168,10 @@ class TrapController extends \Controllers\ObjectAbstract
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /configuration/trap/delete
+     * @route /configuration/manufacturer/delete
      */
     public function deleteAction()
     {
         parent::deleteAction();
-    }
-
-    /**
-     * Manufacturer for specific trap
-     *
-     * @method get
-     * @route /configuration/trap/[i:id]/manufacturer
-     */
-    public function manufacturerForTrapAction()
-    {
-        parent::getSimpleRelation('manufacturer_id', '\Models\Configuration\Manufacturer');
-    }
-
-    /**
-     * Services for specific trap
-     *
-     * @method get
-     * @route /configuration/trap/[i:id]/service
-     */
-    public function serviceForTrapAction()
-    {
-        parent::getRelations(static::$relationMap['trap_services']);
-    }
-
-    /**
-     * Service templates for specific trap
-     *
-     * @method get
-     * @route /configuration/trap/[i:id]/servicetemplate
-     */
-    public function servicetemplateForTrapAction()
-    {
-        parent::getRelations(static::$relationMap['trap_servicetemplates']);
     }
 }

@@ -44,12 +44,13 @@ class ServiceController extends \Controllers\ObjectAbstract
     public static $relationMap = array(
         'service_servicegroups' => '\Models\Configuration\Relation\service\servicegroup',
         'service_hosts' => '\Models\Configuration\Relation\Service\Host',
-        'service_categories' => '\Models\Configuration\Relation\service\servicecategory',
-        'service_parents' => '\Models\Configuration\Relation\service\serviceparent',
-        'service_childs' => '\Models\Configuration\Relation\service\servicechild',
-        'service_contacts' => '\Models\Configuration\Relation\service\Contact',
-        'service_contactgroups' => '\Models\Configuration\Relation\service\Contactgroup',
-        'service_servicetemplates' => '\Models\Configuration\Relation\service\servicetemplate'
+        'service_categories' => '\Models\Configuration\Relation\Service\servicecategory',
+        'service_parents' => '\Models\Configuration\Relation\Service\serviceparent',
+        'service_childs' => '\Models\Configuration\Relation\Service\servicechild',
+        'service_contacts' => '\Models\Configuration\Relation\Service\Contact',
+        'service_contactgroups' => '\Models\Configuration\Relation\Service\Contactgroup',
+        'service_servicetemplates' => '\Models\Configuration\Relation\Service\servicetemplate',
+        'service_traps' => '\Models\Configuration\Relation\Trap\Service'
     );
 
     /**
@@ -302,5 +303,16 @@ class ServiceController extends \Controllers\ObjectAbstract
     public function serviceTemplateForServiceAction()
     {
         parent::getSimpleRelation('service_template_model_stm_id', '\Models\Configuration\Servicetemplate');
+    }
+
+    /**
+     * Trap for a specific service
+     *
+     * @method post
+     * @route /configuration/service/[i:id]/trap
+     */
+    public function trapForServiceAction()
+    {
+        parent::getRelations(static::$relationMap['service_traps']);
     }
 }
