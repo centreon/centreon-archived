@@ -60,7 +60,10 @@ class ServicecategoryController extends \Controllers\ObjectAbstract
     }
 
     /**
+     * List servicecategories
      * 
+     * @method get
+     * @route /configuration/servicecategory/formlist
      */
     public function formListAction()
     {
