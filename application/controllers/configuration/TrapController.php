@@ -35,32 +35,28 @@
 
 namespace Controllers\Configuration;
 
-class HostgroupController extends \Controllers\ObjectAbstract
+class TrapController extends \Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'Hostgroup';
-    protected $objectName = 'hostgroup';
-    protected $objectBaseUrl = '/configuration/hostgroup';
-    protected $objectClass = '\Models\Configuration\Hostgroup';
-    
-    public static $relationMap = array(
-        'host_hostgroups' => '\Models\Configuration\Relation\Host\Hostgroup',
-    );
+    protected $objectDisplayName = 'Trap';
+    protected $objectName = 'trap';
+    protected $objectBaseUrl = '/configuration/snmptraps';
+    protected $objectClass = '\Models\Configuration\Trap';
 
     /**
-     * List hostgroups
+     * List traps
      *
      * @method get
-     * @route /configuration/hostgroup
+     * @route /configuration/snmptraps
      */
     public function listAction()
     {
         parent::listAction();
     }
-    
+
     /**
      * 
      * @method get
-     * @route /configuration/hostgroup/formlist
+     * @route /configuration/snmptraps/formlist
      */
     public function formListAction()
     {
@@ -70,7 +66,7 @@ class HostgroupController extends \Controllers\ObjectAbstract
     /**
      * 
      * @method get
-     * @route /configuration/hostgroup/list
+     * @route /configuration/snmptraps/list
      */
     public function datatableAction()
     {
@@ -78,10 +74,10 @@ class HostgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Create a new hostgroup
+     * Create a new trap
      *
      * @method post
-     * @route /configuration/hostgroup/create
+     * @route /configuration/snmptraps/create
      */
     public function createAction()
     {
@@ -89,11 +85,11 @@ class HostgroupController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Update a hostgroup
+     * Update a trap
      *
      *
      * @method put
-     * @route /configuration/hostgroup/update
+     * @route /configuration/snmptraps/update
      */
     public function updateAction()
     {
@@ -101,11 +97,11 @@ class HostgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Add a hostgroup
+     * Add a trap
      *
      *
      * @method get
-     * @route /configuration/hostgroup/add
+     * @route /configuration/snmptraps/add
      */
     public function addAction()
     {
@@ -113,11 +109,11 @@ class HostgroupController extends \Controllers\ObjectAbstract
     }
     
     /**
-     * Update a hostgroup
+     * Update a trap
      *
      *
      * @method get
-     * @route /configuration/hostgroup/[i:id]/[i:advanced]
+     * @route /configuration/snmptraps/[i:id]/[i:advanced]
      */
     public function editAction()
     {
@@ -128,7 +124,7 @@ class HostgroupController extends \Controllers\ObjectAbstract
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/hostgroup/mc_fields
+     * @route /configuration/snmptraps/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -139,7 +135,7 @@ class HostgroupController extends \Controllers\ObjectAbstract
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/hostgroup/mc_fields/[i:id]
+     * @route /configuration/snmptraps/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -147,10 +143,10 @@ class HostgroupController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Duplicate a hostgroup
+     * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/hostgroup/duplicate
+     * @route /configuration/snmptraps/duplicate
      */
     public function duplicateAction()
     {
@@ -161,7 +157,7 @@ class HostgroupController extends \Controllers\ObjectAbstract
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/hostgroup/massive_change
+     * @route /configuration/snmptraps/massive_change
      */
     public function massiveChangeAction()
     {
@@ -169,25 +165,13 @@ class HostgroupController extends \Controllers\ObjectAbstract
     }
 
     /**
-     * Delete action for host
+     * Delete action for hosttemplate
      *
      * @method post
-     * @route /configuration/hostgroup/delete
+     * @route /configuration/snmptraps/delete
      */
     public function deleteAction()
     {
         parent::deleteAction();
-    }
-    
-    /**
-     * Get list of hostgroups for a specific host
-     *
-     *
-     * @method get
-     * @route /configuration/hostgroup/[i:id]/host
-     */
-    public function hostForHostGroupAction()
-    {
-        parent::getRelations(static::$relationMap['host_hostgroups']);
     }
 }

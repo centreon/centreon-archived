@@ -106,8 +106,7 @@ class Module
 
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (is_null($menus)) {
-            $sql = "SELECT menu_id, short_name 
-                FROM menus";
+            $sql = "SELECT menu_id, short_name FROM menus";
             $stmt = $db->prepare($sql);
             $stmt->execute();
             $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -115,30 +114,28 @@ class Module
                 $menus[$row['short_name']] = $row['menu_id'];
             }
         }
-        $mandatoryKeys = array('name', 'short_name', 'order');
+        $mandatoryKeys = array('name', 'short_name');
         foreach ($mandatoryKeys as $k) {
             if (!isset($data[$k])) {
                 throw new Exception(sprintf('Missing mandatory key %s', $k));
             }
         }
+        if (isset($data['parent']) && !isset($menus[$data['parent']])) {
+            throw new Exception(sprintf('Parent %s does not exist', $data['parent']));
+        }
+
         if (!isset($menus[$data['short_name']])) {
             $sql = "INSERT INTO menus 
                 (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, is_module) VALUES
                 (:name, :short_name, :parent, :route, :icon_class, :icon, :bgcolor, :order, :module)";
         } else {
-            $sql = "UPDATE menus SET
-                name = :name,
-                parent_id = :parent,
-                url = :route,
-                icon_class = :icon_class,
-                icon = :icon,
-                bgcolor = :bgcolor,
-                menu_order = :order,
-                is_module = :module
+            $menuOrder = "";
+            if (isset($data['order'])) {
+                $menuOrder = " menu_order = :order, ";
+            }
+            $sql = "UPDATE menus SET name = :name, parent_id = :parent, url = :route, icon_class = :icon_class,
+                icon = :icon, bgcolor = :bgcolor, $menuOrder is_module = :module
                 WHERE short_name = :short_name";
-        }
-        if (isset($data['parent']) && !isset($menus[$data['parent']])) {
-            throw new Exception(sprintf('Parent %s does not exist', $data['parent']));
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
@@ -152,9 +149,25 @@ class Module
         $stmt->bindParam(':icon', $icon);
         $bgcolor = isset($data['bgcolor']) ? $data['bgcolor'] : null;
         $stmt->bindParam(':bgcolor', $bgcolor);
-        $stmt->bindParam(':order', $data['order']);
+        if (isset($data['order'])) {
+            $stmt->bindParam(':order', $order);
+        }
         $module = isset($data['module']) ? $data['module'] : 0;
         $stmt->bindParam(':module', $module);
         $stmt->execute();
+        if (!isset($menus[$data['short_name']])) {
+            $menus[$data['short_name']] = $db->lastInsertId('menus', 'menu_id');
+            if (!isset($data['order']) && isset($data['parent'])) {
+                $stmt = $db->prepare("SELECT (MAX(menu_order) + 1) as max_order 
+                    FROM menus WHERE parent_id = :parent_id");
+                $stmt->bindParam(':parent_id', $menus[$data['parent']]);
+                $stmt->execute();
+                $row = $stmt->fetch();
+                $stmt = $db->prepare("UPDATE menus SET menu_order = :menu_order WHERE menu_id = :menu_id");
+                $stmt->bindParam(':menu_order', $row['max_order']);
+                $stmt->bindParam(':menu_id', $menus[$data['short_name']]);
+                $stmt->execute();
+            }
+        }
     }
 }

@@ -377,28 +377,7 @@ class HostTemplateController extends \Controllers\ObjectAbstract
      */
     public function checkPeriodForHostTemplateAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = Host::getList('timeperiod_tp_id', -1, 0, null, "ASC", $filters, "AND");
-        
-        if (count($hostList) == 0) {
-            $router->response()->json(array('id' => null, 'text' => null));
-            return;
-        }
-        
-        $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id']);
-        $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
-        
-        $finalTimeperiodList = array();
-        if (count($timeperiodList) > 0) {
-            $finalTimeperiodList["id"] = $timeperiodList[0]['tp_id'];
-            $finalTimeperiodList["text"] = $timeperiodList[0]['tp_name'];
-        }
-        $router->response()->json($finalTimeperiodList);
+        parent::getSimpleRelation('timeperiod_tp_id', '\Models\Configuration\Timeperiod');
     }
     
     /**
@@ -410,26 +389,20 @@ class HostTemplateController extends \Controllers\ObjectAbstract
      */
     public function notificationPeriodForHostTemplateAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = Host::getList('timeperiod_tp_id2', -1, 0, null, "ASC", $filters, "AND");
-        
-        $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id2']);
-        $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
-        
-        $finalTimeperiodList = array();
-        if (count($timeperiodList) > 0) {
-            $finalTimeperiodList["id"] = $timeperiodList[0]['tp_id'];
-            $finalTimeperiodList["text"] = $timeperiodList[0]['tp_name'];
-        }
-        
-        $router->response()->json($finalTimeperiodList);
+        parent::getSimpleRelation('timeperiod_tp_id2', '\Models\Configuration\Timeperiod');
     }
     
+    /**
+     * Get check command for a specific host template
+     *
+     * @method get
+     * @route /configuration/hosttemplate/[i:id]/checkcommand
+     */
+    public function checkcommandForHostTemplateAction()
+    {
+        parent::getSimpleRelation('command_command_id', '\Models\Configuration\Command');
+    }
+
     /**
      * Get list of Commands for a specific host template
      *
@@ -437,26 +410,9 @@ class HostTemplateController extends \Controllers\ObjectAbstract
      * @method get
      * @route /configuration/hosttemplate/[i:id]/eventhandler
      */
-    public function eventHandlerForHostAction()
+    public function eventHandlerForHostTemplateAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = Host::getList('command_command_id2', -1, 0, null, "ASC", $filters, "AND");
-        
-        $filtersCommand = array('command_id' => $hostList[0]['command_command_id2']);
-        $commandList = Command::getList('command_id, command_name', -1, 0, null, "ASC", $filtersCommand, "AND");
-        
-        $finalCommandList = array();
-        if (count($commandList) > 0) {
-            $finalCommandList["id"] = $commandList[0]['command_id'];
-            $finalCommandList["text"] = $commandList[0]['command_name'];
-        }
-        
-        $router->response()->json($finalCommandList);
+        parent::getSimpleRelation('command_command_id2', '\Models\Configuration\Command');
     }
 
     /**

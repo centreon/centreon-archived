@@ -106,8 +106,8 @@
 				<field name="host_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
 			</block>
 			<block name="Additional information">
-				<field name="hg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="host_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>

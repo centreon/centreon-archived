@@ -159,35 +159,7 @@ class HostController extends \Controllers\ObjectAbstract
      */
     public function contactForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $contactList = Contact::getMergedParameters(
-            array('contact_id', 'contact_name', 'contact_email'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('host.host_id' => $requestParam['id']),
-            "AND"
-        );
-        
-        $finalContactList = array();
-        foreach ($contactList as $contact) {
-            $finalContactList[] = array(
-                "id" => $contact['contact_id'],
-                "text" => $contact['contact_name'],
-                "theming" => \Centreon\Repository\UserRepository::getUserIcon(
-                    $contact['contact_name'],
-                    $contact['contact_email']
-                )
-            );
-        }
-        
-        $router->response()->json($finalContactList);
+        parent::getRelations(static::$relationMap['host_contacts']);
     }
     
     /**
@@ -199,31 +171,7 @@ class HostController extends \Controllers\ObjectAbstract
      */
     public function contactgroupForHostAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $contactgroupList = Contactgroup::getMergedParameters(
-            array('cg_id', 'cg_name'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('host.host_id' => $requestParam['id']),
-            "AND"
-        );
-        
-        $finalContactgroupList = array();
-        foreach ($contactgroupList as $contactgroup) {
-            $finalContactgroupList[] = array(
-                "id" => $contactgroup['cg_id'],
-                "text" => $contactgroup['cg_name']
-            );
-        }
-        
-        $router->response()->json($finalContactgroupList);
+        parent::getRelations(static::$relationMap['host_contactgroups']);
     }
     
     /**

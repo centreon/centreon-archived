@@ -108,9 +108,10 @@ class HostgroupRepository extends \Centreon\Repository\Repository
         'hg_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/hostgroup/update',
+                'route' => '/configuration/hostgroup/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::hg_id::'
+                    'id' => '::hg_id::',
+                    'advanced' => '0'
                 ),
                 'linkName' => '::hg_name::'
             )
