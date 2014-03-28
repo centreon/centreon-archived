@@ -224,13 +224,8 @@ class Form
     private function renderAsHtml(&$element)
     {
         switch ($element['type']) {
-            case 'password':
-            default:
-                $element['input'] = $this->renderHtmlInput($element);
-                $element['label'] = $this->renderHtmlLabel($element);
-                $element['html'] = $this->renderFinalHtml($element);
-                break;
             case 'textarea':
+            default:
                 $element['input'] = $this->renderHtmlTextarea($element);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
@@ -266,39 +261,6 @@ class Form
                     }
                 }
                 break;
-            case 'checkbox':
-                $element['input'] = $this->renderHtmlCheckbox($element);
-                $element['label'] = $this->renderHtmlLabel($element);
-                $element['html'] = $this->renderFinalHtml($element);
-                break;
-            case 'radio':
-                $element['input'] = $this->renderHtmlRadio($element, $element['name']);
-                $element['label'] = $this->renderHtmlLabel($element);
-                $element['html'] = $this->renderFinalHtml($element);
-                break;
-            case 'group':
-                $selectedValues = array();
-                if (is_array($element['value'])) {
-                    $selectedValues = array_keys($element['value']);
-                }
-                $element['input'] = '<div class="input-group">';
-                foreach ($element['elements'] as $groupElement) {
-                    if ($groupElement['type'] == 'checkbox') {
-                        $element['input'] .= $this->renderHtmlCheckbox($groupElement);
-                    } else {
-                        $currentElementName = substr($groupElement['name'], strlen($element['name'])+1, -1);
-                        $selected = in_array($currentElementName, $selectedValues);
-                        $element['input'] .= $this->renderHtmlRadio(
-                            $groupElement,
-                            $element['name'],
-                            $selected
-                        ).'&nbsp;&nbsp;';
-                    }
-                }
-                $element['input'] .= '</div>';
-                $element['label'] = $this->renderHtmlLabel($element);
-                $element['html'] = $this->renderFinalHtml($element);
-                break;
         }
     }
     
@@ -306,12 +268,17 @@ class Form
     {
         $helpButton = '';
         $classInput = 'col-sm-9';
+        $classAdvanced = '';
         if ($inputElement['type'] !== 'submit') {
             $helpButton = $this->renderHelp($inputElement);
             $classInput = 'col-sm-8';
         }
         
-        return '<div class="form-group">'.
+        if (isset($inputElement['label_advanced']) && $inputElement['label_advanced'] == '1') {
+            $classAdvanced = 'advanced';
+        }
+        
+        return '<div class="form-group ' . $classAdvanced . '">'.
                 '<div class="col-sm-3" style="text-align:right">'.$inputElement['label'].'</div>'.
                 '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'.
                 $helpButton.
@@ -780,6 +747,10 @@ class Form
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
+        
+        if (isset($field['advanced']) && $field['advanced'] != null) {
+            $params['advanced'] = $field['advanced'];
+        }
         
         if (isset($field['help']) && $field['help'] != null) {
             $params['help'] = $field['help'];

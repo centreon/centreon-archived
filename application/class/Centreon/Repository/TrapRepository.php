@@ -36,33 +36,33 @@
 namespace Centreon\Repository;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Sylvestre Ho <sho@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class HostcategoryRepository extends \Centreon\Repository\Repository
+class TrapRepository extends \Centreon\Repository\Repository
 {
     /**
      *
      * @var string
      */
-    public static $tableName = 'hostcategories';
+    public static $tableName = 'traps';
     
     /**
      *
      * @var string
      */
-    public static $objectName = 'Hostcategory';
+    public static $objectName = 'Trap';
     
     /**
      *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allHostcategory" class="allHostcategory" type="checkbox">' => 'hc_id',
-        'Name' => 'hc_name',
-        'Alias' => 'hc_alias',
-        'Status' => 'hc_activate'
+        '<input id="allTrap" class="allTrap" type="checkbox">' => 'traps_id',
+        'Name' => 'traps_name',
+        'OID' => 'traps_oid',
+        'Status' => 'traps_status'
     );
     
     /**
@@ -70,10 +70,10 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $researchIndex = array(
-        'hc_id',
-        'hc_name',
-        'hc_alias',
-        'hc_activate'
+        'traps_id',
+        'traps_name',
+        'traps_oid',
+        'traps_status'
     );
     
     /**
@@ -83,10 +83,13 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
     public static $datatableHeader = array(
         'none',
         'search_name',
-        'search_alias',
+        'search_oid',
         array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
+                'None' => '-1',
+                'OK' => '0',
+                'Warning' => '1',
+                'Critical' => '2',
+                'Unknown' => '3'
             )
         )
     );
@@ -96,28 +99,31 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $columnCast = array(
-        'hc_activate' => array(
+        'traps_status' => array(
             'type' => 'select',
             'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
+                '-1' => '<span></span>',
+                '0' => '<span class="label label-success">OK</span>',
+                '1' => '<span class="label label-warning">Warning</span>',
+                '2' => '<span class="label label-danger">Critical</span>',
+                '3' => '<span>Unknown</span>',
             )
         ),
-        'hc_id' => array(
+        'traps_id' => array(
             'type' => 'checkbox',
             'parameters' => array(
-                'displayName' => '::hc_name::'
+                'displayName' => '::traps_name::'
             )
         ),
-        'hc_name' => array(
+        'traps_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/hostcategory/[i:id]/[i:advanced]',
+                'route' => '/configuration/trap/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::hc_id::',
+                    'id' => '::traps_id::',
                     'advanced' => 0
                 ),
-                'linkName' => '::hc_alias::'
+                'linkName' => '::traps_name::'
             )
         )
     );
@@ -129,11 +135,13 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
     public static $datatableFooter = array(
         'none',
         'search_name',
-        'search_alias',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
+        'search_oid',
+        array('select' => array(
+                'None' => '-1',
+                'OK' => '0',
+                'Warning' => '1',
+                'Critical' => '2',
+                'Unknown' => '3'
             )
         )
     );
