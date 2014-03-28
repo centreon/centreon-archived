@@ -20,40 +20,50 @@
 			</block>
 			<block name="Trap translation">
 				<field name="traps_args" label="Output message" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="traps_status" label="Default status" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_status" label="Default status" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Ok>0</Ok>
-						<Warning>1</Warning>
-						<Critical>2</Critical>
-						<Unknown>3</Unknown>
+						<choices>
+							<Ok>0</Ok>
+							<Warning>1</Warning>
+							<Critical>2</Critical>
+							<Unknown>3</Unknown>
+						</choices>
 					</attributes>
 				</field>
-				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Enabled>1</Enabled>
-						<Disabled>0</Disabled>
+						<choices>
+							<Enabled>1</Enabled>
+							<Disabled>0</Disabled>
+						</choices>
 					</attributes>
 				</field>
-				<field name="traps_advanced_treatment_default" label="If no matched rules" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_advanced_treatment_default" label="If no matched rules" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Submit_result>0</Submit_result>
-						<Do_not_submit_result>1</Do_not_submit_result>
+						<choices>
+							<Submit_result>0</Submit_result>
+							<Do_not_submit_result>1</Do_not_submit_result>
+						</choices>
 					</attributes>
 				</field>
 			</block>
 			<block name="Submit result to monitoring engine">
-				<field name="traps_submit_result_enable" label="Submit result" default_value="1" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_submit_result_enable" label="Submit result" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
+						<choices>
+							<Yes>1</Yes>
+							<No>0</No>
+						</choices>
 					</attributes>
 				</field>
 			</block>
 			<block name="Force service check rescheduling">
-				<field name="traps_reschedule_svc_enable" label="Reschedule service check" default_value="0" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_reschedule_svc_enable" label="Reschedule service check" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
 					<attributes>
-						<Yes>1</Yes>
-						<No>0</No>
+						<choices>
+							<Yes>1</Yes>
+							<No>0</No>
+						</choices>
 					</attributes>
 				</field>
 			</block>
