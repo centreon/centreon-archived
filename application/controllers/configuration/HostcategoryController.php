@@ -43,6 +43,10 @@ class HostcategoryController extends \Controllers\ObjectAbstract
     protected $objectName = 'hostcategory';
     protected $objectBaseUrl = '/configuration/hostcategory';
     protected $objectClass = '\Models\Configuration\Hostcategory';
+    public static $relationMap = array(
+        'hc_hosts' => '\Models\Configuration\Relation\Host\Hostcategory',
+        'hc_hosttemplates' => '\Models\Configuration\Relation\Hosttemplate\Hostcategory'
+    );
 
     /**
      * List hostcategories
@@ -115,11 +119,11 @@ class HostcategoryController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/hostcategory/[i:id]
+     * @route /configuration/hostcategory/[i:id]/[i:advanced]
      */
     public function editAction()
     {
-        
+        parent::editAction();
     }
 
     /**
@@ -175,5 +179,27 @@ class HostcategoryController extends \Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Host for specific host category
+     *
+     * @method get
+     * @route /configuration/hostcategory/[i:id]/host
+     */
+    public function hostForHostcategoryAction()
+    {
+        parent::getRelations(static::$relationMap['hc_hosts']);
+    }
+
+    /**
+     * Host for specific host category
+     *
+     * @method get
+     * @route /configuration/hostcategory/[i:id]/hosttemplate
+     */
+    public function hosttemplateForHostcategoryAction()
+    {
+        parent::getRelations(static::$relationMap['hc_hosttemplates']);
     }
 }
