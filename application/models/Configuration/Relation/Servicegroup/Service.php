@@ -42,6 +42,8 @@ class Service extends \Models\Configuration\Relation
     protected static $relationTable = "servicegroup_relation";
     protected static $firstKey = "servicegroup_sg_id";
     protected static $secondKey = "service_service_id";
+    public static $firstObject = "\\Models\\Configuration\\Servicegroup";
+    public static $secondObject = "\\Models\\Configuration\\Service";
 
     /**
      * Used for inserting relation into database
