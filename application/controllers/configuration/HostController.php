@@ -143,7 +143,7 @@ class HostController extends \Controllers\ObjectAbstract
      * Update a host
      *
      * @method get
-     * @route /configuration/host/[i:id]/[i:advanced]
+     * @route /configuration/host/[i:id]
      */
     public function editAction()
     {

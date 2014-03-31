@@ -119,7 +119,7 @@ class CommandController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/command/[i:id]/[i:advanced]
+     * @route /configuration/command/[i:id]
      * @acl update
      */
     public function editAction()

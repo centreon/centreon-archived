@@ -133,7 +133,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/add', 0, array('id' => 0));
+        $form = new \Centreon\Core\Form\Wizard($this->objectBaseUrl . '/add', array('id' => 0));
         $form->addHiddenComponent('object', $this->objectName);
         $tpl = \Centreon\Core\Di::getDefault()->get('template');
         $tpl->assign('formName', $form->getName());
@@ -231,7 +231,7 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
         
-        $myForm = new Generator($objectFormUpdateUrl, $requestParam['advanced'], array('id' => $requestParam['id']));
+        $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', $this->objectName);
         
@@ -241,10 +241,9 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $formModeUrl = \Centreon\Core\Di::getDefault()
                         ->get('router')
                         ->getPathFor(
-                            $this->objectBaseUrl.'/[i:id]/[i:advanced]',
+                            $this->objectBaseUrl.'/[i:id]',
                             array(
-                                'id' => $requestParam['id'],
-                                'advanced' => (int)!$requestParam['advanced']
+                                'id' => $requestParam['id']
                             )
                         );
         

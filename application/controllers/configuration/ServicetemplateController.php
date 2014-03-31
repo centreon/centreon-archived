@@ -123,7 +123,7 @@ class ServicetemplateController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/[i:advanced]
+     * @route /configuration/servicetemplate/[i:id]
      */
     public function editAction()
     {

@@ -117,7 +117,7 @@ class TrapController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/trap/[i:id]/[i:advanced]
+     * @route /configuration/trap/[i:id]
      */
     public function editAction()
     {

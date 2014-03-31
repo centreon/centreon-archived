@@ -119,10 +119,9 @@ class HostRepository extends \Centreon\Repository\Repository
         'host_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/host/[i:id]/[i:advanced]',
+                'route' => '/configuration/host/[i:id]',
                 'routeParams' => array(
-                    'id' => '::host_id::',
-                    'advanced' => '0'
+                    'id' => '::host_id::'
                 ),
                 'linkName' => '::host_name::'
             )

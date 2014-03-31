@@ -101,10 +101,9 @@ class ManufacturerRepository extends \Centreon\Repository\Repository
         'name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/manufacturer/[i:id]/[i:advanced]',
+                'route' => '/configuration/manufacturer/[i:id]',
                 'routeParams' => array(
-                    'id' => '::id::',
-                    'advanced' => 0
+                    'id' => '::id::'
                 ),
                 'linkName' => '::alias::'
             )
