@@ -1,174 +1,139 @@
 [
-  {
-    "name": "Dashboard",
-    "short_name": "dashboard",
-    "icon_class": "fa fa-dashboard",
-    "order": 1,
-    "bgcolor": "lightgreen"
-  },
-  {
-    "name": "Realtime",
-    "short_name": "realtime",
-    "icon_class": "fa fa-clock-o",
-    "order": 2,
-    "bgcolor": "lightblue"
-  },
+{
+  "name": "Dashboard",
+  "short_name": "dashboard",
+  "icon_class": "fa fa-dashboard",
+  "bgcolor": "lightgreen"
+},
+{
+  "name": "Realtime",
+  "short_name": "realtime",
+  "icon_class": "fa fa-clock-o",
+  "bgcolor": "lightblue",
+  "menus": [
   {
     "name": "EventLogs",
     "short_name": "eventlogs",
-    "order": 1,
-    "parent": "realtime",
     "route": "/realtime/eventlogs"
-  },
-  {
-    "name": "Performance",
-    "short_name": "performance",
-    "icon_class": "fa fa-bar-chart-o",
-    "order": 3,
-    "bgcolor": "lightseagreen "
-  },
-  {
-    "name": "Configuration",
-    "short_name": "configuration",
-    "icon_class": "fa fa-gears",
-    "order": 4,
-    "bgcolor": "#CCC"
-  },
+  }]
+},
+{
+  "name": "Performance",
+  "short_name": "performance",
+  "icon_class": "fa fa-bar-chart-o",
+  "bgcolor": "lightseagreen "
+},
+{
+  "name": "Configuration",
+  "short_name": "configuration",
+  "icon_class": "fa fa-gears",
+  "bgcolor": "#CCC",
+  "menus": [
   {
     "name": "Hosts",
     "short_name": "conf_hosts",
-    "parent": "configuration",
-    "order": 1
-  },
-  {
-    "name": "Hosts",
-    "short_name": "conf_hosts_list",
-    "parent": "conf_hosts",
-    "order": 1,
-    "route": "/configuration/host"
-  },
-  {
-    "name": "Host templates",
-    "short_name": "conf_hosttemplate_list",
-    "parent": "conf_hosts",
-    "order": 2,
-    "route": "/configuration/hosttemplate"
-  },
-  {
-    "name": "Hostgroups",
-    "short_name": "conf_hostgroup_list",
-    "parent": "conf_hosts",
-    "order": 3,
-    "route": "/configuration/hostgroup"
-  },
-  {
-    "name": "Host categories",
-    "short_name": "conf_hostcategory_list",
-    "parent": "conf_hosts",
-    "order": 4,
-    "route": "/configuration/hostcategory"
+    "menus":[
+    {
+      "name": "Hosts",
+      "short_name": "conf_hosts_list",
+      "route": "/configuration/host"
+    },
+    {
+      "name": "Host templates",
+      "short_name": "conf_hosttemplate_list",
+      "route": "/configuration/hosttemplate"
+    },
+    {
+      "name": "Host groups",
+      "short_name": "conf_hostgroup_list",
+      "route": "/configuration/hostgroup"
+    },
+    {
+      "name": "Host categories",
+      "short_name": "conf_category_list",
+      "route": "/configuration/hostcategory"
+    }
+    ]
   },
   {
     "name": "Services",
     "short_name": "conf_services",
-    "parent": "configuration",
-    "order": 2
-  },
-  {
-    "name": "Services",
-    "short_name": "conf_services_list",
-    "parent": "conf_services",
-    "order": 1,
-    "route": "/configuration/service"
-  },
-  {
-    "name": "Service templates",
-    "short_name": "conf_servicetemplate_list",
-    "parent": "conf_services",
-    "order": 2,
-    "route": "/configuration/servicetemplate"
-  },
-  {
-    "name": "Servicegroups",
-    "short_name": "conf_servicegroup_list",
-    "parent": "conf_services",
-    "order": 3,
-    "route": "/configuration/servicegroup"
-  },
-  {
-    "name": "Service categories",
-    "short_name": "conf_servicecategory_list",
-    "parent": "conf_services",
-    "order": 4,
-    "route": "/configuration/servicecategory"
+    "menus":[
+    {
+      "name": "Services",
+      "short_name": "conf_services_list",
+      "route": "/configuration/service"
+    },
+    {
+      "name": "Service templates",
+      "short_name": "conf_servicetemplate_list",
+      "route": "/configuration/servicetemplate"
+    },
+    {
+      "name": "Servicegroups",
+      "short_name": "conf_servicegroup_list",
+      "route": "/configuration/servicegroup" 
+    },
+    {
+      "name": "Service categories",
+      "short_name": "conf_servicecategory_list",
+      "route": "/configuration/servicecategory"
+    }
+    ]
   },
   {
     "name": "Commands",
     "short_name": "conf_commands",
-    "parent": "configuration",
-    "order": 3
-  },
-  {
-    "name": "Commands",
-    "short_name": "conf_commands_list",
-    "parent": "conf_commands",
-    "order": 1,
-    "route": "/configuration/command"
-  },
-  {
-    "name": "Connectors",
-    "short_name": "conf_connectors_list",
-    "parent": "conf_commands",
-    "order": 2,
-    "route": "/configuration/command"
+    "menus": [
+    {
+      "name": "Commands",
+      "short_name": "conf_commands_list",
+      "route": "/configuration/command"
+    },
+    {
+      "name": "Connectors",
+      "short_name": "conf_connectors_list",
+      "route": "/configuration/command"
+    }
+    ]
   },
   {
     "name": "Users",
     "short_name": "conf_users",
-    "parent": "configuration",
-    "order": 4,
-    "route": "/configuration/user"
-  },
-  {
-    "name": "Users",
-    "short_name": "conf_users_list",
-    "parent": "conf_users",
-    "order": 1,
-    "route": "/configuration/user"
-  },
-  {
-    "name": "User groups",
-    "short_name": "conf_usergroups_list",
-    "parent": "conf_users",
-    "order": 2,
-    "route": "/configuration/usergroup"
+    "menus": [
+    {
+      "name": "Users",
+      "short_name": "conf_users_list",
+      "route": "/configuration/user"
+    },
+    {
+      "name": "User groups",
+      "short_name": "conf_usergroups_list",
+      "route": "/configuration/usergroup"
+    }
+    ]
   },
   {
     "name": "Traps",
     "short_name": "conf_traps",
-    "parent": "configuration",
-    "order": 5,
-    "route": "/configuration/trap"
-  },
-  {
-    "name": "Traps",
-    "short_name": "conf_traps_list",
-    "parent": "conf_traps",
-    "order": 1,
-    "route": "/configuration/trap"
-  },
-  {
-    "name": "Manufacturers",
-    "short_name": "conf_manufacturers_list",
-    "parent": "conf_traps",
-    "order": 2,
-    "route": "/configuration/manufacturer"
-  },
-  {
-    "name": "Administration",
-    "short_name": "administration",
-    "icon_class": "fa fa-folder-open",
-    "order": 1,
-    "bgcolor": "#FA5858"
-  }
+    "menus": [
+    {
+      "name": "Traps",
+      "short_name": "conf_traps_list",
+      "route": "/configuration/trap"
+    },
+    {
+      "name": "Manufacturers",
+      "short_name": "conf_manufacturers_list",
+      "route": "/configuration/manufacturer"
+    }
+    ]
+  }]
+},
+{
+  "name": "Administration",
+  "short_name": "administration",
+  "icon_class": "fa fa-folder-open",
+  "bgcolor": "#FA5858"
+}
 ]
