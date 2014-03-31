@@ -19,10 +19,10 @@
 <table class="ListTable">
 	<tr class="ListHeader">
 		<td class="ListColHeaderCenter" style='width:120px'>{$time}</td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;">Event type</td>		
+		<td class="ListColHeaderCenter" style="white-space:nowrap;">{$modification_type}</td>		
 		<td class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;">{$object_name}</td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;">Author</td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;">{$author}</td>
 	</tr>
 	{assign var='classStyle' value='list_two'}
 	{foreach key=key item=item from=$tabz_obj_name}

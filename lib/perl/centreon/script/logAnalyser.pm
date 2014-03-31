@@ -192,7 +192,7 @@ EOQ
 INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 EOQ
-        my $cur_ctime = undef;
+        my $cur_ctime;
 
         while (<FILE>) {
             if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/) {
