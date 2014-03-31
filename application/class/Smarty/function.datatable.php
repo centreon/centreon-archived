@@ -74,5 +74,8 @@ function smarty_function_datatable($params, $smarty)
     
     $smarty->assign('datatableParameters', $datatableParameters);
     
-    return $smarty->fetch('tools/datatable.tpl');
+    if ($params['configuration']) {
+        return $smarty->fetch('tools/datatable.tpl');
+    }
+    return $smarty->fetch('tools/datatable-table.tpl');
 }

@@ -43,6 +43,9 @@ class ServicegroupController extends \Controllers\ObjectAbstract
     protected $objectName = 'servicegroup';
     protected $objectBaseUrl = '/configuration/servicegroup';
     protected $objectClass = '\Models\Configuration\Servicegroup';
+    public static $relationMap = array(
+        'sg_services' => '\Models\Configuration\Relation\Servicegroup\Service'
+    );
 
     /**
      * List servicegroups
@@ -84,19 +87,19 @@ class ServicegroupController extends \Controllers\ObjectAbstract
      */
     public function createAction()
     {
-        
+        parent::createAction(); 
     }
 
     /**
      * Update a servicegroup
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/servicegroup/update
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
@@ -116,7 +119,7 @@ class ServicegroupController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/servicegroup/[i:id]
+     * @route /configuration/servicegroup/[i:id]/[i:advanced]
      */
     public function editAction()
     {
@@ -177,5 +180,16 @@ class ServicegroupController extends \Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Get services for a specific service group
+     *
+     * @method get
+     * @route /configuration/servicegroup/[i:id]/service
+     */
+    public function servicesForServicegroupAction()
+    {
+        parent::getRelations(static::$relationMap['sg_services']);
     }
 }

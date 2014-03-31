@@ -42,6 +42,8 @@ class Service extends \Models\Configuration\Relation
     protected static $relationTable = "servicegroup_relation";
     protected static $firstKey = "servicegroup_sg_id";
     protected static $secondKey = "service_service_id";
+    public static $firstObject = "\\Models\\Configuration\\Servicegroup";
+    public static $secondObject = "\\Models\\Configuration\\Service";
 
     /**
      * Used for inserting relation into database
@@ -54,7 +56,7 @@ class Service extends \Models\Configuration\Relation
     public static function insert($fkey, $hostId, $serviceId)
     {
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        $sql = "INSERT INTO ".static::$elationTable." "
+        $sql = "INSERT INTO ".static::$relationTable." "
             . "(".static::$firstKey.", host_host_id, ".static::$secondKey.") "
             . "VALUES (?, ?, ?)";
         $stmt = $db->prepare($sql);

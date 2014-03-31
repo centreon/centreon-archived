@@ -112,9 +112,10 @@ class ServicegroupRepository extends \Centreon\Repository\Repository
         'sg_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/servicegroup/[i:id]',
+                'route' => '/configuration/servicegroup/[i:id]/[i:advanced]',
                 'routeParams' => array(
-                    'id' => '::sg_id::'
+                    'id' => '::sg_id::',
+                    'advanced' => 0
                 ),
                 'linkName' => '::sg_alias::'
             )
