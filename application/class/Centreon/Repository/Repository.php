@@ -35,8 +35,6 @@
 
 namespace Centreon\Repository;
 
-use Models\Configuration\Host;
-
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -265,7 +263,7 @@ abstract class Repository
      */
     public static function getCustomDatas($params)
     {
-       
+        
     }
     
     /**
@@ -334,55 +332,6 @@ abstract class Repository
         
         // Returing the result
         return $result[0]['nb'.ucwords(static::$tableName)];
-    }
-    
-     /**
-     * 
-     * @param array $params
-     * @return array
-     */
-    public static function newGetTotalRecordsForDatatable($params)
-    {
-        // Initializing connection
-        $di = \Centreon\Core\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        $request = "SELECT FOUND_ROWS()";
-        // Executing the request
-        $stmt = $dbconn->query($request);
-        
-        // Getting the result
-        $result = $stmt->fetchAll();
-        
-        // Returing the result
-        return $result[0][0];
-    }
-    
-    /**
-     * 
-     * @param type $element
-     * @return type
-     */
-    public static function castColumn($element)
-    {
-        $elementField = array_keys($element);
-        $originalElement = $element;
-        foreach (static::$columnCast as $castField => $castValues) {
-            if (is_array($castValues)) {
-                if (\in_array($castField, $elementField)) {
-                    $element[$castField] = $castValues[$element[$castField]];
-                }
-            } else {
-                $castedElement = \array_map(
-                    function ($n) {
-                        return "::$n::";
-                    },
-                    $elementField
-                );
-                $element[$castField] = str_replace($castedElement, $originalElement, $castValues);
-            }
-        }
-        return $element;
     }
     
     /**
