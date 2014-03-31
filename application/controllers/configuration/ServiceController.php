@@ -71,7 +71,36 @@ class ServiceController extends \Controllers\ObjectAbstract
      */
     public function formListAction()
     {
-        parent::formListAction();
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParams = $this->getParams('get');
+        $serviceId = \Models\Configuration\Service::getPrimaryKey();
+        $serviceDescription = \Models\Configuration\Service::getUniqueLabelField();
+        $hostId = \Models\Configuration\Host::getPrimaryKey();
+        $hostName = \Models\Configuration\Host::getUniqueLabelField();
+        $filters = array(
+            $serviceDescription => '%'.$requestParams['q'].'%',
+            $hostName => '%'.$requestParams['q'].'%',
+        );
+        $list = \Models\Configuration\Relation\Host\Service::getMergedParameters(
+            array($hostId, $hostName),
+            array($serviceId, $serviceDescription), 
+            -1, 
+            0, 
+            null, 
+            "ASC", 
+            $filters, 
+            "OR"
+        );
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$serviceId],
+                "text" => $obj[$hostName] . ' ' . $obj[$serviceDescription]
+            );
+        }
+        $router->response()->json($finalList);
     }
 
     /**

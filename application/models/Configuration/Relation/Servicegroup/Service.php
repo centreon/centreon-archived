@@ -56,7 +56,7 @@ class Service extends \Models\Configuration\Relation
     public static function insert($fkey, $hostId, $serviceId)
     {
         $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        $sql = "INSERT INTO ".static::$elationTable." "
+        $sql = "INSERT INTO ".static::$relationTable." "
             . "(".static::$firstKey.", host_host_id, ".static::$secondKey.") "
             . "VALUES (?, ?, ?)";
         $stmt = $db->prepare($sql);
