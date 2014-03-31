@@ -49,9 +49,9 @@ class Wizard extends Generator
      *
      * @see \Centreon\Core\Form\Generator::__construct
      */
-    public function __construct($formRoute, $advanced = 0, $extraParams = array())
+    public function __construct($formRoute, $extraParams = array())
     {
-        parent::__construct($formRoute, $advanced, $extraParams);
+        parent::__construct($formRoute, $extraParams);
     }
 
     /**

@@ -120,7 +120,7 @@ class ContacttemplateController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]/[i:advanced]
+     * @route /configuration/contacttemplate/[i:id]
      */
     public function editAction()
     {

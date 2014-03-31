@@ -176,7 +176,7 @@ class HostTemplateController extends \Controllers\ObjectAbstract
      * Update a host template
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/[i:advanced]
+     * @route /configuration/hosttemplate/[i:id]
      */
     public function editAction()
     {

@@ -138,7 +138,7 @@ class ServicecategoryController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/servicecategory/[i:id]/[i:advanced]
+     * @route /configuration/servicecategory/[i:id]
      */
     public function editAction()
     {

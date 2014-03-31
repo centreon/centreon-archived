@@ -117,7 +117,7 @@ class HostgroupController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/hostgroup/[i:id]/[i:advanced]
+     * @route /configuration/hostgroup/[i:id]
      */
     public function editAction()
     {

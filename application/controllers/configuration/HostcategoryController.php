@@ -119,7 +119,7 @@ class HostcategoryController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/hostcategory/[i:id]/[i:advanced]
+     * @route /configuration/hostcategory/[i:id]
      */
     public function editAction()
     {

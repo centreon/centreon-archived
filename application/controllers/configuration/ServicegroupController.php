@@ -120,32 +120,7 @@ class ServicegroupController extends \Controllers\ObjectAbstract
      */
     public function editAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('servicegroupForm');
-        $form->addText('name', _('Service Group Name'));
-        $form->addText('description', _('Service Description'));
-        $radios['list'] = array(
-            array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-            ),
-            array(
-                'name' => 'Disabled',
-                'label' => 'Disabled',
-                'value' => '0'
-            )
-        );
-        $form->addRadio('servicegroup_status', _("Status"), 'servicegroup_type', '&nbsp;', $radios);
-        $form->addTextarea('comments', _('Comments'));
-        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('configuration/servicegroup/edit.tpl');
+        parent::editAction();
     }
 
 

@@ -124,7 +124,7 @@ class ServiceController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/service/[i:id]/[i:advanced]
+     * @route /configuration/service/[i:id]
      */
     public function editAction()
     {

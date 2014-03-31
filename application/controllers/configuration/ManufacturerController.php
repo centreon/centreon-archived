@@ -113,7 +113,7 @@ class ManufacturerController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/manufacturer/[i:id]/[i:advanced]
+     * @route /configuration/manufacturer/[i:id]
      */
     public function editAction()
     {
