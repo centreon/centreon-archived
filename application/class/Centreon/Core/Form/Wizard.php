@@ -61,7 +61,7 @@ class Wizard extends Generator
     {
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        $route = $di->get('router')->request()->pathname();
+        $route = $this->formRoute;
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $route = str_replace($baseUrl, '/', $route);
 
