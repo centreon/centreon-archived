@@ -34,6 +34,8 @@
  */
 namespace Controllers;
 
+use \Centreon\Core\Form\Wizard;
+
 /**
  * Home controller
  * @authors Sylvestre Ho
@@ -45,13 +47,154 @@ class HomeController extends \Centreon\Core\Controller
     /**
      * Action for home page
      *
-     * @method GET
+     * @method get
      * @route /home
      */
     public function homeAction()
     {
-        \Centreon\Core\Di::getDefault()
-            ->get('template')
-            ->display('home/home.tpl');
+        $template = \Centreon\Core\Di::getDefault()->get('template');
+        $template->addCss('jquery.gridster.min.css');
+        $template->addCss('centreon-widget.css');
+        $template->addJs('jquery.gridster.min.js');
+        $template->addJs('jquery.gridster.with-extras.min.js');
+        $gridJs = '
+            $(function() {
+                function savepos() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/home/saveposition",
+                        data: { pos: gridster.serialize() }
+                    });
+                }
+
+                var gridster = $(".gridster ul").gridster({
+                    widget_margins: [10, 10],
+                    widget_base_dimensions: [140, 140],
+                    draggable: {
+                        handle: ".portlet-header",
+                        stop: function() { savepos(); }
+                    },
+                    resize: {
+                        enabled: true,
+                        stop: function() { savepos(); }
+                    }
+                }).data("gridster");
+
+                $("#view_add").click(function() {
+                    $("#modal").modal({
+                        "remote": "/home/displayviewpreference"
+                    });
+                });
+            });';
+        $template->addCustomJs($gridJs);
+        $widgets = array();
+        $widgets[] = true;
+        $widgets[] = true;
+        $widgets[] = true;
+        $template->assign('widgets', $widgets);
+        $template->display('home/home.tpl');
+    }
+
+    /**
+     * Save position
+     *
+     * @method post
+     * @route /home/saveposition
+     */
+    public function savePositionAction()
+    {
+        $params = $this->getParams('post');
+        print_r($params);
+    }
+
+    /**
+     * Update preference
+     *
+     * @method post
+     * @route /home/updatewidgetpreference
+     */
+    public function updatePreferencesAction()
+    {
+
+    }
+
+    /**
+     * Display widget preference window
+     *
+     * @method get
+     * @route /home/displaywidgetpreference
+     */
+    public function displayWidgetPreferenceAction()
+    {
+
+    }
+
+    /**
+     * Add a new widget
+     *
+     * @method post
+     * @route /home/addwidget
+     */
+    public function addWidgetAction()
+    {
+
+    }
+
+    /**
+     * Remove widget
+     *
+     * @method post
+     * @route /home/removewidget
+     */
+    public function removeWidgetAction()
+    {
+
+    }
+
+    /**
+     * Add a new view
+     *
+     * @method post
+     * @route /home/addview
+     */
+    public function addViewAction()
+    {
+
+    }
+
+    /**
+     * Remove view
+     *
+     * @method post
+     * @route /home/removeview
+     */
+    public function removeViewAction()
+    {
+
+    }
+
+    /**
+     * Update view
+     *
+     * @method post
+     * @route /home/updateview
+     */
+    public function updateViewAction()
+    {
+
+    }
+
+    /**
+     * Display view preference window
+     * 
+     * @method get
+     * @route /home/displayviewpreference
+     */
+    public function displayViewPreferenceAction()
+    {
+        $template = \Centreon\Core\Di::getDefault()->get('template');
+        $form = new Wizard('/home/updateview', 0, array('id' => 0));
+        echo $form->generate();
+//        $template->display('home/viewpreferences.tpl');
     }
 }
