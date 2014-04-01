@@ -26,7 +26,7 @@ Informations générales
 *	Le champ **Surveillé depuis le collecteur** indique quel est le serveur de supervision chargé de superviser cet hôte.
 *	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à cet objet. Pour ajouter un modèle d'hôte, cliquez sur le bouton |navigate_plus|.
  
- En cas de conflits de paramètres présent sur plusieurs modèles, le modèle d'hôte au dessus écrase les propriétés identiques définies dans modèles d'hôtes en dessous.
+ En cas de conflits de paramètres présents sur plusieurs modèles, le modèle d'hôte au dessus écrase les propriétés identiques définies dans modèles d'hôtes en dessous.
  Le bouton |move| permet de déplacer l'ordre des modèles d'hôte. Le bouton |delete| permet de supprimer le modèle d'hôte.
  
 *	Si le champ **Créer aussi les services liés au modèle** est définit à **Oui**, Centreon génère automatiquement les services en se basant sur les modèles de services liés aux modèles d'hôtes définis au dessus (voir chapitre :ref:`hosttemplates`). 
@@ -37,7 +37,7 @@ Propriétés du contrôle de l'hôte
 *	Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut de l'objet.
 *	Le champ **Commande de vérification** indique la commande utilisée pour vérifier la disponibilité de l'hôte.
 *	Le champ **Arguments** définit les arguments donnés à la commande de vérification (chaque argument commence avec un "!").
-*	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôle à effectuer avant de valider le statut de l'hôte : lorsque le statut est validé, le processus de notificatino est enclenché.
+*	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôle à effectuer avant de valider le statut de l'hôte : lorsque le statut est validé, le processus de notification est enclenché.
 *	Le champ **Intervalle normal de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut de l'hôte est OK.
 *	Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l'intervalle de validation du statut non-OK de l'hôte.
 *	Les champs **Contrôles actifs activés** et **Contrôles passifs activés** activent/désactivent les contrôles actifs et passifs.
@@ -80,9 +80,9 @@ Traitement des données
 **********************
 
 *	Si le **Contrôle de vérification de l'hôte** est activé, alors la commande de remontée des contrôles de l'hôte sera activée.
-*	Le champ **Contrôler la fraicheur du résultat** permet d'activer ou de désactiver le contrôle de fraicheur du résultat.
-*	Le champ **Seuil de fraicheur du résultat** est exprimé en secondes. Si durant cette période aucune demande de changement de statut de l'hôte (commande passive) n'a été reçue alors la commande de vérification active est exécutée.
-*	Le champ **Détection de bagotage des status** permet d'activer ou de désactiver la détection du bagotage des statuts (statut changant trop fréquement de valeur sur une période données).
+*	Le champ **Contrôler la fraîcheur du résultat** permet d'activer ou de désactiver le contrôle de fraîcheur du résultat.
+*	Le champ **Seuil de fraîcheur du résultat** est exprimé en secondes. Si durant cette période aucune demande de changement de statut de l'hôte (commande passive) n'a été reçue alors la commande de vérification active est exécutée.
+*	Le champ **Détection de bagotage des status** permet d'activer ou de désactiver la détection du bagotage des statuts (statut changeant trop fréquement de valeur sur une période donnée).
 *	Les champs **Seuil bas de détection de bagotage des statuts** et **Seuil haut de détection de bagotage des statuts** définissent les seuils hauts et bas pour la détection du bagotage en pourcentage de changement de statuts.
 *	Le champ **Traitement des données de performances** permet d'activer ou de désactiver le traitement des données de performances (et donc la génération des graphiques de performances). Cette option est inutile dans le cas où Centreon Broker est utilisé.
 *	Les champs **Rétention des informations de statut** et **Rétention des informations ne concernant pas le statut** indiquent si les informations concernant ou non le statut sont sauvegardées après chaque relance de la commande de vérification.
@@ -114,7 +114,7 @@ Les champs présentés ci-dessous sont des champs utilisés uniquement par la CG
 Access groups
 =============
 
-*   Le champ **ACL Resource Groups**, visible que pour les utilisateurs non administreur, permet de lier l'hôte à un groupe afin de visualiser ce dernier (voir chapitre :ref:`acl`).
+*   Le champ **ACL Resource Groups** (seulement visible pour les utilisateurs non administreur), permet de lier l'hôte à un groupe d'hôtes afin de pouvoir visualiser ce dernier (voir chapitre :ref:`acl`).
 
 Informations supplémentaires
 ============================
