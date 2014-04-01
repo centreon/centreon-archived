@@ -38,7 +38,7 @@ namespace Controllers\Administration;
 use \Centreon\Core\Form;
 use \Centreon\Core\Form\Generator;
 
-class AclmenuController extends \Centreon\Core\Controller
+class AclmenuController extends \Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'AclMenu';
     protected $objectName = 'aclmenu';
@@ -228,6 +228,50 @@ class AclmenuController extends \Centreon\Core\Controller
     public function formListAction()
     {
         parent::formListAction();
+    }
+    
+    /**
+     * Retrieve list of acl menu for a form
+     *
+     * @method get
+     * @route /administration/aclmenu/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
+    }
+    
+    /**
+     * Duplicate acl menu
+     *
+     * @method get
+     * @route /administration/aclmenu/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+    
+    /**
+     * Duplicate acl menu
+     *
+     * @method get
+     * @route /administration/aclmenu/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+    
+    /**
+     * MC Field action for aclmenu
+     *
+     * @method post
+     * @route /administration/aclmenu/mc_fields
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
     }
 
     /**

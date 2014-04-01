@@ -138,7 +138,7 @@ class ConnectorController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /configuration/connector/[i:id]/[i:advanced]
+     * @route /configuration/connector/[i:id]
      * @acl update
      */
     public function editAction()

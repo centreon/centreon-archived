@@ -115,10 +115,9 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         'sc_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/servicecategory/[i:id]/[i:advanced]',
+                'route' => '/configuration/servicecategory/[i:id]',
                 'routeParams' => array(
-                    'id' => '::sc_id::',
-                    'advanced' => '0'
+                    'id' => '::sc_id::'
                 ),
                 'linkName' => '::sc_description::'
             )

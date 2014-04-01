@@ -160,7 +160,7 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'service_description' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/service/[i:id]/[i:advanced]',
+                'route' => '/configuration/service/[i:id]',
                 'routeParams' => array(
                     'id' => '::service_id::',
                     'advanced' => '0'
@@ -171,10 +171,9 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'host_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/host/[i:id]/[i:advanced]',
+                'route' => '/configuration/host/[i:id]',
                 'routeParams' => array(
-                    'id' => '::host_id::',
-                    'advanced' => '0'
+                    'id' => '::host_id::'
                 ),
                 'linkName' => '::host_name::'
             )
@@ -267,8 +266,8 @@ class ServiceRepository extends \Centreon\Repository\Repository
                 \Centreon\Core\Di::getDefault()
                     ->get('router')
                     ->getPathFor(
-                        '/configuration/servicetemplate/[i:id]/[i:advanced]',
-                        array('id' => $tplArr['id'], 'advanced' => '0')
+                        '/configuration/servicetemplate/[i:id]',
+                        array('id' => $tplArr['id'])
                     )
             );
             

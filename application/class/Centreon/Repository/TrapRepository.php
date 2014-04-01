@@ -118,10 +118,9 @@ class TrapRepository extends \Centreon\Repository\Repository
         'traps_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/trap/[i:id]/[i:advanced]',
+                'route' => '/configuration/trap/[i:id]',
                 'routeParams' => array(
-                    'id' => '::traps_id::',
-                    'advanced' => 0
+                    'id' => '::traps_id::'
                 ),
                 'linkName' => '::traps_name::'
             )

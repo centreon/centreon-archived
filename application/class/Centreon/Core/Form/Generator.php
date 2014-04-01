@@ -103,18 +103,18 @@ class Generator
      * @param boolean $advanced
      * @param array $extraParams
      */
-    public function __construct($formRoute, $advanced = 0, $extraParams = array())
+    public function __construct($formRoute, $extraParams = array())
     {
         $this->formRoute = $formRoute;
         $this->extraParams = $extraParams;
-        $this->getFormFromDatabase($advanced);
+        $this->getFormFromDatabase();
     }
     
     /**
      * 
      * @param boolean $advanced
      */
-    protected function getFormFromDatabase($advanced = 0)
+    protected function getFormFromDatabase()
     {
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();

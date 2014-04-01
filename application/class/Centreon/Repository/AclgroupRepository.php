@@ -93,10 +93,9 @@ class AclgroupRepository extends \Centreon\Repository\Repository
         'acl_group_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/administration/aclgroup/[i:id]/[i:advanced]',
+                'route' => '/administration/aclgroup/[i:id]',
                 'routeParams' => array(
-                    'id' => '::acl_group_id::',
-                    'advanced' => '0'
+                    'id' => '::acl_group_id::'
                 ),
                 'linkName' => '::acl_group_name::'
             )

@@ -86,7 +86,9 @@ class AclmenuRepository extends \Centreon\Repository\Repository
         ),
         'acl_menu_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+             'parameters' => array(
+                'displayName' => '::acl_menu_name::'
+            )
         ),
         'name' => array(
             'type' => 'url',

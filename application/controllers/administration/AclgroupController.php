@@ -140,7 +140,7 @@ class AclgroupController extends \Controllers\ObjectAbstract
      *
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]/[i:advanced]
+     * @route /administration/aclgroup/[i:id]
      */
     public function editAction()
     {

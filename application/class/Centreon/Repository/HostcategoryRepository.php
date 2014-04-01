@@ -112,10 +112,9 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
         'hc_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/hostcategory/[i:id]/[i:advanced]',
+                'route' => '/configuration/hostcategory/[i:id]',
                 'routeParams' => array(
-                    'id' => '::hc_id::',
-                    'advanced' => 0
+                    'id' => '::hc_id::'
                 ),
                 'linkName' => '::hc_alias::'
             )
