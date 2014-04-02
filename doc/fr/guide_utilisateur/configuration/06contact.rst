@@ -18,7 +18,7 @@ Afin d'ajouter un contact, il suffit de se rendre dans le menu **Configuration**
 .. image :: /images/guide_utilisateur/configuration/06useradd.png
    :align: center 
 
-Pour afficher la matrice de notification d'un contact, cliquez sur **Afficher les notifications du contact** (à coté du menu **Ajouter**).
+Pour afficher la matrice de notification d'un contact, cliquez sur **Afficher les notifications du contact** (à côté du menu **Ajouter**).
 
 **********************
 Informations générales
