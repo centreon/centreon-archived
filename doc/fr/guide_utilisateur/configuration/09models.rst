@@ -105,7 +105,7 @@ Explications
 La bonne pratique veut que des modèles de services soient associés à des modèles d'hôtes : lors de la création d'un hôte, les services sont générés automatiquement à partir des modèles d'hôtes.
 Il y a deux intérêts à lier les modèles de services aux modèles d'hôtes :
 
-* Les services générés automatiquement conserve leurs granularité : il est donc possible de modifier les attributs d'un service sans impacter les autres services issus de ce modèle
+* Les services générés automatiquement conservent leur granularité : il est donc possible de modifier les attributs d'un service sans impacter les autres services issus de ce modèle
 * La création de nouveaux hôtes est grandement accélérée : vous n'avez qu'à définir l'hôte et les modèles d'hôtes associés à celui-ci
 
 Exemple : Je créé l'hôte srvi-web-01 selon le modèle ci-dessous :
@@ -115,9 +115,9 @@ Exemple : Je créé l'hôte srvi-web-01 selon le modèle ci-dessous :
 
 L'hôte srvi-web-01 possèdera automatiquement les services suivants :
 
-* Load, CPU, Memoiry, disk-/ à partir des modèles de serices issus du modèle d'hôte "Linux-Server-RedHat-5"
-* broken-jobs, hit-ratio, tablespaces, listener à partir des modèles de serices issus du modèle d'hôte "DB-MySQL"
-* processus et connection à partir des modèles de serices issus du modèle d'hôte "Web-Server-Apache"
+* Load, CPU, Memoiry, disk-/ à partir des modèles de services issus du modèle d'hôte "Linux-Server-RedHat-5"
+* broken-jobs, hit-ratio, tablespaces, listener à partir des modèles de services issus du modèle d'hôte "DB-MySQL"
+* processus et connection à partir des modèles de services issus du modèle d'hôte "Web-Server-Apache"
 
 Lorsque les services d'un hôte sont générés à partir des modèles d'hôtes, il est possible que certains services générés ne soient plus ou pas vérifiés par l'outil de supervision.
 Dans ce cas, il est nécessaire de désactiver les services inutilisés (et non de les supprimer).

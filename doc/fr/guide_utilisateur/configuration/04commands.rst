@@ -6,7 +6,7 @@ Les commandes
 Définition
 **********
 
-Une commande est la définiion d'une ligne de commande qui utilise un script ou une application afin de réaliser une action.
+Une commande est la définition d'une ligne de commande qui utilise un script ou une application afin de réaliser une action.
 Il est possible d'exécuter cette commande en précisant des arguments.
 
 Il existe trois types de commandes :
@@ -72,6 +72,6 @@ Chaque argument se présente sous la forme **$ARGn$** où n est un entier nature
 Exemple de ligne de commande utilisant les arguments : $USER1$/check-bench-process-DB -w $ARG1$ -c $ARG2$ -n $ARG3$
 
 .. note::
-	La bonne pratique veut que nous remplacions les arguments par des :ref:`macros personnalisées<custommacros>`.
+	La bonne pratique veut que nous remplaçions les arguments par des :ref:`macros personnalisées<custommacros>`.
 
 .. |bluearrow|    image:: /images/bluearrow.png
