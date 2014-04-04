@@ -9,14 +9,11 @@ Présentation
 Les serveurs satellites (aussi appelés collecteurs) sont des serveurs de supervision équipés d'un ordonnanceur et d'un module broker. 
 Ils sont chargés de superviser les équipements et de renvoyer les résultats vers le serveur Centreon central (pour la visualisation des résultats...).
 
-*************
-Mise en place
-*************
-
+************
 Installation
-============
+************
 
-Le processus d'installation est identique à celui d'un serveur Centreon central réalisé àa partir du fichier iso de CES.
+Le processus d'installation est identique à celui d'un serveur Centreon central réalisé à partir du fichier iso de CES.
 
 .. note::
     Référez-vous à la documentation :ref:`premier pas avec CES 3.0<firststepsces3>`
