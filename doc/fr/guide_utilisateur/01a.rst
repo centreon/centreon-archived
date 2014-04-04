@@ -60,10 +60,10 @@ Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker
 *   Possibilité de flux unidirectionnels entre le serveur Centreon et ses collecteurs (uniquement des flux LAN vers DMZ par exemple)
  
 **********
-Pré-requis
+Prérequis
 **********
 
-Le tableau ci-dessous donne les pré-requis pour l'installation de CES 3.0 :
+Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.0 :
 
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
 |  Nombre de services    |  Nombre de collecteurs   | Processeur du serveur central | Mémoire vive du serveur central | Processeur du serveur satellite | Mémoire vive du serveur satellite |
@@ -193,8 +193,8 @@ Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 Configuration
 *************
 
-Découverte de l'interface web
-=============================
+Via l'interface web
+===================
 
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
 L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**. 

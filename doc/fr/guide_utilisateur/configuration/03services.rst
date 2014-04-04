@@ -48,7 +48,7 @@ Notification
 ============
 
 *	Le champ **Notification activée** permet d'activer ou de désactiver les notifications pour l'objet.
-*	Le champ **Utiliser les contacts définis sur l'hôte** : j'ai proposé une traduction sur la plateforme] permet de faire hériter les contacts depuis la configuration de l'hôte.
+*	Le champ **Utiliser les contacts définis sur l'hôte** : permet de faire hériter les contacts depuis la configuration de l'hôte.
 *	Si la case **Contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
 *	La liste **Contacts liés** indique les contacts qui recevront les notifications.
 *	Si la case **Groupes de contacts en complément de ceux hérités** est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent.
@@ -64,7 +64,7 @@ Onglet Relations
 Relations
 =========
 
-*	La liste **Lié aux hôtes** permet de définir le ou les hôtes auxquels est liés à ce service.
+*	La liste **Lié aux hôtes** permet de définir le ou les hôtes auxquels lier ce service.
 *	La liste **Lié aux groupes de services** permet de lier le service à un ou plusieurs groupes de services.
 
 Traps SNMP
@@ -77,9 +77,9 @@ Traitement des données
 **********************
 
 *   Si le champ **Exécuter une commande post contrôle**  est activé, alors la commande de remontée des contrôles de l'hôte sera activée.
-*	Le champ **Contrôler la fraicheur du résultat** permet d'activer ou de désactiver le contrôle de fraicheur du résultat.
-*	Le champ **Seuil de fraicheur du résultat** est exprimé en secondes. Si durant cette période aucune demande de changement de statut du service (commande passive) n'a été reçue alors la commande de vérification est exécutée.
-*   Le champ **Détection de bagotage des status** permet d'activer ou de désactiver la détection du bagotage des statuts (statut changant trop fréquement de valeur sur une période données).
+*	Le champ **Contrôler la fraîcheur du résultat** permet d'activer ou de désactiver le contrôle de fraîcheur du résultat.
+*	Le champ **Seuil de fraîcheur du résultat** est exprimé en secondes. Si durant cette période aucune demande de changement de statut du service (commande passive) n'a été reçue alors la commande de vérification est exécutée.
+*   Le champ **Détection de bagotage des statuts** permet d'activer ou de désactiver la détection du bagotage des statuts (statut changeant trop fréquemment de valeur sur une période donnée).
 *   Les champs **Seuil bas de détection de bagotage des statuts** et **Seuil haut de détection de bagotage des statuts** définissent les seuils hauts et bas pour la détection du bagotage en pourcentage de changement.
 *	Le champ **Traitement des données de performances** permet d'activer ou de désactiver le traitement des données de performances (et donc la génération des graphiques de performances).
 *	Les champs **Rétention des informations de statut** et **Rétention et des informations concernant pas le statut** indiquent si les informations concernant ou ne concernant pas le statut sont sauvegardées après chaque relance de la commande de vérification.
@@ -96,7 +96,7 @@ Centreon
 ========
 
 *	**Modèle de graphique** : Définit le modèle de graphique à utiliser pour présenter les données de performances liées au service.
-*	**Catégories** : Définit la(les) catégorie(s) auxquelles le service appartient.
+*	**Catégories** : Définit la(les) catégorie(s) à laquelle (auxquelles) le service appartient.
 
 Moteur de supervision
 =====================
@@ -118,7 +118,7 @@ Informations supplémentaires
 Détachement d'un service
 ************************
 
-Si un service est lié à plusieurs hôtes, alors il sera identique pour chacun deux. Il ne sera donc pas possible de modifier unitairement le service d'un hôte pour modifier une propriété.
+Si un service est lié à plusieurs hôtes, alors il sera identique pour chacun d'eux. Il ne sera donc pas possible de modifier unitairement le service d'un hôte pour modifier une propriété.
 C'est pourquoi il est possible de transformer ce service lié à plusieurs hôtes en un service unique pour chaque hôte :
 
 #.	Dans la liste des services, sélectionnez le service lié à plusieurs hôtes (habituellement ce service est surligné en orange)

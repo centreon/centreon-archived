@@ -120,7 +120,7 @@ Centreon. Editez le fichier */etc/mime.types* et rechercher les lignes :
     text/x-xsl xsl
     text/x-xslt xslt xsl
 
-Remplassez-les par :
+Remplacez-les par :
   ::
   
     text/xml xsl
@@ -186,36 +186,37 @@ Contrôle de prérequis
 
 Si l'étape d'installation des prérequis s'est déroulée avec succès vous devriez 
 avoir aucun problème lors de cette étape. Sinon reprendre la procédure 
-d'installation des prérequis::
+d'installation des prérequis :
+  ::
 
-  ###############################################################################
-  #                                                                             #
-  #                         Centreon (www.centreon.com)                         #
-  #                          Thanks for using Centreon                          #
-  #                                                                             #
-  #                                    v2.5.0                                   #
-  #                                                                             #
-  #                              infos@centreon.com                             #
-  #                                                                             #
-  #                   Make sure you have installed and configured               #
-  #                   sudo - sed - php - apache - rrdtool - mysql               #
-  #                                                                             #
-  ###############################################################################
-  ------------------------------------------------------------------------
-          Checking all needed binaries
-  ------------------------------------------------------------------------
-  rm                                                         OK
-  cp                                                         OK
-  mv                                                         OK
-  /bin/chmod                                                 OK
-  /bin/chown                                                 OK
-  echo                                                       OK
-  more                                                       OK
-  mkdir                                                      OK
-  find                                                       OK
-  /bin/grep                                                  OK
-  /bin/cat                                                   OK
-  /bin/sed                                                   OK 
+    ###############################################################################
+    #                                                                             #
+    #                         Centreon (www.centreon.com)                         #
+    #                          Thanks for using Centreon                          #
+    #                                                                             #
+    #                                    v2.5.0                                   #
+    #                                                                             #
+    #                              infos@centreon.com                             #
+    #                                                                             #
+    #                   Make sure you have installed and configured               #
+    #                   sudo - sed - php - apache - rrdtool - mysql               #
+    #                                                                             #
+    ###############################################################################
+    ------------------------------------------------------------------------
+            Checking all needed binaries
+    ------------------------------------------------------------------------
+    rm                                                         OK
+    cp                                                         OK
+    mv                                                         OK
+    /bin/chmod                                                 OK
+    /bin/chown                                                 OK
+    echo                                                       OK
+    more                                                       OK
+    mkdir                                                      OK
+    find                                                       OK
+    /bin/grep                                                  OK
+    /bin/cat                                                   OK
+    /bin/sed                                                   OK 
 
 Acceptation de la licence
 -------------------------

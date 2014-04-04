@@ -510,7 +510,7 @@
 
                 if (isset($_REQUEST['in_broker'])) {
                     $mainCfg = new CentreonConfigEngine($pearDB);
-                    $mainCfg->insertBrokerDirectives($nagios_id["MAX(nagios_id)"], $_REQUEST['in_broker']);
+                    $mainCfg->insertBrokerDirectives($nagios_id, $_REQUEST['in_broker']);
                 }
 
 		if ($ret["nagios_activate"]["nagios_activate"]) {

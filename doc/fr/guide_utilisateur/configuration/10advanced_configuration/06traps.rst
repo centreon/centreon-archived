@@ -11,8 +11,8 @@ Définition
 Les traps SNMP sont des informations envoyées en utilisant le protocole SNMP depuis un équipement supervisé vers un serveur de supervision (satellite).
 Ces informations contiennent plusieurs attributs dont :
 
-* Adresse de l'équipement qui a envoyé l'information
-* L'OID racine (Object Identifier) correspond à l'identifiant du message reçu
+* Adresse de l'équipement qui a envoyé l'information.
+* L'OID racine (Object Identifier) correspond à l'identifiant du message reçu.
 * Le message envoyé au travers du trap SNMP qui correspond à un ensemble de paramètres (1 à N).
 
 Afin de pouvoir interpréter l'évènement reçu, le serveur de supervision doit posséder dans sa configuration le nécessaire pour traduire l'évènement.
@@ -44,7 +44,7 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyés par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier tampon (par défaut : **/var/spool/centreontrapd/**).
 #. Le service 'centreontrapd' lit les informations reçues dans le dossier tampon et interprète les différents traps reçus en vérifiant dans la base de données Centreon les actions à entreprendre pour traiter ces évènements.
-#. Le service 'centreontrapd' transmet les informations à l'ordonnanceur ou au service 'centcore' (pour transmettre les informations à un ordonnanceur distant) qui se charge de modifier le statut et les informations associées au service dont est lié le trap SNMP.
+#. Le service 'centreontrapd' transmet les informations à l'ordonnanceur ou au service 'centcore' (pour transmettre les informations à un ordonnanceur distant) qui se charge de modifier le statut et les informations associées au service auquel est lié le trap SNMP.
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_centreon.png
    :align: center
@@ -58,7 +58,7 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyées par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier tampon (par défaut : **/var/spool/centreontrapd/**).
-#. Le service 'centreontrapd' lit les informations reçues dans le dossier tampon et interprète les différentes traps reçus en vérifiant dans la base de données SQLite les actions à entreprendre pour traiter les traps reçues.
+#. Le service 'centreontrapd' lit les informations reçues dans le dossier tampon et interprète les différentes traps reçus en vérifiant dans la base de données SQLite les actions à entreprendre pour traiter les traps reçus.
 #. Le service 'centreontrapd' transmet les informations à l'ordonnanceur qui se charge de modifier le statut et les informations associées au service dont est lié le trap SNMP.
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_poller.png
@@ -286,29 +286,29 @@ Il est également possible de créer manuellement des définitions de trap SNMP 
 * Le champ **Nom du Trap** définit le nom du trap.
 * Le champ **OID** définit l'OID racine à recevoir pour que ce trap soit considéré comme reçu.
 * Le champ **Nom du constructeur** définit le nom du constructeur auquel appartient le trap à sélectionner dans la liste déroulante.
-* Le champ **Message de sortie** contient le message à afficher en cas de réception d'une trap contenant l'OID configuré au-dessus.
+* Le champ **Message de sortie** contient le message à afficher en cas de réception d'un trap contenant l'OID configuré au-dessus.
 
 .. note::
    Par défaut, la MIB contient la définition de cette variable (Exemple : "Link up on interface $2. State: $4.", ici $2 sera remplacé par le 2ème argument reçu dans l'évènement.). Dans le cas contraire, la variable **$*** permet d'afficher l'ensemble des arguments contenu dans le trap.
 
 .. note::
-   Il est possible de construire soit même le message de sortie. Pour cela, utilisez la MIB afin de connaitre les arguments qui seront présent dans le corps de l'évènement et récupérer les arguments avec les variables **$n**. Chaque argument étant identifié par un OID, il est possible d'utiliser directement cet OID afin de le placer dans le message de sortie sans connaitre sa position via la variable **@{OID}**.
+   Il est possible de construire soit même le message de sortie. Pour cela, utilisez la MIB afin de connaitre les arguments qui seront présents dans le corps de l'évènement et récupérer les arguments avec les variables **$n**. Chaque argument étant identifié par un OID, il est possible d'utiliser directement cet OID afin de le placer dans le message de sortie sans connaitre sa position via la variable **@{OID}**.
 
 * Le champ **Statut par défaut** définit le statut "supervision" par défaut du service en cas de réception du trap.
-* Le Si la case **Envoyer le résultat** est cochée alors le résultat est soumis au moteur de supervision
-* Le champ **Commentaires** (dernier champ) contient par défaut le commentaire constructeur du trap SNMP. La plupart du temps, ce commentaire indique la liste des variables contenus dans le trap SNMP (voir chapitre suivant sur la configuration avancée).
+* Le Si la case **Envoyer le résultat** est cochée alors le résultat est soumis au moteur de supervision.
+* Le champ **Commentaires** (dernier champ) contient par défaut le commentaire constructeur du trap SNMP. La plupart du temps, ce commentaire indique la liste des variables contenues dans le trap SNMP (voir chapitre suivant sur la configuration avancée).
 
 Configuration avancée des traps
 -------------------------------
 
 Il est possible de détermine le statut d'un service à partir de la valeur d'un paramètre du trap SNMP plutôt qu'à partir de l'OID racine. Anciennement les constructeurs définissaient
-un trap SNMP (OID racine) par type d'évènement à envoyer (linkUp / linkDown). Aujourd'hui, la tendance est de définir un OID racine par catégorie d'évènements puis de définir l'évènement via un ensemble de paramètre.
+un trap SNMP (OID racine) par type d'évènement à envoyer (linkUp / linkDown). Aujourd'hui, la tendance est de définir un OID racine par catégorie d'évènements puis de définir l'évènement via un ensemble de paramètres.
 
 Pour cela, il est possible de définir des **Règles de correspondance avancées** en cliquant sur le bouton |navigate_plus| et de créer autant de règles que nécessaire.
 Pour chaque règle, définir les paramètres :
 
 *   **Chaine** définit l'élément sur lequel sera appliqué la recherche (@OUTPUT@ défini l'ensemble du **Message de sortie** traduit).
-*   **Expression régulière** définit la recherche de type REGEXP à appliquer
+*   **Expression régulière** définit la recherche de type REGEXP à appliquer.
 *   **Statut** définit le statut du service en cas de concordance.
 
 .. note::
@@ -327,8 +327,8 @@ L'onglet **Avancé** permet de configurer le comportement d'exécution du proces
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06advancedconfiguration.png
    :align: center
 
-*   **Activer le routage** permet d'activer le routage des informations
-*   **Commande de routage** permet de définir la commande à utiliser pour le routage
+*   **Activer le routage** permet d'activer le routage des informations.
+*   **Commande de routage** permet de définir la commande à utiliser pour le routage.
 
 Avant d'exécuter le traitement de l'évènement (traduction du **Message de sortie**), il est possible d'exécuter une commande appelée PREEXEC.
 Pour cela, il est possible de définir des **Commande PREEXEC (de type SNMPTT)** en cliquant sur le bouton |navigate_plus| et de créer autant de règles que nécessaire.
@@ -354,11 +354,11 @@ Exemple
 
 Le résultat sera de la forme : Interface GigabitEthernet0/1 ( SERVEUR NAS ) linkUP. State: up
 
-*   Le champ **Enregistrer les informations des traps SNMP en base de données** permet de journaliser ou non les traps en base de donnée
+*   Le champ **Enregistrer les informations des traps SNMP en base de données** permet de journaliser ou non les traps en base de données.
 *   Le champ **Temps d'exécution maximum** exprimé en secondes, permet de définir le temps maximum de traitement de l'évènement y compris les commandes de prétraitement (PREEXEC) ainsi que celles de post-traitement (commande spéciale).
 *   Le champ **Intervalle d'exécution** exprimé en secondes, permet de définir le temps minimum d'attente entre deux traitements d'un évènement.
 *   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.
-*   Le champ **Méthode d'exécution** permet de définir si lors de la réception de plusieurs mêmes évènements (OID racine). L'exécution est soit **Séquentielle**, soit **Parallèle**
+*   Le champ **Méthode d'exécution** permet de définir si lors de la réception de plusieurs mêmes évènements (OID racine). L'exécution est soit **Séquentielle**, soit **Parallèle**.
 
 *************
 Les variables

@@ -8,7 +8,7 @@ Merethis fournit RPM pour ses produits au travers de la solution Centreon
 Entreprise Server (CES) en version Open Sources et disponible gratuitement 
 sur notre dépôt.
 
-Ces paquets ont été testés avec succès syr les environnements CentOS et Red Hat en version 5.x et 6.x.
+Ces paquets ont été testés avec succès sur les environnements CentOS et Red Hat en version 5.x et 6.x.
 
 **********
 Prérequis
@@ -52,7 +52,7 @@ Depuis CES 2.2, deux choix d'installation sont disponibles
 | centreon-base-config-nagios          | Nagios                | Ndoutils        |
 +--------------------------------------+-----------------------+-----------------+
 
-Vous devez choisir entre l'un des deux processusde configuration de votre 
+Vous devez choisir entre l'un des deux processus de configuration de votre 
 plate-forme de supervision. Merethis recommande le premier choix basé sur le 
 moteur "Centreon Engine" et le multiplexeur de flux "Centreon Broker".
 
@@ -77,7 +77,7 @@ Exécutez la commande :
 
   $ yum install centreon-base-config-nagios centreon
 
-Après cette étape, vous devez vous connecter à Centreon pour finaliser le procéssus
+Après cette étape, vous devez vous connecter à Centreon pour finaliser le processus
 d'installation. Cette étape est décrite :ref:`ici <installation_web>`.
 
 Installer un collecteur
@@ -101,10 +101,10 @@ Exécutez la commande :
 
   $ yum install centreon-poller-nagios
 
-Base configuration of pollers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Configuration basique d'un collecteur
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-La comunication entre le serveur central et un collecteur se fait via SSH.
+La communication entre le serveur central et un collecteur se fait via SSH.
 
 Vous devez échanger les clés SSH entre les serveurs.
 

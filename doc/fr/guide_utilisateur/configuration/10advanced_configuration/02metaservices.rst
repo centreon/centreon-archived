@@ -26,7 +26,7 @@ Les types de sources de données
 
 Le résultat du calcul est une donnée de performance (métrique) qui génèrera un graphique de performance.
 Afin de tracer au mieux le résultat, il faut sélectionner le type de source de données (par défaut **GAUGE**).
-Les types de source de données disponibles sont :
+Les types de sources de données disponibles sont :
 
 * Le type **GAUGE** enregistre une valeur instantanée (température, humidité, CPU, ...)
 * Le type **COUNTER** enregistre une valeur incrémentale par rapport au résultat précédent
@@ -93,7 +93,7 @@ Informations supplémentaires
 Sélectionner manuellement des services
 **************************************
 
-Si vous avez choisit l'option **Sélectionner les services manuellement**, au sein de l'écran regroupant l'ensemble des méta-services :
+Si vous avez choisi l'option **Sélectionner les services manuellement**, au sein de l'écran regroupant l'ensemble des méta-services :
 
 1. Cliquez sur |flechedirection| pour sélectionner les métriques entrant en jeu dans le calcul du méta-service. Ces métriques sont appelées indicateurs.
 2. Cliquez sur **Ajouter**

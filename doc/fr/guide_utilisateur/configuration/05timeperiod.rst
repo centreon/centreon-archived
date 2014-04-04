@@ -51,8 +51,8 @@ Les exceptions permettent d'inclure à la plage temporaire des jours exceptionne
 
 Exemple : Un administrateur souhaite définir une période temporelle qui regroupe les heures de fermeture du bureau c'est à dire :
 
-*	De 18h00 à 07h59 les jours de semaines
-*	24 heures sur 24 les weekend
+*	De 18h00 à 07h59 les jours de semaine
+*	24 heures sur 24 les weekends
 *	Les jours fériés, jours de fermeture exceptionnelle
 
 Afin de pouvoir définir les jours fériés ainsi que les jours de fermeture exceptionnelle, il est nécessaire d'utiliser les exceptions.
@@ -81,11 +81,11 @@ Par journée exceptionnelle, vous devez définir une plage horaire. Le tableau c
 Options avancées
 ================
 
-Au sein des options avancées, il est possible d'**inclure** ou d'**exclure** des périodes à la période temporelle.
+Au sein des options avancées, il est possible d'**inclure** ou d'**exclure** des périodes à la définition de l'objet.
 Exemple d'application. Prenons deux périodes temporelles :
 
-*	Une période est définie 24 heures sur 24 / 7 jours sur 7 appelé **24x7**
-*	Une autre qui regroupe les horaires d'ouvertures du bureau appelé **working_hours**
+*	Une période est définie 24 heures sur 24 / 7 jours sur 7 appelée **24x7**
+*	Une autre qui regroupe les horaires d'ouvertures du bureau appelée **working_hours**
 
 Pour obtenir les horaires de fermeture du bureau, je n'ai qu'à créer une période temporelle dans laquelle j'inclus la plage **24x7** et pour laquelle j'exclus la plage **working_hours**.
 

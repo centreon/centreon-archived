@@ -6,7 +6,7 @@ Les commandes
 Définition
 **********
 
-Une commande est la définiion d'une ligne de commande qui utilise un script ou une application afin de réaliser une action.
+Une commande est la définition d'une ligne de commande qui utilise un script ou une application afin de réaliser une action.
 Il est possible d'exécuter cette commande en précisant des arguments.
 
 Il existe trois types de commandes :
@@ -48,7 +48,7 @@ Les champs de configuration
 *	Le champ **Ligne de commande** indique l'application ou le script utilisé avec la commande.
 *	La case **Activer le shell** permet d'activer des fonctions propres à un shell tel que le pipe...
 *	Les champs **Exemple d'arguments** et **$HOSTADDRESS$** définissent respectivement des exemples d'arguments (chaque argument commence par un "!") et une adresse IP de test.
-	Ces champs permettent d'exécuter la ligne de commande définie au dessus via l'interface web en cliquant sur la flèche bleue : |bluearrow|.
+	Ces champs permettent d'exécuter la ligne de commande définie au-dessus via l'interface web en cliquant sur la flèche bleue : |bluearrow|.
 *	Le bouton **Description des arguments** permet d'ajouter une description aux arguments de type "$ARGn$". Cette description sera visible lors de l'utilisation de la commande dans un formulaire d'hôte ou de service.
  
 .. image :: /images/guide_utilisateur/configuration/04linkbetweencommandandservices.png

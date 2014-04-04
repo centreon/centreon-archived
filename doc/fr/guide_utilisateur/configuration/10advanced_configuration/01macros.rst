@@ -31,7 +31,7 @@ Les macros personnalisées
 Définition
 ==========
 
-Les macros personnalisées sont des macros créées par l'utilisateur lors de la création d'un hôte ou d'un service.
+Les macros personnalisées sont des macros définies par l'utilisateur lors de la création d'un hôte ou d'un service.
 Elles sont utilisées dans les commandes de vérifications.
 Les macros personnalisées commencent par $_HOST pour les macros personnalisées d'hôtes et par $_SERVICE pour les macros personnalisées de services.
 Il y a plusieurs avantages à utiliser les macros personnalisées à la place des arguments :
@@ -104,7 +104,7 @@ Elles sont complémentaires aux macros standards. Exemple :
 La documentation complète des macros à la demande est disponible à cette adresse `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_.
 
 .. note::
-    L'utilisation de ces macros n'est pas recommandé car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommateur en termes de ressources.
+    L'utilisation de ces macros n'est pas recommandée car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommateur en termes de ressources.
 
 .. warning::
     L'activation du paramètre **Activation des optimisations pour les installations de grandes tailles** rend impossible l'utilisation des macros d'environnements.

@@ -245,7 +245,7 @@
                                                               'keys'    => array('host_id'),
                                                               'get_row' => 'host_name',
                                                               'order'   => array('host.host_name')),
-                                                         true));
+                                                         false));
         $form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this, "services");'));
         $ams = $form->addElement('advmultiselect', 'services', array(_("Linked Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams->setButtonAttributes('add', array('value' =>  _("Add")));
