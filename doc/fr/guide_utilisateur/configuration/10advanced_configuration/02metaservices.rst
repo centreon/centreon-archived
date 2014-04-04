@@ -93,7 +93,7 @@ Informations supplémentaires
 Sélectionner manuellement des services
 **************************************
 
-Si vous avez choisit l'option **Sélectionner les services manuellement**, au sein de l'écran regroupant l'ensemble des méta-services :
+Si vous avez choisi l'option **Sélectionner les services manuellement**, au sein de l'écran regroupant l'ensemble des méta-services :
 
 1. Cliquez sur |flechedirection| pour sélectionner les métriques entrant en jeu dans le calcul du méta-service. Ces métriques sont appelées indicateurs.
 2. Cliquez sur **Ajouter**

@@ -37,7 +37,7 @@ Pour ajouter une escalade de notification :
 * Le champ **Dernière notification** permet de choisir le dernier numéro de la notification pour lequel ce groupe de contacts sera averti. Si le groupe de contacts est le dernier niveau de l'escalade. La valeur de ce champ est **0**.
 * Le champ **Intervalle de notification** définit l'intervalle de notifications entre chaque alerte.
 * Le champ **Période d'escalade** définit la période temporelle de notifications.
-* Les champs **Options d'escalade des hôtes** et **Options d'escalade des services** définissent les statuts d'hôtes et de services pour lesquels l'escalade est utilisés.
+* Les champs **Options d'escalade des hôtes** et **Options d'escalade des services** définissent les statuts d'hôtes et de services pour lesquels l'escalade est utilisée.
 * La liste **Groupes de contacts liés** définit le groupe de contacts à contacter lors du déclenchement de l'escalade.
 * Le champ **Commentaire** permet de commenter l'escalade.
 

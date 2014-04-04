@@ -17,8 +17,9 @@ Il est nécessaire de programmer des temps d'arrêts récurrents sur les service
 .. note::
    Les temps d'arrêts sont pris en comptes dans le calcul du taux de disponibilité de la ressource dans le menu "Tableau de bord".
 
+***************************
 Les types de temps d'arrêts
-===========================
+***************************
 
 Il existe deux types de temps d'arrêts :
 
