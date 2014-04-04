@@ -49,7 +49,7 @@ Héritage de type associatif
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il s'agit d'additionner plusieurs modèles au sein d'un même objet afin d'additionner l'ensemble des paramètres disponibles.
-Si un hôte hérite de plusieurs modèles d'hôtes et si un même paramètre est défini sur plusieurs modèles, alors le modèle d'hôte situé au dessus des autres modèles est prioritaire par rapport à ses ascendants.
+Si un hôte hérite de plusieurs modèles d'hôtes et si un même paramètre est défini sur plusieurs modèles, alors le modèle d'hôte situé au-dessus des autres modèles est prioritaire par rapport à ses ascendants.
 
 .. image :: /images/guide_utilisateur/configuration/09hostmodels.png
    :align: center
@@ -121,7 +121,7 @@ L'hôte srvi-web-01 possèdera automatiquement les services suivants :
 
 Lorsque les services d'un hôte sont générés à partir des modèles d'hôtes, il est possible que certains services générés ne soient plus ou pas vérifiés par l'outil de supervision.
 Dans ce cas, il est nécessaire de désactiver les services inutilisés (et non de les supprimer).
-En cas de suppression des services, la regénération des services de l'hôte à partir des modèles d'hôtes va recréer les services supprimés.
+En cas de suppression des services, la régénération  des services de l'hôte à partir des modèles d'hôtes va recréer les services supprimés.
 
 Configuration
 =============

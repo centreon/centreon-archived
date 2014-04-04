@@ -48,7 +48,7 @@ Les champs de configuration
 *	Le champ **Ligne de commande** indique l'application ou le script utilisé avec la commande.
 *	La case **Activer le shell** permet d'activer des fonctions propres à un shell tel que le pipe...
 *	Les champs **Exemple d'arguments** et **$HOSTADDRESS$** définissent respectivement des exemples d'arguments (chaque argument commence par un "!") et une adresse IP de test.
-	Ces champs permettent d'exécuter la ligne de commande définie au dessus via l'interface web en cliquant sur la flèche bleue : |bluearrow|.
+	Ces champs permettent d'exécuter la ligne de commande définie au-dessus via l'interface web en cliquant sur la flèche bleue : |bluearrow|.
 *	Le bouton **Description des arguments** permet d'ajouter une description aux arguments de type "$ARGn$". Cette description sera visible lors de l'utilisation de la commande dans un formulaire d'hôte ou de service.
  
 .. image :: /images/guide_utilisateur/configuration/04linkbetweencommandandservices.png
@@ -72,6 +72,6 @@ Chaque argument se présente sous la forme **$ARGn$** où n est un entier nature
 Exemple de ligne de commande utilisant les arguments : $USER1$/check-bench-process-DB -w $ARG1$ -c $ARG2$ -n $ARG3$
 
 .. note::
-	La bonne pratique veut que nous remplaçions les arguments par des :ref:`macros personnalisées<custommacros>`.
+	La bonne pratique veut que nous remplacions les arguments par des :ref:`macros personnalisées<custommacros>`.
 
 .. |bluearrow|    image:: /images/bluearrow.png

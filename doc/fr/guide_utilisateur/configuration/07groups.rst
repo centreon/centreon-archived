@@ -5,7 +5,7 @@ Les groupes
 Un groupe permet de regrouper un ou plusieurs objets. Il existe trois types de groupes : hôtes, services et contacts.
 
 Les groupes d'hôtes et de services servent principalement lors de la visualisation des graphiques ou pour regrouper les objets.
-Les groupes de contacts sont utilisés principalement pour la mise en place de LCAs (ou ACL)..
+Les groupes de contacts sont utilisés principalement pour la mise en place de LCAs (ou ACL).
 
 .. _hostgroups:
 
