@@ -47,3 +47,7 @@ span.custom-owner-label {
 .custom-tag-label {
 	float: right;
 }
+
+.custom-view-badge {
+	margin-left: 10px;
+}
