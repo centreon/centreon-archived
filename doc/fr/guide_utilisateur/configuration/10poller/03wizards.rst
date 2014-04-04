@@ -42,7 +42,7 @@ Configuration du serveur central pour une architecture distribuée
    :alt: Distributed monitoring schema
 
 .. note::
-   Schéma d'unr architecture distribuée
+   Schéma d'une architecture distribuée
 
 .. image:: /images/guide_utilisateur/configuration/10poller/centreon_broker_wizard_02_step01.png
    :align: center
@@ -64,7 +64,7 @@ Configuration d'un collecteur pour une architecture distribuée
    :alt: Schema distributed monitoring
 
 .. note::
-   Schéma d'unr architecture distribuée
+   Schéma d'une architecture distribuée
 
 .. image:: /images/guide_utilisateur/configuration/10poller/centreon_broker_wizard_03_step01.png
    :align: center

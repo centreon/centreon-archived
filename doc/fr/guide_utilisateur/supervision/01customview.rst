@@ -104,11 +104,11 @@ Columns
 * Si la case **Display Output** est cochée, alors le message associé au statut de l'hôte sera affiché
 * La liste **Output Length** permet de limiter la longueur du message affiché
 * Si la case **Display Status** est cochée, alors le statut de l'hôte est affiché
-* Si la case **Display IP** est cochée, alors l'adresse IP de l'hôte est affiché
-* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification est affichée
+* Si la case **Display IP** est cochée, alors l'adresse IP de l'hôte est affichée
+* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification est affiché
 * Si la case **Display Duration** est cochée, alors la durée durant laquelle l'hôte a conservé son statut est affichée
 * Si la case **Display Hard State Duration** est cochée, alors la durée durant laquelle l'hôte a conservé son état HARD est affichée
-* Si la case **Display Tries** est cochée, alors le nombre d'essais avant la validation de l'état est affichée
+* Si la case **Display Tries** est cochée, alors le nombre d'essais avant la validation de l'état est affiché
 * La liste **Order By** permet de classer les hôtes par ordre alphabétique suivant plusieurs paramètres
 
 Misc
@@ -132,7 +132,7 @@ Filters
 * La liste **Acknowledgement Filter** permet d'afficher les services acquittés ou non acquittés (si la liste est vide, les deux types d'hôtes seront affichés)
 * La liste **Downtime Filter** permet d'afficher les services qui subissent un temps d'arrêt ou non (si la liste est vide, les deux types d'hôtes seront affichés)
 * La liste **State Type** permet d'afficher les services en état SOFT ou HARD (si la liste est vide, les deux types d'hôtes seront affichés)
-* La liste **Hostgroup** permet d'afficher les services appartenant à des hotes faisant partie d'un certain groupe d'hôtes (si la liste est vide, tous les services seront affichés)
+* La liste **Hostgroup** permet d'afficher les services appartenant à des hôtes faisant partie d'un certain groupe d'hôtes (si la liste est vide, tous les services seront affichés)
 * La liste **Servicegroup** permet d'afficher les services appartenant à un certain groupe de services (si la liste est vide, tous les services seront affichés)
 * La liste **Results** limite le nombre de résultats
 
@@ -144,7 +144,7 @@ Columns
 * Si la case **Display Output** est cochée, alors le message associé au statut du service sera affiché
 * La liste **Output Length** permet de limiter la longueur du message affiché
 * Si la case **Display Status** est cochée, alors le statut du service est affiché
-* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification sont affichées
+* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification sont affichés
 * Si la case **Display Duration** est cochée, alors la durée durant laquelle le service a conservé son statut est affichée
 * Si la case **Display Hard State Duration** est cochée, alors la durée durant laquelle le service a conservé son état HARD est affichée
 * Si la case **Display Tries** est cochée, alors le nombre d'essais avant la validation de l'état est affiché
