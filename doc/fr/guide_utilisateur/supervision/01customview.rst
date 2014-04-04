@@ -105,7 +105,7 @@ Columns
 * La liste **Output Length** permet de limiter la longueur du message affiché
 * Si la case **Display Status** est cochée, alors le statut de l'hôte est affiché
 * Si la case **Display IP** est cochée, alors l'adresse IP de l'hôte est affichée
-* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification est affiché
+* Si la case **Display Last Check** est cochée, alors la date et l'horaire de la dernière vérification sont affichés
 * Si la case **Display Duration** est cochée, alors la durée durant laquelle l'hôte a conservé son statut est affichée
 * Si la case **Display Hard State Duration** est cochée, alors la durée durant laquelle l'hôte a conservé son état HARD est affichée
 * Si la case **Display Tries** est cochée, alors le nombre d'essais avant la validation de l'état est affiché

@@ -49,7 +49,7 @@ Depuis CES 2.2, deux choix d'installation sont disponibles
 +======================================+=======================+=================+
 | centreon-base-config-centreon-engine | Centreon Engine       | Centreon Broker |
 +--------------------------------------+-----------------------+-----------------+
-| centreon-base-config-nagios          | Nagios                | Ndoutils        |
+| centreon-base-config-nagios          | Nagios                | NDOutils        |
 +--------------------------------------+-----------------------+-----------------+
 
 Vous devez choisir entre l'un des deux processus de configuration de votre 

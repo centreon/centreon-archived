@@ -56,9 +56,8 @@ En plus des statuts standards, de nouveaux statuts  permettent d'ajouter des inf
 * Le statut ACKNOWLEDGED est un statut indiquant que l'incident du service ou de l'hôte est pris en compte par un utilisateur.
 * Le statut DOWNTIME est un statut indiquant que l'incident du service ou de l'hôte est survenu durant une période de temps d'arrêt programmé.
 
-******************
 Etats SOFT et HARD
-******************
+==================
 
 Un hôte ou un service peut avoir deux états :
 
@@ -84,7 +83,7 @@ Imaginons le scénario suivant :
 
  * Instant t + 0 : Le service est vérifié, il a le statut OK.
  * Instant t + 5 : La seconde vérification montre que le service a le statut CRITICAL. Le service passe en état SOFT (essai 1/3).
- * Instant t + 6 : La troisième vérification a lieu, le service a toujours le statut CRITICAL en état SOFT (essai 2/3).
+ * Instant t + 6 : La troisième vérification à lieu, le service a toujours le statut CRITICAL en état SOFT (essai 2/3).
  * Instant t + 7 : La quatrième vérification montre que le service a toujours le statut CRITICAL (essai 3/3). Le nombre d'essais a été atteint, le statut est configuré (état HARD). Le processus de notification est enclenché.
  * Instant t + 8 : Le service retrouve le statut OK. Il passe directement en état HARD. Le processus de notification est enclenché.
  * Instant t + 13 : Le service a le statut WARNING. Il passe en état SOFT (essai 1/3).
@@ -231,7 +230,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Latence                                  | Affiche le temps de latence entre la programmation de l'exécution et l'exécution réelle de la sonde |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Temps d'exécution                        | Affiche le temps d'éxécution de la sonde                                                            |
+| Temps d'exécution                        | Affiche le temps d'exécution de la sonde                                                            |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Changement du dernier état               | Affiche la date et l'heure depuis laquelle l'hôte est dans l'état actuel                            |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -316,7 +315,7 @@ Le menu de gauche permet de modifier les services visibles au sein du tableau :
 * Pour visualiser les services rencontrant un problème validé (état "HARD") mais étant non acquittés, cliquez sur **Problèmes non acquittés**
 * Pour visualiser tous les services rencontrant un problème (validé ou non, acquittés ou non), cliquez sur **Problèmes en cours**
 * Pour visualiser tous les services, cliquez sur **Tous les services**
-* Pour visualiser tous les services (classés par hôtes), quelque soit le statut, cliquez sur **Détails** (en dessous d'hôtes)
+* Pour visualiser tous les services (classés par hôtes), quel que soit le statut, cliquez sur **Détails** (en dessous d'hôtes)
 
 .. image :: /images/guide_utilisateur/supervision/04servicelistbyhostdetail.png
    :align: center

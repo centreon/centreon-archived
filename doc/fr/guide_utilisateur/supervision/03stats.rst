@@ -22,7 +22,7 @@ Plusieurs tableaux permettent de visualiser les performances de vos ordonnanceur
 * Le tableau **Actuellement contrôlés** permet de visualiser le nombre d'hôtes et de services contrôlés depuis la dernière minute, les cinq dernières minutes, le dernier quart d'heure ou la dernière heure.
 * Le tableau **Temps de latence des contrôles** permet de visualiser les temps de latence minimum, maximum et moyen des contrôles effectués sur les hôtes et les services.
 .. warning::
-    Plus le temps de latence est élevé, plus les contrôles sont exécutés en retard via-à-vis de l'heure initiale programmée par l'ordonnanceur. Cela implique une potentielle charge élevée du serveur.
+    Plus le temps de latence est élevé, plus les contrôles sont exécutés en retard vis-à-vis de l'heure initiale programmée par l'ordonnanceur. Cela implique une potentielle charge élevée du serveur.
 
 * Le tableau **Utilisation du buffer** permet de visualiser le nombre de commandes externes en attente de traitements par l'ordonnanceur.
 

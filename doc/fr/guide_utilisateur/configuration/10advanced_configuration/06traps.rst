@@ -65,7 +65,7 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
    :align: center
 
 .. note::
-    Le processus Centcore à la charge, comme pour l'export de configuration de la supervsiion, de copier la base SQLite sur le collecteur distant.
+    Le processus Centcore à la charge, comme pour l'export de configuration de la supervision, de copier la base SQLite sur le collecteur distant.
 
 **************************
 Configuration des services
@@ -396,9 +396,9 @@ Lors de l'ajout d'une règle de correspondance ou de l'exécution d'une commande
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 | @TIME@                   | Heure de réception du trap                                                                                                                |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| @POLLERID@               | ID du poller ayant reçu le trap                                                                                                           |
+| @POLLERID@               | ID du collecteur ayant reçu le trap                                                                                                       |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| @POLLERADDRESS@          | Adresse IP du poller ayant reçu le trap                                                                                                   |
+| @POLLERADDRESS@          | Adresse IP du collecteur ayant reçu le trap                                                                                               |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 | @CMDFILE@                | Chemin vers le fichier de commande de CentCore (central) ou de Centreon Engine (collecteur)                                               |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+

@@ -86,7 +86,7 @@ Pour ajouter une macro de ressources :
 
 * Le champ **Nom de la ressource** définit le nom de la macro de ressources. Exemple : $USER3$
 * Le champ **Valeur de la ressource** définit la valeur de la macro.
-* La liste **Lié au collecteur** permet de définir quels seront les moteurs de supervision qui pourront acceder à cette macro.
+* La liste **Lié au collecteur** permet de définir quels seront les moteurs de supervision qui pourront accéder à cette macro.
 * Les champs **Statut** et **Commentaire** permettent d'activer/désactiver la macro ou de la commenter.
 
 ***************************
