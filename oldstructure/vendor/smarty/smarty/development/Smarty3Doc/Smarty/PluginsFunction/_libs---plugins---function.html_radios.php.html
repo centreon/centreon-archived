@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page function.html_radios.php</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name">/libs/plugins/function.html_radios.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-functions">Functions</a>
+			</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Smarty plugin</p>
+		
+			</div>
+</div>
+		
+
+	
+	
+	
+	<a name="sec-functions"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Functions</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<span class="disabled">Functions</span>
+		</div>
+		<div class="info-box-body">	
+			<a name="functionsmarty_function_html_radios" id="functionsmarty_function_html_radios"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">smarty_function_html_radios</span> (line <span class="line-number">45</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Smarty {html_radios} function plugin</p>
+<p class="description"><p>File:       function.html_radios.php<br />  Type:       function<br />  Name:       html_radios<br />  Date:       24.Feb.2003<br />  Purpose:    Prints out a list of radio input types<br />  Params:  <pre> - name       (optional) - string default "radio"
+ - values     (required) - array
+ - options    (required) - associative array
+ - checked    (optional) - array default not set
+ - separator  (optional) - ie <br> or &nbsp;
+ - output     (optional) - the output next to each radio button
+ - assign     (optional) - assign the output as an array to this variable
+ - escape     (optional) - escape the content (not value), defaults to true</pre>  Examples:  <pre> {html_radios values=$ids output=$names}
+ {html_radios values=$ids name='box' separator='<br>' output=$names}
+ {html_radios values=$ids checked=$checked separator='<br>' output=$names}</pre></p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> credits to Monte Ohrt &lt;<a href="mailto:monte">at ohrt dot com monte at ohrt dot com</a>&gt;</li>
+				<li><span class="field">author:</span> Christopher Kvarme &lt;<a href="mailto:christopher.kvarme@flashjab.com">christopher.kvarme@flashjab.com</a>&gt;</li>
+				<li><span class="field">version:</span> 1.0</li>
+				<li><span class="field">link:</span> <a href="http://smarty.php.net/manual/en/language.function.html.radios.php">{html_radios}
+      (Smarty online manual)</a></li>
+				<li><span class="field">uses:</span> <a href="../../Smarty/PluginsShared/_libs---plugins---shared.escape_special_chars.php.html#functionsmarty_function_escape_special_chars">smarty_function_escape_special_chars()</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			smarty_function_html_radios
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$params</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$template</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$params</span><span class="var-description">: parameters</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$template</span><span class="var-description">: template object</span>			</li>
+				</ul>
+		
+	
+</div>
+<a name="functionsmarty_function_html_radios_output" id="functionsmarty_function_html_radios_output"><!-- --></a>
+<div class="oddrow">
+	
+	<div>
+		<span class="method-title">smarty_function_html_radios_output</span> (line <span class="line-number">157</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			smarty_function_html_radios_output
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$value</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$output</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$selected</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$extra</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$separator</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$labels</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$label_ids</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$escape</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$output</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$selected</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$extra</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$separator</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$labels</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$label_ids</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$escape</span>			</li>
+				</ul>
+		
+	
+</div>
+		</div>
+	</div>
+	
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:41 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

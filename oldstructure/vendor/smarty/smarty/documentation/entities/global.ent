@@ -1,0 +1,32 @@
+<!--
+ $Id: global.ent 2661 2006-12-02 22:18:14Z pete_morgan $
+
+ Contains global "macros" for all the XML documents.
+ -->
+
+<!ENTITY url.smarty          'http://www.smarty.net/'>
+<!ENTITY url.ml.archive      'http://groups.google.com/group/smarty-discussion'>
+<!ENTITY ml.general.sub      'ismarty-discussion-subscribe@googlegroups.com'>
+
+<!ENTITY url.wiki            'http://smarty.incutio.com/'>
+<!ENTITY url.forums          'http://www.smarty.net/forums/'>
+<!ENTITY url.chat            'irc://irc.freenode.net/smarty'>
+<!ENTITY url.faq_1           'http://smarty.incutio.com/?page=SmartyFrequentlyAskedQuestions'>
+<!ENTITY url.faq_2           'http://www.smarty.net/forums/viewforum.php?f=23'>
+
+<!ENTITY url.e-accel         'http://eaccelerator.net/'>
+<!ENTITY url.ion-accel       'http://www.php-accelerator.co.uk'>
+<!ENTITY url.mmcache-accel   'http://turck-mmcache.sourceforge.net/'>
+<!ENTITY url.zend            'http://www.zend.com/'>
+<!ENTITY url.overLib         'http://www.bosrup.com/web/overlib/'>
+
+<!-- to use like <ulink url="&url.php-manual;some_function"> -->
+<!ENTITY url.php-manual      'http://php.net/'>
+
+<!-- The three special language constants -->
+<!ENTITY true  '<constant>TRUE</constant>'>
+<!ENTITY false '<constant>FALSE</constant>'>
+<!ENTITY null  '<constant>NULL</constant>'>
+<!-- use <type>NULL</type> if you're talking about the _type_ NULL,
+     use &null; if it's about the _value_ NULL
+ -->

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 4705 $ -->
+<!-- EN-Revision: 4637 Maintainer: takagi Status: ready -->
+<!-- CREDITS: mat-sh,daichi,joe -->
+
+<!ENTITY note.parameter.merge '<note>
+ <title>テクニカルノート</title>
+ <para>
+  <parameter>merge</parameter> パラメータは配列のキーを尊重するので、
+  インデックスが数値である２つの配列をマージする場合、
+  それらはお互い上書きされるか不連続なキーの配列になるかもしれません。
+  これは、数値のキーを全て削除した後に再びキーに番号付けを行う、PHP
+  の <ulink url="&url.php-manual;array_merge"><varname>array_merge()</varname></ulink>
+  関数とは違っています。
+ </para>
+</note>'>
+
+<!ENTITY note.parameter.function '<note>
+ <title>テクニカルノート</title>
+ <para>
+  選択したコールバック <parameter>function</parameter> が
+  <literal>array(&amp;$object, $method)</literal> 形式である場合は、
+  同じ <literal>$method</literal> を持つクラスのインスタンスをひとつだけ登録できます。
+  そのような場合は、最後に登録されたコールバック <parameter>function</parameter>
+  のみが用いられます。
+ </para>
+</note>'>
+
+<!ENTITY parameter.cacheid '<listitem>
+<para>
+<parameter>cache_id</parameter> はオプションのパラメータです。
+ この関数をコールするたびにこのパラメータを指定するかわりに、変数
+ <link linkend="variable.cache.id">
+ <parameter>$cache_id</parameter></link> を使うこともできます。
+ これは、同じテンプレートを使う異なるコンテンツ (異なる製品を表示するページなど)
+ をキャッシュする場合に使います。
+ 詳細は <link linkend="caching">キャッシュ</link> を参照ください。
+</para>
+</listitem>'>
+
+<!ENTITY parameter.compileid2 '<listitem>
+<para>
+<parameter>compile_id</parameter> はオプションのパラメータです。
+ この関数をコールするたびにこのパラメータを指定するかわりに、変数
+ <link linkend="variable.compile.id">
+ <parameter>$compile_id</parameter></link> を使うこともできます。
+ これは、同じテンプレートの異なるバージョンをコンパイルしたい場合
+ (言語ごとに別々にコンパイルしたい場合など)
+ に使います。
+</para>
+</listitem>'>
+
+<!ENTITY parameter.parent '<listitem>
+<para>
+<parameter>parent</parameter> はオプションのパラメータです。
+これは、メイン Smarty オブジェクトやユーザが作成したデータオブジェクト、
+あるいはユーザが作成したテンプレートオブジェクトなどへのアップリンクです。
+これらのオブジェクトは連結することができます。
+テンプレートからは、連結したオブジェクト内で代入されたすべての値にアクセスできます。
+</para>
+</listitem>'>
+
+<!ENTITY parameter.data '<listitem>
+<para>
+<parameter>data</parameter> はオプションのパラメータです。
+これは、オブジェクトに代入された変数の 名前/値 のペアを含む連想配列です。
+</para>
+</listitem>'>
+
+<!ENTITY parameter.compileid '<para>
+ 任意の第３パラメータとして <parameter>$compile_id</parameter>
+ を渡すことができます。
+ 異なる言語でコンパイルされた別々のテンプレートが存在するような、
+ 同じテンプレートの異なるバージョンをコンパイルしたい場合に利用します。
+ この関数をコールする度に compile_id を渡す代わりに、一度
+ <link linkend="variable.compile.id">
+ <parameter>$compile_id</parameter></link> 変数をセットすることもできます。
+</para>'>
+
+
+<!ENTITY parameter.filtertype '<listitem>
+<para>
+<parameter>type</parameter> にはフィルタの型を定義します。使える値は "pre"、"post"、"output" および "variable" です。
+</para>
+</listitem>'>
+
+<!ENTITY parameter.plugintype '<listitem>
+<para>
+<parameter>type</parameter> にはプラグインの型を定義します。使える値は "function"、"block"、"compiler" および "modifier" です。
+</para>
+</listitem>'>
+
+<!ENTITY parameter.pluginname '<listitem>
+<para>
+<parameter>name</parameter> にはプラグインの名前を定義します。
+</para>
+</listitem>'>
+
+<!ENTITY parameter.callback '<listitem>
+<para>
+   PHP 関数のコールバック <parameter>function</parameter>
+   は、次のいずれかとなります。
+   <itemizedlist>
+       <listitem><para>
+       関数名を含んだ文字列
+       </para></listitem>
+
+       <listitem><para>
+       <literal>array($object, $method)</literal> 形式の配列
+       （<literal>$object</literal> はオブジェクトの参照で、
+       <literal>$method</literal> はメソッド名を含む文字列）
+       </para></listitem>
+
+       <listitem><para>
+       <literal>array($class, $method)</literal> という形式の配列
+       （<literal>$class</literal> はクラス名であり、
+       <literal>$method</literal> はクラスのメソッド名）
+       </para></listitem>
+   </itemizedlist>
+   </para>
+</listitem>'>
+

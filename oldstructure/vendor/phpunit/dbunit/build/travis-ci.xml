@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+         colors="true"
+         verbose="true">
+  <php>
+    <const name="PHPUNIT_TESTSUITE" value="true"/>
+    <!--<const name="PHPUNIT_TESTSUITE_EXTENSION_DATABASE_MYSQL" value="mysql:dbname=test;unix_socket=/tmp/mysql.sock"/>-->
+  </php>
+
+  <testsuites>
+    <testsuite name="PHPUnit">
+      <directory suffix="Test.php">../Tests/DataSet</directory>
+      <directory suffix="Test.php">../Tests/Operation</directory>
+      <directory suffix="Test.php">../Tests/DB</directory>
+    </testsuite>
+  </testsuites>
+
+  <logging>
+    <log type="coverage-text" target="php://stdout"/>
+  </logging>
+
+  <filter>
+    <whitelist addUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">../PHPUnit</directory>
+    </whitelist>
+  </filter>
+</phpunit>

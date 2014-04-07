@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4728 $ -->
+<sect1 id="resources.file">
+ <title>ファイルテンプレートリソース</title>
+ <para>
+  Smarty はファイルシステム用のテンプレートリソースを組み込みで備えています。
+  <literal>file:</literal> リソースがSmartyのデフォルトのリソースです。
+  <link linkend="variable.default.resource.type"><parameter>$default_resource_type</parameter></link> が変更された場合、<literal>file:</literal> リソースキーを明示的につけなければなりません。
+ </para>
+ <para>
+  要求したテンプレートをファイルリソースが見つけられない場合、<link linkend="variable.default.template.handler.func"><parameter>$default_template_handler_func</parameter></link> が呼び出されます。
+ </para>
+ <note>
+  <title>注意</title>
+  <para>
+   Smarty 3.1 では、
+   <link linkend="variable.use.include.path"><parameter>$use_include_path</parameter></link> を有効にしない限り、<ulink url="&url.php-manual;ini.core.php#ini.include-path">include_path</ulink> を走査しなくなりました。
+  </para>
+ </note>
+ 
+ <sect2 id="templates.from.template.dir">
+  <title>$template_dir からテンプレートを取得する</title>
+  <para>
+   ファイルリソースは <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link> で設定したディレクトリからテンプレートのソースファイルを取得します。 ディレクトリのリストは配列に現れた順に走査され、見つかった最初のテンプレートが処理されます。
+  </para>
+  <example>
+   <title>$template_dir からテンプレートを取得する例</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->display('index.tpl');
+$smarty->display('file:index.tpl'); // 上に同じ
+?>
+]]>
+   </programlisting>
+   <para>テンプレートの中でテンプレートファイルを取得する例</para>
+   <programlisting>
+<![CDATA[
+{include file='index.tpl'}
+{include file='file:index.tpl'} {* 上に同じ *}
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+ 
+ <sect2 id="templates.from.specified.template.dir">
+  <title>特定の $template_dir からテンプレートを取得する</title>
+  <para>
+   Smarty 3.1 から、
+   <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link>
+   で指定した要素をブラケットで指定できる機能が追加されました。
+   これによって、複数のテンプレートセットを持つWebサイトが、どのテンプレートにアクセスするかをよりうまく制御できるようになります。
+  </para>
+  <para>
+   <literal>file:</literal> リソースタイプを指定する場所ではどこでも、このブラケット指定は使えます。
+  </para>
+  <example>
+   <title>$template_dir の特定の要素を指定する例</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+// テンプレートディレクトリをセットアップ
+$smarty->setTemplateDir(array(
+    './templates',            // element: 0, index: 0
+    './templates_2',          // element: 1, index: 1
+    '10' => 'templates_10',   // element: 2, index: '10'
+    'foo' => 'templates_foo', // element: 3, index: 'foo'
+));
+
+/*
+  テンプレートの構造は以下とする
+  ./templates/foo.tpl
+  ./templates_2/foo.tpl
+  ./templates_2/bar.tpl
+  ./templates_10/foo.tpl
+  ./templates_10/bar.tpl
+  ./templates_foo/foo.tpl
+*/
+
+// 通常のアクセス方法
+$smarty->display('file:foo.tpl'); 
+// ./templates/foo.tpl が読み込まれます。
+
+// 数値インデックスを使う方法
+$smarty->display('file:[1]foo.tpl'); 
+// ./templates_2/foo.tpl が読み込まれます。
+
+// 数値のインデックスを指定する方法
+$smarty->display('file:[10]foo.tpl'); 
+// ./templates_10/foo.tpl が読み込まれます。
+
+// 文字列でインデックスを指定する方法
+$smarty->display('file:[foo]foo.tpl'); 
+// ./templates_foo/foo.tpl が読み込まれます。
+
+// "未定義の" 数値でインデックスを指定した場合(要素の場所を指定)
+$smarty->display('file:[2]foo.tpl'); 
+// ./templates_10/foo.tpl が読み込まれます。
+
+?>
+]]>
+   </programlisting>
+   <para>テンプレートの中でブラケット指定を使う</para>
+   <programlisting>
+<![CDATA[
+{include file="file:foo.tpl"}
+{* ./templates/foo.tpl が読み込まれます *}
+
+{include file="file:[1]foo.tpl"}
+{* ./templates_2/foo.tpl が読み込まれます *}
+
+{include file="file:[foo]foo.tpl"}
+{* ./templates_foo/foo.tpl が読み込まれます *}
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+   
+ <sect2 id="templates.from.any.dir">
+  <title>任意の場所からテンプレートを取得する</title>
+  <para>
+   <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link>
+   で指定されたディレクトリ以外からテンプレートを取得する場合、<literal>file:</literal> リソースタイプが必須です。
+   <literal>file:</literal> の後で、テンプレートへの絶対パス(最初にスラッシュを付ける) を指定します。 
+  </para>
+  <note>
+   <para>
+    <link linkend="advanced.features.security"><varname>セキュリティ</varname></link> 機能を有効にした場合、
+    <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link> で指定したディレクトリ以外のファイルは、<parameter>$secure_dir</parameter> で指定したディレクトリでない限りアクセスできなくなります。
+   </para>
+  </note>
+  <example>
+   <title>任意の場所からテンプレートを取得する例</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->display('file:/export/templates/index.tpl');
+$smarty->display('file:/path/to/my/templates/menu.tpl');
+?>
+]]>
+   </programlisting>
+   <para>
+    テンプレート内で任意の場所からテンプレートを取得する例
+   </para>
+   <programlisting>
+<![CDATA[
+{include file='file:/usr/local/share/templates/navigation.tpl'}
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+ 
+ <sect2 id="templates.windows.filepath">
+  <title>Windows のファイルパスについて</title>
+  <para>
+   Windows マシンで Smarty を動作させている場合、ファイルパスの先頭に通常はドライブレター(C:) がつきます。
+   この場合、名前空間の衝突を避けながら望む結果を得るために、必ず <literal>file:</literal> リソースを使うようにして下さい。
+  </para>
+  <example>
+   <title>Windows のファイルパスを指定してテンプレートを使う例</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->display('file:C:/export/templates/index.tpl');
+$smarty->display('file:F:/path/to/my/templates/menu.tpl');
+?>
+]]>
+  </programlisting>
+  <para>
+   テンプレート内で Windows のファイルパスを指定する例:
+  </para>
+  <programlisting>
+<![CDATA[
+{include file='file:D:/usr/local/share/templates/navigation.tpl'}
+]]>
+</programlisting>
+  </example>
+ </sect2>
+
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

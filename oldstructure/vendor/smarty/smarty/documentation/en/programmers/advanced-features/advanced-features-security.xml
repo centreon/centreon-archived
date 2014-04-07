@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4525 $ -->
+<sect1 id="advanced.features.security">
+ <title>Security</title>
+ <para>
+   Security is good for situations when you have untrusted parties editing the templates
+   eg via ftp, and you want to reduce the risk of system security compromises through the template language. 
+ </para>
+ <para>
+   The settings of the security policy are defined by properties of an instance of the Smarty_Security class.
+These are the possible settings:
+<itemizedlist>
+  <listitem>
+    <para>
+      <parameter>$php_handling</parameter> determines how Smarty to handle PHP code embedded in templates.
+      Possible values are:
+      <itemizedlist>
+        <listitem>
+          <para>
+          Smarty::PHP_PASSTHRU -> echo PHP tags as they are
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Smarty::PHP_QUOTE    -> escape tags as entities
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Smarty::PHP_REMOVE   -> remove php tags
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+          Smarty::PHP_ALLOW    -> execute php tags
+          </para>
+        </listitem>
+      </itemizedlist>
+      The default value is Smarty::PHP_PASSTHRU.
+    </para>
+    <para>
+      If security is enabled the <link linkend="variable.php.handling"><parameter>$php_handling</parameter></link>
+      setting of the Smarty object is not checked for security.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <parameter>$secure_dir</parameter> is an array of template directories that are considered secure.
+      <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link> concidered secure implicitly.
+      The default is an empty array.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <parameter>$trusted_dir</parameter> is an array of all directories that are considered trusted.
+      Trusted directories are where you keep php scripts that are executed directly from the templates
+      with <link linkend="language.function.include.php"><varname>{include_php}</varname></link>.
+      The default is an empty array.
+    </para>
+  </listitem>
+  <listitem>
+      <para>
+        <parameter>$trusted_uri</parameter> is an array of regular expressions matching URIs that are considered trusted.
+        This security directive used by <link linkend="language.function.fetch"><varname>{fetch}</varname></link> and
+        <link linkend="language.function.html.image"><varname>{html_image}</varname></link>. URIs passed to these functions
+        are reduced to <literal>{$PROTOCOL}://{$HOSTNAME}</literal> to allow simple regular expressions 
+        (without having to deal with edge cases like authentication-tokens).
+      </para>
+      <para>
+        The expression <literal>'#https?://.*smarty.net$#i'</literal> would allow accessing the follwing URIs:
+        <itemizedlist>
+          <listitem><para><literal>http://smarty.net/foo</literal></para></listitem>
+          <listitem><para><literal>http://smarty.net/foo</literal></para></listitem>
+          <listitem><para><literal>http://www.smarty.net/foo</literal></para></listitem>
+          <listitem><para><literal>http://smarty.net/foo</literal></para></listitem>
+          <listitem><para><literal>https://foo.bar.www.smarty.net/foo/bla?blubb=1</literal></para></listitem>
+        </itemizedlist>
+
+        but deny access to these URIs:
+
+        <itemizedlist>
+            <listitem><para><literal>http://smarty.com/foo</literal> (not matching top-level domain "com")</para></listitem>
+            <listitem><para><literal>ftp://www.smarty.net/foo</literal> (not matching protocol "ftp")</para></listitem>
+            <listitem><para><literal>http://www.smarty.net.otherdomain.com/foo</literal> (not matching end of domain "smarty.net")</para></listitem>
+          </itemizedlist>
+      </para>
+    </listitem>
+  <listitem>
+    <para>
+      <parameter>$static_classes</parameter> is an array of classes that are considered trusted.
+      The default is an empty array which allows access to all static classes. To disable access to
+      all static classes set $static_classes = null.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <parameter>$php_functions</parameter> is an array of PHP functions that are considered trusted and 
+      can be used from within template. To disable access to all PHP functions set $php_functions = null.
+      An empty array ( $php_functions = array() ) will allow all PHP functions.
+      The default is array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array','time','nl2br').
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <parameter>$php_modifiers</parameter> is an array of PHP functions that are considered trusted and 
+      can be used from within template as modifier. To disable access to all PHP modifier set $php_modifier = null.
+      An empty array ( $php_modifier = array() ) will allow all PHP functions.
+      The default is array('escape','count').
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <parameter>$streams</parameter> is an array of streams that are considered trusted and 
+      can be used from within template. To disable access to all streams set $streams = null.
+      An empty array ( $streams = array() ) will allow all streams.
+      The default is array('file').
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+     <parameter>$allowed_modifiers</parameter> is an array of (registered / autoloaded) 
+     modifiers that should be accessible to the template. If this array is non-empty,
+     only the herein listed modifiers may be used. This is a whitelist.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <parameter>$disabled_modifiers</parameter> is an array of (registered / autoloaded) 
+     modifiers that may not be accessible to the template.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <parameter>$allowed_tags</parameter> is a boolean flag which controls if constants can
+     function-, block and filter plugins that should be accessible to the template. If this 
+     array is non-empty, only the herein listed modifiers may be used. This is a whitelist.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <parameter>$disabled_tags</parameter> is an array of (registered / autoloaded) 
+     function-, block and filter plugins that may not be accessible to the template.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <parameter>$allow_constants</parameter> is a boolean flag which controls if constants can
+     be accessed by the template. The default is "true".
+    </para>
+   </listitem>
+  <listitem>
+    <para>
+      <parameter>$allow_super_globals</parameter> is a boolean flag which controls if the PHP
+      super globals can be accessed by the template. The default is "true".
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      <parameter>$allow_php_tag</parameter> is a boolean flag which controls if {php} and {include_php}
+      tags can be used by the template. The default is "false".
+    </para>
+  </listitem>
+</itemizedlist>
+ </para>
+  <para>
+    If security is enabled, no private methods, functions or properties of static classes or assigned objects can be accessed
+    (beginningwith '_') by the template. 
+  </para>
+  <para>
+    To customize the security policy settings you can extend the Smarty_Security class or create an instance of it.
+ </para>
+  <example>
+    <title>Setting security policy by extending the Smarty_Security class</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+require 'Smarty.class.php';
+
+class My_Security_Policy extends Smarty_Security {
+  // disable all PHP functions
+  public $php_functions = null;
+  // remove PHP tags
+  public $php_handling = Smarty::PHP_REMOVE;
+  // allow everthing as modifier
+  public $modifiers = array();
+}
+$smarty = new Smarty();
+// enable security
+$smarty->enableSecurity('My_Security_Policy');
+?>
+]]>
+</programlisting>
+  </example>
+  <example>
+    <title>Setting security policy by instance of the Smarty_Security class</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+require 'Smarty.class.php';
+$smarty = new Smarty();
+$my_security_policy = new Smarty_Security($smarty);
+// disable all PHP functions
+$my_security_policy->php_functions = null;
+// remove PHP tags
+$my_security_policy->php_handling = Smarty::PHP_REMOVE;
+// allow everthing as modifier
+$my_security_policy->$modifiers = array();
+// enable security
+$smarty->enableSecurity($my_security_policy);
+?>
+]]>
+</programlisting>
+  </example>
+  <example>
+    <title>Enable security with the default settings</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+require 'Smarty.class.php';
+$smarty = new Smarty();
+// enable default security
+$smarty->enableSecurity();
+?>
+]]>
+</programlisting>
+  </example>
+  <note><para>
+    Must security policy settings are only checked when the template gets compiled. For that reasion you should
+    delete all cached and compiled template files when you change your security settings.
+  </para></note>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

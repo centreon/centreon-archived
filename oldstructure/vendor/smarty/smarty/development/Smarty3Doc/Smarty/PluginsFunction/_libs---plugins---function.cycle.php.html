@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page function.cycle.php</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name">/libs/plugins/function.cycle.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-functions">Functions</a>
+			</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Smarty plugin</p>
+		
+			</div>
+</div>
+		
+
+	
+	
+	
+	<a name="sec-functions"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Functions</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<span class="disabled">Functions</span>
+		</div>
+		<div class="info-box-body">	
+			
+Strict standards: Only variables should be passed by reference in C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php on line 712
+
+Call Stack:
+    0.0006     229032   1. {main}() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:0
+    0.0027     240216   2. include('C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:59
+    0.1463    8650352   3. phpDocumentor_setup->createDocs() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc:65
+   13.2331  130016152   4. phpDocumentor_IntermediateParser->Output() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Setup.inc.php:761
+   13.9644  131381624   5. phpDocumentor_IntermediateParser->Convert() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1865
+   13.9644  131381720   6. Converter->walk() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1652
+   15.9223  134291344   7. HTMLframesConverter->endPage() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converter.inc:1939
+   15.9225  134292512   8. Smarty->fetch() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converters\HTML\frames\HTMLframesConverter.inc:366
+   15.9448  134412880   9. include('C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsFunction\26d3399f63abd43a7d72f8c21440dcb0\%%-65^%%-658603405^page.tpl.php') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1298
+   15.9661  134417648  10. Smarty->_smarty_include() C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsFunction\26d3399f63abd43a7d72f8c21440dcb0\%%-65^%%-658603405^page.tpl.php:257
+   15.9663  134420960  11. Smarty->_compile_resource() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1935
+   15.9673  134426584  12. Smarty->_compile_source() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1458
+   15.9677  134460088  13. Smarty_Compiler->_compile_file() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1523
+   15.9685  134494200  14. Smarty_Compiler->_compile_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:316
+   15.9694  134495120  15. Smarty_Compiler->_compile_custom_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:537
+
+<a name="functionsmarty_function_cycle" id="functionsmarty_function_cycle"><!-- --></a>
+<div class="evenrow">
+	
+	<div>
+		<span class="method-title">smarty_function_cycle</span> (line <span class="line-number">46</span>)
+	</div> 
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Smarty {cycle} function plugin</p>
+<p class="description"><p>Type:     function<br />  Name:     cycle<br />  Date:     May 3, 2002<br />  Purpose:  cycle through given values<br />  Params:  <pre> - name      - name of cycle (optional)
+ - values    - comma separated list of values to cycle, or an array of values to cycle
+               (this can be left out for subsequent calls)
+ - reset     - boolean - resets given var to true
+ - print     - boolean - print var or not. default is true
+ - advance   - boolean - whether or not to advance the cycle
+ - delimiter - the value delimiter, default is ","
+ - assign    - boolean, assigns to template var instead of printed.</pre>  Examples:<br />  <pre> {cycle values="#eeeeee,#d0d0d0d"}
+ {cycle name=row values="one,two,three" reset=true}
+ {cycle name=row}</pre></p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Monte Ohrt &lt;<a href="mailto:monte">at ohrt dot com monte at ohrt dot com</a>&gt;</li>
+				<li><span class="field">author:</span> credit to Mark Priatel &lt;<a href="mailto:mpriatel@rogers.com">mpriatel@rogers.com</a>&gt;</li>
+				<li><span class="field">author:</span> credit to Gerard &lt;<a href="mailto:gerard@interfold.com">gerard@interfold.com</a>&gt;</li>
+				<li><span class="field">author:</span> credit to Jason Sweat &lt;<a href="mailto:jsweat_php@yahoo.com">jsweat_php@yahoo.com</a>&gt;</li>
+				<li><span class="field">version:</span> 1.3</li>
+				<li><span class="field">link:</span> <a href="http://www.smarty.net/manual/en/language.function.cycle.php">{cycle}
+       (Smarty online manual)</a></li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string|null</span>
+		<span class="method-name">
+			smarty_function_cycle
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$params</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$template</span>)
+			</div>
+
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$params</span><span class="var-description">: parameters</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$template</span><span class="var-description">: template object</span>			</li>
+				</ul>
+		
+	
+</div>
+		</div>
+	</div>
+	
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:41 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

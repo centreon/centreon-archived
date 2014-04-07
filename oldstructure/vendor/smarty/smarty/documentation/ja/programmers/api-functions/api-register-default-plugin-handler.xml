@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4710 $ -->
+<!-- EN-Revision: 4063 Maintainer: takagi Status: ready -->
+<refentry id="api.register.default.plugin.handler">
+ <refnamediv>
+  <refname>registerDefaultPluginHandler()</refname>
+  <refpurpose>未定義のタグから呼ばれる関数を登録する</refpurpose>
+ </refnamediv>
+ <refsect1>
+  <title>Description</title>
+  <methodsynopsis>
+   <type>void</type><methodname>registerDefaultPluginHandler</methodname>
+   <methodparam><type>mixed</type><parameter>callback</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+      デフォルトのプラグインハンドラを登録します。これは、
+      コンパイラがタグの定義を見つけられなかったときに呼ばれるものです。
+      次のパラメータを使います。
+      <itemizedlist>
+          &parameter.callback;
+      </itemizedlist>   
+  </para>
+  <para>
+    Smarty のコンパイル時に遭遇したタグが
+    内部的に未定義で、かつ登録されてもいなくて、
+    さらにプラグインフォルダにも存在しない場合に、デフォルトのプラグインハンドラを使って解決を試みます。
+    このハンドラは同じ未定義のタグに対して何度も呼ばれる可能性があります。
+    有効なプラグイン形式をループ処理するためです。
+  </para>
+
+  <example>
+   <title>デフォルトのプラグインハンドラの例</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+$smarty = new Smarty();
+$smarty->registerDefaultPluginHandler('my_plugin_handler');
+
+/**
+ * Default Plugin Handler
+ *
+ * called when Smarty encounters an undefined tag during compilation
+ * 
+ * @param string                     $name      name of the undefined tag
+ * @param string                     $type     tag type (e.g. Smarty::PLUGIN_FUNCTION, Smarty::PLUGIN_BLOCK, 
+                                               Smarty::PLUGIN_COMPILER, Smarty::PLUGIN_MODIFIER, Smarty::PLUGIN_MODIFIERCOMPILER)
+ * @param Smarty_Internal_Template   $template     template object
+ * @param string                     &$callback    returned function name 
+ * @param string                     &$script      optional returned script filepath if function is external
+ * @param bool                       &$cacheable    true by default, set to false if plugin is not cachable (Smarty >= 3.1.8)
+ * @return bool                      true if successfull
+ */
+function my_plugin_handler ($name, $type, $template, &$callback, &$script, &$cacheable)
+{
+    switch ($type) {
+        case Smarty::PLUGIN_FUNCTION:
+            switch ($name) {
+                case 'scriptfunction':
+                    $script = './scripts/script_function_tag.php';
+                    $callback = 'default_script_function_tag';
+                    return true;
+                case 'localfunction':
+                    $callback = 'default_local_function_tag';
+                    return true;
+                default:
+                return false;
+            }
+        case Smarty::PLUGIN_COMPILER:
+            switch ($name) {
+                case 'scriptcompilerfunction':
+                    $script = './scripts/script_compiler_function_tag.php';
+                    $callback = 'default_script_compiler_function_tag';
+                    return true;
+                default:
+                return false;
+            }
+        case Smarty::PLUGIN_BLOCK:
+            switch ($name) {
+                case 'scriptblock':
+                    $script = './scripts/script_block_tag.php';
+                    $callback = 'default_script_block_tag';
+                    return true;
+                default:
+                return false;
+            }
+        default:
+        return false;
+    }
+ }
+
+?>
+]]>
+  </programlisting>
+  </example>
+     <note>
+         <para>
+             戻すコールバックは静的なものでなければなりません。
+             関数名か、あるいはクラス名とメソッド名の配列を返します。
+         </para>
+         <para>
+             オブジェクトとメソッド名のような動的なコールバックには対応していません。
+         </para>
+     </note> 
+     
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

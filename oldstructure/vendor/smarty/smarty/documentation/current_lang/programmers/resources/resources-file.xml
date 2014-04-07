@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 3827 $ -->
+<sect1 id="resources.file">
+ <title>File Template Resources</title>
+ <para>
+  Smarty ships with a built-in template resource for the filesystem. The <literal>file:</literal> is the default resource. 
+  The resource key <literal>file:</literal> must only be specified, if the 
+  <link linkend="variable.default.resource.type"><parameter>$default_resource_type</parameter></link> has been changed.
+ </para>
+ <para>
+  If the file resource cannot find the requested template, the 
+  <link linkend="variable.default.template.handler.func"><parameter>$default_template_handler_func</parameter></link>
+  is invoked.	
+ </para>
+ <note>
+  <title>Note</title>
+  <para>
+   As of Smarty 3.1 the file resource no longer walks through the 
+   <ulink url="&url.php-manual;ini.core.php#ini.include-path">include_path</ulink> unless
+   <link linkend="variable.use.include.path"><parameter>$use_include_path</parameter> is activated</link>
+  </para>
+ </note>
+ 
+ <sect2 id="templates.from.template.dir">
+  <title>Templates from $template_dir</title>
+  <para>
+   The file resource pulls templates source files from the directories specified in 
+   <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link>. 
+   The list of directories is traversed in the order they appear in the array. 
+   The first template found is the one to process.
+  </para>
+  <example>
+   <title>Using templates from the $template_dir</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->display('index.tpl');
+$smarty->display('file:index.tpl'); // same as above
+?>
+]]>
+   </programlisting>
+   <para>From within a Smarty template</para>
+   <programlisting>
+<![CDATA[
+{include file='index.tpl'}
+{include file='file:index.tpl'} {* same as above *}
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+ 
+ <sect2 id="templates.from.specified.template.dir">
+  <title>Templates from a specific $template_dir</title>
+  <para>
+   Smarty 3.1 introduced the bracket-syntax for specifying an element from 
+   <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link>.
+   This allows websites employing multiple sets of templates better control over
+   which template to acces.
+  </para>
+  <para>
+   The bracket-syntax can be used from anywhere you can specify the 
+   <literal>file:</literal> resource type.
+  </para>
+  <example>
+   <title>Specifying the $template_dir to use</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+// setup template directories
+$smarty->setTemplateDir(array(
+    './templates',            // element: 0, index: 0
+    './templates_2',          // element: 1, index: 1
+    '10' => 'templates_10',   // element: 2, index: '10'
+    'foo' => 'templates_foo', // element: 3, index: 'foo'
+));
+
+/*
+  assume the template structure
+  ./templates/foo.tpl
+  ./templates_2/foo.tpl
+  ./templates_2/bar.tpl
+  ./templates_10/foo.tpl
+  ./templates_10/bar.tpl
+  ./templates_foo/foo.tpl
+*/
+
+// regular access
+$smarty->display('file:foo.tpl'); 
+// will load ./templates/foo.tpl
+
+// using numeric index
+$smarty->display('file:[1]foo.tpl'); 
+// will load ./templates_2/foo.tpl
+
+// using numeric string index
+$smarty->display('file:[10]foo.tpl'); 
+// will load ./templates_10/foo.tpl
+
+// using string index
+$smarty->display('file:[foo]foo.tpl'); 
+// will load ./templates_foo/foo.tpl
+
+// using "unknown" numeric index (using element number)
+$smarty->display('file:[2]foo.tpl'); 
+// will load ./templates_10/foo.tpl
+
+?>
+]]>
+   </programlisting>
+   <para>From within a Smarty template</para>
+   <programlisting>
+<![CDATA[
+{include file="file:foo.tpl"}
+{* will load ./templates/foo.tpl *}
+
+{include file="file:[1]foo.tpl"}
+{* will load ./templates_2/foo.tpl *}
+
+{include file="file:[foo]foo.tpl"}
+{* will load ./templates_foo/foo.tpl *}
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+   
+ <sect2 id="templates.from.any.dir">
+  <title>Templates from any directory</title>
+  <para>
+   Templates outside of the 
+   <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link>
+   require the <literal>file:</literal> template resource type, followed by
+   the absolute path to the template (with leading slash.)
+  </para>
+  <note>
+   <para>
+    With <link linkend="advanced.features.security"><varname>Security</varname></link> enabled, 
+    access to templates outside of the 
+    <link linkend="variable.template.dir"><parameter>$template_dir</parameter></link> 
+    is not allowed unless you list those directories in <parameter>$secure_dir</parameter>.
+   </para>
+  </note>
+  <example>
+   <title>Using templates from any directory</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->display('file:/export/templates/index.tpl');
+$smarty->display('file:/path/to/my/templates/menu.tpl');
+?>
+]]>
+   </programlisting>
+   <para>
+    And from within a Smarty template:
+   </para>
+   <programlisting>
+<![CDATA[
+{include file='file:/usr/local/share/templates/navigation.tpl'}
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+ 
+ <sect2 id="templates.windows.filepath">
+  <title>Windows Filepaths</title>
+  <para>
+   If you are using a Windows machine, filepaths usually include a
+   drive letter (C:) at the beginning of the pathname. Be sure to use
+   <literal>file:</literal> in the path to avoid namespace conflicts and
+   get the desired results.
+  </para>
+  <example>
+   <title>Using templates from windows file paths</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->display('file:C:/export/templates/index.tpl');
+$smarty->display('file:F:/path/to/my/templates/menu.tpl');
+?>
+]]>
+  </programlisting>
+  <para>
+   And from within Smarty template:
+  </para>
+  <programlisting>
+<![CDATA[
+{include file='file:D:/usr/local/share/templates/navigation.tpl'}
+]]>
+</programlisting>
+  </example>
+ </sect2>
+
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

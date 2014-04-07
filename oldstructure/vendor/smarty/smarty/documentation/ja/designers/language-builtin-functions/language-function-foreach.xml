@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 4711 $ -->
+<!-- EN-Revision: 4278 Maintainer: takagi Status: ready -->
+<!-- CREDITS: mat-sh,daichi,joe -->
+<sect1 id="language.function.foreach">
+ <title>{foreach},{foreachelse}</title> 
+ <para>
+  <varname>{foreach}</varname> はデータの配列をループするために使います。<varname>{foreach}</varname>
+  は <link linkend="language.function.section"><varname>{section}</varname></link> ループよりもシンプルできれいな構文で、
+  連想配列をループすることもできます。
+ </para>
+ <para>
+  <varname>{foreach $arrayvar as $itemvar}</varname> 
+ </para>
+ <para>
+  <varname>{foreach $arrayvar as $keyvar=>$itemvar}</varname> 
+ </para>
+ <note>
+ <para>
+  この foreach 構文は、名前つき属性を受け付けません。この構文は Smarty 3
+  で新しく導入されたものですが、Smarty 2.x 形式の
+  <literal>{foreach from=$myarray key="mykey" item="myitem"}</literal> もまだ対応しています。
+ </para>
+ </note>
+   <itemizedlist>
+   <listitem><para>
+   <varname>{foreach}</varname> ループはネストさせることができます。
+   </para></listitem>
+
+   <listitem><para>
+   <parameter>array</parameter> 変数を渡すと、その要素数で
+   <varname>{foreach}</varname> のループ回数が決まります。
+   整数値を渡してループ回数を決めることもできます。
+   </para></listitem>
+
+   <listitem><para>
+   <parameter>array</parameter> 変数に値がない場合に、
+   <varname>{foreachelse}</varname> が実行されます。
+   </para></listitem>
+    
+  <listitem>
+   <para>
+    <varname>{foreach}</varname> のプロパティには
+    <link linkend="foreach.property.index"><parameter>@index</parameter></link>、
+    <link linkend="foreach.property.iteration"><parameter>@iteration</parameter></link>、
+    <link linkend="foreach.property.first"><parameter>@first</parameter></link>、
+    <link linkend="foreach.property.last"><parameter>@last</parameter></link>、
+    <link linkend="foreach.property.show"><parameter>@show</parameter></link>、
+    <link linkend="foreach.property.total"><parameter>@total</parameter></link>
+    があります。
+   </para>
+  </listitem>
+  
+  <listitem>
+   <para>
+    <varname>{foreach}</varname> では
+    <link linkend="foreach.construct.break"><varname>{break}</varname></link>、
+    <link linkend="foreach.construct.continue"><varname>{continue}</varname></link>
+    が使えます。
+   </para>
+  </listitem>
+        
+    <listitem><para>
+     <parameter>key</parameter> 変数のかわりに、ループ要素の現在のキーにアクセスする方法として
+     <parameter>{$item@key}</parameter> を使うことができます (以下の例を参照ください)。
+    </para></listitem>    
+    
+   </itemizedlist> 
+ 
+   <note>
+   <para>
+    <literal>$var@property</literal> 構文は Smarty 3 で新しく導入されたものですが、
+    Smarty 2 の <literal>{foreach from=$myarray key="mykey" item="myitem"}</literal> 英式の構文での
+    <literal>$smarty.foreach.name.property</literal> もまだ対応しています。
+   </para>
+   </note>  
+   <note>
+   <para>
+    配列のキーを <literal>{foreach $myArray as $myKey => $myValue}</literal>
+    で取得することもできますが、foreach ループ内で常に <varname>$myValue@key</varname>
+    で取得することができます。
+   </para>
+   </note>
+ 
+ 
+ <para><emphasis role="bold">オプションのフラグ</emphasis></para>
+ <informaltable frame="all">
+  <tgroup cols="2">
+   <colspec colname="param" align="center" />
+   <colspec colname="desc" />
+   <thead>
+    <row>
+     <entry>名前</entry>
+     <entry>概要</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>nocache</entry>
+     <entry><varname>{foreach}</varname> ループのキャッシュを無効にする</entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </informaltable>
+ 
+ 
+ <example>
+  <title>シンプルな <varname>{foreach}</varname> ループ</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+$arr = array('red', 'green', 'blue');
+$smarty->assign('myColors', $arr);
+?>
+]]>
+  </programlisting>
+   <para><parameter>$myArray</parameter> を順序なしリストで出力するテンプレート</para>
+  <programlisting>
+<![CDATA[
+<ul>
+{foreach $myColors as $color}
+    <li>{$color}</li>
+{/foreach}
+</ul>
+]]>
+  </programlisting>
+  <para>
+   上の例の出力は次のようになります。
+  </para>
+  <screen>
+<![CDATA[
+<ul>
+    <li>red</li>
+    <li>green</li>
+    <li>blue</li>
+</ul>
+]]>
+  </screen>
+ </example>
+
+<example>
+  <title>追加の <parameter>key</parameter> 変数の例</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+$people = array('fname' => 'John', 'lname' => 'Doe', 'email' => 'j.doe@example.com');
+$smarty->assign('myPeople', $people);
+?>
+]]>
+  </programlisting>
+   <para><parameter>$myArray</parameter> を キー/値 のペアで出力するテンプレート。</para>
+  <programlisting>
+<![CDATA[
+<ul>
+{foreach $myPeople as $value}
+   <li>{$value@key}: {$value}</li>
+{/foreach}
+</ul>
+]]>
+  </programlisting>
+  <para>
+   上の例の出力は次のようになります。
+  </para>
+  <screen>
+<![CDATA[
+<ul>
+    <li>fname: John</li>
+    <li>lname: Doe</li>
+    <li>email: j.doe@example.com</li>
+</ul>
+]]>
+  </screen>
+ </example>
+
+
+
+ <example>
+  <title>{foreach} で <parameter>item</parameter> と <parameter>key</parameter> をネストする例</title>
+  <para>配列を Smarty に割り当てます。key にはループする値のキーが含まれます。</para>
+  <programlisting role="php">
+<![CDATA[
+<?php
+ $smarty->assign('contacts', array(
+                             array('phone' => '555-555-1234',
+                                   'fax' => '555-555-5678',
+                                   'cell' => '555-555-0357'),
+                             array('phone' => '800-555-4444',
+                                   'fax' => '800-555-3333',
+                                   'cell' => '800-555-2222')
+                             ));
+?>
+]]>
+  </programlisting>
+  <para><parameter>$contact</parameter> を出力するテンプレート</para>
+  <programlisting>
+<![CDATA[
+{* key は常にプロパティとして使えます *}
+{foreach $contacts as $contact}
+  {foreach $contact as $value}
+    {$value@key}: {$value}
+  {/foreach}
+{/foreach}
+
+{* PHP の構文を使ってキーにアクセスすることもできます *}
+{foreach $contacts as $contact}
+  {foreach $contact as $key => $value}
+    {$key}: {$value}
+  {/foreach}
+{/foreach}
+]]>
+  </programlisting>
+  <para>
+   上の例の出力は、どちらも次のようになります。
+  </para>
+  <screen>
+<![CDATA[
+  phone: 555-555-1234
+  fax: 555-555-5678
+  cell: 555-555-0357
+  phone: 800-555-4444
+  fax: 800-555-3333
+  cell: 800-555-2222
+]]>
+  </screen>
+ </example>
+
+ <example>
+  <title>データベースでの {foreachelse} の例</title>
+  <para>データベース (PDO) の検索結果をループします。この例は、array() ではなく PHP のイテレータをループします。</para>
+<programlisting role="php">
+<![CDATA[
+<?php 
+  include('Smarty.class.php'); 
+
+  $smarty = new Smarty; 
+
+  $dsn = 'mysql:host=localhost;dbname=test'; 
+  $login = 'test'; 
+  $passwd = 'test'; 
+
+  // テンプレート内で複数の結果カーソルを使う場合は、
+  // mysql のバッファクエリを使うように PDO を
+  // 設定します
+
+  $db = new PDO($dsn, $login, $passwd, array( 
+     PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true)); 
+
+  $res = $db->prepare("select * from users"); 
+  $res->execute(); 
+  $res->setFetchMode(PDO::FETCH_LAZY); 
+
+  // Smarty に代入します
+  $smarty->assign('res',$res); 
+
+  $smarty->display('index.tpl');?>
+?>
+]]>
+  </programlisting>
+  <programlisting>
+<![CDATA[
+{foreach $res as $r} 
+  {$r.id} 
+  {$r.name}
+{foreachelse}
+  .. 検索結果が見つかりませんでした ..
+{/foreach}
+]]>
+  </programlisting>
+ </example>
+
+ <para>
+   上の例では、結果に <literal>id</literal> および <literal>name</literal>
+   というカラムが含まれることを前提としています。
+ </para>
+ <para>
+   普通に配列をループさせるのに比べたイテレータの利点は何でしょうか?
+   配列の場合は、すべての結果をメモリに取り込んでからループが始まります。
+   イテレータの場合は、ループ内で 1 件ずつ読み込みと解放を繰り返します。
+   これは、結果セットが巨大な場合は特に、処理時間とメモリの節約になるでしょう。
+ </para>
+
+ <sect2 id="foreach.property.index">
+  <title>@index</title>
+  <para>
+   <parameter>index</parameter> には、現在の配列のインデックスをゼロから数えた値が含まれます。
+  </para>
+  <example>
+  <title><parameter>index</parameter> の例</title>
+
+   <programlisting>
+<![CDATA[
+{* 4 回目の反復 (index が 3 のとき) に空の行を出力します *}
+<table>
+{foreach $items as $i}
+  {if $i@index eq 3}
+     {* 空の行を出力します *}
+     <tr><td>nbsp;</td></tr>
+  {/if}
+  <tr><td>{$i.label}</td></tr>
+{/foreach}
+</table>
+]]>
+  </programlisting>
+  </example>
+  </sect2>
+
+ <sect2 id="foreach.property.iteration">
+  <title>@iteration</title>
+  <para>
+   <parameter>iteration</parameter> は現在のループが反復された回数を表示します。
+   <link linkend="foreach.property.index"><parameter>index</parameter></link>
+   とは異なり、常に 1 から始まります。
+   各ループごとに 1 ずつ加算されます。
+  </para>
+ <example>
+  <title><parameter>iteration</parameter> の例: is div by</title>
+  <para>
+    <emphasis>"is div by"</emphasis> 演算子を使うと、特定の回数を検出することができます。
+    これは、4 件おきに名前を太字にする例です。
+  </para>
+  <programlisting>
+<![CDATA[
+{foreach $myNames as $name}
+  {if $name@iteration is div by 4}
+    <b>{$name}</b>
+  {/if}
+  {$name}
+{/foreach}
+]]>
+</programlisting> 
+ </example>
+  <example>
+   <title><parameter>iteration</parameter> の例: is even/odd by</title>
+   <para>
+     <emphasis>"is even by"</emphasis> 演算子と <emphasis>"is odd by"</emphasis> 演算子を使うと、
+     特定の件数ごとに何かを切り替えることができます。
+     even と odd で、どちらから始まるかが切り替わります。
+     これは、3 件おきにフォントの色を切り替える例です。
+   </para>
+   <programlisting>
+ <![CDATA[
+ {foreach $myNames as $name}
+   {if $name@iteration is even by 3}
+     <span style="color: #000">{$name}</span>
+   {else}
+     <span style="color: #eee">{$name}</span>
+   {/if}
+ {/foreach}
+ ]]>
+ </programlisting> 
+ 
+   <para>
+    この出力は、次のようになります。
+   </para>
+   <screen>
+<![CDATA[
+    <span style="color: #000">...</span>
+    <span style="color: #000">...</span>
+    <span style="color: #000">...</span>
+    <span style="color: #eee">...</span>
+    <span style="color: #eee">...</span>
+    <span style="color: #eee">...</span>
+    <span style="color: #000">...</span>
+    <span style="color: #000">...</span>
+    <span style="color: #000">...</span>
+    <span style="color: #eee">...</span>
+    <span style="color: #eee">...</span>
+    <span style="color: #eee">...</span>
+    ...
+]]>
+   </screen>
+ 
+  </example>
+ </sect2>
+
+ <sect2 id="foreach.property.first">
+  <title>@first</title>
+  <para>
+   <parameter>first</parameter> は、現在の <varname>{foreach}</varname>
+   の反復が最初のものであるときに &true; となります。
+   ここでは、最初の反復時にテーブルのヘッダを表示します。
+  </para>
+  <example>
+  <title><parameter>first</parameter> プロパティの例</title>
+   <programlisting>
+<![CDATA[
+{* 最初の項目にはテーブルのヘッダを表示します *}
+<table>
+{foreach $items as $i}
+  {if $i@first}
+    <tr>
+      <th>key</td>
+      <th>name</td>
+    </tr>
+  {/if}
+  <tr>
+    <td>{$i@key}</td>
+    <td>{$i.name}</td>
+  </tr>
+{/foreach}
+</table>
+]]>
+  </programlisting>
+  </example>
+ </sect2>
+
+ <sect2 id="foreach.property.last">
+  <title>@last</title>
+  <para>
+   <parameter>last</parameter> は、現在の <varname>{foreach}</varname>
+   の反復が最後のものであるときに &true; となります。
+   この例では、最後の反復に横罫線を表示します。
+  </para>
+   <example>
+  <title><parameter>last</parameter> プロパティの例</title>
+    <programlisting>
+<![CDATA[
+{* 一覧の最後に横罫線を追加します *}
+{foreach $items as $item}
+  <a href="#{$item.id}">{$item.name}</a>{if $item@last}<hr>{else},{/if}
+{foreachelse}
+  ... コンテンツ ...
+{/foreach}
+]]>
+  </programlisting>
+   </example>
+ </sect2>
+
+ <sect2 id="foreach.property.show">
+  <title>@show</title>
+  <para>
+   <parameter>show</parameter> は <varname>{foreach}</varname> のパラメータとして使用します。
+   <parameter>show</parameter> は boolean 値です。
+   &false; の場合は <varname>{foreach}</varname> は表示されません。
+  </para>
+  <example>
+   <title><parameter>show</parameter> プロパティの例</title>
+   <programlisting>
+<![CDATA[
+<ul>
+{foreach $myArray as $name}
+    <li>{$name}</li>
+{/foreach}
+</ul>
+{if $name@show} 配列にデータが含まれている場合にここで何かをします {/if}
+]]>
+</programlisting>
+</example>
+ </sect2>
+
+ <sect2 id="foreach.property.total">
+  <title>@total</title>
+  <para>
+   <parameter>total</parameter> には、
+   <varname>{foreach}</varname> がループするトータル回数が含まれます。
+   これは、<varname>{foreach}</varname> の内部だけではなく
+   ループを抜けた後でも使用できます。
+  </para>
+     <example>
+  <title><parameter>total</parameter> プロパティの例</title>
+<programlisting>
+<![CDATA[
+{* 返された行の総数を最後に表示します *}
+{foreach $items as $item}
+  {$item.name}<hr/>
+  {if $item@last}
+    <div id="total">{$item@total} items</div>
+  {/if}
+{foreachelse}
+ ... 別の内容 ...
+{/foreach}
+]]>
+</programlisting>
+</example>
+
+  <para>
+   <link linkend="language.function.section"><varname>{section}</varname></link>、
+   <link linkend="language.function.for"><varname>{for}</varname></link>
+   および
+   <link linkend="language.function.while"><varname>{while}</varname></link>
+   も参照ください。
+  </para>
+
+ </sect2>
+ 
+ <sect2 id="foreach.construct.break">
+  <title>{break}</title>
+  <para>
+   <varname>{break}</varname> は、配列の処理を途中で止めます。
+  </para>
+  <example>
+   <title><varname>{break}</varname> の例</title>
+   <programlisting>
+ <![CDATA[
+  {$data = [1,2,3,4,5]}
+  {foreach $data as $value}
+    {if $value == 3}
+      {* 配列の処理を終了します *}
+      {break}
+    {/if}
+    {$value}
+  {/foreach}
+  {*
+    出力は、1 2
+  *}
+ ]]>
+   </programlisting>
+  </example>
+ </sect2>
+ 
+ <sect2 id="foreach.construct.continue">
+  <title>{continue}</title>
+  <para>
+   <varname>{continue}</varname> は、現在のループでその後の処理を省略して次のループに進みます。
+  </para>
+  <example>
+   <title><varname>{continue}</varname> の例</title>
+   <programlisting>
+ <![CDATA[
+  {$data = [1,2,3,4,5]}
+  {foreach $data as $value}
+    {if $value == 3}
+      {* この処理をスキップします *}
+      {continue}
+    {/if}
+    {$value}
+  {/foreach}
+  {*
+    出力は、1 2 4 5
+  *}
+ ]]>
+   </programlisting>
+  </example>
+ </sect2>
+ 
+</sect1>
+
+<!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ indent-tabs-mode:nil
+ sgml-parent-document:nil
+ sgml-default-dtd-file:"../../../../manual.ced"
+ sgml-exposed-tags:nil
+ sgml-local-catalogs:nil
+ sgml-local-ecat-files:nil
+ End:
+ vim600: syn=xml fen fdm=syntax fdl=2 si
+ vim: et tw=78 syn=sgml
+ vi: ts=1 sw=1
+-->

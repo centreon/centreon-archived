@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PHP_PMD" basedir=".">
+
+    <!--
+        Include local project properties.
+    -->
+    <property file="build.properties" />
+
+    <!--
+        Import common build targets
+    -->
+	<import file="${basedir}/setup/src/main/xml/base.xml" />
+
+    <!--
+        Hook that will be called after we have copied the project's library
+        directory.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+            library.dir     The library directory in the temporary build tree.
+    -->
+    <target name="~copy-vendor-dir-after">
+        <delete includeemptydirs="true">
+            <fileset dir="${vendor.dir}/pdepend">
+                <exclude name="pdepend/src/main/**" />
+            </fileset>
+        </delete>
+    </target>
+
+    <!--
+        Hook method for copying files for the project's xyz archive format.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="do-copy-files-for-xyz-archive">
+        <copy todir="${output.dir}/resources/rulesets">
+            <fileset dir="${commons.srcdir.resource}/rulesets" />
+        </copy>
+    </target>
+
+    <!--
+        We use the phar archive after hook to validate that a newly created
+        phar archive works as expected.
+
+        Parameters:
+            ${-package:phar:filename}  Name of the created phar file.
+    -->
+    <target name="-phpmd:package:phar:after~hooked" extensionOf="-package:phar:after~hook">
+
+        <echo message="Executing:" level="verbose" />
+        <echo message="  ${-package:phar:filename} PHP/PMD/Rule text ${phpmd.rulesets}" level="verbose" />
+
+        <exec dir="${commons.srcdir.php}"
+              executable="${-package:phar:filename}" 
+              failonerror="true">
+              
+            <arg value="PHP/PMD/Rule" />
+            <arg value="text" />
+            <arg value="${phpmd.rulesets}" />
+        </exec>
+    </target>
+
+    <!--
+        Executes the newly created and installed PEAR version of PHPMD.
+    -->
+    <target name="-phpmd:package:pear:after~hooked" extensionOf="-package:pear:after~hook">
+
+        <echo message="Executing:" level="verbose" />
+        <echo message="  phpmd PHP/PMD/Rule text ${phpmd.rulesets}" level="verbose" />
+
+        <exec dir="${commons.srcdir.php}" 
+              executable="${commons.executable.php}" 
+              failonerror="true">
+
+            <arg value="-d" />
+            <arg value="include_path=${common-pear-root-dir}" />
+            <arg value="${common-pear-bin-dir}/phpmd" />
+            <arg value="PHP/PMD/Rule" />
+            <arg value="text" />
+            <arg value="${phpmd.rulesets}" />
+        </exec>
+    </target>
+
+</project>

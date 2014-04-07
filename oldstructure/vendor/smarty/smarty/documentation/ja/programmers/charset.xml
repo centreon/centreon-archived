@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4723 $ -->
+<!-- EN-Revision: 3827 Maintainer: takagi Status: ready -->
+<chapter id="charset">
+<title>文字セットの符号化</title>
+
+<sect1 id="charset.encoding">
+ <title>文字セットの符号化</title>
+ <para>
+  テキスト形式のデータの符号化方式にはいろいろあります。中でもよく使われているのが ISO-8859-1 (Latin1) と UTF-8 です。
+  定数 <varname>SMARTY_RESOURCE_CHAR_SET</varname> で何か他の符号化方式を指定しない限り、
+  Smarty は、
+  <ulink url="&url.php-manual;mbstring">mbstring</ulink> が有効な場合は
+  <literal>UTF-8</literal>、そして有効でない場合は <literal>ISO-8859-1</literal> を内部文字セットとみなします。
+ </para>
+
+ <note><para>
+  <literal>ISO-8859-1</literal> は、PHP が産まれたときからずっと、デフォルトの内部文字セットでした。
+  Unicode が出だしたのは 1991 年からです。その後、Unicode がどんどん幅をきかせるようになりました。
+  というのも Unicode は、既知の文字のほとんどを、文字体系 (ラテン文字、キリル文字、日本語、……) をまたがって符号化できたからです。
+  <literal>UTF-8</literal> は unicode で最もよく使われている符号化方式です。
+  何千もの文字を、最小限のオーバーヘッドで表せます。
+ </para><para>unicode と UTF-8 は今やあちこちに広まっているので、これを使うことを強くおすすめします。</para></note>
+
+ <note><para>Smarty の内部コードやコアプラグインは、Smarty 3.1 で完全に UTF-8 対応になりました。unicode 互換の機能を使うには、
+  <ulink url="&url.php-manual;mbstring">mbstring</ulink> が必要です。お遣いの環境でこれが有効になっていない場合は、
+  Smarty で UTF-8 の全機能を使うことはできません。
+ </para></note>
+
+ <example>
+  <title>さまざまな文字符号化方式の設定</title>
+  <programlisting>
+<![CDATA[
+// 日本語の文字符号化方式
+if (function_exists('mb_internal_charset')) {
+  mb_internal_charset('EUC-JP');
+}
+define('SMARTY_RESOURCE_CHAR_SET', 'EUC-JP');
+require_once 'libs/Smarty.class.php';
+$smarty = new Smarty();
+]]>  
+ </programlisting>
+ </example>
+
+</sect1>
+</chapter>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

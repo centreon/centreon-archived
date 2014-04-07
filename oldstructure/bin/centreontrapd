@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+use warnings;
+use centreon::script::centreontrapd;
+
+centreon::script::centreontrapd->new()->run();
+
+__END__
+
+=head1 NAME
+
+centreontrapd - a daemon to handle SNMP traps.
+
+=head1 SYNOPSIS
+
+centreontrapd [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--config-extra>
+
+Specify the path to the centreontrapd configuration file (default: /etc/centreon/centreontrapd.pm).
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<centreontrapd> will read centreon traps config and execute actions.
+
+=cut
+

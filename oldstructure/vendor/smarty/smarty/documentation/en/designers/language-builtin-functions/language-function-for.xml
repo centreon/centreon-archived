@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 3827 $ -->
+<sect1 id="language.function.for">
+ <title>{for}</title> 
+ <para>
+  The <varname>{for}{forelse}</varname> tag is used to create simple loops. The following different formarts are supported:
+ </para>
+ <itemizedlist>
+  <listitem>
+   <para>
+    <varname>{for $var=$start to $end}</varname> simple loop with step size of 1.
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <varname>{for $var=$start to $end step $step}</varname> loop with individual step size.
+   </para>
+  </listitem>
+ </itemizedlist>
+ 
+ <para>
+  <varname>{forelse}</varname> is executed when the loop is not iterated.
+ </para>
+ 
+ <para><emphasis role="bold">Attributes:</emphasis></para>
+ <informaltable frame="all">
+  <tgroup cols="6">
+   <colspec colname="param" align="center" />
+   <colspec colname="position" align="center" />
+   <colspec colname="type" align="center" />
+   <colspec colname="required" align="center" />
+   <colspec colname="default" align="center" />
+   <colspec colname="desc" />
+   <thead>
+    <row>
+     <entry>Attribute Name</entry>
+     <entry>Shorthand</entry>
+     <entry>Type</entry>
+     <entry>Required</entry>
+     <entry>Default</entry>
+     <entry>Description</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>max</entry>
+     <entry>n/a</entry>
+     <entry>integer</entry>
+     <entry>No</entry>
+     <entry><emphasis>n/a</emphasis></entry>
+     <entry>Limit the number of iterations</entry> 
+    </row>
+   </tbody>
+  </tgroup>
+ </informaltable>
+ 
+ <para><emphasis role="bold">Option Flags:</emphasis></para>
+ <informaltable frame="all">
+  <tgroup cols="2">
+   <colspec colname="param" align="center" />
+   <colspec colname="desc" />
+   <thead>
+    <row>
+     <entry>Name</entry>
+     <entry>Description</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>nocache</entry>
+     <entry>Disables caching of the <varname>{for}</varname> loop</entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </informaltable>
+ 
+ 
+ <example>
+  <title>A simple <varname>{for}</varname> loop</title>
+  <programlisting role="php">
+<![CDATA[
+<ul>
+{for $foo=1 to 3}
+    <li>{$foo}</li>
+{/for}
+</ul>
+]]>
+  </programlisting>
+  <para>
+   The above example will output:
+  </para>
+  <screen>
+<![CDATA[
+<ul>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+</ul>
+]]>
+  </screen>
+ </example>
+ 
+ <example>
+  <title>Using the <varname>max</varname> attribute</title>
+  <programlisting role="php">
+<![CDATA[
+$smarty->assign('to',10);
+]]>
+  </programlisting>
+  <programlisting role="php">
+<![CDATA[
+<ul>
+{for $foo=3 to $to max=3}
+    <li>{$foo}</li>
+{/for}
+</ul>
+]]>
+  </programlisting>
+  <para>
+   The above example will output:
+  </para>
+  <screen>
+<![CDATA[
+<ul>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+</ul>
+]]>
+  </screen>
+ </example>
+ 
+ <example>
+  <title>Excution of <varname>{forelse}</varname></title>
+  <programlisting role="php">
+<![CDATA[
+$smarty->assign('start',10);
+$smarty->assign('to',5);
+]]>
+  </programlisting>
+  <programlisting role="php">
+<![CDATA[
+<ul>
+{for $foo=$start to $to}
+    <li>{$foo}</li>
+{forelse}
+  no iteration
+{/for}
+</ul>
+]]>
+  </programlisting>
+  <para>
+   The above example will output:
+  </para>
+  <screen>
+<![CDATA[
+  no iteration
+]]>
+  </screen>
+ </example>
+ 
+  <para>
+   See also <link linkend="language.function.foreach"><varname>{foreach}</varname></link>,
+   <link linkend="language.function.section"><varname>{section}</varname></link>
+   and
+   <link linkend="language.function.while"><varname>{while}</varname></link>
+  </para>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ indent-tabs-mode:nil
+ sgml-parent-document:nil
+ sgml-default-dtd-file:"../../../../manual.ced"
+ sgml-exposed-tags:nil
+ sgml-local-catalogs:nil
+ sgml-local-ecat-files:nil
+ End:
+ vim600: syn=xml fen fdm=syntax fdl=2 si
+ vim: et tw=78 syn=sgml
+ vi: ts=1 sw=1
+-->

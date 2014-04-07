@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4711 $ -->
+<!-- EN-Revision: 4020 Maintainer: takagi Status: ready -->
+<sect1 id="language.function.shortform.assign">
+ <title>{$var=...}</title>
+ <para>
+  これは {assign} 関数の短縮形です。
+  値を直接テンプレートに代入したり、配列の要素に代入したりできます。
+ </para>
+
+ <note><para>
+   テンプレート内で変数に代入するというのは、
+   本質的にはアプリケーションのロジックをプレゼンテーションに持ち込んでいることになります。
+   これは本来 PHP 側でやったほうがうまく処理できることでしょう。
+   自己責任のもとで使いましょう。
+ </para></note>
+
+ <para>
+  次の属性をタグに追加することができます。
+ </para>
+ 
+ <para><emphasis role="bold">属性</emphasis></para>
+ <informaltable frame="all">
+  <tgroup cols="6">
+   <colspec colname="param" align="center" />
+   <colspec colname="position" align="center" />
+   <colspec colname="type" align="center" />
+   <colspec colname="required" align="center" />
+   <colspec colname="default" align="center" />
+   <colspec colname="desc" />
+   <thead>
+    <row>
+     <entry>属性名</entry>
+     <entry>短縮形</entry>
+     <entry>型</entry>
+     <entry>必須</entry>
+     <entry>デフォルト</entry>
+     <entry>概要</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>scope</entry>
+     <entry>n/a</entry>
+     <entry>string</entry>
+     <entry>No</entry>
+     <entry><emphasis>n/a</emphasis></entry>
+     <entry>代入する変数のスコープ。'parent'、'root' あるいは 'global'</entry> 
+    </row>
+   </tbody>
+  </tgroup>
+ </informaltable>
+ 
+ <para><emphasis role="bold">オプションのフラグ</emphasis></para>
+ <informaltable frame="all">
+  <tgroup cols="2">
+   <colspec colname="param" align="center" />
+   <colspec colname="desc" />
+   <thead>
+    <row>
+     <entry>名前</entry>
+     <entry>概要</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>nocache</entry>
+     <entry>変数を 'nocache' 属性つきで代入する</entry>
+    </row>    
+   </tbody>
+  </tgroup>
+ </informaltable>
+ 
+ <example>
+  <title>シンプルな代入</title>
+  <programlisting>
+<![CDATA[
+{$name='Bob'}
+
+The value of $name is {$name}.
+]]>
+  </programlisting>
+  <para>
+   上の例の出力は次のようになります。
+  </para>
+  <screen>
+<![CDATA[
+The value of $name is Bob.
+]]>
+  </screen>
+ </example>
+
+ <example>
+  <title>計算結果の代入</title>
+  <programlisting>
+<![CDATA[
+{$running_total=$running_total+$some_array[row].some_value}
+]]>
+  </programlisting>
+ </example>
+
+ <example>
+  <title>配列要素の代入</title>
+  <programlisting>
+<![CDATA[
+{$user.name="Bob"}
+]]>
+  </programlisting>
+ </example>
+ 
+ <example>
+  <title>多次元配列の要素の代入</title>
+  <programlisting>
+<![CDATA[
+{$user.name.first="Bob"}
+]]>
+  </programlisting>
+ </example>
+ 
+ <example>
+  <title>配列要素の追加</title>
+  <programlisting>
+<![CDATA[
+{$users[]="Bob"}
+]]>
+  </programlisting>
+ </example>
+ 
+ <example>
+  <title>呼び出し元テンプレートのスコープでの代入</title>
+  <para>インクルードされたテンプレート内で代入した変数は、インクルードした側のテンプレートからも見えます。</para>
+  <programlisting>
+<![CDATA[
+{include file="sub_template.tpl"}
+...
+{* サブテンプレートで代入した変数を表示します *}
+{$foo}<br>
+...
+]]>
+  </programlisting>
+  <para>上のテンプレートでインクルードしている <filename>sub_template.tpl</filename> の例を次に示します。</para>
+  <programlisting>
+<![CDATA[
+...
+{* foo はインクルード元のテンプレートからも見えます *}
+{$foo="something" scope=parent}
+{* bar はこのテンプレート内でしか見えません *}
+{$bar="value"}
+...
+]]>
+</programlisting>
+ </example>
+ 
+ <para>
+  <link linkend="language.function.assign"><varname>{assign}</varname></link>
+  および
+  <link linkend="language.function.append"><varname>{append}</varname></link>
+  も参照ください。
+ </para>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

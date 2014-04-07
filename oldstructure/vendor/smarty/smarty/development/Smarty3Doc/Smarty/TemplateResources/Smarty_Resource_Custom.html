@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_Resource_Custom</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_Resource_Custom</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Smarty Resource Plugin</p>
+<p class="description"><p>Wrapper Implementation for custom resource plugins</p></p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_libs---sysplugins---smarty_resource_custom.php.html">/libs/sysplugins/smarty_resource_custom.php</a> (line <span class="field">18</span>)
+		</p>
+		
+				
+		<pre><a href="../../Smarty/TemplateResources/Smarty_Resource.html">Smarty_Resource</a>
+   |
+   --Smarty_Resource_Custom</pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-vars">Vars</a>
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Resource-examples/Smarty_Resource_Mysql.html">Smarty_Resource_Mysql</a></td>
+					<td>
+											MySQL Resource
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Resource-examples/Smarty_Resource_Mysqls.html">Smarty_Resource_Mysqls</a></td>
+					<td>
+											MySQL Resource
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																												
+												<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#fetch" title="details" class="method-name">fetch</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">&$source</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">&$mtime</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">integer|boolean</span>
+										<a href="#fetchTimestamp" title="details" class="method-name">fetchTimestamp</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getBasename" title="details" class="method-name">getBasename</a>
+											(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>&nbsp;<span class="var-name">$source</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getContent" title="details" class="method-name">getContent</a>
+											(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>&nbsp;<span class="var-name">$source</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#populate" title="details" class="method-name">populate</a>
+											(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>&nbsp;<span class="var-name">$source</span>, [<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span> = <span class="var-default">null</span>])
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+										<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../../Smarty/TemplateResources/Smarty_Resource.html">Smarty_Resource</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#var$compileds">Smarty_Resource::$compileds</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#var$compiler_class">Smarty_Resource::$compiler_class</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#var$resources">Smarty_Resource::$resources</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#var$sources">Smarty_Resource::$sources</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#var$sysplugins">Smarty_Resource::$sysplugins</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#var$template_lexer_class">Smarty_Resource::$template_lexer_class</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#var$template_parser_class">Smarty_Resource::$template_parser_class</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-vars">Vars</a>
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methodfetch" id="fetch"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">fetch</span> (line <span class="line-number">27</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">fetch template and its modification time from data source</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			fetch
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">&$source</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">&$mtime</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: template name</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">&$source</span><span class="var-description">: template source</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">&$mtime</span><span class="var-description">: template modification timestamp (epoch)</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Resource-examples/Smarty_Resource_Mysql.html#methodfetch">Smarty_Resource_Mysql::fetch()</a>
+								: Fetch a template and its modification time from database
+							</li>
+					<li>
+				<a href="../../Resource-examples/Smarty_Resource_Mysqls.html#methodfetch">Smarty_Resource_Mysqls::fetch()</a>
+								: Fetch a template and its modification time from database
+							</li>
+				</ul>
+	</div>
+<a name="methodfetchTimestamp" id="fetchTimestamp"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">fetchTimestamp</span> (line <span class="line-number">38</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Fetch template's modification timestamp from data source</p>
+<p class="description"><p></p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> timestamp (epoch) the template was modified, or false if not found</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">integer|boolean</span>
+		<span class="method-name">
+			fetchTimestamp
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: template name</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Resource-examples/Smarty_Resource_Mysql.html#methodfetchTimestamp">Smarty_Resource_Mysql::fetchTimestamp()</a>
+								: Fetch a template's modification time from database
+							</li>
+				</ul>
+	</div>
+<a name="methodgetBasename" id="getBasename"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getBasename</span> (line <span class="line-number">89</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Determine basename for compiled filename</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> resource's basename</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getBasename
+		</span>
+					(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>&nbsp;<span class="var-name">$source</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>
+				<span class="var-name">$source</span><span class="var-description">: source object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodgetBasename">Smarty_Resource::getBasename()</a></dt>
+						<dd>Determine basename for compiled filename</dd>
+					</dl>
+			
+	</div>
+<a name="methodgetContent" id="getContent"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getContent</span> (line <span class="line-number">73</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Load template's source into current template object</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> template source</li>
+				<li><span class="field">throws:</span> SmartyException if source cannot be loaded</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getContent
+		</span>
+					(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>&nbsp;<span class="var-name">$source</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>
+				<span class="var-name">$source</span><span class="var-description">: source object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodgetContent">Smarty_Resource::getContent()</a></dt>
+						<dd>Load template's source into current template object</dd>
+					</dl>
+			
+	</div>
+<a name="methodpopulate" id="populate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">populate</span> (line <span class="line-number">49</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">populate Source Object with meta data from Resource</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			populate
+		</span>
+					(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>&nbsp;<span class="var-name">$source</span>, [<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Source.html">Smarty_Template_Source</a></span>
+				<span class="var-name">$source</span><span class="var-description">: source object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$_template</span><span class="var-description">: template object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodpopulate">Smarty_Resource::populate()</a></dt>
+						<dd>populate Source Object with meta data from Resource</dd>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../../Smarty/TemplateResources/Smarty_Resource.html">Smarty_Resource</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodbuildFilepath">Smarty_Resource::buildFilepath()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodbuildUniqueResourceName">Smarty_Resource::buildUniqueResourceName()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodconfig">Smarty_Resource::config()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodfileExists">Smarty_Resource::fileExists()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodgetBasename">Smarty_Resource::getBasename()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodgetContent">Smarty_Resource::getContent()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodgetUniqueTemplateName">Smarty_Resource::getUniqueTemplateName()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodload">Smarty_Resource::load()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodnormalizePath">Smarty_Resource::normalizePath()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodparseResourceName">Smarty_Resource::parseResourceName()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodpopulate">Smarty_Resource::populate()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodpopulateCompiledFilepath">Smarty_Resource::populateCompiledFilepath()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodpopulateTimestamp">Smarty_Resource::populateTimestamp()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/TemplateResources/Smarty_Resource.html#methodsource">Smarty_Resource::source()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:51 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

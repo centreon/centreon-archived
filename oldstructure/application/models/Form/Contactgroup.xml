@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="contactgroup_form">
+		<route>/configuration/usergroup/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/configuration/usergroup</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="cg_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="cg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+			</block>
+			<block name="Relations">
+				<field name="contactgroup_contacts" label="Contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/contact/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/usergroup/[i:id]/contact</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attributes>
+				</field>
+			</block>
+			<block name="Additional information">
+				<field name="cg_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+					</attributes>
+				</field>
+				<field name="cg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+			</block>
+		</section>
+	</form>
+</forms>

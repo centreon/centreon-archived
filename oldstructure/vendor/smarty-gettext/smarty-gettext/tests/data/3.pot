@@ -1,0 +1,9 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+#: <DATADIR>/3.html:1
+msgid "There is one expired account"
+msgid_plural "There are %1 expired accounts"
+msgstr[0] ""
+msgstr[1] ""
+

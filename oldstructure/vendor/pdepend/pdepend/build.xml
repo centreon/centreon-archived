@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PHP Depend" basedir=".">
+
+    <!--
+        Include local project properties.
+    -->
+    <property file="build.properties" />
+
+    <!--
+        Import common build targets
+    -->
+    <import file="${basedir}/setup/src/main/xml/base.xml" />
+
+    <!--
+        Updates the internal used case version number.
+    -->
+    <target name="pdepend:update-version">
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${basedir}/scripts/update-version.php" />
+        </exec>
+    </target>
+
+    <!--
+        We use the phar archive after hook to validate that a newly created
+        phar archive works as expected.
+
+        Parameters:
+            ${-package:phar:filename}  Name of the created phar file.
+    -->
+    <target name="-pdepend:package:phar:after~hooked" extensionOf="-package:phar:after~hook">
+        <antcall target="-package-execute">
+            <param name="-package.includepath" value="${commons:tmpdir}"/>
+            <param name="-package.executable" value="${-package:phar:filename}" />
+        </antcall>
+    </target>
+
+    <!--
+        We use the pear archive after hook to validate that a clean PHP_Depend
+        PEAR installation works as expected.
+    -->
+    <target name="-pdepend:package:pear:after~hooked" extensionOf="-package:pear:after~hook">
+        <antcall target="-package-execute">
+            <param name="-package.includepath" value="${common-pear-root-dir}"/>
+            <param name="-package.executable" value="${common-pear-bin-dir}/pdepend" />
+        </antcall>
+    </target>
+
+    <!--
+        Will execute the code contained in one of the package files.
+
+        Parameters
+            ${-package.includepath} The used include path.
+            ${-package.executable}  The projects executable
+    -->
+    <target name="-package-execute">
+        <echo message="Executing:" level="verbose" />
+        <echo message="  ${-package.executable} --summary-xml... PHP/Depend/Code" level="verbose" />
+
+        <exec dir="${commons.srcdir.php}" 
+              executable="${commons.executable.php}" 
+              failonerror="true">
+
+            <arg value="-d" />
+            <arg value="include_path=${-package.includepath}" />
+            <arg value="${-package.executable}" />
+            <arg value="--summary-xml=${commons:tmpdir}/summary.xml" />
+            <arg value="--jdepend-xml=${commons:tmpdir}/jdepend.xml" />
+            <arg value="--jdepend-chart=${commons:tmpdir}/jdepend.svg" />
+            <arg value="--overview-pyramid=${commons:tmpdir}/pyramid.svg" />
+            <arg value="--coderank-mode=inheritance,property,method" />
+            <arg value="PHP/Depend/Code" />
+        </exec>
+    </target>
+
+    <!--
+        UTILIZED EXTENSION POINTS
+    -->
+
+    <!--
+        This extension of the initialize phase triggers an update of the
+        internally used case identifier.
+    -->
+    <target name="-pdepend:initialize:main~hooked"
+            depends="pdepend:update-version"
+            extensionOf="-initialize:main~hook" />
+
+</project>

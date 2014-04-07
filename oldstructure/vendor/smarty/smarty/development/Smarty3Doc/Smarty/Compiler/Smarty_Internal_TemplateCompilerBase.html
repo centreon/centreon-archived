@@ -1,0 +1,973 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_Internal_TemplateCompilerBase</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_Internal_TemplateCompilerBase</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Main abstract compiler class</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_libs---sysplugins---smarty_internal_templatecompilerbase.php.html">/libs/sysplugins/smarty_internal_templatecompilerbase.php</a> (line <span class="field">19</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_SmartyTemplateCompiler.html">Smarty_Internal_SmartyTemplateCompiler</a></td>
+					<td>
+											Class SmartyTemplateCompiler
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																																																																																												<div class="var-title">
+					static <span class="var-type">array</span>
+					<a href="#$_tag_objects" title="details" class="var-name">$_tag_objects</a>
+				</div>
+																												<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$called_functions" title="details" class="var-name">$called_functions</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$compiles_template_function" title="details" class="var-name">$compiles_template_function</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$default_handler_plugins" title="details" class="var-name">$default_handler_plugins</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$default_modifier_list" title="details" class="var-name">$default_modifier_list</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">boolean</span>
+					<a href="#$forceNocache" title="details" class="var-name">$forceNocache</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$inheritance" title="details" class="var-name">$inheritance</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$known_modifier_type" title="details" class="var-name">$known_modifier_type</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$merged_templates" title="details" class="var-name">$merged_templates</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$modifier_plugins" title="details" class="var-name">$modifier_plugins</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$suppressFilter" title="details" class="var-name">$suppressFilter</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$suppressHeader" title="details" class="var-name">$suppressHeader</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$suppressMergedTemplates" title="details" class="var-name">$suppressMergedTemplates</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$suppressNocacheProcessing" title="details" class="var-name">$suppressNocacheProcessing</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$suppressTemplatePropertyHeader" title="details" class="var-name">$suppressTemplatePropertyHeader</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+					<a href="#$template" title="details" class="var-name">$template</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$write_compiled_code" title="details" class="var-name">$write_compiled_code</a>
+				</div>
+																								<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_tag_stack" title="details" class="var-name">$_tag_stack</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																												
+												<div class="method-definition">
+											<span class="method-result">Smarty_Internal_TemplateCompilerBase</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#callTagCompiler" title="details" class="method-name">callTagCompiler</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>, [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param1</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param2</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param3</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#compileTag" title="details" class="method-name">compileTag</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$parameter</span> = <span class="var-default">array()</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">bool</span>
+										<a href="#compileTemplate" title="details" class="method-name">compileTemplate</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$template</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">bool</span>
+										<a href="#doCompile" title="details" class="method-name">doCompile</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$_content</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getPlugin" title="details" class="method-name">getPlugin</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$plugin_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$plugin_type</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$pugin_name</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#getPluginFromDefaultHandler" title="details" class="method-name">getPluginFromDefaultHandler</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$plugin_type</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#processNocacheCode" title="details" class="method-name">processNocacheCode</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>, <span class="var-type">boolean</span>&nbsp;<span class="var-name">$is_code</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#trigger_template_error" title="details" class="method-name">trigger_template_error</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$args</span> = <span class="var-default">null</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$line</span> = <span class="var-default">null</span>])
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$_tag_objects" id="$_tag_objects"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">array</span>
+			<span class="var-name">$_tag_objects</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">47</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">compile tag objects</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$called_functions" id="$called_functions"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$called_functions</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">131</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">called subfuntions from template function</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$compiles_template_function" id="$compiles_template_function"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$compiles_template_function</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">125</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">flag if currently a template function is compiled</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$default_handler_plugins" id="$default_handler_plugins"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$default_handler_plugins</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">82</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">plugins loaded by default plugin handler</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$default_modifier_list" id="$default_modifier_list"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$default_modifier_list</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">89</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">saved preprocessed modifier list</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$forceNocache" id="$forceNocache"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">boolean</span>
+			<span class="var-name">$forceNocache</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">95</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">force compilation of complete template as nocache</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$inheritance" id="$inheritance"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$inheritance</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">75</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">flag when compiling {block}</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$known_modifier_type" id="$known_modifier_type"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$known_modifier_type</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">143</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">type of already compiled modifier</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$merged_templates" id="$merged_templates"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$merged_templates</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">68</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">merged templates</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$modifier_plugins" id="$modifier_plugins"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$modifier_plugins</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">137</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">flags for used modifier plugins</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$suppressFilter" id="$suppressFilter"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$suppressFilter</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">113</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">suppress pre and post filter</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$suppressHeader" id="$suppressHeader"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$suppressHeader</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">101</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">suppress Smarty header code in compiled template</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$suppressMergedTemplates" id="$suppressMergedTemplates"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$suppressMergedTemplates</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">40</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">suppress generation of merged template code</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$suppressNocacheProcessing" id="$suppressNocacheProcessing"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$suppressNocacheProcessing</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">33</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">suppress generation of nocache code</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$suppressTemplatePropertyHeader" id="$suppressTemplatePropertyHeader"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$suppressTemplatePropertyHeader</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">107</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">suppress template property header code in compiled template</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$template" id="$template"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+			<span class="var-name">$template</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">61</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">current template</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$write_compiled_code" id="$write_compiled_code"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$write_compiled_code</span>
+			 = <span class="var-default"> true</span>			(line <span class="line-number">119</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">flag if compiled template file shall we written</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_tag_stack" id="$_tag_stack"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_tag_stack</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">54</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">tag stack</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">156</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Initialize compiler</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Smarty_Internal_TemplateCompilerBase</span>
+		<span class="method-name">
+			__construct
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_SmartyTemplateCompiler.html#method__construct">Smarty_Internal_SmartyTemplateCompiler::__construct()</a>
+								: Initialize compiler
+							</li>
+				</ul>
+	</div>
+<a name="methodcallTagCompiler" id="callTagCompiler"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">callTagCompiler</span> (line <span class="line-number">471</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">lazy loads internal compile plugin for tag and calls the compile methode</p>
+<p class="description"><p>compile objects cached for reuse.  class name format:  Smarty_Internal_Compile_TagName  plugin filename format: Smarty_Internal_Tagname.php</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> compiled code</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			callTagCompiler
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>, [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param1</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param2</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param3</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$tag</span><span class="var-description">: tag name</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: list of tag attributes</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$param1</span><span class="var-description">: optional parameter</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$param2</span><span class="var-description">: optional parameter</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$param3</span><span class="var-description">: optional parameter</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcompileTag" id="compileTag"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">compileTag</span> (line <span class="line-number">244</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Compile Tag</p>
+<p class="description"><p>This is a call back from the lexer/parser  It executes the required compile plugin for the Smarty tag</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> compiled code</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			compileTag
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$args</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$parameter</span> = <span class="var-default">array()</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$tag</span><span class="var-description">: tag name</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$args</span><span class="var-description">: array with tag attributes</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$parameter</span><span class="var-description">: array with compilation parameter</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcompileTemplate" id="compileTemplate"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">compileTemplate</span> (line <span class="line-number">166</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Method to compile a Smarty template</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if compiling succeeded, false if it failed</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			compileTemplate
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$template</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$template</span><span class="var-description">: template object to compile</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddoCompile" id="doCompile"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">doCompile</span> (line <span class="line-number">151</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Methode to compile a Smarty template</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if compiling succeeded, false if it failed</li>
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			doCompile
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$_content</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$_content</span><span class="var-description">: template source</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_SmartyTemplateCompiler.html#methoddoCompile">Smarty_Internal_SmartyTemplateCompiler::doCompile()</a>
+								: Methode to compile a Smarty template
+							</li>
+				</ul>
+	</div>
+<a name="methodgetPlugin" id="getPlugin"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPlugin</span> (line <span class="line-number">499</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check for plugins and return function name</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> call name of function</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getPlugin
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$plugin_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$plugin_type</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$pugin_name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$pugin_name</span><span class="var-description">: name of plugin or function</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$plugin_type</span><span class="var-description">: type of plugin</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$plugin_name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetPluginFromDefaultHandler" id="getPluginFromDefaultHandler"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPluginFromDefaultHandler</span> (line <span class="line-number">553</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check for plugins by default plugin handler</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if found</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			getPluginFromDefaultHandler
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$plugin_type</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$tag</span><span class="var-description">: name of tag</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$plugin_type</span><span class="var-description">: type of plugin</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodprocessNocacheCode" id="processNocacheCode"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">processNocacheCode</span> (line <span class="line-number">600</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Inject inline code for nocache template sections</p>
+<p class="description"><p>This method gets the content of each template element from the parser.  If the content is compiled code and it should be not cached the code is injected  into the rendered output.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> content</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			processNocacheCode
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>, <span class="var-type">boolean</span>&nbsp;<span class="var-name">$is_code</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$content</span><span class="var-description">: content of template element</span>			</li>
+					<li>
+				<span class="var-type">boolean</span>
+				<span class="var-name">$is_code</span><span class="var-description">: true if content is compiled code</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtrigger_template_error" id="trigger_template_error"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">trigger_template_error</span> (line <span class="line-number">640</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">display compiler error messages without dying</p>
+<p class="description"><p>If parameter $args is empty it is a parser detected syntax error.  In this case the parser is called to obtain information about expected tokens.</p><p>If parameter $args contains a string this is used as error message</p></p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> SmartyCompilerException when an unexpected token is found</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			trigger_template_error
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$args</span> = <span class="var-default">null</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$line</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$args</span><span class="var-description">: individual error message or null</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$line</span><span class="var-description">: line-number</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:50 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

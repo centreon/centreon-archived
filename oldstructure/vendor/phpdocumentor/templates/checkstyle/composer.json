@@ -1,0 +1,12 @@
+{
+    "name": "phpdocumentor/template-checkstyle",
+    "type": "phpdocumentor-template",
+    "description": "Checkstyle XML output template for phpDocumentor2",
+    "keywords": ["documentation", "template", "phpdoc"],
+    "homepage": "http://www.phpdoc.org",
+    "license": "MIT",
+    "require": {
+        "ext-xsl": "*",
+        "phpdocumentor/unified-asset-installer": "~1.1"
+    }
+}

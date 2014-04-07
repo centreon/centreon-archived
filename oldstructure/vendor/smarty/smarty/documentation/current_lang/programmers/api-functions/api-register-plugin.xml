@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4278 $ -->
+<refentry id="api.register.plugin">
+ <refnamediv>
+  <refname>registerPlugin()</refname>
+  <refpurpose>dynamically register plugins</refpurpose>
+ </refnamediv>
+ <refsect1>
+  <title>Description</title>
+  <methodsynopsis>
+   <type>void</type><methodname>registerPlugin</methodname>
+   <methodparam><type>string</type><parameter>type</parameter></methodparam>
+   <methodparam><type>string</type><parameter>name</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>callback</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>cacheable</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>cache_attrs</parameter>
+   </methodparam>
+  </methodsynopsis>
+  <para>
+   This method registers functions or methods defined in your script as plugin.
+   It uses the following parameters:
+   <itemizedlist>
+   &parameter.plugintype;
+   &parameter.pluginname;
+   &parameter.callback;
+    <listitem>
+     <para>
+     <parameter>cacheable</parameter> and <parameter>cache_attrs</parameter> can be
+     omitted in most cases. See <link
+      linkend="caching.cacheable">controlling cacheability of plugins output</link>
+     on how to use them properly.
+    </para>
+     </listitem>
+   </itemizedlist>
+  </para>
+
+ <example>
+   <title>register a function plugin</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->registerPlugin("function","date_now", "print_current_date");
+
+function print_current_date($params, $smarty)
+{
+  if(empty($params["format"])) {
+    $format = "%b %e, %Y";
+  } else {
+    $format = $params["format"];
+  }
+  return strftime($format,time());
+}
+?>
+]]>
+   </programlisting>
+   <para>
+   And in the template
+   </para>
+<programlisting>
+<![CDATA[
+{date_now}
+
+{* or to format differently *}
+{date_now format="%Y/%m/%d"}
+]]>
+</programlisting>
+</example>
+
+  <example>
+   <title>register block function plugin</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// function declaration
+function do_translation ($params, $content, $smarty, &$repeat, $template)
+{
+  if (isset($content)) {
+    $lang = $params["lang"];
+    // do some translation with $content
+    return $translation;
+  }
+}
+
+// register with smarty
+$smarty->registerPlugin("block","translate", "do_translation");
+?>
+]]>
+   </programlisting>
+   <para>
+    Where the template is:
+   </para>
+   <programlisting>
+<![CDATA[
+{translate lang="br"}Hello, world!{/translate}
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>register modifier plugin</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+// let's map PHP's stripslashes function to a Smarty modifier.
+$smarty->registerPlugin("modifier","ss", "stripslashes");
+
+?>
+]]>
+</programlisting>
+   <para>In the template, use <literal>ss</literal> to strip slashes.</para>
+   <programlisting>
+<![CDATA[
+<?php
+{$var|ss}
+?>
+]]>
+</programlisting>
+   
+  </example>
+  
+<para>
+See also
+<link linkend="api.unregister.plugin"><varname>unregisterPlugin()</varname></link>,
+<link linkend="plugins.functions">plugin functions</link>,
+<link linkend="plugins.block.functions">plugin block functions</link>,
+<link linkend="plugins.compiler.functions">plugin compiler functions</link>,
+ and the
+ <link linkend="plugins.modifiers">creating plugin modifiers</link> section.
+</para>
+
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+

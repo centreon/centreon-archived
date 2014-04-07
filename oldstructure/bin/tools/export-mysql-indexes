@@ -1,0 +1,177 @@
+#!/usr/bin/env php
+<?php
+$help = "NAME
+    export-mysql-indexes - MySQL indexes export tool
+
+DESCRIPTION
+    This script exports all indexes in a database in JSON format. To be used
+    with import-mysql-indexes
+
+SYNOPSIS
+    export-mysql-indexes [OPTION]... -d DATABASENAME
+
+OPTIONS
+    -d, --dbname DATABASENAME
+        The name of the database to export.
+
+    -e, --exclude TABLENAME
+        Excludes specified table from export. If you want to specify multiple
+        tables you can use this option multiple times.
+
+    -h, --help
+        Displays this help manual.
+
+    -H, --host HOSTNAME
+        Connect to MySQL server on a host different than localhost.
+
+    -o, --output FILENAME
+        Write the JSON string to a file instead of printing it on the standart
+        output.
+
+    -p, --password PASSWORD
+        Database password. If not specified attempting to connect without a
+        password.
+
+    -u, --username USERNAME
+        Specify username for the database connection. By default system username
+        is used.
+
+NOTES
+    Some PHP builds no not support long options. Use the short options in this
+    case.
+
+AUTHOR
+    Merethis (Alexandru Vilau)
+";
+
+$getHelp = "
+To get help type:
+    export-mysql-indexes --help
+";
+
+error_reporting(-1);
+
+$options = (getopt('hd:u:p:H:e:o:', array(
+            'host:',
+            'dbname:',
+            'username:',
+            'password:',
+            'help',
+            'exclude:',
+            'output:'
+        )));
+
+/* In case help options */
+if (isset($options['help']) || isset($options['h'])) {
+    echo $help;
+    exit;
+}
+
+/* Figuring out options */
+$host = isset($options['H']) ? $options['H'] : (isset($options['host']) ? $options['host'] : '127.0.0.1');
+$host = is_array($host) ? end($host) : $host;
+$dbname = isset($options['d']) ? $options['d'] : (isset($options['dbname']) ? $options['dbname'] : false);
+$dbname = is_array($dbname) ? end($dbname) : $dbname;
+$username = isset($options['u']) ? $options['u'] : (isset($options['username']) ? $options['username'] : (isset($_SERVER['LOGNAME']) ? $_SERVER['LOGNAME'] : false));
+$username = is_array($username) ? end($username) : $username;
+$password = isset($options['p']) ? $options['p'] : (isset($options['password']) ? $options['password'] : '');
+$password = is_array($password) ? end($password) : $password;
+$excludedTables = isset($options['e']) ? $options['e'] : (isset($options['exclude']) ? $options['exclude'] : array());
+$excludedTables = is_array($excludedTables) ? $excludedTables : array($excludedTables);
+$output = isset($options['o']) ? $options['o'] : (isset($options['output']) ? $options['output'] : false);
+$output = is_array($output) ? end($output) : $output;
+
+if ($dbname === false) {
+    echo "Error: No database name specified. Use -d option to specify it\n";
+    echo $getHelp;
+    exit(1);
+}
+if ($username === false) {
+    echo "Error: No username specified. Use -u to specify it\n";
+    echo $getHelp;
+    exit(1);
+}
+
+function quote(&$element)
+{
+    $element = '\'' . $element . '\'';
+}
+
+try {
+    $conn = new PDO('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
+    if (count($excludedTables)) {
+        array_walk($excludedTables, 'quote');
+        $excludedTablesPart = 'AND TABLE_NAME NOT IN(' . implode(', ', $excludedTables) . ')';
+    } else {
+        $excludedTablesPart = '';
+    }
+    $indexesStmt = $conn->query($q = " SELECT
+                                        *
+                                    FROM
+                                        information_schema.STATISTICS
+                                    WHERE
+                                        TABLE_SCHEMA = '$dbname'
+                                        /* AND INDEX_NAME <> 'PRIMARY' */
+                                        $excludedTablesPart
+                                    ORDER BY
+                                        TABLE_NAME ASC,
+                                        INDEX_NAME ASC,
+                                        SEQ_IN_INDEX ASC");
+    if (!$indexesStmt) {
+        $error = $conn->errorInfo();
+        throw new Exception('Cannot select indexes: ' . $error[2]);
+    }
+
+    $indexColumns = $indexesStmt->fetchAll(PDO::FETCH_ASSOC);
+    $indexesForExport = array();
+    $lastIndexNameWithTableNamePrefix = null;
+    $currentIndex = null;
+
+    foreach ($indexColumns as $indexColumn) {
+        /* Checking if this column belongs to the same index as last one */
+        if ($indexColumn['TABLE_NAME'] . '/' . $indexColumn['INDEX_NAME'] !== $lastIndexNameWithTableNamePrefix) {
+            if ($currentIndex) {
+                $indexesForExport[] = $currentIndex;
+            }
+            $currentIndex = array(
+                'tableName' => $indexColumn['TABLE_NAME'],
+                'indexName' => $indexColumn['INDEX_NAME'],
+                'unique' => $indexColumn['NON_UNIQUE'] ? false : true,
+                'columns' => array()
+            );
+        }
+        /* Pushing column name and length */
+        $currentIndex['columns'][] = array(
+            'name' => $indexColumn['COLUMN_NAME'],
+            'length' => $indexColumn['SUB_PART']
+        );
+        /* Saving last index's name preceeded by the table name to ensure uniqueness */
+        $lastIndexNameWithTableNamePrefix = $indexColumn['TABLE_NAME'] . '/' . $indexColumn['INDEX_NAME'];
+    }
+    /* Pushing last index */
+    $indexesForExport[] = $currentIndex;
+    if (!function_exists('json_encode')) {
+        if (!(@include 'Services/JSON.php') || !class_exists('Services_JSON')) {
+            echo "Please install Services_JSON pear package\n    pear install Services_JSON\n";
+            exit(1);
+        }
+        $json = new Services_JSON();
+        $outputString = $json->encode($indexesForExport);
+    } else {
+        $outputString = json_encode($indexesForExport);
+    }
+
+    if ($output) {
+        $success = @file_put_contents($output, $outputString);
+        if (!$success) {
+            echo "Cannot write to file '$output'. Make sure you have write permissions";
+            exit(1);
+        }
+    } else {
+        echo $outputString;
+        exit;
+    }
+} catch (Exception $e) {
+    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+    exit(1);
+}

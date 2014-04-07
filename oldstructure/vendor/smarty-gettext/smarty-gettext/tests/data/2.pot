@@ -1,0 +1,14 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+#: <DATADIR>/2.html:4
+msgid "Hello, %1"
+msgstr ""
+
+#: <DATADIR>/2.html:5
+msgid "What I'm following (%1)"
+msgstr ""
+
+#: <DATADIR>/2.html:6
+msgid "... in category %1"
+msgstr ""

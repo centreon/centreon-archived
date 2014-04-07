@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.10" version="2.0"
+  xmlns="http://pear.php.net/dtd/package-2.0"
+  xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+                      http://pear.php.net/dtd/tasks-1.0.xsd
+                      http://pear.php.net/dtd/package-2.0
+                      http://pear.php.net/dtd/package-2.0.xsd">
+ <name>DbUnit</name>
+ <channel>pear.phpunit.de</channel>
+ <summary>DbUnit port for PHP/PHPUnit to support database interaction testing.</summary>
+ <description>DbUnit port for PHP/PHPUnit to support database interaction testing.</description>
+ <lead>
+  <name>Sebastian Bergmann</name>
+  <user>sb</user>
+  <email>sb@sebastian-bergmann.de</email>
+  <active>yes</active>
+ </lead>
+ <date>2013-11-01</date>
+ <version>
+  <release>1.3.0</release>
+  <api>1.3.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license>The BSD 3-Clause License</license>
+ <notes>http://github.com/sebastianbergmann/dbunit/blob/master/README.markdown</notes>
+ <contents>
+  <dir name="/">
+   <dir name="PHPUnit">
+    <dir name="Extensions">
+     <dir name="Database">
+      <dir name="Constraint">
+       <file baseinstalldir="/" name="DataSetIsEqual.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="TableIsEqual.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="TableRowCount.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir>
+      <dir name="DataSet">
+       <dir name="Persistors">
+        <file baseinstalldir="/" name="Abstract.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Factory.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="FlatXml.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="MysqlXml.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Xml.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Yaml.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+       </dir>
+       <dir name="Specs">
+        <file baseinstalldir="/" name="Csv.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="DbQuery.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="DbTable.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Factory.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="FlatXml.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="IFactory.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Xml.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Yaml.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+       </dir>
+       <file baseinstalldir="/" name="AbstractDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="AbstractTable.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="AbstractTableMetaData.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="AbstractXmlDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="CompositeDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="CsvDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="DataSetFilter.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="DefaultDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="DefaultTable.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="DefaultTableIterator.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="DefaultTableMetaData.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="FlatXmlDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IPersistable.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ISpec.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ITable.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ITableIterator.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ITableMetaData.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IYamlParser.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="MysqlXmlDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="QueryDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="QueryTable.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ReplacementDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ReplacementTable.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ReplacementTableIterator.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="SymfonyYamlParser.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="TableFilter.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="TableMetaDataFilter.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="XmlDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="YamlDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir>
+      <dir name="DB">
+       <dir name="MetaData">
+        <file baseinstalldir="/" name="InformationSchema.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="MySQL.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Oci.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="PgSQL.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="Sqlite.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+        <file baseinstalldir="/" name="SqlSrv.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+       </dir>
+       <file baseinstalldir="/" name="DataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="DefaultDatabaseConnection.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="FilteredDataSet.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IDatabaseConnection.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IMetaData.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="MetaData.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ResultSetTable.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="TableIterator.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="TableMetaData.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Table.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir>
+      <dir name="Operation">
+       <file baseinstalldir="/" name="Composite.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="DeleteAll.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Delete.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Exception.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Factory.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IDatabaseOperation.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Insert.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Null.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Replace.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="RowBased.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Truncate.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Update.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir>
+      <dir name="UI">
+       <dir name="Mediums">
+        <file baseinstalldir="/" name="Text.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+       </dir>
+       <dir name="Modes">
+        <dir name="ExportDataSet">
+         <file baseinstalldir="/" name="Arguments.php" role="php">
+          <tasks:replace from="@package_version@" to="version" type="package-info" />
+         </file>
+        </dir>
+        <file baseinstalldir="/" name="ExportDataSet.php" role="php">
+         <tasks:replace from="@package_version@" to="version" type="package-info" />
+        </file>
+       </dir>
+       <file baseinstalldir="/" name="Command.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="Context.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IMedium.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IMediumPrinter.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IModeFactory.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="IMode.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="InvalidModeException.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+       <file baseinstalldir="/" name="ModeFactory.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir>
+      <file baseinstalldir="/" name="AbstractTester.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="Autoload.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="DefaultTester.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="Exception.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="IDatabaseListConsumer.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="ITester.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="TestCase.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir>
+    </dir>
+   </dir>
+   <dir name="Samples">
+    <dir name="BankAccountDB">
+     <dir name="_files">
+      <file baseinstalldir="/" name="bank-account-after-deposits.xml" role="doc">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="bank-account-after-new-account.xml" role="doc">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="bank-account-after-withdrawals.xml" role="doc">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+      <file baseinstalldir="/" name="bank-account-seed.xml" role="doc">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir>
+     <file baseinstalldir="/" name="BankAccountDBTestMySQL.php" role="doc">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+     <file baseinstalldir="/" name="BankAccountDBTest.php" role="doc">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+     <file baseinstalldir="/" name="BankAccount.php" role="doc">
+      <tasks:replace from="@package_version@" to="version" type="package-info" />
+     </file>
+    </dir>
+   </dir>
+   <file baseinstalldir="/" name="ChangeLog.markdown" role="doc"/>
+   <file baseinstalldir="/" name="LICENSE" role="doc"/>
+   <file baseinstalldir="/" name="dbunit.php" role="script">
+    <tasks:replace from="/usr/bin/env php" to="php_bin" type="pear-config"/>
+    <tasks:replace from="@php_bin@" to="php_bin" type="pear-config" />
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="/" name="dbunit.bat" role="script">
+    <tasks:replace from="@php_bin@" to="php_bin" type="pear-config" />
+    <tasks:replace from="@bin_dir@" to="bin_dir" type="pear-config" />
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.3.3</min>
+   </php>
+   <pearinstaller>
+    <min>1.9.4</min>
+   </pearinstaller>
+   <package>
+    <name>PHPUnit</name>
+    <channel>pear.phpunit.de</channel>
+    <min>3.7.0</min>
+   </package>
+   <package>
+    <name>Yaml</name>
+    <channel>pear.symfony.com</channel>
+    <min>2.1.0</min>
+   </package>
+   <extension>
+    <name>pdo</name>
+   </extension>
+   <extension>
+    <name>simplexml</name>
+   </extension>
+  </required>
+ </dependencies>
+ <phprelease>
+  <installconditions>
+   <os>
+    <name>windows</name>
+   </os>
+  </installconditions>
+  <filelist>
+   <install as="dbunit" name="dbunit.php" />
+   <install as="dbunit.bat" name="dbunit.bat" />
+  </filelist>
+ </phprelease>
+ <phprelease>
+  <filelist>
+   <install as="dbunit" name="dbunit.php" />
+   <ignore name="dbunit.bat" />
+  </filelist>
+ </phprelease>
+</package>

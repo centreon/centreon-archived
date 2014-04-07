@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_Internal_Utility</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_Internal_Utility</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Utility class</p>
+		<p class="notes">
+			Located in <a class="field" href="_libs---sysplugins---smarty_internal_utility.php.html">/libs/sysplugins/smarty_internal_utility.php</a> (line <span class="field">41</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+												<div class="method-definition">
+					static 						<span class="method-result">integer</span>
+										<a href="#clearCompiledTemplate" title="details" class="method-name">clearCompiledTemplate</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$resource_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">integer</span>
+										<a href="#compileAllConfig" title="details" class="method-name">compileAllConfig</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$extension</span>, <span class="var-type">bool</span>&nbsp;<span class="var-name">$force_compile</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$time_limit</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$max_errors</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">integer</span>
+										<a href="#compileAllTemplates" title="details" class="method-name">compileAllTemplates</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$extension</span>, <span class="var-type">bool</span>&nbsp;<span class="var-name">$force_compile</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$time_limit</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$max_errors</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#getTags" title="details" class="method-name">getTags</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$template</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$templae</span>)
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">bool</span>
+										<a href="#testInstall" title="details" class="method-name">testInstall</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">&$errors</span> = <span class="var-default">null</span>], <span class="var-type">array</span>&nbsp;<span class="var-name">$errors</span>)
+									</div>
+								
+																																												</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodclearCompiledTemplate" id="clearCompiledTemplate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method clearCompiledTemplate</span> (line <span class="line-number">184</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Delete compiled template file</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of template files deleted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			clearCompiledTemplate
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$resource_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$resource_name</span><span class="var-description">: template name</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$exp_time</span><span class="var-description">: expiration time</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty instance</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcompileAllConfig" id="compileAllConfig"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method compileAllConfig</span> (line <span class="line-number">125</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Compile all config files</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of config files compiled</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			compileAllConfig
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$extension</span>, <span class="var-type">bool</span>&nbsp;<span class="var-name">$force_compile</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$time_limit</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$max_errors</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$extension</span><span class="var-description">: config file name extension</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$force_compile</span><span class="var-description">: force all to recompile</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$time_limit</span><span class="var-description">: set maximum execution time</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$max_errors</span><span class="var-description">: set maximum allowed errors</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty instance</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcompileAllTemplates" id="compileAllTemplates"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method compileAllTemplates</span> (line <span class="line-number">61</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Compile all template files</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of template files compiled</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			compileAllTemplates
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$extension</span>, <span class="var-type">bool</span>&nbsp;<span class="var-name">$force_compile</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$time_limit</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$max_errors</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$extension</span><span class="var-description">: template file name extension</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$force_compile</span><span class="var-description">: force all to recompile</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$time_limit</span><span class="var-description">: set maximum execution time</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$max_errors</span><span class="var-description">: set maximum allowed errors</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty instance</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetTags" id="getTags"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getTags</span> (line <span class="line-number">278</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return array of tag/attributes of all tags used by an template</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of tag/attributes</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			getTags
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$template</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$templae</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$templae</span><span class="var-description">: template object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$template</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtestInstall" id="testInstall"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method testInstall</span> (line <span class="line-number">295</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">diagnose Smarty setup</p>
+<p class="description"><p>If $errors is secified, the diagnostic report will be appended to the array, rather than being output.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> status, true if everything is fine, false else</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			testInstall
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">&$errors</span> = <span class="var-default">null</span>], <span class="var-type">array</span>&nbsp;<span class="var-name">$errors</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty instance to test</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$errors</span><span class="var-description">: array to push results into rather than outputting them</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">&$errors</span>			</li>
+				</ul>
+		
+			
+	</div>
+
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:51 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

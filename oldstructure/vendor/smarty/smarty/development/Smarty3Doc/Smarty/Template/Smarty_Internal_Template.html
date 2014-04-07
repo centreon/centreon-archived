@@ -1,0 +1,1215 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_Internal_Template</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_Internal_Template</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Main class with template data structures and methods</p>
+		<p class="notes">
+			Located in <a class="field" href="_libs---sysplugins---smarty_internal_template.php.html">/libs/sysplugins/smarty_internal_template.php</a> (line <span class="field">22</span>)
+		</p>
+		
+				
+		<pre><a href="../../Smarty/Template/Smarty_Internal_Data.html">Smarty_Internal_Data</a>
+   |
+   --<a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html">Smarty_Internal_TemplateBase</a>
+      |
+      --Smarty_Internal_Template</pre>
+	
+			</div>
+</div>
+
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																																																																																								<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$allow_relative_path" title="details" class="var-name">$allow_relative_path</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$block_data" title="details" class="var-name">$block_data</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$cache_id" title="details" class="var-name">$cache_id</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">integer</span>
+					<a href="#$cache_lifetime" title="details" class="var-name">$cache_lifetime</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">boolean</span>
+					<a href="#$caching" title="details" class="var-name">$caching</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$compile_id" title="details" class="var-name">$compile_id</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$has_nocache_code" title="details" class="var-name">$has_nocache_code</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">bool</span>
+					<a href="#$mustCompile" title="details" class="var-name">$mustCompile</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$properties" title="details" class="var-name">$properties</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$required_plugins" title="details" class="var-name">$required_plugins</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+					<a href="#$smarty" title="details" class="var-name">$smarty</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$template_resource" title="details" class="var-name">$template_resource</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$used_tags" title="details" class="var-name">$used_tags</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$variable_filters" title="details" class="var-name">$variable_filters</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_capture_stack" title="details" class="var-name">$_capture_stack</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																												
+												<div class="method-definition">
+											<span class="method-result">Smarty_Internal_Template</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$template_resource</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, [<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_parent</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$_cache_id</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$_compile_id</span> = <span class="var-default">null</span>], [<span class="var-type">bool</span>&nbsp;<span class="var-name">$_caching</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$_cache_lifetime</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__destruct" title="details" class="method-name">__destruct</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#capture_error" title="details" class="method-name">capture_error</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">integer</span>
+										<a href="#clearCache" title="details" class="method-name">clearCache</a>
+											([<span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#compileTemplateSource" title="details" class="method-name">compileTemplateSource</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#createLocalArrayVariable" title="details" class="method-name">createLocalArrayVariable</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$tpl_var</span>, [<span class="var-type">bool</span>&nbsp;<span class="var-name">$nocache</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$scope</span> = <span class="var-default">Smarty::SCOPE_LOCAL</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#createTemplateCodeFrame" title="details" class="method-name">createTemplateCodeFrame</a>
+											([<span class="var-type">string</span>&nbsp;<span class="var-name">$content</span> = <span class="var-default">''</span>], [<span class="var-type">bool</span>&nbsp;<span class="var-name">$cache</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">bool</span>
+										<a href="#decodeProperties" title="details" class="method-name">decodeProperties</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$properties</span>, [<span class="var-type">bool</span>&nbsp;<span class="var-name">$cache</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#getScope" title="details" class="method-name">&amp;getScope</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$scope</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">mixed</span>
+										<a href="#getScopePointer" title="details" class="method-name">getScopePointer</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$scope</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getSubTemplate" title="details" class="method-name">getSubTemplate</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$template</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$caching</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$cache_lifetime</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$data</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$parent_scope</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$vars</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#mustCompile" title="details" class="method-name">mustCompile</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#setupInlineSubTemplate" title="details" class="method-name">setupInlineSubTemplate</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$template</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$caching</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$cache_lifetime</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$data</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$parent_scope</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$hash</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$vars</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">bool</span>
+										<a href="#writeCachedContent" title="details" class="method-name">writeCachedContent</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$content</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#_count" title="details" class="method-name">_count</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__get" title="details" class="method-name">__get</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$property_name</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__set" title="details" class="method-name">__set</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$property_name</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$allow_relative_path" id="$allow_relative_path"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$allow_relative_path</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">95</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">internal flag to allow relative path in child template blocks</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$block_data" id="$block_data"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$block_data</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">80</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">blocks for template inheritance</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$cache_id" id="$cache_id"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$cache_id</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">28</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">cache_id</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$cache_lifetime" id="$cache_lifetime"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$cache_lifetime</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">43</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">cache lifetime in seconds</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$caching" id="$caching"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">boolean</span>
+			<span class="var-name">$caching</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">38</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">caching enabled</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$compile_id" id="$compile_id"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$compile_id</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">33</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">$compile_id</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$has_nocache_code" id="$has_nocache_code"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$has_nocache_code</span>
+			 = <span class="var-default"> false</span>			(line <span class="line-number">58</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">flag if template does contain nocache code sections</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$mustCompile" id="$mustCompile"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">bool</span>
+			<span class="var-name">$mustCompile</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">53</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">flag if compiled template is invalid and must be (re)compiled</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$properties" id="$properties"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$properties</span>
+			 = <span class="var-default">array('file_dependency' =&gt; array(),'nocache_hash'=&gt;'','function'=&gt;array())</span>			(line <span class="line-number">63</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">special compiled and cached template properties</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$required_plugins" id="$required_plugins"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$required_plugins</span>
+			 = <span class="var-default">array('compiled' =&gt; array(),'nocache'=&gt;array())</span>			(line <span class="line-number">70</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">required plugins</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$smarty" id="$smarty"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+			<span class="var-name">$smarty</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">75</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Global smarty instance</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$template_resource" id="$template_resource"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$template_resource</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">48</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Template resource</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$used_tags" id="$used_tags"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$used_tags</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">90</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">optional log of tag/attributes</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$variable_filters" id="$variable_filters"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$variable_filters</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">85</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">variable filters</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_capture_stack" id="$_capture_stack"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_capture_stack</span>
+			 = <span class="var-default">array(0 =&gt; array())</span>			(line <span class="line-number">100</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">internal capture runtime stack</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+							<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../../Smarty/Template/Smarty_Internal_Data.html">Smarty_Internal_Data</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#var$config_vars">Smarty_Internal_Data::$config_vars</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#var$parent">Smarty_Internal_Data::$parent</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#var$template_class">Smarty_Internal_Data::$template_class</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#var$tpl_vars">Smarty_Internal_Data::$tpl_vars</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">116</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create template data object</p>
+<p class="description"><p>Some of the global Smarty settings copied to template scope  It load the required template resources and cacher plugins</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Smarty_Internal_Template</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$template_resource</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, [<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_parent</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$_cache_id</span> = <span class="var-default">null</span>], [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$_compile_id</span> = <span class="var-default">null</span>], [<span class="var-type">bool</span>&nbsp;<span class="var-name">$_caching</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$_cache_lifetime</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$template_resource</span><span class="var-description">: template resource string</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty instance</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$_parent</span><span class="var-description">: back pointer to parent object with variables or null</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$_cache_id</span><span class="var-description">: cache   id or null</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$_compile_id</span><span class="var-description">: compile id or null</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$_caching</span><span class="var-description">: use caching?</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$_cache_lifetime</span><span class="var-description">: cache life-time in seconds</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method__destruct" id="__destruct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">688</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Template data object destrutor</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__destruct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcapture_error" id="capture_error"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">capture_error</span> (line <span class="line-number">585</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">runtime error not matching capture tags</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			capture_error
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodclearCache" id="clearCache"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">clearCache</span> (line <span class="line-number">596</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Empty cache for this template</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of cache files deleted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			clearCache
+		</span>
+					([<span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$exp_time</span><span class="var-description">: expiration time</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcompileTemplateSource" id="compileTemplateSource"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">compileTemplateSource</span> (line <span class="line-number">164</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Compiles the template</p>
+<p class="description"><p>If the template is not evaluated the compiled template is saved on disk</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			compileTemplateSource
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcreateLocalArrayVariable" id="createLocalArrayVariable"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">createLocalArrayVariable</span> (line <span class="line-number">493</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Template code runtime function to create a local Smarty variable for array assignments</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			createLocalArrayVariable
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$tpl_var</span>, [<span class="var-type">bool</span>&nbsp;<span class="var-name">$nocache</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$scope</span> = <span class="var-default">Smarty::SCOPE_LOCAL</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$tpl_var</span><span class="var-description">: tempate variable name</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$nocache</span><span class="var-description">: cache mode of variable</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$scope</span><span class="var-description">: scope of variable</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreateTemplateCodeFrame" id="createTemplateCodeFrame"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">createTemplateCodeFrame</span> (line <span class="line-number">337</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create code frame for compiled and cached templates</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			createTemplateCodeFrame
+		</span>
+					([<span class="var-type">string</span>&nbsp;<span class="var-name">$content</span> = <span class="var-default">''</span>], [<span class="var-type">bool</span>&nbsp;<span class="var-name">$cache</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$content</span><span class="var-description">: optional template content</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$cache</span><span class="var-description">: flag for cache file</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddecodeProperties" id="decodeProperties"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">decodeProperties</span> (line <span class="line-number">427</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This function is executed automatically when a compiled or cached template file is included</p>
+<p class="description"><p><ul><li>Decode saved properties from compiled template and cache files</li><li>Check if compiled or cache file is valid</li></ul></p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> flag if compiled or cache file is valid</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			decodeProperties
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$properties</span>, [<span class="var-type">bool</span>&nbsp;<span class="var-name">$cache</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$properties</span><span class="var-description">: special template properties</span>			</li>
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$cache</span><span class="var-description">: flag if called from cache file</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetScope" id="getScope"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getScope</span> (line <span class="line-number">514</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Template code runtime function to get pointer to template variable array of requested scope</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> array of template variables</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			&amp;getScope
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$scope</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$scope</span><span class="var-description">: requested variable scope</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetScopePointer" id="getScopePointer"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getScopePointer</span> (line <span class="line-number">537</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get parent or root of template parent chain</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> object</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			getScopePointer
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$scope</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$scope</span><span class="var-description">: pqrent or root scope</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetSubTemplate" id="getSubTemplate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSubTemplate</span> (line <span class="line-number">245</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Template code runtime function to get subtemplate content</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> template content</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getSubTemplate
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$template</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$caching</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$cache_lifetime</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$data</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$parent_scope</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$vars</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$template</span><span class="var-description">: the resource handle of the template file</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$cache_id</span><span class="var-description">: cache id to be used with this template</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id to be used with this template</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$caching</span><span class="var-description">: cache mode</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$cache_lifetime</span><span class="var-description">: life time of cache data</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$vars</span><span class="var-description">: optional  variables to assign</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$parent_scope</span><span class="var-description">: scope in which {include} should execute</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$data</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodmustCompile" id="mustCompile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">mustCompile</span> (line <span class="line-number">142</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns if the current template must be compiled by the Smarty compiler</p>
+<p class="description"><p>It does compare the timestamps of template source and the compiled templates and checks the force compile configuration</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if the template must be compiled</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			mustCompile
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsetupInlineSubTemplate" id="setupInlineSubTemplate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setupInlineSubTemplate</span> (line <span class="line-number">302</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Template code runtime function to set up an inline subtemplate</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> template content</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			setupInlineSubTemplate
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$template</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$caching</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$cache_lifetime</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$data</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$parent_scope</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$hash</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$vars</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$template</span><span class="var-description">: the resource handle of the template file</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$cache_id</span><span class="var-description">: cache id to be used with this template</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id to be used with this template</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$caching</span><span class="var-description">: cache mode</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$cache_lifetime</span><span class="var-description">: life time of cache data</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$vars</span><span class="var-description">: optional  variables to assign</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$parent_scope</span><span class="var-description">: scope in which {include} should execute</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$hash</span><span class="var-description">: nocache hash code</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$data</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodwriteCachedContent" id="writeCachedContent"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">writeCachedContent</span> (line <span class="line-number">217</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Writes the cached template output</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			writeCachedContent
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$content</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$content</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_count" id="_count"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_count</span> (line <span class="line-number">557</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">[util function] counts an array, arrayaccess/traversable or PDOStatement object</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the count for arrays and objects that implement countable, 1 for other objects that don't, and 0 for empty elements</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			_count
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method__get" id="__get"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">__get</span> (line <span class="line-number">634</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">get Smarty property in template context</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__get
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$property_name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$property_name</span><span class="var-description">: property name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method__set" id="__set"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">__set</span> (line <span class="line-number">608</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">set Smarty property in template context</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__set
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$property_name</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$property_name</span><span class="var-description">: property name</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$value</span><span class="var-description">: value</span>			</li>
+				</ul>
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html">Smarty_Internal_TemplateBase</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodcreateData">Smarty_Internal_TemplateBase::createData()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methoddisplay">Smarty_Internal_TemplateBase::display()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodfetch">Smarty_Internal_TemplateBase::fetch()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodgetRegisteredObject">Smarty_Internal_TemplateBase::getRegisteredObject()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodisCached">Smarty_Internal_TemplateBase::isCached()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodloadFilter">Smarty_Internal_TemplateBase::loadFilter()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterCacheResource">Smarty_Internal_TemplateBase::registerCacheResource()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterClass">Smarty_Internal_TemplateBase::registerClass()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterDefaultConfigHandler">Smarty_Internal_TemplateBase::registerDefaultConfigHandler()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterDefaultPluginHandler">Smarty_Internal_TemplateBase::registerDefaultPluginHandler()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterDefaultTemplateHandler">Smarty_Internal_TemplateBase::registerDefaultTemplateHandler()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterFilter">Smarty_Internal_TemplateBase::registerFilter()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterObject">Smarty_Internal_TemplateBase::registerObject()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterPlugin">Smarty_Internal_TemplateBase::registerPlugin()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodregisterResource">Smarty_Internal_TemplateBase::registerResource()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodunloadFilter">Smarty_Internal_TemplateBase::unloadFilter()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodunregisterCacheResource">Smarty_Internal_TemplateBase::unregisterCacheResource()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodunregisterFilter">Smarty_Internal_TemplateBase::unregisterFilter()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodunregisterObject">Smarty_Internal_TemplateBase::unregisterObject()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodunregisterPlugin">Smarty_Internal_TemplateBase::unregisterPlugin()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#methodunregisterResource">Smarty_Internal_TemplateBase::unregisterResource()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#method_get_filter_name">Smarty_Internal_TemplateBase::_get_filter_name()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_TemplateBase.html#method__call">Smarty_Internal_TemplateBase::__call()</a></span><br>
+											</blockquote>
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../../Smarty/Template/Smarty_Internal_Data.html">Smarty_Internal_Data</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodappend">Smarty_Internal_Data::append()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodappendByRef">Smarty_Internal_Data::appendByRef()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodassign">Smarty_Internal_Data::assign()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodassignByRef">Smarty_Internal_Data::assignByRef()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodassignGlobal">Smarty_Internal_Data::assignGlobal()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodclearAllAssign">Smarty_Internal_Data::clearAllAssign()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodclearAssign">Smarty_Internal_Data::clearAssign()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodclearConfig">Smarty_Internal_Data::clearConfig()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodconfigLoad">Smarty_Internal_Data::configLoad()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodgetConfigVariable">Smarty_Internal_Data::getConfigVariable()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodgetConfigVars">Smarty_Internal_Data::getConfigVars()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodgetStreamVariable">Smarty_Internal_Data::getStreamVariable()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodgetTemplateVars">Smarty_Internal_Data::getTemplateVars()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Template/Smarty_Internal_Data.html#methodgetVariable">Smarty_Internal_Data::getVariable()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:49 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

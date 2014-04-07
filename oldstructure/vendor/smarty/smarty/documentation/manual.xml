@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+          "./dtds/dbxml-4.1.2/docbookx.dtd" [
+<!ENTITY % build.version SYSTEM "entities/version.ent">
+%build.version;
+
+<!-- Add translated specific definitions and snippets -->
+<!ENTITY % language-defs     SYSTEM "current_lang/language-defs.ent">
+<!ENTITY % language-snippets SYSTEM "current_lang/language-snippets.ent">
+
+%language-defs;
+%language-snippets;
+
+<!-- Fallback to English definitions and snippets (in case of missing translation) -->
+<!ENTITY % language-defs.default     SYSTEM "current_lang/language-defs.ent">
+
+%language-defs.default;
+
+<!-- All global entities for the XML files -->
+<!ENTITY % global.entities  SYSTEM "entities/global.ent">
+
+%global.entities;
+
+<!ENTITY % file.entities    SYSTEM "entities/file-entities.ent">
+
+%file.entities;
+
+]>
+
+
+<book lang="&lang;" id="manual">
+ <title>&SMARTYManual;</title>
+
+ &bookinfo;
+ &preface;
+ &getting-started;
+
+ <part id="smarty.for.designers">
+  <title>&SMARTYDesigners;</title>
+
+  &designers.language-basic-syntax;
+  &designers.language-variables;
+  &designers.language-modifiers;
+  &designers.language-combining-modifiers;
+  &designers.language-builtin-functions;
+  &designers.language-custom-functions;
+  &designers.config-files;
+  &designers.chapter-debugging-console;
+ </part>
+
+ <part id="smarty.for.programmers">
+  <title>&SMARTYProgrammers;</title>
+  
+  &programmers.charset;
+  &programmers.smarty-constants;
+  &programmers.api-variables;
+  &programmers.api-functions;
+  &programmers.caching;
+  &programmers.resources;
+  &programmers.advanced-features;
+  &programmers.plugins;
+  &programmers.bc;
+ </part>
+ 
+<part id="appendixes">
+ <title>&Appendixes;</title>
+ &appendixes.troubleshooting;
+ &appendixes.tips;
+ &appendixes.resources;
+ &appendixes.bugs;
+</part>
+</book>

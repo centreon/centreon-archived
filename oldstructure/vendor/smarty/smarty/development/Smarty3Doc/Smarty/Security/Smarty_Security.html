@@ -1,0 +1,1015 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_Security</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_Security</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This class does contain the security settings</p>
+		<p class="notes">
+			Located in <a class="field" href="_libs---sysplugins---smarty_security.php.html">/libs/sysplugins/smarty_security.php</a> (line <span class="field">22</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																																																																																																																																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$allowed_modifiers" title="details" class="var-name">$allowed_modifiers</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$allowed_tags" title="details" class="var-name">$allowed_tags</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">boolean</span>
+					<a href="#$allow_constants" title="details" class="var-name">$allow_constants</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">boolean</span>
+					<a href="#$allow_super_globals" title="details" class="var-name">$allow_super_globals</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$disabled_modifiers" title="details" class="var-name">$disabled_modifiers</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$disabled_tags" title="details" class="var-name">$disabled_tags</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$php_functions" title="details" class="var-name">$php_functions</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">integer</span>
+					<a href="#$php_handling" title="details" class="var-name">$php_handling</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$php_modifiers" title="details" class="var-name">$php_modifiers</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$secure_dir" title="details" class="var-name">$secure_dir</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$static_classes" title="details" class="var-name">$static_classes</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$streams" title="details" class="var-name">$streams</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$trusted_dir" title="details" class="var-name">$trusted_dir</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$trusted_uri" title="details" class="var-name">$trusted_uri</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_config_dir" title="details" class="var-name">$_config_dir</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_php_resource_dir" title="details" class="var-name">$_php_resource_dir</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_resource_dir" title="details" class="var-name">$_resource_dir</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_secure_dir" title="details" class="var-name">$_secure_dir</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_template_dir" title="details" class="var-name">$_template_dir</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$_trusted_dir" title="details" class="var-name">$_trusted_dir</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																				
+												<div class="method-definition">
+											<span class="method-result">Smarty_Security</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedModifier" title="details" class="method-name">isTrustedModifier</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$modifier_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedPHPDir" title="details" class="method-name">isTrustedPHPDir</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$filepath</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedPhpFunction" title="details" class="method-name">isTrustedPhpFunction</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$function_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedPhpModifier" title="details" class="method-name">isTrustedPhpModifier</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$modifier_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedResourceDir" title="details" class="method-name">isTrustedResourceDir</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$filepath</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedStaticClass" title="details" class="method-name">isTrustedStaticClass</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$class_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedStream" title="details" class="method-name">isTrustedStream</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$stream_name</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedTag" title="details" class="method-name">isTrustedTag</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#isTrustedUri" title="details" class="method-name">isTrustedUri</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$allowed_modifiers" id="$allowed_modifiers"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$allowed_modifiers</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">110</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of allowed modifier plugins.</p>
+<p class="description"><p>If empty no restriction by allowed_modifiers.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$allowed_tags" id="$allowed_tags"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$allowed_tags</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">96</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of allowed tags.</p>
+<p class="description"><p>If empty no restriction by allowed_tags.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$allow_constants" id="$allow_constants"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">boolean</span>
+			<span class="var-name">$allow_constants</span>
+			 = <span class="var-default"> true</span>			(line <span class="line-number">130</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">+ flag if constants can be accessed from template</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$allow_super_globals" id="$allow_super_globals"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">boolean</span>
+			<span class="var-name">$allow_super_globals</span>
+			 = <span class="var-default"> true</span>			(line <span class="line-number">135</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">+ flag if super globals can be accessed from template</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$disabled_modifiers" id="$disabled_modifiers"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$disabled_modifiers</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">117</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of disabled modifier plugins.</p>
+<p class="description"><p>If empty no restriction by disabled_modifiers.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$disabled_tags" id="$disabled_tags"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$disabled_tags</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">103</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of disabled tags.</p>
+<p class="description"><p>If empty no restriction by disabled_tags.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$php_functions" id="$php_functions"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$php_functions</span>
+			 = <span class="var-default">array(<br />        'isset', 'empty',<br />        'count', 'sizeof',<br />        'in_array', 'is_array',<br />        'time',<br />        'nl2br',<br />    )</span>			(line <span class="line-number">72</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of trusted PHP functions.</p>
+<p class="description"><p>If empty all functions are allowed.  To disable all PHP functions set $php_functions = null.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$php_handling" id="$php_handling"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$php_handling</span>
+			 = <span class="var-default"> Smarty::PHP_PASSTHRU</span>			(line <span class="line-number">36</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This determines how Smarty handles &quot;&lt;?php ... ?&gt;&quot; tags in templates.</p>
+<p class="description"><p>possible values:  <ul><li>Smarty::PHP_PASSTHRU -&gt; echo PHP tags as they are</li><li>Smarty::PHP_QUOTE    -&gt; escape tags as entities</li><li>Smarty::PHP_REMOVE   -&gt; remove php tags</li><li>Smarty::PHP_ALLOW    -&gt; execute php tags</li></ul></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$php_modifiers" id="$php_modifiers"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$php_modifiers</span>
+			 = <span class="var-default">array(<br />        'escape',<br />        'count'<br />    )</span>			(line <span class="line-number">86</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of trusted PHP modifiers.</p>
+<p class="description"><p>If empty all modifiers are allowed.  To disable all modifier set $modifiers = null.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$secure_dir" id="$secure_dir"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$secure_dir</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">43</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is the list of template directories that are considered secure.</p>
+<p class="description"><p>$template_dir is in this list implicitly.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$static_classes" id="$static_classes"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$static_classes</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">64</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of trusted static classes.</p>
+<p class="description"><p>If empty access to all static classes is allowed.  If set to 'none' none is allowed.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$streams" id="$streams"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$streams</span>
+			 = <span class="var-default">array('file')</span>			(line <span class="line-number">125</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of trusted streams.</p>
+<p class="description"><p>If empty all streams are allowed.  To disable all streams set $streams = null.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$trusted_dir" id="$trusted_dir"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$trusted_dir</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">50</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is an array of directories where trusted php scripts reside.</p>
+<p class="description"><p>$security is disabled during their inclusion/execution.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$trusted_uri" id="$trusted_uri"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$trusted_uri</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">56</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">List of regular expressions (PCRE) that include trusted URIs</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">usedby:</span> <a href="../../Smarty/Security/Smarty_Security.html#methodisTrustedUri">Smarty_Security::isTrustedUri()</a> - for list of patterns to match against $uri</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_config_dir" id="$_config_dir"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_config_dir</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">151</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Cache for $config_dir lookups</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_php_resource_dir" id="$_php_resource_dir"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_php_resource_dir</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">161</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Cache for $php_resource_dir lookups</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_resource_dir" id="$_resource_dir"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_resource_dir</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">141</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Cache for $resource_dir lookups</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_secure_dir" id="$_secure_dir"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_secure_dir</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">156</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Cache for $secure_dir lookups</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_template_dir" id="$_template_dir"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_template_dir</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">146</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Cache for $template_dir lookups</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$_trusted_dir" id="$_trusted_dir"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$_trusted_dir</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">166</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Cache for $trusted_dir lookups</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">172</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Smarty_Security</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedModifier" id="isTrustedModifier"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedModifier</span> (line <span class="line-number">269</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if modifier plugin is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if tag is trusted</li>
+				<li><span class="field">throws:</span> SmartyCompilerException if modifier is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedModifier
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$modifier_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$modifier_name</span>			</li>
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedPHPDir" id="isTrustedPHPDir"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedPHPDir</span> (line <span class="line-number">417</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if directory of file resource is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if directory is trusted</li>
+				<li><span class="field">throws:</span> SmartyException if PHP directory is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedPHPDir
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filepath</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filepath</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedPhpFunction" id="isTrustedPhpFunction"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedPhpFunction</span> (line <span class="line-number">185</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if PHP function is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if function is trusted</li>
+				<li><span class="field">throws:</span> SmartyCompilerException if php function is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedPhpFunction
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$function_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$function_name</span>			</li>
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedPhpModifier" id="isTrustedPhpModifier"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedPhpModifier</span> (line <span class="line-number">221</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if PHP modifier is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if modifier is trusted</li>
+				<li><span class="field">throws:</span> SmartyCompilerException if modifier is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedPhpModifier
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$modifier_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$modifier_name</span>			</li>
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedResourceDir" id="isTrustedResourceDir"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedResourceDir</span> (line <span class="line-number">313</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if directory of file resource is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if directory is trusted</li>
+				<li><span class="field">throws:</span> SmartyException if directory is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedResourceDir
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$filepath</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$filepath</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedStaticClass" id="isTrustedStaticClass"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedStaticClass</span> (line <span class="line-number">203</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if static class is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if class is trusted</li>
+				<li><span class="field">throws:</span> SmartyCompilerException if static class is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedStaticClass
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$class_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$class_name</span>			</li>
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedStream" id="isTrustedStream"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedStream</span> (line <span class="line-number">297</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if stream is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if stream is trusted</li>
+				<li><span class="field">throws:</span> SmartyException if stream is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedStream
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$stream_name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$stream_name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedTag" id="isTrustedTag"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedTag</span> (line <span class="line-number">239</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if tag is trusted.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if tag is trusted</li>
+				<li><span class="field">throws:</span> SmartyCompilerException if modifier is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedTag
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$tag_name</span>, <span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$tag_name</span>			</li>
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisTrustedUri" id="isTrustedUri"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isTrustedUri</span> (line <span class="line-number">395</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if URI (e.g. {fetch} or {html_image}) is trusted</p>
+<p class="description"><p>To simplify things, isTrustedUri() resolves all input to &quot;{$PROTOCOL}://{$HOSTNAME}&quot;.  So &quot;http://username:password@hello.world.example.org:8080/some-path?some=query-string&quot;  is reduced to &quot;http://hello.world.example.org&quot; prior to applying the patters from <a href="../../Smarty/Security/Smarty_Security.html#var$trusted_uri">$trusted_uri</a>.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true if URI is trusted</li>
+				<li><span class="field">throws:</span> SmartyException if URI is not trusted</li>
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">uses:</span> <a href="../../Smarty/Security/Smarty_Security.html#var$trusted_uri">Smarty_Security::$trusted_uri</a> - for list of patterns to match against $uri</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			isTrustedUri
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$uri</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:51 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

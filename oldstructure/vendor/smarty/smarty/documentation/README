@@ -1,0 +1,24 @@
+This directory contains the documentation for Smarty. All files are in docbook
+format with an .xml extension. Different subdirs contain different available languages.
+
+Programs required:
+
+xmlto
+xsltproc
+fop
+
+Files required:
+
+Default XSL stylesheets, ship with Ubuntu under:
+/usr/share/xml/docbook/stylesheet/docbook-xsl
+
+MAKE:
+ * make html         (make plain html english docs)
+ * make pdf          (make pdf english docs)
+ * make LANG=de html (make plain html german docs)
+ * make LANG=de pdf  (make pdf german docs)
+
+CHM files (todo)
+
+Revision Tracking (for translations):
+ * make LANG=de revcheck (this will create revcheck.html)

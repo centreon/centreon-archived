@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 3856 $ -->
+<!-- EN-Revision: 3827 Maintainer: takagi Status: ready -->
+<refentry id="api.register.filter">
+ <refnamediv>
+  <refname>registerFilter()</refname>
+  <refpurpose>動的にフィルタを登録する</refpurpose>
+ </refnamediv>
+ <refsect1>
+  <title>説明</title>
+  <methodsynopsis>
+   <type>void</type><methodname>registerFilter</methodname>
+   <methodparam><type>string</type><parameter>type</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>callback</parameter></methodparam>
+  </methodsynopsis>
+  <para>
+   この関数は、テンプレート上で動くフィルタを動的に登録します。
+   次のパラメータを使います。
+   <itemizedlist>
+    &parameter.filtertype;
+   &parameter.callback;
+   </itemizedlist>   
+  </para>
+   &note.parameter.function;
+
+  <para>
+   <link linkend="plugins.prefilters.postfilters">プリフィルタ</link>
+   は、テンプレートのソースをコンパイルする前に実行します。
+   プリフィルタ関数を準備する方法の詳細は <link
+    linkend="advanced.features.prefilters">テンプレート プリフィルタ</link>
+   を参照ください。
+  </para>
+ 
+  <para>
+   <link linkend="plugins.prefilters.postfilters">ポストフィルタ</link>
+   は、テンプレートを PHP にコンパイルした後で実行します。
+   ポストフィルタ関数を準備する方法の詳細は <link
+    linkend="advanced.features.postfilters">テンプレート ポストフィルタ</link>
+   を参照ください。
+  </para>
+  
+  <para>
+   <link linkend="plugins.outputfilters">アウトプットフィルタ</link>
+   は、テンプレートの出力を
+   <link linkend="api.display">表示</link> する前に実行します。
+   アウトプットフィルタ関数を準備する方法の詳細は
+   <link linkend="advanced.features.outputfilters">テンプレート
+   アウトプットフィルタ</link> を参照ください。
+  </para>
+
+  <para>
+<link linkend="api.unregister.filter"><varname>unregisterFilter()</varname></link>、
+<link linkend="api.load.filter"><varname>loadFilter()</varname></link>、
+<link linkend="variable.autoload.filters"><parameter>$autoload_filters</parameter></link>、
+ <link linkend="advanced.features.prefilters">テンプレート プリフィルタ</link>、
+ <link linkend="advanced.features.postfilters">テンプレート ポストフィルタ</link>、
+ <link linkend="advanced.features.outputfilters">テンプレート アウトプットフィルタ</link>
+ も参照ください。
+</para>
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

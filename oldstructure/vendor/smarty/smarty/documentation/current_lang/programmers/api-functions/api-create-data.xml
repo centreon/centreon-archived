@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 3827 $ -->
+<refentry id="api.create.data">
+ <refnamediv>
+  <refname>createData()</refname>
+  <refpurpose>creates a data object</refpurpose>
+ </refnamediv>
+ <refsect1>
+  <title>Description</title>
+  <methodsynopsis>
+   <type>string</type><methodname>createData</methodname>
+   <methodparam choice="opt"><type>object</type><parameter>parent</parameter></methodparam>
+  </methodsynopsis>
+  <methodsynopsis>
+   <type>string</type><methodname>createData</methodname>
+   <void />
+  </methodsynopsis>
+  <para>
+   This creates a data object which will hold assigned variables.
+    It uses the following parameters:
+    <itemizedlist>
+    <listitem>
+     <para>
+      <parameter>parent</parameter> is an optional parameter. It is an uplink to the main Smarty object, 
+      a another user-created data object or to user-created template object. These objects can be chained.
+      Templates can access variables assigned to any of the objects in it's parent chain.
+     </para>
+     </listitem>
+    </itemizedlist>
+  </para>
+  <para>
+   Data objects are used to create scopes for assigned variables. They can be used to have
+   controll which variables are seen by which templates.
+  </para>
+  <para>
+   <example>
+    <title>createData()</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include('Smarty.class.php');
+$smarty = new Smarty;
+
+// create data object with its private variable scope
+$data = $smarty->createData();
+
+// assign variable to data scope
+$data->assign('foo','bar');
+
+// create template object which will use variables from data object
+$tpl = $smarty->createTemplate('index.tpl',$data);
+
+// display the template
+$tpl->display();
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   See also
+   <link linkend="api.display"><varname>display()</varname></link>,
+    and
+   <link linkend="api.create.template"><varname>createTemplate()</varname></link>,
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

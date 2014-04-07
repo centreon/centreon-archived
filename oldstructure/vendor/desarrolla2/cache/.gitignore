@@ -1,0 +1,10 @@
+// .gitignore
+/build
+/nbproject
+/vendor
+/.idea
+/composer.lock
+/tests/config.yml
+/TODO.txt
+*~
+*.swp

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 3856 $ -->
+<!-- EN-Revision: 3842 Maintainer: takagi Status: ready -->
+<!-- CREDITS: mat-sh,daichi,joe -->
+ <sect1 id="caching.cacheable">
+  <title>出力のキャッシュ可能性の制御</title>
+  <para>
+   キャッシュを有効にすると、通常は最終的なページの出力のすべてがキャッシュされます。
+   しかし、Smarty3 では、出力の特定の部分だけキャッシュしないようにできるオプションも用意しています。
+  </para>
+  <note>
+   <title>全般的な注意</title>
+   <para>
+    キャッシュされていない部分で使ったすべての変数は、
+    ページをキャッシュから読み込んだときに PHP から新たに代入されることに注意しましょう。
+   </para>
+  </note>
+  <sect2 id="cacheability.sections">
+   <title>テンプレートセクションのキャッシュ可能性</title>
+   <para>
+    テンプレートの大きなセクションをキャッシュ対象外にするには、
+    <link linkend="language.function.nocache"><varname>{nocache}</varname></link>
+    タグと <link linkend="language.function.nocache"><varname>{/nocache}</varname></link> タグを使います。
+   </para>
+   <example>
+    <title>テンプレートのセクションをキャッシュ対象外にする</title>
+    <programlisting>
+<![CDATA[
+
+Today's date is
+{nocache}
+{$smarty.now|date_format}
+{/nocache}
+]]>
+   </programlisting>
+    <para>
+     上のコードは、キャッシュしたページに現在の日付を出力します。
+    </para>
+   </example>
+  </sect2>
+  <sect2 id="cacheability.tags">
+   <title>タグのキャッシュ可能性</title>
+   <para>
+    個別のタグのキャッシュを無効にするには、そのタグに "nocache" フラグを追加します。
+   </para>
+   <example>
+    <title>タグの出力をキャッシュ対象外にする</title>
+    <programlisting>
+<![CDATA[
+Today's date is
+{$smarty.now|date_format nocache}
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+  <sect2 id="cacheability.variables">
+   <title>変数のキャッシュ可能性</title>
+   <para>
+    変数を <link linkend="api.assign"><varname>assign()</varname></link> するときに、キャッシュしないよう指定することができます。
+    そのような変数を使っているタグは、すべて自動的に非キャッシュモードとなります。
+   </para>
+   <note>
+    <title>ノート</title>
+    <para>
+     非キャッシュモードでタグを実行した場合は、そのタグで使われている他のすべての変数が
+     ページをキャッシュから読み込んだときに PHP から新たに代入されることに注意しましょう。
+    </para>
+   </note>
+   <note>
+    <title>ノート</title>
+    <para>
+     変数の非キャッシュ設定は、コンパイル済みのテンプレートのコードに影響を及ぼします。
+     設定を変えた後は、コンパイル済みのテンプレートやキャッシュされたテンプレートを削除して
+     再コンパイルしなければなりません。
+    </para>
+   </note>
+   <example>
+    <title>キャッシュしない変数</title>
+    <programlisting>
+<![CDATA[
+// $foo をキャッシュしない変数として代入します
+$smarty->assign('foo',time(),true);
+]]>
+<![CDATA[
+Dynamic time value is {$foo}
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+  <sect2 id="cacheability.plugins">
+     <title>プラグインのキャッシュ可能性</title>
+  <para>
+   プラグインを登録する際にキャッシュ可能なプラグインを宣言する事が出来ます。
+   <link linkend="api.register.plugin"><varname>registerPlugin()</varname></link>
+   の３番目のパラメータが <parameter>$cacheable</parameter> で、デフォルトは &true; です。
+  </para>
+  <para>
+   <literal>$cacheable=false</literal> であるプラグインが登録された時、
+   プラグインはページがキャッシュから読まれる場合でもページを表示する度に呼ばれます。
+   プラグイン関数は
+   <link linkend="plugins.inserts"><varname>{insert}</varname></link>
+   関数に少し似た振る舞いをします。
+  </para>
+   <note>
+    <title>ノート</title>
+    <para>
+     <parameter>$cacheable</parameter> は、コンパイル済みのテンプレートのコードに影響を及ぼします。
+     設定を変えた後は、コンパイル済みのテンプレートやキャッシュされたテンプレートを削除して
+     再コンパイルしなければなりません。
+    </para>
+   </note>
+  <para>
+   <link linkend="plugins.inserts"><varname>{insert}</varname></link>
+   とは対照的に、プラグインの属性はデフォルトではキャッシュされません。
+   キャッシュするためには第４パラメータ <parameter>$cache_attrs</parameter>
+   によって宣言します。<parameter>$cache_attrs</parameter>
+   はキャッシュされるべき属性の名前を格納した配列であり、
+   プラグイン関数はページがキャッシュから取り出される度に
+   属性はキャッシュに記述されていたものとして値を取得します。
+  </para>
+
+  <example>
+   <title>プラグインの出力がキャッシュされるのを防ぐ</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+function remaining_seconds($params, $smarty) {
+    $remain = $params['endtime'] - time();
+    if($remain >= 0){
+        return $remain . ' second(s)';
+    }else{
+        return 'done';
+    }
+}
+
+$smarty->registerPlugin('function','remaining', 'remaining_seconds', false, array('endtime'));
+
+if (!$smarty->isCached('index.tpl')) {
+    // データベースから $obj を取り出して割り当てる
+    $smarty->assignByRef('obj', $obj);
+}
+
+$smarty->display('index.tpl');
+?>
+]]>
+   </programlisting>
+   <para>
+    <filename>index.tpl</filename> は次のようになります。
+   </para>
+   <programlisting>
+<![CDATA[
+Time Remaining: {remaining endtime=$obj->endtime}
+]]>
+   </programlisting>
+   <para>
+    たとえページがキャッシュされていても <literal>$obj</literal>
+    の endtime の秒数までは各ページの表示は変更されていきます。
+    その後のリクエストでページがキャッシュに書かれている時、
+    endtime 属性がキャッシュされたのでオブジェクトをデータベースから取り出す必要があるだけです。
+   </para>
+  </example>
+
+  <example>
+   <title>テンプレートの一節がキャッシュされるのを防ぐ</title>
+   <programlisting role="php">
+<![CDATA[
+index.php:
+
+<?php
+$smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+function smarty_block_dynamic($param, $content, $smarty) {
+    return $content;
+}
+$smarty->registerPlugin('block','dynamic', 'smarty_block_dynamic', false);
+
+$smarty->display('index.tpl');
+?>
+]]>
+   </programlisting>
+   <para>
+    <filename>index.tpl</filename> は次のようになります。
+   </para>
+   <programlisting>
+<![CDATA[
+Page created: {'0'|date_format:'%D %H:%M:%S'}
+
+{dynamic}
+
+Now is: {'0'|date_format:'%D %H:%M:%S'}
+
+... 他にも何か ...
+
+{/dynamic}
+]]>
+   </programlisting>
+  </example>
+
+  <para>
+   ページをリロードした時に、両方の日付が異なる点に注意して下さい。
+   一つは <quote>動的</quote> であり、もう一つは <quote>静的</quote> です。
+   <literal>{dynamic}...{/dynamic}</literal> 間に含まれるコンテンツ全てを動的に生成する事ができ、
+   残るコンテンツはキャッシュされない事を確認して下さい。
+  </para>
+   <note>
+   <title>ノート</title>
+   <para>
+    上の例は、単に動的ブロックプラグインの動作を説明するためだけのものです。
+    <link linkend="cacheability.sections"><parameter>テンプレートセクションのキャッシュ可能性</parameter></link>
+    組み込みの <link linkend="language.function.nocache"><varname>{nocache}</varname></link>
+    および <link linkend="language.function.nocache"><varname>{/nocache}</varname></link>
+    タグを使ってテンプレートセクションのキャッシュを無効にする方法があります。
+   </para>
+   </note>
+  </sect2>
+ </sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

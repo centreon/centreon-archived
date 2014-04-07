@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 3856 $ -->
+<!-- EN-Revision: 3827 Maintainer: takagi Status: ready -->
+<sect1 id="advanced.features.static.classes">
+ <title>static クラス</title>
+ <para>
+  static クラスには直接アクセスすることができます。構文は、PHP と同じです。
+ </para>
+
+ <note><para>
+   PHP のクラスに直接アクセスすることはお勧めしません。
+   これは、アプリケーションのコードの構造と表示内容とを密結合させることになり、
+   さらにテンプレートの構造も複雑になってしまいます。
+   プラグインを登録し、テンプレートを PHP のクラスやオブジェクトから隔離することを推奨します。
+   この仕組みはよく考えた上で使うようにしましょう。
+   Smarty のウェブサイトにあるベストプラクティスのページも参照ください。
+ </para></note>    
+
+
+ <example>
+  <title>static クラスへのアクセス方法</title>
+  <programlisting>
+<![CDATA[
+{assign var=foo value=myclass::BAR}  <--- クラス定数 BAR
+
+{assign var=foo value=myclass::method()}  <--- メソッドの結果
+
+{assign var=foo value=myclass::method1()->method2}  <--- メソッドチェイン
+
+{assign var=foo value=myclass::$bar}  <--- myclass クラスの bar プロパティ
+
+{assign var=foo value=$bar::method}  <--- Smarty の変数 bar をクラス名として使う
+
+]]>
+  </programlisting>
+ </example>
+
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

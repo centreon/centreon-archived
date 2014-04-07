@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4722 $ -->
+<!-- EN-Revision: 3827 Maintainer: takagi Status: ready -->
+<sect1 id="language.function.setfilter">
+ <title>{setfilter}</title>
+ <para>
+  <varname>{setfilter}...{/setfilter}</varname> ブロックタグは、
+  テンプレートインスタンスの変数フィルタを定義します。
+ </para>
+ <para>
+  構文: {setfilter filter1|filter2|filter3....}...{/setfilter}
+ </para>
+ <para>
+  フィルタには、次の内容を指定できます。
+ </para>
+ <itemizedlist>
+  <listitem>
+   <para>
+    変数フィルタプラグインの名前。
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    修飾子の名前、そしてオプションで追加のパラメータ。
+   </para>
+  </listitem>
+ </itemizedlist>
+
+<para>
+ <varname>{setfilter}...{/setfilter}</varname> ブロックはネストできます。
+ 内側のブロックでフィルタを定義すると、外側のブロックでの定義を上書きします。
+</para>
+ 
+ <para>
+  テンプレートインスタンスのフィルタは、他の修飾子やフィルタに追加して適用されます。実行順は次の通りです。
+  修飾子、
+  default_modifier、
+  $escape_html、
+  登録済みの変数フィルタ、
+  オートロードした変数フィルタ、
+  テンプレートインスタンスの変数フィルタ。
+  default_modifier の後をすべて無効にするには <literal>nofilter</literal> フラグを使います。
+ </para>
+
+ <example>
+  <title>{setfilter} タグ</title>
+  <programlisting>
+<![CDATA[
+<script>
+{setfilter filter1}
+  {$foo} {* filter1 が $foo の出力に適用されます *}
+  {setfilter filter2|mod:true}
+    {$bar} {* filter2 と mod 修飾子が $bar の出力に適用されます *}
+  {/setfilter}
+  {$buh} {* filter1 が $buh の出力に適用されます *}
+{/setfilter}
+{$blar} {* $blar の出力には、テンプレートインスタンスのフィルタが適用されません }
+</script>
+]]>
+  </programlisting>
+ </example>
+ 
+ <note>
+  <para>
+   テンプレートインスタンスフィルタの設定は、インクルードしたサブテンプレートの出力には影響しません。
+  </para>
+ </note>
+
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

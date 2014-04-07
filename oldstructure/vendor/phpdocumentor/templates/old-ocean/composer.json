@@ -1,0 +1,12 @@
+{
+    "name": "phpdocumentor/template-old-ocean",
+    "type": "phpdocumentor-template",
+    "description": "Blue template with high contrast for the foreground",
+    "keywords": ["documentation", "template", "phpdoc"],
+    "homepage": "http://www.phpdoc.org",
+    "license": "MIT",
+    "require": {
+        "ext-xsl": "*",
+        "phpdocumentor/unified-asset-installer": "~1.1"
+    }
+}

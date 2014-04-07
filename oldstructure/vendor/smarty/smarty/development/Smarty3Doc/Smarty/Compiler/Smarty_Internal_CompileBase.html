@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_Internal_CompileBase</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_Internal_CompileBase</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This class does extend all internal compile plugins</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_libs---sysplugins---smarty_internal_compilebase.php.html">/libs/sysplugins/smarty_internal_compilebase.php</a> (line <span class="field">16</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Assign.html">Smarty_Internal_Compile_Assign</a></td>
+					<td>
+											Smarty Internal Plugin Compile Assign Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"></td>
+					<td>
+											Smarty Internal Plugin Compile Block Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"></td>
+					<td>
+											Smarty Internal Plugin Compile BlockClose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Break.html">Smarty_Internal_Compile_Break</a></td>
+					<td>
+											Smarty Internal Plugin Compile Break Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Call.html">Smarty_Internal_Compile_Call</a></td>
+					<td>
+											Smarty Internal Plugin Compile Function_Call Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Capture.html">Smarty_Internal_Compile_Capture</a></td>
+					<td>
+											Smarty Internal Plugin Compile Capture Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_CaptureClose.html">Smarty_Internal_Compile_CaptureClose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Captureclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Config_Load.html">Smarty_Internal_Compile_Config_Load</a></td>
+					<td>
+											Smarty Internal Plugin Compile Config Load Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Continue.html">Smarty_Internal_Compile_Continue</a></td>
+					<td>
+											Smarty Internal Plugin Compile Continue Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Debug.html">Smarty_Internal_Compile_Debug</a></td>
+					<td>
+											Smarty Internal Plugin Compile Debug Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Eval.html">Smarty_Internal_Compile_Eval</a></td>
+					<td>
+											Smarty Internal Plugin Compile Eval Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Extends.html">Smarty_Internal_Compile_Extends</a></td>
+					<td>
+											Smarty Internal Plugin Compile extend Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_For.html">Smarty_Internal_Compile_For</a></td>
+					<td>
+											Smarty Internal Plugin Compile For Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Forelse.html">Smarty_Internal_Compile_Forelse</a></td>
+					<td>
+											Smarty Internal Plugin Compile Forelse Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Forclose.html">Smarty_Internal_Compile_Forclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Forclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Foreach.html">Smarty_Internal_Compile_Foreach</a></td>
+					<td>
+											Smarty Internal Plugin Compile Foreach Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Foreachelse.html">Smarty_Internal_Compile_Foreachelse</a></td>
+					<td>
+											Smarty Internal Plugin Compile Foreachelse Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Foreachclose.html">Smarty_Internal_Compile_Foreachclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Foreachclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Function.html">Smarty_Internal_Compile_Function</a></td>
+					<td>
+											Smarty Internal Plugin Compile Function Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Functionclose.html">Smarty_Internal_Compile_Functionclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Functionclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_If.html">Smarty_Internal_Compile_If</a></td>
+					<td>
+											Smarty Internal Plugin Compile If Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Else.html">Smarty_Internal_Compile_Else</a></td>
+					<td>
+											Smarty Internal Plugin Compile Else Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Elseif.html">Smarty_Internal_Compile_Elseif</a></td>
+					<td>
+											Smarty Internal Plugin Compile ElseIf Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Ifclose.html">Smarty_Internal_Compile_Ifclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Ifclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include.html">Smarty_Internal_Compile_Include</a></td>
+					<td>
+											Smarty Internal Plugin Compile Include Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include_Php.html">Smarty_Internal_Compile_Include_Php</a></td>
+					<td>
+											Smarty Internal Plugin Compile Insert Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Insert.html">Smarty_Internal_Compile_Insert</a></td>
+					<td>
+											Smarty Internal Plugin Compile Insert Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Ldelim.html">Smarty_Internal_Compile_Ldelim</a></td>
+					<td>
+											Smarty Internal Plugin Compile Ldelim Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Nocache.html">Smarty_Internal_Compile_Nocache</a></td>
+					<td>
+											Smarty Internal Plugin Compile Nocache Classv
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Nocacheclose.html">Smarty_Internal_Compile_Nocacheclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Nocacheclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Block_Plugin.html">Smarty_Internal_Compile_Private_Block_Plugin</a></td>
+					<td>
+											Smarty Internal Plugin Compile Block Plugin Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Function_Plugin.html">Smarty_Internal_Compile_Private_Function_Plugin</a></td>
+					<td>
+											Smarty Internal Plugin Compile Function Plugin Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Modifier.html">Smarty_Internal_Compile_Private_Modifier</a></td>
+					<td>
+											Smarty Internal Plugin Compile Modifier Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Object_Block_Function.html">Smarty_Internal_Compile_Private_Object_Block_Function</a></td>
+					<td>
+											Smarty Internal Plugin Compile Object Block Function Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Object_Function.html">Smarty_Internal_Compile_Private_Object_Function</a></td>
+					<td>
+											Smarty Internal Plugin Compile Object Function Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Print_Expression.html">Smarty_Internal_Compile_Private_Print_Expression</a></td>
+					<td>
+											Smarty Internal Plugin Compile Print Expression Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Registered_Block.html">Smarty_Internal_Compile_Private_Registered_Block</a></td>
+					<td>
+											Smarty Internal Plugin Compile Registered Block Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Registered_Function.html">Smarty_Internal_Compile_Private_Registered_Function</a></td>
+					<td>
+											Smarty Internal Plugin Compile Registered Function Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Special_Variable.html">Smarty_Internal_Compile_Private_Special_Variable</a></td>
+					<td>
+											Smarty Internal Plugin Compile special Smarty Variable Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Rdelim.html">Smarty_Internal_Compile_Rdelim</a></td>
+					<td>
+											Smarty Internal Plugin Compile Rdelim Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Section.html">Smarty_Internal_Compile_Section</a></td>
+					<td>
+											Smarty Internal Plugin Compile Section Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Sectionelse.html">Smarty_Internal_Compile_Sectionelse</a></td>
+					<td>
+											Smarty Internal Plugin Compile Sectionelse Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Sectionclose.html">Smarty_Internal_Compile_Sectionclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Sectionclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Setfilter.html">Smarty_Internal_Compile_Setfilter</a></td>
+					<td>
+											Smarty Internal Plugin Compile Setfilter Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Setfilterclose.html">Smarty_Internal_Compile_Setfilterclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Setfilterclose Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_While.html">Smarty_Internal_Compile_While</a></td>
+					<td>
+											Smarty Internal Plugin Compile While Class
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../Smarty/Compiler/Smarty_Internal_Compile_Whileclose.html">Smarty_Internal_Compile_Whileclose</a></td>
+					<td>
+											Smarty Internal Plugin Compile Whileclose Class
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$optional_attributes" title="details" class="var-name">$optional_attributes</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$option_flags" title="details" class="var-name">$option_flags</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$required_attributes" title="details" class="var-name">$required_attributes</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$shorttag_order" title="details" class="var-name">$shorttag_order</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																												
+												<div class="method-definition">
+											<span class="method-result">mixed</span>
+										<a href="#closeTag" title="details" class="method-name">closeTag</a>
+											(<span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>, <span class="var-type">array|string</span>&nbsp;<span class="var-name">$expectedTag</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#getAttributes" title="details" class="method-name">getAttributes</a>
+											(<span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$attributes</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#openTag" title="details" class="method-name">openTag</a>
+											(<span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$openTag</span>, [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">null</span>])
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$optional_attributes" id="$optional_attributes"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$optional_attributes</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">30</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Array of names of optional attribute required by tag  use array('_any') if there is no restriction of attributes names</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Block.html#var$optional_attributes">Smarty_Internal_Compile_Block::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Break.html#var$optional_attributes">Smarty_Internal_Compile_Break::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Call.html#var$optional_attributes">Smarty_Internal_Compile_Call::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Capture.html#var$optional_attributes">Smarty_Internal_Compile_Capture::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Config_Load.html#var$optional_attributes">Smarty_Internal_Compile_Config_Load::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Continue.html#var$optional_attributes">Smarty_Internal_Compile_Continue::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Eval.html#var$optional_attributes">Smarty_Internal_Compile_Eval::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Foreach.html#var$optional_attributes">Smarty_Internal_Compile_Foreach::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Function.html#var$optional_attributes">Smarty_Internal_Compile_Function::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include.html#var$optional_attributes">Smarty_Internal_Compile_Include::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include_Php.html#var$optional_attributes">Smarty_Internal_Compile_Include_Php::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Insert.html#var$optional_attributes">Smarty_Internal_Compile_Insert::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Block_Plugin.html#var$optional_attributes">Smarty_Internal_Compile_Private_Block_Plugin::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Function_Plugin.html#var$optional_attributes">Smarty_Internal_Compile_Private_Function_Plugin::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Object_Block_Function.html#var$optional_attributes">Smarty_Internal_Compile_Private_Object_Block_Function::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Object_Function.html#var$optional_attributes">Smarty_Internal_Compile_Private_Object_Function::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Print_Expression.html#var$optional_attributes">Smarty_Internal_Compile_Private_Print_Expression::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Registered_Block.html#var$optional_attributes">Smarty_Internal_Compile_Private_Registered_Block::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Registered_Function.html#var$optional_attributes">Smarty_Internal_Compile_Private_Registered_Function::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Section.html#var$optional_attributes">Smarty_Internal_Compile_Section::$optional_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+				</ul>
+		
+
+</div>
+<a name="var$option_flags" id="$option_flags"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$option_flags</span>
+			 = <span class="var-default">array('nocache')</span>			(line <span class="line-number">42</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Array of names of valid option flags</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include.html#var$option_flags">Smarty_Internal_Compile_Include::$option_flags</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Print_Expression.html#var$option_flags">Smarty_Internal_Compile_Private_Print_Expression::$option_flags</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+				</ul>
+		
+
+</div>
+<a name="var$required_attributes" id="$required_attributes"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$required_attributes</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">23</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Array of names of required attribute required by tag</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Block.html#var$required_attributes">Smarty_Internal_Compile_Block::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Call.html#var$required_attributes">Smarty_Internal_Compile_Call::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Config_Load.html#var$required_attributes">Smarty_Internal_Compile_Config_Load::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Eval.html#var$required_attributes">Smarty_Internal_Compile_Eval::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Extends.html#var$required_attributes">Smarty_Internal_Compile_Extends::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Foreach.html#var$required_attributes">Smarty_Internal_Compile_Foreach::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Function.html#var$required_attributes">Smarty_Internal_Compile_Function::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include.html#var$required_attributes">Smarty_Internal_Compile_Include::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include_Php.html#var$required_attributes">Smarty_Internal_Compile_Include_Php::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Insert.html#var$required_attributes">Smarty_Internal_Compile_Insert::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Private_Function_Plugin.html#var$required_attributes">Smarty_Internal_Compile_Private_Function_Plugin::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Section.html#var$required_attributes">Smarty_Internal_Compile_Section::$required_attributes</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+				</ul>
+		
+
+</div>
+<a name="var$shorttag_order" id="$shorttag_order"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$shorttag_order</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">36</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Shorttag attribute order defined by its names</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Block.html#var$shorttag_order">Smarty_Internal_Compile_Block::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Break.html#var$shorttag_order">Smarty_Internal_Compile_Break::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Call.html#var$shorttag_order">Smarty_Internal_Compile_Call::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Capture.html#var$shorttag_order">Smarty_Internal_Compile_Capture::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Config_Load.html#var$shorttag_order">Smarty_Internal_Compile_Config_Load::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Continue.html#var$shorttag_order">Smarty_Internal_Compile_Continue::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Eval.html#var$shorttag_order">Smarty_Internal_Compile_Eval::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Extends.html#var$shorttag_order">Smarty_Internal_Compile_Extends::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Foreach.html#var$shorttag_order">Smarty_Internal_Compile_Foreach::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Function.html#var$shorttag_order">Smarty_Internal_Compile_Function::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include.html#var$shorttag_order">Smarty_Internal_Compile_Include::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Include_Php.html#var$shorttag_order">Smarty_Internal_Compile_Include_Php::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Insert.html#var$shorttag_order">Smarty_Internal_Compile_Insert::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+					<li>
+				<a href="../../Smarty/Compiler/Smarty_Internal_Compile_Section.html#var$shorttag_order">Smarty_Internal_Compile_Section::$shorttag_order</a>
+								: Attribute definition: Overwrites base class.
+							</li>
+				</ul>
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methodcloseTag" id="closeTag"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">closeTag</span> (line <span class="line-number">150</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pop closing tag</p>
+<p class="description"><p>Raise an error if this stack-top doesn't match with expected opening tags</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> any type the opening tag's name or saved data</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			closeTag
+		</span>
+					(<span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>, <span class="var-type">array|string</span>&nbsp;<span class="var-name">$expectedTag</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+					<li>
+				<span class="var-type">array|string</span>
+				<span class="var-name">$expectedTag</span><span class="var-description">: the expected opening tag names</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetAttributes" id="getAttributes"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getAttributes</span> (line <span class="line-number">56</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This function checks if the attributes passed are valid</p>
+<p class="description"><p>The attributes passed for the tag to compile are checked against the list of required and  optional attributes. Required attributes must be present. Optional attributes are check against  the corresponding list. The keyword '_any' specifies that any attribute will be accepted  as valid</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of mapped attributes for further processing</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			getAttributes
+		</span>
+					(<span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$attributes</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$attributes</span><span class="var-description">: attributes applied to the tag</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodopenTag" id="openTag"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">openTag</span> (line <span class="line-number">136</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Push opening tag name on stack</p>
+<p class="description"><p>Optionally additional data can be saved on stack</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			openTag
+		</span>
+					(<span class="var-type">object</span>&nbsp;<span class="var-name">$compiler</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$openTag</span>, [<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">object</span>
+				<span class="var-name">$compiler</span><span class="var-description">: compiler object</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$openTag</span><span class="var-description">: the opening tag's name</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: optional data saved</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:45 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

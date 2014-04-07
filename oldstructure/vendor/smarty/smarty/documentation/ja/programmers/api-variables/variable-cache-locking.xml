@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4721 $ -->
+     <sect1 id="variable.cache.locking">
+      <title>$cache_locking</title>
+       <para>
+        Cache locking avoids concurrent cache generation. This means resource intensive pages can be generated only once, 
+        even if they've been requested multiple times in the same moment.
+       </para>
+       <para>
+        Cache locking is disabled by default. To enable it set <varname>$cache_locking</varname> to &true;. 
+       </para>
+      <para>
+       See also
+       <link linkend="variable.locking.timeout"><varname>$locking_timeout</varname></link>
+      </para>
+     </sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

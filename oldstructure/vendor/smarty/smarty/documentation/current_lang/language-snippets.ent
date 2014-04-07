@@ -1,0 +1,117 @@
+<!-- $Revision: 4637 $ -->
+
+<!ENTITY note.parameter.merge '<note>
+ <title>Technical Note</title>
+ <para>
+  The <parameter>merge</parameter> parameter respects array keys, so if
+  you merge two numerically indexed arrays, they may overwrite each other
+  or result in non-sequential keys. This is unlike the PHP
+  <ulink url="&url.php-manual;array_merge">
+  <varname>array_merge()</varname></ulink> function
+   which wipes out numerical keys and renumbers them.
+ </para>
+</note>'>
+
+<!ENTITY note.parameter.function '<note>
+ <title>Technical Note</title>
+ <para>
+  If the chosen <parameter>function</parameter> callback is of the form 
+  <literal>array(&amp;$object, $method)</literal>, only one instance of the
+  same class and with the same <literal>$method</literal> can be registered. The
+  latest registered <parameter>function</parameter> callback will be used in 
+  such a scenario.
+ </para>
+</note>'>
+
+<!ENTITY parameter.cacheid '<listitem>
+<para>
+<parameter>cache_id</parameter> is an optional parameter. You can
+ also set the <link linkend="variable.cache.id">
+ <parameter>$cache_id</parameter></link> variable once instead of passing
+  this to each call to this function. It is used in the event that you want to 
+  cache different content of the same template, such as pages for displaying different products. See also the <link linkend="caching">caching
+   section</link> for more information.
+</para>
+</listitem>'>
+
+<!ENTITY parameter.compileid2 '<listitem>
+<para>
+<parameter>compile_id</parameter> is an optional parameter. You can
+ also set the <link linkend="variable.compile.id">
+ <parameter>$compile_id</parameter></link> variable once instead of passing
+  this to each call to this function. It is used in the event that you want to compile different versions of
+ the same template, such as having separate templates compiled
+ for different languages.
+</para>
+</listitem>'>
+
+<!ENTITY parameter.parent '<listitem>
+<para>
+<parameter>parent</parameter> is an optional parameter. It is an uplink to the main Smarty object, 
+a user-created data object or to another user-created template object. These objects can be chained.
+The template can access only variables assigned to any of the objects in the parent chain.
+</para>
+</listitem>'>
+
+<!ENTITY parameter.data '<listitem>
+<para>
+<parameter>data</parameter> is an optional parameter. It is an associative array
+   containing the name/value pairs of variables which get assigned to the object.
+</para>
+</listitem>'>
+
+<!ENTITY parameter.compileid '<para>
+ As an optional third parameter, you can pass a
+ <parameter>$compile_id</parameter>.
+ This is in the event that you want to compile different versions of
+ the same template, such as having separate templates compiled
+ for different languages. You can
+ also set the <link linkend="variable.compile.id">
+ <parameter>$compile_id</parameter></link> variable once instead of passing
+  this to each call to this function.
+</para>'>
+
+
+<!ENTITY parameter.filtertype '<listitem>
+<para>
+<parameter>type</parameter> defines the type of the filter. Valid values are "pre", "post", "output" and "variable".
+</para>
+</listitem>'>
+
+<!ENTITY parameter.plugintype '<listitem>
+<para>
+<parameter>type</parameter> defines the type of the plugin. Valid values are "function", "block", "compiler" and "modifier".
+</para>
+</listitem>'>
+
+<!ENTITY parameter.pluginname '<listitem>
+<para>
+<parameter>name</parameter> defines the name of the plugin.
+</para>
+</listitem>'>
+
+<!ENTITY parameter.callback '<listitem>
+<para>
+<parameter>callback</parameter> defines the PHP callback. it can be either:
+   <itemizedlist>
+       <listitem><para>
+       A string containing the function <parameter>name</parameter>
+       </para></listitem>
+
+       <listitem><para>
+       An array of the form <literal>array($object, $method)</literal> with
+       <literal>$object</literal> being a reference to an
+       object and <literal>$method</literal> being a string
+       containing the method-name
+       </para></listitem>
+
+       <listitem><para>
+       An array of the form
+       <literal>array($class, $method)</literal> with
+       <literal>$class</literal> being the class name and
+       <literal>$method</literal> being a method of the class.
+       </para></listitem>
+   </itemizedlist>
+   </para>
+</listitem>'>
+

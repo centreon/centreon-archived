@@ -1,0 +1,1 @@
+UPDATE `index_data` SET host_name = '_Module_Meta' WHERE host_name = 'Meta_Module';

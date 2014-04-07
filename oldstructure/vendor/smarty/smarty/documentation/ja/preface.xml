@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision: 3856 $ -->
+<!-- EN-Revision: 3844 Maintainer: takagi Status: ready -->
+<!-- CREDITS: mat-sh,daichi,joe -->
+ <preface id="preface">
+  <title>序文</title>
+  
+  <para>
+   <emphasis role="bold">Smarty の考え方</emphasis>
+  </para>  
+  
+  <para>
+    Smarty は、主にこれらのことを目標として設計しています。
+  </para>
+
+  <itemizedlist>
+    <listitem><para>画面の見た目とアプリケーションのコードをきれいに分離する</para></listitem>
+    <listitem><para>PHP が裏方を担当し、Smarty のテンプレートが表面を担当する</para></listitem>
+    <listitem><para>PHP を補完するものであって、PHP にとってかわるものではない</para></listitem>
+    <listitem><para>プログラマとデザイナの両方が高速な開発/デプロイをできるようにする</para></listitem>
+    <listitem><para>すばやく手軽な保守</para></listitem>
+    <listitem><para>PHP の知識がなくても理解しやすい構文</para></listitem>
+    <listitem><para>カスタマイズしやすい柔軟性</para></listitem>
+    <listitem><para>PHP から隔離することによるセキュリティの確保</para></listitem>
+    <listitem><para>フリー・オープンソース</para></listitem>
+  </itemizedlist>
+
+  <para>
+   <emphasis role="bold">Smarty とは?</emphasis>
+  </para>  
+
+  <para>
+    Smarty は PHP 用のテンプレートエンジンで、見た目 (HTML/CSS)
+    をアプリケーションのロジックから分離させる手助けをします。つまり、
+    <emphasis>PHP のコードはアプリケーションのロジック</emphasis>
+    であり、それを見た目から分離するということです。
+  </para>
+  
+  <para>
+    <emphasis role="bold">二つの派閥</emphasis>
+  </para>
+
+  <para>
+    PHP におけるテンプレートを語るときには、大きく二つの派閥があります。
+    まず一方は、"PHP 自体がテンプレートエンジンだよ" 派です。
+    この手法では、単に PHP のコードを HTML に混ぜ込みます。
+    スクリプトの実行速度という観点ではこの方式が最速でしょうが、多くの人が指摘するように
+    PHP の構文は乱雑なものであり、HTML のようなタグによるマークアップとの相性はよくありません。
+  </para>
+
+  <para>
+    もう一方の派閥は、画面の見た目に関する内容はプログラムのコードと切り離すべきだと主張します。
+    そうした上で、シンプルなタグを使ってアプリケーションのコンテンツの配置を示すのだ、と。
+    この手法は他のテンプレートエンジンやプログラミング言語でも一般的であり、Smarty もこちらの方法を採用しています。
+    Smarty の考え方は、テンプレートは見た目に関する内容に集中し、アプリケーションのコードをまぜないということ。
+    そして、それによるオーバーヘッドを可能な限り少なくするということです。
+  </para>
+
+  <para>
+   <emphasis role="bold">PHP をテンプレートから分離することが、なぜそんなに大切なの?</emphasis>
+  </para>  
+  
+  <para>
+    大きな利点は次の二つです。
+  </para>
+  
+  <itemizedlist>
+    <listitem>  
+      <para>
+        構文: テンプレートは一般的に、HTML のようなセマンティックマークアップで構成されています。
+        PHP の構文はアプリケーションのコードを書くのには適していますが、
+        HTML と混ぜると急速に退化してしまいます。
+        Smarty のシンプルな {tag} 形式の構文は、表示内容を表現することに特化して設計されています。
+        Smarty は、テンプレートから "コード" をできるだけ減らすことに力を入れているのです。
+        これによってテンプレートの作成効率があがり、保守も容易になります。
+        Smarty の構文を覚えるには PHP の知識は不要で、
+        プログラマにとっても非プログラマにとっても直感的に理解しやすいものです。
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        隔離: PHP をテンプレートと混ぜてしまうと、
+        どんなロジックであっても無制限にテンプレートに取り込めるようになってしまいます。
+        Smarty はテンプレートを PHP から隔離することで、表示内容とビジネスロジックを切り分けられるようにしています。
+        Smarty にはセキュリティ機能も用意されており、これを使うとテンプレートに対してさらなる制約を加えることもできます。
+      </para>
+    </listitem>
+  </itemizedlist>
+
+  <para>
+   <emphasis role="bold">ウェブデザイナと PHP</emphasis>
+  </para>  
+    
+  <para>
+   "Smarty を使ったところでウェブデザイナも Smarty の構文を学ばなければならないわけだし、
+   どうせ学ぶなら別に PHP でもいいんじゃない?"
+   よくある問いです。もちろんウェブデザイナも PHP を覚えることはできるでしょう。
+   そして既に PHP を身につけているかもしれません。
+   しかし、身につけられるかどうかという問題ではなく、その結果 PHP と HTML
+   が混じってしまうことが問題なのです。デザイナに PHP を使わせると、
+   本来テンプレート側でやるべきではないことまでテンプレートに詰め込みだしてしまうでしょう
+   (単にバターナイフが欲しいだけの人にスイスアーミーナイフを手渡してしまうようなものです)。
+   アプリケーションの設計に関する指針をデザイナに教えることはできますが、
+   そんなことはデザイナが本来学ぶべきことではないでしょう
+   (それを覚えた時点で開発者の仲間入りですね!)。
+   PHP のマニュアルもまた、必要以上に大量の情報の山です。
+   車を運転するにはドライバー向けのマニュアルだけがあればいいのに、
+   工場の部品の組み立てマニュアルまで渡されているようなものです。
+   Smarty を使えば、デザイナにとって必要なツールだけを提供することができます。
+   そして開発者は、それらのツールを決めこまやかに制御できるようになります。
+   タグベースのシンプルな構文はデザイナにとっても取っつきやすく、
+   テンプレートの管理を合理化するのに役立つでしょう。
+  </para>
+
+  <para>
+   <emphasis role="bold">実装が重要</emphasis>
+  </para>  
+    
+  <para>
+    Smarty を使えば見た目とアプリケーションのコードをきれいに分離させることができますが、
+    そのルールをねじ曲げるだけの余地も多く残されています。まずい実装
+    (テンプレートに PHP のコードを混ぜ込むなど) をしてしまうと、
+    より大きな問題を抱えることになってしまいます。
+    どういった点に注意すべきかは、このドキュメントが参考になるでしょう。
+    また、Smarty のウェブサイトにあるベストプラクティスのページも参照ください。
+  </para>
+  
+  <para>
+   <emphasis role="bold">動作原理は?</emphasis>
+  </para>  
+    
+  <para>
+    その裏側では、Smarty はテンプレートをコンパイル (コピーして変換)
+    して PHP のスクリプトにしています。コンパイルが行われるのは各テンプレートが最初に実行されたときで、
+    それ以降はコンパイルした版を使い続けます。Smarty がそのあたりの管理をすべて行うので、
+    テンプレートデザイナは単に Smarty テンプレートだけを編集していればよいのです。
+    コンパイルされた版のことを気にする必要はありません。
+    こうすることで、テンプレートは保守しやすくなり、それでいて実行速度は高速になります。
+    だって、コンパイルされたコードは単なる PHP スクリプトなのですから。
+    そしてもちろん、PHP のスクリプトであるということは、
+    APC などの opcode キャッシュの恩恵を受けられるということでもあります。
+  </para>
+  
+  <para>
+   <emphasis role="bold">テンプレートの継承</emphasis>
+  </para>  
+    
+  <para>
+    Smarty 3 ではテンプレートの継承機能が新たに導入されました。すばらしい新機能のうちのひとつです。
+    テンプレートの継承ができなかった以前のバージョンでは、
+    ヘッダやフッタなどの部品ごとにテンプレートを分けて管理していました。
+    このような構成には多くの問題があり、
+    たとえばヘッダやフッタの内容をページ単位でいじりたいときなどにはちょっとした小細工が必要でした。
+    テンプレートの継承を使えば、他のテンプレートをインクルードすることなしに
+    各テンプレートをひとつのページとして扱うことができます。
+    そして、テンプレートを継承することで、そのコンテンツのブロックを操作することができるのです。
+    このおかげで、テンプレートがより直感的かつ効率的に扱えるようになり、管理も容易になりました。
+    詳細な情報は、Smarty のウェブサイトにあるテンプレートの継承についての説明を参照ください。
+  </para>
+
+  <para>
+   <emphasis role="bold">XML/XSLT 構文を使わない理由は?</emphasis>
+  </para>  
+    
+  <para>
+    主な理由は二つです。まず、Smarty は、単に XML/HTML ベースのテンプレートとしてだけ使われるものではないということです。
+    eメールやJavaScript、CSV、あるいはPDFドキュメントなどの作成に用いることもあります。
+    次に、XML/XSLT の構文は冗長であり、PHP のコードよりもさらに壊れやすいということです。
+    コンピュータにとっては完璧なのでしょうが、人間が読むには恐ろしい代物です。
+    Smarty は、読みやすく理解しやすく、そして保守しやすいものであることを目指しています。
+  </para>
+
+  <para>
+   <emphasis role="bold">テンプレートのセキュリティ</emphasis>
+  </para>  
+    
+  <para>
+    Smarty は PHP から隔離されていますが、お望みならさらに安全に使う選択肢も用意されています。
+    テンプレートのセキュリティ機能を使うと、PHP (および Smarty の関数) に対する制約を加えることができます。
+    これは、第三者が編集したテンプレートを使うときなど、
+    そのテンプレートに PHP や Smarty 関数の全パワーを渡してしまいたくない場合に便利です。
+  </para>
+
+  <para>
+   <emphasis role="bold">統合</emphasis>
+  </para>  
+    
+  <para>
+    Smarty が Model-View-Controller (MVC) フレームワークと比較されることがときどきあります。
+    Smarty は MVC ではなく単なるプレゼンテーション層です。つまり、
+    MVC におけるビュー (V) にあたるものです。
+    実際、Smarty を MVC のビューとして組み込むのは簡単です。
+    多くの MVC フレームワークで Smarty の組み込み手順がまとめられています。
+    また、掲示板やドキュメントなどにも有用なヘルプがあることでしょう。
+  </para>
+
+  <para>
+   <emphasis role="bold">他のテンプレートエンジン</emphasis>
+  </para>  
+    
+  <para>
+    <emphasis>"プログラムのコードと画面の見た目を分離する"</emphasis>
+    という考え方を採用しているテンプレートエンジンは、何も Smarty だけではありません。
+    たとえば Python には、同じ考え方で作られている Django Templates や CheetahTemplate
+    などがあります。
+    <emphasis>注意: Python のような言語では HTML をネイティブに混ぜ込むことができないので、
+    コードと見た目の分離が最初から適切にできるという利点があります。
+    Python に HTML を混ぜ込むライブラリもありますが、一般的には使われていないようです。</emphasis>
+  </para>
+
+  <para>
+   <emphasis role="bold">Smarty は○○ではありません</emphasis>
+  </para>  
+    
+  <para>
+    Smarty はアプリケーション開発フレームワークではありません。
+    Smarty は MVC ではありません。
+    Smarty は Zend Framework や CodeIgniter、PHPCake あるいはその他の
+    PHP 用アプリケーション開発フレームワークのかわりに使えるものではありません。
+  </para>
+
+  <para>
+    Smarty はテンプレートエンジンであり、アプリケーションのビューを担当する部品となります。
+    Smarty は、上にあげたような各種エンジンのビューコンポーネントとして
+    容易に組み合わせることができます。
+    他のソフトウェアと同様、Smarty を使うにはある程度の学習が必要です。
+    Smarty を使ったからといってそれだけでアプリケーションの設計がすっきりするわけではありません。
+    開発者やウェブデザイナーがそうするよう意識することが必要です。
+  </para>
+
+  <para>
+   <emphasis role="bold">Smarty はどんな場面で使える?</emphasis>
+  </para>
+
+  <para>
+    Smarty は万能のツールというわけではありません。
+    自分がやりたいことに Smarty がフィットするかどうかを見極めることが大切です。
+    注意すべき点をいくつかまとめました。
+  </para>
+
+  <para>
+     テンプレートの構文:
+     PHP のタグと HTML が混じった状態に満足ですか?
+     ウェブデザイナさんは PHP を使うことに納得していますか?
+     画面表示に特化したタグベースの構文のほうがお好みではありませんか?
+     Smarty と PHP の両方の経験がある人なら、これらの質問に答えられることでしょう。
+  </para>
+
+  <para>
+     投資対効果:
+     テンプレートを PHP から隔離したいという要望がありますか?
+     信頼できない人が編集したテンプレートに、PHP のすべてのパワーを解放してしまってもよいのですか?
+     テンプレートの中で何ができて何ができないのかをプログラムで制御したいとは思いませんか?
+     Smarty には、これらの機能が設計段階で組み込まれています。
+  </para>
+
+  <para>
+     機能群:
+     キャッシュやテンプレート継承、プラグインなどといった Smarty の機能が自分の開発サイクルを縮め、
+     必要なコードを書くための時間を確保できるようになりますか?
+     使おうとしているコードベースやフレームワークには、画面表示部分に関して必要な機能が含まれていますか?
+  </para>
+
+  <para>
+     PHP におけるテンプレートについてはさまざまな意見があります。
+     Smarty についてよく理解し、そして自分がやりたいことを見極めたうえで、
+     何を使うかを自身で決めるとよいでしょう。
+     何か質問があれば、フォーラムや IRC でいつでも受け付けます。
+  </para>
+  
+  <para>
+   Smarty ウェブサイトの "Use Cases and Work Flow" についてのページも参照ください。
+  </para>
+
+  <para>
+   <emphasis role="bold">Smarty を使っているサイト</emphasis>
+  </para>  
+
+  <para>
+    Smarty のウェブサイトには、万単位のユニークビジターが毎日訪れます。ほとんどは、ドキュメントを読もうとする開発者です。
+    よく知られている PHP プロジェクトの中にも Smarty を使っているところが多くあります。
+    XOOPS CMS、CMS Made Simple、Tiki CMS/Groupware そして X-Cart などがその一例です。
+  </para>
+
+  <para>
+   <emphasis role="bold">まとめ</emphasis>
+  </para>  
+    
+  <para>
+    小規模なウェブサイトであっても大規模なエンタープライズソリューションであっても、
+    Smarty はあなたのニーズを満たすでしょう。
+    次のような多くの機能を持つ Smarty は、素晴らしい選択肢となります。
+  </para>
+
+  <itemizedlist>
+    <listitem><para>PHP とHTML/CSS との分離</para></listitem>
+    <listitem><para>組織のメンバーや管理者にとっての読みやすさ</para></listitem>
+    <listitem><para>サードパーティのテンプレートに対するセキュリティ</para></listitem>
+    <listitem><para>完璧な機能、そしてさらに必要に応じた拡張の容易性</para></listitem>
+    <listitem><para>多くの利用実績</para></listitem>
+    <listitem><para>商用でも使える LGPL ライセンス</para></listitem>
+    <listitem><para>100% フリーなオープンソースプロジェクト</para></listitem>
+  </itemizedlist>
+  
+ </preface>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

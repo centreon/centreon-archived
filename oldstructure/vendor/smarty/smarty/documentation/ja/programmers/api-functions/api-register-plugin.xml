@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4715 $ -->
+<!-- EN-Revision: 4278 Maintainer: takagi Status: ready -->
+<refentry id="api.register.plugin">
+ <refnamediv>
+  <refname>registerPlugin()</refname>
+  <refpurpose>動的にプラグインを登録する</refpurpose>
+ </refnamediv>
+ <refsect1>
+  <title>説明</title>
+  <methodsynopsis>
+   <type>void</type><methodname>registerPlugin</methodname>
+   <methodparam><type>string</type><parameter>type</parameter></methodparam>
+   <methodparam><type>string</type><parameter>name</parameter></methodparam>
+   <methodparam><type>mixed</type><parameter>callback</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>cacheable</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>cache_attrs</parameter>
+   </methodparam>
+  </methodsynopsis>
+  <para>
+   このメソッドは、スクリプト内でプラグインとして定義された関数やメソッドを登録します。
+   次のパラメータを使います。
+   <itemizedlist>
+   &parameter.plugintype;
+   &parameter.pluginname;
+   &parameter.callback;
+    <listitem>
+     <para>
+     <parameter>cacheable</parameter> および <parameter>cache_attrs</parameter>
+     は、たいていの場合は省略できます。これらの適切な使いかたについては <link
+      linkend="caching.cacheable">プラグイン出力のキャッシュ制御</link>
+     を参照ください。
+    </para>
+     </listitem>
+   </itemizedlist>
+  </para>
+
+ <example>
+   <title>関数プラグインの登録</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$smarty->registerPlugin("function","date_now", "print_current_date");
+
+function print_current_date($params, $smarty)
+{
+  if(empty($params["format"])) {
+    $format = "%b %e, %Y";
+  } else {
+    $format = $params["format"];
+  }
+  return strftime($format,time());
+}
+?>
+]]>
+   </programlisting>
+   <para>
+   テンプレートでは次のように使います。
+   </para>
+<programlisting>
+<![CDATA[
+{date_now}
+
+{* 別のフォーマットを使う場合 *}
+{date_now format="%Y/%m/%d"}
+]]>
+</programlisting>
+</example>
+
+  <example>
+   <title>ブロック関数プラグインの登録</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// 関数の宣言
+function do_translation ($params, $content, $smarty, &$repeat, $template)
+{
+  if (isset($content)) {
+    $lang = $params["lang"];
+    // $content に対して何らかの変換をします
+    return $translation;
+  }
+}
+
+// smarty に登録します
+$smarty->registerPlugin("block","translate", "do_translation");
+?>
+]]>
+   </programlisting>
+   <para>
+    テンプレート側は、このようになります。
+   </para>
+   <programlisting>
+<![CDATA[
+{translate lang="br"}Hello, world!{/translate}
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>修飾子プラグインの登録</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+// PHP の stripslashes 関数を Smarty の修飾子としてマップします
+$smarty->registerPlugin("modifier","ss", "stripslashes");
+
+?>
+]]>
+</programlisting>
+   <para>テンプレート側では、<literal>ss</literal> でスラッシュを除去できます。</para>
+   <programlisting>
+<![CDATA[
+<?php
+{$var|ss}
+?>
+]]>
+</programlisting>
+   
+  </example>
+  
+<para>
+<link linkend="api.unregister.plugin"><varname>unregisterPlugin()</varname></link>、
+<link linkend="plugins.functions">プラグイン関数</link>、
+<link linkend="plugins.block.functions">プラグインブロック関数</link>、
+<link linkend="plugins.compiler.functions">プラグインコンパイラ関数</link>、
+ そして
+ <link linkend="plugins.modifiers">プラグイン修飾子の作成</link> の節も参照ください。
+</para>
+
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+

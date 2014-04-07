@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4741 $ -->
+<!-- EN-Revision: 4740 Maintainer: takagi Status: ready -->
+<refentry id="api.compile.all.config">
+ <refnamediv>
+  <refname>compileAllConfig()</refname>
+  <refpurpose>すべての既知の設定ファイルをコンパイルする</refpurpose>
+ </refnamediv>
+ <refsect1>
+  <title>説明</title>
+  <methodsynopsis>
+   <type>string</type><methodname>compileAllConfig</methodname>
+   <methodparam choice="opt"><type>string</type><parameter>extension</parameter></methodparam>
+   <methodparam choice="opt"><type>boolean</type><parameter>force</parameter></methodparam>
+   <methodparam choice="opt"><type>integer</type><parameter>timelimit</parameter></methodparam>
+   <methodparam choice="opt"><type>integer</type><parameter>maxerror</parameter></methodparam>
+  </methodsynopsis>
+   <para>
+    この関数は、<link linkend="variable.config.dir"><varname>$config_dir</varname></link>
+    にある設定ファイルをコンパイルします。次のパラメータを使います。
+    <itemizedlist>
+     <listitem>
+      <para>
+       <parameter>extension</parameter> はオプションの文字列で、設定ファイルの拡張子を定義します。
+       デフォルトは ".conf" です。
+      </para>
+     </listitem>
+     <listitem>
+        <para>
+       <parameter>force</parameter> はオプションの boolean 値で、変更されたファイルのみをコンパイルする
+       (false) か、すべての設定ファイルをコンパイルする (true) かを決めます。
+       デフォルトは "false" です。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       <parameter>timelimit</parameter> はオプションの整数値で、コンパイル処理の時間制限を秒単位で指定します。
+       デフォルトは無制限です。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       <parameter>maxerror</parameter> はオプションの静数値で、エラーの制限を設定します。
+       この設定を超える数の設定ファイルがコンパイルに失敗すると、この関数の処理は中断されます。
+       デフォルトは無制限です。
+      </para>
+     </listitem>
+    </itemizedlist>
+  </para>
+  <note><para>
+   この関数は、すべての設定に対して望み通りの結果を得られるとは限りません。自己責任のもとで使ってください。
+  </para></note>
+ 
+  <para>
+   <example>
+    <title>compileAllConfig()</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+include('Smarty.class.php');
+$smarty = new Smarty;
+
+// すべての設定ファイルを強制的にコンパイルします
+$smarty->compileAllConfig('.config',true);
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_CacheResource_Apc</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_CacheResource_Apc</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">APC CacheResource</p>
+<p class="description"><p>CacheResource Implementation based on the KeyValueStore API to use  memcache as the storage resource for Smarty's output caching.  *</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Uwe Tews</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_demo---plugins---cacheresource.apc.php.html">/demo/plugins/cacheresource.apc.php</a> (line <span class="field">12</span>)
+		</p>
+		
+				
+		<pre><a href="../Smarty/Cacher/Smarty_CacheResource.html">Smarty_CacheResource</a>
+   |
+   --<a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html">Smarty_CacheResource_KeyValueStore</a>
+      |
+      --Smarty_CacheResource_Apc</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																												
+												<div class="method-definition">
+											<span class="method-result">Smarty_CacheResource_Apc</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#delete" title="details" class="method-name">delete</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$keys</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#purge" title="details" class="method-name">purge</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#read" title="details" class="method-name">read</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$keys</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#write" title="details" class="method-name">write</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$keys</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$expire</span> = <span class="var-default">null</span>])
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			
+Strict standards: Only variables should be passed by reference in C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php on line 712
+
+Call Stack:
+    0.0006     229032   1. {main}() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:0
+    0.0027     240216   2. include('C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:59
+    0.1463    8650352   3. phpDocumentor_setup->createDocs() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc:65
+   13.2331  130016152   4. phpDocumentor_IntermediateParser->Output() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Setup.inc.php:761
+   13.9644  131381624   5. phpDocumentor_IntermediateParser->Convert() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1865
+   13.9644  131381720   6. Converter->walk() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1652
+   15.2486  134407480   7. HTMLframesConverter->endClass() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converter.inc:1936
+   15.2490  134408928   8. Smarty->fetch() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converters\HTML\frames\HTMLframesConverter.inc:347
+   15.2876  134899456   9. include('C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1298
+   15.3090  135057184  10. Smarty->_smarty_include() C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php:585
+   15.3092  135061584  11. Smarty->_compile_resource() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1935
+   15.3102  135068264  12. Smarty->_compile_source() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1458
+   15.3105  135102608  13. Smarty_Compiler->_compile_file() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1523
+   15.3117  135149752  14. Smarty_Compiler->_compile_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:316
+   15.3126  135150720  15. Smarty_Compiler->_compile_custom_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:537
+
+
+Strict standards: Only variables should be passed by reference in C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php on line 712
+
+Call Stack:
+    0.0006     229032   1. {main}() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:0
+    0.0027     240216   2. include('C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:59
+    0.1463    8650352   3. phpDocumentor_setup->createDocs() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc:65
+   13.2331  130016152   4. phpDocumentor_IntermediateParser->Output() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Setup.inc.php:761
+   13.9644  131381624   5. phpDocumentor_IntermediateParser->Convert() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1865
+   13.9644  131381720   6. Converter->walk() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1652
+   15.2486  134407480   7. HTMLframesConverter->endClass() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converter.inc:1936
+   15.2490  134408928   8. Smarty->fetch() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converters\HTML\frames\HTMLframesConverter.inc:347
+   15.2876  134899456   9. include('C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1298
+   15.3090  135057184  10. Smarty->_smarty_include() C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php:585
+   15.3092  135061584  11. Smarty->_compile_resource() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1935
+   15.3102  135068264  12. Smarty->_compile_source() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1458
+   15.3105  135102608  13. Smarty_Compiler->_compile_file() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1523
+   15.3180  135162784  14. Smarty_Compiler->_compile_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:316
+   15.3186  135163704  15. Smarty_Compiler->_compile_custom_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:537
+
+							<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html">Smarty_CacheResource_KeyValueStore</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#var$contents">Smarty_CacheResource_KeyValueStore::$contents</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#var$timestamps">Smarty_CacheResource_KeyValueStore::$timestamps</a></span><br>
+							</span>
+											</blockquote> 
+									<p>Inherited from <span class="classname"><a href="../Smarty/Cacher/Smarty_CacheResource.html">Smarty_CacheResource</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#var$resources">Smarty_CacheResource::$resources</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#var$sysplugins">Smarty_CacheResource::$sysplugins</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-vars">Vars</a>
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			
+Strict standards: Only variables should be passed by reference in C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php on line 712
+
+Call Stack:
+    0.0006     229032   1. {main}() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:0
+    0.0027     240216   2. include('C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:59
+    0.1463    8650352   3. phpDocumentor_setup->createDocs() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc:65
+   13.2331  130016152   4. phpDocumentor_IntermediateParser->Output() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Setup.inc.php:761
+   13.9644  131381624   5. phpDocumentor_IntermediateParser->Convert() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1865
+   13.9644  131381720   6. Converter->walk() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1652
+   15.2486  134407480   7. HTMLframesConverter->endClass() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converter.inc:1936
+   15.2490  134408928   8. Smarty->fetch() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converters\HTML\frames\HTMLframesConverter.inc:347
+   15.2876  134899456   9. include('C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1298
+   15.3346  135068064  10. Smarty->_smarty_include() C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php:686
+   15.3348  135072464  11. Smarty->_compile_resource() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1935
+   15.3356  135086264  12. Smarty->_compile_source() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1458
+   15.3358  135123920  13. Smarty_Compiler->_compile_file() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1523
+   15.3374  135218816  14. Smarty_Compiler->_compile_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:316
+   15.3381  135219736  15. Smarty_Compiler->_compile_custom_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:537
+
+
+Strict standards: Only variables should be passed by reference in C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php on line 712
+
+Call Stack:
+    0.0006     229032   1. {main}() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:0
+    0.0027     240216   2. include('C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpdoc:59
+    0.1463    8650352   3. phpDocumentor_setup->createDocs() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\phpdoc.inc:65
+   13.2331  130016152   4. phpDocumentor_IntermediateParser->Output() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Setup.inc.php:761
+   13.9644  131381624   5. phpDocumentor_IntermediateParser->Convert() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1865
+   13.9644  131381720   6. Converter->walk() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\IntermediateParser.inc:1652
+   15.2486  134407480   7. HTMLframesConverter->endClass() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converter.inc:1936
+   15.2490  134408928   8. Smarty->fetch() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Converters\HTML\frames\HTMLframesConverter.inc:347
+   15.2876  134899456   9. include('C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php') C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1298
+   15.3346  135068064  10. Smarty->_smarty_include() C:\wamp\www\smarty3.1.0\development\Smarty3Doc\Smarty\PluginsBlock\26d3399f63abd43a7d72f8c21440dcb0\%%165^%%1653142046^class.tpl.php:686
+   15.3348  135072464  11. Smarty->_compile_resource() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1935
+   15.3356  135086264  12. Smarty->_compile_source() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1458
+   15.3358  135123920  13. Smarty_Compiler->_compile_file() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty.class.php:1523
+   15.3461  135243952  14. Smarty_Compiler->_compile_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:316
+   15.3468  135244872  15. Smarty_Compiler->_compile_custom_tag() C:\wamp\www\phpdocumentator\PhpDocumentor-1.4.3\phpDocumentor\Smarty-2.6.0\libs\Smarty_Compiler.class.php:537
+
+<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">14</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Smarty_CacheResource_Apc</span>
+		<span class="method-name">
+			__construct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methoddelete" id="delete"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">delete</span> (line <span class="line-number">60</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Remove values from cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true on success, false on failure</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			delete
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$keys</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$keys</span><span class="var-description">: list of keys to delete</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methoddelete">Smarty_CacheResource_KeyValueStore::delete()</a></dt>
+						<dd>Remove values from cache</dd>
+					</dl>
+			
+	</div>
+<a name="methodpurge" id="purge"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">purge</span> (line <span class="line-number">73</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Remove *all* values from cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true on success, false on failure</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			purge
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodpurge">Smarty_CacheResource_KeyValueStore::purge()</a></dt>
+						<dd>Remove *all* values from cache</dd>
+					</dl>
+			
+	</div>
+<a name="methodread" id="read"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">read</span> (line <span class="line-number">29</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Read values for a set of keys from cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> list of values with the given keys used as indexes</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			read
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$keys</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$keys</span><span class="var-description">: list of keys to fetch</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodread">Smarty_CacheResource_KeyValueStore::read()</a></dt>
+						<dd>Read values for a set of keys from cache</dd>
+					</dl>
+			
+	</div>
+<a name="methodwrite" id="write"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">write</span> (line <span class="line-number">46</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Save values for a set of keys to cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true on success, false on failure</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			write
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$keys</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$expire</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$keys</span><span class="var-description">: list of values to save</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$expire</span><span class="var-description">: expiration time</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodwrite">Smarty_CacheResource_KeyValueStore::write()</a></dt>
+						<dd>Save values for a set of keys to cache</dd>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html">Smarty_CacheResource_KeyValueStore</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodacquireLock">Smarty_CacheResource_KeyValueStore::acquireLock()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodaddMetaTimestamp">Smarty_CacheResource_KeyValueStore::addMetaTimestamp()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodclear">Smarty_CacheResource_KeyValueStore::clear()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodclearAll">Smarty_CacheResource_KeyValueStore::clearAll()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methoddelete">Smarty_CacheResource_KeyValueStore::delete()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodfetch">Smarty_CacheResource_KeyValueStore::fetch()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodgetLatestInvalidationTimestamp">Smarty_CacheResource_KeyValueStore::getLatestInvalidationTimestamp()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodgetMetaTimestamp">Smarty_CacheResource_KeyValueStore::getMetaTimestamp()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodgetTemplateUid">Smarty_CacheResource_KeyValueStore::getTemplateUid()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodhasLock">Smarty_CacheResource_KeyValueStore::hasLock()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodinvalidate">Smarty_CacheResource_KeyValueStore::invalidate()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodlistInvalidationKeys">Smarty_CacheResource_KeyValueStore::listInvalidationKeys()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodpopulate">Smarty_CacheResource_KeyValueStore::populate()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodpopulateTimestamp">Smarty_CacheResource_KeyValueStore::populateTimestamp()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodprocess">Smarty_CacheResource_KeyValueStore::process()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodpurge">Smarty_CacheResource_KeyValueStore::purge()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodread">Smarty_CacheResource_KeyValueStore::read()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodreleaseLock">Smarty_CacheResource_KeyValueStore::releaseLock()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodsanitize">Smarty_CacheResource_KeyValueStore::sanitize()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodwrite">Smarty_CacheResource_KeyValueStore::write()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource_KeyValueStore.html#methodwriteCachedContent">Smarty_CacheResource_KeyValueStore::writeCachedContent()</a></span><br>
+											</blockquote>
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../Smarty/Cacher/Smarty_CacheResource.html">Smarty_CacheResource</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodacquireLock">Smarty_CacheResource::acquireLock()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodclear">Smarty_CacheResource::clear()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodclearAll">Smarty_CacheResource::clearAll()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodgetCachedContent">Smarty_CacheResource::getCachedContent()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodhasLock">Smarty_CacheResource::hasLock()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodinvalidLoadedCache">Smarty_CacheResource::invalidLoadedCache()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodload">Smarty_CacheResource::load()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodlocked">Smarty_CacheResource::locked()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodpopulate">Smarty_CacheResource::populate()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodpopulateTimestamp">Smarty_CacheResource::populateTimestamp()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodprocess">Smarty_CacheResource::process()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodreleaseLock">Smarty_CacheResource::releaseLock()</a></span><br>
+													<span class="method-name"><a href="../Smarty/Cacher/Smarty_CacheResource.html#methodwriteCachedContent">Smarty_CacheResource::writeCachedContent()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:40 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

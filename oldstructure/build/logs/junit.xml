@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="CentreonBase" tests="34" assertions="49" failures="0" errors="1" time="0.141366">
+    <testsuite name="Test\Centreon\Centreon\CacheTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/CacheTest.php" namespace="Test\Centreon\Centreon" fullPackage="Test.Centreon.Centreon" tests="2" assertions="2" failures="0" errors="1" time="0.001277">
+      <testcase name="testCache" class="Test\Centreon\Centreon\CacheTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/CacheTest.php" line="23" assertions="2" time="0.001125"/>
+      <testcase name="testApc" class="Test\Centreon\Centreon\CacheTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/CacheTest.php" line="33" assertions="0" time="0.000152">
+        <error type="Desarrolla2\Cache\Exception\ApcCacheException">Test\Centreon\Centreon\CacheTest::testApc
+Desarrolla2\Cache\Exception\ApcCacheException: Error saving data with the key "app:test" to the APC cache.
+
+/home/lionel/projets/centreon/vendor/desarrolla2/cache/src/Desarrolla2/Cache/Adapter/Apc.php:83
+/home/lionel/projets/centreon/vendor/desarrolla2/cache/src/Desarrolla2/Cache/Cache.php:95
+/home/lionel/projets/centreon/tests/Centreon/Core/CacheTest.php:40
+</error>
+      </testcase>
+    </testsuite>
+    <testsuite name="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" namespace="Test\Centreon\Centreon" fullPackage="Test.Centreon.Centreon" tests="8" assertions="17" failures="0" errors="0" time="0.009909">
+      <testcase name="testFileGet" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="46" assertions="3" time="0.004683"/>
+      <testcase name="testGetGroup" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="55" assertions="2" time="0.000959"/>
+      <testcase name="testDbGet" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="67" assertions="2" time="0.000625"/>
+      <testcase name="testDbSet" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="77" assertions="2" time="0.001080"/>
+      <testcase name="testConstructFileNotExists" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="90" assertions="2" time="0.000735"/>
+      <testcase name="testConstructFileHasErrors" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="96" assertions="2" time="0.000620"/>
+      <testcase name="testSetExceptionBadGroup" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="102" assertions="2" time="0.000588"/>
+      <testcase name="testSetExceptionBadVariable" class="Test\Centreon\Centreon\ConfigTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ConfigTest.php" line="112" assertions="2" time="0.000619"/>
+    </testsuite>
+    <testsuite name="Test\Centreon\Centreon\DbTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DbTest.php" namespace="Test\Centreon\Centreon" fullPackage="Test.Centreon.Centreon" tests="3" assertions="4" failures="0" errors="0" time="0.000317">
+      <testcase name="testConnection" class="Test\Centreon\Centreon\DbTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DbTest.php" line="11" assertions="1" time="0.000078"/>
+      <testcase name="testStatement" class="Test\Centreon\Centreon\DbTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DbTest.php" line="17" assertions="2" time="0.000102"/>
+      <testcase name="testFetchRow" class="Test\Centreon\Centreon\DbTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DbTest.php" line="26" assertions="1" time="0.000137"/>
+    </testsuite>
+    <testsuite name="Test\Centreon\Centreon\DiTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DiTest.php" namespace="Test\Centreon\Centreon" fullPackage="Test.Centreon.Centreon" tests="5" assertions="13" failures="0" errors="0" time="0.000529">
+      <testcase name="testSetShared" class="Test\Centreon\Centreon\DiTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DiTest.php" line="14" assertions="3" time="0.000194"/>
+      <testcase name="testSet" class="Test\Centreon\Centreon\DiTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DiTest.php" line="26" assertions="3" time="0.000058"/>
+      <testcase name="testGetBadName" class="Test\Centreon\Centreon\DiTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DiTest.php" line="39" assertions="2" time="0.000057"/>
+      <testcase name="testGetBadServiceType" class="Test\Centreon\Centreon\DiTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DiTest.php" line="46" assertions="2" time="0.000053"/>
+      <testcase name="testInstance" class="Test\Centreon\Centreon\DiTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/DiTest.php" line="54" assertions="3" time="0.000167"/>
+    </testsuite>
+    <testsuite name="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" namespace="Test\Centreon\Core" fullPackage="Test.Centreon.Core" tests="8" assertions="8" failures="0" errors="0" time="0.108346">
+      <testcase name="testAddButton" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="26" assertions="1" time="0.032168"/>
+      <testcase name="testSimpleCheckbox" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="43" assertions="1" time="0.010875"/>
+      <testcase name="testGroupCheckbox" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="60" assertions="1" time="0.011209"/>
+      <testcase name="testSimpleRadio" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="93" assertions="1" time="0.011077"/>
+      <testcase name="testGroupRadio" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="110" assertions="1" time="0.010818"/>
+      <testcase name="testAddHidden" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="196" assertions="1" time="0.010731"/>
+      <testcase name="testAddReset" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="213" assertions="1" time="0.010806"/>
+      <testcase name="testAddText" class="Test\Centreon\Core\FormTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/FormTest.php" line="230" assertions="1" time="0.010662"/>
+    </testsuite>
+    <testsuite name="Test\Centreon\Centreon\HookTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/HookTest.php" namespace="Test\Centreon\Centreon" fullPackage="Test.Centreon.Centreon" tests="1" assertions="0" failures="0" errors="0" time="0.000043">
+      <testcase name="testActionHook" class="Test\Centreon\Centreon\HookTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/HookTest.php" line="14" assertions="0" time="0.000043"/>
+    </testsuite>
+    <testsuite name="LoggerTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/LoggerTest.php" tests="1" assertions="2" failures="0" errors="0" time="0.001149">
+      <testcase name="testLoad" class="LoggerTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/LoggerTest.php" line="22" assertions="2" time="0.001149"/>
+    </testsuite>
+    <testsuite name="Test\Centreon\Centreon\ModuleTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ModuleTest.php" namespace="Test\Centreon\Centreon" fullPackage="Test.Centreon.Centreon" tests="4" assertions="0" failures="0" errors="0" time="0.000132">
+      <testcase name="testInstall" class="Test\Centreon\Centreon\ModuleTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ModuleTest.php" line="14" assertions="0" time="0.000037"/>
+      <testcase name="testUninstall" class="Test\Centreon\Centreon\ModuleTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ModuleTest.php" line="19" assertions="0" time="0.000027"/>
+      <testcase name="testRegisterHook" class="Test\Centreon\Centreon\ModuleTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ModuleTest.php" line="24" assertions="0" time="0.000025"/>
+      <testcase name="testUnregisterHook" class="Test\Centreon\Centreon\ModuleTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/ModuleTest.php" line="29" assertions="0" time="0.000043"/>
+    </testsuite>
+    <testsuite name="Test\Centreon\Core\TemplateTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/TemplateTest.php" namespace="Test\Centreon\Core" fullPackage="Test.Centreon.Core" tests="2" assertions="3" failures="0" errors="0" time="0.019664">
+      <testcase name="testAddCss" class="Test\Centreon\Core\TemplateTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/TemplateTest.php" line="23" assertions="1" time="0.010028"/>
+      <testcase name="testAddJs" class="Test\Centreon\Core\TemplateTest" file="/home/lionel/projets/centreon/tests/Centreon/Core/TemplateTest.php" line="31" assertions="2" time="0.009636"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,1 @@
+{function name=functest3 default='default'}{$default} {$param}{/function}{call name=functest3 param='param' default='overwrite'} {call name=functest3 param='param2'}

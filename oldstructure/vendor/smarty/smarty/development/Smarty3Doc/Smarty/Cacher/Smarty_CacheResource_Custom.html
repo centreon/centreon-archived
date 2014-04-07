@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Smarty_CacheResource_Custom</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Smarty_CacheResource_Custom</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Cache Handler API</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Rodney Rehm</li>
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_libs---sysplugins---smarty_cacheresource_custom.php.html">/libs/sysplugins/smarty_cacheresource_custom.php</a> (line <span class="field">16</span>)
+		</p>
+		
+				
+		<pre><a href="../../Smarty/Cacher/Smarty_CacheResource.html">Smarty_CacheResource</a>
+   |
+   --Smarty_CacheResource_Custom</pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-vars">Vars</a>
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../../CacheResource-examples/Smarty_CacheResource_Mysql.html">Smarty_CacheResource_Mysql</a></td>
+					<td>
+											MySQL CacheResource
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																												
+												<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#acquireLock" title="details" class="method-name">acquireLock</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">integer</span>
+										<a href="#clear" title="details" class="method-name">clear</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$resource_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">integer</span>
+										<a href="#clearAll" title="details" class="method-name">clearAll</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, [<span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">integer</span>
+										<a href="#delete" title="details" class="method-name">delete</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer|null</span>&nbsp;<span class="var-name">$exp_time</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#fetch" title="details" class="method-name">fetch</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$content</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$mtime</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$mtime</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">integer|boolean</span>
+										<a href="#fetchTimestamp" title="details" class="method-name">fetchTimestamp</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">booelan</span>
+										<a href="#hasLock" title="details" class="method-name">hasLock</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#populate" title="details" class="method-name">populate</a>
+											(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#populateTimestamp" title="details" class="method-name">populateTimestamp</a>
+											(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$source</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">booelan</span>
+										<a href="#process" title="details" class="method-name">process</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span>, [<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#releaseLock" title="details" class="method-name">releaseLock</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#save" title="details" class="method-name">save</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer|null</span>&nbsp;<span class="var-name">$exp_time</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#writeCachedContent" title="details" class="method-name">writeCachedContent</a>
+											(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+										<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../../Smarty/Cacher/Smarty_CacheResource.html">Smarty_CacheResource</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#var$resources">Smarty_CacheResource::$resources</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#var$sysplugins">Smarty_CacheResource::$sysplugins</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-vars">Vars</a>
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methodacquireLock" id="acquireLock"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">acquireLock</span> (line <span class="line-number">214</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Lock cache for this template</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			acquireLock
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>
+				<span class="var-name">$cached</span><span class="var-description">: cached object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodacquireLock">Smarty_CacheResource::acquireLock()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodclear" id="clear"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">clear</span> (line <span class="line-number">182</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Empty cache for a specific template</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of cache files deleted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			clear
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$resource_name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty object</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$resource_name</span><span class="var-description">: template name</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$cache_id</span><span class="var-description">: cache id</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$exp_time</span><span class="var-description">: expiration time (number of seconds, not timestamp)</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodclear">Smarty_CacheResource::clear()</a></dt>
+						<dd>Empty cache for a specific template</dd>
+					</dl>
+			
+	</div>
+<a name="methodclearAll" id="clearAll"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">clearAll</span> (line <span class="line-number">166</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Empty cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of cache files deleted</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			clearAll
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, [<span class="var-type">integer</span>&nbsp;<span class="var-name">$exp_time</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty object</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$exp_time</span><span class="var-description">: expiration time (number of seconds, not timestamp)</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodclearAll">Smarty_CacheResource::clearAll()</a></dt>
+						<dd>Empty cache</dd>
+					</dl>
+			
+	</div>
+<a name="methoddelete" id="delete"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">delete</span> (line <span class="line-number">70</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Delete content from cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of deleted caches</li>
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">integer</span>
+		<span class="method-name">
+			delete
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer|null</span>&nbsp;<span class="var-name">$exp_time</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: template name</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$cache_id</span><span class="var-description">: cache id</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id</span>			</li>
+					<li>
+				<span class="var-type">integer|null</span>
+				<span class="var-name">$exp_time</span><span class="var-description">: seconds till expiration time in seconds or null</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../CacheResource-examples/Smarty_CacheResource_Mysql.html#methoddelete">Smarty_CacheResource_Mysql::delete()</a>
+								: Delete content from cache
+							</li>
+				</ul>
+	</div>
+<a name="methodfetch" id="fetch"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">fetch</span> (line <span class="line-number">29</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">fetch cached content and its modification time from data source</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			fetch
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$content</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$mtime</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$mtime</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$id</span><span class="var-description">: unique cache content identifier</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: template name</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$cache_id</span><span class="var-description">: cache id</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$content</span><span class="var-description">: cached content</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$mtime</span><span class="var-description">: cache modification timestamp (epoch)</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">&$content</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">&$mtime</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../CacheResource-examples/Smarty_CacheResource_Mysql.html#methodfetch">Smarty_CacheResource_Mysql::fetch()</a>
+								: fetch cached content and its modification time from data source
+							</li>
+				</ul>
+	</div>
+<a name="methodfetchTimestamp" id="fetchTimestamp"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">fetchTimestamp</span> (line <span class="line-number">43</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Fetch cached content's modification timestamp from data source</p>
+<p class="description"><p></p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> timestamp (epoch) the template was modified, or false if not found</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">integer|boolean</span>
+		<span class="method-name">
+			fetchTimestamp
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$id</span><span class="var-description">: unique cache content identifier</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: template name</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$cache_id</span><span class="var-description">: cache id</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../CacheResource-examples/Smarty_CacheResource_Mysql.html#methodfetchTimestamp">Smarty_CacheResource_Mysql::fetchTimestamp()</a>
+								: Fetch cached content's modification timestamp from data source
+							</li>
+				</ul>
+	</div>
+<a name="methodhasLock" id="hasLock"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">hasLock</span> (line <span class="line-number">195</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check is cache is locked for this template</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true or false if cache is locked</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">booelan</span>
+		<span class="method-name">
+			hasLock
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>
+				<span class="var-name">$cached</span><span class="var-description">: cached object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodhasLock">Smarty_CacheResource::hasLock()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodpopulate" id="populate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">populate</span> (line <span class="line-number">79</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">populate Cached Object with meta data from Resource</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			populate
+		</span>
+					(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>, <span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>
+				<span class="var-name">$cached</span><span class="var-description">: cached object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$_template</span><span class="var-description">: template object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodpopulate">Smarty_CacheResource::populate()</a></dt>
+						<dd>populate Cached Object with meta data from Resource</dd>
+					</dl>
+			
+	</div>
+<a name="methodpopulateTimestamp" id="populateTimestamp"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">populateTimestamp</span> (line <span class="line-number">94</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">populate Cached Object with timestamp and exists from Resource</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			populateTimestamp
+		</span>
+					(<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$source</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>
+				<span class="var-name">$source</span><span class="var-description">: cached object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>
+				<span class="var-name">$cached</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodpopulateTimestamp">Smarty_CacheResource::populateTimestamp()</a></dt>
+						<dd>populate Cached Object with timestamp and exists from Resource</dd>
+					</dl>
+			
+	</div>
+<a name="methodprocess" id="process"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">process</span> (line <span class="line-number">115</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Read the cached template and process the header</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> true or false if the cached content does not exist</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">booelan</span>
+		<span class="method-name">
+			process
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span>, [<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$_template</span><span class="var-description">: template object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>
+				<span class="var-name">$cached</span><span class="var-description">: cached object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodprocess">Smarty_CacheResource::process()</a></dt>
+						<dd>Read the cached template and process header</dd>
+					</dl>
+			
+	</div>
+<a name="methodreleaseLock" id="releaseLock"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">releaseLock</span> (line <span class="line-number">229</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Unlock cache for this template</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			releaseLock
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>&nbsp;<span class="var-name">$smarty</span>, <span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>&nbsp;<span class="var-name">$cached</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty.html">Smarty</a></span>
+				<span class="var-name">$smarty</span><span class="var-description">: Smarty object</span>			</li>
+					<li>
+				<span class="var-type"><a href="../../Smarty/TemplateResources/Smarty_Template_Cached.html">Smarty_Template_Cached</a></span>
+				<span class="var-name">$cached</span><span class="var-description">: cached object</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodreleaseLock">Smarty_CacheResource::releaseLock()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodsave" id="save"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">save</span> (line <span class="line-number">59</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Save content to cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> success</li>
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			save
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$cache_id</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$compile_id</span>, <span class="var-type">integer|null</span>&nbsp;<span class="var-name">$exp_time</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$id</span><span class="var-description">: unique cache content identifier</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: template name</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$cache_id</span><span class="var-description">: cache id</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$compile_id</span><span class="var-description">: compile id</span>			</li>
+					<li>
+				<span class="var-type">integer|null</span>
+				<span class="var-name">$exp_time</span><span class="var-description">: seconds till expiration or null</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$content</span><span class="var-description">: content to cache</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../../CacheResource-examples/Smarty_CacheResource_Mysql.html#methodsave">Smarty_CacheResource_Mysql::save()</a>
+								: Save content to cache
+							</li>
+				</ul>
+	</div>
+<a name="methodwriteCachedContent" id="writeCachedContent"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">writeCachedContent</span> (line <span class="line-number">147</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Write the rendered template output to cache</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> success</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			writeCachedContent
+		</span>
+					(<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>&nbsp;<span class="var-name">$_template</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$content</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../../Smarty/Template/Smarty_Internal_Template.html">Smarty_Internal_Template</a></span>
+				<span class="var-name">$_template</span><span class="var-description">: template object</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$content</span><span class="var-description">: content to cache</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodwriteCachedContent">Smarty_CacheResource::writeCachedContent()</a></dt>
+						<dd>Write the rendered template output to cache</dd>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../../Smarty/Cacher/Smarty_CacheResource.html">Smarty_CacheResource</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodacquireLock">Smarty_CacheResource::acquireLock()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodclear">Smarty_CacheResource::clear()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodclearAll">Smarty_CacheResource::clearAll()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodgetCachedContent">Smarty_CacheResource::getCachedContent()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodhasLock">Smarty_CacheResource::hasLock()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodinvalidLoadedCache">Smarty_CacheResource::invalidLoadedCache()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodload">Smarty_CacheResource::load()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodlocked">Smarty_CacheResource::locked()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodpopulate">Smarty_CacheResource::populate()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodpopulateTimestamp">Smarty_CacheResource::populateTimestamp()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodprocess">Smarty_CacheResource::process()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodreleaseLock">Smarty_CacheResource::releaseLock()</a></span><br>
+													<span class="method-name"><a href="../../Smarty/Cacher/Smarty_CacheResource.html#methodwriteCachedContent">Smarty_CacheResource::writeCachedContent()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 17 Jun 2013 21:06:45 +0000 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

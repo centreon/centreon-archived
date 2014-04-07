@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 4020 $ -->
+<sect1 id="language.function.shortform.assign">
+ <title>{$var=...}</title>
+ <para>
+  This is a short-hand version of the {assign} function. You can
+  assign values directly to the template, or assign values to array elements too.
+ </para>
+
+ <note><para>
+   Assignment of variables in-template is essentially placing application logic into the presentation that may be better handled in PHP. Use at your own discretion.
+ </para></note>
+
+ <para>
+  The following attributes can be added to the tag:
+ </para>
+ 
+ <para><emphasis role="bold">Attributes:</emphasis></para>
+ <informaltable frame="all">
+  <tgroup cols="6">
+   <colspec colname="param" align="center" />
+   <colspec colname="position" align="center" />
+   <colspec colname="type" align="center" />
+   <colspec colname="required" align="center" />
+   <colspec colname="default" align="center" />
+   <colspec colname="desc" />
+   <thead>
+    <row>
+     <entry>Attribute Name</entry>
+     <entry>Shorthand</entry>
+     <entry>Type</entry>
+     <entry>Required</entry>
+     <entry>Default</entry>
+     <entry>Description</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>scope</entry>
+     <entry>n/a</entry>
+     <entry>string</entry>
+     <entry>No</entry>
+     <entry><emphasis>n/a</emphasis></entry>
+     <entry>The scope of the assigned variable: 'parent','root' or 'global'</entry> 
+    </row>
+   </tbody>
+  </tgroup>
+ </informaltable>
+ 
+ <para><emphasis role="bold">Option Flags:</emphasis></para>
+ <informaltable frame="all">
+  <tgroup cols="2">
+   <colspec colname="param" align="center" />
+   <colspec colname="desc" />
+   <thead>
+    <row>
+     <entry>Name</entry>
+     <entry>Description</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>nocache</entry>
+     <entry>Assigns the variable with the 'nocache' attribute</entry>
+    </row>    
+   </tbody>
+  </tgroup>
+ </informaltable>
+ 
+ <example>
+  <title>Simple assignment</title>
+  <programlisting>
+<![CDATA[
+{$name='Bob'}
+
+The value of $name is {$name}.
+]]>
+  </programlisting>
+  <para>
+   The above example will output:
+  </para>
+  <screen>
+<![CDATA[
+The value of $name is Bob.
+]]>
+  </screen>
+ </example>
+
+ <example>
+  <title>Assignment with math</title>
+  <programlisting>
+<![CDATA[
+{$running_total=$running_total+$some_array[row].some_value}
+]]>
+  </programlisting>
+ </example>
+
+ <example>
+  <title>Assignment of an array element</title>
+  <programlisting>
+<![CDATA[
+{$user.name="Bob"}
+]]>
+  </programlisting>
+ </example>
+ 
+ <example>
+  <title>Assignment of an multidimensional array element</title>
+  <programlisting>
+<![CDATA[
+{$user.name.first="Bob"}
+]]>
+  </programlisting>
+ </example>
+ 
+ <example>
+  <title>Appending an array</title>
+  <programlisting>
+<![CDATA[
+{$users[]="Bob"}
+]]>
+  </programlisting>
+ </example>
+ 
+ <example>
+  <title>Assigment in the scope of calling template</title>
+  <para>Variables assigned in the included template will be seen in the including template.</para>
+  <programlisting>
+<![CDATA[
+{include file="sub_template.tpl"}
+...
+{* display variable assigned in sub_template *}
+{$foo}<br>
+...
+]]>
+  </programlisting>
+  <para>The template above includes the example <filename>sub_template.tpl</filename> below</para>
+  <programlisting>
+<![CDATA[
+...
+{* foo will be known also in the including template *}
+{$foo="something" scope=parent}
+{* bar is assigned only local in the including template *}
+{$bar="value"}
+...
+]]>
+</programlisting>
+ </example>
+ 
+ <para>
+  See also <link linkend="language.function.assign"><varname>{assign}</varname></link>
+  and
+  <link linkend="language.function.append"><varname>{append}</varname></link>
+ </para>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Revision: 3856 $ -->
+<!-- EN-Revision: 3832 Maintainer: takagi Status: ready -->
+<sect1 id="language.function.debug">
+ <title>{debug}</title>
+  <para>
+  <varname>{debug}</varname> は、デバッグコンソールをページに出力します。
+  これは、php スクリプト側での <link linkend="chapter.debugging.console">debug</link>
+  の設定にかかわらず動作します。実行時に処理が行われるので、
+  <link linkend="api.assign">代入した</link> 変数についてしか表示できず、
+  使用中のテンプレートについては表示できません。
+  しかし、テンプレートのスコープで現在使用可能なすべての変数を見ることができます。
+ </para>
+ <para>
+  キャッシュを有効にしていてページがキャッシュから読み込まれた場合は <varname>{debug}</varname>
+  が表示するのはキャッシュされたページに代入されている変数だけです。
+ </para>
+ <para>
+  テンプレート内でローカルに代入された変数も見たい場合は、
+  <varname>{debug}</varname> タグをテンプレートの最後に置きます。
+ </para>
+ 
+ <para>
+ <link linkend="chapter.debugging.console">デバッギングコンソールのページ</link>
+ も参照ください。
+ </para>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"../../../../manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

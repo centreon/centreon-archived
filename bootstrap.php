@@ -41,48 +41,80 @@ $centreon_path = __DIR__;
 ini_set('display_errors', 'On');
 
 /* Add classpath to include path */
-set_include_path($centreon_path . '/application/class/Centreon' . PATH_SEPARATOR . get_include_path());
+set_include_path($centreon_path . PATH_SEPARATOR . get_include_path());
 
 require_once 'vendor/autoload.php';
 
 spl_autoload_register(function ($classname) use ($centreon_path) {
-    $filename = $centreon_path . '/application/class/' . str_replace('\\', '/', $classname) . '.php';
-    if (file_exists($filename)) {
-        require $filename;
-    }
-});
-
-spl_autoload_register(function ($classname) use ($centreon_path) {
-    $classname = strtolower($classname);
-    $tmp = explode("\\", $classname);
-    $shortname = $tmp[(count($tmp) - 1)];
-    $filename = $centreon_path . '/application/' . str_replace('\\', '/', $classname) . '/'. $shortname .'.php';
-    if (file_exists($filename)) {
-        require $filename;
-    }
-});
-
-spl_autoload_register(function ($classname) use ($centreon_path) {
-    $tmp = explode("\\", $classname);
-    $myClassName = array_pop($tmp);
-    $rawpath = implode("/", $tmp);
-    $path = strtolower($rawpath);
-    $filename = $centreon_path . '/application/' . $path. '/' . $myClassName . '.php';
-    if (file_exists($filename)) {
-        require $filename;
-    } else {
-        $path = str_replace("Models", "models", $rawpath);
-        $filename = $centreon_path . '/application/' . $path. '/' . $myClassName . '.php';
-        if (file_exists($filename)) {
-            require $filename;
+    $filename = $centreon_path;
+    $fullClassPath = explode('\\', $classname);
+    
+    $mainScope = array_shift($fullClassPath);
+    if ($mainScope == 'Centreon') {
+        $secondScope = array_shift($fullClassPath);
+        if (strtolower($secondScope) === 'internal') {
+            $filename .= '/core/internal/'.  implode('/', $fullClassPath);
+        } elseif (strtolower($secondScope) === 'controllers') {
+            $filename .= '/core/controllers/'.  implode('/', $fullClassPath);
         }
     }
+    
+    $filename .= '.php';
+    if (file_exists($filename)) {
+        require_once $filename;
+    }
 });
 
-require_once $centreon_path.'/application/functions/array.php';
+spl_autoload_register(function ($classname) use ($centreon_path) {
+    $filename = $centreon_path . '/modules/';
+    $fullClassPath = explode('\\', $classname);
+    
+    $filename .= array_shift($fullClassPath).'Module';
+    $secondScope = array_shift($fullClassPath);
+    switch(strtolower($secondScope)) {
+        default:
+            $filename .= implode('/', $fullClassPath);
+            break;
+        case 'controllers':
+            $filename .= '/controllers/'.  implode('/', $fullClassPath);
+            break;
+        case 'models':
+            $filename .= '/models/'.  implode('/', $fullClassPath);
+            break;
+        case 'repository':
+            $filename .= '/repositories/'.  implode('/', $fullClassPath);
+            break;
+    }
+    
+    $filename .= '.php';
+    if (file_exists($filename)) {
+        require_once $filename;
+    }
+});
+
+/*spl_autoload_register(function ($classname) use ($centreon_path) {
+    $filename = $centreon_path;
+    $fullClassPath = explode('\\', $classname);
+    
+    $mainScope = array_shift($fullClassPath);
+    if ($mainScope == 'Centreon') {
+        if ($fullClassPath[0] === 'Controllers') {
+            $filename .= '/core/controllers' .  implode('/', $fullClassPath);
+        }
+    }
+    
+    $filename .= '.php';
+    if (file_exists($filename)) {
+        require_once $filename;
+    }
+});*/
+
+foreach (glob($centreon_path.'/core/custom/Centreon/*.php') as $filename) {
+    require_once $filename;
+}
 
 try {
-    $bootstrap = new \Centreon\Core\Bootstrap();
+    $bootstrap = new \Centreon\Internal\Bootstrap();
     $bootstrap->init();
 } catch (\Exception $e) {
     echo $e;

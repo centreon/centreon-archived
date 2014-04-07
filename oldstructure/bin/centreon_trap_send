@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+
+use warnings;
+use centreon::script::centreon_trap_send;
+
+centreon::script::centreon_trap_send->new()->run();
+
+__END__
+
+=head1 NAME
+
+centreon_trap_send - a script to test SNMP traps.
+
+=head1 SYNOPSIS
+
+centreon_trap_send [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-d|--destination <value>>
+
+Specify the host to send the trap.
+<value> corresponds to the host destination (default: localhost).
+
+=item B<-c|--community <value>>
+
+Specify the trap community.
+<value> corresponds to the trap community (default: public).
+
+=item B<-o|--oid <value>>
+
+Specify the trap OID.
+<value> corresponds to the trap OID (default: .1.3.6.1.4.1.12182.1).
+
+=item B<-a|--arg <value>>
+
+Specify the trap arguments.
+<value> corresponds to a trap argument (default: -a '.1.3.6.1.4.1.12182.2.1:OCTET_STRING:Test "20"' -a '.1.3.6.1.4.1.12182.2.1:INTEGER:10').
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<centreon_trap_send> will read args and send a trap.
+
+=cut
+

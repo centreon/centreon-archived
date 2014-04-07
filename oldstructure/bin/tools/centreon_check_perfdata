@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+use warnings;
+use centreon::script::centreon_check_perfdata;
+
+centreon::script::centreon_check_perfdata->new()->run();
+
+__END__
+
+=head1 NAME
+
+centreon_check_perfdata - a script to check ndo perfdata (test before upgrade in new centstorage).
+
+=head1 SYNOPSIS
+
+centreon_check_perfdata [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<centreon_check_perfdata> will read centreon_status database to get perfdata and check validity.
+
+=cut
+
