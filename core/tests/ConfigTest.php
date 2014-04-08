@@ -4,8 +4,7 @@ namespace Test\Centreon;
 
 use \Centreon\Internal\Config,
     \Centreon\Internal\Cache,
-    \Centreon\Internal\Di,
-    \Centreon\Internal\Db;
+    \Centreon\Internal\Di;
 
 class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
 {
@@ -14,8 +13,8 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
-        new Di();
         $this->datadir = CENTREON_PATH . '/core/tests/data';
+        new Di();
         parent::setUp();
     }
 
@@ -28,14 +27,14 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
     public function getConnection()
     {
         if (is_null($this->conn)) {
-            $dbconn = new Db('sqlite::memory:');
+            $dbconn = new \Centreon\Internal\Db('sqlite::memory:');
             $dbconn->exec("CREATE TABLE IF NOT EXISTS `options` (
                 `group` VARCHAR(255) NOT NULL DEFAULT 'default',
                 `key` VARCHAR(255) NULL,
                 `value` VARCHAR(255) NULL
             )");
-            $di = new Di();
-            Di::getDefault()->setShared('db_centreon', $dbconn);
+            $di = new \Centreon\Internal\Di();
+            \Centreon\Internal\Di::getDefault()->setShared('db_centreon', $dbconn);
             $this->conn = $this->createDefaultDBConnection($dbconn, ':memory:');
         }
         return $this->conn;

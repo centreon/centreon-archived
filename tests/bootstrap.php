@@ -35,6 +35,9 @@
 
 $centreon_path = dirname(__DIR__);
 
+/* Define the path to configuration files */
+define('CENTREON_ETC', '../config/');
+
 ini_set('display_errors', 'On');
 
 /* Add classpath to include path */

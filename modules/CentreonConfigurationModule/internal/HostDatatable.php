@@ -223,12 +223,12 @@ class HostDatatable extends \Centreon\Internal\Datatable
             
         foreach ($resultSet as &$myHostSet) {
             $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;<span data-overlay-url="/configuration/host/snapshot/'.
+                '&nbsp;<span data-overlay-url="'.$router->getPathFor('/configuration/host/snapshot/').
                 $myHostSet['host_id'].
                 '"><span class="overlay">'.
                 $myHostSet['host_name'].
                 '</span></span>';
-            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="/realtime/host/'.
+            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor('/realtime/host/').
                 $myHostSet['host_id'].
                 '/tooltip">';
             $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
@@ -239,7 +239,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
             $myHostSet['host_template']  = "";
             $templates = HosttemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="/configuration/hosttemplate/viewconf/'.
+                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/configuration/hosttemplate/viewconf/').
                     $template['id'].'"><a class="overlay" href="'.
                     $router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
                     '"><i class="fa '.
