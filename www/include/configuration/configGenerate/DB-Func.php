@@ -537,7 +537,7 @@
 
 		$str .= "#\n";
 		$str .= "#         By " . $by;
-		$len_by = strlen($by);
+		$len_by = mb_strlen($by, 'UTF-8');
 		$DBRESULT = $len - 13 - $len_by - 2;
 
 		// Add space to put text on center
