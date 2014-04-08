@@ -23,7 +23,11 @@
   <target name="lint" description="Perform syntax check of sourcecode files">
     <apply executable="php" failonerror="true">
       <arg value="-l" />
-      <fileset dir="${basedir}/application">
+      <fileset dir="${basedir}/core">
+        <include name="**/*.php"/>
+        <modified/>
+      </fileset>
+      <fileset dir="${basedir}/modules">
         <include name="**/*.php"/>
         <modified/>
       </fileset>
@@ -35,7 +39,8 @@
       <arg value="--count-tests" />
       <arg value="--log-csv" />
       <arg value="${basedir}/build/logs/phploc.csv" />
-      <arg path="${basedir}/application" />
+      <arg path="${basedir}/core" />
+      <arg path="${basedir}/modules" />
     </exec>
   </target>
   
@@ -44,7 +49,7 @@
       <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
       <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
       <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
-      <arg path="${basedir}/application" />
+      <arg path="${basedir}/core,${basedir}/modules" />
     </exec>
   </target>
 
@@ -53,7 +58,8 @@
       <arg value="--report=checkstyle" />
       <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
       <arg value="--standard=PSR2" />
-      <arg value="${basedir}/application" />
+      <arg value="${basedir}/core" />
+      <arg value="${basedir}/modules" />
     </exec>
   </target>
 
@@ -61,13 +67,14 @@
     <exec executable="vendor/bin/phpcpd">
       <arg value="--log-pmd" />
       <arg value="${basedir}/build/logs/pmd-cpd.xml" />
-      <arg value="${basedir}/application" />
+      <arg value="${basedir}/core" />
+      <arg value="${basedir}/modules" />
     </exec>
   </target>
 
   <target name="phpmd-ci" description="Perform project mess detection">
     <exec executable="vendor/bin/phpmd">
-      <arg value="${basedir}/application" />
+      <arg value="${basedir}/core,${basedir}/modules" />
       <arg value="xml" />
       <arg value="${basedir}/ci/phpmd.xml" />
       <arg value="--reportfile" />
