@@ -59,7 +59,7 @@ class CommandApi extends \Centreon\Internal\Controller
          */
         $params = 'command_id,command_name';
         
-        $cmdList = \Models\Configuration\Command::getList($params);
+        $cmdList = \CentreonConfiguration\Models\Command::getList($params);
         
         $router->response()->json(
             array(
@@ -94,7 +94,7 @@ class CommandApi extends \Centreon\Internal\Controller
         /*
          * Get host informations
          */
-        $hostList = \Models\Configuration\Command::getList('*', -1, 0, null, "ASC", $params);
+        $hostList = \CentreonConfiguration\Models\Command::getList('*', -1, 0, null, "ASC", $params);
 
         $router->response()->json(
                                   array(

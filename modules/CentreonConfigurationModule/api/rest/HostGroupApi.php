@@ -47,7 +47,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
      * Action for listing hosts
      *
      * @method GET
-     * @route /api/1.0/hostgroup
+     * @route /api/configuration/[a:version]/hostgroup
      */
     public function listAction()
     {
@@ -59,7 +59,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
          */
         $params = 'hg_id,hg_name,hg_alias';
         
-        $cmdList = \Models\Configuration\Hostgroup::getList($params);
+        $cmdList = \CentreonConfiguration\Models\Hostgroup::getList($params);
         
         $router->response()->json(
                                   array(
@@ -74,7 +74,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
      * Action to get info a specific host
      *
      * @method GET
-     * @route /api/1.0/hostgroup/[i:id]
+     * @route /api/configuration/[a:version]/hostgroup/[i:id]
      */
     public function listHostgroupAction()
     {
@@ -94,7 +94,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
         /*
          * Get host informations
          */
-        $hostList = \Models\Configuration\Hostgroup::getList('*', -1, 0, null, "ASC", $params);
+        $hostList = \CentreonConfiguration\Models\Hostgroup::getList('*', -1, 0, null, "ASC", $params);
 
         $router->response()->json(
                                   array(
@@ -109,7 +109,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
      * Action for update 
      *
      * @method PUT
-     * @route /api/1.0/hostgroup/[i:id]
+     * @route /api/configuration/[a:version]/hostgroup/[i:id]
      */
     public function updateAction()
     {
@@ -120,7 +120,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
      * Action for add
      *
      * @method POST
-     * @route /api/1.0/hostgroup
+     * @route /api/configuration/[a:version]/hostgroup
      */
     public function addAction()
     {
@@ -131,7 +131,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
      * Action for delete
      *
      * @method DELETE
-     * @route /api/1.0/hostgroup/[i:id]
+     * @route /api/configuration/[a:version]/hostgroup/[i:id]
      */
     public function deleteAction()
     {
@@ -142,7 +142,7 @@ class HostGroupApi extends \Centreon\Internal\Controller
      * Action for duplicate
      *
      * @method PUT
-     * @route /api/1.0/hostgroup/duplicate/[i:id]
+     * @route /api/configuration/[a:version]/hostgroup/duplicate/[i:id]
      */
     public function duplicateAction()
     {

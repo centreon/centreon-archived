@@ -47,7 +47,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      * Action for listing hosts
      *
      * @method GET
-     * @route /api/1.0/servicegroup
+     * @route /api/configuration/[a:version]/servicegroup
      */
     public function listAction()
     {
@@ -59,7 +59,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
          */
         $params = 'sg_id,sg_name';
         
-        $cmdList = \Models\Configuration\Servicegroup::getList($params);
+        $cmdList = \CentreonConfiguration\Models\Servicegroup::getList($params);
         
         $router->response()->json(
                                   array(
@@ -74,7 +74,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      * Action to get info a specific host
      *
      * @method GET
-     * @route /api/1.0/servicegroup/[i:id]
+     * @route /api/configuration/[a:version]/servicegroup/[i:id]
      */
     public function listServicegroupAction()
     {
@@ -94,7 +94,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
         /*
          * Get host informations
          */
-        $hostList = \Models\Configuration\Servicegroup::getList('*', -1, 0, null, "ASC", $params);
+        $hostList = \CentreonConfiguration\Models\Servicegroup::getList('*', -1, 0, null, "ASC", $params);
 
         $router->response()->json(
                                   array(
@@ -109,7 +109,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      * Action for update 
      *
      * @method PUT
-     * @route /api/1.0/servicegroup/[i:id]
+     * @route /api/configuration/[a:version]/servicegroup/[i:id]
      */
     public function updateAction()
     {
@@ -120,7 +120,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      * Action for add
      *
      * @method POST
-     * @route /api/1.0/servicegroup
+     * @route /api/configuration/[a:version]/servicegroup
      */
     public function addAction()
     {
@@ -131,7 +131,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      * Action for delete
      *
      * @method DELETE
-     * @route /api/1.0/servicegroup/[i:id]
+     * @route /api/configuration/[a:version]/servicegroup/[i:id]
      */
     public function deleteAction()
     {
@@ -142,7 +142,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      * Action for duplicate
      *
      * @method PUT
-     * @route /api/1.0/servicegroup/duplicate/[i:id]
+     * @route /api/configuration/[a:version]/servicegroup/duplicate/[i:id]
      */
     public function duplicateAction()
     {

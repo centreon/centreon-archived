@@ -83,32 +83,30 @@ class HostApi extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
-        $requestParams = $this->getParams();
-
         /* 
          * Get parameters
          */
-        $param = $router->request()->paramsNamed();
-
+        $requestParams = $this->getParams();
+        
         /*
          * Query parameter
          */
         $params = array(
-                        "host_id" => $param['id'], 
-                        "host_register" => '1'
-                        );
+            "host_id" => $requestParams['id'], 
+            "host_register" => '1'
+        );
         
         /*
          * Get host informations
          */
-        $hostList = \Models\Configuration\Host::getList('*', -1, 0, null, "ASC", $params, "AND");
+        $hostList = \CentreonConfiguration\Models\Host::getList('*', -1, 0, null, "ASC", $params, "AND");
 
         $router->response()->json(
-        array(
-                "api-version" => $requestParams['version'],
-                "status" => true,
-                "data" => $hostList
-            )
+            array(
+                    "api-version" => $requestParams['version'],
+                    "status" => true,
+                    "data" => $hostList
+                )
         );
     }
 

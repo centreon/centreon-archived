@@ -47,7 +47,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
      * Action for listing hosts
      *
      * @method GET
-     * @route /api/1.0/hostcategory
+     * @route /api/configuration/[a:version]/hostcategory
      */
     public function listAction()
     {
@@ -59,7 +59,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
          */
         $params = 'hc_id,hc_name';
         
-        $cmdList = \Models\Configuration\Hostcategory::getList($params);
+        $cmdList = \CentreonConfiguration\Models\Hostcategory::getList($params);
         
         $router->response()->json(
                                   array(
@@ -74,7 +74,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
      * Action to get info a specific host
      *
      * @method GET
-     * @route /api/1.0/hostcategory/[i:id]
+     * @route /api/configuration/[a:version]/hostcategory/[i:id]
      */
     public function listHostcategoryAction()
     {
@@ -94,22 +94,22 @@ class HostCategoryApi extends \Centreon\Internal\Controller
         /*
          * Get host informations
          */
-        $hostList = \Models\Configuration\Hostcategory::getList('*', -1, 0, null, "ASC", $params);
+        $hostList = \CentreonConfiguration\Models\Hostcategory::getList('*', -1, 0, null, "ASC", $params);
 
         $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $hostList
-                                        )
-                                  );
+            array(
+                "api-version" => 1,
+                "status" => true,
+                "data" => $hostList
+            )
+        );
     }
 
     /**
      * Action for update 
      *
      * @method PUT
-     * @route /api/1.0/hostcategory/[i:id]
+     * @route /api/configuration/[a:version]/hostcategory/[i:id]
      */
     public function updateAction()
     {
@@ -120,7 +120,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
      * Action for add
      *
      * @method POST
-     * @route /api/1.0/hostcategory
+     * @route /api/configuration/[a:version]/hostcategory
      */
     public function addAction()
     {
@@ -131,7 +131,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
      * Action for delete
      *
      * @method DELETE
-     * @route /api/1.0/hostcategory/[i:id]
+     * @route /api/configuration/[a:version]/hostcategory/[i:id]
      */
     public function deleteAction()
     {
@@ -142,7 +142,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
      * Action for duplicate
      *
      * @method PUT
-     * @route /api/1.0/hostcategory/duplicate/[i:id]
+     * @route /api/configuration/[a:version]/hostcategory/duplicate/[i:id]
      */
     public function duplicateAction()
     {
