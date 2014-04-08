@@ -47,7 +47,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action for listing hosts
      *
      * @method GET
-     * @route /api/configuration/command/[a:version]
+     * @route /api/configuration/[a:version]/command
      */
     public function listAction()
     {
@@ -74,7 +74,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action to get info a specific host
      *
      * @method GET
-     * @route /api/configuration/command/[i:id]/[a:version]
+     * @route /api/configuration/[a:version]/command/[i:id]
      */
     public function listCommandAction()
     {
