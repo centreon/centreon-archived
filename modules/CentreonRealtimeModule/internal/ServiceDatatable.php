@@ -135,8 +135,8 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 'parameters' => array(
                     'route' => '/realtime/service/[i:hid]/[i:sid]',
                     'routeParams' => array(
-                                           'hid' => '::host_id::',
-                                           'sid' => '::service_id::'
+                        'hid' => '::host_id::',
+                        'sid' => '::service_id::'
                     ),
                     'linkName' => '::description::'
                 )

@@ -191,7 +191,7 @@
 				</field>
 			</block>
 			<block name="Parentships">
-				<field name="hosts_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field name="host_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>
@@ -200,7 +200,7 @@
 						<multiple>true</multiple>			
 					</attributes>
 				</field>
-				<field name="hosts_childs" label="Childs Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field name="host_childs" label="Childs Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>

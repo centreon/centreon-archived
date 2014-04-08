@@ -40,7 +40,7 @@ namespace Centreon\Internal\Form\Validator;
  * @package Centreon
  * @subpackage Core
  */
-class Forbiddenchar implements Ivalidator
+class ForbiddenChar implements Ivalidator
 {
     /**
      * 
