@@ -64,7 +64,7 @@ echo _("Name of the logger");
 echo _("Configuration messages");
 echo _("Debug messages");
 echo _("Error messages");
-echo _("Informational messages ");
+echo _("Informational messages");
 echo _("Logging level");
 echo _("Max file size in bytes");
 echo _("RRD file directory for metrics");
@@ -88,5 +88,6 @@ echo _("Rebuild check interval in seconds");
 echo _("Store performance data in data_bin");
 echo _("Insert in index data");
 echo _("File for Centeron Broker statistics");
+echo _("Store in performance data in data_bin");
 
 ?>
