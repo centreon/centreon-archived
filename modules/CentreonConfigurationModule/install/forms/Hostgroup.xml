@@ -37,6 +37,10 @@
         <route>/configuration/hostgroup/add</route>
         <step name="General">
             <field name="hg_name" mandatory="1"></field>
+            <field name="hg_alias" mandatory="0"></field>
+        </step>
+        <step name="Relation">
+        	<field name="hg_hosts" mandatory="0"></field>
         </step>
     </wizard>
 </forms>

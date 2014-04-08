@@ -145,7 +145,7 @@
 			</block>
 		</section>
 	</form>
-	<wizard name="add_host">
+	<wizard name="add_trap">
 		<route>/configuration/trap/add</route>
 		<step name="General">
 			<field name="traps_name" mandatory="1"></field>
