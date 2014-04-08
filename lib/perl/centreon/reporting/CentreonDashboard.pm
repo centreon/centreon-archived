@@ -64,15 +64,15 @@ sub insertHostStats {
     my $end = shift;
     my $dayDuration = $end - $start;
     my $query_start = "INSERT INTO `log_archive_host` (`host_id`,".
-                            " `UPTimeScheduled`,".
-                            " `DOWNTimeScheduled`,".
-                            " `UNREACHABLETimeScheduled`,".
-                            " `MaintenanceTime`,".
-                            " `UNDETERMINEDTimeScheduled`,".
-                            " `UPnbEvent`,".
-                            " `DOWNnbEvent`,".
-                            " `UNREACHABLEnbEvent`,".
-                            " `date_start`, `date_end`) VALUES ";
+        " `UPTimeScheduled`,".
+        " `DOWNTimeScheduled`,".
+        " `UNREACHABLETimeScheduled`,".
+        " `MaintenanceTime`,".
+        " `UNDETERMINEDTimeScheduled`,".
+        " `UPnbEvent`,".
+        " `DOWNnbEvent`,".
+        " `UNREACHABLEnbEvent`,".
+        " `date_start`, `date_end`) VALUES ";
     my $query_end = "";
     my $firstHost = 1;
     my $count = 0;
@@ -87,8 +87,8 @@ sub insertHostStats {
         if (defined($stateDurations->{$key})) {
             my $stats = $stateDurations->{$key};
             my @tab = @$stats;
-            foreach(@tab) {
-                 $query_end .= $_.",";
+            foreach (@tab) {
+                $query_end .= $_.",";
             }
             $query_end .= $start.",".$end.")";
         } else {
@@ -117,17 +117,17 @@ sub insertServiceStats {
     my $end = shift;
     my $dayDuration = $end - $start;
     my $query_start = "INSERT INTO `log_archive_service` (`host_id`, `service_id`,".
-                            " `OKTimeScheduled`,".
-                            " `WARNINGTimeScheduled`,".
-                            " `CRITICALTimeScheduled`,".
-                            " `UNKNOWNTimeScheduled`,".
-                            " `MaintenanceTime`,".
-                            " `UNDETERMINEDTimeScheduled`,".
-                            " `OKnbEvent`,".
-                            " `WARNINGnbEvent`,".
-                            " `CRITICALnbEvent`,".
-                            " `UNKNOWNnbEvent`,".
-                            " `date_start`, `date_end`) VALUES ";
+        " `OKTimeScheduled`,".
+        " `WARNINGTimeScheduled`,".
+        " `CRITICALTimeScheduled`,".
+        " `UNKNOWNTimeScheduled`,".
+        " `MaintenanceTime`,".
+        " `UNDETERMINEDTimeScheduled`,".
+        " `OKnbEvent`,".
+        " `WARNINGnbEvent`,".
+        " `CRITICALnbEvent`,".
+        " `UNKNOWNnbEvent`,".
+        " `date_start`, `date_end`) VALUES ";
     my $query_end = "";
     my $firstService = 1;
     my $count = 0;
@@ -143,7 +143,7 @@ sub insertServiceStats {
         if (defined($stateDurations->{$key})) {
             my $stats = $stateDurations->{$key};
             my @tab = @$stats;
-            foreach(@tab) {
+            foreach (@tab) {
                 $query_end .= $_.",";
             }
             $query_end .= $start.",".$end.")";
@@ -167,7 +167,7 @@ sub insertServiceStats {
 sub truncateServiceStats {
     my $self = shift;
     my $centstorage = $self->{"centstorage"};
-    
+
     my $query = "TRUNCATE TABLE `log_archive_service`";
     $centstorage->query($query);
 }
@@ -176,7 +176,7 @@ sub truncateServiceStats {
 sub truncateHostStats {
     my $self = shift;
     my $centstorage = $self->{"centstorage"};
-    
+
     my $query = "TRUNCATE TABLE `log_archive_host`";
     $centstorage->query($query);
 }
@@ -185,7 +185,7 @@ sub truncateHostStats {
 sub deleteServiceStats {
     my $self = shift;
     my $centstorage = $self->{"centstorage"};
-    
+
     my ($start, $end) = (shift, shift);
     my ($day, $month, $year) = (localtime($end))[3,4,5];
     $end = mktime(0, 0, 0, $day + 1, $month, $year);
@@ -197,7 +197,7 @@ sub deleteServiceStats {
 sub deleteHostStats {
     my $self = shift;
     my $centstorage = $self->{"centstorage"};
-    
+
     my ($start, $end) = (shift, shift);
     my ($day, $month, $year) = (localtime($end))[3,4,5];
     $end = mktime(0, 0, 0, $day + 1, $month, $year);
