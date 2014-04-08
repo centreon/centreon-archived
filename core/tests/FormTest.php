@@ -9,15 +9,18 @@ use Centreon\Internal\Config,
 class FormTest extends \PHPUnit_Framework_TestCase
 {
     private $datadir;
+    private $formTpl;
 
     public function setUp()
     {
         $this->datadir = CENTREON_PATH . '/core/tests/data/';
+        $this->formTpl = 'form/testForm.tpl';
         $config = new Config($this->datadir . '/test-template.ini');
         $di = new Di();
         $di->setShared('config', $config);
         $tpl = new Template();
         $di->setShared('template', $tpl);
+        $tpl->setTemplateDir(CENTREON_PATH . '/core/tests/views/');
         parent::setUp();
     }
     
@@ -30,15 +33,21 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
-        $form->add('testClassiqueInput', 'button' , _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddButton.tpl');
+        $arr = array(
+            'type' => 'submit',
+            'label' => 'Validate',
+            'name' => 'testSubmit',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testSubmit']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
-            '<div class="form-group">'.
-            '<label class="sr-only" for="testClassiqueInput">testClassiqueInput</label>'.
-            '<input id="testClassiqueInput" '.
-            'type="button" name="testClassiqueInput" value="Save" class="form-controler" />'.
-            '</div>',
+            '<div class="form-group ">'.
+            '<div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testSubmit">Validate</label>'.
+            '</div><div class="col-sm-9"><</div></div>',
             $printedResult
         );
     }
@@ -47,9 +56,16 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
-        $form->add('testClassiqueCheckbox', 'checkbox' , _("Test Checkbox"));
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddSimpleCheckbox.tpl');
+        $arr = array(
+            'type' => 'checkbox',
+            'label' => 'Simple checkbox',
+            'name' => 'testCheckbox',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testCheckbox']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
             '<div class="form-group">'.
             '<label class="sr-only" for="testClassiqueCheckbox">Test Checkbox</label>'.
@@ -78,7 +94,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         );
         $form->addCheckBox('testClassiqueCheckbox', 'testClassiqueCheckbox', '&nbsp;', $checkboxes);
         $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddGroupCheckbox.tpl');
+        $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
             '<div class="form-group">'.
             '<label class="sr-only" for="testClassiqueCheckbox">testClassiqueCheckbox</label>'.
@@ -99,7 +115,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form = new Form('testForm');
         $form->addRadio('testClassiqueRadio', _("Test Radio"), 'testRadio', _("Test Radio"));
         $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddSimpleRadio.tpl');
+        $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
             '<div class="form-group">'.
                 '<label class="sr-only" for="testClassiqueRadio">Test Radio</label>'.
@@ -128,7 +144,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         );
         $form->addRadio('testClassiqueRadio', _("Test Radio"), 'testRadio', '&nbsp;', $radios);
         $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddGroupRadio.tpl');
+        $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
             '<div class="form-group">'.
                 '<label class="sr-only" for="testClassiqueRadio">Test Radio</label>'.
@@ -219,7 +235,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form = new Form('testForm');
         $form->add('testClassiqueInput', 'reset', _("Reset"));
         $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddReset.tpl');
+        $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
             '<div class="form-group">'.
             '<label class="sr-only" for="testClassiqueInput">testClassiqueInput</label>'.
@@ -236,7 +252,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form = new Form('testForm');
         $form->add('testClassiqueInput');
         $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddText.tpl');
+        $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
             '<div class="form-group">'.
             '<label class="sr-only" for="testClassiqueInput">testClassiqueInput</label>'.
