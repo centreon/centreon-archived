@@ -461,7 +461,11 @@
             $str_unitH_append = ", ";
         }
     if ($str_unitH != "") {
-        $str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
+        if ($oreon->broker->getBroker() == "ndo") {
+            $str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
+        } else {
+            $str_unitH = "(`host_name` IN ($str_unitH) AND service_id IS NULL)";
+        }
     }
 
     /*
