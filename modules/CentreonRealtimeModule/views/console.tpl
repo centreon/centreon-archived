@@ -1,8 +1,9 @@
 {extends file="file:[Core]viewLayout.tpl"}
 {block name="title"}
-	{t}Service monitoring{/t}
+	{t}Monitoring{/t}
 {/block}
 {block name="content"}
+    <div class="first-content"></div>
 	{datatable module=$moduleName object=$objectName configuration=false datatableObject=$datatableObject}
 	<div class="modal fade" role="dialog" id="modal-console">
 		<div class="modal-dialog modal-lg">
@@ -14,39 +15,6 @@
 	{datatablejs module=$moduleName object=$objectName objectUrl=$objectListUrl datatableObject=$datatableObject}
 	<script>
 		$(function() {
-			/* tooltips */
-			$(document).delegate('.rt-tooltip', 'mouseover', function() {
-				var url = $(this).parent("a").attr("href");
-				$(this).qtip({
-					overwrite: false,
-					content: {
-						text: function(event, api) {
-							$.ajax({
-								url: url + '/tooltip'
-							})
-							.then(function(content) {
-								api.set('content.text', content);
-							}, function(xhr, status, error) {
-								api.set('content.text', status + ':' + error);
-							});
-						}
-					},
-					show: {
-						ready: true
-					},
-					style: {
-						classes: 'qtip-bootstrap centreon-qtip',
-						width: 'auto'
-					},
-					position: {
-						viewport: $(window),
-						adjust: {
-							screen: true
-						}
-					}
-				});
-			});
-
 			/* monitoring actions */
 
 			/* we remove the empty label, for it conflicts with our action bar */

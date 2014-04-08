@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class TimeperiodDatatable extends \Centreon\Internal\ExperimentalDatatable
+class TimeperiodDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -71,7 +71,7 @@ class TimeperiodDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allTimeperiodid' class='allTimeperiodid' type='checkbox'>",
             'name' => 'tp_id',
@@ -98,7 +98,7 @@ class TimeperiodDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/usergroup/[i:id]',
+                    'route' => '/configuration/timeperiod/[i:id]',
                     'routeParams' => array(
                         'id' => '::tp_id::'
                     ),

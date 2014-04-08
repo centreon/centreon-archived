@@ -44,7 +44,8 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $datatableObject = '\CentreonConfiguration\Internal\TrapDatatable';
     public static $relationMap = array(
         'trap_services' => '\CentreonConfiguration\Models\Relation\Trap\Service',
-        'trap_servicetemplates' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate'
+        'trap_servicetemplates' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate',
+	'trap_manufacturer' => '\CentreonConfiguration\Models\Relation\Trap\Manufacturer'
     );
 
     /**
@@ -94,7 +95,7 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
      * Add a trap
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/trap/add
      */
     public function createAction()
@@ -112,6 +113,18 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function editAction()
     {
         parent::editAction();
+    }
+    
+    /**
+     * Add a trap
+     *
+     * @method get
+     * @route /configuration/trap/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/trap/add');
+        parent::addAction();
     }
 
     /**

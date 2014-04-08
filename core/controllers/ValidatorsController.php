@@ -141,7 +141,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
     {
         $params = $this->getParams('post');
 
-        $result = \Centreon\Internal\Form\Validator\Circular::validate(
+        $result = \Centreon\Internal\Form\Validator\CircularDependency::validate(
             $params['value'],
             $params['object'],
             $params['id']

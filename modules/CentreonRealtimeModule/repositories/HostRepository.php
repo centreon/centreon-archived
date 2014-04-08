@@ -226,4 +226,55 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         }
         
     }
+
+    /**
+     * Get service status
+     *
+     * @param int $hostId
+     * @return mixed
+     */
+    public static function getStatus($hostId)
+    {
+        // Initializing connection
+        $di = \Centreon\Internal\Di::getDefault();
+        $dbconn = $di->get('db_storage');
+
+        $stmt = $dbconn->prepare('SELECT state as state FROM hosts WHERE host_id = ? AND enabled = 1 LIMIT 1');
+        $stmt->execute(array($hostId));
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return $row['state'];
+        }
+        return -1;
+    }
+
+    /**
+     * Format small badge status
+     *
+     * @param int $status
+     */
+    public static function getStatusBadge($status) 
+    {
+        switch ($status) {
+            case 0:
+                $status = "label-success";
+                break;
+            case 1:
+                $status = "label-warning";
+                break;
+            case 2:
+                $status = "label-danger";
+                break;
+            case 3:
+                $status = "label-default";
+                break;
+            case 4:
+                $status = "label-info";
+                break;
+            default:
+                $status = "";
+                break;
+        }
+        return "<span class='label $status pull-right overlay'>&nbsp;<!--<i class='fa fa-check-square-o'>--></i></span>";
+    }
 }

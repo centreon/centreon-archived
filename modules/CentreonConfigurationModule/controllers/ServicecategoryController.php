@@ -46,7 +46,7 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     protected $objectClass = '\CentreonConfiguration\Models\Servicecategory';
     public static $relationMap = array(
         'sc_services' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
-        'sc_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory'
+        'sc_servicetemplates' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicecategory'
     );
     
     public static $isDisableable = true;
@@ -117,12 +117,24 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
      * Add a servicecategory
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/servicecategory/add
      */
     public function createAction()
     {
         parent::createAction();
+    }
+    
+    /**
+     * Add a servicecategory
+     *
+     * @method get
+     * @route /configuration/servicecategory/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/servicecategory/add');
+        parent::addAction();
     }
     
     /**

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,14 +35,17 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use \Centreon\Internal\Datatable\Datasource\CentreonDb,
+    \CentreonRealtime\Repository\HostRepository as RealTimeHostRepository,
+    \CentreonConfiguration\Repository\HostRepository,
+    \CentreonConfiguration\Repository\HosttemplateRepository;
 
 /**
  * Description of HostDatatable
  *
  * @author lionel
  */
-class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
+class HostDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -58,7 +60,7 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
      * @var array 
      */
     protected static $configuration = array(
-        'autowidth' => true,
+        'autowidth' => false,
         'order' => array(
             array('host_name', 'asc'),
             array('host_id', 'asc')
@@ -71,22 +73,23 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allHostid' class='allHostid' type='checkbox'>",
             'name' => 'host_id',
             'data' => 'host_id',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            'width' => '5%',
+            'width' => '20px',
             'cast' => array(
                 'type' => 'checkbox',
                 'parameters' => array(
                     'displayName' => '::host_name::'
                 )
-            )
+            ),
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Name',
@@ -105,6 +108,9 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                     ),
                     'linkName' => '::host_name::'
                 )
+            ),
+            'searchParam' => array(
+                'main' => 'true',
             )
         ),
         array (
@@ -133,15 +139,40 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'width' => '50px',
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Retry',
+            'name' => 'host_retry_check_interval',
+            'data' => 'host_retry_check_interval',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'className' => "cell_center"
+        ),
+        array (
+            'title' => 'Atp',
             'name' => 'host_max_check_attempts',
             'data' => 'host_max_check_attempts',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'width' => '40px',
+            'className' => "cell_center"
+        ),
+        array (
+            'title' => 'Templates',
+            'name' => 'host_id as host_template',
+            'data' => 'host_template',
+            'orderable' => false,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Status',
@@ -152,13 +183,24 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-            'type' => 'select',
-                'parameters' =>array(
+                'type' => 'select',
+                'parameters' => array(
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
                     '2' => 'Trash',
                 )
-            )
+            ),
+            'searchParam' => array(
+                'main' => 'true',
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0',
+                    'Trash' => '2'
+                )
+            ),
+            'className' => "cell_center",
+            'width' => '50px'
         ),
     );
     
@@ -177,9 +219,33 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+            
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;'.$myHostSet['host_name'];
+            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
+                '&nbsp;<span data-overlay-url="/configuration/host/snapshot/'.
+                $myHostSet['host_id'].
+                '"><span class="overlay">'.
+                $myHostSet['host_name'].
+                '</span></span>';
+            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="/realtime/host/'.
+                $myHostSet['host_id'].
+                '/tooltip">';
+            $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
+                RealTimeHostRepository::getStatus($myHostSet['host_id'])
+            );
+
+            /* Templates */
+            $myHostSet['host_template']  = "";
+            $templates = HosttemplateRepository::getTemplateList($myHostSet['host_id']);
+            foreach ($templates as $template) {
+                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="/configuration/hosttemplate/viewconf/'.
+                    $template['id'].'"><a class="overlay" href="'.
+                    $router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
+                    '"><i class="fa '.
+                    $template['ico'].
+                    '"></i></a></span>';
+            } 
         }
     }
 }

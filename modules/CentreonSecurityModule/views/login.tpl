@@ -79,6 +79,8 @@ $(function() {
         e.preventDefault();
         logIn();
     });
+
+    $("#login").focus();
 });
 </script>
 </body>

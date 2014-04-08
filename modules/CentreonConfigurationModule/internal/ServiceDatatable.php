@@ -36,24 +36,31 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use \Centreon\Internal\Datatable\Datasource\CentreonDb,
+    \CentreonConfiguration\Repository\ServiceRepository,
+    \CentreonConfiguration\Repository\HostRepository,
+    \CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository,
+    \Centreon\Internal\Di;
 
 /**
  * Description of ServiceDatatable
  *
  * @author lionel
  */
-class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ServiceDatatable extends \Centreon\Internal\Datatable
 {
     /**
      *
      * @var array 
      */
     protected static $configuration = array(
-        'autowidth' => true,
+        'autowidth' => false,
         'order' => array(
             array('host_name', 'asc'),
             array('service_description', 'asc')
+        ),
+        'searchCols' => array(
+            'service_activate' => '1',
         ),
         'stateSave' => true,
         'paging' => true,
@@ -77,13 +84,13 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allService' class='allService' type='checkbox'>",
             'name' => 'service_id',
             'data' => 'service_id',
             'orderable' => false,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(
@@ -92,14 +99,15 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::service_description::'
                 )
             ),
-            'className' => 'datatable-align-center'
+            'className' => 'cell_center',
+            'width' => "20px"
         ),
         array (
             'title' => 'Host Id',
             'name' => 'host_id',
             'data' => 'host_id',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => false,
             'source' => 'relation',
@@ -152,6 +160,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
             'title' => 'Retry',
@@ -161,15 +171,19 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
-            'title' => 'Max atp',
+            'title' => 'Atp',
             'name' => 'service_max_check_attempts',
             'data' => 'service_max_check_attempts',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
             'title' => 'Notifications',
@@ -186,7 +200,9 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     '1' => '<span class="label label-success">Enabled</span>',
                     '2' => '<span class="label label-info">Default</span>',
                 )
-            )
+            ),
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
             'title' => 'Parent Template',
@@ -213,12 +229,16 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     '2' => '<span class="label label-warning">Trash</span>',
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0',
+                    'Trash' => '2'
+                )
+            ),
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
     );
     
@@ -249,51 +269,42 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
+                $myServiceSet['host_name'] = '<span data-overlay-url="/configuration/host/snapshot/'.
+                    $myServiceSet['host_id'].
+                    '"><span class="overlay">'.
+                    HostRepository::getIconImage(
                     $myServiceSet['host_name']
-                ).'&nbsp;'.$myServiceSet['host_name'];
+                ).'&nbsp;'.$myServiceSet['host_name'].
+                '</span></span>';
             }
-            
+                        
             // Set Scheduling
-            $myServiceSet['service_normal_check_interval'] = \CentreonConfiguration\Repository\ServiceRepository::formatNotificationOptions(
-                \CentreonConfiguration\Repository\ServiceRepository::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
+            $myServiceSet['service_normal_check_interval'] = ServiceRepository::formatNotificationOptions(
+                ServiceRepository::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
             );
-            $myServiceSet['service_retry_check_interval'] = \CentreonConfiguration\Repository\ServiceRepository::formatNotificationOptions(
-                \CentreonConfiguration\Repository\ServiceRepository::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
+            $myServiceSet['service_retry_check_interval'] = ServiceRepository::formatNotificationOptions(
+                ServiceRepository::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
             );
-            $myServiceSet['service_max_check_attempts'] = \CentreonConfiguration\Repository\ServiceRepository::getMyServiceField(
+            $myServiceSet['service_max_check_attempts'] = ServiceRepository::getMyServiceField(
                 $myServiceSet['service_id'],
                 'service_max_check_attempts'
             );
-            $myServiceSet['service_notifications'] = \CentreonConfiguration\Repository\ServiceRepository::getNotificicationsStatus($myServiceSet['service_id']);
+            $myServiceSet['service_notifications'] = ServiceRepository::getNotificicationsStatus($myServiceSet['service_id']);
             
             // Get Real Service Description
             if (!$myServiceSet["service_description"]) {
-                $myServiceSet["service_description"] = \CentreonConfiguration\Repository\ServiceRepository::getMyServiceAlias(
+                $myServiceSet["service_description"] = ServiceRepository::getMyServiceAlias(
                     $myServiceSet['service_template_model_stm_id']
-                );
-            } else {
-                $myServiceSet["service_description"] = str_replace(
-                    '#S#',
-                    "/",
-                    $myServiceSet["service_description"]
-                );
-                $myServiceSet["service_description"] = str_replace(
-                    '#BS#',
-                    "\\",
-                    $myServiceSet["service_description"]
                 );
             }
             
             // Set Tpl Chain
             $tplStr = null;
-            $tplArr = \CentreonConfiguration\Repository\ServiceRepository::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
-            $tplArr['description'] = str_replace('#S#', "/", $tplArr['description']);
-            $tplArr['description'] = str_replace('#BS#', "\\", $tplArr['description']);
+            $tplArr = ServiceRepository::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
             $tplRoute = str_replace(
                 "//",
                 "/",
-                \Centreon\Internal\Di::getDefault()
+                Di::getDefault()
                     ->get('router')
                     ->getPathFor(
                         '/configuration/servicetemplate/[i:id]',
@@ -301,12 +312,27 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     )
             );
             
-            $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";
+            $tplStr .= '<span data-overlay-url="/configuration/servicetemplate/viewconf/'.
+                $myServiceSet['service_template_model_stm_id'].
+                '"><a href="'.
+                $tplRoute.
+                '" class="overlay">'.
+                $tplArr['description'].
+                '</a></span>';
             
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
             
-            $myServiceSet['service_description'] = \CentreonConfiguration\Repository\ServiceRepository::getIconImage($myServiceSet['service_id']).
-                '&nbsp;'.$myServiceSet['service_description'];
+            $myServiceSet['service_description'] = '<span data-overlay-url="/configuration/service/snapshot/'.
+                $myServiceSet['service_id'].
+                '"><span class="overlay">'.
+                ServiceRepository::getIconImage($myServiceSet['service_id']).
+                '&nbsp;'.
+                $myServiceSet['service_description'].
+                '</span></span>';
+            $myServiceSet['service_description'] .= '</a><a href="#" data-overlay-url="/realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip">';
+            $myServiceSet['service_description'] .= ServiceRealTimeRepository::getStatusBadge(
+                ServiceRealTimeRepository::getStatus($myServiceSet["host_id"], $myServiceSet["service_id"])
+            );
             
             $myServiceSet['service_activate'] = $save;
         }

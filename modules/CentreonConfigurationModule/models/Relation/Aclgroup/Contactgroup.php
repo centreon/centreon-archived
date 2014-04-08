@@ -37,7 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Aclgroup;
 
-class Contactgroup extends \CentreonConfiguration\Models\Relation
+use \Centreon\Models\CentreonRelationModel;
+
+class Contactgroup extends CentreonRelationModel
 {
     protected static $relationTable = "acl_group_contactgroups_relations";
     protected static $firstKey = "acl_group_id";

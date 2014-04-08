@@ -89,6 +89,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             ->addJs('jquery.select2/select2.min.js')
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
+            ->addJs('centreon.search.js')
             ->addJs('centreon-wizard.js');
 
         /* Set Cookie */
@@ -308,13 +309,17 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
                         $arr = explode(',', $givenParameters[$k]);
                         $db->beginTransaction();
                         foreach ($arr as $relId) {
-                            if (!is_numeric($relId)) {
-                                continue;
-                            }
-                            if ($rel::$firstObject == $this->objectClass) {
-                                $rel::insert($id, $relId);
-                            } else {
-                                $rel::insert($relId, $id);
+                            if (is_numeric($relId)) {
+                                if ($rel::$firstObject == $this->objectClass) {
+                                    $rel::insert($id, $relId);
+                                } else {
+                                    $rel::insert($relId, $id);
+                                }
+                            } elseif (!empty($relId)) {
+                                $complexeRelId = explode('_', $relId);
+                                if ($rel::$firstObject == $this->objectClass) {
+                                    $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
+                                }
                             }
                         }
                         $db->commit();

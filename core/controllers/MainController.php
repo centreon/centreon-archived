@@ -45,9 +45,9 @@ class MainController extends \Centreon\Internal\Controller
      */
     public function indexAction()
     {
-        echo "Alors, au final, la bête fut vaincue et les infidèles se réjouirent.<br />"
-        . "Mais tout n'était pas perdu, car des cendres s'éleva un majestueux oiseau.<br />"
-            . "L'oiseau scruta les infidèles et lança sur eux le feu et le tonnerre.<br />"
-            . "Dès lors que la bête fut réincarnée et sa puissance renouvelée, les disciples de Mammon se tapirent dans l'horreur.";
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        $backUrl = $router->getPathFor('/customview');
+        $router->response()->redirect($backUrl, 200);
     }
 }

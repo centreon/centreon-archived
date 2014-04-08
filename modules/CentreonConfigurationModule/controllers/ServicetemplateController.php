@@ -90,24 +90,36 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
      * Update a servicetemplate
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/servicetemplate/update
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
      * Add a service template
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/servicetemplate/add
      */
     public function createAction()
     {
         parent::createAction();
+    }
+    
+    /**
+     * Add a servicetemplate
+     *
+     * @method get
+     * @route /configuration/servicetemplate/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/servicetemplate/add');
+        parent::addAction();
     }
     
     /**
@@ -316,5 +328,18 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     public function serviceTemplateForServiceTemplateAction()
     {
         parent::getSimpleRelation('service_template_model_stm_id', '\CentreonConfiguration\Models\Servicetemplate');
+    }
+
+    /**
+     * Display service template configuration in a popin window
+     *
+     * @method get
+     * @route /configuration/servicetemplate/viewconf/[i:id]
+     */
+    public function displayConfAction()
+    {
+        $params = $this->getParams();
+        $this->tpl->assign('id', $params['id']);
+        $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
     }
 }

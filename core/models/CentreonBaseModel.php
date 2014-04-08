@@ -360,6 +360,64 @@ abstract class CentreonBaseModel
     }
     
     /**
+     * List all objects with all their parameters
+     * Data heavy, use with as many parameters as possible
+     * in order to limit it
+     *
+     * @param mixed $parameterNames
+     * @param int $count
+     * @param int $offset
+     * @param string $order
+     * @param string $sort
+     * @param array $filters
+     * @param string $filterType
+     * @return array
+     * @throws Exception
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        if ($filterType != "OR" && $filterType != "AND") {
+            throw new Exception('Unknown filter type');
+        }
+        if (is_array($parameterNames)) {
+            $params = implode(",", $parameterNames);
+        } else {
+            $params = $parameterNames;
+        }
+        $sql = "SELECT $params FROM " . static::$table;
+        $filterTab = array();
+        if (count($filters)) {
+            foreach ($filters as $key => $rawvalue) {
+                if (!count($filterTab)) {
+                    $sql .= " WHERE $key LIKE ? ";
+                } else {
+                    $sql .= " $filterType $key LIKE ? ";
+                }
+                $value = trim($rawvalue);
+                $value = str_replace("\\", "\\\\", $value);
+                $value = str_replace("_", "\_", $value);
+                $value = str_replace(" ", "\ ", $value);
+                $filterTab[] = '%'.$value.'%';
+            }
+        }
+        if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
+            $sql .= " ORDER BY $order $sort ";
+        }
+        if (isset($count) && $count != -1) {
+            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $sql = $db->limit($sql, $count, $offset);
+        }
+        return static::getResult($sql, $filterTab, "fetchAll");
+    }
+    
+    /**
      * 
      * @param type $id
      * @param type $parameterNames

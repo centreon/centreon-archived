@@ -35,15 +35,17 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Host;
-use \CentreonConfiguration\Models\Relation\Host\Contact;
-use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
-use \CentreonConfiguration\Models\Relation\Host\Hostchild;
-use \CentreonConfiguration\Models\Relation\Host\Hostparent;
-use \CentreonConfiguration\Models\Relation\Host\Poller;
-use \CentreonConfiguration\Models\Timeperiod;
-use \CentreonConfiguration\Models\Command;
-use CentreonConfiguration\Internal\HostDatatable;
+use \Centreon\Internal\Di,
+    \CentreonConfiguration\Models\Host,
+    \CentreonConfiguration\Models\Relation\Host\Contact,
+    \CentreonConfiguration\Models\Relation\Host\Contactgroup,
+    \CentreonConfiguration\Models\Relation\Host\Hostchild,
+    \CentreonConfiguration\Models\Relation\Host\Hostparent,
+    \CentreonConfiguration\Models\Relation\Host\Poller,
+    \CentreonConfiguration\Models\Timeperiod,
+    \CentreonConfiguration\Models\Command,
+    \CentreonConfiguration\Internal\HostDatatable,
+    \CentreonConfiguration\Repository\HostRepository;
 
 class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -73,6 +75,10 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function listAction()
     {
+        $this->tpl->addJs('centreon.overlay.js')
+            ->addJs('jquery.qtip.min.js')
+            ->addCss('jquery.qtip.min.css')
+            ->addCss('centreon.qtip.css');
         parent::listAction();
     }
     
@@ -93,7 +99,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function datatableAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
@@ -134,7 +140,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $givenParameters = $this->getParams('post');
         parent::updateAction();
         if ($givenParameters['host_create_services_from_template']) {
-            \CentreonConfiguration\Models\Host::deployServices($givenParameters['object_id']);
+            Host::deployServices($givenParameters['object_id']);
         }
     }
     
@@ -450,5 +456,22 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function disableAction()
     {
         parent::disableAction('host_activate');
+    }
+
+    /**
+     * Display the configuration snapshot of a host
+     * with template inheritance
+     *
+     * @method get
+     * @route /configuration/host/snapshot/[i:id]
+     */
+    public function snapshotAction()
+    {
+        $params = $this->getParams();
+        $data = HostRepository::getConfigurationData($params['id']);
+        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $this->tpl->assign('checkdata', $checkdata);
+        $this->tpl->assign('notifdata', $notifdata);
+        $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 }

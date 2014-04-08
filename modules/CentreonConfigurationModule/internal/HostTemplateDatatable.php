@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class HostTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
+class HostTemplateDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -71,22 +71,23 @@ class HostTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
-            'title' => 'Id',
+            'title' => "<input id='allHostid' class='allHostid' type='checkbox'>",
             'name' => 'host_id',
             'data' => 'host_id',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            'width' => '5%',
+            'width' => '20px',
             'cast' => array(
                 'type' => 'checkbox',
                 'parameters' => array(
                     'displayName' => '::host_name::'
                 )
-            )
+                            ),
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Name',
@@ -99,7 +100,7 @@ class HostTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/host/[i:id]',
+                    'route' => '/configuration/hosttemplate/[i:id]',
                     'routeParams' => array(
                         'id' => '::host_id::'
                     ),
@@ -123,16 +124,41 @@ class HostTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '50px',
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Retry',
+            'name' => 'host_retry_check_interval',
+            'data' => 'host_retry_check_interval',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'className' => "cell_center"
+        ),
+        array (
+            'title' => 'Atp',
             'name' => 'host_max_check_attempts',
             'data' => 'host_max_check_attempts',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '40px',
+            'className' => "cell_center"
+        ),
+        array (
+            'title' => 'Templates',
+            'name' => 'host_id as host_template',
+            'data' => 'host_template',
+            'orderable' => false,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+            'className' => "cell_center"
         ),
         array (
             'title' => 'Status',
@@ -143,13 +169,15 @@ class HostTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-            'type' => 'select',
-                'parameters' =>array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
-                    '2' => 'Trash',
-                )
-            )
+                            'type' => 'select',
+                            'parameters' => array(
+                                                  '0' => '<span class="label label-danger">Disabled</span>',
+                                                  '1' => '<span class="label label-success">Enabled</span>',
+                                                  '2' => 'Trash',
+                                                  )
+                            ),
+            'className' => "cell_center",
+            'width' => '50px'
         ),
     );
     
@@ -168,9 +196,19 @@ class HostTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+
         foreach ($resultSet as &$myHostSet) {
             $myHostSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage($myHostSet['host_name']).
                 '&nbsp;'.$myHostSet['host_name'];
+            
+            /* Templates */
+            $myHostSet['host_template']  = "";
+            $templates = \CentreonConfiguration\Repository\HosttemplateRepository::getTemplateList($myHostSet['host_id']);
+            foreach ($templates as $template) {
+                $myHostSet['host_template'] .= "<span class='badge alert-success'><a href='".$router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id']))."'><i class='fa ".$template['ico']."'></i></a></span>";
+            } 
+
         }
     }
 }

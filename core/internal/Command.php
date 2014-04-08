@@ -85,8 +85,10 @@ class Command
         $object = ucfirst($requestLineExploded[1] . 'Command');
         $action = $requestLineExploded[2] . 'Action';
         
-        if (!\Centreon\Custom\Module\ModuleInformations::isModuleReachable($module)) {
-            throw new Exception("The module doesn't exist");
+        if (strtolower($module) != 'core') {
+            if (!\Centreon\Custom\Module\ModuleInformations::isModuleReachable($module)) {
+                throw new Exception("The module doesn't exist");
+            }
         }
         
         if (!isset($this->commandList[$object])){
@@ -167,9 +169,10 @@ class Command
         $this->commandList = array();
         
         // First get the Core one
-        $coreCommandsFiles = glob(__DIR__."/../command/*Command.php");
+        $coreCommandsFiles = glob(__DIR__."/../commands/*Command.php");
         foreach ($coreCommandsFiles as $coreCommand) {
-            $this->commandList[$coreCommand] = '\\Centreon\\Commands\\'.basename($coreCommand, '.php');
+            $objectName = basename($coreCommand, '.php');
+            $this->commandList[$objectName] = '\\Centreon\\Commands\\'.$objectName;
         }
         
         // Now lets see the modules

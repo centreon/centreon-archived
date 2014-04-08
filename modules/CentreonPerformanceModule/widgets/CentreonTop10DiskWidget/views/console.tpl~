@@ -1,0 +1,10 @@
+{extends file="file:[Core]widgetLayout.tpl"}
+{block name="content"}
+Top 10 Disk Usage 
+<hr>
+{foreach $data as $key => $item}
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {$item[percent]}%;">{$item[percent]}%</div>
+</div>
+{/foreach}
+{/block}

@@ -34,14 +34,53 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Service;
 
-class Host extends \CentreonConfiguration\Models\Relation
+use \Centreon\Models\CentreonRelationModel;
+
+class Host extends CentreonRelationModel
 {
     protected static $relationTable = "host_service_relation";
     protected static $firstKey = "service_service_id";
     protected static $secondKey = "host_host_id";
     public static $firstObject = "\CentreonConfiguration\Models\Service";
     public static $secondObject = "\CentreonConfiguration\Models\Host";
+    
+    /**
+     * 
+     * @param type $firstTableParams
+     * @param type $secondTableParams
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param type $filters
+     * @param type $filterType
+     * @param type $relationTableParams
+     * @return type
+     */
+    public static function getMergedParametersBySearch(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR",
+        $relationTableParams = array()
+    ) {
+        $filters['service_register'] = '1';
+        return parent::getMergedParametersBySearch(
+            $firstTableParams,
+            $secondTableParams,
+            $count,
+            $offset,
+            $order,
+            $sort,
+            $filters,
+            $filterType,
+            $relationTableParams
+        );
+    }
 }

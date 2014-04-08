@@ -37,13 +37,51 @@
 
 namespace CentreonConfiguration\Models\Relation\Service;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Servicegroup extends Relation
+class Servicegroup extends CentreonRelationModel
 {
     protected static $relationTable = "servicegroup_relation";
     protected static $firstKey = "servicegroup_sg_id";
     protected static $secondKey = "service_service_id";
     public static $firstObject = "\CentreonConfiguration\Models\Servicegroup";
     public static $secondObject = "\CentreonConfiguration\Models\Service";
+    
+    /**
+     * 
+     * @param type $firstTableParams
+     * @param type $secondTableParams
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param type $filters
+     * @param type $filterType
+     * @param type $relationTableParams
+     * @return type
+     */
+    public static function getMergedParametersBySearch(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR",
+        $relationTableParams = array()
+    ) {
+        $filters['service_register'] = '1';
+        return parent::getMergedParametersBySearch(
+            $firstTableParams,
+            $secondTableParams,
+            $count,
+            $offset,
+            $order,
+            $sort,
+            $filters,
+            $filterType,
+            $relationTableParams
+        );
+    }
 }

@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal\Form;
 
+use \Centreon\Internal\Exception;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -100,7 +102,6 @@ class Generator
     /**
      * 
      * @param string $formRoute
-     * @param boolean $advanced
      * @param array $extraParams
      */
     public function __construct($formRoute, $extraParams = array())
@@ -123,7 +124,11 @@ class Generator
         $queryForm = "SELECT form_id, name, redirect, redirect_route FROM form WHERE route = '$this->formRoute'";
         $stmtForm = $dbconn->query($queryForm);
         $formInfo = $stmtForm->fetchAll();
-        
+
+        if (!isset($formInfo[0])) {
+            throw new Exception(sprintf('Could not find form with route %s', $this->formRoute));
+        }
+
         $formId = $formInfo[0]['form_id'];
         $this->formName = $formInfo[0]['name'];
         $this->formRedirect = $formInfo[0]['redirect'];
@@ -209,9 +214,6 @@ class Generator
             default:
                 $this->formHandler->addStatic($field, $this->extraParams);
                 break;
-            case 'textarea':
-                $this->formHandler->addTextarea($field['name'], $field['label']);
-                break;
         }
     }
     
@@ -239,7 +241,7 @@ class Generator
         $formElements = $this->formHandler->toSmarty();
 
         
-        $htmlRendering = '<br><div class="row">';
+        $htmlRendering = '<div class="row">';
         
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
@@ -258,7 +260,7 @@ class Generator
         
         $formRendering = '';
 
-        $tabRendering = '<ul class="nav nav-tabs" id="formHeader">';
+        $tabRendering = '<div class="form-tabs-header"><div class="inline-block"><ul class="nav nav-tabs" id="formHeader">';
         
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
             $tabRendering .= '<li>'
@@ -269,7 +271,7 @@ class Generator
                 .'</a>'
                 . '</li>';
         }
-        $formRendering .= '</ul>';
+        $formRendering .= '</ul></div></div>';
         /*
         $formRendering .= '<div class="tab-content">';
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {

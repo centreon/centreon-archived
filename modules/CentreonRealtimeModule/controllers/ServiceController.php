@@ -75,7 +75,7 @@ class ServiceController extends \Centreon\Internal\Controller
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
-        	->addJs('jquery.dataTables.min.js')
+            ->addJs('jquery.dataTables.min.js')
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
@@ -83,12 +83,14 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('dataTables.bootstrap.js')
-        	->addJs('jquery.select2/select2.min.js')
-        	->addJs('jquery.validate.min.js')
+            ->addJs('jquery.select2/select2.min.js')
+            ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-langs.min.js')
-            ->addJs('daterangepicker.js');
+            ->addJs('daterangepicker.js')
+            ->addJs('centreon.search.js')
+            ->addJs('centreon.overlay.js');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
@@ -149,7 +151,7 @@ class ServiceController extends \Centreon\Internal\Controller
 
         /* Load css */
         $tpl->addCss('dataTables.css')
-        	->addCss('dataTables.bootstrap.css')
+            ->addCss('dataTables.bootstrap.css')
             ->addCss('dataTables-TableTools.css')
             ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')
@@ -157,12 +159,12 @@ class ServiceController extends \Centreon\Internal\Controller
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
-        	->addJs('jquery.dataTables.min.js')
-        	->addJs('jquery.dataTables.TableTools.min.js')
-        	->addJs('bootstrap-dataTables-paging.js')
-        	->addJs('jquery.dataTables.columnFilter.js')
-        	->addJs('jquery.select2/select2.min.js')
-        	->addJs('jquery.validate.min.js')
+            ->addJs('jquery.dataTables.min.js')
+            ->addJs('jquery.dataTables.TableTools.min.js')
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('jquery.select2/select2.min.js')
+            ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-langs.min.js')
@@ -179,12 +181,12 @@ class ServiceController extends \Centreon\Internal\Controller
      * Service tooltip
      *
      * @method get
-     * @route /realtime/service/[i:id]/tooltip
+     * @route /realtime/service/[i:hid]/[i:sid]/tooltip
      */
     public function serviceTooltipAction()
     {
         $params = $this->getParams();
-        $rawdata = ServicedetailRepository::getRealtimeData($params['id']);
+        $rawdata = ServicedetailRepository::getRealtimeData($params['hid'], $params['sid']);
         if (isset($rawdata[0])) {
             $data = $this->transformRawData($rawdata[0]);
             $this->tpl->assign('title', $rawdata[0]['host_name'] . ' - ' . $rawdata[0]['service_description']);
@@ -220,6 +222,12 @@ class ServiceController extends \Centreon\Internal\Controller
                 Status::TYPE_SERVICE, 
                 true
             ) . " (" . ($rawdata['state_type'] ? "HARD" : "SOFT") . ")"
+        );
+
+        /* Command line */
+        $data[] = array(
+            'label' => _('Command line'),
+            'value' => chunk_split($rawdata['command_line'], 80, "<br/>")
         );
 
         /* Output */

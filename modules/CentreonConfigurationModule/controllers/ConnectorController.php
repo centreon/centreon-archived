@@ -35,8 +35,6 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Form;
-
 class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Connector';

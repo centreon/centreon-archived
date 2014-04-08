@@ -37,9 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Host;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Poller extends Relation
+class Poller extends CentreonRelationModel
 {
     protected static $relationTable = "ns_host_relation";
     protected static $firstKey = "nagios_server_id";

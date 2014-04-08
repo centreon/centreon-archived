@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class ManufacturerDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ManufacturerDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -71,7 +71,7 @@ class ManufacturerDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allManufacturerid' class='allManufacturerid' type='checkbox'>",
             'name' => 'id',
@@ -98,7 +98,7 @@ class ManufacturerDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/trap/[i:id]',
+                    'route' => '/configuration/manufacturer/[i:id]',
                     'routeParams' => array(
                         'id' => '::id::'
                     ),

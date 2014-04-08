@@ -35,10 +35,11 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Relation\Host\Contact;
-use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
-use \CentreonConfiguration\Models\Relation\Host\Hostchild;
-use \CentreonConfiguration\Models\Relation\Host\Hostparent;
+use \CentreonConfiguration\Models\Relation\Host\Contact,
+    \CentreonConfiguration\Models\Relation\Host\Contactgroup,
+    \CentreonConfiguration\Models\Relation\Host\Hostchild,
+    \CentreonConfiguration\Models\Relation\Host\Hostparent,
+    \CentreonConfiguration\Repository\HostRepository;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -64,7 +65,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      *
      * @var string 
      */
-    protected $objectClass = '\CentreonConfiguration\Models\Host';
+    protected $objectClass = '\CentreonConfiguration\Models\Hosttemplate';
     
     /**
      *
@@ -488,5 +489,21 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     public function disableAction()
     {
         parent::disableAction('host_activate');
+    }
+
+    /**
+     * Display host template configuration in a popin window
+     *
+     * @method get
+     * @route /configuration/hosttemplate/viewconf/[i:id]
+     */
+    public function displayConfAction()
+    {
+        $params = $this->getParams();
+        $data = HostRepository::getConfigurationData($params['id']);
+        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $this->tpl->assign('checkdata', $checkdata);
+        $this->tpl->assign('notifdata', $notifdata);
+        $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 }

@@ -4,15 +4,66 @@
       "short_name": "administration",
       "icon_class": "fa fa-folder-open",
       "bgcolor": "#FA5858",
-      "menus" : [
+      "menus" : [{
+                "name": "ACL",
+                "short_name": "acl",
+                "menus" : [
+                    {
+                        "name" : "ACL action",
+                        "short_name" : "acl_action",
+                        "route" : "/administration/aclaction"
+                    },
+                    {
+                        "name" : "ACL group",
+                        "short_name" : "acl_group",
+                        "route" : "/administration/aclgroup"
+                    },
+                    {
+                        "name" : "ACL menu",
+                        "short_name" : "acl_menu",
+                        "route" : "/administration/aclmenu"
+                    },
+                    {
+                        "name" : "ACL resource",
+                        "short_name" : "acl_resource",
+                        "route" : "/administration/aclresource"
+                    }
+                ]
+            },
             {
-              "name": "Extensions",
-              "short_name": "extensions",
-              "menus" : [
+                "name": "Extensions",
+                "short_name": "extensions",
+                "menus" : [
                     {
                         "name" : "Modules",
                         "short_name" : "modules",
                         "route" : "/administration/extensions/module"
+                    }
+                ]
+            },
+            {
+                "name": "Options",
+                "short_name": "options",
+                "menus" : [
+                    {
+                        "name" : "Centreon",
+                        "short_name" : "centreon-options",
+                        "route" : "/administration/options/centreon"
+                    },
+                    {
+                        "name" : "Monitoring",
+                        "short_name" : "monitoring-options",
+                        "route" : "/administration/options/monitoring"
+                    },
+                    {
+                        "name" : "Centcore",
+                        "short_name" : "centreon-options",
+                        "route" : "/administration/options/centcore"
+                    },
+                    {
+                        "name" : "RRDTool",
+                        "short_name" : "rrdtool-options",
+                        "route" : "/administration/options/rrdtool"
                     }
                 ]
             }

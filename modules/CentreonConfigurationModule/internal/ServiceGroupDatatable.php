@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class ServiceGroupDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ServiceGroupDatatable extends \Centreon\Internal\Datatable
 {
     /**
      *
@@ -70,7 +70,7 @@ class ServiceGroupDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allServiceGroup' class='allServiceGroup' type='checkbox'>",
             'name' => 'sg_id',

@@ -643,11 +643,12 @@ class CustomviewController extends \Centreon\Internal\Controller
     {
         return 'var jsonPosition = '.$jsonPosition.'
                 var widgets = '.$jsonWidgets.'
-                var w = Math.round($(window).width() / 13);
-                var h = Math.round($(window).height() / 5);
+                var w = Math.ceil($(".content").width() / 6.5);
+                var h = 220;
         
                 var gridster = $(".gridster ul").gridster({
-                    widget_margins: [7, 7],
+                    max_cols: 6,
+                    widget_margins: [3, 3],
                     widget_base_dimensions: [w, h],
                     draggable: {
                         handle: ".portlet-header",

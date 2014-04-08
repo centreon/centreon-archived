@@ -35,6 +35,11 @@
 
 namespace CentreonConfiguration\Repository;
 
+use \CentreonConfiguration\Models\Host,
+    \CentreonConfiguration\Models\Command,
+    \CentreonConfiguration\Models\Timeperiod,
+    \Centreon\Internal\Utils\YesNoDefault;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -42,140 +47,6 @@ namespace CentreonConfiguration\Repository;
  */
 class HostRepository extends \CentreonConfiguration\Repository\Repository
 {
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'host';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Host';
-    
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allHost" class="allHost" type="checkbox">' => 'host_id',
-        'Name' => 'host_name',
-        'Description' => 'host_alias',
-        'IP Address / DNS' => 'host_address',
-        'Interval' => 'host_check_interval', 
-        'Retry' => 'host_max_check_attempts',
-        'Status' => 'host_activate'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'host_id',
-        'host_name',
-        'host_alias',
-        'host_address',
-        'host_check_interval',
-        'host_max_check_attempts',
-        'host_activate'
-    );
-    
-    public static $specificConditions = "host_register = '1' ";
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_description',
-        'search_address',
-        'interval', 
-        'retry',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array(
-        'host_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
-                '2' => 'Trash',
-            )
-        ),
-        'host_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::host_name::'
-            )
-        ),
-        'host_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/host/[i:id]',
-                'routeParams' => array(
-                    'id' => '::host_id::'
-                ),
-                'linkName' => '::host_name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search_name',
-        'search_description',
-        'search_address',
-        'interval', 
-        'retry',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
-        )
-    );
-
-    /**
-     * @see \Centreon\Repository\Repository::$hasCategory
-     */
-    public static $hasCategory = true;
-
-    /**
-     * @see \Centreon\Repository\Repository:$groupname
-     */
-    public static $groupname = 'Hostgroup';
-    
-    /**
-     * 
-     * @param array $resultSet
-     */
-    public static function formatDatas(&$resultSet)
-    {
-        foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = self::getIconImage($myHostSet['host_name']).
-                '&nbsp;'.$myHostSet['host_name'];
-        }
-    }
-    
     /**
      * 
      * @param string $host_name
@@ -383,5 +254,104 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         return $contactgroupList;
     }
 
+    /**
+     * Get configuration data of a host
+     *
+     * @param int $hostId
+     */
+    public static function getConfigurationData($hostId)
+    {
+        return Host::getParameters($hostId, "*");
+    }
 
+    /**
+     * Get object name
+     *
+     * @param string $objectType
+     * @param int $objectId
+     * @return string
+     */
+    protected static function getObjectName($objectType, $objectId)
+    {
+        if ($objectId) {
+            $field = $objectType::getUniqueLabelField();
+            $object = $objectType::getParameters($objectId, $field);
+            if (isset($object[$field])) {
+                return $object[$field];
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Format data so that it can be displayed in tooltip
+     *
+     * @param array $data
+     * @return array array($checkdata, $notifdata)
+     */
+    public static function formatDataForTooltip($data)
+    {
+        /* Check data */
+        $checkdata = array();
+        $checkdata[] = array(
+            'label' => _('Command'),
+            'value' => self::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id'])
+        );
+        $checkdata[] = array(
+            'label' => _('Time period'),
+            'value' => self::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id'])
+        );
+        $checkdata[] = array(
+            'label' => _('Max check attempts'),
+            'value' => $data['host_max_check_attempts']
+        );
+        $checkdata[] = array(
+            'label' => _('Check interval'),
+            'value' => $data['host_check_interval']
+        );
+        $checkdata[] = array(
+            'label' => _('Retry check interval'),
+            'value' => $data['host_retry_check_interval']
+        );
+        $checkdata[] = array(
+            'label' => _('Active checks enabled'),
+            'value' => YesNoDefault::toString($data['host_active_checks_enabled'])
+        );
+        $checkdata[] = array(
+            'label' => _('Passive checks enabled'),
+            'value' => $data['host_passive_checks_enabled']
+        );
+
+        /* Notification data */
+        $notifdata = array();
+        $notifdata[] = array(
+            'label' => _('Notification enabled'),
+            'value' => YesNoDefault::toString($data['host_notifications_enabled'])
+        );
+        $notifdata[] = array(
+            'label' => _('Notification interval'),
+            'value' => $data['host_notification_interval']
+        );
+        $notifdata[] = array(
+            'label' => _('Time period'),
+            'value' => self::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
+        );
+        $notifdata[] = array(
+            'label' => _('Options'),
+            'value' => $data['host_notification_options']
+        );
+        $notifdata[] = array(
+            'label' => _('First notification delay'),
+            'value' => $data['host_first_notification_delay']
+        );
+        $notifdata[] = array(
+            'label' => _('Contacts'),
+            'value' => ''
+        );
+        $notifdata[] = array(
+            'label' => _('Contact groups'),
+            'value' => ''
+        );
+        return array($checkdata, $notifdata);
+    }
 }

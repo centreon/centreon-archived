@@ -44,7 +44,7 @@ use \CentreonConfiguration\Repository\HostRepository as HostConfigurationReposit
  *
  * @author lionel
  */
-class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
+class HostDatatable extends \Centreon\Internal\Datatable
 {
     /**
      *
@@ -71,7 +71,7 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allHost' class='allHost' type='checkbox'>",
             'name' => 'host_id',
@@ -86,7 +86,8 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::name::'
                 )
             ),
-            'className' => 'datatable-align-center'
+            'className' => 'cell_center',
+            'width' => "20px"
         ),
         array (
             'title' => 'Name',
@@ -104,6 +105,25 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                         'id' => '::host_id::'
                     ),
                     'linkName' => '::name::'
+                )
+            )
+        ),
+        array (
+            'title' => 'Address',
+            'name' => 'address',
+            'data' => 'address',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'cast' => array(
+                'type' => 'url',
+                'parameters' => array(
+                    'route' => '/realtime/host/[i:id]',
+                    'routeParams' => array(
+                        'id' => '::host_id::'
+                    ),
+                    'linkName' => '::address::'
                 )
             )
         ),
@@ -132,35 +152,19 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'Critical' => 2,
                 'Unknown' => 3,
                 'Pending' => 4
-            )
+                                    ),
+            'width' => "50px",
+            'className' => 'cell_center'
         ),
-        array (
-            'title' => 'Address',
-            'name' => 'address',
-            'data' => 'address',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'url',
-                'parameters' => array(
-                    'route' => '/realtime/host/[i:id]',
-                    'routeParams' => array(
-                        'id' => '::host_id::'
-                    ),
-                    'linkName' => '::address::'
-                )
-            )
-        ),
-        array (
+        array(
             'title' => 'Last Check',
-            'name' => 'last_check',
+            'name' => '(unix_timestamp(NOW())-last_check) AS last_check',
             'data' => 'last_check',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Duration',
@@ -169,7 +173,8 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Retry',
@@ -178,12 +183,23 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '50px',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Output',
             'name' => 'output',
             'data' => 'output',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+        ),
+        array (
+            'title' => 'Perfdata',
+            'name' => 'perfdata',
+            'data' => 'perfdata',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -218,6 +234,10 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                 ).'&nbsp;&nbsp;'.$myHostSet['name'];
             }
             $myHostSet['duration'] = Datetime::humanReadable($myHostSet['duration'],
+                                                             Datetime::PRECISION_FORMAT,
+                                                             2
+                                                             );
+            $myHostSet['last_check'] = Datetime::humanReadable($myHostSet['last_check'],
                                                              Datetime::PRECISION_FORMAT,
                                                              2
                                                              );

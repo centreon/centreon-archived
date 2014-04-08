@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+  <form name="Engineoptions_form">
+	<route>/administration/options/engine/update</route>
+	<redirect>0</redirect>
+	<redirect_route>/administration/options/engine</redirect_route>
+	<section name="General Parameters">
+      <block name="Scheduling">
+		<field name="interval_length" label="Interval length" default_value="60" advanced="0" type="text" parent_field="" mandatory="0">
+          <help>This is the number of seconds per "unit interval" used for timing in the scheduling queue, re-notifications, etc. "Units intervals" are used in the object configuration file to determine how often to run a service check, how often to re-notify a contact, etc. The default value for this is set to 60, which means that a "unit value" of 1 in the object configuration file will mean 60 seconds (1 minute).</help>
+        </field>
+      </block>
+      <block name="Object Naming">
+		<field name="illegal_macro_output_chars" label="Illegal Macro Output chars" default_value="`~$^&amp;&quot;'|&lt;&gt;" advanced="0" type="text" parent_field="" mandatory="0">
+          <help></help>
+        </field>
+		<field name="illegal_object_name_chars" label="Illegal Object Name Chars" default_value="~!$%^&amp;*&quot;'|&lt;&gt;?,()=" advanced="0" type="text" parent_field="" mandatory="0">
+          <help>Life duration of sessions.</help>
+        </field>
+	  </block>
+    </section>
+  </form>
+</forms>

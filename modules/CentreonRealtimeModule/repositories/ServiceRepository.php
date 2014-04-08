@@ -37,7 +37,8 @@ namespace CentreonRealtime\Repository;
 
 use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
     \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository,
-    \Centreon\Internal\Utils\Datetime;
+    \Centreon\Internal\Utils\Datetime,
+    \Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -239,4 +240,63 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                                                                 ); 
         }
     }
+
+    /**
+     * Get service status
+     *
+     * @param int $host_id
+     * @param int $service_id
+     * @return mixed
+     */
+    public static function getStatus($host_id, $service_id)
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_storage');
+        
+        $stmt = $dbconn->prepare('SELECT last_hard_state as state 
+            FROM services 
+            WHERE service_id = ? 
+            AND host_id = ? 
+            AND enabled = 1 
+            LIMIT 1');
+        $stmt->execute(array($service_id, $host_id));
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return $row['state'];
+        }
+        return -1;
+    }
+
+    /**
+     * Format small badge status
+     *
+     * @param int $status
+     * @return string
+     */
+    public static function getStatusBadge($status) 
+    {
+        switch ($status) {
+            case 0:
+                $status = "label-success";
+                break;
+            case 1:
+                $status = "label-warning";
+                break;
+            case 2:
+                $status = "label-danger";
+                break;
+            case 3:
+                $status = "label-default";
+                break;
+            case 4:
+                $status = "label-info";
+                break;
+            default:
+                $status = "";
+                break;
+        }
+        return "<span class='label $status pull-right overlay'>&nbsp;</span>";
+    }
+
+     
 }

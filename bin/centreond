@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+use warnings;
+use centreon::script::centcore;
+
+centreon::script::centcore->new()->run();
+
+__END__
+
+=head1 NAME
+
+centreond - a daemon to manage pollers.
+
+=head1 SYNOPSIS
+
+centreond [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<centreond> manage pollers: send external commands to poller, update ACL, purge database and launch specific commands (autodiscovery).
+
+=cut
+

@@ -63,8 +63,8 @@ class Datetime
             'm' => array('month', 'months'),
             'd' => array('day', 'days'),
             'h' => array('hour', 'hours'),
-            'i' => array('minute', 'minutes'),
-            's' => array('second', 'seconds')
+            'i' => array('min', 'min'),
+            's' => array('sec', 'sec')
         );
         if (version_compare(phpversion(), '5.4.0', '<')) {
             $dateInterval = new DateInterval($diff);

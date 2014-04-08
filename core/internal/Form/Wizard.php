@@ -65,7 +65,7 @@ class Wizard extends Generator
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $route = str_replace($baseUrl, '/', $route);
 
-        $query = "SELECT w.name as wizard_name, s.name as step_name, s.rank as step_rank, sf.mandatory as mandatory,
+        $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, s.rank as step_rank, sf.mandatory as mandatory,
             sf.rank as field_pos, f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
             FROM form_wizard w, form_step s, form_step_field_relation sf, form_field f
             WHERE w.route = :route
@@ -77,6 +77,16 @@ class Wizard extends Generator
         $stmt->bindParam(':route', $route);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
+            
+            // Get validators
+            $validatorQuery = "SELECT v.action as validator_action, vr.client_side_event as events "
+                        . "FROM form_validator v, form_field_validator_relation vr "
+                        . "WHERE vr.field_id = $row[field_id] "
+                        . "AND vr.validator_id = v.validator_id";
+            $validatorStmt = $dbconn->query($validatorQuery);
+            $row['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
                 $this->formHandler = new \Centreon\Internal\Form($this->formName);

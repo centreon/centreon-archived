@@ -45,7 +45,7 @@ use \CentreonConfiguration\Repository\HostRepository as HostConfigurationReposit
  *
  * @author lionel
  */
-class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ServiceDatatable extends \Centreon\Internal\Datatable
 {
     protected static $hook = 'displayServiceRtColumn';
     protected static $objectId = 'service_id';
@@ -56,7 +56,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
      * @var array 
      */
     protected static $configuration = array(
-        'autowidth' => true,
+        'autowidth' => false,
         'order' => array(
             array('h.name', 'asc'),
             array('s.description', 'asc')
@@ -77,7 +77,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allService' class='allService' type='checkbox'>",
             'name' => 'service_id',
@@ -92,7 +92,9 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::description::'
                 )
             ),
-            'className' => 'datatable-align-center'
+            'className' => 'datatable-align-center', 
+            'width' => '15px',
+            'className' => 'cell_center'
         ),
          array (
             'title' => 'Name',
@@ -121,15 +123,6 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             )
         ),
         array (
-            'title' => "Host id",
-            'name' => 's.host_id',
-            'data' => 'host_id',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false
-        ),
-        array (
             'title' => 'Service',
             'name' => 's.description',
             'data' => 'description',
@@ -140,13 +133,25 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/realtime/service/[i:id]',
+                    'route' => '/realtime/service/[i:hid]/[i:sid]',
                     'routeParams' => array(
-                        'id' => '::service_id::'
+                                           'hid' => '::host_id::',
+                                           'sid' => '::service_id::'
                     ),
                     'linkName' => '::description::'
                 )
             ),
+        ),
+        array (
+            'title' => "",
+            'name' => 's.host_id',
+            'data' => 'ico',
+            'orderable' => false,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+            "width" => '15px',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Status',
@@ -170,17 +175,19 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchvalues' => array(
                 'Enabled' => '1',
                 'Disabled' => '0',
-                'Trash' => '2'
-            )
+                                    ),
+            'width' => '50px',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Last Check',
-            'name' => 's.last_check',
+            'name' => '(unix_timestamp(NOW())-s.last_check) AS last_check',
             'data' => 'last_check',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '10%'
         ),
         array (
             'title' => 'Duration',
@@ -189,7 +196,9 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '10%',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Retry',
@@ -198,12 +207,23 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '25px',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Output',
             'name' => 's.output',
             'data' => 'output',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+        ),
+        array (
+            'title' => 'Perfdata',
+            'name' => 's.perfdata',
+            'data' => 'perfdata',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -230,19 +250,25 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
         $previousHost = '';
         foreach ($resultSet as &$myServiceSet) {
             // Set host_name
-            /*if ($myServiceSet['name'] === $previousHost) {
+            if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span class="rt-tooltip">'.
+                $myServiceSet['name'] = '<span data-overlay-url="/realtime/host/'.
+                    $myServiceSet['host_id'].
+                    '/tooltip"><span class="overlay">'.
                     $icon.
-                    '&nbsp;'.$myServiceSet['name'].'</span>';
-            }*/
-/*            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
-            $myServiceSet['description'] = '<span class="rt-tooltip">'.
+                    '&nbsp;'.$myServiceSet['name'].'</span></span>';
+            }
+            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
+            $myServiceSet['description'] = '<span data-overlay-url="/realtime/service/'.
+                $myServiceSet['host_id'].
+                '/'.$myServiceSet['service_id'].
+                '/tooltip"><span class="overlay">'.
                 $icon.
-                '&nbsp;'.$myServiceSet['description'].'</span>';*/
+                '&nbsp;'.$myServiceSet['description'].'</span></span>';
+            $myServiceSet['ico'] = "<i class='fa fa-bar-chart-o'></i>"; 
             $myServiceSet['duration'] = Datetime::humanReadable(
                                                                 $myServiceSet['duration'],
                                                                 Datetime::PRECISION_FORMAT,
@@ -253,6 +279,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                                                                 Datetime::PRECISION_FORMAT,
                                                                 2
                                                                 );
+            //$myServiceSet['last_check'] = date("d/m/Y - H:i:s", $myServiceSet['last_check']);
         }
     }
+
 }

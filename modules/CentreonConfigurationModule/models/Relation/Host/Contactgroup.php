@@ -37,9 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Host;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Contactgroup extends Relation
+class Contactgroup extends CentreonRelationModel
 {
     protected static $relationTable = "contactgroup_host_relation";
     protected static $firstKey = "contactgroup_cg_id";

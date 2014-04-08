@@ -37,9 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Hosttemplate;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Hostcategory extends Relation
+class Hostcategory extends CentreonRelationModel
 {
     protected static $relationTable = "hostcategories_relation";
     protected static $firstKey = "hostcategories_hc_id";

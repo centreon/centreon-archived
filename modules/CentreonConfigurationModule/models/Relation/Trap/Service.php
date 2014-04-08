@@ -37,7 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Trap;
 
-class Service extends \CentreonConfiguration\Models\Relation
+use \Centreon\Models\CentreonRelationModel;
+
+class Service extends CentreonRelationModel
 {
     protected static $relationTable = "traps_service_relation";
     protected static $firstKey = "traps_id";

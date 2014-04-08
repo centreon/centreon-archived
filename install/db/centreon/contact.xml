@@ -21,12 +21,12 @@
         <column name="contact_comment" phpName="ContactComment" type="LONGVARCHAR" required="false"/>
         <column name="contact_js_effects" phpName="ContactJsEffects" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
         <column name="contact_location" phpName="ContactLocation" type="INTEGER" required="false" defaultValue="0"/>
-        <column name="contact_oreon" phpName="ContactOreon" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="contact_oreon" phpName="ContactOreon" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
         <column name="contact_enable_notifications" phpName="ContactEnableNotifications" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="contact_template_id" phpName="ContactTemplateId" type="INTEGER" required="false"/>
         <column name="contact_admin" phpName="ContactAdmin" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
         <column name="contact_type_msg" phpName="ContactTypeMsg" type="CHAR" sqlType="enum('txt','html','pdf')" required="false" defaultValue="txt"/>
-        <column name="contact_activate" phpName="ContactActivate" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="contact_activate" phpName="ContactActivate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
         <column name="contact_auth_type" phpName="ContactAuthType" type="VARCHAR" size="255" required="false" defaultValue=""/>
         <column name="contact_ldap_dn" phpName="ContactLdapDn" type="LONGVARCHAR" required="false"/>
         <column name="ar_id" phpName="ArId" type="INTEGER" required="false"/>

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -43,7 +42,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class HostGroupDatatable extends \Centreon\Internal\ExperimentalDatatable
+class HostGroupDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -71,9 +70,9 @@ class HostGroupDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
-            'title' => 'Id',
+            'title' => "<input id='allHostid' class='allHostid' type='checkbox'>",
             'name' => 'hg_id',
             'data' => 'hg_id',
             'orderable' => true,
@@ -86,7 +85,9 @@ class HostGroupDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'parameters' => array(
                     'displayName' => '::hg_name::'
                 )
-            )
+                            ),
+            'width' => "20px",
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Name',
@@ -130,7 +131,9 @@ class HostGroupDatatable extends \Centreon\Internal\ExperimentalDatatable
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
                 )
-            )
+            ),
+            'width' => "50px",
+            'className' => 'cell_center'
         ),
     );
     

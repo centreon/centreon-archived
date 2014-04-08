@@ -4,9 +4,9 @@
 
 {block name="content"}
     <div class="content-container">
-        <div class="row">
-            <a id="advanced_mode_switcher" href="#" class="btn btn-default">{t}Switch to advanced mode{/t}</a>
-        </div>
+        <a id="advanced_mode_switcher" href="#" class="btn btn-primary">
+            <i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}
+        </a>
         {$form}
     </div>
         
@@ -22,20 +22,21 @@
     <script>
         function hideEmptyBlocks()
         {
-            $(".panel .panel-body").each(function(i, v) {
+            $(".panel-body").each(function(i, v) {
+                
                 var $myFormGroupLength = $(v).children(".form-group").length;
                 var $hidden = 0;
 
                 $(v).children(".form-group").each(function(j, w) {
-                  if ($(w).css("display") === "none") {
-                      $hidden += 1;
-                  }
+                    if ($(w).css("display") === "none") {
+                        $hidden += 1;
+                    }
                 });
-
+                
                 if ($myFormGroupLength === $hidden) {
-                  $(v).parent().css("display", "none");
+                    $(v).prev().css("display", "none");
                 } else {
-                  $(v).parent().css("display", "block");
+                    $(v).prev().css("display", "block");
                 }
             });
         }
@@ -47,9 +48,9 @@
         $("#advanced_mode_switcher").on("click", function (event) {
             $(".advanced").toggleClass("advanced-display");
             if ($(".advanced").hasClass('advanced-display')) {
-                $(this).text("{t}Switch to advanced mode{/t}");
+                $(this).html('<i class="fa fa-gear"></i> {t}Switch to Simple mode{/t}');
             } else {
-                $(this).text("{t}Switch to simple mode{/t}");
+                $(this).html('<i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}');
             }
             hideEmptyBlocks();
         });
@@ -95,6 +96,9 @@
         
         $(function () {
             $('#formHeader a:first').tab('show');
+            $("#formHeader").parent().after(
+                $('<div class="pull-right inline-block"></div>').append($("#advanced_mode_switcher"))
+            );
         });
     </script>
 {/block}

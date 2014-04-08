@@ -41,5 +41,5 @@ namespace Centreon\Internal\Datatable\Dataprovider;
  */
 interface iDataprovider
 {
-    public static function loadDatas($params, array $columns, array $specialFields, $modelClass = '');
+    public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '');
 }

@@ -1,4 +1,6 @@
 <script>
+    var oTable;
+
     $(document).ready(function() {
 
         /* Remove the label next to pagination dropdown */
@@ -8,7 +10,7 @@
             $("#datatable{$object}_length").append($(".configuration-actions"));
         });
 
-        var oTable = $('#datatable{$object}').dataTable({
+        oTable = $('#datatable{$object}').dataTable({
             "bProcessing": true,
             "sAjaxSource": "{url_for url=$objectUrl}",
             "bStateSave": false,
@@ -48,13 +50,12 @@
             $(labelToRemove).hide();
             $("#datatable{$object}_length").append($(".configuration-actions"));
             $(".configuration-actions").show();
-            new $.fn.dataTable.FixedHeader(oTable);
         }); 
 
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
         setInterval(function () { 
-                oTable.fnDraw(false);
+            oTable.api().ajax.reload(null, false);
         }, 60000);
 
         function toggleSelectedAction() {
@@ -71,16 +72,7 @@
                 $('#selected_option').hide();
             }
         }
-
-        $(".search_field").keyup(function() {
-            row = $(this).parent().parent().children().index($(this).parent());
-            oTable.fnFilter(this.value, row);
-        });
-
-        $(".search_type").change(function() {
-            oTable.fnFilter(this.value, jQuery(".search_type").index(this));
-        });
-
+        
         $('table[id^="datatable"] thead input[id^="all"]').on('click', function(e) {
             var $checkbox = $(e.currentTarget);
             $checkbox.parents('table').find('tbody input[type="checkbox"][class^="all"]').each(function() {
@@ -167,7 +159,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -255,7 +247,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully duplicated{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -352,7 +344,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The changes have been applied{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -451,7 +443,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully Enabled{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -524,7 +516,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully Disabled{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -539,10 +531,62 @@
         });
         {/if}
 
-/*        new $.fn.dataTable.FixedColumns( oTable );
-        $(window).bind('resize', function () {
-            oTable.fnAdjustColumnSizing();
-        });*/
+        var requestSent = true;
+        $('input.centreon-search').on('keyup', function(e) {
+            if (this.value.length > 2) {
+                oTable.api().column($(this).data('column-index'))
+                    .search(this.value)
+                    .draw();
+                requestSent = false;
+            } else {
+                if (!requestSent) {
+                    oTable.api().column($(this).data('column-index'))
+                        .search(' ')
+                        .draw();
+                    requestSent = true;
+                }
+            }
+        });
+        
+        $('select.centreon-search').on('change', function(e) {
+            oTable.api().column($(this).data('column-index'))
+                .search(this.value)
+                .draw();
+        });
+
+        $("input[name='advsearch']").centreonsearch({
+            minChars: 2,
+            tags: {
+            {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
+                {if $colSearch['type'] == 'select'}
+                    {$fieldname="select[name='$colName']"}
+                {else}
+                    {$fieldname="input[name='$colName']"}
+                {/if}
+                "{$colName}": "{$fieldname}",
+            {/foreach}
+            },
+            associateFields: {
+            {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
+                {if $colSearch['type'] == 'select'}
+                    {$fieldname="select[name='$colName']"}
+                {else}
+                    {$fieldname="input[name='$colName']"}
+                {/if}
+                "{$colName}": "{$fieldname}",
+            {/foreach}
+            }
+        });
+
+        $("#btnSearch").on("click", function(e) {
+            $("input[name='advsearch']").centreonsearch("fillAssociateFields");
+            e.preventDefault();
+            $('.centreon-search').each(function(idx, element) {
+                oTable.api().column($(element).data('column-index'))
+                    .search($(element).val());
+            });
+            oTable.api().draw();
+        });
     });
     
     

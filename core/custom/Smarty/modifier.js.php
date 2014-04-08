@@ -44,9 +44,6 @@
  * -------------------------------------------------------------
  */
 function smarty_modifier_js($jsFile) {
-    $di = \Centreon\Internal\Di::getDefault();
-    $config = $di->get('config');
-    $baseUrl = rtrim($config->get('global','base_url'), '/').'/static/centreon/js/';
-    $jsIncludeLine = '<script src="'.$baseUrl.$jsFile.'"></script>';
+    $jsIncludeLine = '<script src="'.$jsFile.'"></script>';
     return $jsIncludeLine;
 }

@@ -37,7 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Aclgroup;
 
-class Aclaction extends \CentreonConfiguration\Models\Relation
+use \Centreon\Models\CentreonRelationModel;
+
+class Aclaction extends CentreonRelationModel
 {
     protected static $relationTable = "acl_group_actions_relations";
     protected static $firstKey = "acl_group_id";

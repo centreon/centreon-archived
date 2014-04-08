@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
+class CommandDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -58,7 +58,7 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
      * @var array 
      */
     protected static $configuration = array(
-        'autowidth' => true,
+        'autowidth' => false,
         'order' => array(
             array('command_name', 'asc'),
             array('command_id', 'asc')
@@ -71,7 +71,7 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allCommandid' class='allCommandid' type='checkbox'>",
             'name' => 'command_id',
@@ -86,7 +86,9 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'parameters' => array(
                     'displayName' => '::command_name::'
                 )
-            )
+            ),
+            "className" => 'cell_center',
+            "width" => "20px"
         ),
         array (
             'title' => 'Name',
@@ -127,12 +129,15 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
-                    '1' => 'Notifications',
-                    '2' => 'Check',
-                    '3' => 'Miscelleanous',
-                    '4' => 'Discovery',
+                                      '1' => '<span class="label label-info">Notifications</span>',
+                                      '2' => '<span class="label label-info">Check</span>',
+                                      '3' => '<span class="label label-info">Miscelleanous</span>',
+                                      '4' => '<span class="label label-info">Discovery</span>',
                 )
-            )
+                            ),
+            "className" => 'cell_center',
+            'width' => "40px"
+            
         ),
         array (
             'title' => 'Host use',
@@ -142,6 +147,8 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            'width' => "50px"
         ),
         array (
             'title' => 'Service use',
@@ -151,6 +158,8 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            'width' => "50px"
         ),
     );
     
@@ -170,6 +179,7 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
     public function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myCmdSet) {
+            $myCmdSet['command_line'] = sprintf('%.70s', $myCmdSet['command_line'])."...";
             $myCmdSet['host_use'] = \CentreonConfiguration\Repository\CommandRepository::getUseNumber($myCmdSet["command_id"], "host");
             $myCmdSet['svc_use'] =  \CentreonConfiguration\Repository\CommandRepository::getUseNumber($myCmdSet["command_id"], "service");
         }
