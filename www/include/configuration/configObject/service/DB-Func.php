@@ -76,8 +76,8 @@ if (!isset($oreon) && !isset($centreon)) {
  	    $macArray = $_POST;
 	    $macTab = array();
 		foreach ($macArray as $key => $value) {
-		    if (preg_match('/^macroInput/', $key, $matches)) {
-			    $macTab[] = "'\$_SERVICE".strtoupper($value)."\$'";
+		    if (isset($value) && is_string($value) && preg_match('/^macroInput/', $key, $matches)) {
+                $macTab[] = "'\$_SERVICE".strtoupper($value)."\$'";
 			}
         }
         if (count($macTab)) {
@@ -1201,9 +1201,8 @@ function divideHostsToHost($service_id) {
 		/*
 		 * Update demand macros
 		 */
-		if (isset($_REQUEST['macroInput']) && 
-            isset($_REQUEST['macroValue'])) {
-            $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword']);
+		if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
+            $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], (!isset($_REQUEST['macroPassword']) ? 0 : $_REQUEST['macroPassword']));
         } else {
             $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".CentreonDB::escape($service_id)."'");
         }
