@@ -33,7 +33,7 @@
  *
  */
 
-namespace Centreon\Repository\EventlogsRepository;
+namespace CentreonRealtime\Repository\EventlogsRepository;
 
 /**
  * Factory for Eventlogs

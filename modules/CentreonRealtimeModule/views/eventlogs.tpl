@@ -1,4 +1,4 @@
-{extends file="../viewLayout.tpl"}
+{extends file="file:[Core]viewLayout.tpl"}
 
 {block name="title"}{t}Event Logs{/t}{/block}
 

@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Controllers\Realtime;
+namespace CentreonRealtime\Controllers;
 
 /**
  * Display the logs of nagios
@@ -41,7 +41,7 @@ namespace Controllers\Realtime;
  * @package Centreon
  * @subpackage Controllers
  */
-class EventlogsController extends \Centreon\Core\Controller
+class EventlogsController extends \Centreon\Internal\Controller
 {
     /**
      * The page structure for display
@@ -51,7 +51,7 @@ class EventlogsController extends \Centreon\Core\Controller
      */
     public function displayAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
 
         $tmpl = $di->get('template');
         $tmpl->addJs('moment-with-langs.min.js');
@@ -61,7 +61,7 @@ class EventlogsController extends \Centreon\Core\Controller
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
-        $tmpl->display('realtime/eventlogs.tpl');
+        $tmpl->display('file:[CentreonRealtime]eventlogs.tpl');
     }
 
     /**
@@ -72,7 +72,7 @@ class EventlogsController extends \Centreon\Core\Controller
      */
     public function getListEventAction()
     {
-        $router = \Centreon\Core\Di::getDefault()->get('router');
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
         $filters = $params->all();
 
@@ -83,7 +83,7 @@ class EventlogsController extends \Centreon\Core\Controller
         if (isset($params['startTime'])) {
             unset($filters['startTime']);
         }
-        $listEvents = \Centreon\Repository\EventlogsRepository::getEventLogs(
+        $listEvents = \CentreonRealtime\Repository\EventlogsRepository::getEventLogs(
             $fromTime,
             'DESC',
             20,
@@ -114,13 +114,13 @@ class EventlogsController extends \Centreon\Core\Controller
      */
     public function refreshNewEventLogsAction()
     {
-        $router = \Centreon\Core\Di::getDefault()->get('router');
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
         $filters = $params->all();
         if (isset($params['startTime'])) {
             unset($filters['startTime']);
         }
-        $listEvents = \Centreon\Repository\EventlogsRepository::getEventLogs(
+        $listEvents = \CentreonRealtime\Repository\EventlogsRepository::getEventLogs(
             $params['startTime'],
             'ASC',
             null,

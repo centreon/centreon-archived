@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonRealtime\Repository;
 
 /**
  * Factory for Eventlogs
@@ -58,14 +58,14 @@ class EventlogsRepository
         /* Get configuration */
         $storageType = 'db';
         if ($storageType == 'db') {
-            return \Centreon\Repository\EventlogsRepository\Database::getEventLogs(
+            return \CentreonRealtime\Repository\EventlogsRepository\Database::getEventLogs(
                 $fromTime,
                 $order,
                 $limit,
                 $filters
             );
         } elseif ($storageType == 'es') {
-            return \Centreon\Repository\EventlogsRepository\ElasticSearch::getEventLogs(
+            return \CentreonRealtime\Repository\EventlogsRepository\ElasticSearch::getEventLogs(
                 $fromTime,
                 $order,
                 $limit,
