@@ -82,11 +82,20 @@ class Router extends \Klein\Klein
             $controllersList[] = '\\Centreon\\Controllers\\'.basename($coreController, '.php');
         }
         
+        $coreApiFiles = glob(__DIR__."/../api/rest/*Api.php");
+        foreach ($coreApiFiles as $coreApi) {
+            $controllersList[] = '\\Centreon\\Api\\Rest\\'.basename($coreApi, '.php');
+        }
+        
         // Now lets see the modules
         foreach ($modules as $module) {
             $myModuleControllersFiles = glob(__DIR__."/../../modules/$module/controllers/*Controller.php");
             foreach ($myModuleControllersFiles as $moduleController) {
                 $controllersList[] = '\\'.str_replace('Module', '', $module).'\\Controllers\\'.basename($moduleController, '.php');
+            }
+            $myModuleApiFiles = glob(__DIR__."/../../modules/$module/api/rest/*Api.php");
+            foreach ($myModuleApiFiles as $moduleApi) {
+                $controllersList[] = '\\'.str_replace('Module', '', $module).'\\Api\\Rest\\'.basename($moduleApi, '.php');
             }
         }
         

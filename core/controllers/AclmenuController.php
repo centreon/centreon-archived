@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonAdministration\Controllers;
+namespace Centreon\Controllers;
 
 use \Centreon\Internal\Form;
 

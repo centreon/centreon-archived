@@ -84,6 +84,19 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
         case 'repository':
             $filename .= '/repositories/'.  implode('/', $fullClassPath);
             break;
+        case 'internal':
+            $filename .= '/internal/'.  implode('/', $fullClassPath);
+            break;
+        case 'api':
+            $thirdScope = array_shift($fullClassPath);
+            if (strtolower($thirdScope) === 'internal') {
+                $filename .= '/api/internal/'.  implode('/', $fullClassPath);
+            } elseif (strtolower($thirdScope) === 'rest') {
+                $filename .= '/api/rest/'.  implode('/', $fullClassPath);
+            } elseif (strtolower($thirdScope) === 'soap') {
+                $filename .= '/api/soap/'.  implode('/', $fullClassPath);
+            }
+            break;
     }
     
     $filename .= '.php';
@@ -91,23 +104,6 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
         require_once $filename;
     }
 });
-
-/*spl_autoload_register(function ($classname) use ($centreon_path) {
-    $filename = $centreon_path;
-    $fullClassPath = explode('\\', $classname);
-    
-    $mainScope = array_shift($fullClassPath);
-    if ($mainScope == 'Centreon') {
-        if ($fullClassPath[0] === 'Controllers') {
-            $filename .= '/core/controllers' .  implode('/', $fullClassPath);
-        }
-    }
-    
-    $filename .= '.php';
-    if (file_exists($filename)) {
-        require_once $filename;
-    }
-});*/
 
 foreach (glob($centreon_path.'/core/custom/Centreon/*.php') as $filename) {
     require_once $filename;
