@@ -192,7 +192,7 @@ sub insertEventTable {
             
     my $count = 0;
     my ($hostName, $serviceDescription) = split (";;", $id);
-    for($count = 0; $count < scalar(@$events) - 1; $count++) {
+    for ($count = 0; $count < scalar(@$events) - 1; $count++) {
         my $tab = $events->[$count];
         my $ack = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostName, $serviceDescription);
         my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].", ".$ack.")";
