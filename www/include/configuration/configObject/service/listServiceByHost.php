@@ -215,7 +215,7 @@
             ($oreon->user->admin ? "" : $acldbname.".centreon_acl acl, ").
             "host_service_relation hsr " .
 	        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
-			"WHERE host.host_register = '1' $searchH_SQL AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
+			"WHERE host.host_register = '1' $searchH_SQL AND host.host_activate = '1' AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
 					"AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
 					((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
                     ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
