@@ -1,9 +1,0 @@
-#!/bin/sh
-#----
-## @Synopsis	Dummy script for gettext
-## @Copyright	Copyright 2008, Guillaume Watteeux
-## @license	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-## Dummy script for gettext. Use when gettext not found on system.
-#----
-
-echo "$*"

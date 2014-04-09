@@ -22,18 +22,6 @@
 		<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" mandatory="1">
           <help>The command line specifies the real command line, that is actually executed by Monitoring engine. Before execution, all valid macros are replaced with their respective values. To use the dollar sign (\$) on the command line, you have to escape it with another dollar sign (\$\$). A semicolon (;) is used as seperator for config file comments and must be worked around by setting a \$USER\$ macro to a semicolon and then referencing it here in place of the semicolon. If you want to pass arguments to commands during runtime, you can use \$ARGn\$ macros in the command line.</help>
         </field>
-		<block name="Commands linked to connector">
-		  <field name="connector_id" label="Connector" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-			<attributes>
-			  <object_type>object</object_type>
-			  <defaultValuesRoute>/configuration/connector/formlist</defaultValuesRoute>
-			  <listValuesRoute>/configuration/command/[i:id]/connector</listValuesRoute>
-			  <multiple>false</multiple>
-			  <ordered>false</ordered>
-			</attributes>
-            <help>Connectors are run in background and execute specific commands without the need to execute a binary, thus enhancing performance. This feature is available in Centreon Engine (>= 1.3)</help>
-		  </field>
-		</block>      
 		<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
 		  <attributes>
             <choices>
@@ -44,6 +32,18 @@
           <help>If your command requires shell features like pipes, redirections, globbing etc. check this box. If you are using Monitoring Engine this option cannot be disabled. Note that commands that require shell are slowing down the poller server.</help>
 		</field>
 	  </block>
+        <block name="Commands linked to connector">
+            <field name="connector_id" label="Connector" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+            <attributes>
+                <object_type>object</object_type>
+                <defaultValuesRoute>/configuration/connector/formlist</defaultValuesRoute>
+                <listValuesRoute>/configuration/command/[i:id]/connector</listValuesRoute>
+                <multiple>false</multiple>
+                <ordered>false</ordered>
+            </attributes>
+            <help>Connectors are run in background and execute specific commands without the need to execute a binary, thus enhancing performance. This feature is available in Centreon Engine (>= 1.3)</help>
+            </field>
+        </block>
 	  <block name="Additional information">
 		<field name="command_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
       </block>

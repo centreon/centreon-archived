@@ -1,5 +1,0 @@
-<?php
-function testRuleNotAppliesToFunctionParameterWithNameSmallerThanThreshold($fooBar)
-{
-    
-}

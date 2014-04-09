@@ -1,5 +1,0 @@
-<?php
-function testArrayGraphForEmptyShortArrayDefinition()
-{
-    return [];
-}
