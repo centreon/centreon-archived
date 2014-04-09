@@ -282,7 +282,7 @@
 	    }
 	    $DBRESULT->free();
 	} else {
-		$DBRESULT = $pearDBO->query("SELECT hostgroup_id, name FROM hostgroups ORDER BY name");
+		$DBRESULT = $pearDBO->query("SELECT hostgroup_id, name FROM hostgroups WHERE enabled = 1 ORDER BY name");
 		$options = "<option value='0'></options>";
 		while ($data = $DBRESULT->fetchRow()) {
 	        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["name"]."</option>";

@@ -64,7 +64,7 @@
 	 */
 	$convertTable = array();
     $convertID = array();
-    $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, alias, name FROM hostgroups");
+    $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, alias, name FROM hostgroups WHERE enabled = 1");
     while ($hg = $DBRESULT->fetchRow()){
 		$convertTable[$hg["name"]] = $hg["alias"];
 	    $convertID[$hg["alias"]] = $hg["hostgroup_id"];
@@ -108,7 +108,8 @@
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
-                "AND h.enabled = 1 ";
+                "AND h.enabled = 1 " . 
+                "AND hg.enabled = 1 " ;
 		if (isset($instance) && $instance > 0) {
 		    $rq1 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
@@ -119,7 +120,8 @@
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
-                "AND h.enabled = 1 ";
+                "AND h.enabled = 1 " . 
+                "AND hg.enabled = 1 " ;
 		if (isset($instance) && $instance > 0) {
 		    $rq1 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
@@ -146,7 +148,8 @@
 					"AND hhg.host_id = h.host_id " .
                     "AND h.enabled = 1 " .
 					"AND h.host_id = s.host_id " .
-                    "AND s.enabled = 1 ";
+                    "AND s.enabled = 1 " . 
+                    "AND hg.enabled = 1 " ;
 			if (isset($instance) && $instance > 0) {
                 $rq2 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 			}
@@ -161,7 +164,8 @@
 				"AND hhg.host_id = h.host_id " .
                 "AND h.enabled = 1 " .
 				"AND h.host_id = s.host_id " .
-                "AND s.enabled = 1 ";
+                "AND s.enabled = 1 " . 
+                "AND hg.enabled = 1 " ;
 	    if (isset($instance) && $instance > 0) {
             $rq2 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}

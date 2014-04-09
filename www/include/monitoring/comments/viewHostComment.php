@@ -137,7 +137,8 @@
         $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%".$pearDBO->escape($host_name)."%'" : "") .
                 (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%".$pearDBO->escape($search_output)."%'" : "");
         if ($hostgroup) {
-             $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id
+             $rq2 .= " AND hg.enabled = 1 
+                       AND hgm.hostgroup_id = hg.hostgroup_id
                        AND hg.name = '".$pearDBO->escape($hostgroup)."'
                        AND hgm.host_id = c.host_id ";
         }

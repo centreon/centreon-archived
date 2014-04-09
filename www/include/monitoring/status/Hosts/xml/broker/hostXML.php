@@ -133,7 +133,7 @@
 		$rq1 .= " centreon_acl, ";
 	}
 	if ($hostgroups) {
-		$rq1 .= " hosts_hostgroups hhg, ";
+		$rq1 .= " hosts_hostgroups hhg, hostgroups hg";
 	}
     if ($criticality_id) {
         $rq1 .= "customvariables cvs, ";
@@ -191,7 +191,7 @@
 	}
 
 	if ($hostgroups) {
-		$rq1 .= " AND h.host_id = hhg.host_id AND hostgroup_id IN ($hostgroups) ";
+		$rq1 .= " AND h.host_id = hhg.host_id AND hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id AND hg.enabled = 1";
 	}
 
 	if ($instance != -1) {

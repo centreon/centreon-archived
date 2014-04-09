@@ -47,8 +47,8 @@
 	 */
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/class/centreonInstance.class.php";
-        include_once $centreon_path . "www/class/centreonCriticality.class.php";
-        include_once $centreon_path . "www/class/centreonMedia.class.php";
+    include_once $centreon_path . "www/class/centreonCriticality.class.php";
+    include_once $centreon_path . "www/class/centreonMedia.class.php";
         
 	/**
 	 * Require commonu Files.
@@ -182,7 +182,7 @@
 				h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull ";
 	$request .= " FROM hosts h, instances i ";
 	if (isset($hostgroups) && $hostgroups != 0) {
-		$request .= ", hosts_hostgroups hg ";
+		$request .= ", hosts_hostgroups hg, hostgroups hg2";
 	}
         if ($criticality_id) {
             $request .= ", customvariables cvs ";
@@ -255,7 +255,7 @@
 	 * HostGroup Filter
 	 */
 	if (isset($hostgroups) && $hostgroups != 0) {
-		$request .= " AND hg.host_id = h.host_id AND hg.hostgroup_id IN (".$hostgroups. ") ";
+		$request .= " AND hg.hostgroup_id = hg2.hostgroup_id AND hg2.enabled = 1 AND hg.host_id = h.host_id AND hg.hostgroup_id IN (".$hostgroups. ") ";
 	}
 
 	/**
