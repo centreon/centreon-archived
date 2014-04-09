@@ -35,16 +35,15 @@
  */
 
 
-namespace CentreonConfiguration\Models\Acl;
+namespace CentreonConfiguration\Models\Relation\Hosttemplate;
 
-/**
- * Used for interacting with Acl Menus
- *
- * @author sylvestre
- */
-class Menu extends \Centreon\Models\CentreonBaseModel
+use \Centreon\Models\CentreonRelationModel;
+
+class Contactgroup extends CentreonRelationModel
 {
-    protected static $table = "acl_menus";
-    protected static $primaryKey = "acl_menu_id";
-    protected static $uniqueLabelField = "name";
+    protected static $relationTable = "contactgroup_host_relation";
+    protected static $firstKey = "contactgroup_cg_id";
+    protected static $secondKey = "host_host_id";
+    public static $firstObject = "\CentreonConfiguration\Models\Contactgroup";
+    public static $secondObject = "\CentreonConfiguration\Models\Hosttemplate";
 }

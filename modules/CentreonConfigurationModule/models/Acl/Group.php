@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models\Acl;
  *
  * @author sylvestre
  */
-class Group extends \CentreonConfiguration\Models\Object
+class Group extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "acl_groups";
     protected static $primaryKey = "acl_group_id";

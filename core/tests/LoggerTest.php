@@ -9,6 +9,11 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     private $config;
     private $datadir;
 
+    public static function setUpBeforeClass()
+    {
+        \Monolog\Registry::clear();
+    }
+
     public function setUp()
     {
         $this->datadir = CENTREON_PATH . '/core/tests/data/';
@@ -19,7 +24,6 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        \Monolog\Registry::clear();
         parent::tearDown();
     }
 

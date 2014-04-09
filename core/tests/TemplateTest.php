@@ -15,6 +15,9 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
         $config = new Config($this->datadir . '/test-template.ini');
         $di = new Di();
         $di->setShared('config', $config);
+        $tpl = new Template(); 
+        $di->setShared('template', $tpl);
+        $tpl->setTemplateDir(CENTREON_PATH . '/core/tests/views/');
         parent::setUp();
     }
 
@@ -25,7 +28,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 
     public function testAddCss()
     {
-        $tpl = new Template();
+        $tpl = Di::getDefault()->get('template');
         $tpl->addCss('styles.css');
         $printedResult = $tpl->fetch('template/testAddCss.tpl');
         $this->assertContains('styles.css', $printedResult);
@@ -33,7 +36,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     
     public function testAddJs()
     {
-        $tpl = new Template();
+        $tpl = Di::getDefault()->get('template');
         $tpl->addJs('jquery.min.js')
             ->addJs('bootstrap.min.js');
         $printedResult = $tpl->fetch('template/testAddJs.tpl');
