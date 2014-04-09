@@ -26,6 +26,9 @@
 					</attributes>
 				</field>
 			</block>
+			<block name="Macros">
+				<field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
+			</block>
 			<block name="Check properties">
 				<field name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
@@ -150,14 +153,6 @@
 		</section>
 		<section name="Relations">
 			<block name="Relations">
-				<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/servicetemplate/[i:id]/host</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
 				<field name="service_template_hosts" label="Linked with host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
@@ -174,9 +169,6 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-			</block>
-			<block name="Macros">
-				<field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
 			</block>
 
 			<block name="SNMP traps">

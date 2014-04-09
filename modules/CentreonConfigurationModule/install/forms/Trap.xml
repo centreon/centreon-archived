@@ -155,7 +155,7 @@
 			<field name="traps_status" mandatory="1"></field>
 		</step>
 		<step name="Relations">
-			<field name="trap_servicetemplates" mandatory="1"></field>
+			<field name="trap_servicetemplates" mandatory="0"></field>
 		</step>
 	</wizard>
 </forms>
