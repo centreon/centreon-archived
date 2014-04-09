@@ -21,7 +21,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="hg_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0"></field>
+				<field name="hg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
 				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>

@@ -12,7 +12,7 @@
                         <validator events="blur">forbiddenChar</validator>
                     </validators>
                 </field>
-				<field name="hc_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="hc_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
@@ -65,6 +65,7 @@
 		</step>
 		<step name="Relations">
 			<field name="hc_hosts" mandatory="0"></field>
+			<field name="hc_hosttemplates" mandatory="0"></field>
 		</step>
 	</wizard>
 </forms>

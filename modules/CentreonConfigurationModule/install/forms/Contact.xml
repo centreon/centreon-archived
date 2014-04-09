@@ -181,6 +181,7 @@
 			<field name="contact_passwd_confirm" mandatory="1"></field>
 			<field name="contact_admin" mandatory="1"></field>
 			<field name="contact_auth_type" mandatory="0"></field>
+			<field name="contact_aclgroups" mandatory="0"></field>
 		</step>
         </wizard>
 </forms>
