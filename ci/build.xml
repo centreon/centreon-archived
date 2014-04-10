@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="centreon" default="build" basedir="..">
-  <target name="build" depends="prepare,lint,phploc,pdepend,phpcs-ci,phpcpd,phpmd-ci,phpunit" />
+  <target name="build" depends="prepare,lint,phploc,pdepend,phpcs-ci,phpcpd,phpmd-ci,phpdoc,phpunit" />
 
   <target name="clean" description="Clean the builds environment">
     <delete dir="${basedir}/build/api"/>
@@ -79,6 +79,22 @@
       <arg value="${basedir}/ci/phpmd.xml" />
       <arg value="--reportfile" />
       <arg value="${basedir}/build/logs/pmd.xml" />
+    </exec>
+  </target>
+
+  <target name="phpdoc" description="Generate API documentation">
+    <exec executable="vendor/bin/phpdoc.php">
+      <arg value="run" />
+      <arg value="-t" />
+      <arg value="${basedir}/build/api/" />
+      <arg value="-d" />
+      <arg value="${basedir}/core" />
+      <arg value="-d" />
+      <arg value="${basedir}/modules" />
+      <arg value="-i" />
+      <arg value="*Test.php" />
+      <arg value="--title='Centreon API'" />
+      <arg value="--template=responsive" />
     </exec>
   </target>
 
