@@ -16,6 +16,18 @@
     this.lastScroll = 0;
     this.newNotSee = 0;
     this.trHeading = "";
+
+    /* Prepare templates */
+    this.templateRows = null;
+    if ( this.settings.templateRows !== "" ) {
+      this.templateRows = Hogan.compile( this.settings.templateRows, { delimiters: "<% %>" } );
+    }
+    this.templateCols = {};
+    if ( this.templateRows === null ) {
+      $.each( this.settings.templateCols, function( idx, tpl ) {
+        $this.templateCols[ idx ] = Hogan.compile( tpl , { delimiters: "<% %>" } );
+      });
+    }
     
     this.$elem.addClass( this.settings.cls );
 
@@ -33,7 +45,9 @@
       var ret = $.grep($(th)[0].classList, function( item ) {
         return regexCls.test(item);
       });
-      classes.push(ret[0]);
+      if ( ret[0] !== undefined ) {
+        classes.push(ret[0]);
+      }
     });
     this.classes = classes;
 
@@ -111,22 +125,35 @@
         data: data,
         dataType: "json",
         success: function( data, statusText, jqXHR ) {
-          if (data.data.length === 0) {
+          if ( data.data.length === 0 ) {
             $this.hasEvent = false;
             $this.loading = false;
 	    $this.recentTime = new Date().getTime() / 1000; /* @todo better */
             return;
           }
           $.each( data.data, function( idx, values ) {
-            var $tr = $( "<tr></tr>" ),
-                i = 0;
-            $.each( values, function( key, value ) {
-              $( "<td></td>" )
-                .addClass( $this.classes[ i++ ] )
-                .text( value )
-                .appendTo( $tr );
-            });
-            $tr.appendTo( $this.$elem.children( "tbody" ) );
+	    var line;
+	    /* Insert with template */
+	    if ( $this.templateRows !== null ) {
+	      line = $this.templateRows.render( values );
+	      $this.$elem.children( "tbody" ).append( $( line ) );
+	    } else {
+	      /* Default insert line */
+              var $tr = $( "<tr></tr>" ),
+                  i = 0;
+              $.each( values, function( key, value ) {
+	        if ( key in $this.templateCols ) {
+		  value = $this.templateCols[ key ].render( values );
+		}
+		if ( i < $this.classes.length ) {
+                  $( "<td></td>" )
+                    .addClass( $this.classes[ i++ ] )
+                    .html( value )
+                    .appendTo( $tr );
+		}
+              });
+              $tr.appendTo( $this.$elem.children( "tbody" ) );
+	    }
           });
 
           $this.lastTime = data.lastTimeEntry;
@@ -259,6 +286,8 @@
     ajaxUrlGetNew: "",
     refresh: 10000,
     limit: 20,
-    formFilter: ""
+    formFilter: "",
+    templateRows: "",
+    templateCols: {}
   };
 })( jQuery );
