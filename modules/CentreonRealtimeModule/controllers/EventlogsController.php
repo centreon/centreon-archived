@@ -38,7 +38,7 @@ namespace CentreonRealtime\Controllers;
  * Display the logs of nagios
  *
  * @authors Maximilien Bersoult
- * @package Centreon
+ * @package CentreonRealtime
  * @subpackage Controllers
  */
 class EventlogsController extends \Centreon\Internal\Controller
