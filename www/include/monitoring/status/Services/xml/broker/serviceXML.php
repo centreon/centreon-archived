@@ -470,6 +470,8 @@ while ($data = $DBRESULT->fetchRow()) {
         
     if ($data["notes_url"] != "") {
         $data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);
+        $data["notes_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["notes_url"]);
+        $data["notes_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["notes_url"]);
         $data["notes_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes_url"]);
         if (isset($data["alias"]) && $data["alias"]) {
             $data["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
@@ -490,6 +492,8 @@ while ($data = $DBRESULT->fetchRow()) {
 
     if ($data["action_url"] != "") {
         $data["action_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["action_url"]);
+        $data["action_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["action_url"]);
+        $data["action_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["action_url"]);
         $data["action_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["action_url"]);
         if (isset($data["alias"]) && $data["alias"]) {
             $data["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
