@@ -1529,12 +1529,15 @@ function updateServiceContactGroup($service_id = null, $ret = array()) {
     $rq = "DELETE FROM contactgroup_service_relation ";
     $rq .= "WHERE service_service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
-    if (isset($ret["service_cgs"]))
+
+    if (isset($ret["service_cgs"])) {
         $ret = $ret["service_cgs"];
-    else
+    } else {
         $ret = $form->getSubmitValue("service_cgs");
+    }
+
     $cg = new CentreonContactgroup($pearDB);
-    for($i = 0; $i < count($ret); $i++)	{
+    for ($i = 0; $i < count($ret); $i++)	{
         if (!is_numeric($ret[$i])) {
             $res = $cg->insertLdapGroup($ret[$i]);
             if ($res != 0) {
