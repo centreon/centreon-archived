@@ -93,7 +93,7 @@
                         WHERE dmspr.dependency_dep_id = dep.dep_id $aclCond) > 0";
 	if ($search)
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
-	$rq .= " LIMIT ".$num * $limit.", ".$limit;
+	$rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
