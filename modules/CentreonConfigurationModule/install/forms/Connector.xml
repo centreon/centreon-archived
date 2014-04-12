@@ -7,6 +7,10 @@
 	<section name="General">
 	  <block name="General information">
 		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+			<validators>
+				<validator events="blur">unique</validator>
+				<validator events="blur">forbiddenChar</validator>
+			</validators>
           <help>Name which will be used for identifying the connector.</help>
         </field>
 		<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0">

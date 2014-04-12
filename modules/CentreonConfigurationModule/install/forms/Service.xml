@@ -108,34 +108,6 @@
 	  <block name="Macros">
 	    <field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
 	  </block>
-	  <block name="Relations">
-		<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-		  <attributes>
-			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/servicegroup/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/servicegroup</listValuesRoute>
-			<multiple>true</multiple>
-		  </attributes>
-		</field>
-		<field name="service_categories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
-		  <attributes>
-			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/servicecategory/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/servicecategory</listValuesRoute>
-			<multiple>true</multiple>
-		  </attributes>
-		</field>
-	  </block>
-	  <block name="SNMP traps">
-		<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
-		  <attributes>
-			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/trap/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/trap</listValuesRoute>
-			<multiple>true</multiple>
-		  </attributes>
-		</field>
-	  </block>
     </section>
     <section name="Notification">
 	  <block name="Notification Options">
@@ -223,6 +195,34 @@
 	  </block>
 	</section>
 	<section name="Relations">
+		<block name="Relations">
+			<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		  		<attributes>
+					<object_type>object</object_type>
+					<defaultValuesRoute>/configuration/servicegroup/formlist</defaultValuesRoute>
+					<listValuesRoute>/configuration/service/[i:id]/servicegroup</listValuesRoute>
+					<multiple>true</multiple>
+		  		</attributes>
+			</field>
+			<field name="service_categories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+		  		<attributes>
+					<object_type>object</object_type>
+					<defaultValuesRoute>/configuration/servicecategory/formlist</defaultValuesRoute>
+					<listValuesRoute>/configuration/service/[i:id]/servicecategory</listValuesRoute>
+					<multiple>true</multiple>
+		  		</attributes>
+			</field>
+	  	</block>
+	  	<block name="SNMP traps">
+			<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+		  		<attributes>
+					<object_type>object</object_type>
+					<defaultValuesRoute>/configuration/trap/formlist</defaultValuesRoute>
+					<listValuesRoute>/configuration/service/[i:id]/trap</listValuesRoute>
+					<multiple>true</multiple>
+		  		</attributes>
+			</field>
+		</block>
 	</section>
 	<section name="Data processing">
 	  <block name="Data processing">

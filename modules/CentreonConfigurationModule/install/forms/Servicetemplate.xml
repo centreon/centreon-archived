@@ -6,7 +6,12 @@
 		<redirect_route>/configuration/servicetemplate</redirect_route>
 		<section name="Service configuration">
 			<block name="General information">
-				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+					<validators>
+						<validator events="blur">unique</validator>
+						<validator events="blur">forbiddenChar</validator>
+					</validators>
+				</field>
 				<field name="service_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="service_template_model_stm_id" label="Service Template Model" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
@@ -77,6 +82,8 @@
 					</attributes>
 				</field>
 			</block>
+		</section>
+		<section name="Notification">
 			<block name="Notification">
 				<field name="service_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
@@ -170,7 +177,6 @@
 					</attributes>
 				</field>
 			</block>
-
 			<block name="SNMP traps">
 				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
