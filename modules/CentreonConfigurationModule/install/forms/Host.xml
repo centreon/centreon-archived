@@ -32,7 +32,7 @@
                         <validator events="blur">circularDependency</validator>
                     </validators>
 				</field>
-				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<help>Define the image that should be associated with this host here. This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.</help>
 					<attributes>
 						<object_type>object</object_type>
@@ -321,6 +321,7 @@
 			<field name="host_address" mandatory="1"></field>
 			<field name="host_hosttemplates" mandatory="0"></field>
 			<field name="host_custommacros" mandatory="0"></field>
+			<field name="host_icon" mandatory="0"></field>
 		</step>
 		<step name="Relations">
 			<field name="host_hostgroups" mandatory="0"></field>
