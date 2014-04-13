@@ -57,16 +57,18 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
         
         $config = \Centreon\Internal\Di::getDefault()->get('config');
         $finalRoute = rtrim($config->get('global', 'base_url'), '/');
         
         while (1) {
             $stmt = $dbconn->query(
-                "SELECT ehi_icon_image, host_id "
-                . "FROM host, extended_host_information "
-                . "WHERE host_name = '$host_name' "
-                . "AND host_id = host_host_id"
+                "SELECT b.filename, h.host_id "
+                . "FROM host h, host_image_relation hir, binaries b "
+                . "WHERE h.host_name = '$host_name' "
+                . "AND h.host_id = hir.host_id "
+                . "AND hir.binary_id = b.binary_id"
             );
             $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
             
@@ -79,10 +81,19 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             );
             $tplResult = $stmtTpl->fetch(\PDO::FETCH_ASSOC);
 
-            if (!is_null($ehiResult['ehi_icon_image'])) {
-                $finalRoute .= "<img src='".$finalRoute.$ehiResult['ehi_icon_image']."'>";
+            if (!is_null($ehiResult['filename'])) {
+                $filenameExploded = explode('.', $ehiResult['filename']);
+                $nbOfOccurence = count($filenameExploded);
+                $fileFormat = $filenameExploded[$nbOfOccurence-1];
+                $filenameLength = strlen($ehiResult['filename']);
+                $routeAttr = array(
+                    'image' => substr($ehiResult['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                    'format' => '.'.$fileFormat
+                );
+                $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]/thumb', $routeAttr);
+                $finalRoute .= '<img src="'.$imgSrc.'" style="width:20px;height:20px;">';
                 break;
-            } elseif (is_null($ehiResult['ehi_icon_image'])/* && !is_null($tplResult['host_tpl_id'])*/) {
+            } elseif (is_null($ehiResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
                 $finalRoute = "<i class='fa fa-hdd-o'></i>";
                 break;
             }

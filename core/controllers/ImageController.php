@@ -103,7 +103,7 @@ class ImageController extends \Centreon\Internal\Controller
             );
         }
         
-        $iconList = array(
+        /*$iconList = array(
             'fa-bolt',
             'fa-camera',
             'fa-hdd-o',
@@ -124,7 +124,7 @@ class ImageController extends \Centreon\Internal\Controller
                 "text" => substr($icon, 3),
                 "theming" => '<i class="fa '.$icon.'"></i> '.substr($icon, 3)
             );
-        }
+        }*/
         
         $router->response()->json($finalIconList);
     }
