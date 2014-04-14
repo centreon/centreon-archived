@@ -134,7 +134,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        $tpl = \Centreon\Di::getDefault()->get('template');
+        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
         $tpl->assign('validateUrl', '/configuration/host/add');
         parent::addAction();
     }
