@@ -4,12 +4,20 @@
 		<route>/customview/updateview</route>
 		<section name="General">
 			<block name="General information">
-				<field name="view_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="view_mode" label="Alias" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="mode" label="Privacy" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
 					<attributes>
                         <choices>
                             <Public>1</Public>
 							<Private>0</Private>
+                        </choices>
+					</attributes>
+				</field>
+				<field name="locked" label="Locked" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+                        <choices>
+							<No>0</No>
+                            <Yes>1</Yes>
                         </choices>
 					</attributes>
 				</field>
@@ -19,8 +27,9 @@
 	<wizard name="view_preference_form">
 		<route>/customview/updateview</route>
 		<step name="General">
-			<field name="view_name" mandatory="1"></field>
-			<field name="view_mode" mandatory="1"></field>
+			<field name="name" mandatory="1"></field>
+			<field name="mode" mandatory="1"></field>
+			<field name="locked" mandatory="1"></field>
 		</step>
 	</wizard>
 </forms>

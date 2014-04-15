@@ -35,7 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Form\Generator;
+use \Centreon\Internal\Form\Generator,
+    \CentreonConfiguration\Repository\AuditlogRepository;
 
 /**
  * Abstact class for configuration controller
@@ -645,7 +646,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
         $name = $name[$objClass::getUniqueLabelField()];
         /* Add change log */
-        \Models\Tools\LogAction::addLog(
+        AuditlogRepository::addLog(
             $actionList[$action],
             $this->objectName,
             $id,
@@ -683,7 +684,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $objClass = $this->objectClass;
         $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
         $name = $name[$objClass::getUniqueLabelField()];
-        \Models\Tools\LogAction::addLog(
+        AuditlogRepository::addLog(
             $actionList[$action],
             $this->objectName,
             $id,

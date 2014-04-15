@@ -63,7 +63,8 @@ class CustomviewController extends \Centreon\Internal\Controller
             ->addJs('centreon-wizard.js')
             ->addJs('bootbox.min.js');
         $currentView = 1;
-        $customViews = CustomviewRepository::getCustomViews(1);
+        $user = $_SESSION['user'];
+        $customViews = CustomviewRepository::getCustomViewsOfUser($user->getId());
         $jsonPosition = "[]";
         if (isset($customViews[$currentView])) {
             $jsonPosition = $customViews[$currentView]['position'];
@@ -78,8 +79,8 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsFunctionSavePos().'
                 '.$this->getJsFunctionRemoveWidget().'
                 '.$this->getJsInitGrid($jsonPosition, $jsonWidgets).'
-                '.$this->getJsAddView().'
-                '.$this->getJsViewSettings().'
+                '.$this->getJsEditView("#view_add", "/customview/updateview").'
+                '.$this->getJsEditView("#view_settings", "/customview/updateview/1").'
                 '.$this->getJsDeleteView().'
                 '.$this->getJsDefault().'
                 '.$this->getJsBookmark().'
@@ -182,11 +183,23 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Update view
      *
      * @method post
-     * @route /customview/updateview/
+     * @route /customview/updateview
      */
     public function updateViewAction()
     {
-
+        $givenParameters = $this->getParams('post');
+        $params = array();
+        $user = $_SESSION['user'];
+        foreach ($givenParameters as $k => $v) {
+            $params[$k] = $v;
+        }
+        if (!isset($params['custom_view_id'])) {
+            CustomviewRepository::insert($params, $user->getId());
+        } else {
+            CustomviewRepository::update($params, $user->getId());
+        }
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router->response()->json(array('success' => true));
     }
 
     /**
@@ -198,7 +211,20 @@ class CustomviewController extends \Centreon\Internal\Controller
     public function displayViewPreferenceAction()
     {
         $template = \Centreon\Internal\Di::getDefault()->get('template');
-        $form = new Wizard('/customview/updateview', array('id' => 0));
+        $template->assign('validateUrl', '/customview/updateview');
+        $id = 0;
+        $requestParam = $this->getParams('named');
+        if (isset($requestParam['id']) && $requestParam['id']) {
+            $id = $requestParam['id'];
+        }
+        $form = new Wizard('/customview/updateview', array('id' => $id));
+        $title = _('Add a new view');
+        if ($id) {
+            $form->addHiddenComponent('custom_view_id', $id);
+            $form->setDefaultValues(CustomviewRepository::getCustomViewData($id));
+            $title = _('Edit view preferences');
+        }
+        $template->assign('modalTitle', $title);
         echo str_replace(
             array('alertMessage', 'alertClose'),
             array('alertModalMessage', 'alertModalClose'),
@@ -331,27 +357,21 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for view add
      *
+     * @param string $dom
+     * @param string $route
      * @return string
      */
-    protected function getJsAddView()
+    protected function getJsEditView($dom, $route)
     {
-        return '$("#view_add").click(function() {
-                    $("#modal").modal({
-                        "remote": "/customview/updateview"
+        return '$("'.$dom.'").click(function() {
+                    $("#modal").removeData("bs.modal");
+                    $("#modal").removeData("centreonWizard");
+                    $("#modal .modal-content").text("");
+                    $("#modal").one("loaded.bs.modal", function(e) {
+                        $(this).centreonWizard();
                     });
-                });';
-    }
-
-    /**
-     * Get js code for view settings
-     *
-     * @return string
-     */
-    protected function getJsViewSettings()
-    {
-        return '$("#view_settings").click(function() {
                     $("#modal").modal({
-                        "remote": "/customview/updateview/1"
+                        "remote": "'.$route.'"
                     });
                 });';
     }

@@ -180,12 +180,32 @@ class CustomviewRepository
     }
 
     /**
-     * Get Custom Views
+     * Get custom view data
+     *
+     * @param int $viewId
+     * @return array
+     * @throws \Centreon\Internal\Exception
+     */
+    public static function getCustomViewData($viewId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare("SELECT name, mode, locked, owner_id, position
+            FROM custom_views
+            WHERE custom_view_id = ?");
+        $stmt->execute(array($viewId));
+        if ($stmt->rowCount()) {
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+        throw new Exception(sprintf('Could not find view id %s', $viewId));
+    }
+
+    /**
+     * Get Custom Views for a user
      *
      * @param int $userId
      * @return array
      */
-    public static function getCustomViews($userId)
+    public static function getCustomViewsOfUser($userId)
     {
         static $customViews = null;
 
@@ -220,12 +240,11 @@ class CustomviewRepository
      * @param int $userId
      * @return int
      */
-    public static function addCustomView($params, $userId)
+    public static function insert($params, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("INSERT INTO custom_views (name, mode, locked, owner_id) VALUES (?, ?, ?, ?)");
         $stmt->execute(array($params['name'], $params['locked'], $params['mode'], $userId));
-        $db->query($query);
         $lastId = self::getLastViewId();
 
         $stmt = $db->prepare("INSERT INTO custom_view_user_relation (custom_view_id, user_id) VALUES (?, ?)");
@@ -240,7 +259,7 @@ class CustomviewRepository
      * @param int $userId
      * @return void
      */
-    public static function deleteCustomView($viewId, $userId)
+    public static function delete($viewId, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("DELETE FROM custom_view_user_relation WHERE custom_view_id = ? AND user_id = ?");
@@ -256,7 +275,7 @@ class CustomviewRepository
      * @param int $userId
      * @return int
      */
-    public static function updateCustomView($params, $userId)
+    public static function update($params, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("UPDATE custom_views 
