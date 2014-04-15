@@ -113,9 +113,14 @@ class CustomviewRepository
     public static function setDefault($viewId, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM custom_view_default WHERE user_id = ?");
+        
+        $stmt = $db->prepare("UPDATE custom_view_user_relation SET is_default = 0 
+            WHERE user_id = ?");
         $stmt->execute(array($userId));
-        $stmt = $db->query("INSERT INTO custom_view_default (custom_view_id, user_id) VALUES (?, ?)");
+
+        $stmt = $db->prepare("UPDATE custom_view_user_relation SET is_default = 1 
+            WHERE custom_view_id = ?
+            AND user_id = ?");
         $stmt->execute(array($viewId, $userId));
     }
 

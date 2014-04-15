@@ -165,7 +165,9 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function removeViewAction()
     {
-
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::delete($givenParameters['view_id'], $user->getId());
     }
 
     /**
@@ -177,6 +179,19 @@ class CustomviewController extends \Centreon\Internal\Controller
     public function bookmarkViewAction()
     {
 
+    }
+
+    /**
+     * Set view as default
+     *
+     * @method post
+     * @route /customview/setdefaultview
+     */
+    public function setDefaultViewAction()
+    {
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::setDefault($givenParameters['view_id'], $user->getId());
     }
 
     /**
@@ -246,16 +261,17 @@ class CustomviewController extends \Centreon\Internal\Controller
                         buttons: {
                             cancel: {
                                 label: "Cancel",
-                                className: "btn-default",
-                                callback: function() {
-                                    console.log("cancelled");
-                                }
+                                className: "btn-default"
                             },
                             confirm: {
                                 label: "Delete",
                                 className: "btn-danger",
                                 callback: function() {
-                                    console.log("confirmed")
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/removeview",
+                                        data: { view_id: 1 }
+                                    });
                                 }
                             }
                         }
@@ -337,16 +353,17 @@ class CustomviewController extends \Centreon\Internal\Controller
                         buttons: {
                             cancel: {
                                 label: "Cancel",
-                                className: "btn-default",
-                                callback: function() {
-                                    console.log("cancelled");
-                                }
+                                className: "btn-default"
                             },
                             confirm: {
                                 label: "Set as default",
                                 className: "btn-success",
                                 callback: function() {
-                                    console.log("confirmed")
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/setdefaultview",
+                                        data: { view_id: 1 }
+                                    });
                                 }
                             }
                         }
