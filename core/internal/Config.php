@@ -38,13 +38,16 @@ namespace Centreon\Internal;
 /**
  * Class for Centreon Configuration
  *
- * @see http://www.php.net/manual/en/class.pdo.php
+ * @see http://www.php.net/manual/en/class.pdo.php PHP PDO
  * @authors Maximilien Bersoult
  * @package Centreon
  * @subpackage Core
  */
 class Config
 {
+    /**
+     * @var string The list of group from config file, this group is readonly
+     */
     private $fileGroups = array(
         'db_centreon',
         'db_storage',
@@ -54,6 +57,9 @@ class Config
         'static_file',
         'global'
     );
+    /**
+     * @var array The application configuration
+     */
     private $config = null;
 
     /**

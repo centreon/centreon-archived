@@ -38,13 +38,16 @@ namespace Centreon\Internal\Db;
 /**
  * Class for manage database connection
  *
- * @see http://www.php.net/manual/en/class.pdostatement.php
+ * @see http://www.php.net/manual/en/class.pdostatement.php PDO Statement
  * @authors Maximilien Bersoult
  * @package Centreon
  * @subpackage Core
  */
 class Statement extends \PDOStatement
 {
+    /**
+     * @var \PDO The database connection
+     */
     protected $connection;
 
     /**
@@ -60,7 +63,7 @@ class Statement extends \PDOStatement
     /**
      * Execute a prepare statement
      *
-     * @see http://www.php.net/manual/en/pdostatement.execute.php
+     * @see http://www.php.net/manual/en/pdostatement.execute.php PDO Statement
      * @param $parameters array The input parameters
      * @return bool
      */
