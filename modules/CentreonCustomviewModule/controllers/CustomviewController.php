@@ -178,7 +178,22 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function bookmarkViewAction()
     {
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::bookmark($givenParameters['view_id'], $user->getId());
+    }
 
+    /**
+     * Unbookmark view
+     *
+     * @method post
+     * @route /customview/unbookmarkview
+     */
+    public function unbookmarkViewAction()
+    {
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::unbookmark($givenParameters['view_id'], $user->getId());
     }
 
     /**
@@ -327,11 +342,26 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 label: "Cancel",
                                 className: "btn-default"
                             },
+                            unbookmark: {
+                                label: "Unbookmark",
+                                className: "btn-danger",
+                                callback: function() {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/unbookmarkview",
+                                        data: { view_id: 1 }
+                                    });
+                                }
+                            },
                             confirm: {
                                 label: "Bookmark",
                                 className: "btn-success",
                                 callback: function() {
-                                    console.log("confirmed")
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/bookmarkview",
+                                        data: { view_id: 1 }
+                                    });
                                 }
                             }
                         }
@@ -444,7 +474,9 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
+     * Get js code for position saving
      *
+     * @return string
      */
     protected function getJsFunctionSavePos() 
     {
@@ -458,7 +490,9 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
+     * Get js code for widget removal
      *
+     * @return string
      */
     protected function getJsFunctionRemoveWidget()
     {

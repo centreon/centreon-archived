@@ -104,7 +104,7 @@ class CustomviewRepository
     }
 
     /**
-     * Set Default
+     * Set default
      *
      * @param int $viewId
      * @param int $userId
@@ -113,14 +113,42 @@ class CustomviewRepository
     public static function setDefault($viewId, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        
+        self::bookmark($viewId, $userId);
         $stmt = $db->prepare("UPDATE custom_view_user_relation SET is_default = 0 
             WHERE user_id = ?");
         $stmt->execute(array($userId));
-
         $stmt = $db->prepare("UPDATE custom_view_user_relation SET is_default = 1 
             WHERE custom_view_id = ?
             AND user_id = ?");
+        $stmt->execute(array($viewId, $userId));
+    }
+    
+    /**
+     * Bookmark a view
+     *
+     * @param int $viewId
+     * @param int $userId
+     * @return void
+     */
+    public static function bookmark($viewId, $userId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+
+        self::unbookmark($viewId, $userId);
+        $stmt = $db->prepare("INSERT INTO custom_view_user_relation (custom_view_id, user_id) VALUES (?, ?)");
+        $stmt->execute(array($viewId, $userId));
+    }
+
+    /**
+     * Unbookmark view
+     *
+     * @param int $viewId
+     * @param int $userId
+     */
+    public static function unbookmark($viewId, $userId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare("DELETE FROM custom_view_user_relation WHERE custom_view_id = ? AND user_id = ?");
         $stmt->execute(array($viewId, $userId));
     }
 
