@@ -61,18 +61,16 @@ $(function() {
       data: $("#wizard_form").serializeArray(),
       context: document.body
     })
-
     .success(function(data, status, jqxhr) {
       alertModalClose();
       if (data.success) {
         {if isset($formRedirect) && $formRedirect}
-          window.location='{url_for url=$formRedirectRoute}';
+          window.location='{url_for url=$formRedirect}';
         {else}
           alertModalMessage("The object has been successfully saved", "alert-success");
         {/if}
         $('#modal').modal('hide');
         if ($('.dataTable').length) {
-          console.log('hmmmmm');
           $('.dataTable').dataTable().fnDraw();
         }
       } else {

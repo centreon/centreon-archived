@@ -435,13 +435,23 @@ class WidgetRepository
      *
      * @param array $params
      * @return void
+     * @throws \Centreon\Internal\Exception
      */
-    public static function deleteWidgetFromView($params)
+    public static function deleteWidgetFromView($params, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM widget_views
-        		  WHERE widget_id = ?");
-        $stmt->execute(array($params['widget_id']));
+        $stmt = $db->prepare("SELECT widget_id 
+            FROM widgets w, custom_views c 
+            WHERE c.custom_view_id = w.custom_view_id
+            AND w.widget_id = ?
+            AND (c.owner_id = ? OR c.locked = 0)");
+        $stmt->execute(array($params['widget_id'], $userId));
+        if ($stmt->rowCount()) {
+            $stmt = $db->prepare("DELETE FROM widgets WHERE widget_id = ?");
+            $stmt->execute(array($params['widget_id']));
+        } else {
+            throw new Exception('You are not allowed to remove this widget');
+        }
     }
 
     /**

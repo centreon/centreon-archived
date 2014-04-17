@@ -69,7 +69,7 @@ class CustomviewController extends \Centreon\Internal\Controller
         $user = $_SESSION['user'];
         $customViews = CustomviewRepository::getCustomViewsOfUser($user->getId());
         $jsonPosition = "[]";
-        if (isset($customViews[$currentView])) {
+        if (isset($customViews[$currentView]) && $customViews[$currentView]['position']) {
             $jsonPosition = $customViews[$currentView]['position'];
         }
         $widgets = WidgetRepository::getWidgetsFromViewId($currentView);
@@ -184,6 +184,7 @@ class CustomviewController extends \Centreon\Internal\Controller
         $params = $this->getParams('named');
         $form = new Wizard('/customview/addwidget', array('id' => 0));
         $form->addHiddenComponent('custom_view_id', $params['view_id']);
+        $template->assign('formRedirect', '/customview');
         $template->addCustomJs('
             var widgets = '.$widgets.';
 
@@ -222,7 +223,9 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function removeWidgetAction()
     {
-        WidgetRepository::deleteWidgetFromView($params);
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        WidgetRepository::deleteWidgetFromView($givenParameters, $user->getId());
     }
 
     /**
@@ -371,6 +374,7 @@ class CustomviewController extends \Centreon\Internal\Controller
     {
         return '$(".widget-delete").click(function() {
                     var li = $(this).parents().closest("li"); 
+
                     bootbox.dialog({
                         message: "Remove widget from view?",
                         title: "Remove widget",
@@ -385,7 +389,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     gridster.remove_widget(li);
                                     savepos();
-                                    removeWidget($(this).data("widget-id"));
+                                    removeWidget($(li).data("widget-id"));
                                 }
                             }
                         }
