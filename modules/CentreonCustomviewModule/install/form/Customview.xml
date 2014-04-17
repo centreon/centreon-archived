@@ -32,4 +32,28 @@
 			<field name="locked" mandatory="1"></field>
 		</step>
 	</wizard>
+	<form name="add_widget_to_view_form">
+		<route>/customview/addwidget</route>
+		<section name="General">
+			<block name="General information">
+				<field name="title" label="Title" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="widget" label="Widget" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+						<defaultValuesRoute>/customview/widgetformlist</defaultValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
+					<help></help>
+				</field>
+			</block>
+		</section>
+	</form>
+	<wizard name="add_widget_to_view_form">
+		<route>/customview/addwidget</route>
+		<step name="Give a title to your widget">
+			<field name="title" mandatory="1"></field>
+		</step>
+		<step name="Pick a widget">
+			<field name="widget" mandatory="1"></field>
+		</step>
+	</wizard>
 </forms>

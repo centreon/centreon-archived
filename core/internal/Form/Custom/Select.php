@@ -56,10 +56,12 @@ class Select extends Customobject
         // Load JsFile
         $tpl->addJs('jquery.select2/select2.min.js');
 
-        if (isset($element['label_object_type']) && $element['label_object_type'] == 'object') {
+        if (isset($element['label_defaultValuesRoute'])) {
             $element['label_defaultValuesRoute'] = \Centreon\Internal\Di::getDefault()
                             ->get('router')
                             ->getPathFor($element['label_defaultValuesRoute'], $element['label_extra']);
+        }
+        if (isset($element['label_listValuesRoute'])) {
             $element['label_listValuesRoute'] = \Centreon\Internal\Di::getDefault()
                             ->get('router')
                             ->getPathFor($element['label_listValuesRoute'], $element['label_extra']);
@@ -111,7 +113,9 @@ class Select extends Customobject
                     .'results: function (data){ '
                         .'return {results:data, more:false}; '
                     .'}'
-                .'},'
+                .'},';
+        if (isset($element['label_listValuesRoute'])) {
+            $myJs .= ''
                 .'initSelection: function(element, callback) { '
                     .'var id=$(element).val();'
                     .'if (id == " ") {
@@ -130,7 +134,9 @@ class Select extends Customobject
                             }
                         });
                      }
-                },'
+                },';
+        }
+        $myJs .= ''
             .'});'."\n";
         
         $myJs .= $addJs;

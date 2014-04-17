@@ -135,7 +135,7 @@ class WidgetRepository
      * @param mixed $param
      * @return mixed
      */
-    protected static function getWidgetInfo($type = "id", $param)
+    public static function getWidgetInfo($type = "id", $param = null)
     {
         static $tabDir;
         static $tabId;
@@ -144,9 +144,12 @@ class WidgetRepository
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $query = "SELECT description, directory, title, widget_model_id, url, version, 
                 author, email, website, keywords, screenshot, thumbnail, autoRefresh
-            	FROM widget_models";
+                FROM widget_models
+                ORDER BY title";
             $stmt = $db->prepare($query);
             $stmt->execute();
+            $tabDir = array();
+            $tabId = array();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $tabDir[$row['directory']] = array();
                 $tabId[$row['widget_model_id']] = array();
@@ -156,13 +159,19 @@ class WidgetRepository
                 }
             }
         }
-        if ($type == "directory" && isset($tabDir[$param])) {
-            return $tabDir[$param];
+        if ($type == "directory") {
+            if (!is_null($param) && isset($tabDir[$param])) {
+                return $tabDir[$param];
+            }
+            return $tabDir;
         }
-        if ($type == "id" && isset($tabId[$param])) {
-            return $tabId[$param];
+        if ($type == "id") {
+            if (!is_null($param) && isset($tabId[$param])) {
+                return $tabId[$param];
+            }
+            return $tabId;
         }
-        return null;
+        return array();
     }
 
 
@@ -174,22 +183,17 @@ class WidgetRepository
      */
     public static function addWidget($params)
     {
-        if (!isset($params['custom_view_id']) || !isset($params['widget_model_id']) || !isset($params['widget_title'])) {
+        if (!isset($params['custom_view_id']) || !isset($params['widget']) || 
+            !isset($params['title'])) {
             throw new Exception('No custom view or no widget selected');
         }
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $query = "INSERT INTO widgets (title, widget_model_id)
-        		  VALUES (:title, :model_id)";
+        $query = "INSERT INTO widgets (title, widget_model_id, custom_view_id)
+        		  VALUES (:title, :model_id, :custom_view_id)";
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':title', $params['widget_title']);
-        $stmt->bindParam(':model_id', $params['widget_model_id']);
-        $stmt->execute();
-        $query = "INSERT INTO widget_views (custom_view_id, widget_id, widget_order)
-        		  VALUES (:view_id, :widget_id, :order)";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':view_id', $params['custom_view_id']);
-        $stmt->bindParam(':widget_id', self::getLastInsertedWidgetId($params['widget_title']));
-        $stmt->bindParam(':order', 0);
+        $stmt->bindParam(':title', $params['title']);
+        $stmt->bindParam(':model_id', $params['widget']);
+        $stmt->bindParam(':custom_view_id', $params['custom_view_id']);
         $stmt->execute();
     }
 

@@ -57,11 +57,14 @@ class CustomviewController extends \Centreon\Internal\Controller
         $template = \Centreon\Internal\Di::getDefault()->get('template');
         $template->addCss('jquery.gridster.min.css')
             ->addCss('centreon-widget.css')
-            ->addCss('centreon-wizard.css');
+            ->addCss('centreon-wizard.css')
+            ->addCss('select2.css')
+            ->addCss('select2-bootstrap.css');
         $template->addJs('jquery.gridster.min.js')
             ->addJs('jquery.gridster.with-extras.min.js')
             ->addJs('centreon-wizard.js')
-            ->addJs('bootbox.min.js');
+            ->addJs('bootbox.min.js')
+            ->addJs('jquery.select2/select2.min.js');
         $currentView = 1;
         $user = $_SESSION['user'];
         $customViews = CustomviewRepository::getCustomViewsOfUser($user->getId());
@@ -84,6 +87,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsDeleteView().'
                 '.$this->getJsDefault().'
                 '.$this->getJsBookmark().'
+                '.$this->getJsWidgetList().'
                 '.$this->getJsRemoveWidget().'
             });';
         $template->addCustomJs($gridJs);
@@ -132,7 +136,82 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function addWidgetAction()
     {
+        $givenParameters = $this->getParams('post');
+        $params = array();
+        $user = $_SESSION['user'];
+        foreach ($givenParameters as $k => $v) {
+            $params[$k] = $v;
+        }
+        WidgetRepository::addWidget($params);
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router->response()->json(array('success' => true));
+    }
 
+    /**
+     * Return a list of widget for selectbox
+     *
+     * @method get
+     * @route /customview/widgetformlist
+     */
+    public function widgetformlistAction()
+    {
+        $widgets = WidgetRepository::getWidgetInfo();
+        $list = array();
+        foreach ($widgets as $id => $info) {
+            $list[] = array(
+                'id' => $id,
+                'text' => $info['title']
+            );
+        }
+        \Centreon\Internal\Di::getDefault()
+            ->get('router')
+            ->response()
+            ->json($list);
+    }
+
+    /**
+     * Display list of widgets
+     *
+     * @method get
+     * @route /customview/widgetlist/[i:view_id]
+     */
+    public function widgetListAction()
+    {
+        $template = \Centreon\Internal\Di::getDefault()->get('template');
+        $template->assign('validateUrl', '/customview/addwidget');
+        $template->assign('modalTitle', _('Add a new widget'));
+        $widgets = json_encode(WidgetRepository::getWidgetInfo());
+        $params = $this->getParams('named');
+        $form = new Wizard('/customview/addwidget', array('id' => 0));
+        $form->addHiddenComponent('custom_view_id', $params['view_id']);
+        $template->addCustomJs('
+            var widgets = '.$widgets.';
+
+            $("#widget").change(function() {
+                $("div#widget_info").remove();
+                $("div.active").append($("<div>", { id: "widget_info" }));
+                
+                $("div#widget_info").append($("<div>", { id: "widget-desc", class: "form-group" }));
+                $("div#widget-desc").append("<div class=\"col-sm-3\" style=\"text-align: right\"><label>Description</label></div>");
+                $("div#widget-desc").append("<div class=\"col-sm-8\">" + widgets[$(this).val()].description + "</div>");
+
+                $("div#widget_info").append($("<div>", { id: "widget-vers", class: "form-group" }));
+                $("div#widget-vers").append("<div class=\"col-sm-3\" style=\"text-align: right\"><label>Version</label></div>");
+                $("div#widget-vers").append("<div class=\"col-sm-8\">" + widgets[$(this).val()].version + "</div>");
+
+                $("div#widget_info").append($("<div>", { id: "widget-auth", class: "form-group" }));
+                $("div#widget-auth").append("<div class=\"col-sm-3\" style=\"text-align: right\"><label>Author</label></div>");
+                $("div#widget-auth").append("<div class=\"col-sm-8\">" + widgets[$(this).val()].author + "</div>");
+                
+                $("div#widget_info").append($("<div>", { id: "widget-image", class: "form-group" }));
+                $("div#widget-image").append("<div class=\"col-sm-11\" style=\"text-align: center\"><img src=\"" + widgets[$(this).val()].thumbnail  + "\"></div>");
+            });
+        ');
+        echo str_replace(
+            array('alertMessage', 'alertClose'),
+            array('alertModalMessage', 'alertModalClose'),
+            $form->generate()
+        );
     }
 
     /**
@@ -144,17 +223,6 @@ class CustomviewController extends \Centreon\Internal\Controller
     public function removeWidgetAction()
     {
         WidgetRepository::deleteWidgetFromView($params);
-    }
-
-    /**
-     * Add a new view
-     *
-     * @method post
-     * @route /customview/addview
-     */
-    public function addViewAction()
-    {
-
     }
 
     /**
@@ -399,6 +467,26 @@ class CustomviewController extends \Centreon\Internal\Controller
                         }
                     });
                 });';
+    }
+
+    /**
+     * Get js widget list
+     *
+     * @return string
+     */
+    protected function getJsWidgetList()
+    {
+        return '$("#view_widget").click(function() {
+                    $("#modal").removeData("bs.modal");
+                    $("#modal").removeData("centreonWizard");
+                    $("#modal .modal-content").text("");
+                    $("#modal").one("loaded.bs.modal", function(e) {
+                        $(this).centreonWizard();
+                    });
+                    $("#modal").modal({
+                        "remote": "/customview/widgetlist/1"
+                    });
+                })';
     }
 
     /**
