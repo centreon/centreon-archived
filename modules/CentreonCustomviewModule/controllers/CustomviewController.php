@@ -57,15 +57,19 @@ class CustomviewController extends \Centreon\Internal\Controller
         $template = \Centreon\Internal\Di::getDefault()->get('template');
         $template->addCss('jquery.gridster.min.css')
             ->addCss('centreon-widget.css')
-            ->addCss('centreon-wizard.css');
+            ->addCss('centreon-wizard.css')
+            ->addCss('select2.css')
+            ->addCss('select2-bootstrap.css');
         $template->addJs('jquery.gridster.min.js')
             ->addJs('jquery.gridster.with-extras.min.js')
             ->addJs('centreon-wizard.js')
-            ->addJs('bootbox.min.js');
+            ->addJs('bootbox.min.js')
+            ->addJs('jquery.select2/select2.min.js');
         $currentView = 1;
-        $customViews = CustomviewRepository::getCustomViews(1);
+        $user = $_SESSION['user'];
+        $customViews = CustomviewRepository::getCustomViewsOfUser($user->getId());
         $jsonPosition = "[]";
-        if (isset($customViews[$currentView])) {
+        if (isset($customViews[$currentView]) && $customViews[$currentView]['position']) {
             $jsonPosition = $customViews[$currentView]['position'];
         }
         $widgets = WidgetRepository::getWidgetsFromViewId($currentView);
@@ -78,11 +82,12 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsFunctionSavePos().'
                 '.$this->getJsFunctionRemoveWidget().'
                 '.$this->getJsInitGrid($jsonPosition, $jsonWidgets).'
-                '.$this->getJsAddView().'
-                '.$this->getJsViewSettings().'
+                '.$this->getJsEditView("#view_add", "/customview/updateview").'
+                '.$this->getJsEditView("#view_settings", "/customview/updateview/1").'
                 '.$this->getJsDeleteView().'
                 '.$this->getJsDefault().'
                 '.$this->getJsBookmark().'
+                '.$this->getJsWidgetList().'
                 '.$this->getJsRemoveWidget().'
             });';
         $template->addCustomJs($gridJs);
@@ -131,7 +136,83 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function addWidgetAction()
     {
+        $givenParameters = $this->getParams('post');
+        $params = array();
+        $user = $_SESSION['user'];
+        foreach ($givenParameters as $k => $v) {
+            $params[$k] = $v;
+        }
+        WidgetRepository::addWidget($params);
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router->response()->json(array('success' => true));
+    }
 
+    /**
+     * Return a list of widget for selectbox
+     *
+     * @method get
+     * @route /customview/widgetformlist
+     */
+    public function widgetformlistAction()
+    {
+        $widgets = WidgetRepository::getWidgetInfo();
+        $list = array();
+        foreach ($widgets as $id => $info) {
+            $list[] = array(
+                'id' => $id,
+                'text' => $info['title']
+            );
+        }
+        \Centreon\Internal\Di::getDefault()
+            ->get('router')
+            ->response()
+            ->json($list);
+    }
+
+    /**
+     * Display list of widgets
+     *
+     * @method get
+     * @route /customview/widgetlist/[i:view_id]
+     */
+    public function widgetListAction()
+    {
+        $template = \Centreon\Internal\Di::getDefault()->get('template');
+        $template->assign('validateUrl', '/customview/addwidget');
+        $template->assign('modalTitle', _('Add a new widget'));
+        $widgets = json_encode(WidgetRepository::getWidgetInfo());
+        $params = $this->getParams('named');
+        $form = new Wizard('/customview/addwidget', array('id' => 0));
+        $form->addHiddenComponent('custom_view_id', $params['view_id']);
+        $template->assign('formRedirect', '/customview');
+        $template->addCustomJs('
+            var widgets = '.$widgets.';
+
+            $("#widget").change(function() {
+                $("div#widget_info").remove();
+                $("div.active").append($("<div>", { id: "widget_info" }));
+                
+                $("div#widget_info").append($("<div>", { id: "widget-desc", class: "form-group" }));
+                $("div#widget-desc").append("<div class=\"col-sm-3\" style=\"text-align: right\"><label>Description</label></div>");
+                $("div#widget-desc").append("<div class=\"col-sm-8\">" + widgets[$(this).val()].description + "</div>");
+
+                $("div#widget_info").append($("<div>", { id: "widget-vers", class: "form-group" }));
+                $("div#widget-vers").append("<div class=\"col-sm-3\" style=\"text-align: right\"><label>Version</label></div>");
+                $("div#widget-vers").append("<div class=\"col-sm-8\">" + widgets[$(this).val()].version + "</div>");
+
+                $("div#widget_info").append($("<div>", { id: "widget-auth", class: "form-group" }));
+                $("div#widget-auth").append("<div class=\"col-sm-3\" style=\"text-align: right\"><label>Author</label></div>");
+                $("div#widget-auth").append("<div class=\"col-sm-8\">" + widgets[$(this).val()].author + "</div>");
+                
+                $("div#widget_info").append($("<div>", { id: "widget-image", class: "form-group" }));
+                $("div#widget-image").append("<div class=\"col-sm-11\" style=\"text-align: center\"><img src=\"" + widgets[$(this).val()].thumbnail  + "\"></div>");
+            });
+        ');
+        echo str_replace(
+            array('alertMessage', 'alertClose'),
+            array('alertModalMessage', 'alertModalClose'),
+            $form->generate()
+        );
     }
 
     /**
@@ -142,18 +223,9 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function removeWidgetAction()
     {
-        WidgetRepository::deleteWidgetFromView($params);
-    }
-
-    /**
-     * Add a new view
-     *
-     * @method post
-     * @route /customview/addview
-     */
-    public function addViewAction()
-    {
-
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        WidgetRepository::deleteWidgetFromView($givenParameters, $user->getId());
     }
 
     /**
@@ -164,7 +236,9 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function removeViewAction()
     {
-
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::delete($givenParameters['view_id'], $user->getId());
     }
 
     /**
@@ -175,18 +249,58 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function bookmarkViewAction()
     {
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::bookmark($givenParameters['view_id'], $user->getId());
+    }
 
+    /**
+     * Unbookmark view
+     *
+     * @method post
+     * @route /customview/unbookmarkview
+     */
+    public function unbookmarkViewAction()
+    {
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::unbookmark($givenParameters['view_id'], $user->getId());
+    }
+
+    /**
+     * Set view as default
+     *
+     * @method post
+     * @route /customview/setdefaultview
+     */
+    public function setDefaultViewAction()
+    {
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        CustomviewRepository::setDefault($givenParameters['view_id'], $user->getId());
     }
 
     /**
      * Update view
      *
      * @method post
-     * @route /customview/updateview/
+     * @route /customview/updateview
      */
     public function updateViewAction()
     {
-
+        $givenParameters = $this->getParams('post');
+        $params = array();
+        $user = $_SESSION['user'];
+        foreach ($givenParameters as $k => $v) {
+            $params[$k] = $v;
+        }
+        if (!isset($params['custom_view_id'])) {
+            CustomviewRepository::insert($params, $user->getId());
+        } else {
+            CustomviewRepository::update($params, $user->getId());
+        }
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router->response()->json(array('success' => true));
     }
 
     /**
@@ -198,7 +312,20 @@ class CustomviewController extends \Centreon\Internal\Controller
     public function displayViewPreferenceAction()
     {
         $template = \Centreon\Internal\Di::getDefault()->get('template');
-        $form = new Wizard('/customview/updateview', array('id' => 0));
+        $template->assign('validateUrl', '/customview/updateview');
+        $id = 0;
+        $requestParam = $this->getParams('named');
+        if (isset($requestParam['id']) && $requestParam['id']) {
+            $id = $requestParam['id'];
+        }
+        $form = new Wizard('/customview/updateview', array('id' => $id));
+        $title = _('Add a new view');
+        if ($id) {
+            $form->addHiddenComponent('custom_view_id', $id);
+            $form->setDefaultValues(CustomviewRepository::getCustomViewData($id));
+            $title = _('Edit view preferences');
+        }
+        $template->assign('modalTitle', $title);
         echo str_replace(
             array('alertMessage', 'alertClose'),
             array('alertModalMessage', 'alertModalClose'),
@@ -220,16 +347,17 @@ class CustomviewController extends \Centreon\Internal\Controller
                         buttons: {
                             cancel: {
                                 label: "Cancel",
-                                className: "btn-default",
-                                callback: function() {
-                                    console.log("cancelled");
-                                }
+                                className: "btn-default"
                             },
                             confirm: {
                                 label: "Delete",
                                 className: "btn-danger",
                                 callback: function() {
-                                    console.log("confirmed")
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/removeview",
+                                        data: { view_id: 1 }
+                                    });
                                 }
                             }
                         }
@@ -246,6 +374,7 @@ class CustomviewController extends \Centreon\Internal\Controller
     {
         return '$(".widget-delete").click(function() {
                     var li = $(this).parents().closest("li"); 
+
                     bootbox.dialog({
                         message: "Remove widget from view?",
                         title: "Remove widget",
@@ -260,7 +389,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     gridster.remove_widget(li);
                                     savepos();
-                                    removeWidget($(this).data("widget-id"));
+                                    removeWidget($(li).data("widget-id"));
                                 }
                             }
                         }
@@ -285,11 +414,26 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 label: "Cancel",
                                 className: "btn-default"
                             },
+                            unbookmark: {
+                                label: "Unbookmark",
+                                className: "btn-danger",
+                                callback: function() {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/unbookmarkview",
+                                        data: { view_id: 1 }
+                                    });
+                                }
+                            },
                             confirm: {
                                 label: "Bookmark",
                                 className: "btn-success",
                                 callback: function() {
-                                    console.log("confirmed")
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/bookmarkview",
+                                        data: { view_id: 1 }
+                                    });
                                 }
                             }
                         }
@@ -311,16 +455,17 @@ class CustomviewController extends \Centreon\Internal\Controller
                         buttons: {
                             cancel: {
                                 label: "Cancel",
-                                className: "btn-default",
-                                callback: function() {
-                                    console.log("cancelled");
-                                }
+                                className: "btn-default"
                             },
                             confirm: {
                                 label: "Set as default",
                                 className: "btn-success",
                                 callback: function() {
-                                    console.log("confirmed")
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/customview/setdefaultview",
+                                        data: { view_id: 1 }
+                                    });
                                 }
                             }
                         }
@@ -329,29 +474,43 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
-     * Get js code for view add
+     * Get js widget list
      *
      * @return string
      */
-    protected function getJsAddView()
+    protected function getJsWidgetList()
     {
-        return '$("#view_add").click(function() {
-                    $("#modal").modal({
-                        "remote": "/customview/updateview"
+        return '$("#view_widget").click(function() {
+                    $("#modal").removeData("bs.modal");
+                    $("#modal").removeData("centreonWizard");
+                    $("#modal .modal-content").text("");
+                    $("#modal").one("loaded.bs.modal", function(e) {
+                        $(this).centreonWizard();
                     });
-                });';
+                    $("#modal").modal({
+                        "remote": "/customview/widgetlist/1"
+                    });
+                })';
     }
 
     /**
-     * Get js code for view settings
+     * Get js code for view add
      *
+     * @param string $dom
+     * @param string $route
      * @return string
      */
-    protected function getJsViewSettings()
+    protected function getJsEditView($dom, $route)
     {
-        return '$("#view_settings").click(function() {
+        return '$("'.$dom.'").click(function() {
+                    $("#modal").removeData("bs.modal");
+                    $("#modal").removeData("centreonWizard");
+                    $("#modal .modal-content").text("");
+                    $("#modal").one("loaded.bs.modal", function(e) {
+                        $(this).centreonWizard();
+                    });
                     $("#modal").modal({
-                        "remote": "/customview/updateview/1"
+                        "remote": "'.$route.'"
                     });
                 });';
     }
@@ -407,7 +566,9 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
+     * Get js code for position saving
      *
+     * @return string
      */
     protected function getJsFunctionSavePos() 
     {
@@ -421,7 +582,9 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
+     * Get js code for widget removal
      *
+     * @return string
      */
     protected function getJsFunctionRemoveWidget()
     {

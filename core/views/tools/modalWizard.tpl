@@ -1,6 +1,12 @@
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-<h4>Add</h4>
+<h4>
+{if isset($modalTitle)}
+  {$modalTitle}
+{else}
+  {t}Add{/t}
+{/if}
+</h4>
 </div>
 <div class="flash alert fade in" id="modal-flash-message" style="display: none;">
   <button type="button" class="close" aria-hidden="true">&times;</button>
@@ -40,36 +46,38 @@ $(function() {
         validateMandatory = false;
         $(this).parent().addClass("has-error has-feedback");
         errorText += $(this).attr("placeholder") + " is required<br/>";
-    }
-  });
+      }
+    });
 
-  if (!validateMandatory) {
+    if (!validateMandatory) {
       alertMessage(errorText, "alert-danger");
       return false;
-  }
-
-  $.ajax({
-    url: "{url_for url=$validateUrl}",
-    type: "POST",
-    dataType: 'json',
-    data: $("#wizard_form").serializeArray(),
-    context: document.body
-  })
-  .success(function(data, status, jqxhr) {
-    alertModalClose();
-    if (data.success) {
-      {if isset($formRedirect) && $formRedirect}
-        window.location='{url_for url=$formRedirectRoute}';
-      {else}
-        alertModalMessage("The object has been successfully saved", "alert-success");
-      {/if}
-      $('#modal').modal('hide');
-      $('.dataTable').dataTable().fnDraw();
-    } else {
-      alertModalMessage(data.error, "alert-danger");
     }
-  });
-  return false;
+
+    $.ajax({
+      url: "{url_for url=$validateUrl}",
+      type: "POST",
+      dataType: 'json',
+      data: $("#wizard_form").serializeArray(),
+      context: document.body
+    })
+    .success(function(data, status, jqxhr) {
+      alertModalClose();
+      if (data.success) {
+        {if isset($formRedirect) && $formRedirect}
+          window.location='{url_for url=$formRedirect}';
+        {else}
+          alertModalMessage("The object has been successfully saved", "alert-success");
+        {/if}
+        $('#modal').modal('hide');
+        if ($('.dataTable').length) {
+          $('.dataTable').dataTable().fnDraw();
+        }
+      } else {
+        alertModalMessage(data.error, "alert-danger");
+      }
+    });
+    return false;
   });
   {/if}
   {$customJs}

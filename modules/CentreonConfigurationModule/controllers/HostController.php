@@ -105,7 +105,8 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         $id = parent::createAction();
-        if ($givenParameters['host_create_services_from_template']) {
+        if (isset($givenParameters['host_create_services_from_template']) && 
+            $givenParameters['host_create_services_from_template']) {
             \CentreonConfiguration\Models\Host::deployServices($id);
         }
     }

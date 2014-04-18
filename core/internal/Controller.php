@@ -64,19 +64,25 @@ abstract class Controller
      * Get params
      *
      * @param string $type
+     * @return array
      */
     protected function getParams($type = "")
     {
         switch(strtolower($type)) {
-            default:
-                return $this->request->params();
             case 'get':
-                return $this->request->paramsGet();
+                $collection = $this->request->paramsGet();
+                break;
             case 'post':
-                return $this->request->paramsPost();
+                $collection = $this->request->paramsPost();
+                break;
             case 'named':
-                return $this->request->paramsNamed();
+                $collection = $this->request->paramsNamed();
+                break;
+            default:
+                $collection = $this->request->params();
+                break;
         }
+        return $collection;
     }
 
     /**

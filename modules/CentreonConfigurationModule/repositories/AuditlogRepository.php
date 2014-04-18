@@ -32,14 +32,14 @@
  * For more information : contact@centreon.com
  */
 
-namespace Models\Tools;
+namespace CentreonConfiguration\Repository;
 
 /**
- * Models for logaction, change log
+ * Handles audit logs
  *
  * @author Maximilien Bersoult <mbersoult@merethis.com>
  */
-class LogAction
+class AuditlogRepository
 {
     /**
      * Add a change log
@@ -52,7 +52,7 @@ class LogAction
      */
     public static function addLog($actionType, $objType, $objId, $objName, $objValues)
     {
-        $di = \Centreon\Core\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
         $query = 'INSERT INTO log_action
             (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
