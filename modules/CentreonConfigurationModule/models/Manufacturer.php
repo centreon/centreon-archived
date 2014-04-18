@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models;
  *
  * @author sylvestre
  */
-class Manufacturer extends Object
+class Manufacturer extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "traps_vendor";
     protected static $primaryKey = "id";

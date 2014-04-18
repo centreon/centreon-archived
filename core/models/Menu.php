@@ -42,7 +42,7 @@ namespace Centreon\Models;
  *
  * @author sylvestre
  */
-class Menu extends Object
+class Menu extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "menus";
     protected static $primaryKey = "menu_id";

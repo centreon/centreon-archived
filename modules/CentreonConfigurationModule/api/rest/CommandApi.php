@@ -132,6 +132,8 @@ class CommandApi extends \Centreon\Internal\Controller
      *
      * @method DELETE
      * @route /api/configuration/[a:version]/command/[i:id]
+     * 
+     */
     public function deleteAction()
     {
         print "Not implemented yet";

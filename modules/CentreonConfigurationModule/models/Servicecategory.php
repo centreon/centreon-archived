@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models;
  *
  * @author sylvestre
  */
-class Servicecategory extends Object
+class Servicecategory extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "service_categories";
     protected static $primaryKey = "sc_id";

@@ -278,12 +278,12 @@ class Installer
      *
      * @param string $xmlFile
      */
-    public static function installFromXml($xmlFile = "")
+    public static function installFromXml($moduleId, $xmlFile = "")
     {
         $xml = simplexml_load_file($xmlFile);
         foreach ($xml as $form) {
             if ($form->getName() == 'form') {
-                self::processForm($form);
+                self::processForm($moduleId, $form);
             } elseif ($form->getName() == 'wizard') {
                 self::processWizard($form);
             }
@@ -421,7 +421,7 @@ class Installer
      *
      * @param SimpleXMLElement $form
      */
-    protected static function processForm($form)
+    protected static function processForm($moduleId, $form)
     {
         $insertedSections = array();
         $insertedBlocks = array();
@@ -467,7 +467,7 @@ class Installer
                         'advanced' => $field['advanced'],
                         'type' => $field['type'],
                         'parent_field' => $field['parent_field'],
-                        'module_id' => $field['module_id'],
+                        'module_id' => $moduleId,
                         'child_actions' => $field->child_actions,
                         'attributes' => $attributes,
                         'help' => $field->help
@@ -497,7 +497,11 @@ class Installer
         self::purgeSections($insertedSections);
     }
     
-    
+    /**
+     * 
+     * @param type $attributes
+     * @return boolean
+     */
     protected static function parseAttributes($attributes)
     {
         $finalAttributes = array();

@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models;
  *
  * @author sylvestre
  */
-class Command extends Object
+class Command extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "command";
     protected static $primaryKey = "command_id";

@@ -42,7 +42,7 @@ namespace Models\Configuration;
  *
  * @author sylvestre
  */
-class Timeperiod extends Object
+class Timeperiod extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "timeperiod";
     protected static $primaryKey = "tp_id";

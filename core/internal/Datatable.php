@@ -42,6 +42,9 @@ namespace Centreon\Internal;
  */
 class Datatable
 {
+    /**
+     * 
+     */
     public function __construct()
     {
         
@@ -53,10 +56,10 @@ class Datatable
      * @param array $params
      * @return json
      */
-    public static function getDatas($object, $params = array())
+    public static function getDatas($module, $object, $params = array())
     {
         // Get connection
-        $objectToCall = '\\CentreonConfiguration\\Repository\\'.ucwords(strtolower($object)).'Repository';
+        $objectToCall = '\\' . $module . '\\Repository\\'.ucwords(strtolower($object)).'Repository';
         $datasToSend = $objectToCall::getDatasForDatatable($params);
         
         // format the data before returning
@@ -75,10 +78,10 @@ class Datatable
      * @param string $object
      * @return array
      */
-    public static function getConfiguration($object)
+    public static function getConfiguration($module, $object)
     {
         // Get connection
-        $objectToCall = '\\CentreonConfiguration\\Repository\\'.ucwords(strtolower($object)).'Repository';
+        $objectToCall = '\\' . $module . '\\Repository\\'.ucwords(strtolower($object)).'Repository';
         return $objectToCall::getParametersForDatatable();
     }
     
@@ -88,9 +91,9 @@ class Datatable
      * @param type $resultSet
      * @return type
      */
-    public static function removeUnwantedFields($object, $resultSet)
+    public static function removeUnwantedFields($module, $object, $resultSet)
     {
-        $objectToCall = '\\CentreonConfiguration\\Repository\\'.ucwords(strtolower($object)).'Repository';
+        $objectToCall = '\\' . $module . '\\Repository\\'.ucwords(strtolower($object)).'Repository';
         foreach ($objectToCall::$additionalColumn as $c) {
             foreach ($resultSet as &$oneSet) {
                 unset($oneSet[$c]);
@@ -105,13 +108,13 @@ class Datatable
      * @param string $object
      * @return array
      */
-    public static function castResult($element, $object)
+    public static function castResult($element, $params)
     {
         try {
             $elementField = array_keys($element);
             $originalElement = $element;
-            $object = ucwords(strtolower($object));
-            $objectToCall = '\\CentreonConfiguration\\Repository\\'.$object.'Repository';
+            $object = ucwords(strtolower($params[0]));
+            $objectToCall = '\\' . $params[1] . '\\Repository\\'.$object.'Repository';
             foreach ($objectToCall::$columnCast as $castField => $castParameters) {
                 $subCaster = 'add'.ucwords($castParameters['type']);
                 $element[$castField] = self::$subCaster(
@@ -161,7 +164,12 @@ class Datatable
         
         $linkName =  str_replace($castedElement, $element, $values['linkName']);
         
-        return '<a href="'. $finalRoute .'">'. $linkName .'</a>';
+        $class = '';
+        if (isset($values['styleClass'])) {
+            $class .=$values['styleClass'];
+        }
+        
+        return '<a class="' . $class . '" href="' . $finalRoute . '">' . $linkName . '</a>';
     }
     
     /**
@@ -202,6 +210,14 @@ class Datatable
      */
     public static function addSelect($object, $fields, $values, $elementField, $element)
     {
-        return $values[$element[$fields]];
+        if (isset($values['selecttype']) && ($values['selecttype'] != 'none')) {
+            $subElementValues = $values['parameters'][$element[$fields]]['parameters'];
+            $subCaster = 'add'.ucwords($values['selecttype']);
+            $myElement = static::$subCaster($object, $fields, $subElementValues, $elementField, $element);
+        } else {
+            $myElement = $values[$element[$fields]];
+        }
+        
+        return $myElement;
     }
 }

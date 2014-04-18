@@ -46,9 +46,12 @@
 function smarty_function_datatable($params, $smarty)
 {
     $smarty->assign('object', $params['object']);
-    $smarty->assign('objectAddUrl', $params['objectAddUrl']);
     
-    $datatableParameters = \Centreon\Internal\Datatable::getConfiguration($params['object']);
+    if (isset($params['objectAddUrl'])) {
+        $smarty->assign('objectAddUrl', $params['objectAddUrl']);
+    }
+    
+    $datatableParameters = \Centreon\Internal\Datatable::getConfiguration($params['module'], $params['object']);
     $datatableParameters['nbFixedTr'] = 1;
     
     // Process Column

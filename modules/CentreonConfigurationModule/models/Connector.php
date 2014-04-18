@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models;
  *
  * @author sylvestre
  */
-class Connector extends Object
+class Connector extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "connector";
     protected static $primaryKey = "id";

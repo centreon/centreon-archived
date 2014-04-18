@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models;
  *
  * @author sylvestre
  */
-class Poller extends Object
+class Poller extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "nagios_server";
     protected static $primaryKey = "id";

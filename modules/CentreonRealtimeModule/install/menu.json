@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Realtime",
+        "short_name": "realtime",
+        "icon_class": "fa fa-clock-o",
+        "bgcolor": "lightblue",
+        "menus": [
+            {
+                "name": "EventLogs",
+                "short_name": "eventlogs",
+                "route": "/realtime/eventlogs",
+                "parent": "realtime"
+            }
+        ]
+    }
+]
