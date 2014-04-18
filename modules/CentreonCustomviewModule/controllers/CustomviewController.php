@@ -89,6 +89,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsBookmark().'
                 '.$this->getJsWidgetList().'
                 '.$this->getJsRemoveWidget().'
+                '.$this->getJsWidgetSettings().'
             });';
         $template->addCustomJs($gridJs);
         $template->display('file:[CentreonCustomview]customview.tpl');
@@ -107,10 +108,10 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
-     * Update preference
+     * Update widget settings
      *
      * @method post
-     * @route /customview/updatewidgetpreference
+     * @route /customview/updatewidgetsettings
      */
     public function updatePreferencesAction()
     {
@@ -118,14 +119,27 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
-     * Display widget preference window
+     * Display widget preference widget settings
      *
      * @method get
-     * @route /customview/displaywidgetpreference
+     * @route /customview/widgetsettings/[i:id]
      */
     public function displayWidgetPreferenceAction()
     {
-
+        $params = $this->getParams('named');
+        $widgetId = $params['id'];
+        $template = \Centreon\Internal\Di::getDefault()->get('template');
+        $template->assign('validateUrl', '/customview/updatewidgetsettings/' . $widgetId);
+        $form = new Wizard('/customview/updatewidgetsettings/' . $widgetId, array('id' => $widgetId));
+        $title = _('Settings for widget');
+        $form->addHiddenComponent('widget_id', $widgetId);
+        $form->setDefaultValues(CustomviewRepository::getCustomViewData($id));
+        $template->assign('modalTitle', $title);
+        echo str_replace(
+            array('alertMessage', 'alertClose'),
+            array('alertModalMessage', 'alertModalClose'),
+            $form->generate()
+        );
     }
 
     /**
@@ -399,6 +413,29 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
+     * Get js code for widget settings
+     *
+     * @return string
+     */
+    protected function getJsWidgetSettings()
+    {
+        return '$(".widget-settings").click(function() {
+                    var li = $(this).parents().closest("li"); 
+
+                    $("#modal").removeData("bs.modal");
+                    $("#modal").removeData("centreonWizard");
+                    $("#modal .modal-content").text("");
+                    $("#modal").one("loaded.bs.modal", function(e) {
+                        $(this).centreonWizard();
+                    });
+                    $("#modal").modal({
+                        "remote": "/customview/widgetsettings/" + $(li).data("widget-id")
+                    });
+                });';
+
+    } 
+
+    /**
      * Get js code for bookmark
      *
      * @return string
@@ -549,7 +586,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         <span>\'+this.title+\'</span> \
                         <span class="portlet-ui-icon"> \
                         <i class="fa fa-refresh"></i> \
-                        <i class="fa fa-gears"></i> \
+                        <i class="fa fa-gears widget-settings"></i> \
                         <i class="fa fa-trash-o widget-delete"></i> \
                         </span> \
                         </span> \

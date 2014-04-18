@@ -573,6 +573,16 @@ class WidgetRepository
     }
 
     /**
+     * Insert widget forms into database
+     *
+     * @param int $widgetModelId
+     */
+    public static function insertWidgetForms($widgetModelId)
+    {
+
+    }
+
+    /**
      * Install
      *
      * @param string $widgetPath
