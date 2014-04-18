@@ -51,6 +51,8 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      * @var array
      */
     public static $relationMap;
+    
+    public static $moduleName = 'CentreonConfiguration';
 
     /**
      * List view for object
@@ -85,6 +87,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         
         /* Display variable */
         $tpl->assign('objectName', $this->objectDisplayName);
+        $tpl->assign('moduleName', self::$moduleName);
         $tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
         $tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
         $tpl->assign('objectMcUrl', $this->objectBaseUrl . '/massive_change');
@@ -379,6 +382,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         
         $router->response()->json(
             \Centreon\Internal\Datatable::getDatas(
+                self::$moduleName,
                 $this->objectName,
                 $this->getParams('get')
             )

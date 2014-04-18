@@ -6,8 +6,8 @@
 		<redirect_route>/configuration/service</redirect_route>
 		<section name="Service configuration">
 			<block name="General information">
-				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="service_template_model_stm_id" label="Template" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="service_template_model_stm_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
@@ -17,7 +17,7 @@
 				</field>
 			</block>
 			<block name="Check properties">
-				<field name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -26,7 +26,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
@@ -34,7 +34,7 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
@@ -42,10 +42,10 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="service_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="service_check_interval" label="Normal check interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="service_retry_check_interval" label="Retry check interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" mandatory="1"></field>
+				<field name="service_check_interval" label="Normal check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
+				<field name="service_retry_check_interval" label="Retry check interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
+				<field name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -54,7 +54,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -65,7 +65,7 @@
 				</field>
 			</block>
 			<block name="Notification">
-				<field name="service_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -74,7 +74,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_inherit_contacts_from_host" label="Inherit contacts from hosts" default_value="1" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_inherit_contacts_from_host" label="Inherit contacts from hosts" default_value="1" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -82,7 +82,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="contact_additive_inheritance" label="Contact additive inheritance" default_value="0" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_additive_inheritance" label="Contact additive inheritance" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -90,7 +90,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="service_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
@@ -98,7 +98,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="cg_additive_inheritance" label="Contact group additive inheritance" default_value="0" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="cg_additive_inheritance" label="Contact group additive inheritance" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -106,7 +106,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="service_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
@@ -114,8 +114,8 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="service_notification_interval" label="Notification interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="service_notification_interval" label="Notification interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="1"></field>
+				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
@@ -123,7 +123,7 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="service_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
+				<field name="service_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Warning>1</Warning>
@@ -135,12 +135,12 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="service_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
 			</block>
 		</section>
 		<section name="Relations">
 			<block name="Relations">
-				<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="1">
+				<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
@@ -148,7 +148,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="1">
+				<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/servicegroup/formlist</defaultValuesRoute>
@@ -156,7 +156,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="service_servicecategories" label="Linked with service categories" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="1">
+				<field name="service_servicecategories" label="Linked with service categories" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/servicecategory/formlist</defaultValuesRoute>
@@ -166,7 +166,7 @@
 				</field>
 			</block>
 			<block name="SNMP traps">
-				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/trap/formlist</defaultValuesRoute>
@@ -178,7 +178,7 @@
 		</section>
 		<section name="Data processing">
 			<block name="Data processing">
-				<field name="service_obsess_over_host" label="Obsess over service" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_obsess_over_host" label="Obsess over service" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -189,7 +189,7 @@
 				</field>
 			</block>
 			<block name="Freshness control options">
-				<field name="service_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -198,10 +198,10 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="service_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Flapping options">
-				<field name="service_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -210,11 +210,11 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+				<field name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Perfdata options">
-				<field name="service_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -225,7 +225,7 @@
 				</field>
 			</block>
 			<block name="History options">
-				<field name="service_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -234,7 +234,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -243,7 +243,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
+				<field name="service_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Ok>1</Ok>
@@ -255,7 +255,7 @@
 				</field>
 			</block>
 			<block name="Event handler">
-				<field name="service_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="service_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -264,7 +264,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="service_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="service_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
@@ -276,7 +276,7 @@
 		</section>
 		<section name="Extended information">
 			<block name="Extended information">
-				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
+				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>

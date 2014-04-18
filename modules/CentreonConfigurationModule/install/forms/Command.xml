@@ -6,8 +6,8 @@
 		<redirect_route>/configuration/command</redirect_route>
 		<section name="General">
 			<block name="General information">
-				<field name="command_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="command_type" label="Type" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="command_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="command_type" label="Type" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Notification>1</Notification>
@@ -16,8 +16,8 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" mandatory="1"></field>
+				<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -27,7 +27,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="connector_id" label="Connector" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="connector_id" label="Connector" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/connector/formlist</defaultValuesRoute>
@@ -36,7 +36,7 @@
 						<ordered>false</ordered>
 					</attributes>
 				</field>
-				<field name="command_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="command_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
 			</block>
 		</section>
 	</form>

@@ -6,9 +6,9 @@
 		<redirect_route>/configuration/hostcategory</redirect_route>
 		<section name="General">
 			<block name="General information">
-				<field name="hc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="hc_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" module_id="1" mandatory="0">
+				<field name="hc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="hc_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
@@ -20,7 +20,7 @@
 				</field>
 			</block>
 			<block name="Relations">
-				<field name="hc_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="hc_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
@@ -29,7 +29,7 @@
 						<ordered>false</ordered>
 					</attributes>
 				</field>
-				<field name="hc_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="hc_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/hosttemplate/formlist</defaultValuesRoute>
@@ -40,8 +40,8 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="hc_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="hc_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="hc_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
+				<field name="hc_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>

@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace Centreon\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -58,7 +58,7 @@ abstract class Repository
      *
      * @var string
      */
-    public static $moduleName = 'CentreonConfiguration';
+    public static $moduleName = 'Centreon';
     
     /**
      *

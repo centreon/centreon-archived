@@ -6,11 +6,11 @@
 		<redirect_route>/administration/aclgroup</redirect_route>
 		<section name="General">
 			<block name="General information">
-				<field name="acl_group_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="acl_group_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="acl_group_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="acl_group_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 			</block>
 			<block name="Relations">
-				<field name="acl_group_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="acl_group_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
@@ -19,7 +19,7 @@
 						<ordered>false</ordered>
 					</attributes>
 				</field>
-				<field name="acl_group_contact_groups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="acl_group_contact_groups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
@@ -30,7 +30,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="acl_group_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="acl_group_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -42,7 +42,7 @@
 		</section>
 		<section name="Access">
 			<block name="Resource access">
-				<field name="acl_group_resources" label="Resource access" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="acl_group_resources" label="Resource access" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/administration/aclresource/formlist</defaultValuesRoute>
@@ -53,7 +53,7 @@
 				</field>
 			</block>
 			<block name="Menu access">
-				<field name="acl_group_menus" label="Menu access" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="acl_group_menus" label="Menu access" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/administration/aclmenu/formlist</defaultValuesRoute>
@@ -64,7 +64,7 @@
 				</field>
 			</block>
 			<block name="Action access">
-				<field name="acl_group_access" label="Action access" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="acl_group_access" label="Action access" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/administration/aclaction/formlist</defaultValuesRoute>

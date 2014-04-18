@@ -45,7 +45,7 @@
     function toggleSelectedAction() {
         var countElem = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]').length;
         var countChecked = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').length;
-        if (countElem == countChecked) {
+        if (countElem === countChecked) {
             $('table[id^="datatable"] thead input[id^="all"]').prop("checked", true);
         } else {
             $('table[id^="datatable"] thead input[id^="all"]').prop("checked", false);
@@ -85,6 +85,7 @@
     });
 
     /* Add modal */
+    {if isset($objectAddUrl)}
     $('#modalAdd').on('click', function(e) {
         $('#modal').removeData('bs.modal');
         $('#modal').removeData('centreonWizard');
@@ -96,8 +97,10 @@
             'remote': '{url_for url=$objectAddUrl}'
         });
     });
+    {/if}
 
     /* Delete modal */
+    {if isset($objectDeleteUrl)}
     $('#modalDelete').on('click', function(e) {
         e.preventDefault();
         $('#modal .modal-content').text('');
@@ -167,8 +170,10 @@
             .removeData('bs.modal')
             .modal();
     });
+    {/if}
 
     /* Duplicate modal */
+    {if isset($objectDuplicateUrl)}
     $('#modalDuplicate').on('click', function(e) {
         e.preventDefault();
         $('#modal').removeData('bs.modal');
@@ -252,8 +257,10 @@
 
         $('#modal').modal();
     });
+    {/if}
 
     /* Massive change modal */
+    {if isset($objectMcUrl)}
     $('#modalMassiveChange').on('click', function(e) {
         e.preventDefault();
         $('#modal').removeData('bs.modal');
@@ -374,4 +381,5 @@
 
         $('#modal').modal();
     });
+    {/if}
 </script>

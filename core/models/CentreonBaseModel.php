@@ -35,14 +35,14 @@
  */
 
 
-namespace CentreonConfiguration\Models;
+namespace Centreon\Models;
 
 /**
  * Abstract Centreon Object class
  *
  * @author sylvestre
  */
-abstract class Object
+abstract class CentreonBaseModel
 {
     /**
      * Table name of the object
@@ -357,6 +357,25 @@ abstract class Object
             $sql = $db->limit($sql, $count, $offset);
         }
         return static::getResult($sql, $filterTab, "fetchAll");
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @param type $parameterNames
+     * @return type
+     */
+    public static function get($id, $parameterNames = "*")
+    {
+        if (is_array($parameterNames)) {
+            $params = implode(",", $parameterNames);
+        } else {
+            $params = $parameterNames;
+        }
+        $sql = "SELECT $params FROM " . static::$table;
+        $sql .= " WHERE " . static::$primaryKey . " LIKE ? ";
+        $result = static::getResult($sql, array($id), "fetchAll");
+        return $result[0];
     }
 
     /**

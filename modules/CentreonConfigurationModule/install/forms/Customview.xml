@@ -4,8 +4,8 @@
 		<route>/customview/updateview</route>
 		<section name="General">
 			<block name="General information">
-				<field name="view_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="view_mode" label="Alias" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="view_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="view_mode" label="Alias" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Public>1</Public>

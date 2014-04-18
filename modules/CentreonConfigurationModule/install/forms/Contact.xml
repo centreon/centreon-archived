@@ -6,10 +6,10 @@
 		<redirect_route>/configuration/user</redirect_route>
 		<section name="General">
 			<block name="General information">
-				<field name="contact_alias" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="contact_name" label="Full name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="contact_email" label="E-mail address" default_value="" advanced="0" type="email" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="contact_template_id" label="Template" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_alias" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="contact_name" label="Full name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="contact_email" label="E-mail address" default_value="" advanced="0" type="email" parent_field="" mandatory="1"></field>
+				<field name="contact_template_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/contacttemplate/formlist</defaultValuesRoute>
@@ -19,7 +19,7 @@
 				</field>
 			</block>
 			<block name="Relations">
-				<field name="contact_contactgroups" label="Contact groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_contactgroups" label="Contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
@@ -30,7 +30,7 @@
 				</field>
 			</block>
 			<block name="Notification">
-				<field name="contact_enable_notifications" label="Enable notifications" default_value="2" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="contact_enable_notifications" label="Enable notifications" default_value="2" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -39,7 +39,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="contact_host_notification_options" label="Host notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_host_notification_options" label="Host notification options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Down>1</Down>
@@ -51,7 +51,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="timeperiod_tp_id" label="Host notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="timeperiod_tp_id" label="Host notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
@@ -59,7 +59,7 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="contact_host_notif_command" label="Host notification command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_host_notif_command" label="Host notification command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
@@ -68,7 +68,7 @@
 						<ordered>false</ordered>
 					</attributes>
 				</field>
-				<field name="contact_service_notification_options" label="Service notification options" default_value="" advanced="1" type="checkbox" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_service_notification_options" label="Service notification options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Warning>1</Warning>
@@ -81,7 +81,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="timeperiod_tp_id2" label="Service notification period" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="timeperiod_tp_id2" label="Service notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
@@ -89,7 +89,7 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="contact_service_notif_command" label="Service notification command" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_service_notif_command" label="Service notification command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
@@ -102,7 +102,7 @@
 		</section>
 		<section name="Access">
 			<block name="Authentication">
-				<field name="contact_oreon" label="Enable UI access" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="contact_oreon" label="Enable UI access" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -110,10 +110,10 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="contact_passwd" label="Password" default_value="" advanced="0" type="password" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="contact_passwd_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="contact_autologin_key" label="Autologin key" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="contact_auth_type" label="Authentication type" default_value="local" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_passwd" label="Password" default_value="" advanced="0" type="password" parent_field="" mandatory="0"></field>
+				<field name="contact_passwd_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" mandatory="0"></field>
+				<field name="contact_autologin_key" label="Autologin key" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+				<field name="contact_auth_type" label="Authentication type" default_value="local" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Default>local</Default>
@@ -123,7 +123,7 @@
 				</field>
 			</block>
 			<block name="ACL">
-				<field name="contact_admin" label="Admin role" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="contact_admin" label="Admin role" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -131,7 +131,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="contact_aclgroups" label="ACL groups" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_aclgroups" label="ACL groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
@@ -144,7 +144,7 @@
 		</section>
 		<section name="Extended information">
 			<block name="Locale settings">
-				<field name="contact_lang" label="Language" default_value="en_US.UTF-8" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="contact_lang" label="Language" default_value="en_US.UTF-8" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
@@ -154,7 +154,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="contact_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="contact_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -162,7 +162,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="contact_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="contact_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
 			</block>
 		</section>
 	</form>

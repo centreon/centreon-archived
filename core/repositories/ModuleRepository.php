@@ -33,111 +33,165 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace Centreon\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-abstract class Repository
+class ModuleRepository extends \Centreon\Repository\Repository
 {
     /**
      *
      * @var string
      */
-    public static $tableName = '';
+    public static $tableName = 'module';
     
     /**
      *
      * @var string
      */
-    public static $objectName = '';
+    public static $objectName = 'Module';
     
     /**
      *
-     * @var string
+     * @var type 
      */
-    public static $moduleName = 'CentreonConfiguration';
+    public static $additionalColumn = array(
+        'alias',
+    );
     
     /**
      *
      * @var array Default column for datatable
      */
-    public static $datatableColumn = array();
+    public static $datatableColumn = array(
+        '<input id="allModule" class="allModule" type="checkbox">' => 'id',
+        'Name' => 'name',
+        'Description' => 'description',
+        'Version' => 'version',
+        'Author' => 'author',
+        'Status' => 'isactivated',
+        'Install status' => 'isinstalled'
+    );
     
     /**
      *
      * @var array 
      */
-    public static $additionalColumn = array();
-    
-    /**
-     *
-     * @var array This array should math the additional column variable
-     */
-    public static $researchIndex = array();
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = '';
-    
-    /**
-     *
-     * @var string Acl string
-     */
-    public static $aclConditions = '';
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $linkedTables = '';
+    public static $researchIndex = array(
+        'id',
+        'alias',
+        'description',
+        'version',
+        'author',
+        'isactivated',
+        'isinstalled'
+    );
     
     /**
      *
      * @var array 
      */
-    public static $datatableHeader = array();
+    public static $datatableHeader = array(
+        'none',
+        'search_name',
+        'search_description',
+        'search_version',
+        'search_author',
+        array(
+            'select' => array(
+                'Enabled' => '1',
+                'Disabled' => '0'
+            )
+        ),
+        array(
+            'select' => array(
+                'Installed' => '1',
+                'Not installed' => '0'
+            )
+        ),
+    );
     
     /**
      *
      * @var array 
      */
-    public static $columnCast = array();
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array();
-
-    /**
-     * @var bool If this object has category
-     */
-    public static $hasCategory = false;
-
-    /**
-     * @var string The name of group, if the object does not have group it's a empty string
-     */
-    public static $groupname = '';
-    
-    /**
-     * 
-     * @return array
-     */
-    public static function getParametersForDatatable()
-    {
-        return array(
-            'column' => static::$datatableColumn,
-            'header' => static::$datatableHeader,
-            'footer' => static::$datatableFooter,
-            'hasCategory' => static::$hasCategory,
-            'groupname' => _(static::$groupname)
-        );
-    }
+    public static $columnCast = array(
+        'isactivated' => array(
+            'type' => 'select',
+            'parameters' =>array(
+                'selecttype' => 'url',
+                'parameters' => array(
+                    '0' => array(
+                        'parameters' => array(
+                            'route' => '/administration/extensions/module/[i:id]/enable',
+                            'routeParams' => array(
+                                'id' => '::id::'
+                            ),
+                            'linkName' => 'Disabled',
+                            'styleClass' => 'btn btn-danger btn-block'
+                        )
+                    ),
+                    '1' => array(
+                        'parameters' => array(
+                            'route' => '/administration/extensions/module/[i:id]/disable',
+                            'routeParams' => array(
+                                'id' => '::id::'
+                            ),
+                            'linkName' => 'Enabled',
+                            'styleClass' => 'btn btn-success btn-block'
+                        )
+                    ),
+                )
+            )
+        ),
+        'isinstalled' => array(
+            'type' => 'select',
+            'parameters' => array(
+                'selecttype' => 'url',
+                'parameters' => array(
+                    '0' => array(
+                        'parameters' => array(
+                            'route' => '/administration/extensions/module/[*:shortname]/install',
+                            'routeParams' => array(
+                                'shortname' => '::name::'
+                            ),
+                            'linkName' => 'Uninstalled',
+                            'styleClass' => 'btn btn-danger btn-block'
+                        )
+                    ),
+                    '1' => array(
+                        'parameters' => array(
+                            'route' => '/administration/extensions/module/[i:id]/uninstall',
+                            'routeParams' => array(
+                                'id' => '::id::'
+                            ),
+                            'linkName' => 'Installed',
+                            'styleClass' => 'btn btn-success btn-block'
+                        )
+                    ),
+                )
+            )
+        ),
+        'id' => array(
+            'type' => 'checkbox',
+            'parameters' => array(
+                'displayName' => '::name::'
+            )
+        ),
+        'name' => array(
+            'type' => 'url',
+            'parameters' => array(
+                'route' => '/administration/extensions/module/[i:id]',
+                'routeParams' => array(
+                    'id' => '::id::'
+                ),
+                'linkName' => '::alias::'
+            )
+        )
+    );
     
     /**
      * 
@@ -231,6 +285,36 @@ abstract class Repository
         
         // Returning the result
         $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // Get current moduleName
+        $moduleNameList = array();
+        foreach($resultSet as $cModule) {
+            $moduleNameList[] = $cModule['name'];
+        }
+        
+        // Add file system repo
+        $rawModuleList = glob(__DIR__."/../../modules/*Module/");
+        foreach ($rawModuleList as $module) {
+            if (file_exists(realpath($module . 'install/config.json'))) {
+                $b = json_decode(file_get_contents($module . 'install/config.json'), true);
+                if (!in_array($b['shortname'], $moduleNameList)) {
+                    $resultSet[] = array(
+                        'id' => 0,
+                        'name' => $b['shortname'],
+                        'description' => $b['name'],
+                        'version' => $b['version'],
+                        'author' => implode(", ", $b['author']),
+                        'isactivated' => 0,
+                        'isinstalled' => 0,
+                        'alias' => $b['name'],
+                    );
+                }
+            }
+        }
+        
+        /*var_dump($resultSet);
+        var_dump(array_unique($resultSet));*/
+        
         $countTab = count($resultSet);
         $objectTab = array();
         for ($i=0; $i<$countTab; $i++) {
@@ -255,118 +339,5 @@ abstract class Repository
                 )
             )
         );
-    }
-    
-    /**
-     * Format datas before return to the calling script/function/object
-     * @param array $resultSet
-     */
-    public static function formatDatas(&$resultSet)
-    {
-        
-    }
-    
-    /**
-     * 
-     * @param array $params
-     * @return array
-     */
-    public static function getCustomDatas($params)
-    {
-        
-    }
-    
-    /**
-     * 
-     * @param array $params
-     * @return integer
-     */
-    public static function getTotalRecordsForDatatable($params)
-    {
-        // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        $conditions = '';
-        $additionalTables = '';
-        
-        // Getting table column
-        $c = array_values(static::$researchIndex);
-        
-        if (!empty(static::$specificConditions)) {
-            $conditions = "WHERE ".static::$specificConditions;
-        }
-        
-        if (!empty(static::$aclConditions)) {
-            if (empty($conditions)) {
-                $conditions = "WHERE ".static::$aclConditions;
-            } else {
-                $conditions = "AND ".static::$aclConditions;
-            }
-        }
-        
-        if (!empty(static::$linkedTables)) {
-            $additionalTables = ', '.static::$linkedTables;
-        }
-        
-        // Conditions (Recherche)
-        foreach ($params as $paramName => $paramValue) {
-            if (strpos($paramName, 'sSearch_') !== false) {
-                if (!empty($paramValue) || $paramValue === "0") {
-                    $colNumber = substr($paramName, strlen('sSearch_'));
-                    
-                    if (substr($c[$colNumber], 0, 11) === '[SPECFIELD]') {
-                        $research = str_replace('::search_value::', '%'.$paramValue.'%', substr($c[$colNumber], 11));
-                    } else {
-                        $research = $c[$colNumber]." like '%".$paramValue."%' ";
-                    }
-                    
-                    if (empty($conditions)) {
-                        $conditions = "WHERE ".$research;
-                    } else {
-                        $conditions .= "AND ".$research;
-                    }
-                }
-            }
-        }
-        
-        // Building the final request
-        $request = "SELECT COUNT('id') as nb".ucwords(static::$tableName).
-            " FROM ".static::$tableName."$additionalTables $conditions";
-        
-        // Executing the request
-        $stmt = $dbconn->query($request);
-        
-        // Getting the result
-        $result = $stmt->fetchAll();
-        
-        // Returing the result
-        return $result[0]['nb'.ucwords(static::$tableName)];
-    }
-    
-    /**
-     * 
-     * @param type $array
-     * @return type
-     */
-    public static function arrayValuesRecursive($array)
-    {
-        $array = array_values($array);
-        for ($i = 0, $n = count($array); $i < $n; $i++) {
-            $element = $array[$i];
-            if (is_array($element)) {
-                $array[$i] = self::arrayValuesRecursive($element);
-            }
-        }
-        return $array;
-    }
-    
-    /**
-     * 
-     * @param array $params
-     */
-    public static function getTotalRecords($params)
-    {
-        
     }
 }

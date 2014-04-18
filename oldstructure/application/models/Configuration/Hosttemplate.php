@@ -42,7 +42,7 @@ namespace Models\Configuration;
  *
  * @author sylvestre
  */
-class Hosttemplate extends Object
+class Hosttemplate extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "host";
     protected static $primaryKey = "host_id";

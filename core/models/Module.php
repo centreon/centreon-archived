@@ -38,13 +38,13 @@
 namespace Centreon\Models;
 
 /**
- * Used for interacting with menus
+ * Used for interacting with Contact objects
  *
  * @author sylvestre
  */
-class Menu extends \Centreon\Models\CentreonBaseModel
+class Module extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "menus";
-    protected static $primaryKey = "menu_id";
-    protected static $uniqueLabelField = "url";
+    protected static $table = "module";
+    protected static $primaryKey = "id";
+    protected static $uniqueLabelField = "name";
 }

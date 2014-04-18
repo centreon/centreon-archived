@@ -35,16 +35,12 @@
  */
 
 
-namespace Centreon\Models;
+namespace Centreon\Controllers;
 
-/**
- * Used for interacting with menus
- *
- * @author sylvestre
- */
-class Menu extends \Centreon\Models\CentreonBaseModel
+class ModuleController extends \Centreon\Internal\Controller
 {
-    protected static $table = "menus";
-    protected static $primaryKey = "menu_id";
-    protected static $uniqueLabelField = "url";
+    private function display()
+    {
+        
+    }
 }

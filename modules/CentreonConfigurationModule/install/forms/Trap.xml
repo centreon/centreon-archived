@@ -6,9 +6,9 @@
 		<redirect_route>/configuration/trap</redirect_route>
 		<section name="Host configuration">
 			<block name="General information">
-				<field name="traps_name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="traps_oid" label="Alias" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="traps_oid" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/manufacturer/formlist</defaultValuesRoute>
@@ -19,8 +19,8 @@
 				</field>
 			</block>
 			<block name="Trap translation">
-				<field name="traps_args" label="Output message" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
-				<field name="traps_status" label="Default status" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_args" label="Output message" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="traps_status" label="Default status" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Ok>0</Ok>
@@ -30,7 +30,7 @@
 						</choices>
 					</attributes>
 				</field>
-				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Enabled>1</Enabled>
@@ -38,7 +38,7 @@
 						</choices>
 					</attributes>
 				</field>
-				<field name="traps_advanced_treatment_default" label="If no matched rules" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_advanced_treatment_default" label="If no matched rules" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Submit_result>0</Submit_result>
@@ -48,7 +48,7 @@
 				</field>
 			</block>
 			<block name="Submit result to monitoring engine">
-				<field name="traps_submit_result_enable" label="Submit result" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_submit_result_enable" label="Submit result" default_value="1" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Yes>1</Yes>
@@ -58,7 +58,7 @@
 				</field>
 			</block>
 			<block name="Force service check rescheduling">
-				<field name="traps_reschedule_svc_enable" label="Reschedule service check" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_reschedule_svc_enable" label="Reschedule service check" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Yes>1</Yes>
@@ -68,7 +68,7 @@
 				</field>
 			</block>
 			<block name="Command execution">
-				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -76,15 +76,15 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="traps_execution_command" label="Special command" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="traps_execution_command" label="Special command" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Additional information">
-				<field name="traps_comments" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="traps_comments" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
 			</block>
 		</section>
 		<section name="Relations">
 			<block name="Resources">
-				<field name="trap_services" label="Linked services" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="trap_services" label="Linked services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/service/formlist</defaultValuesRoute>
@@ -92,7 +92,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="trap_servicetemplates" label="Linked service templates" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="0">
+				<field name="trap_servicetemplates" label="Linked service templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
@@ -104,7 +104,7 @@
 		</section>
 		<section name="Advanced settings">
 			<block name="Route parameters">
-				<field name="traps_routing_mode" label="Routing mode" default_value="0" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_routing_mode" label="Routing mode" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -112,10 +112,10 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="traps_routing_value" label="Route definition" default_value="" advanced="1" type="text" parent_field="" module_id="1" mandatory="0"></field>
+				<field name="traps_routing_value" label="Route definition" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Misc">
-				<field name="traps_log" label="Log" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="0">
+				<field name="traps_log" label="Log" default_value="" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -123,9 +123,9 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="traps_timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="traps_exec_interval" label="Execution interval" default_value="" advanced="1" type="integer" parent_field="" module_id="1" mandatory="0"></field>
-				<field name="traps_exec_interval_type" label="Execution type" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="traps_timeout" label="Timeout" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
+				<field name="traps_exec_interval" label="Execution interval" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
+				<field name="traps_exec_interval_type" label="Execution type" default_value="" advanced="1" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <None>0</None>
@@ -134,7 +134,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="traps_exec_method" label="Execution method" default_value="" advanced="1" type="radio" parent_field="" module_id="1" mandatory="1">
+				<field name="traps_exec_method" label="Execution method" default_value="" advanced="1" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Parallel>0</Parallel>
