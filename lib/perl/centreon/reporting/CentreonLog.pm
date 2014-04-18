@@ -73,7 +73,7 @@ sub getLogOfServices {
             " WHERE `ctime` >= ".$start.
             " AND `ctime` < ".$end.
             " AND (`type` = 'HARD' OR (`status` = 'OK' AND `type` = 'SOFT'))".
-            " AND `service_description` IS NOT null".
+            " AND `service_description` IS NOT NULL".
             " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
             " ORDER BY `ctime`";
     } elsif($self->{'dbLayer'} eq "broker") {
@@ -82,7 +82,7 @@ sub getLogOfServices {
             " WHERE `ctime` >= ".$start.
             " AND `ctime` < ".$end.
             " AND (`type` = 1 OR (`status` = 0 AND `type` = 0))".
-            " AND `service_id` IS NOT null".
+            " AND (`service_id` IS NOT NULL OR `service_description IS NOT NULL) `".
             " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
             " ORDER BY `ctime`";
     }
