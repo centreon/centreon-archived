@@ -93,6 +93,19 @@ class Module
     {
         Hook::unregister($this->moduleId, $blockName);
     }
+    
+    public static function parseMenuArray($menus)
+    {
+        $i = 1;
+        foreach ($menus as $menu) {
+            $menu['order'] = $i;
+            \Centreon\Internal\Module::setMenu($menu);
+            if (isset($menu['menus']) && count($menu['menus'])) {
+                self::parseMenuArray($menu['menus']);
+            }
+            $i++;
+        }
+    }
 
     /**
      * Set menu entry

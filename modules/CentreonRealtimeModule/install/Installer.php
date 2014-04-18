@@ -1,6 +1,6 @@
 <?php
 
-namespace CentreonConfiguration\Install;
+namespace CentreonRealtime\Install;
 
 /**
  * 

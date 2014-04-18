@@ -40,11 +40,26 @@ class AbstractModule implements iModuleInstaller
         $this->preInstall();
         $this->installDb();
         $this->installForms();
+        $this->installMenu();
         $this->customInstall();
         $this->postInstall();
     }
     
     public function customInstall()
+    {
+        
+    }
+    
+    public function installMenu()
+    {
+        $filejson = $this->moduleDirectory . 'install/menu.json';
+        if (file_exists($filejson)) {
+            $menus = json_decode(file_get_contents($filejson), true);
+            \Centreon\Internal\Module::parseMenuArray($menus);
+        }
+    }
+    
+    public function removeMenu()
     {
         
     }
@@ -70,7 +85,7 @@ class AbstractModule implements iModuleInstaller
      */
     public function installForms()
     {
-        $formsFiles = $this->moduleDirectory . '/forms/*.xml';
+        $formsFiles = $this->moduleDirectory . '/install/forms/*.xml';
         foreach (glob($formsFiles) as $xmlFile) {
             \Centreon\Internal\Form\Installer::installFromXml($this->moduleId, $xmlFile);
         }
@@ -139,6 +154,7 @@ class AbstractModule implements iModuleInstaller
         $this->preRemove();
         $this->removeDb();
         $this->removeForms();
+        $this->removeMenu();
         $this->postRemove();
     }
     
