@@ -89,13 +89,18 @@ class Router extends \Klein\Klein
         
         // Now lets see the modules
         foreach ($modules as $module) {
-            $myModuleControllersFiles = glob(__DIR__."/../../modules/$module/controllers/*Controller.php");
-            foreach ($myModuleControllersFiles as $moduleController) {
-                $controllersList[] = '\\'.str_replace('Module', '', $module).'\\Controllers\\'.basename($moduleController, '.php');
-            }
-            $myModuleApiFiles = glob(__DIR__."/../../modules/$module/api/rest/*Api.php");
-            foreach ($myModuleApiFiles as $moduleApi) {
-                $controllersList[] = '\\'.str_replace('Module', '', $module).'\\Api\\Rest\\'.basename($moduleApi, '.php');
+            $moduleName = str_replace('Module', '', $module);
+            preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
+            $moduleShortName = strtolower(implode('-', $myMatches[0]));
+            if (\Centreon\Custom\Module\ModuleInformations::isModuleReachable($moduleShortName)) {
+                $myModuleControllersFiles = glob(__DIR__."/../../modules/$module/controllers/*Controller.php");
+                foreach ($myModuleControllersFiles as $moduleController) {
+                    $controllersList[] = '\\'.$moduleName.'\\Controllers\\'.basename($moduleController, '.php');
+                }
+                $myModuleApiFiles = glob(__DIR__."/../../modules/$module/api/rest/*Api.php");
+                foreach ($myModuleApiFiles as $moduleApi) {
+                    $controllersList[] = '\\'.$moduleName.'\\Api\\Rest\\'.basename($moduleApi, '.php');
+                }
             }
         }
         

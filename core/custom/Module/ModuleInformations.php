@@ -68,15 +68,19 @@ class ModuleInformations
     public static function isModuleActivated($moduleName)
     {
         $resultModule = \Centreon\Models\Module::getIdByParameter('name', $moduleName);
-        $result = \Centreon\Models\Module::getParameters($resultModule[0]['id'], 'isactivated');
-        return (boolean)$result[0]['isactivated'];
+        $result = \Centreon\Models\Module::getParameters($resultModule[0], 'isactivated');
+        return (boolean)$result['isactivated'];
     }
     
     public static function isModuleInstalled($moduleName)
     {
+        $isinstalled = false;
         $resultModule = \Centreon\Models\Module::getIdByParameter('name', $moduleName);
-        $result = \Centreon\Models\Module::getParameters($resultModule[0]['id'], 'isinstalled');
-        return (boolean)$result[0]['isinstalled'];
+        if (count($resultModule) > 0) {
+            $result = \Centreon\Models\Module::getParameters($resultModule[0], 'isinstalled');
+            $isinstalled = (boolean)$result['isinstalled'];
+        }
+        return $isinstalled;
     }
     
     /**
@@ -86,9 +90,12 @@ class ModuleInformations
     public static function isModuleReachable($moduleName)
     {
         $isReachable = false;
-        if (self::isModuleActivated($moduleName) && self::isModuleInstalled($moduleName)) {
-            $isReachable = true;
+        if (self::isModuleInstalled($moduleName)) {
+            if (self::isModuleActivated($moduleName)) {
+                $isReachable = true;
+            }
         }
+        
         return $isReachable;
     }
     
