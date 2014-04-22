@@ -94,14 +94,17 @@ class Module
         Hook::unregister($this->moduleId, $blockName);
     }
     
-    public static function parseMenuArray($menus)
+    public static function parseMenuArray($menus, $parent = null)
     {
         $i = 1;
         foreach ($menus as $menu) {
             $menu['order'] = $i;
+            if (!is_null($parent)) {
+                $menu['parent'] = $parent;
+            }
             \Centreon\Internal\Module::setMenu($menu);
             if (isset($menu['menus']) && count($menu['menus'])) {
-                self::parseMenuArray($menu['menus']);
+                self::parseMenuArray($menu['menus'], $menu['short_name']);
             }
             $i++;
         }
@@ -133,6 +136,7 @@ class Module
                 throw new Exception(sprintf('Missing mandatory key %s', $k));
             }
         }
+        
         if (isset($data['parent']) && !isset($menus[$data['parent']])) {
             throw new Exception(sprintf('Parent %s does not exist', $data['parent']));
         }
@@ -162,9 +166,8 @@ class Module
         $stmt->bindParam(':icon', $icon);
         $bgcolor = isset($data['bgcolor']) ? $data['bgcolor'] : null;
         $stmt->bindParam(':bgcolor', $bgcolor);
-        if (isset($data['order'])) {
-            $stmt->bindParam(':order', $order);
-        }
+        $order = isset($data['order']) ? $data['order'] : null;
+        $stmt->bindParam(':order', $order);
         $module = isset($data['module']) ? $data['module'] : 0;
         $stmt->bindParam(':module', $module);
         $stmt->execute();

@@ -124,11 +124,15 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);
 
         // Check if all dependencies are satisfied
-        $dependenciesCheckResult = $moduleInstaller->isDependenciesSatisfied();
-        if ($dependenciesCheckResult['success']) {
-            $moduleInstaller->install();
-        } else {
-            throw new Exception("Missing dependencies");
+        try {
+            $dependenciesCheckResult = $moduleInstaller->isDependenciesSatisfied();
+            if ($dependenciesCheckResult['success']) {
+                $moduleInstaller->install();
+            } else {
+                throw new Exception("Missing dependencies");
+            }
+        } catch (\Exception $e) {
+            $moduleInstaller->remove();
         }
         
         $backUrl = $router->getPathFor('/administration/extensions/module');
