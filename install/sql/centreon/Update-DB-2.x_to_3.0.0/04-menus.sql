@@ -9,7 +9,7 @@ CREATE TABLE `menus` (
   `icon_class` varchar(100) DEFAULT NULL,
   `icon` varchar(255) DEFAULT NULL,
   `bgcolor` varchar(55) DEFAULT NULL,
-  `module_id` int(10) unsigned NOT NULL,
+  `module_id` int unsigned NOT NULL,
   `menu_order` tinyint(5) DEFAULT '0',
   PRIMARY KEY (`menu_id`),
   KEY `parent_id` (`parent_id`),
