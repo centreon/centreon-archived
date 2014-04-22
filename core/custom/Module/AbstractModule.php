@@ -83,13 +83,8 @@ class AbstractModule implements iModuleInstaller
         $filejson = $this->moduleDirectory . 'install/menu.json';
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
-            \Centreon\Internal\Module::parseMenuArray($menus);
+            \Centreon\Internal\Module::parseMenuArray($this->moduleId, $menus);
         }
-    }
-    
-    public function removeMenu()
-    {
-        
     }
 
     /**
@@ -121,7 +116,7 @@ class AbstractModule implements iModuleInstaller
     
     public function removeForms()
     {
-        
+        \Centreon\Internal\Form\Installer::cleanDb($this->moduleId);
     }
     
     /**
@@ -182,7 +177,6 @@ class AbstractModule implements iModuleInstaller
         $this->preRemove();
         $this->removeDb();
         $this->removeForms();
-        $this->removeMenu();
         $this->postRemove();
     }
     

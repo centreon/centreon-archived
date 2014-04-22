@@ -14,6 +14,6 @@ CREATE TABLE `menus` (
   PRIMARY KEY (`menu_id`),
   KEY `parent_id` (`parent_id`),
   KEY `fk_menus_1_idx` (`module_id`),
-  CONSTRAINT `fk_menus_1` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_menus_1` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_menu_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`menu_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
