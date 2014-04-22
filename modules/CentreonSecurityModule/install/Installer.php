@@ -1,6 +1,6 @@
 <?php
 
-namespace CentreonDummy\Install;
+namespace CentreonSecurity\Install;
 
 /**
  * 
