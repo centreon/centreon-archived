@@ -8,8 +8,7 @@
             {
                 "name": "EventLogs",
                 "short_name": "eventlogs",
-                "route": "/realtime/eventlogs",
-                "parent": "realtime"
+                "route": "/realtime/eventlogs"
             }
         ]
     }

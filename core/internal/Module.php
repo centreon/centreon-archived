@@ -94,14 +94,18 @@ class Module
         Hook::unregister($this->moduleId, $blockName);
     }
     
-    public static function parseMenuArray($menus)
+    public static function parseMenuArray($moduleId, $menus, $parent = null)
     {
         $i = 1;
         foreach ($menus as $menu) {
             $menu['order'] = $i;
+            if (!is_null($parent)) {
+                $menu['parent'] = $parent;
+            }
+            $menu['module'] = $moduleId;
             \Centreon\Internal\Module::setMenu($menu);
             if (isset($menu['menus']) && count($menu['menus'])) {
-                self::parseMenuArray($menu['menus']);
+                self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
             }
             $i++;
         }
@@ -133,13 +137,14 @@ class Module
                 throw new Exception(sprintf('Missing mandatory key %s', $k));
             }
         }
+        
         if (isset($data['parent']) && !isset($menus[$data['parent']])) {
             throw new Exception(sprintf('Parent %s does not exist', $data['parent']));
         }
 
         if (!isset($menus[$data['short_name']])) {
             $sql = "INSERT INTO menus 
-                (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, is_module) VALUES
+                (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, module_id) VALUES
                 (:name, :short_name, :parent, :route, :icon_class, :icon, :bgcolor, :order, :module)";
         } else {
             $menuOrder = "";
@@ -147,7 +152,7 @@ class Module
                 $menuOrder = " menu_order = :order, ";
             }
             $sql = "UPDATE menus SET name = :name, parent_id = :parent, url = :route, icon_class = :icon_class,
-                icon = :icon, bgcolor = :bgcolor, $menuOrder is_module = :module
+                icon = :icon, bgcolor = :bgcolor, $menuOrder module_id = :module
                 WHERE short_name = :short_name";
         }
         $stmt = $db->prepare($sql);
@@ -162,9 +167,8 @@ class Module
         $stmt->bindParam(':icon', $icon);
         $bgcolor = isset($data['bgcolor']) ? $data['bgcolor'] : null;
         $stmt->bindParam(':bgcolor', $bgcolor);
-        if (isset($data['order'])) {
-            $stmt->bindParam(':order', $order);
-        }
+        $order = isset($data['order']) ? $data['order'] : null;
+        $stmt->bindParam(':order', $order);
         $module = isset($data['module']) ? $data['module'] : 0;
         $stmt->bindParam(':module', $module);
         $stmt->execute();

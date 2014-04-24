@@ -1,0 +1,23 @@
+{
+    "name": "Centreon Security",
+    "shortname" : "centreon-security",
+    "version": "3.0.0",
+    "author" : [
+        "Merethis"
+    ],
+    "url" : "",
+    "description" : "Centreon Security Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        
+    ],
+    "program dependencies" : [
+        
+    ]
+}
