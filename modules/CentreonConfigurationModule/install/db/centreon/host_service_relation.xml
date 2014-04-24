@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="host_service_relation" phpName="HostServiceRelation" idMethod="native">
+        <column name="hsr_id" phpName="HsrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="hostgroup_hg_id" phpName="HostgroupHgId" type="INTEGER" required="false"/>
+        <column name="host_host_id" phpName="HostHostId" type="INTEGER" required="false"/>
+        <column name="servicegroup_sg_id" phpName="ServicegroupSgId" type="INTEGER" required="false"/>
+        <column name="service_service_id" phpName="ServiceServiceId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="hostgroup" name="host_service_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="hostgroup_hg_id" foreign="hg_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="host" name="host_service_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="host_host_id" foreign="host_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="servicegroup" name="host_service_relation_ibfk_3" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="servicegroup_sg_id" foreign="sg_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="service" name="host_service_relation_ibfk_4" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="service_service_id" foreign="service_id"/>
+        </foreign-key>
+        <index name="hostgroup_index">
+            <index-column name="hostgroup_hg_id"/>
+        </index>
+        <index name="host_index">
+            <index-column name="host_host_id"/>
+        </index>
+        <index name="servicegroup_index">
+            <index-column name="servicegroup_sg_id"/>
+        </index>
+        <index name="service_index">
+          <index-column name="service_service_id"/>
+        </index>
+        <index name="host_service_index">
+            <index-column name="host_host_id"/>
+            <index-column name="service_service_id"/>
+        </index>
+        <index name="host_host_id">
+            <index-column name="host_host_id"/>
+            <index-column name="service_service_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

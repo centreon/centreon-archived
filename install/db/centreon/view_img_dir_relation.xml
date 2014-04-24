@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="view_img_dir_relation" phpName="ViewImgDirRelation" idMethod="native">
+        <column name="vidr_id" phpName="VidrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="dir_dir_parent_id" phpName="DirDirParentId" type="INTEGER" required="false"/>
+        <column name="img_img_id" phpName="ImgImgId" type="INTEGER" required="false"/>
+        <index name="directory_parent_index">
+            <index-column name="dir_dir_parent_id"/>
+        </index>
+        <index name="image_index">
+            <index-column name="img_img_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

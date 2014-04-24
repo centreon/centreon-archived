@@ -1,0 +1,15 @@
+[
+    {
+        "name": "Home",
+        "short_name": "home",
+        "icon_class": "fa fa-home",
+        "bgcolor": "#CCC",
+        "menus": [
+            {
+                "name": "Custom views",
+                "short_name": "customviews",
+                "route": "/customview"
+            }
+        ]
+    }
+]
