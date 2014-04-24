@@ -51,22 +51,19 @@ class ConfigGenerateResourcesRepository extends \CentreonConfiguration\Repositor
     public function generateResources($poller_id) 
     {
         $di = \Centreon\Internal\Di::getDefault();
+
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
 
         /* Init Content Array */
         $content = array();
         
-        /* Filter column that we want to include into the files */ 
-        $enableField = array("command_name" => 1, "command_line" => 1, "command_example" => 1);
-        $commentField = array("command_example" => 1);
-
         /* Get information into the database. */
         $query = "SELECT resource_name, resource_line 
                         FROM cfg_resource r, cfg_resource_instance_relations rr 
                         WHERE r.resource_id = rr.resource_id 
                                 AND rr.instance_id = 1 
-                                AND resource_activate = '1' 
+                                AND resource_activate = '$poller_id' 
                   ORDER BY resource_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
