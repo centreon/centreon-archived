@@ -36,7 +36,9 @@
   </div>
 </form>
 <script>
+var modalListener;
 $(function() {
+  $(document).unbind('finished');
   {if isset($validateUrl)}
   $(document).on('finished', function (event) {
     var validateMandatory = true;

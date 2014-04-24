@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="extended_host_information" phpName="ExtendedHostInformation" idMethod="native">
+        <column name="ehi_id" phpName="EhiId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_host_id" phpName="HostHostId" type="INTEGER" required="false"/>
+        <column name="ehi_notes" phpName="EhiNotes" type="VARCHAR" size="200" required="false"/>
+        <column name="ehi_notes_url" phpName="EhiNotesUrl" type="VARCHAR" size="200" required="false"/>
+        <column name="ehi_action_url" phpName="EhiActionUrl" type="VARCHAR" size="200" required="false"/>
+        <column name="ehi_icon_image" phpName="EhiIconImage" type="INTEGER" required="false"/>
+        <column name="ehi_icon_image_alt" phpName="EhiIconImageAlt" type="VARCHAR" size="200" required="false"/>
+        <column name="ehi_vrml_image" phpName="EhiVrmlImage" type="INTEGER" required="false"/>
+        <column name="ehi_statusmap_image" phpName="EhiStatusmapImage" type="INTEGER" required="false"/>
+        <column name="ehi_2d_coords" phpName="Ehi2dCoords" type="VARCHAR" size="200" required="false"/>
+        <column name="ehi_3d_coords" phpName="Ehi3dCoords" type="VARCHAR" size="200" required="false"/>
+        <foreign-key foreignTable="host" name="extended_host_information_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="host_host_id" foreign="host_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="view_img" name="extended_host_information_ibfk_2" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="ehi_icon_image" foreign="img_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="view_img" name="extended_host_information_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="ehi_vrml_image" foreign="img_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="view_img" name="extended_host_information_ibfk_4" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="ehi_statusmap_image" foreign="img_id"/>
+        </foreign-key>
+        <unique name="host_host_id">
+            <unique-column name="host_host_id"/>
+        </unique>
+        <index name="host_index">
+            <index-column name="host_host_id"/>
+        </index>
+        <index name="extended_host_information_ibfk_2">
+            <index-column name="ehi_icon_image"/>
+        </index>
+        <index name="extended_host_information_ibfk_3">
+            <index-column name="ehi_vrml_image"/>
+        </index>
+        <index name="extended_host_information_ibfk_4">
+            <index-column name="ehi_statusmap_image"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

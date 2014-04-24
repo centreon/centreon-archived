@@ -619,4 +619,31 @@ class Installer
         }
         $db->commit();
     }
+    
+    /**
+     * 
+     */
+    public static function cleanDb($moduleId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        
+        // Remove the field first
+        $sqlFields = "DELETE FROM form_field WHERE module_id = '$moduleId'";
+        $stmtRemoveFields = $db->query($sqlFields);
+        
+        // First clean the block
+        $sqlBlock = "DELETE FROM form_block WHERE NOT EXISTS (SELECT block_id FROM form_block_field_relation)";
+        $stmtRemoveBlock = $db->query($sqlBlock);
+        
+        // Second clean the section
+        $sqlSection = "DELETE FROM form_section WHERE NOT EXISTS (SELECT section_id FROM form_block)";
+        $stmtRemoveSection = $db->query($sqlSection);
+        
+        
+        // Then last but not least clean the form
+        $sqlForm = "DELETE FROM form WHERE NOT EXISTS (SELECT form_id FROM form_section)";
+        $stmtForm = $db->query($sqlForm);
+        
+        
+    }
 }

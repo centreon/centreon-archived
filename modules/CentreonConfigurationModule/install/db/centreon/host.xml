@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="host" phpName="Host" idMethod="native">
+        <column name="host_id" phpName="HostId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_template_model_htm_id" phpName="HostTemplateModelHtmId" type="INTEGER" required="false"/>
+        <column name="command_command_id" phpName="CommandCommandId" type="INTEGER" required="false"/>
+        <column name="command_command_id_arg1" phpName="CommandCommandIdArg1" type="LONGVARCHAR" required="false"/>
+        <column name="timeperiod_tp_id" phpName="TimeperiodTpId" type="INTEGER" required="false"/>
+        <column name="timeperiod_tp_id2" phpName="TimeperiodTpId2" type="INTEGER" required="false"/>
+        <column name="command_command_id2" phpName="CommandCommandId2" type="INTEGER" required="false"/>
+        <column name="command_command_id_arg2" phpName="CommandCommandIdArg2" type="LONGVARCHAR" required="false"/>
+        <column name="host_name" phpName="HostName" type="VARCHAR" size="200" required="false"/>
+        <column name="host_alias" phpName="HostAlias" type="VARCHAR" size="200" required="false"/>
+        <column name="host_address" phpName="HostAddress" type="VARCHAR" size="255" required="false"/>
+        <column name="display_name" phpName="DisplayName" type="VARCHAR" size="255" required="false"/>
+        <column name="host_max_check_attempts" phpName="HostMaxCheckAttempts" type="INTEGER" required="false"/>
+        <column name="host_check_interval" phpName="HostCheckInterval" type="INTEGER" required="false"/>
+        <column name="host_retry_check_interval" phpName="HostRetryCheckInterval" type="INTEGER" required="false"/>
+        <column name="host_active_checks_enabled" phpName="HostActiveChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_passive_checks_enabled" phpName="HostPassiveChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_checks_enabled" phpName="HostChecksEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="initial_state" phpName="InitialState" type="CHAR" sqlType="enum('o','d','u')" required="false"/>
+        <column name="host_obsess_over_host" phpName="HostObsessOverHost" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_check_freshness" phpName="HostCheckFreshness" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_freshness_threshold" phpName="HostFreshnessThreshold" type="INTEGER" required="false"/>
+        <column name="host_event_handler_enabled" phpName="HostEventHandlerEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_low_flap_threshold" phpName="HostLowFlapThreshold" type="INTEGER" required="false"/>
+        <column name="host_high_flap_threshold" phpName="HostHighFlapThreshold" type="INTEGER" required="false"/>
+        <column name="host_flap_detection_enabled" phpName="HostFlapDetectionEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="flap_detection_options" phpName="FlapDetectionOptions" type="VARCHAR" size="255" required="false"/>
+        <column name="host_process_perf_data" phpName="HostProcessPerfData" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_retain_status_information" phpName="HostRetainStatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_retain_nonstatus_information" phpName="HostRetainNonstatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="host_notification_interval" phpName="HostNotificationInterval" type="INTEGER" required="false"/>
+        <column name="host_notification_options" phpName="HostNotificationOptions" type="VARCHAR" size="200" required="false"/>
+        <column name="host_notifications_enabled" phpName="HostNotificationsEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="contact_additive_inheritance" phpName="ContactAdditiveInheritance" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
+        <column name="cg_additive_inheritance" phpName="CgAdditiveInheritance" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
+        <column name="host_first_notification_delay" phpName="HostFirstNotificationDelay" type="INTEGER" required="false"/>
+        <column name="host_stalking_options" phpName="HostStalkingOptions" type="VARCHAR" size="200" required="false"/>
+        <column name="host_snmp_community" phpName="HostSnmpCommunity" type="VARCHAR" size="255" required="false"/>
+        <column name="host_snmp_version" phpName="HostSnmpVersion" type="VARCHAR" size="255" required="false"/>
+        <column name="host_location" phpName="HostLocation" type="INTEGER" required="false" defaultValue="0"/>
+        <column name="host_comment" phpName="HostComment" type="LONGVARCHAR" required="false"/>
+        <column name="host_register" phpName="HostRegister" type="CHAR" sqlType="enum('0','1','2','3')" required="false"/>
+        <column name="host_activate" phpName="HostActivate" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="1"/>
+        <foreign-key foreignTable="command" name="host_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
+          <reference local="command_command_id" foreign="command_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="command" name="host_ibfk_2" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="command_command_id2" foreign="command_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="timeperiod" name="host_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="timeperiod_tp_id" foreign="tp_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="timeperiod" name="host_ibfk_4" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="timeperiod_tp_id2" foreign="tp_id"/>
+        </foreign-key>
+        <index name="htm_index">
+            <index-column name="host_template_model_htm_id"/>
+        </index>
+        <index name="cmd1_index">
+            <index-column name="command_command_id"/>
+        </index>
+        <index name="cmd2_index">
+            <index-column name="command_command_id2"/>
+        </index>
+        <index name="tp1_index">
+            <index-column name="timeperiod_tp_id"/>
+        </index>
+        <index name="tp2_index">
+            <index-column name="timeperiod_tp_id2"/>
+        </index>
+        <index name="name_index">
+            <index-column name="host_name"/>
+        </index>
+        <index name="host_id_register">
+            <index-column name="host_id"/>
+            <index-column name="host_register"/>
+        </index>
+        <index name="alias_index">
+            <index-column name="host_alias"/>
+        </index>
+        <index name="host_register">
+            <index-column name="host_register"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="timeperiod_include_relations" phpName="TimeperiodIncludeRelations" idMethod="native">
+        <column name="include_id" phpName="IncludeId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" required="true"/>
+        <column name="timeperiod_include_id" phpName="TimeperiodIncludeId" type="INTEGER" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="acl_resources_sg_relations" phpName="AclResourcesSgRelations" idMethod="native">
+        <column name="asgr" phpName="Asgr" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="sg_id" phpName="SgId" type="INTEGER" required="false"/>
+        <column name="acl_res_id" phpName="AclResId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="acl_resources" name="acl_resources_sg_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="acl_res_id" foreign="acl_res_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="servicegroup" name="acl_resources_sg_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="sg_id" foreign="sg_id"/>
+        </foreign-key>
+        <index name="sg_id">
+            <index-column name="sg_id"/>
+        </index>
+        <index name="acl_res_id">
+            <index-column name="acl_res_id"/>
+        </index>
+        <index name="sg_id_2">
+            <index-column name="sg_id"/>
+            <index-column name="acl_res_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

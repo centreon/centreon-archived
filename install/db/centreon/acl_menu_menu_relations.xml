@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="acl_menu_menu_relations" phpName="AclMenuMenuRelations" idMethod="native">
+        <column name="acl_menu_id" phpName="AclMenuId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true" defaultValue="0"/>
+        <column name="menu_id" phpName="MenuId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true" defaultValue="0"/>
+        <column name="acl_level" phpName="AclLevel" type="TINYINT" size="3" required="false"/>
+        <foreign-key foreignTable="acl_menus" name="acl_menu_menu_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="acl_menu_id" foreign="acl_menu_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="menus" name="acl_menu_menu_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="menu_id" foreign="menu_id"/>
+        </foreign-key>
+        <index name="acl_menu_menu_relations_ibfk_2">
+            <index-column name="menu_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

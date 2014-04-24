@@ -71,7 +71,6 @@ class Select extends Customobject
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
         }
-        
         $addJs = '';
         if (isset($element['label_ordered']) && $element['label_ordered']) {
             $addJs = '$("#'
@@ -88,7 +87,11 @@ class Select extends Customobject
                     update: function() { $("#'.$element['name'].'").select2("onSortEnd"); }
                   });'."\n";
         }
-        
+
+        if (!isset($element['label_multiple'])) {
+            $element['label_multiple'] = 0;
+        }
+
         $myHtml = '<input '
             . 'class="form-control '
             . $addClass
@@ -101,7 +104,11 @@ class Select extends Customobject
                 . 'multiple:'.(int)$element['label_multiple'].', '
                 . 'allowClear: true, '
                 . 'formatResult: select2_formatResult, '
-                . 'formatSelection: select2_formatSelection, '
+                . 'formatSelection: select2_formatSelection, ';
+        if (isset($element['label_selectData'])) {
+            $myJs .= 'data: { results: '.$element['label_selectData'].' },';
+        } elseif (isset($element['label_defaultValuesRoute'])) {
+            $myJs .= ''
                 . 'ajax: {'
                     .'data: function(term, page) {'
                         .'return { '
@@ -114,7 +121,14 @@ class Select extends Customobject
                         .'return {results:data, more:false}; '
                     .'}'
                 .'},';
-        if (isset($element['label_listValuesRoute'])) {
+        }
+        if (isset($element['label_selectDefault']) && $element['label_selectDefault'] != "[]") {
+            $myJs .= ''
+                .'initSelection: function(element, callback) {'
+                    .'var data = '.$element['label_selectDefault'].';'
+                    .'callback(data);'
+                .'}';
+        } elseif (isset($element['label_listValuesRoute'])) {
             $myJs .= ''
                 .'initSelection: function(element, callback) { '
                     .'var id=$(element).val();'

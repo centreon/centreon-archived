@@ -63,18 +63,20 @@ class Radio extends Customobject
         $myJs = '';
         $i = 1;
         
-        foreach ($element['label_choices'] as $key=>$choice) {
-            $htmlSelected = '';
-            if ($value == $choice) {
-                $htmlSelected = 'checked=checked';
+        if (isset($element['label_choices'])) { 
+            foreach ($element['label_choices'] as $key=>$choice) {
+                $htmlSelected = '';
+                if ($value == $choice) {
+                    $htmlSelected = 'checked=checked';
+                }
+                $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">&nbsp;'.
+                            '<input '.'id="'.$element['id']. $i . '" '.
+                            'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
+                            'value=' . $choice . ' '.$htmlSelected.' '.
+                            '/>'.' '.$key.
+                            '</label>'.'&nbsp;&nbsp;';
+                $i++;
             }
-            $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">&nbsp;'.
-                        '<input '.'id="'.$element['id']. $i . '" '.
-                        'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
-                        'value=' . $choice . ' '.$htmlSelected.' '.
-                        '/>'.' '.$key.
-                        '</label>'.'&nbsp;&nbsp;';
-            $i++;
         }
         
         return array(

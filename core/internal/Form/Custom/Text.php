@@ -48,7 +48,7 @@ class Text extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
+        $value = (isset($element['html']) ? 'value="'.$element['html'].'" ' : '');
         
         $placeholder = 'placeholder="'.$element['name'].'" ';
         if (isset($element['label_label']) && (!empty($element['label_label']))) {

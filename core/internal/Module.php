@@ -94,7 +94,7 @@ class Module
         Hook::unregister($this->moduleId, $blockName);
     }
     
-    public static function parseMenuArray($menus, $parent = null)
+    public static function parseMenuArray($moduleId, $menus, $parent = null)
     {
         $i = 1;
         foreach ($menus as $menu) {
@@ -102,9 +102,10 @@ class Module
             if (!is_null($parent)) {
                 $menu['parent'] = $parent;
             }
+            $menu['module'] = $moduleId;
             \Centreon\Internal\Module::setMenu($menu);
             if (isset($menu['menus']) && count($menu['menus'])) {
-                self::parseMenuArray($menu['menus'], $menu['short_name']);
+                self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
             }
             $i++;
         }
@@ -143,7 +144,7 @@ class Module
 
         if (!isset($menus[$data['short_name']])) {
             $sql = "INSERT INTO menus 
-                (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, is_module) VALUES
+                (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, module_id) VALUES
                 (:name, :short_name, :parent, :route, :icon_class, :icon, :bgcolor, :order, :module)";
         } else {
             $menuOrder = "";
@@ -151,7 +152,7 @@ class Module
                 $menuOrder = " menu_order = :order, ";
             }
             $sql = "UPDATE menus SET name = :name, parent_id = :parent, url = :route, icon_class = :icon_class,
-                icon = :icon, bgcolor = :bgcolor, $menuOrder is_module = :module
+                icon = :icon, bgcolor = :bgcolor, $menuOrder module_id = :module
                 WHERE short_name = :short_name";
         }
         $stmt = $db->prepare($sql);
