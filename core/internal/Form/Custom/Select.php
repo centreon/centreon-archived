@@ -127,6 +127,10 @@ class Select extends Customobject
                 .'initSelection: function(element, callback) {'
                     .'var data = '.$element['label_selectDefault'].';'
                     .'callback(data);'
+                    .'id = $(element).val();'
+                    .'if (data.id) {'
+                    .'  $(element).val(data.id);'
+                    .'}'
                 .'}';
         } elseif (isset($element['label_listValuesRoute'])) {
             $myJs .= ''
