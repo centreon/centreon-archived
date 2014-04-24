@@ -47,6 +47,7 @@ class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Reposit
     private $_objCache;
     private $_di;
     private $_stepStatus;
+    private $_path;
 
 
     /*
@@ -57,6 +58,7 @@ class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Reposit
     {
         $this->_di = \Centreon\Internal\Di::getDefault();
         $this->_stepStatus = array();
+        $this->_path = "/var/lib/centreon/tmp/";
 
         /*
          * Check Poller Status
@@ -69,13 +71,10 @@ class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Reposit
         }
 
         /* Generate Configuration files */
-        \CentreonConfiguration\Repository\ConfigGenerateCommandRepository::generateCheckCommand($poller_id);
-        \CentreonConfiguration\Repository\ConfigGenerateCommandRepository::generateMiscCommand($poller_id);
-        \CentreonConfiguration\Repository\ConfigGenerateResourcesRepository::generateResources($poller_id);
-        
-
-        //\CentreonConfiguration\Repository\WriteConfigFileRepository::writeFile('', "/tmp/test.txt", $user = "API");
-
+        \CentreonConfiguration\Repository\ConfigGenerateCommandRepository::generateCheckCommand($poller_id, $this->_path.$poller_id."/check-command.cfg");
+        \CentreonConfiguration\Repository\ConfigGenerateCommandRepository::generateMiscCommand($poller_id, $this->_path.$poller_id."/misc-command.cfg");
+        \CentreonConfiguration\Repository\ConfigGenerateResourcesRepository::generateResources($poller_id, $this->_path.$poller_id."/resources.cfg");
+        \CentreonConfiguration\Repository\ConfigGenerateMainRepository::generateMainFile($poller_id, $this->_path.$poller_id."/centengine.cfg");
 
         /*
          * Create Buffers for objects

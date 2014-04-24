@@ -138,4 +138,22 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
             )
         )
     );
+    
+    public static function getCommandName($id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        /* Get Command name */
+        $stmt = $dbconn->prepare("SELECT command_name FROM command WHERE command_id = '$id'");
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (isset($row["command_name"])) {
+            return $row["command_name"];
+        } else {
+            return -1;
+        }
+    }
 }

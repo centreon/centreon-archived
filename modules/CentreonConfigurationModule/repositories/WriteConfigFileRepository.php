@@ -153,7 +153,13 @@ class WriteConfigFileRepository extends \CentreonConfiguration\Repository\Reposi
         /* Read the array of data */
         if (is_array($content)) {
             foreach ($content as $field => $value) {
-                \CentreonConfiguration\Repository\WriteConfigFileRepository::addGlobalParameters($handle, $field, $value);
+                if (is_array($value)) {
+                    foreach ($value as $v) {
+                        \CentreonConfiguration\Repository\WriteConfigFileRepository::addGlobalParameters($handle, $field, $v);
+                    }
+                } else {
+                    \CentreonConfiguration\Repository\WriteConfigFileRepository::addGlobalParameters($handle, $field, $value);
+                }
             }
         } else {
             return array("status" => false, "message" => "Content is not an array");

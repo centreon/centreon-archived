@@ -48,7 +48,7 @@ class ConfigGenerateResourcesRepository extends \CentreonConfiguration\Repositor
      * Methode tests
      * @return value
      */
-    public function generateResources($poller_id) 
+    public function generateResources($poller_id, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -72,7 +72,7 @@ class ConfigGenerateResourcesRepository extends \CentreonConfiguration\Repositor
         }
 
         /* Write Check-Command configuration file */    
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::writeParamsFile($content, "/tmp/resources.cfg", $user = "API");
+        \CentreonConfiguration\Repository\WriteConfigFileRepository::writeParamsFile($content, $filename, $user = "API");
         unset($content);
     }
 }
