@@ -115,7 +115,13 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function updatePreferencesAction()
     {
-    
+        $params = $this->getParams('post');
+        $user = $_SESSION['user'];
+        WidgetRepository::updateWidgetPreferences($params, $user->getId()); 
+        \Centreon\Internal\Di::getDefault()
+            ->get('router')
+            ->response()
+            ->json(array('success' => true));
     }
 
     /**
@@ -129,11 +135,11 @@ class CustomviewController extends \Centreon\Internal\Controller
         $params = $this->getParams('named');
         $widgetId = $params['id'];
         $template = \Centreon\Internal\Di::getDefault()->get('template');
-        $template->assign('validateUrl', '/customview/updatewidgetsettings/' . $widgetId);
-        $form = new Wizard('/customview/updatewidgetsettings/' . $widgetId, array('id' => $widgetId));
+        $template->assign('validateUrl', '/customview/updatewidgetsettings');
+        $form = new \Centreon\Internal\Form\Widget($widgetId, array('id' => $widgetId));
         $title = _('Settings for widget');
         $form->addHiddenComponent('widget_id', $widgetId);
-        $form->setDefaultValues(CustomviewRepository::getCustomViewData($id));
+        $form->setDefaultValues(WidgetRepository::getWidgetPreferences($widgetId));
         $template->assign('modalTitle', $title);
         echo str_replace(
             array('alertMessage', 'alertClose'),
@@ -141,6 +147,7 @@ class CustomviewController extends \Centreon\Internal\Controller
             $form->generate()
         );
     }
+
 
     /**
      * Add a new widget
