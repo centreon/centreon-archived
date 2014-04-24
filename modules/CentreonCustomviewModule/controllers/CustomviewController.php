@@ -139,7 +139,6 @@ class CustomviewController extends \Centreon\Internal\Controller
         $form = new \Centreon\Internal\Form\Widget($widgetId, array('id' => $widgetId));
         $title = _('Settings for widget');
         $form->addHiddenComponent('widget_id', $widgetId);
-        $form->setDefaultValues(WidgetRepository::getWidgetPreferences($widgetId));
         $template->assign('modalTitle', $title);
         echo str_replace(
             array('alertMessage', 'alertClose'),

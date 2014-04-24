@@ -88,8 +88,7 @@ class Widget extends Generator
                 break;
             case 'boolean':
                 $type = 'checkbox';
-                $choices = array(null => 1);
-                $attr = json_encode(array('choices' => $choices));
+                $attr = json_encode(array('choices' => array(null => 1)));
                 break;
             case 'hidden':
                 $type = 'text';
@@ -179,7 +178,6 @@ class Widget extends Generator
         $stmt->bindParam(':widget_id', $widgetId);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
-            list($row['type'], $row['attributes']) = $this->convertType($row);
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
                 $this->formHandler = new \Centreon\Internal\Form($this->formName);
@@ -189,8 +187,10 @@ class Widget extends Generator
                 $this->formComponents[$row['header_title']]['default'] = array();
                 $header = $row['header_title'];
             }
-            $this->formDefaults[$row['label']] = $row['default_value'];
+//            $this->formDefaults[$row['name']] = $row['default_value'];
+            $this->formDefaults[$row['name']] = $row['preference_value'];
             $row['mandatory'] = 0;
+            list($row['type'], $row['attributes']) = $this->convertType($row);
             $this->addFieldToForm($row);
             $this->formComponents[$header]['default'][] = $row;
         }
