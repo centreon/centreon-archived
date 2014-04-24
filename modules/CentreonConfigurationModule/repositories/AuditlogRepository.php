@@ -66,6 +66,7 @@ class AuditlogRepository
         $stmt->bindParam(':action_type', $actionType, \PDO::PARAM_STR);
         $stmt->bindParam(':contact_id', $_SESSION['user']->getId(), \PDO::PARAM_INT);
         $stmt->execute();
+
         /* Get new insert log */
         $query = 'SELECT MAX(action_log_id) as action_log_id
             FROM log_action
@@ -78,6 +79,7 @@ class AuditlogRepository
             throw new \Exception("Error when insert log action");
         }
         $actionId = $row['action_log_id'];
+
         /* Insert changed elements in database */
         $query = 'INSERT INTO log_action_modification
             (field_name, field_value, action_log_id)
