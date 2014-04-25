@@ -42,7 +42,7 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class WriteConfigFileRepository extends \CentreonConfiguration\Repository\Repository
+class WriteConfigFileRepository
 {
     public static function initFile($filename) {
         /* Remove configuration file if the file exists */
@@ -212,7 +212,7 @@ class WriteConfigFileRepository extends \CentreonConfiguration\Repository\Reposi
     private static function closeObject($handle) 
     {
         /* Write end object into the file */
-        if (!fwrite($handle, "}\n")) {
+        if (!fwrite($handle, "}\n\n")) {
             throw new RuntimeException('Cannot write end object.');
         }
     }
