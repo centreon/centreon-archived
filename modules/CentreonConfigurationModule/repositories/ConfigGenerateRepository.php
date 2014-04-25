@@ -76,6 +76,14 @@ class ConfigGenerateRepository
         ConfigGenerateResourcesRepository::generateResources($poller_id, $this->_path.$poller_id."/resources.cfg");
         ConfigGenerateTimeperiodRepository::generateTimeperiod($poller_id, $this->_path.$poller_id."/timeperiods.cfg");
         ConnectorRepository::generateConnectors($poller_id, $this->_path.$poller_id."/connectors.cfg");
+
+        /* Generate config Object */
+        HostgroupRepository::generateHostgroup($poller_id, $this->_path.$poller_id."/objects/hostgroups.cfg");
+        ServicegroupRepository::generateServicegroup($poller_id, $this->_path.$poller_id."/objects/servicegroups.cfg");
+
+        HosttemplateRepository::generateHostTemplates($poller_id, $this->_path.$poller_id."/objects/hostTemplates.cfg");
+
+        /* Generate Main File */
         ConfigGenerateMainRepository::generateMainFile($poller_id, $this->_path.$poller_id."/centengine.cfg");
 
         /*
