@@ -42,37 +42,46 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class ConfigGenerateResourcesRepository
+class ConfigGenerateTimeperiodRepository
 {
     /*
      * Methode tests
      * @return value
      */
-    public function generateResources($poller_id, $filename) 
+    public function generateTimeperiod($poller_id, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
-
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
 
+        $enableField = array("tp_id" => 1);
+        
         /* Init Content Array */
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resource r, cfg_resource_instance_relations rr 
-                        WHERE r.resource_id = rr.resource_id 
-                                AND rr.instance_id = 1 
-                                AND resource_activate = '$poller_id' 
-                  ORDER BY resource_name";
+        $query = "SELECT * FROM timeperiod ORDER BY tp_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $content[$row["resource_name"]] = $row["resource_line"];
+            $tmp = array("type" => "timeperiod");
+            $tmpData = array();
+            foreach ($row as $key => $value) {
+                if ($key == 'tp_name') {
+                    $key = "timeperiod_name";
+                }
+                if (!isset($enableField[$key])) {
+                    $key = str_replace("tp_", "", $key);
+                    $tmpData[$key] = $value;
+                }
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeParamsFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
         unset($content);
     }
 }
+

@@ -42,7 +42,7 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Repository
+class ConfigGenerateRepository
 {
     private $_objCache;
     private $_di;
@@ -63,7 +63,7 @@ class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Reposit
         /*
          * Check Poller Status
          */
-        $checkInfos = \CentreonConfiguration\Repository\ConfigGenerateRepository::checkPollerInformations($poller_id);
+        $checkInfos = static::checkPollerInformations($poller_id);
         if (!$checkInfos[0]) {
             return $checkInfos;
         } else {
@@ -71,29 +71,31 @@ class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Reposit
         }
 
         /* Generate Configuration files */
-        \CentreonConfiguration\Repository\ConfigGenerateCommandRepository::generateCheckCommand($poller_id, $this->_path.$poller_id."/check-command.cfg");
-        \CentreonConfiguration\Repository\ConfigGenerateCommandRepository::generateMiscCommand($poller_id, $this->_path.$poller_id."/misc-command.cfg");
-        \CentreonConfiguration\Repository\ConfigGenerateResourcesRepository::generateResources($poller_id, $this->_path.$poller_id."/resources.cfg");
-        \CentreonConfiguration\Repository\ConfigGenerateMainRepository::generateMainFile($poller_id, $this->_path.$poller_id."/centengine.cfg");
+        ConfigGenerateCommandRepository::generateCheckCommand($poller_id, $this->_path.$poller_id."/check-command.cfg");
+        ConfigGenerateCommandRepository::generateMiscCommand($poller_id, $this->_path.$poller_id."/misc-command.cfg");
+        ConfigGenerateResourcesRepository::generateResources($poller_id, $this->_path.$poller_id."/resources.cfg");
+        ConfigGenerateTimeperiodRepository::generateTimeperiod($poller_id, $this->_path.$poller_id."/timeperiods.cfg");
+        ConnectorRepository::generateConnectors($poller_id, $this->_path.$poller_id."/connectors.cfg");
+        ConfigGenerateMainRepository::generateMainFile($poller_id, $this->_path.$poller_id."/centengine.cfg");
 
         /*
          * Create Buffers for objects
          */
-        $bufferInfos = \CentreonConfiguration\Repository\ConfigGenerateRepository::prepareBuffers($poller_id);
+        $bufferInfos = static::prepareBuffers($poller_id);
         if (!$bufferInfos[0]) {
             return $bufferInfos;
         } else {
             $this->_stepStatus[] = $bufferInfos;
         }
 
-        $changeInfos = \CentreonConfiguration\Repository\ConfigGenerateRepository::checkChanges($poller_id);
+        $changeInfos = static::checkChanges($poller_id);
         if (!$changeInfos[0]) {
             return $changeInfos;
         } else {
             $this->_stepStatus[] = $changeInfos;
         }
 
-        $generateInfos = \CentreonConfiguration\Repository\ConfigGenerateRepository::generateConfigurations($poller_id);
+        $generateInfos = static::generateConfigurations($poller_id);
         if (!$generateInfos[0]) {
             return $generateInfos;
         } else {
@@ -104,10 +106,10 @@ class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Reposit
 
     public static function generateConfigurations($poller_id = null) 
     {
-        \CentreonConfiguration\Repository\ConfigGenerateRepository::generateBrokerConfigurations($poller_id);
-        \CentreonConfiguration\Repository\ConfigGenerateRepository::generateMainFileConfigurations($poller_id);
-        \CentreonConfiguration\Repository\ConfigGenerateRepository::generateResourcesFileConfigurations($poller_id);
-        \CentreonConfiguration\Repository\ConfigGenerateRepository::generateObjectsFilesConfigurations($poller_id);
+        static::generateBrokerConfigurations($poller_id);
+        static::generateMainFileConfigurations($poller_id);
+        static::generateResourcesFileConfigurations($poller_id);
+        static::generateObjectsFilesConfigurations($poller_id);
     }
 
     public static function generateBrokerConfigurations($poller_id = null) 
@@ -151,7 +153,7 @@ class ConfigGenerateRepository extends \CentreonConfiguration\Repository\Reposit
     {
         $di = \Centreon\Internal\Di::getDefault();
 
-        $val = \CentreonConfiguration\Repository\ConfigGenerateRepository::isPollerEnabled($poller_id);
+        $val = static::isPollerEnabled($poller_id);
         if ($val) {
             return array($val, "Poller $poller_id is enabled");
         } else {

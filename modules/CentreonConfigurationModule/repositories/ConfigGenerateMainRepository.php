@@ -36,25 +36,25 @@
 namespace  CentreonConfiguration\Repository;
 
 /**
- * Factory for ConfigGenerate Engine For commands
+ * Factory for ConfigGenerate Engine For centengine.cfg
  *
  * @author Julien Mathis <jmathis@merethis.com>
  * @version 3.0.0
  */
 
-class ConfigGenerateMainRepository extends \CentreonConfiguration\Repository\Repository
+class ConfigGenerateMainRepository 
 {
     /*
-     * Methode tests
+     * Methode for generating Main configuration file
      * @return value
      */
-    public function generateMainFile($poller_id, $filename) 
+    public static function generateMainFile($poller_id, $filename, $testing = 0) 
     {
         /* Get Content */
-        $content = \CentreonConfiguration\Repository\ConfigGenerateMainRepository::getContent($poller_id);
+        $content = static::getContent($poller_id);
         
         /* Write Check-Command configuration file */    
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::writeParamsFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeParamsFile($content, $filename, $user = "API");
         unset($content);
     }
 
@@ -68,15 +68,13 @@ class ConfigGenerateMainRepository extends \CentreonConfiguration\Repository\Rep
         /* Init Content Array */
         $content = array();
 
-        $disabledField = \CentreonConfiguration\Repository\ConfigGenerateMainRepository::getDisabledField();
-        $defaultValue = \CentreonConfiguration\Repository\ConfigGenerateMainRepository::getDefaultValue();
-        $command_id = \CentreonConfiguration\Repository\ConfigGenerateMainRepository::getCommandIdField();
+        $disabledField = static::getDisabledField();
+        $defaultValue = static::getDefaultValue();
+        $command_id = static::getCommandIdField();
         
         /* Get configuration files */
-        $confFiles = \CentreonConfiguration\Repository\ConfigGenerateMainRepository::getConfigFiles($poller_id);
+        $confFiles = static::getConfigFiles($poller_id);
         foreach ($confFiles as $category => $data) {
-            print $category;
-            print_r($data);
             foreach ($data as $path) {
                 if (!isset($content[$category])) {
                     $content[$category] = array();
@@ -95,9 +93,9 @@ class ConfigGenerateMainRepository extends \CentreonConfiguration\Repository\Rep
                     if (isset($disabledField[$key]) || (isset($defaultValue[$key]) && $value == 2)) {
                         ;
                     } else if (isset($commandId[$key]) && isset($value)) {
-                        $content[$key] = \CentreonConfiguration\Repository\CommandRepository::getCommandName($value);
+                        $content[$key] = CommandRepository::getCommandName($value);
                     } else if ($key == "broker_module") {
-                        $broker = \CentreonConfiguration\Repository\ConfigGenerateMainRepository::getBrokerConf($poller_id);
+                        $broker = static::getBrokerConf($poller_id);
                         $content[$key] = $broker;
                     } else {
                         if ($value != "") {
@@ -118,24 +116,28 @@ class ConfigGenerateMainRepository extends \CentreonConfiguration\Repository\Rep
         /* TODO : Change hardcoded path */
         $path = "/var/lib/centreon/tmp/";
         
+        /* Check that that basic path exists */
         if (!file_exists($path)) {
             if (!is_dir($path)) {
                 mkdir($path);
             }
         }
 
+        /* Check that poller directory exists */
         if (!file_exists($path.$poller_id)) {
             if (!is_dir($path.$poller_id)) {
                 mkdir($path.$poller_id);
             }
         }
 
+        /* Check that Object directory exists */
         if (!file_exists($path.$poller_id."/objects/")) {
             if (!is_dir($path.$poller_id."/objects/")) {
                 mkdir($path.$poller_id."/objects/");
             }
         }
-        
+
+        /* Add fixed path files */
         $pathList[] = $path."$poller_id/resources.cfg";
         $pathList[] = $path."$poller_id/misc-command.cfg";
         $pathList[] = $path."$poller_id/check-command.cfg";

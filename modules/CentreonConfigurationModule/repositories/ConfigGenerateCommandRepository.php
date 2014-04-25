@@ -42,7 +42,7 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class ConfigGenerateCommandRepository extends \CentreonConfiguration\Repository\Repository
+class ConfigGenerateCommandRepository
 {
     /*
      * Methode tests
@@ -159,7 +159,7 @@ class ConfigGenerateCommandRepository extends \CentreonConfiguration\Repository\
         }
         
         /* Write Check-Command configuration file */    
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
         unset($content);
     }
 }
