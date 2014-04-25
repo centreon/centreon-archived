@@ -137,4 +137,37 @@ class ServicegroupRepository extends \CentreonConfiguration\Repository\Repositor
             )
         )
     );
+
+    public static function generateServicegroup($poller_id, $filename) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT sg_name, sg_alias FROM servicegroup WHERE sg_activate = '1' ORDER BY sg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "servicegroup");
+            $tmpData = array();
+            foreach ($row as $key => $value) {
+                if ($key == 'sg_name') {
+                    $key = 'servicegroup_name';
+                }
+                $key = str_replace("sg_", "", $key);
+                $tmpData[$key] = $value;
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */    
+        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        unset($content);
+    }
 }
