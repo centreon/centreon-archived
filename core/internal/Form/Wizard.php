@@ -61,7 +61,7 @@ class Wizard extends Generator
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        $route = $di->get('router')->request()->pathname();
+        $route = $this->formRoute;
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $route = str_replace($baseUrl, '/', $route);
 
@@ -79,7 +79,7 @@ class Wizard extends Generator
         while ($row = $stmt->fetch()) {
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
-                $this->formHandler = new \Centreon\Form($this->formName);
+                $this->formHandler = new \Centreon\Internal\Form($this->formName);
             }
             if (false === isset($this->formComponents[$row['step_name']])) {
                 $this->formComponents[$row['step_name']] = array();

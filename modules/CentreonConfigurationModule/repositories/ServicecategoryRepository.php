@@ -225,7 +225,10 @@ class ServicecategoryRepository extends \CentreonConfiguration\Repository\Reposi
         $countTab = count($resultSet);
         $objectTab = array();
         for ($i=0; $i<$countTab; $i++) {
-            $objectTab[] = static::$objectName;
+            $objectTab[] = array(
+                static::$objectName,
+                static::$moduleName
+            );
         }
         
         foreach ($resultSet as &$mySC) {

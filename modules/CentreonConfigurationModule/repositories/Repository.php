@@ -56,6 +56,12 @@ abstract class Repository
     
     /**
      *
+     * @var string
+     */
+    public static $moduleName = 'CentreonConfiguration';
+    
+    /**
+     *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array();
@@ -228,7 +234,10 @@ abstract class Repository
         $countTab = count($resultSet);
         $objectTab = array();
         for ($i=0; $i<$countTab; $i++) {
-            $objectTab[] = static::$objectName;
+            $objectTab[] = array(
+                static::$objectName,
+                static::$moduleName
+            );
         }
         
         static::formatDatas($resultSet);
@@ -236,6 +245,7 @@ abstract class Repository
         return self::arrayValuesRecursive(
             \array_values(
                 \Centreon\Internal\Datatable::removeUnwantedFields(
+                    static::$moduleName,
                     static::$objectName,
                     \array_map(
                         "\\Centreon\\Internal\\Datatable::castResult",

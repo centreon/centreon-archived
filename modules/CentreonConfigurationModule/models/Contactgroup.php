@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models;
  *
  * @author sylvestre
  */
-class Contactgroup extends Object
+class Contactgroup extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "contactgroup";
     protected static $primaryKey = "cg_id";

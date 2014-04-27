@@ -181,8 +181,9 @@ class Generator
                     
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;
-                    if (strstr($field['type'], 'select') === false ||
-                        strstr($field['type'], 'deprecated') === false) {
+                    if ((strstr($field['type'], 'select') === false ||
+                        strstr($field['type'], 'deprecated') === false) && 
+                        !isset($this->formDefaults[$field['name']])) {
                         $this->formDefaults[$field['name']] = $field['default_value'];
                     }
                 }
@@ -357,6 +358,9 @@ class Generator
             // Merging with non-mapped form field and returend the values combined
             $this->formHandler->setDefaults(array_merge($myValues, array_diff_key($this->formDefaults, $myValues)));
         } elseif (is_array($defaultValues)) {
+            foreach ($defaultValues as $k => $v) {
+                $this->formDefaults[$k] = $v;
+            }
             $this->formHandler->setDefaults($defaultValues);
         }
     }

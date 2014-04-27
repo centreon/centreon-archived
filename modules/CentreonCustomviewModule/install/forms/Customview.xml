@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="view_preference_form">
+		<route>/customview/updateview</route>
+		<section name="General">
+			<block name="General information">
+				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="mode" label="Privacy" default_value="0" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+                        <choices>
+                            <Public>1</Public>
+							<Private>0</Private>
+                        </choices>
+					</attributes>
+				</field>
+				<field name="locked" label="Locked" default_value="1" advanced="0" type="radio" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+                        <choices>
+							<No>0</No>
+                            <Yes>1</Yes>
+                        </choices>
+					</attributes>
+				</field>
+			</block>
+		</section>
+	</form>
+	<wizard name="view_preference_form">
+		<route>/customview/updateview</route>
+		<step name="General">
+			<field name="name" mandatory="1"></field>
+			<field name="mode" mandatory="1"></field>
+			<field name="locked" mandatory="1"></field>
+		</step>
+	</wizard>
+	<form name="add_widget_to_view_form">
+		<route>/customview/addwidget</route>
+		<section name="General">
+			<block name="General information">
+				<field name="title" label="Title" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
+				<field name="widget" label="Widget" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="1">
+					<attributes>
+						<defaultValuesRoute>/customview/widgetformlist</defaultValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
+					<help></help>
+				</field>
+			</block>
+		</section>
+	</form>
+	<wizard name="add_widget_to_view_form">
+		<route>/customview/addwidget</route>
+		<step name="Give a title to your widget">
+			<field name="title" mandatory="1"></field>
+		</step>
+		<step name="Pick a widget">
+			<field name="widget" mandatory="1"></field>
+		</step>
+	</wizard>
+</forms>

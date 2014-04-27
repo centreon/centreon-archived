@@ -56,10 +56,12 @@ class Select extends Customobject
         // Load JsFile
         $tpl->addJs('jquery.select2/select2.min.js');
 
-        if (isset($element['label_object_type']) && $element['label_object_type'] == 'object') {
+        if (isset($element['label_defaultValuesRoute'])) {
             $element['label_defaultValuesRoute'] = \Centreon\Internal\Di::getDefault()
                             ->get('router')
                             ->getPathFor($element['label_defaultValuesRoute'], $element['label_extra']);
+        }
+        if (isset($element['label_listValuesRoute'])) {
             $element['label_listValuesRoute'] = \Centreon\Internal\Di::getDefault()
                             ->get('router')
                             ->getPathFor($element['label_listValuesRoute'], $element['label_extra']);
@@ -69,7 +71,6 @@ class Select extends Customobject
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
         }
-        
         $addJs = '';
         if (isset($element['label_ordered']) && $element['label_ordered']) {
             $addJs = '$("#'
@@ -86,7 +87,11 @@ class Select extends Customobject
                     update: function() { $("#'.$element['name'].'").select2("onSortEnd"); }
                   });'."\n";
         }
-        
+
+        if (!isset($element['label_multiple'])) {
+            $element['label_multiple'] = 0;
+        }
+
         $myHtml = '<input '
             . 'class="form-control '
             . $addClass
@@ -99,7 +104,11 @@ class Select extends Customobject
                 . 'multiple:'.(int)$element['label_multiple'].', '
                 . 'allowClear: true, '
                 . 'formatResult: select2_formatResult, '
-                . 'formatSelection: select2_formatSelection, '
+                . 'formatSelection: select2_formatSelection, ';
+        if (isset($element['label_selectData'])) {
+            $myJs .= 'data: { results: '.$element['label_selectData'].' },';
+        } elseif (isset($element['label_defaultValuesRoute'])) {
+            $myJs .= ''
                 . 'ajax: {'
                     .'data: function(term, page) {'
                         .'return { '
@@ -111,7 +120,20 @@ class Select extends Customobject
                     .'results: function (data){ '
                         .'return {results:data, more:false}; '
                     .'}'
-                .'},'
+                .'},';
+        }
+        if (isset($element['label_selectDefault']) && $element['label_selectDefault'] != "[]") {
+            $myJs .= ''
+                .'initSelection: function(element, callback) {'
+                    .'var data = '.$element['label_selectDefault'].';'
+                    .'callback(data);'
+                    .'id = $(element).val();'
+                    .'if (data.id) {'
+                    .'  $(element).val(data.id);'
+                    .'}'
+                .'}';
+        } elseif (isset($element['label_listValuesRoute'])) {
+            $myJs .= ''
                 .'initSelection: function(element, callback) { '
                     .'var id=$(element).val();'
                     .'if (id == " ") {
@@ -130,7 +152,9 @@ class Select extends Customobject
                             }
                         });
                      }
-                },'
+                },';
+        }
+        $myJs .= ''
             .'});'."\n";
         
         $myJs .= $addJs;

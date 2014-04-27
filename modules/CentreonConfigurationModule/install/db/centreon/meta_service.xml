@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="meta_service" phpName="MetaService" idMethod="native">
+        <column name="meta_id" phpName="MetaId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="meta_name" phpName="MetaName" type="VARCHAR" size="254" required="false"/>
+        <column name="meta_display" phpName="MetaDisplay" type="VARCHAR" size="254" required="false"/>
+        <column name="check_period" phpName="CheckPeriod" type="INTEGER" required="false"/>
+        <column name="max_check_attempts" phpName="MaxCheckAttempts" type="INTEGER" required="false"/>
+        <column name="normal_check_interval" phpName="NormalCheckInterval" type="INTEGER" required="false"/>
+        <column name="retry_check_interval" phpName="RetryCheckInterval" type="INTEGER" required="false"/>
+        <column name="notification_interval" phpName="NotificationInterval" type="INTEGER" required="false"/>
+        <column name="notification_period" phpName="NotificationPeriod" type="INTEGER" required="false"/>
+        <column name="notification_options" phpName="NotificationOptions" type="VARCHAR" size="255" required="false"/>
+        <column name="notifications_enabled" phpName="NotificationsEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="calcul_type" phpName="CalculType" type="CHAR" sqlType="enum('SOM','AVE','MIN','MAX')" required="false"/>
+        <column name="data_source_type" phpName="DataSourceType" type="TINYINT" size="3" required="true" defaultValue="0"/>
+        <column name="meta_select_mode" phpName="MetaSelectMode" type="CHAR" sqlType="enum('1','2')" required="false" defaultValue="1"/>
+        <column name="regexp_str" phpName="RegexpStr" type="VARCHAR" size="254" required="false"/>
+        <column name="metric" phpName="Metric" type="VARCHAR" size="255" required="false"/>
+        <column name="warning" phpName="Warning" type="VARCHAR" size="254" required="false"/>
+        <column name="critical" phpName="Critical" type="VARCHAR" size="254" required="false"/>
+        <column name="graph_id" phpName="GraphId" type="INTEGER" required="false"/>
+        <column name="meta_comment" phpName="MetaComment" type="LONGVARCHAR" required="false"/>
+        <column name="meta_activate" phpName="MetaActivate" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <foreign-key foreignTable="timeperiod" name="meta_service_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="check_period" foreign="tp_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="timeperiod" name="meta_service_ibfk_2" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="notification_period" foreign="tp_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="giv_graphs_template" name="meta_service_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="graph_id" foreign="graph_id"/>
+        </foreign-key>
+        <index name="name_index">
+            <index-column name="meta_name"/>
+        </index>
+        <index name="check_period_index">
+            <index-column name="check_period"/>
+        </index>
+        <index name="notification_period_index">
+            <index-column name="notification_period"/>
+        </index>
+        <index name="graph_index">
+            <index-column name="graph_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

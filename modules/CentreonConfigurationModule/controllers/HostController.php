@@ -105,7 +105,8 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         $id = parent::createAction();
-        if ($givenParameters['host_create_services_from_template']) {
+        if (isset($givenParameters['host_create_services_from_template']) && 
+            $givenParameters['host_create_services_from_template']) {
             \CentreonConfiguration\Models\Host::deployServices($id);
         }
     }
@@ -134,7 +135,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        $tpl = \Centreon\Di::getDefault()->get('template');
+        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
         $tpl->assign('validateUrl', '/configuration/host/add');
         parent::addAction();
     }

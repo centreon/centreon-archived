@@ -61,7 +61,14 @@ class HostApi extends \Centreon\Internal\Controller
          */
         $params = 'host_id,host_name,host_alias,host_address,host_activate';
         
-        $hostList = \CentreonConfiguration\Models\Host::getList($params, -1, 0, null, "ASC", array("host_register" => '1'));
+        $hostList = \CentreonConfiguration\Models\Host::getList(
+            $params,
+            -1,
+            0,
+            null,
+            "ASC",
+            array("host_register" => '1')
+        );
         
         $router->response()->json(
             array(

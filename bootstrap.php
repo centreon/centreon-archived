@@ -52,10 +52,23 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
     $mainScope = array_shift($fullClassPath);
     if ($mainScope == 'Centreon') {
         $secondScope = array_shift($fullClassPath);
-        if (strtolower($secondScope) === 'internal') {
-            $filename .= '/core/internal/'.  implode('/', $fullClassPath);
-        } elseif (strtolower($secondScope) === 'controllers') {
-            $filename .= '/core/controllers/'.  implode('/', $fullClassPath);
+        switch (strtolower($secondScope)) {
+            default:
+            case 'internal':
+                $filename .= '/core/internal/'.  implode('/', $fullClassPath);
+                break;
+            case 'controllers':
+                $filename .= '/core/controllers/'.  implode('/', $fullClassPath);
+                break;
+            case 'repository':
+                $filename .= '/core/repositories/'.  implode('/', $fullClassPath);
+                break;
+            case 'models':
+                $filename .= '/core/models/'.  implode('/', $fullClassPath);
+                break;
+            case 'custom':
+                $filename .= '/core/custom/'.  implode('/', $fullClassPath);
+                break;
         }
     }
     
@@ -86,6 +99,9 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
             break;
         case 'internal':
             $filename .= '/internal/'.  implode('/', $fullClassPath);
+            break;
+        case 'install':
+            $filename .= '/install/'.  implode('/', $fullClassPath);
             break;
         case 'api':
             $thirdScope = array_shift($fullClassPath);

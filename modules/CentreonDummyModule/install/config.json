@@ -1,0 +1,29 @@
+{
+    "name": "Centreon Dummy",
+    "shortname" : "centreon-dummy",
+    "version": "3.0.0",
+    "author" : [
+        "Lionel Assepo",
+        "Sylvestre Ho",
+        "Maximilien Bersoult",
+        "Julien Mathis"
+    ],
+    "url" : "",
+    "description" : "This is an empty Centreon Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        {
+            "name" : "centreon-configuration",
+            "version" : "3.0.0"
+        }
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        
+    ],
+    "program dependencies" : [
+        
+    ]
+}

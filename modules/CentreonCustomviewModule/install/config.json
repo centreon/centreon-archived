@@ -1,0 +1,23 @@
+{
+    "name": "Centreon Custom Views",
+    "shortname" : "centreon-customview",
+    "version": "3.0.0",
+    "author" : [
+        "Merethis"
+    ],
+    "url" : "",
+    "description" : "Centreon Custom Views Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        
+    ],
+    "program dependencies" : [
+        
+    ]
+}

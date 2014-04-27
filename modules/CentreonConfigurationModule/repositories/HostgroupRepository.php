@@ -132,4 +132,37 @@ class HostgroupRepository extends \CentreonConfiguration\Repository\Repository
             )
         )
     );
+
+    public static function generateHostgroup($poller_id, $filename) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT hg_name, hg_alias FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "hostgroup");
+            $tmpData = array();
+            foreach ($row as $key => $value) {
+                if ($key == 'hg_name') {
+                    $key = 'hostgroup_name';
+                }
+                $key = str_replace("hg_", "", $key);
+                $tmpData[$key] = $value;
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */    
+        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        unset($content);
+    }
 }

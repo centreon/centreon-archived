@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="aclmenu_form">
+		<route>/administration/aclmenu/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/administration/aclmenu</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+			</block>
+			<block name="Menus">
+				<field name="acl_menu_menus" label="Menus" default_value="" advanced="0" type="nestablemenuacl" parent_field="" mandatory="0"></field>
+			</block>
+			<block name="Additional information">
+				<field name="enabled" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+					<attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+					</attributes>
+				</field>
+			</block>
+		</section>
+	</form>
+</forms>

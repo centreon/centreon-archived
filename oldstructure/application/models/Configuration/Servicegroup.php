@@ -42,7 +42,7 @@ namespace Models\Configuration;
  *
  * @author sylvestre
  */
-class Servicegroup extends Object
+class Servicegroup extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "servicegroup";
     protected static $primaryKey = "sg_id";

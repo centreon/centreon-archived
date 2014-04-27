@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models;
  *
  * @author sylvestre
  */
-class Hostcategory extends Object
+class Hostcategory extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "hostcategories";
     protected static $primaryKey = "hc_id";

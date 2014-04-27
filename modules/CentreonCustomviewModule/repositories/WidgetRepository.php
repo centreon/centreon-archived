@@ -76,22 +76,43 @@ class WidgetRepository
     }
 
     /**
-     * Get Widget Title
+     * Get parameter options for elements such as selectboxes and radioboxes
+     *
+     * @param int $parameterId
+     * @return array
+     */
+    public static function getParameterOptions($parameterId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare('SELECT option_name, option_value 
+            FROM widget_parameters_multiple_options
+            WHERE parameter_id = ?');
+        $stmt->execute(array($parameterId));
+        $result = array();
+        while ($row = $stmt->fetch()) {
+            $result[$row['option_value']] = $row['option_name'];
+        }
+        return $result;
+    }
+
+    /**
+     * Get Widget data
      *
      * @param int $widgetId
      * @return string
      */
-    public static function getWidgetTitle($widgetId)
+    public static function getWidgetData($widgetId)
     {
         static $tab;
 
         if (!isset($tab)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $tab = array();
-            $stmt = $db->prepare("SELECT title, widget_id FROM widgets");
+            $stmt = $db->prepare("SELECT title, widget_model_id, widget_id FROM widgets");
             $stmt->execute();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $tab[$row['widget_id']] = $row['title'];
+                $tab[$row['widget_id']]['title'] = $row['title'];
+                $tab[$row['widget_id']]['widget_model_id'] = $row['widget_model_id'];
             }
         }
         if (isset($tab[$widgetId])) {
@@ -118,6 +139,7 @@ class WidgetRepository
             $tab[$widgetModelId] = array();
             $stmt = $db->prepare($query);
             $stmt->bindParam(':model_id', $widgetModelId);
+            $stmt->execute();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $tab[$widgetModelId][$row['parameter_code_name']] = $row['parameter_id'];
             }
@@ -135,7 +157,7 @@ class WidgetRepository
      * @param mixed $param
      * @return mixed
      */
-    protected static function getWidgetInfo($type = "id", $param)
+    public static function getWidgetInfo($type = "id", $param = null)
     {
         static $tabDir;
         static $tabId;
@@ -144,9 +166,12 @@ class WidgetRepository
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $query = "SELECT description, directory, title, widget_model_id, url, version, 
                 author, email, website, keywords, screenshot, thumbnail, autoRefresh
-            	FROM widget_models";
+                FROM widget_models
+                ORDER BY title";
             $stmt = $db->prepare($query);
             $stmt->execute();
+            $tabDir = array();
+            $tabId = array();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $tabDir[$row['directory']] = array();
                 $tabId[$row['widget_model_id']] = array();
@@ -156,13 +181,19 @@ class WidgetRepository
                 }
             }
         }
-        if ($type == "directory" && isset($tabDir[$param])) {
-            return $tabDir[$param];
+        if ($type == "directory") {
+            if (!is_null($param) && isset($tabDir[$param])) {
+                return $tabDir[$param];
+            }
+            return $tabDir;
         }
-        if ($type == "id" && isset($tabId[$param])) {
-            return $tabId[$param];
+        if ($type == "id") {
+            if (!is_null($param) && isset($tabId[$param])) {
+                return $tabId[$param];
+            }
+            return $tabId;
         }
-        return null;
+        return array();
     }
 
 
@@ -174,22 +205,17 @@ class WidgetRepository
      */
     public static function addWidget($params)
     {
-        if (!isset($params['custom_view_id']) || !isset($params['widget_model_id']) || !isset($params['widget_title'])) {
+        if (!isset($params['custom_view_id']) || !isset($params['widget']) || 
+            !isset($params['title'])) {
             throw new Exception('No custom view or no widget selected');
         }
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $query = "INSERT INTO widgets (title, widget_model_id)
-        		  VALUES (:title, :model_id)";
+        $query = "INSERT INTO widgets (title, widget_model_id, custom_view_id)
+        		  VALUES (:title, :model_id, :custom_view_id)";
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':title', $params['widget_title']);
-        $stmt->bindParam(':model_id', $params['widget_model_id']);
-        $stmt->execute();
-        $query = "INSERT INTO widget_views (custom_view_id, widget_id, widget_order)
-        		  VALUES (:view_id, :widget_id, :order)";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':view_id', $params['custom_view_id']);
-        $stmt->bindParam(':widget_id', self::getLastInsertedWidgetId($params['widget_title']));
-        $stmt->bindParam(':order', 0);
+        $stmt->bindParam(':title', $params['title']);
+        $stmt->bindParam(':model_id', $params['widget']);
+        $stmt->bindParam(':custom_view_id', $params['custom_view_id']);
         $stmt->execute();
     }
 
@@ -369,58 +395,43 @@ class WidgetRepository
     }
 
     /**
-     * Update User Widget Preferences
+     * Update widget preferences
      *
      * @param array $params
      * @param int $userId
      * @return void
      * @throws \Centreon\Internal\Exception
      */
-    public static function updateUserWidgetPreferences($params, $userId, $hasPermission = false)
+    public static function updateWidgetPreferences($params, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $query = "SELECT wv.widget_view_id
-            FROM widget_views wv, custom_view_user_relation cvur
-        	WHERE cvur.custom_view_id = wv.custom_view_id
-        	AND wv.widget_id = ? 
-        	AND cvur.user_id = ?
-            AND wv.custom_view_id = ?";
+        $query = "SELECT user_id
+            FROM widgets w, custom_view_user_relation cvur, custom_views c
+            WHERE cvur.custom_view_id = w.custom_view_id
+            AND w.custom_view_id = c.custom_view_id
+            AND w.widget_id = ? 
+            AND cvur.user_id = ?
+            AND (c.locked = 0 OR c.owner_id = ?)";
         $stmt = $db->prepare($query);
-        $stmt->execute(array($params['widget_id'], $userId, $params['custom_view_id']));
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetch();
-            $widgetViewId = $row['widget_view_id'];
-        } else {
-            throw new Exception('No widget_view_id found for user');
+        $stmt->execute(array($params['widget_id'], $userId, $userId));
+        if (!$stmt->rowCount()) {
+            throw new Exception('User is not allowed to update widget preferences');
         }
-        
-        if ($hasPermission == false) {
-            $stmt = $db->prepare("DELETE FROM widget_preferences
-        	    WHERE widget_view_id = ?
-        		AND user_id = ?
-                AND parameter_id NOT IN (SELECT parameter_id 
-                FROM widget_parameters WHERE require_permission = '1')");
-        } else {
-            $stmt = $db->prepare("DELETE FROM widget_preferences
-        				  WHERE widget_view_id = ?
-        				  AND user_id = ?");
-        }
-        $stmt->execute(array($widgetViewId, $userId));
+        $stmt = $db->prepare("DELETE FROM widget_preferences WHERE widget_id = ?");
+        $stmt->execute(array($params['widget_id']));
 
+        $widgetData = self::getWidgetData($params['widget_id']);
         $db->beginTransaction();
         foreach ($params as $key => $val) {
-            if (preg_match("/param_(\d+)/", $key, $matches)) {
-                if (is_array($val)) {
-                    if (isset($val['op_'.$matches[1]]) && isset($val['cmp_'.$matches[1]])) {
-                        $val = $val['op_'.$matches[1]]. ' ' .$val['cmp_'.$matches[1]];
-                    } elseif (isset($val['order_'.$matches[1]]) && isset($val['column_'.$matches[1]])) {
-                        $val = $val['column_'.$matches[1]]. ' ' .$val['order_'.$matches[1]];
-                    } elseif (isset($val['from_'.$matches[1]]) && isset($val['to_'.$matches[1]])) {
-                        $val = $val['from_'.$matches[1]].','.$val['to_'.$matches[1]];
-                    }
-                }
-                $stmt = $db->prepare("INSERT INTO widget_preferences (widget_view_id, parameter_id, preference_value, user_id) VALUES (?, ?, ?, ?)");
-                $stmt->execute(array($widgetViewId, $matches[1], $val, $userId));
+            $stmt = $db->prepare("INSERT INTO widget_preferences (widget_id, parameter_id, preference_value) 
+                VALUES (?, ?, ?)");
+            $parameterId = self::getParameterIdByName($widgetData['widget_model_id'], $key);
+            if ($parameterId) {
+                $stmt->execute(array(
+                    $params['widget_id'], 
+                    $parameterId,
+                    $val
+                ));
             }
         }
         $db->commit();
@@ -431,13 +442,23 @@ class WidgetRepository
      *
      * @param array $params
      * @return void
+     * @throws \Centreon\Internal\Exception
      */
-    public static function deleteWidgetFromView($params)
+    public static function deleteWidgetFromView($params, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM widget_views
-        		  WHERE widget_id = ?");
-        $stmt->execute(array($params['widget_id']));
+        $stmt = $db->prepare("SELECT widget_id 
+            FROM widgets w, custom_views c 
+            WHERE c.custom_view_id = w.custom_view_id
+            AND w.widget_id = ?
+            AND (c.owner_id = ? OR c.locked = 0)");
+        $stmt->execute(array($params['widget_id'], $userId));
+        if ($stmt->rowCount()) {
+            $stmt = $db->prepare("DELETE FROM widgets WHERE widget_id = ?");
+            $stmt->execute(array($params['widget_id']));
+        } else {
+            throw new Exception('You are not allowed to remove this widget');
+        }
     }
 
     /**
@@ -559,6 +580,20 @@ class WidgetRepository
     }
 
     /**
+     * Insert widget wizard into database
+     *
+     * @param string $formName
+     * @param int $widgetModelId
+     */
+    public static function insertWidgetWizard($formName, $widgetModelId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db->prepare("INSERT INTO form_wizard (name, route)
+            VALUES (?, ?)");
+        $db->execute(array($formName, "/customview/widgetsettings/$widgetModelId"));
+    }
+
+    /**
      * Install
      *
      * @param string $widgetPath
@@ -590,6 +625,7 @@ class WidgetRepository
         $stmt->execute();
         $lastId = self::getLastInsertedWidgetModelId($directory);
         self::insertWidgetPreferences($lastId, $config);
+        self::insertWidgetWizard($config['title'], $widgetModelId);
     }
 
 
@@ -768,10 +804,9 @@ class WidgetRepository
      * Get widget Preferences
      *
      * @param int $widgetId
-     * @param int $userId
      * @return array
      */
-    public static function getWidgetPreferences($widgetId, $userId)
+    public static function getWidgetPreferences($widgetId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT default_value, parameter_code_name
@@ -785,12 +820,10 @@ class WidgetRepository
         }
 
         $stmt = $db->prepare("SELECT pref.preference_value, param.parameter_code_name
-            FROM widget_preferences pref, widget_parameters param, widget_views wv
+            FROM widget_preferences pref, widget_parameters param
            	WHERE param.parameter_id = pref.parameter_id
-           	AND pref.widget_view_id = wv.widget_view_id
-           	AND wv.widget_id = ?
-            AND pref.user_id = ?");
-        $stmt->execute(array($widgetId, $userId));
+           	AND pref.widget_id = ?");
+        $stmt->execute(array($widgetId));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $tab[$row['parameter_code_name']] = $row['preference_value'];
         }

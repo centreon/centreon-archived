@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="service_category_form">
+		<route>/configuration/servicecategory/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/configuration/servicecategory</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="sc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="sc_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="icon_id" label="Icon" default_value="" advanced="0" type="deprecated" parent_field="" mandatory="0"></field>
+			</block>
+			<block name="Relations">
+				<field name="sc_services" label="Services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/service/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/servicecategory/[i:id]/service</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attributes>
+				</field>
+				<field name="sc_servicetemplates" label="Service templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/servicecategory/[i:id]/servicetemplate</listValuesRoute>
+						<multiple>true</multiple>
+						<ordered>false</ordered>
+					</attributes>
+				</field>
+			</block>
+			<block name="Additional information">
+				<field name="sc_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
+					<attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+					</attributes>
+				</field>
+			</block>
+		</section>
+	</form>
+</forms>

@@ -18,7 +18,7 @@
 
 namespace JMS\Serializer\EventDispatcher;
 
-class PreSerializeEvent extends ObjectEvent
+class PreSerializeEvent extends \Centreon\Models\CentreonBaseModelEvent
 {
     /**
      * @param string $typeName
