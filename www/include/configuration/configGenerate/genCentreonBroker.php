@@ -37,122 +37,128 @@
  */
 
     if (!isset($oreon)) {
-		exit();
-	}
+        exit();
+    }
 
-	/*
-	 * Connect to MySQL
-	 */
-	$pearDBO = new CentreonDB("centstorage");
+    /*
+     * Connect to MySQL
+     */
+    $pearDBO = new CentreonDB("centstorage");
 
-	require_once $centreon_path . "/www/class/centreonXML.class.php";
+    require_once $centreon_path . "/www/class/centreonXML.class.php";
 
-	$dir_conf = $centreonBrokerPath . '/' . $tab['id'];
+    $dir_conf = $centreonBrokerPath . '/' . $tab['id'];
 
-	if (!is_dir($dir_conf) && is_writable($centreonBrokerPath)) {
-	    mkdir($dir_conf);
-	}
+    if (!is_dir($dir_conf) && is_writable($centreonBrokerPath)) {
+        mkdir($dir_conf);
+    }
 
-	$ns_id = $tab['id'];
+    $ns_id = $tab['id'];
 
-	$files = array();
+    $files = array();
         $eventQueueMaxSize = array();
         
-	/*
-	 * Get the module path for the nagios_server
-	 */
-	$query = "SELECT centreonbroker_module_path FROM nagios_server WHERE id = " . $ns_id;
-	$res = $pearDB->query($query);
-	$centreonBrokerModulePath = null;
-	if (false === PEAR::isError($res) && $res->numRows() == 1) {
-	    $row = $res->fetchRow();
-	    if (trim($row['centreonbroker_module_path']) != '') {
-	        $centreonBrokerModulePath = trim($row['centreonbroker_module_path']);
-	    }
-	}
+    /*
+     * Get the module path for the nagios_server
+     */
+    $query = "SELECT centreonbroker_module_path FROM nagios_server WHERE id = " . $ns_id;
+    $res = $pearDB->query($query);
+    $centreonBrokerModulePath = null;
+    if (false === PEAR::isError($res) && $res->numRows() == 1) {
+        $row = $res->fetchRow();
+        if (trim($row['centreonbroker_module_path']) != '') {
+            $centreonBrokerModulePath = trim($row['centreonbroker_module_path']);
+        }
+    }
 
-	/*
-	 * Init Broker configuration object
-	 */
-	$cbObj = new CentreonConfigCentreonBroker($pearDB);
+    /*
+     * Init Broker configuration object
+     */
+    $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-	$query = "SELECT cs.config_filename, cs.config_write_thread_id, cs.config_write_timestamp, cs.event_queue_max_size, csi.config_key, csi.config_value, csi.config_id, csi.config_group, csi.config_group_id, csi.grp_level, csi.subgrp_id , ns.name
-		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
-		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND csi.grp_level = 0 AND cs.ns_nagios_server = " . $ns_id;
+    $query = "SELECT cs.config_filename, cs.config_write_thread_id, cs.config_write_timestamp, cs.event_queue_max_size, csi.config_key, csi.config_value, csi.config_id, csi.config_group, csi.config_group_id, csi.grp_level, csi.subgrp_id , ns.name
+        FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
+        WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND csi.grp_level = 0 AND cs.ns_nagios_server = " . $ns_id;
 
-	$res = $pearDB->query($query);
+    $res = $pearDB->query($query);
 
-	$blocks = array();
+    $blocks = array();
         if (false === PEAR::isError($res) && $res->numRows()) {
-	    $ns_name = null;
-	    while ($row = $res->fetchRow()) {
-    	    $filename = $row['config_filename'];
+        $ns_name = null;
+        while ($row = $res->fetchRow()) {
+            $filename = $row['config_filename'];
             if (!isset($files[$filename])) {
                 foreach ($cbObj->getTags() as $tagId => $tagName) {
                     $files[$filename][$tagName] = array();
                 }
             }
-	    if (is_null($ns_name)) {
-	        $ns_name = $row['name'];
-	    }
-	    if ($row['config_key'] == 'blockId') {
-	        if (false === isset($blocks[$row['config_value']])) {
-	            $blocks[$row['config_value']] = array();
-	        }
-	        $blocks[$row['config_value']][] = array(
-	            'filename' => $filename,
-	            'config_group' => $row['config_group'],
-	            'config_group_id' => $row['config_group_id']
-	        );
-	    }
-	    $infos = array(
+        if (is_null($ns_name)) {
+            $ns_name = $row['name'];
+        }
+        if ($row['config_key'] == 'blockId') {
+            if (false === isset($blocks[$row['config_value']])) {
+                $blocks[$row['config_value']] = array();
+            }
+            $blocks[$row['config_value']][] = array(
+                'filename' => $filename,
+                'config_group' => $row['config_group'],
+                'config_group_id' => $row['config_group_id']
+            );
+        }
+        $infos = array(
                 'key' => $row['config_key'],
-		'children' => getChildren($row),
-		'values' => $row['config_value']
-	    );
-	    $files[$filename][$row['config_group']][$row['config_group_id']][] = $infos;
+        'children' => getChildren($row),
+        'values' => $row['config_value']
+        );
+        $files[$filename][$row['config_group']][$row['config_group_id']][] = $infos;
             $eventQueueMaxSize[$filename] = $row['event_queue_max_size'];
             $logTimestamp[$filename] = $row['config_write_timestamp'];
             $logThreadId[$filename] = $row['config_write_thread_id'];
         }
 
-	/*
-	 * Replace globals values
-	 */
-	// @TODO
-	/* foreach ($blocks as $blockId => $block) {
-	    list($tagId, $typeId) = explode('_', $blockId);
-            $fields = $cbObj->getBlockInfos($typeId);
-            foreach ($fields as $field) {
-                if (!is_null($field['value'])) {
-                    $default = $cbObj->getInfoDb($field['value']);
-                    if (trim($default) != '') {
-                        foreach ($block as $infos) {
-                            $files[$infos['filename']][$infos['config_group']][$infos['config_group_id']][$field['fieldname']] = $default;
+    /*
+     * Replace globals values
+     */
+    foreach ($blocks as $blockId => $block) {
+        list($tagId, $typeId) = explode('_', $blockId);
+        $fields = $cbObj->getBlockInfos($typeId);
+        foreach ($fields as $field) {
+            if (!is_null($field['value'])) {
+                $default = $cbObj->getInfoDb($field['value']);
+                if (trim($default) != '') {
+                    foreach ($block as $infos) {
+                        if (isset($files[$infos['filename']][$infos['config_group']][$infos['config_group_id']])) {
+                            $nbEl = count($files[$infos['filename']][$infos['config_group']][$infos['config_group_id']]);
+                            for ($i = 0; $i < $nbEl; $i++) {
+                                if ($files[$infos['filename']][$infos['config_group']][$infos['config_group_id']][$i]['key'] == $field['fieldname']) {
+                                    $files[$infos['filename']][$infos['config_group']][$infos['config_group_id']][$i]['values'] = $default;
+                                }
+                            }
                         }
                     }
                 }
             }
-	} */
+        }
+    }
 
-    	/*
-	     * Delete all old files.
-	     */
-	    foreach (glob("$dir_conf/*") as $filename) {
-	        unlink($filename);
-	    }
+        /*
+         * Delete all old files.
+         */
+        foreach (glob("$dir_conf/*") as $filename) {
+            unlink($filename);
+        }
 
-	    
-	    foreach ($files as $filename => $groups) {
-    	    $fileXml = new CentreonXML(true);
-    	    $fileXml->startElement('centreonBroker');
+        
+        foreach ($files as $filename => $groups) {
+            $fileXml = new CentreonXML(true);
+            $fileXml->startElement('centreonBroker');
 
-    	    $fileXml->writeElement('instance', $ns_id);
-    	    $fileXml->writeElement('instance_name', $ns_name);
+            $fileXml->writeElement('instance', $ns_id);
+            $fileXml->writeElement('instance_name', $ns_name);
 
-    	    if (!is_null($centreonBrokerModulePath)) {
-    	        $fileXml->writeElement('module_directory', $centreonBrokerModulePath);
-    	    }
+            if (!is_null($centreonBrokerModulePath)) {
+                $fileXml->writeElement('module_directory', $centreonBrokerModulePath);
+            }
 
             if (isset($eventQueueMaxSize[$filename])) {
                 $fileXml->writeElement('event_queue_max_size', $eventQueueMaxSize[$filename]);
@@ -166,23 +172,23 @@
                 $fileXml->writeElement('log_thread_id', $logThreadId[$filename]);
             }
             
-    	    foreach ($groups as $group => $listInfos) {
-    	        if (count($listInfos) > 0) {
-        	        foreach ($listInfos as $key2 => $infos) {
-        	            $fileXml->startElement($group);
-        	            foreach ($infos as $value) {
-			        writeElement($fileXml, $value);
-        	            }
-        	            $fileXml->endElement();
-        	        }
-    	        }
-    	    }
-    	    $fileXml->endElement();
+            foreach ($groups as $group => $listInfos) {
+                if (count($listInfos) > 0) {
+                    foreach ($listInfos as $key2 => $infos) {
+                        $fileXml->startElement($group);
+                        foreach ($infos as $value) {
+                    writeElement($fileXml, $value);
+                        }
+                        $fileXml->endElement();
+                    }
+                }
+            }
+            $fileXml->endElement();
 
-    	    ob_start();
+            ob_start();
             $fileXml->output();
             file_put_contents($dir_conf . '/' . $filename, ob_get_contents());
             ob_end_clean();
-	    }
-	}
+        }
+    }
 ?>
