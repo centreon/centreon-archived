@@ -1,0 +1,21 @@
+<html>
+<head>
+	<title>Dummy</title>
+	<link href="../../Themes/Centreon-2/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="../../include/common/javascript/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../include/common/javascript/jquery/jquery-ui.js"></script>
+</head>
+<body>
+Loading...	
+</body>
+
+<script type="text/javascript">
+jQuery(function() {
+	jQuery("body").load("./src/index.php", 
+            function() {
+                parent.iResize(window.name, document.body.scrollHeight);
+            }
+         );
+});
+</script>
+</html>
