@@ -239,37 +239,7 @@
 		$hour = $min * 60;
 		$day = mktime($reportTimePeriod["report_hour_end"], $reportTimePeriod["report_minute_end"], 0, 0, 0, 0)
 				- mktime($reportTimePeriod["report_hour_start"], $reportTimePeriod["report_minute_start"], 0, 0, 0, 0);
-		$week = 0;
-		if (isset($reportTimePeriod["report_Monday"])  && $reportTimePeriod["report_Monday"])
-			$week ++;
-		if (isset($reportTimePeriod["report_Tuesday"])  && $reportTimePeriod["report_Tuesday"])
-			$week ++;
-		if (isset($reportTimePeriod["report_Wednesday"])  && $reportTimePeriod["report_Wednesday"])
-			$week ++;
-		if (isset($reportTimePeriod["report_Thursday"])  && $reportTimePeriod["report_Thursday"])
-			$week ++;
-		if (isset($reportTimePeriod["report_Friday"])  && $reportTimePeriod["report_Friday"])
-			$week ++;
-		if (isset($reportTimePeriod["report_Saturday"])  && $reportTimePeriod["report_Saturday"])
-			$week ++;
-		if (isset($reportTimePeriod["report_Sunday"])  && $reportTimePeriod["report_Sunday"])
-			$week ++;
-		$week *= $day;
-		$year = $week * 52;
-		$month = $year / 12;
 		$str = "";
-		if ($year && $time / $year >= 1) {
-			$str .= floor($time / $year)."Y ";
-			$time = $time % $year;
-		}
-		if ($month && $time / $month >= 1) {
-			$str .= floor($time / $month)."M ";
-			$time = $time % $month;
-		}
-		if ($week && $time / $week >= 1) {
-			$str .= floor($time / $week)."w ";
-			$time = $time % $week;
-		}
 		if ($day && $time / $day >= 1) {
 			$str .= floor($time / $day)."d ";
 			$time = $time % $day;
