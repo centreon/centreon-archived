@@ -199,7 +199,7 @@ class Hook
     {
         $filters = array();
         $sql = "SELECT m.name AS module, h.hook_name
-            FROM modules_informations m, hooks h, module_hooks mh 
+            FROM module m, hooks h, module_hooks mh 
             WHERE m.id = mh.module_id
             AND mh.hook_id = h.hook_id";
         if (!is_null($hookName)) {

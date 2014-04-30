@@ -133,6 +133,10 @@ class ExtensionsController extends \Centreon\Internal\Controller
             }
         } catch (\Exception $e) {
             $moduleInstaller->remove();
+            echo '<pre>';
+            echo $e->getMessage();
+            var_dump(debug_backtrace());
+            echo '</pre>';
         }
         
         $backUrl = $router->getPathFor('/administration/extensions/module');
