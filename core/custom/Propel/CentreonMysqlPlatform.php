@@ -78,7 +78,7 @@ class CentreonMysqlPlatform extends \MysqlPlatform
 
             if (!is_null($parameterValue)) {
                 if ($name === 'Partition') {
-                    $tableOptions[] = sprintf('%s %s', $sqlName, $parameterValue);
+                    $tableOptions[] = sprintf('%s %s', $sqlName, $this->parsePartitionCommand($parameterValue));
                 } else {
                     $parameterValue = is_numeric($parameterValue) ? $parameterValue : $this->quote($parameterValue);
                     $tableOptions[] = sprintf('%s=%s', $sqlName, $parameterValue);
@@ -87,5 +87,14 @@ class CentreonMysqlPlatform extends \MysqlPlatform
         }
 
         return $tableOptions;
+    }
+    
+    /**
+     * 
+     * @param string $command
+     */
+    protected function parsePartitionCommand($command)
+    {
+        return $command;
     }
 }

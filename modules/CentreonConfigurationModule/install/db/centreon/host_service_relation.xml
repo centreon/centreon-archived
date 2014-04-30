@@ -34,10 +34,6 @@
             <index-column name="host_host_id"/>
             <index-column name="service_service_id"/>
         </index>
-        <index name="host_host_id">
-            <index-column name="host_host_id"/>
-            <index-column name="service_service_id"/>
-        </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
