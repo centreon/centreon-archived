@@ -11,5 +11,16 @@
                 "route": "/customview"
             }
         ]
+    },
+    {
+        "name": "Extensions",
+        "short_name": "extensions",
+        "menus": [
+            {
+                "name": "Widgets",
+                "short_name": "adminwidgets",
+                "route": "/administration/extensions/widgets"
+            }
+        ]
     }
 ]

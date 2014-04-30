@@ -34,51 +34,50 @@
  *
  */
 
-
-namespace Centreon\Controllers;
+namespace CentreonCustomview\Controllers;
 
 class ExtensionsController extends \Centreon\Internal\Controller
 {
-    public static $objectName = 'Module';
-    public static $objectDisplayName = 'Module';
-    public static $moduleName = 'Centreon';    
+    public static $objectName = 'WidgetModel';
+    public static $objectDisplayName = 'WidgetModel';
+    public static $moduleName = 'CentreonCustomview';
     private $di;
     private $tpl;
 
     /**
      * 
      * @method get
-     * @route /administration/extensions/module
+     * @route /administration/extensions/widgets
      */
-    public function moduleAction()
+    public function widgetAction()
     {
         $this->init();
         
         /* Display variable */
         $this->tpl->assign('objectName', self::$objectDisplayName);
         $this->tpl->assign('moduleName', self::$moduleName);
-        $this->tpl->assign('objectListUrl', '/administration/extensions/module/list');
+        $this->tpl->assign('objectListUrl', '/administration/extensions/widgets/list');
         $this->tpl->display('administration/module.tpl');
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]
+     * @route /administration/extensions/widgets/[i:id]
      */
-    public function displayModuleAction()
+    public function displayWidgetAction()
     {
         $params = $this->getParams();
-        $module = \Centreon\Models\Module::get($params['id']);
-        echo "<pre>"; var_dump($module); echo "<pre>";
+        $widget = \Centreon\Models\WidgetModel::get($params['id']);
+        echo "<pre>"; var_dump($widget); echo "<pre>";
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[*:shortname]/install
+     * @route /administration/extensions/widgets/[*:shortname]/install
      */
-    public function installModuleAction()
+    public function installWidgetAction()
     {
         $router = $this->di->get('router');
         $config = $this->di->get('config');
@@ -86,102 +85,70 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $params = $this->getParams();
         
         $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $params['shortname'])));
-        
-        $moduleDirectory = $centreonPath
-            . 'modules/'
-            . $commonName
-            . 'Module/';
-        
-        if (!file_exists(realpath($moduleDirectory . 'install/config.json'))) {
-            throw new \Exception("The module is not valid because aof a missing configuration file");
-        }
-        $moduleInfo = json_decode(file_get_contents($moduleDirectory . 'install/config.json'), true);
-        // Launched Install
-        $classCall = '\\'.$commonName.'\\Install\\Installer';
-        $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);
+        $widgetDirectory = $centreonPath . 'widgets/' . $commonName . '/';
 
-        // Check if all dependencies are satisfied
-        try {
-            $dependenciesCheckResult = $moduleInstaller->isDependenciesSatisfied();
-            if ($dependenciesCheckResult['success']) {
-                $moduleInstaller->install();
-            } else {
-                throw new Exception("Missing dependencies");
-            }
-        } catch (\Exception $e) {
-            $moduleInstaller->remove();
-            echo '<pre>';
-            echo $e->getMessage();
-            var_dump(debug_backtrace());
-            echo '</pre>';
+        if (!file_exists(realpath($widgetDirectory . 'install/config.json'))) {
+            throw new \Exception("The widget is not valid because of a missing configuration file");
         }
+        $widgetInfo = json_decode(file_get_contents($widgetDirectory . 'install/config.json'), true);
+        echo "<pre>".print_r($widgetInfo, true)."</pre>";
+        //\CentreonCustomview\Repository\WidgetRepository::install();
         
-        $backUrl = $router->getPathFor('/administration/extensions/module');
+        $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]/uninstall
+     * @route /administration/extensions/widgets/[i:id]/uninstall
      */
-    public function uninstallModuleAction()
+    public function uninstallWidgetAction()
     {
         $router = $this->di->get('router');
         $params = $this->getParams();
-        $module = \Centreon\Models\Module::get($params['id']);
-        $config = $this->di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
+        $widget = \Centreon\Models\WidgetModel::get($params['id']);
         
-        $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $module['name'])));
-        
-        $moduleDirectory = $centreonPath
-            . 'modules/'
-            . $commonName
-            . 'Module/';
-        
-        $classCall = '\\'.$commonName.'\\Install\\Installer';
-        $moduleInstaller = new $classCall($moduleDirectory, $module);
-        $moduleInstaller->remove();
-        
-        $backUrl = $router->getPathFor('/administration/extensions/module');
+        //@todo: remove widget from db
+
+        $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]/enable
+     * @route /administration/extensions/widgets/[i:id]/enable
      */
     public function enableModuleAction()
     {
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \Centreon\Models\Module::update($params['id'], array('isactivated' => '1'));
-        $backUrl = $router->getPathFor('/administration/extensions/module');
+        \Centreon\Models\WidgetModel::update($params['id'], array('isactivated' => '1'));
+        $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]/disable
+     * @route /administration/extensions/widgets/[i:id]/disable
      */
     public function disableModuleAction()
     {
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \Centreon\Models\Module::update($params['id'], array('isactivated' => '0'));
-        $backUrl = $router->getPathFor('/administration/extensions/module');
+        \Centreon\Models\WidgetModel::update($params['id'], array('isactivated' => '0'));
+        $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/list
+     * @route /administration/extensions/widgets/list
      */
     public function datatableAction()
     {
@@ -195,7 +162,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
             )
         );
     }
-
+    
     /**
      * Initialize page
      *
