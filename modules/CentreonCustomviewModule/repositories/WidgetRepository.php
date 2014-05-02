@@ -787,13 +787,13 @@ class WidgetRepository
     /**
      * Uninstall
      *
-     * @param string $directory
+     * @param int $widgetModelId
      */
-    public static function uninstall($directory)
+    public static function uninstall($widgetModelId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM widget_models WHERE directory = ?");
-        $stmt->execute(array($directory));
+        $stmt = $db->prepare("DELETE FROM widget_models WHERE widget_model_id = ?");
+        $stmt->execute(array($widgetModelId));
     }
 
     /**

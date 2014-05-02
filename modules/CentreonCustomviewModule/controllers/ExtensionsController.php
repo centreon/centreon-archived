@@ -106,9 +106,8 @@ class ExtensionsController extends \Centreon\Internal\Controller
     {
         $router = $this->di->get('router');
         $params = $this->getParams();
-        $widget = \Centreon\Models\WidgetModel::get($params['id']);
         
-        //@todo: remove widget from db
+        \CentreonCustomview\Repository\WidgetRepository::uninstall($params['id']);
 
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
