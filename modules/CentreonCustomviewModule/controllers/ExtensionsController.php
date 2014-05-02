@@ -87,12 +87,11 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $params['shortname'])));
         $widgetDirectory = $centreonPath . 'widgets/' . $commonName . '/';
 
-        if (!file_exists(realpath($widgetDirectory . 'install/config.json'))) {
+        $jsonFile = $widgetDirectory . 'install/config.json';
+        if (!file_exists(realpath($jsonFile))) {
             throw new \Exception("The widget is not valid because of a missing configuration file");
         }
-        $widgetInfo = json_decode(file_get_contents($widgetDirectory . 'install/config.json'), true);
-        echo "<pre>".print_r($widgetInfo, true)."</pre>";
-        //\CentreonCustomview\Repository\WidgetRepository::install();
+        \CentreonCustomview\Repository\WidgetRepository::install($jsonFile);
         
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
