@@ -164,10 +164,10 @@ class WidgetRepository
 
         if (!isset($tabId) || !isset($tabDir)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $query = "SELECT description, directory, title, widget_model_id, url, version, 
+            $query = "SELECT description, directory, name, widget_model_id, url, version, 
                 author, email, website, keywords, screenshot, thumbnail, autoRefresh
                 FROM widget_models
-                ORDER BY title";
+                ORDER BY name";
             $stmt = $db->prepare($query);
             $stmt->execute();
             $tabDir = array();
@@ -211,7 +211,7 @@ class WidgetRepository
         }
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $query = "INSERT INTO widgets (title, widget_model_id, custom_view_id)
-        		  VALUES (:title, :model_id, :custom_view_id)";
+            VALUES (:title, :model_id, :custom_view_id)";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':title', $params['title']);
         $stmt->bindParam(':model_id', $params['widget']);
