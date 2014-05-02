@@ -123,7 +123,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \Centreon\Models\WidgetModel::update($params['id'], array('isactivated' => '1'));
+        \CentreonCustomview\Models\WidgetModel::update($params['id'], array('isactivated' => '1'));
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
@@ -138,7 +138,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \Centreon\Models\WidgetModel::update($params['id'], array('isactivated' => '0'));
+        \CentreonCustomview\Models\WidgetModel::update($params['id'], array('isactivated' => '0'));
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
