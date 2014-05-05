@@ -180,7 +180,7 @@ class CustomviewController extends \Centreon\Internal\Controller
         foreach ($widgets as $id => $info) {
             $list[] = array(
                 'id' => $id,
-                'text' => $info['title']
+                'text' => $info['name']
             );
         }
         \Centreon\Internal\Di::getDefault()
