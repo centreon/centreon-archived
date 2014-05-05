@@ -40,6 +40,8 @@ use centreon::script;
 
 use base qw(centreon::script);
 
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+
 =head2 $self->log_and_exit($msg)
 
 Logs a message and exits script.
@@ -147,6 +149,7 @@ sub parse_file($$$) {
     my $logdir = "$self->{centreon_config}->{VarLib}/log/$instance";
     my ($last_position, $nbqueries, $counter) = (0, 0, 0);
     my @log_table_rows;
+    my $nbrecords = 0 ;
 
     if (!-d $logdir) {
         mkpath($logdir);
@@ -169,8 +172,19 @@ EOQ
     }
 
     # Decide if we have to read the nagios.log from the begining
-    if ($ctime && $prev_run_info->{ctime} && $ctime == $prev_run_info->{ctime}) {
+    #Count number of lines in a file
+    my $nb_lines_nagios = 0 ;
+    if (open LOG, $logfile) {
+        $nb_lines_nagios++ while (<LOG>);
+        close LOG;
+    }
+    $self->{logger}->writeLogInfo("$nb_lines_nagios lignes dans le fichier $logfile. Database last position flag: $prev_run_info->{log_flag}");
+
+    if ( $prev_run_info->{log_flag} gt $nb_lines_nagios ) {
+        $self->{logger}->writeLogInfo("Detecting logfile rotation, starting parsing from beginning");
+    } else {
         $last_position = $prev_run_info->{log_flag};
+        $self->{logger}->writeLogInfo("Starting parsing at last position");
     }
 
     # Open Log File for parsing
@@ -192,7 +206,7 @@ EOQ
 INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 EOQ
-        my $cur_ctime;
+        my $cur_ctime = undef;
 
         while (<FILE>) {
             if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/) {
@@ -264,6 +278,7 @@ EOQ
                 @log_table_rows = ();
             }
         }
+
         if (defined $cur_ctime) {
             $self->commit_to_log($sth, \@log_table_rows, $instance, $cur_ctime, $counter);
         }
@@ -314,6 +329,7 @@ EOQ
     } else {
         $last_log = $self->date_to_time($startdate);
     }
+
     foreach (@log_files) {
         $_ =~ /nagios\-([0-9\-]+).log/;
         my @time = split /\-/, $1;
