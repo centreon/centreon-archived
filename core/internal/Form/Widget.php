@@ -177,6 +177,7 @@ class Widget extends Generator
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':widget_id', $widgetId);
         $stmt->execute();
+        $header = _("Settings");
         while ($row = $stmt->fetch()) {
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];

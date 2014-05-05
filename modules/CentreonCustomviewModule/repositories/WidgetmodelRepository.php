@@ -61,13 +61,14 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
     public static $datatableColumn = array(
         '<input id="allWidgets" class="allWidgets" type="checkbox">' => 'widget_model_id',
         'Name' => 'name',
+        'Shortname' => 'shortname',
         'Description' => 'description',
         'Version' => 'version',
         'Author' => 'author',
         'Status' => 'isactivated',
         'Install status' => 'isinstalled'
     );
-    
+
     /**
      *
      * @var array 
@@ -75,6 +76,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
     public static $researchIndex = array(
         'widget_model_id',
         'name',
+        'shortname',
         'description',
         'version',
         'author',
@@ -89,6 +91,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
     public static $datatableHeader = array(
         'none',
         'search_name',
+        'search_shortname',
         'search_description',
         'search_version',
         'search_author',
@@ -213,7 +216,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
         foreach (static::$additionalColumn as $field) {
             $field_list .= $field.',';
         }
-        
+
         $field_list = trim($field_list, ',');
 
         
@@ -296,6 +299,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
                     $resultSet[] = array(
                         'widget_model_id' => 0,
                         'name' => $info['name'],
+                        'shortname' => $info['shortname'],
                         'description' => $info['description'],
                         'version' => $info['version'],
                         'author' => $info['author'],

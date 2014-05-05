@@ -164,10 +164,10 @@ class WidgetRepository
 
         if (!isset($tabId) || !isset($tabDir)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $query = "SELECT description, directory, title, widget_model_id, url, version, 
+            $query = "SELECT description, directory, name, widget_model_id, url, version, 
                 author, email, website, keywords, screenshot, thumbnail, autoRefresh
                 FROM widget_models
-                ORDER BY title";
+                ORDER BY name";
             $stmt = $db->prepare($query);
             $stmt->execute();
             $tabDir = array();
@@ -211,7 +211,7 @@ class WidgetRepository
         }
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $query = "INSERT INTO widgets (title, widget_model_id, custom_view_id)
-        		  VALUES (:title, :model_id, :custom_view_id)";
+            VALUES (:title, :model_id, :custom_view_id)";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':title', $params['title']);
         $stmt->bindParam(':model_id', $params['widget']);
@@ -469,9 +469,7 @@ class WidgetRepository
      */
     public static function readConfigFile($filename)
     {
-        $xmlString = file_get_contents($filename);
-        $xmlObj = simplexml_load_string($xmlString);
-        return CentreonUtils::objectIntoArray($xmlObj);
+        return json_decode(file_get_contents($filename), true);
     }
 
     /**
@@ -492,14 +490,14 @@ class WidgetRepository
     /**
      * Get Last Inserted Widget Model id
      *
-     * @param string $directory
+     * @param string $name
      * @return int
      */
-    protected static function getLastInsertedWidgetModelId($directory)
+    protected static function getLastInsertedWidgetModelId($name)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT MAX(widget_model_id) as lastId FROM widget_models WHERE directory = ?");
-        $stmt->execute(array($directory));
+        $stmt = $db->prepare("SELECT MAX(widget_model_id) as lastId FROM widget_models WHERE name = ?");
+        $stmt->execute(array($name));
         $row = $stmt->fetch();
         return $row['lastId'];
     }
@@ -526,12 +524,13 @@ class WidgetRepository
      */
     protected static function getParameterTypeIds()
     {
-        static $types;
+        static $types = null;
 
-        if (!isset($types)) {
+        if (is_null($types)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $types = array();
             $stmt = $db->prepare("SELECT ft_typename, field_type_id FROM  widget_parameters_field_type");
+            $stmt->execute();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $types[$row['ft_typename']] = $row['field_type_id'];
             }
@@ -551,30 +550,31 @@ class WidgetRepository
         if (isset($config['preferences'])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $types = self::getParameterTypeIds();
-            foreach ($config['preferences'] as $preference) {
+            foreach ($config['preferences'] as $attr) {
                 $order = 1;
-                foreach ($preference as $pref) {
-                    $attr = $pref['@attributes'];
-                    if (!isset($types[$attr['type']])) {
-                        throw new Exception('Unknown type : ' . $attr['type'] . ' found in configuration file');
-                    }
-                    if (!isset($attr['requirePermission'])) {
-                        $attr['requirePermission'] = 0;
-                    }
-                    if (!isset($attr['defaultValue'])) {
-                        $attr['defaultValue'] = '';
-                    }
-                    if (!isset($attr['header'])) {
-                        $attr['header'] = null;
-                    }
-                    $stmt = $db->prepare("INSERT INTO widget_parameters
-                    		  (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, header_title)
-                              VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->execute($lastId, $types[$attr['type']], $attr['label'], $attr['name'], $attr['defaultValue'], $order, $attr['requirePermission'], $attr['header']);
-                    $lastParamId  = self::getLastInsertedParameterId($attr['label']);
-                    self::insertParameterOptions($lastParamId, $attr, $pref);
-                    $order++;
+                if (!isset($types[$attr['type']])) {
+                    throw new Exception('Unknown type : ' . $attr['type'] . ' found in configuration file');
                 }
+                if (!isset($attr['requirePermission'])) {
+                    $attr['requirePermission'] = 0;
+                }
+                if (!isset($attr['defaultValue'])) {
+                    $attr['defaultValue'] = '';
+                }
+                if (!isset($attr['header'])) {
+                    $attr['header'] = null;
+                }
+                $stmt = $db->prepare("INSERT INTO widget_parameters
+                    (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, header_title)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute(array(
+                    $lastId, $types[$attr['type']], $attr['label'], 
+                    $attr['name'], $attr['defaultValue'], $order, 
+                    $attr['requirePermission'], $attr['header']
+                ));
+                $lastParamId  = self::getLastInsertedParameterId($attr['label']);
+                self::insertParameterOptions($lastParamId, $attr);
+                $order++;
             }
         }
     }
@@ -588,33 +588,34 @@ class WidgetRepository
     public static function insertWidgetWizard($formName, $widgetModelId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $db->prepare("INSERT INTO form_wizard (name, route)
-            VALUES (?, ?)");
-        $db->execute(array($formName, "/customview/widgetsettings/$widgetModelId"));
+        $stmt = $db->prepare("INSERT INTO form_wizard (name, route) VALUES (?, ?)");
+        $stmt->execute(array($formName, "/customview/widgetsettings/$widgetModelId"));
     }
 
     /**
      * Install
      *
-     * @param string $widgetPath
-     * @param string $directory
+     * @param string $jsonFile
      */
-    public static function install($widgetPath, $directory)
+    public static function install($jsonFile)
     {
-        $config = self::readConfigFile($widgetPath."/".$directory."/configs.xml");
+        $config = self::readConfigFile($jsonFile);
         if (!$config['autoRefresh']) {
             $config['autoRefresh'] = 0;
         }
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("INSERT INTO widget_models (title, description, url, version, directory, 
-            author, email, website, keywords, screenshot, thumbnail, autoRefresh)
-        	VALUES (:title, :description, :url, :version, :directory, 
-            :author, :email, :website, :keywords, :screenshot, :thumbnail, :autorefresh)");
-        $stmt->bindParam(':title', $config['title']);
+        $isactivated = 1;
+        $isinstalled = 1;
+        $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, url, version,
+            author, email, website, keywords, screenshot, thumbnail, autoRefresh, isactivated, isinstalled)
+        	VALUES (:name, :shortname, :description, :url, :version, 
+            :author, :email, :website, :keywords, :screenshot, :thumbnail, :autorefresh,
+            :isactivated, :isinstalled)");
+        $stmt->bindParam(':name', $config['name']);
+        $stmt->bindParam(':shortname', $config['shortname']);
         $stmt->bindParam(':description', $config['description']);
         $stmt->bindParam(':url', $config['url']);
         $stmt->bindParam(':version', $config['version']);
-        $stmt->bindParam(':directory', $directory);
         $stmt->bindParam(':author', $config['author']);
         $stmt->bindParam(':email', $config['email']);
         $stmt->bindParam(':website', $config['website']);
@@ -622,10 +623,12 @@ class WidgetRepository
         $stmt->bindParam(':screenshot', $config['screenshot']);
         $stmt->bindParam(':thumbnail', $config['thumbnail']);
         $stmt->bindParam(':autorefresh', $config['autoRefresh']);
+        $stmt->bindParam(':isactivated', $isactivated);
+        $stmt->bindParam(':isinstalled', $isinstalled);
         $stmt->execute();
-        $lastId = self::getLastInsertedWidgetModelId($directory);
+        $lastId = self::getLastInsertedWidgetModelId($config['name']);
         self::insertWidgetPreferences($lastId, $config);
-        self::insertWidgetWizard($config['title'], $widgetModelId);
+        self::insertWidgetWizard($config['name'], $lastId);
     }
 
 
@@ -634,21 +637,15 @@ class WidgetRepository
      *
      * @param int $paramId
      * @param array $attr
-     * @param array $pref
      * @return void
      */
-    protected static function insertParameterOptions($paramId, $attr, $pref)
+    protected static function insertParameterOptions($paramId, $attr)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if ($attr['type'] == "list" || $attr['type'] == "sort") {
-            if (isset($pref['option'])) {
+            if (isset($attr['options'])) {
                 $db->beginTransaction();
-                foreach ($pref['option'] as $option) {
-                    if (isset($option['@attributes'])) {
-                        $opt = $option['@attributes'];
-                    } else {
-                        $opt = $option;
-                    }
+                foreach ($attr['options'] as $opt) {
                     $stmt = $db->prepare("INSERT INTO widget_parameters_multiple_options (parameter_id, option_name, option_value) VALUES (?, ?, ?)");
                     $stmt->execute(array($paramId, $opt['label'], $opt['value']));
                 }
@@ -677,8 +674,7 @@ class WidgetRepository
             $types = self::getParameterTypeIds();
             foreach ($config['preferences'] as $preference) {
                 $order = 1;
-                foreach ($preference as $pref) {
-                    $attr = $pref['@attributes'];
+                foreach ($preference as $attr) {
                     if (!isset($types[$attr['type']])) {
                         throw new Exception('Unknown type : ' . $attr['type'] . ' found in configuration file');
                     }
@@ -729,7 +725,7 @@ class WidgetRepository
                     $currentParameterTab[$attr['name']] = 1;
                     $stmt = $db->prepare("DELETE FROM widget_parameters_multiple_options WHERE parameter_id = ?");
                     $stmt->execute(array($parameterId));
-                    self::insertParameterOptions($parameterId, $attr, $pref);
+                    self::insertParameterOptions($parameterId, $attr);
                     $order++;
                 }
             }
@@ -791,13 +787,13 @@ class WidgetRepository
     /**
      * Uninstall
      *
-     * @param string $directory
+     * @param int $widgetModelId
      */
-    public static function uninstall($directory)
+    public static function uninstall($widgetModelId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM widget_models WHERE directory = ?");
-        $stmt->execute(array($directory));
+        $stmt = $db->prepare("DELETE FROM widget_models WHERE widget_model_id = ?");
+        $stmt->execute(array($widgetModelId));
     }
 
     /**
