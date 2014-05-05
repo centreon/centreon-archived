@@ -42,7 +42,7 @@ class Installer
      * 
      * @param string $targetDbName
      */
-    public static function updateDb($targetDbName = 'centreon')
+    public static function updateDb($operation = 'upgrade', $targetDbName = 'centreon')
     {
         ini_set('memory_limit', '-1');
         $di = \Centreon\Internal\Di::getDefault();
@@ -75,7 +75,7 @@ class Installer
         
         // Retreive target DB State
         $updatedAppData = new \AppData($platform);
-        self::getAllXmlFiles($updatedAppData, $targetDbName);
+        self::getDbFromXml($updatedAppData, $operation, $targetDbName);
         
         // Get diff between current db state and target db state
         $diff = \PropelDatabaseComparator::computeDiff(
@@ -85,8 +85,6 @@ class Installer
         );
         $strDiff = $platform->getModifyDatabaseDDL($diff);
         $sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
-        /*echo '<pre>'; var_dump($sqlToBeExecuted); echo '</pre>';
-        die();*/
         
         // to sent to verify
         $tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
@@ -99,48 +97,61 @@ class Installer
      * @param \AppData $myAppData
      * @param string $targetDbName
      */
-    public static function getAllXmlFiles(& $myAppData, $targetDbName)
+    public static function getDbFromXml(& $myAppData, $operation, $targetDbName)
     {
         // Initialize configuration
         $di = \Centreon\Internal\Di::getDefault();
-        $config = $di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
         $targetDb = 'db_' . $targetDbName;
         $db = $di->get($targetDb);
+        
+        $xmlDbFiles = self::getAllXmlFiles($operation, $targetDbName);
         
         // Initialize XmlToAppData object
         $appDataObject = new \XmlToAppData(new \Centreon\Custom\Propel\CentreonMysqlPlatform($db), null, 'utf-8');
         
-        // Get Main DB File
-        foreach (glob(realpath(rtrim($centreonPath, '/') . '/install/db/' . $targetDbName). '/*.xml') as $dbFile) {
+        // Get DB File
+        foreach ($xmlDbFiles as $dbFile) {
             $myAppData->joinAppDatas(array($appDataObject->parseFile($dbFile)));
             unset($appDataObject);
             $appDataObject = new \XmlToAppData(new \Centreon\Custom\Propel\CentreonMysqlPlatform($db), null, 'utf-8');
         }
         
-        // Get Module DB File
-        $registeredModules = \Centreon\Models\Module::getList('name');
-        foreach($registeredModules as $module) {
-            $module['name'] = str_replace(' ', '', ucwords(str_replace('-', ' ', $module['name']))) . 'Module';
-            foreach (
-                glob(
-                    realpath(rtrim($centreonPath, '/')
-                    . '/modules')
-                    . '/'
-                    . $module['name']
-                    . '/install/db/'
-                    . $targetDbName
-                    . '/*.xml'
-                )
-                as $dbFile)
-            {
-                $myAppData->joinAppDatas(array($appDataObject->parseFile($dbFile)));
-                unset($appDataObject);
-                $appDataObject = new \XmlToAppData(new \Centreon\Custom\Propel\CentreonMysqlPlatform($db), null, 'utf-8');
+        unset($appDataObject);
+    }
+    
+    private static function getAllXmlFiles($operationType = 'update', $targetDbName = 'centreon')
+    {
+        // Initialize configuration
+        $di = \Centreon\Internal\Di::getDefault();
+        $config = $di->get('config');
+        $centreonPath = $config->get('global', 'centreon_path');
+        
+        $xmlDbFiles = glob(realpath(rtrim($centreonPath, '/') . '/install/db/' . $targetDbName). '/*.xml');
+        
+        // Module
+        if ($operationType == 'update') {
+            $registeredModules = \Centreon\Models\Module::getList('name');
+            foreach($registeredModules as $module) {
+                $module['name'] = str_replace(' ', '', ucwords(str_replace('-', ' ', $module['name']))) . 'Module';
+                $xmlDbFiles = array_merge(
+                    $xmlDbFiles,
+                    glob(
+                        realpath(rtrim($centreonPath, '/') . '/modules') . '/'
+                        . $module['name']
+                        . '/install/db/'
+                        . $targetDbName
+                        . '/*.xml'
+                    )
+                );
             }
+        } else {
+            $xmlDbFiles = array_merge(
+                $xmlDbFiles,
+                glob(realpath(rtrim($centreonPath, '/') . '/modules') . '/*Module/install/db/' . $targetDbName . '/*.xml')
+            );
         }
         
-        unset($appDataObject);
+        return $xmlDbFiles;
     }
     
     /**

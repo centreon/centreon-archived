@@ -141,7 +141,7 @@ class AbstractModule implements iModuleInstaller
     
     public function preInstall()
     {
-        /*$newModuleId = \Centreon\Models\Module::getIdByParameter('name', $this->moduleInfo['shortname']);
+        $newModuleId = \Centreon\Models\Module::getIdByParameter('name', $this->moduleInfo['shortname']);
         if (count($newModuleId) == 0) {
             $params = array(
                 'name' => $this->moduleInfo['shortname'],
@@ -158,7 +158,7 @@ class AbstractModule implements iModuleInstaller
             $this->moduleId = $newModuleId[0];
         } else {
             throw new \Exception("Module already installed");
-        }*/
+        }
     }
     
     /**
