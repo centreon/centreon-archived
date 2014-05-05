@@ -9,6 +9,7 @@
         "monolog/monolog": "dev-master",
         "desarrolla2/cache": "1.7.0",
         "klein/klein": "2.0.2",
+        "propel/propel1": "~1.7",
         "oyejorge/less.php": "1.6.*"
     },
     "require-dev": {
