@@ -36,7 +36,7 @@
 namespace CentreonRealtime\Repository;
 
 /**
- * Factory for Eventlogs
+ * Repository for Issues
  *
  * @author Maximilien Bersoult <mbersoult@merethis.com>
  * @version 3.0.0
@@ -56,12 +56,7 @@ class IssuesRepository
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
-        $query = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, i.start_time, i.end_time
-            FROM issues i, hosts h, services s";
-        $wheres = array();
-        $wheres[] = 'h.host_id = i.host_id';
-        $wheres[] = 's.host_id = i.host_id';
-        $wheres[] = 's.service_id = i.service_id';
+        $globalWheres = array();
         if (false === is_null($fromTime)) {
             $clause = 'i.start_time';
             if ($order == 'DESC') {
@@ -70,15 +65,42 @@ class IssuesRepository
                 $clause .= ' > ';
             }
             $clause .= ':start_time';
-            $wheres[] = $clause;
+            $globalWheres[] = $clause;
         }
+
+        /* Subquery for hosts */
+        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time), he.state as state
+            FROM issues i, hosts h, hoststateevents he"
+        $wheres = array();
+        $wheres[] = "i.host_id = h.host_id";
+        $wheres[] = "i.host_id = se.host_id";
+        $wheres[] = "i.service_id IS NULL";
+        $wheres = array_merge($wheres, $globalWheres);
         if (count($wheres) > 0) {
-            $query .= ' WHERE ' . join(' AND ', $wheres);
+            $queryHosts .= ' WHERE ' . join(' AND ', $wheres);
         }
-        $query .= ' ORDER BY start_time DESC';
+        
+        /* Subquery for services */
+        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time), se.state as state
+            FROM issues i, hosts h, services s, servicestateevents se";
+        $wheres = array();
+        $wheres[] = "i.host_id = h.host_id";
+        $wheres[] = "s.host_id = i.host_id";
+        $wheres[] = "s.service_id = i.service_id";
+        $wheres[] = "se.host_id = i.host_id";
+        $wheres[] = "se.service_id = i.service_id";
+        $wheres[] = "i.service_id IS NOT NULL";
+        $wheres = array_merge($wheres, $globalWheres);
+        if (count($wheres) > 0) {
+            $queryServices .= ' WHERE ' . join(' AND ', $wheres);
+        }
+
+        $query = $queryHosts . " UNION " . $queryServices;
+        $query .= ' ORDER BY i.start_time DESC';
         if (false === is_null($limit)) {
             $query .= ' LIMIT ' . $limit;
         }
+
         $stmt = $dbconn->prepare($query);
         if (false === is_null($fromTime)) {
             $stmt->bindValue(':start_time', $fromTime, \PDO::PARAM_INT);
