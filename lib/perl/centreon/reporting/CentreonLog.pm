@@ -110,7 +110,7 @@ sub getLogOfHosts {
             " AND `ctime` < ".$end.
             " AND (`type` = 'HARD' OR (`status` = 'UP' AND `type` = 'SOFT'))".
             " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
-            " AND `service_description` IS NULL".
+            " AND `service_description` = '' ".
             " ORDER BY `ctime`";
     } elsif ($self->{'dbLayer'} eq "broker") {
         $query = "SELECT `status`, `ctime`, `host_name`".
