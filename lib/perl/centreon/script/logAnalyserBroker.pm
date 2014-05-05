@@ -122,10 +122,8 @@ sub parseFile($$) {
 
     $self->{csdb}->transaction_mode(1);
     eval {
-        my $sth = $self->{csdb}->{instance}->prepare(<<"EOQ");
-        INSERT INTO logs (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance_name, host_id, service_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            EOQ
+        my $sth = $self->{csdb}->{instance}->prepare("INSERT INTO logs (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance_name, host_id, service_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             while (<FILE>) {
                 my $cur_ctime;
