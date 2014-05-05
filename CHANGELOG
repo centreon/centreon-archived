@@ -1,3 +1,21 @@
+## Centreon 2.5.1
+
+Bug fixes
+=========
+#5521: Fixes a bug where the reporting dashboard always showed 100% undetermined
+#5460: Fixes a bug where it was impossible to apply a recurrent service downtime 
+#5446: Fixes a bug where RRD retention was ignored  in Centreon broker configuration
+#5432: Fixes a bug where NEB module entries were not properly saved in the main.cfg form
+#5404: Macros were not properly replaced on Debian distros
+#5345: It was impossible to import host.cfg and contact.cfg
+#5319: The mute button of sound notification was omitted in Centreon 2.5.0
+#5313: Fixes progressbar in generation of configuration file 
+#5309: Fixes various locale issues
+#5174: LDAP sync will no longer discard contact's email when it's empty on LDAP's side
+#4930: The appearing order of widgets was messed up when there were more than 10 widgets in a view
+#4571: It was impossible to start a remote poller from the Web UI
+
+
 ## Centreon 2.5.0
 
 Features
