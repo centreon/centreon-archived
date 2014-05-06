@@ -561,7 +561,7 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for grid init
      *
-     * @parem string $jsonPosition
+     * @param string $jsonPosition
      * @param string $jsonWidgets
      * @return string
      */
@@ -597,7 +597,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         </span> \
                         </span> \
                         </div> \
-                        <iframe class="portlet-content" src="\'+this.url+\'" \
+                        <iframe class="portlet-content" src="/widget/\' + this.widget_id + \'" \
                                 width="100%" height="100%" frameborder="0" style="overflow:hidden;"></iframe> \
                         </li>\',
                         (typeof jsonPosition[index] !== \'undefined\') ? jsonPosition[index].size_x : 5,

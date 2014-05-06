@@ -108,11 +108,14 @@ class WidgetRepository
         if (!isset($tab)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $tab = array();
-            $stmt = $db->prepare("SELECT title, widget_model_id, widget_id FROM widgets");
+            $stmt = $db->prepare("SELECT w.title, w.widget_model_id, widget_id, name, shortname, description,
+                url, version, author, email, website, keywords, screenshot, thumbnail, autoRefresh,
+                isactivated, isinstalled
+                FROM widgets w, widget_models m
+                WHERE w.widget_model_id = m.widget_model_id");
             $stmt->execute();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $tab[$row['widget_id']]['title'] = $row['title'];
-                $tab[$row['widget_id']]['widget_model_id'] = $row['widget_model_id'];
+                $tab[$row['widget_id']] = $row;
             }
         }
         if (isset($tab[$widgetId])) {
