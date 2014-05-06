@@ -41,14 +41,14 @@ namespace  CentreonConfiguration\Repository;
  * @author Julien Mathis <jmathis@merethis.com>
  * @version 3.0.0
  */
-
 class ConfigGenerateResourcesRepository
 {
-    /*
-     * Methode tests
+    /** 
+     * Generate Resources.cfg
+     * @param  
      * @return value
      */
-    public function generateResources($poller_id, $filename) 
+    public function generateResources(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -72,7 +72,7 @@ class ConfigGenerateResourcesRepository
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeParamsFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
 }

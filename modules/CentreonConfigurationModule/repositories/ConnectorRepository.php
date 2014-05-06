@@ -137,7 +137,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
         )
     );
 
-    public function generateConnectors($poller_id, $filename) 
+    public function generateConnectors(& $fileList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -162,7 +162,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
 }
