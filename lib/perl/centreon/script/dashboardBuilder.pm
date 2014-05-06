@@ -93,6 +93,7 @@ sub getLiveService {
         $result{$row->{"cp_key"}} = $row->{"cp_value"};
     }
     $sth->finish;
+    
     # verifying if all variables are set
     if (!defined($result{"report_hour_start"})) {
         $result{"report_hour_start"} = 0;
@@ -142,6 +143,7 @@ sub getDaysFromPeriod {
     if ($end > $todayStart) {
         $end = $todayStart;
     }
+    
     # get start day as mm/dd/yyyy 00:00
     ($day,$month,$year) = (localtime($start))[3,4,5];
     $start =  mktime(0,0,0,$day,$month,$year,0,0,-1);
@@ -154,7 +156,8 @@ sub getDaysFromPeriod {
             $start = mktime(0,0,0, ++$day, $month, $year,0,0,-1);
         }
         my $currentDayOfWeek = (localtime($start))[6];
-        # If in the configuration, this day of week is not selected, the reporting is not calculated
+        
+	# If in the configuration, this day of week is not selected, the reporting is not calculated
         if (defined($self->{liveService}->{"report_".$weekDays[$currentDayOfWeek]}) && $self->{liveService}->{"report_".$weekDays[$currentDayOfWeek]} == 1) {
             # setting reporting date and time ranges
             my $dayStart = mktime(0,$self->{liveService}->{"report_minute_start"},$self->{liveService}->{"report_hour_start"},$day,$month,$year,0,0,-1);
@@ -178,36 +181,42 @@ sub rebuildIncidents {
 
     if (!defined($start) || !defined($end)) {
         $self->{logger}->writeLogError("Cannot determine reporting rebuild period");
-    }
-    # purge tables in order to rebuild statistics
-    my $periods = $self->getDaysFromPeriod($start, $end);
-    if (!scalar(@$periods)) {
-        $self->{logger}->writeLogInfo("Incorrect rebuild period");
-    }
-    if ($purgeType eq "truncate") {
-        $self->{dashboard}->truncateServiceStats();
-        $self->{dashboard}->truncateHostStats();
-    }else {
-        $self->{dashboard}->deleteServiceStats($start, $end);
-        $self->{dashboard}->deleteHostStats($start, $end);
-    }
-    if (defined($start) && defined($end) && !$serviceOnly) {
-        my ($allIds, $allNames) = $self->{host}->getAllHosts(0);
-        # archiving logs for each days
-        foreach(@$periods) {
-            $self->{logger}->writeLogInfo("[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-            my $hostStateDurations = $self->{hostEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
-            $self->{dashboard}->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
-        }
-    }
-    if (defined($start) && defined($end) && !$hostOnly) {
-        my ($allIds, $allNames) = $self->{service}->getAllServices(0);
-        # archiving logs for each days
-        foreach(@$periods) {
-            $self->{logger}->writeLogInfo("[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-            my $serviceStateDurations = $self->{serviceEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
-            $self->{dashboard}->insertServiceStats($allNames, $serviceStateDurations, $_->{"day_start"}, $_->{"day_end"});
-        }
+	$self->{logger}->writeLogError("Please use -s and -e option to defined the rebuild period.");
+    } else {
+	
+	# Purge tables in order to rebuild statistics
+	my $periods = $self->getDaysFromPeriod($start, $end);
+	if (!scalar(@$periods)) {
+	    $self->{logger}->writeLogInfo("Incorrect rebuild period");
+	}
+	if ($purgeType eq "truncate") {
+	    $self->{dashboard}->truncateServiceStats();
+	    $self->{dashboard}->truncateHostStats();
+	} else {
+	    $self->{dashboard}->deleteServiceStats($start, $end);
+	    $self->{dashboard}->deleteHostStats($start, $end);
+	}
+	
+	if (defined($start) && defined($end) && !$serviceOnly) {
+	    my ($allIds, $allNames) = $self->{host}->getAllHosts(0);
+	    
+	    # archiving logs for each days
+	    foreach(@$periods) {
+		$self->{logger}->writeLogInfo("[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+		my $hostStateDurations = $self->{hostEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+		$self->{dashboard}->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
+	    }
+	}
+	if (defined($start) && defined($end) && !$hostOnly) {
+	    my ($allIds, $allNames) = $self->{service}->getAllServices(0);
+	    
+	    # archiving logs for each days
+	    foreach(@$periods) {
+		$self->{logger}->writeLogInfo("[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+		my $serviceStateDurations = $self->{serviceEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+		$self->{dashboard}->insertServiceStats($allNames, $serviceStateDurations, $_->{"day_start"}, $_->{"day_end"});
+	    }
+	}
     }
 }
 
@@ -222,18 +231,20 @@ sub getRebuildOptions {
     } else {
         $hostOnly = 1;
     }
+
     if (!defined($serviceOnly)) {
         $serviceOnly = 0;
     } else {
         $serviceOnly = 1;
     }
+
     my ($start, $end);
     my $purgeType = "truncate";
     if (defined($paramStartDate)){  
         if ($paramStartDate =~ /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/) {
             $start = mktime(0,0,0,$3,$2 - 1,$1 - 1900,0,0,-1);
             $purgeType = "delete";
-        }else {
+        } else {
             $self->{logger}->writeLogError("Bad paramater syntax for option [-s|--period-start]. Syntax example: 2011-11-09");
         }
     }
@@ -268,20 +279,23 @@ sub run {
     
     if (defined($self->{opt_rebuild})) {
         $self->rebuildIncidents($self->getRebuildOptions($self->{opt_startperiod}, $self->{opt_endperiod}, $self->{opt_hostonly}, $self->{opt_serviceonly}));
-    }else {
+    } else {
         my $currentTime = time;
         my ($day,$month,$year, $dayOfWeek) = (localtime($currentTime))[3,4,5,6];
-        # getting day of week of date to process 
+      
+	# getting day of week of date to process 
         if ($dayOfWeek == 0) {
             $dayOfWeek = 6;
-        }else {
+        } else {
             $dayOfWeek--;
         }
+	
         # If in the configuration, this day of week is not selected, the reporting is not calculated
         if (defined($self->{liveService}->{"report_".$weekDays[$dayOfWeek]}) && $self->{liveService}->{"report_".$weekDays[$dayOfWeek]} != 1) {
             $self->{logger}->writeLogInfo("Reporting must not be calculated for this day, check your configuration");
             $self->exit_pgr();
         }
+
         # setting reporting date and time ranges
         my $end = mktime(0,$self->{liveService}->{"report_minute_end"},$self->{liveService}->{"report_hour_end"},$day - 1,$month,$year,0,0,-1);
         my $start = mktime(0,$self->{liveService}->{"report_minute_start"},$self->{liveService}->{"report_hour_start"},$day - 1,$month,$year,0,0,-1);
@@ -294,7 +308,6 @@ sub run {
         my $serviceStateDurations = $self->{serviceEvents}->getStateEventDurations($start, $end);
         $self->{dashboard}->insertServiceStats($serviceNames, $serviceStateDurations, $start, $end);
     }
-    
     $self->exit_pgr();
 }
 
