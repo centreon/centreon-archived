@@ -103,12 +103,12 @@ sub initVars {
         if (my $row = $sth->fetchrow_hashref()) {
             #connecting to censtatus
             $centstatus = centreon::common::db->new(db => $row->{"db_name"},
-                                                     host => $row->{'db_host'},
-                                                     port => $row->{'db_port'},
-                                                     user => $row->{'db_user'},
-                                                     password => $row->{'db_pass'},
-                                                     force => 0,
-                                                     logger => $self->{logger});
+                                                    host => $row->{'db_host'},
+                                                    port => $row->{'db_port'},
+                                                    user => $row->{'db_user'},
+                                                    password => $row->{'db_pass'},
+                                                    force => 0,
+                                                    logger => $self->{logger});
         }
     } elsif ($self->{dbLayer} eq "broker") {
         $centstatus = $self->{csdb};
