@@ -41,4 +41,6 @@ There was a bug in Centreon 2.5.0 that probably messed up your reporting data, y
 
   /path/to/centreon/cron/eventReportBuilder -r
 
-  /path/to/centreon/cron/dashboardBuilder -r
+  /path/to/centreon/cron/dashboardBuilder -r -s <start_date> -e <end_date>
+
+``start_date`` and ``end_date`` must be formatted like this ``yyyy-mm-dd``; they refer to the time period you wish to rebuild your dashboard on.
