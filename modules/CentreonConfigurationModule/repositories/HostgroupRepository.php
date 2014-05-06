@@ -133,7 +133,7 @@ class HostgroupRepository extends \CentreonConfiguration\Repository\Repository
         )
     );
 
-    public static function generateHostgroup($poller_id, $filename) 
+    public static function generateHostgroup(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -162,7 +162,7 @@ class HostgroupRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
 }

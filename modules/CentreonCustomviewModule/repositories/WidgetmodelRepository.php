@@ -286,32 +286,36 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
         foreach($resultSet as $cWidget) {
             $widgetNameList[] = $cWidget['shortname'];
         }
-        
+
+        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         // Add file system repo
-        $rawWidgetList = glob(__DIR__."/../../../widgets/*/");
-        foreach ($rawWidgetList as $widget) {
-            if ($widget == "." || $widget == "..") {
-                continue;
-            }
-            if (file_exists(realpath($widget . '/install/config.json'))) {
-                $info = json_decode(file_get_contents($widget . '/install/config.json'), true);
-                if (!in_array($info['shortname'], $widgetNameList)) {
-                    $resultSet[] = array(
-                        'widget_model_id' => 0,
-                        'name' => $info['name'],
-                        'shortname' => $info['shortname'],
-                        'description' => $info['description'],
-                        'version' => $info['version'],
-                        'author' => $info['author'],
-                        'isactivated' => 0,
-                        'isinstalled' => 0
-                    );
+        $possibleWidgetDir = array(
+            $path . "/widgets/*Widget/",
+            $path . "/modules/*Module/widgets/*Widget/"
+        );
+        foreach ($possibleWidgetDir as $d) {
+            $rawWidgetList = glob($d);
+            foreach ($rawWidgetList as $widget) {
+                if ($widget == "." || $widget == "..") {
+                    continue;
+                }
+                if (file_exists(realpath($widget . '/install/config.json'))) {
+                    $info = json_decode(file_get_contents($widget . '/install/config.json'), true);
+                    if (!in_array($info['shortname'], $widgetNameList)) {
+                        $resultSet[] = array(
+                            'widget_model_id' => 0,
+                            'name' => $info['name'],
+                            'shortname' => $info['shortname'],
+                            'description' => $info['description'],
+                            'version' => $info['version'],
+                            'author' => $info['author'],
+                            'isactivated' => 0,
+                            'isinstalled' => 0
+                        );
+                    }
                 }
             }
         }
-        
-        /*var_dump($resultSet);
-        var_dump(array_unique($resultSet));*/
         
         $countTab = count($resultSet);
         $objectTab = array();

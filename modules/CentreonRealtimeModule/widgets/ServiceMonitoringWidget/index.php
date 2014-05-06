@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright 2005-2014 MERETHIS
+/**
+ * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,59 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonRealtime\Controllers;
 
-/**
- * Display the logs of nagios
- *
- * @authors Maximilien Bersoult
- * @package CentreonRealtime
- * @subpackage Controllers
- */
-class IssuesController extends \Centreon\Internal\Controller
-{
-    /**
-     * The page structure for display the list
-     *
-     * @method GET
-     * @route /realtime/issues
-     */
-    public function displayListAction()
-    {
-        $di = \Centreon\Internal\Di::getDefault();
+var_dump($this->getWidgetParams());
 
-        $tmpl = $di->get('template');
-        $tmpl->addJs('hogan-3.0.0.min.js');
-        $tmpl->addJs('centreon-table-infinite-scroll.js');
-        $tmpl->display('file:[CentreonRealtimeModule]issues_list.tpl');
-    }
-
-    /**
-     * Get the list of issues
-     *
-     * @method POST
-     * @route /realtime/issues
-     */
-    public function getListIssuesAction()
-    {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
-        $params = $router->request()->paramsPost();
-        $filters = $params->all();
-
-        $fromTime = null;
-        if (isset($params['startTime']) && !is_null($params['startTime']) && $params['startTime'] !== '') {
-            $fromTime = $params['startTime'];
-        }
-        if (isset($params['startTime'])) {
-            unset($filters['startTime']);
-        }
-        $listIssues = \CentreonRealtime\Repository\IssuesRepository::getIssues(
-            $fromTime,
-            'DESC',
-            20,
-            $filters
-        );
-
-        $router->response()->json($listIssues);
-    }
-}
+$tpl = $this->getTemplate();
+$tpl->addCss('dataTables.css')
+	->addCss('dataTables.bootstrap.css')
+	->addCss('dataTables-TableTools.css');

@@ -61,7 +61,7 @@ class EventlogsController extends \Centreon\Internal\Controller
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
-        $tmpl->display('file:[CentreonRealtime]eventlogs.tpl');
+        $tmpl->display('file:[CentreonRealtimeModule]eventlogs.tpl');
     }
 
     /**
