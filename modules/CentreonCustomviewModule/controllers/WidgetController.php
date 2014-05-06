@@ -113,7 +113,7 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     protected function getCache()
     {
-        return new \Centreon\Internal\Di::getDefault()->get('cache');
+        return \Centreon\Internal\Di::getDefault()->get('cache');
     }
 
     /**

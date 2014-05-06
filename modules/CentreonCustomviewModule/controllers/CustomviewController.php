@@ -92,7 +92,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsWidgetSettings().'
             });';
         $template->addCustomJs($gridJs);
-        $template->display('file:[CentreonCustomview]customview.tpl');
+        $template->display('file:[CentreonCustomviewModule]customview.tpl');
     }
 
     /**

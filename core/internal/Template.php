@@ -120,13 +120,31 @@ class Template extends \Smarty
     
     private function buildTemplateDirList()
     {
+        $config = \Centreon\Internal\Di::getDefault()->get('config');
+        $path = rtrim($config->get('global', 'centreon_path'), '/');
+
         $templateDirList = array();
-        $templateDirList['Core'] = realpath(__DIR__ . '/../views/');
+        $templateDirList['Core'] = realpath($path . '/core/views/');
+
+        // Add standalone widget dir
+        foreach (glob($path . "/widgets/*Widget/views") as $widgetTemplateDir) {
+            if (preg_match('/\/([a-zA-Z]+Widget)\//', $widgetTemplateDir, $matches)) {
+                $widgetTemplateDir = realpath($widgetTemplateDir);
+                $templateDirList[$matches[1]] = $widgetTemplateDir;
+            }
+        }
         // Add Module Template Dir
-        foreach (glob(__DIR__."/../../modules/*Module/views") as $moduleTemplateDir) {
-            if (preg_match('/\/([a-zA-Z]+)Module\//', $moduleTemplateDir, $matches)) {
+        foreach (glob($path . "/modules/*Module/views") as $moduleTemplateDir) {
+            if (preg_match('/\/([a-zA-Z]+Module)\//', $moduleTemplateDir, $matches)) {
                 $moduleTemplateDir = realpath($moduleTemplateDir);
                 $templateDirList[$matches[1]] = $moduleTemplateDir;
+            }
+        }
+        // Add Widget Template Dir
+        foreach (glob($path . "/modules/*Module/widgets/*Widget/views") as $widgetTemplateDir) {
+            if (preg_match('/\/([a-zA-Z]+Widget)\//', $widgetTemplateDir, $matches)) {
+                $widgetTemplateDir = realpath($widgetTemplateDir);
+                $templateDirList[$matches[1]] = $widgetTemplateDir;
             }
         }
         return $templateDirList;

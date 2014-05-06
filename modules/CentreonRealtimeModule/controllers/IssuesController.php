@@ -56,7 +56,7 @@ class IssuesController extends \Centreon\Internal\Controller
         $tmpl = $di->get('template');
         $tmpl->addJs('hogan-3.0.0.min.js');
         $tmpl->addJs('centreon-table-infinite-scroll.js');
-        $tmpl->display('file:[CentreonRealtime]issues_list.tpl');
+        $tmpl->display('file:[CentreonRealtimeModule]issues_list.tpl');
     }
 
     /**

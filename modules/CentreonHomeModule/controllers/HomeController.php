@@ -52,6 +52,6 @@ class HomeController extends \Centreon\Internal\Controller
     {
         \Centreon\Internal\Di::getDefault()
             ->get('template')
-            ->display('file:[CentreonHome]home.tpl');
+            ->display('file:[CentreonHomeModule]home.tpl');
     }
 }
