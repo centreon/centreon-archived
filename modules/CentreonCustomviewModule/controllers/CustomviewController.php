@@ -354,25 +354,6 @@ class CustomviewController extends \Centreon\Internal\Controller
     }
 
     /**
-     * Entry point for all widgets
-     *
-     * @method get
-     * @route /customview/content/[i:id]
-     */
-    public function entrypointAction()
-    {
-        $params = $this->getParams();
-        $data = WidgetRepository::getWidgetData($params['id']);
-        $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $data['shortname'])));
-        $filename = "../widgets/".$commonName."/".$data['url'];
-        if (file_exists($filename)) {
-           include_once $filename;
-        } else {
-            throw new \Centreon\Internal\Exception(sprintf('Could not find file %s', $filename));
-        }
-    }
-
-    /**
      * Get js code for view deletion
      *
      * @return string
@@ -616,7 +597,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         </span> \
                         </span> \
                         </div> \
-                        <iframe class="portlet-content" src="/customview/content/\' + this.widget_id + \'" \
+                        <iframe class="portlet-content" src="/widget/\' + this.widget_id + \'" \
                                 width="100%" height="100%" frameborder="0" style="overflow:hidden;"></iframe> \
                         </li>\',
                         (typeof jsonPosition[index] !== \'undefined\') ? jsonPosition[index].size_x : 5,
