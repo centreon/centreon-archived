@@ -382,6 +382,8 @@ while ($data = $DBRESULT->fetchRow()) {
             $hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
             $hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
             $hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
+            $hostNotesUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostNotesUrl);
+            $hostNotesUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostNotesUrl);
             $hostNotesUrl = str_replace("\$INSTANCEADDRESS\$",
                                         $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
                                         $hostNotesUrl);
@@ -393,6 +395,8 @@ while ($data = $DBRESULT->fetchRow()) {
             $hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
             $hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
             $hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
+            $hostActionUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostActionUrl);
+            $hostActionUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostActionUrl);
             $hostActionUrl = str_replace("\$INSTANCEADDRESS\$",
                                          $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
                                          $hostActionUrl);
