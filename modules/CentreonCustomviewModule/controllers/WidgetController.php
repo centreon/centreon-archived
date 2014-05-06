@@ -61,13 +61,21 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     public function widgetAction()
     {
+        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'));
         $params = $this->getParams();
         $this->widgetId = $params['id'];
         $data = WidgetRepository::getWidgetData($params['id']);
         $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $data['shortname'])));
-        $filename = "../widgets/".$commonName."/".$data['url'];
+        $dir = glob($path . "/widgets/" . $commonName . "Widget/");
+        if (!isset($dir[0])) {
+            $dir = glob($path . "/modules/*Module/widgets/" . $commonName ."Widget/");
+        }
+        if (!isset($dir[0])) {
+            throw new \Centreon\Internal\Exception(sprintf('Could not find directory %s', $commonName."Widget"));
+        }
+        $filename = $dir[0] . $data['url'];
         if (file_exists($filename)) {
-           include_once $filename;
+            include_once $filename;
         } else {
             throw new \Centreon\Internal\Exception(sprintf('Could not find file %s', $filename));
         }
