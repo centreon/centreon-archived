@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 if (!isset($oreon)) {
@@ -112,6 +109,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
          */
         $tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
         $tab_host_status = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
+        $tab_host_statusid = array("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2);
 
         /*
          * start ndo svc info
@@ -330,7 +328,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $en_disable 			= array("1" => _("Enabled"), "0" => _("Disabled"));
         $img_en 				= array("0" => "'./img/icones/16x16/element_next.gif'", "1" => "'./img/icones/16x16/element_previous.gif'");
 
-	$oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+        $oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
         $host_status[$host_name]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
         $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
@@ -530,8 +528,11 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         if (isset($host_status[$host_name]['instance_name'])) {
             $notesurl = str_replace("\$INSTANCENAME\$", $host_status[$host_name]['instance_name'], $notesurl);
         }
-        $tpl->assign("h_ext_notes", getMyHostExtendedInfoField($host_id, "ehi_notes"));
+        $notesurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $notesurl);
+        $notesurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $notesurl);
+
         $tpl->assign("h_ext_notes_url", $notesurl);
+        $tpl->assign("h_ext_notes", getMyHostExtendedInfoField($host_id, "ehi_notes"));
         $tpl->assign("h_ext_notes_url_lang", _("URL Notes"));
         $tpl->assign("h_ext_action_url_lang", _("Action URL"));
 
@@ -540,6 +541,8 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         if (isset($host_status[$host_name]['instance_name'])) {
             $actionurl = str_replace("\$INSTANCENAME\$", $host_status[$host_name]['instance_name'], $actionurl);
         }
+        $actionurl = str_replace("\$HOSTSTATE\$", $host_status[$host_name]["current_state"], $actionurl);
+        $actionurl = str_replace("\$HOSTSTATEID\$", $tab_host_statusid[$host_status[$host_name]["current_state"]], $actionurl);
         $tpl->assign("h_ext_action_url", $actionurl);
         $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
         $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
