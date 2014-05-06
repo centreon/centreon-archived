@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="custom_view_user_relation" phpName="CustomViewUserRelation" idMethod="native">
-        <column name="custom_view_id" phpName="CustomViewId" type="INTEGER" required="true"/>
-        <column name="user_id" phpName="UserId" type="INTEGER" required="false"/>
+        <column name="custom_view_id" phpName="CustomViewId" primaryKey="true" type="INTEGER" required="true"/>
+        <column name="user_id" phpName="UserId" primaryKey="true" type="INTEGER" required="true"/>
         <foreign-key foreignTable="contact" name="fk_custom_views_user_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="user_id" foreign="contact_id"/>
         </foreign-key>
         <foreign-key foreignTable="custom_views" name="fk_custom_view_user_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="custom_view_id" foreign="custom_view_id"/>
         </foreign-key>
-        <unique name="view_user_unique_index">
-            <unique-column name="custom_view_id"/>
-            <unique-column name="user_id"/>
-        </unique>
-        <index name="fk_custom_views_user_id">
-            <index-column name="user_id"/>
-        </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
