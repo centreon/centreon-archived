@@ -95,7 +95,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $tpl->assign('objectMcFieldsUrl', $this->objectBaseUrl . '/mc_fields');
         $tpl->assign('objectDuplicateUrl', $this->objectBaseUrl . '/duplicate');
         $tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
-        $tpl->display('file:[CentreonConfiguration]list.tpl');
+        $tpl->display('file:[CentreonConfigurationModule]list.tpl');
     }
     
     /**
@@ -258,7 +258,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $tpl->assign('formModeUrl', $formModeUrl);
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $tpl->display('file:[CentreonConfiguration]edit.tpl');
+        $tpl->display('file:[CentreonConfigurationModule]edit.tpl');
     }
     
     /**
