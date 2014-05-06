@@ -6,7 +6,12 @@ Centreon 2.5.1
 WARNING
 *******
 
-If you are upgrading from Centreon 2.5.0 make sure to read the following. If you are upgrading from a version prior to 2.5.0, you can just skip this notice.
+If you are upgrading from Centreon 2.5.0 make sure to read the following. 
+
+.. DANGER::
+If you are upgrading from a version prior to 2.5.0, just skip this notice and follow this procedure instead:
+`https://blog.centreon.com/centreon-2-5-0-release/ <https://blog.centreon.com/centreon-2-5-0-release/>`_.
+
 As usual, database backups are to be made before going any further.
 
 It does not matter whether you run the commands below before or after the web upgrade; do note that those scripts may take some execution time depending on
