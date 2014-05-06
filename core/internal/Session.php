@@ -195,7 +195,7 @@ class Session
         if (false === $this->useCache) {
             foreach (glob($this->savePath . '/sess_*') as $file) {
                 if (filemtime($file) + $maxlifetime < time() && file_exists($file)) {
-                    unlink($this->savePath . '/sess_' . $sessionId);
+                    unlink($file);
                 }
             }
         }
