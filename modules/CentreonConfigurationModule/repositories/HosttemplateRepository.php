@@ -180,7 +180,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         return $content;
     }
 
-    public static function generateHostTemplates($poller_id, $filename) 
+    public static function generateHostTemplates(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -234,7 +234,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
     

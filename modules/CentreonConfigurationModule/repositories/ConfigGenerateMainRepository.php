@@ -48,13 +48,13 @@ class ConfigGenerateMainRepository
      * Methode for generating Main configuration file
      * @return value
      */
-    public static function generateMainFile($poller_id, $filename, $testing = 0) 
+    public static function generateMainFile(& $filesList, $poller_id, $path, $filename, $testing = 0) 
     {
         /* Get Content */
         $content = static::getContent($poller_id);
         
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeParamsFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
 

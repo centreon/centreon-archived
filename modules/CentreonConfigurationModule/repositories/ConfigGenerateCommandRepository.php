@@ -48,7 +48,7 @@ class ConfigGenerateCommandRepository
      * Methode tests
      * @return value
      */
-    public function generateCheckCommand($poller_id, $filename) 
+    public function generateCheckCommand(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
         /* Get Database Connexion */
@@ -111,11 +111,11 @@ class ConfigGenerateCommandRepository
         }
 
         /* Write Check-Command configuration file */    
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        \CentreonConfiguration\Repository\WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
 
-    public function generateMiscCommand($poller_id, $filename) 
+    public function generateMiscCommand(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
         /* Get Database Connexion */
@@ -159,7 +159,7 @@ class ConfigGenerateCommandRepository
         }
         
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
 }

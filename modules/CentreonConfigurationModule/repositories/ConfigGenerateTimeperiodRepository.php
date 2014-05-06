@@ -48,9 +48,10 @@ class ConfigGenerateTimeperiodRepository
      * Methode tests
      * @return value
      */
-    public function generateTimeperiod($poller_id, $filename) 
+    public function generateTimeperiod(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
+
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
 
@@ -80,7 +81,7 @@ class ConfigGenerateTimeperiodRepository
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $user = "API");
         unset($content);
     }
 }

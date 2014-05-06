@@ -44,10 +44,11 @@ namespace  CentreonConfiguration\Repository;
 
 class ConfigGenerateRepository
 {
-    private $_objCache;
-    private $_di;
-    private $_stepStatus;
-    private $_path;
+    private $objCache;
+    private $di;
+    private $stepStatus;
+    private $path;
+    private $filesDir;
 
 
     /*
@@ -56,9 +57,10 @@ class ConfigGenerateRepository
      */
     public function __construct($poller_id) 
     {
-        $this->_di = \Centreon\Internal\Di::getDefault();
-        $this->_stepStatus = array();
-        $this->_path = "/var/lib/centreon/tmp/";
+        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->stepStatus = array();
+        $this->path = "/var/lib/centreon/tmp/";
+        $this->filesDir = array();
 
         /*
          * Check Poller Status
@@ -67,24 +69,25 @@ class ConfigGenerateRepository
         if (!$checkInfos[0]) {
             return $checkInfos;
         } else {
-            $this->_stepStatus[] = $checkInfos;
+            $this->stepStatus[] = $checkInfos;
         }
 
         /* Generate Configuration files */
-        ConfigGenerateCommandRepository::generateCheckCommand($poller_id, $this->_path.$poller_id."/check-command.cfg");
-        ConfigGenerateCommandRepository::generateMiscCommand($poller_id, $this->_path.$poller_id."/misc-command.cfg");
-        ConfigGenerateResourcesRepository::generateResources($poller_id, $this->_path.$poller_id."/resources.cfg");
-        ConfigGenerateTimeperiodRepository::generateTimeperiod($poller_id, $this->_path.$poller_id."/timeperiods.cfg");
-        ConnectorRepository::generateConnectors($poller_id, $this->_path.$poller_id."/connectors.cfg");
+        ConfigGenerateCommandRepository::generateCheckCommand($this->filesDir, $poller_id, $this->path, "check-command.cfg");
+        ConfigGenerateCommandRepository::generateMiscCommand($this->filesDir, $poller_id, $this->path, "misc-command.cfg");
+        ConfigGenerateResourcesRepository::generateResources($this->filesDir, $poller_id, $this->path, "resources.cfg");
+        ConfigGenerateTimeperiodRepository::generateTimeperiod($this->filesDir, $poller_id, $this->path, "timeperiods.cfg");
+        ConnectorRepository::generateConnectors($this->filesDir, $poller_id, $this->path, "connectors.cfg");
 
         /* Generate config Object */
-        HostgroupRepository::generateHostgroup($poller_id, $this->_path.$poller_id."/objects/hostgroups.cfg");
-        ServicegroupRepository::generateServicegroup($poller_id, $this->_path.$poller_id."/objects/servicegroups.cfg");
+        HostgroupRepository::generateHostgroup($this->filesDir, $poller_id, $this->path, "/objects/hostgroups.cfg");
+        ServicegroupRepository::generateServicegroup($this->filesDir, $poller_id, $this->path, "/objects/servicegroups.cfg");
 
-        HosttemplateRepository::generateHostTemplates($poller_id, $this->_path.$poller_id."/objects/hostTemplates.cfg");
+        /* Templates config files */
+        HosttemplateRepository::generateHostTemplates($this->filesDir, $poller_id, $this->path, "/objects/hostTemplates.cfg");
 
         /* Generate Main File */
-        ConfigGenerateMainRepository::generateMainFile($poller_id, $this->_path.$poller_id."/centengine.cfg");
+        ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "/centengine.cfg");
 
         /*
          * Create Buffers for objects
@@ -93,21 +96,21 @@ class ConfigGenerateRepository
         if (!$bufferInfos[0]) {
             return $bufferInfos;
         } else {
-            $this->_stepStatus[] = $bufferInfos;
+            $this->stepStatus[] = $bufferInfos;
         }
 
         $changeInfos = static::checkChanges($poller_id);
         if (!$changeInfos[0]) {
             return $changeInfos;
         } else {
-            $this->_stepStatus[] = $changeInfos;
+            $this->stepStatus[] = $changeInfos;
         }
 
         $generateInfos = static::generateConfigurations($poller_id);
         if (!$generateInfos[0]) {
             return $generateInfos;
         } else {
-            $this->_stepStatus[] = $generateInfos;
+            $this->stepStatus[] = $generateInfos;
         }
 
     }
@@ -191,7 +194,7 @@ class ConfigGenerateRepository
     } 
 
     public function getStepStatus() {
-        return $this->_stepStatus;
+        return $this->stepStatus;
     }
     
 }
