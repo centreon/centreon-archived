@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2005-2011 MERETHIS
+/*
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,26 +32,42 @@
  * For more information : contact@centreon.com
  *
  */
+namespace CentreonRealtime\Controllers;
 
-$tpl = $this->getTemplate();
+/**
+ * Display service monitoring states
+ *
+ * @author Sylvestre Ho
+ * @package CentreonRealtime
+ * @subpackage Controllers
+ */
+class HostController extends \Centreon\Internal\Controller
+{
+    /**
+     * The page structure for display
+     *
+     * @method get
+     * @route /realtime/host/list
+     */
+    public function listAction()
+    {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router->response()->json(
+            \Centreon\Internal\Datatable::getDatas(
+                'CentreonRealtime',
+                'host',
+                $this->getParams('get')
+            )
+        );
+    }
 
-/* Load css */
-$tpl->addCss('dataTables.css')
-	->addCss('dataTables.bootstrap.css')
-	->addCss('dataTables-TableTools.css');
-
-/* Load js */
-$tpl->addJs('jquery.min.js')
-	->addJs('jquery.dataTables.min.js')
-	->addJs('jquery.dataTables.TableTools.min.js')
-	->addJs('bootstrap-dataTables-paging.js')
-	->addJs('jquery.dataTables.columnFilter.js')
-	->addJs('jquery.select2/select2.min.js')
-	->addJs('jquery.validate.min.js')
-	->addJs('additional-methods.min.js');
-
-/* Datatable */
-$tpl->assign('moduleName', 'CentreonRealtime');
-$tpl->assign('objectName', 'Service');
-$tpl->assign('objectListUrl', '/realtime/service/list');
-$tpl->display('file:[ServiceMonitoringWidget]console.tpl');
+    /**
+     * Host detail page
+     *
+     * @method get
+     * @route /realtime/host/[i:id]
+     */
+    public function hostDetailAction()
+    {
+    }
+}

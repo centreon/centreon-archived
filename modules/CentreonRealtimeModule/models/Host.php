@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2005-2011 MERETHIS
+/*
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,27 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-$tpl = $this->getTemplate();
+namespace CentreonRealtime\Models;
 
-/* Load css */
-$tpl->addCss('dataTables.css')
-	->addCss('dataTables.bootstrap.css')
-	->addCss('dataTables-TableTools.css');
-
-/* Load js */
-$tpl->addJs('jquery.min.js')
-	->addJs('jquery.dataTables.min.js')
-	->addJs('jquery.dataTables.TableTools.min.js')
-	->addJs('bootstrap-dataTables-paging.js')
-	->addJs('jquery.dataTables.columnFilter.js')
-	->addJs('jquery.select2/select2.min.js')
-	->addJs('jquery.validate.min.js')
-	->addJs('additional-methods.min.js');
-
-/* Datatable */
-$tpl->assign('moduleName', 'CentreonRealtime');
-$tpl->assign('objectName', 'Service');
-$tpl->assign('objectListUrl', '/realtime/service/list');
-$tpl->display('file:[ServiceMonitoringWidget]console.tpl');
+/**
+ * Used for interacting with hosts
+ *
+ * @author sylvestre
+ */
+class Host extends \Centreon\Models\CentreonBaseModel
+{
+    protected static $table = "hosts";
+    protected static $primaryKey = "host_id";
+    protected static $uniqueLabelField = "name";
+}
