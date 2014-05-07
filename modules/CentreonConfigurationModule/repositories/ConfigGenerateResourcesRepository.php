@@ -72,7 +72,7 @@ class ConfigGenerateResourcesRepository
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $user = "API");
+        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }
 }
