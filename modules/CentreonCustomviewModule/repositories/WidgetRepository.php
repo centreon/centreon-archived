@@ -109,7 +109,7 @@ class WidgetRepository
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $tab = array();
             $stmt = $db->prepare("SELECT w.title, w.widget_model_id, widget_id, name, shortname, description,
-                url, version, author, email, website, keywords, screenshot, thumbnail, autoRefresh,
+                version, author, email, website, keywords, screenshot, thumbnail
                 isactivated, isinstalled
                 FROM widgets w, widget_models m
                 WHERE w.widget_model_id = m.widget_model_id");
@@ -167,8 +167,8 @@ class WidgetRepository
 
         if (!isset($tabId) || !isset($tabDir)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $query = "SELECT description, directory, name, widget_model_id, url, version, 
-                author, email, website, keywords, screenshot, thumbnail, autoRefresh
+            $query = "SELECT description, directory, name, widget_model_id, version, 
+                author, email, website, keywords, screenshot, thumbnail
                 FROM widget_models
                 ORDER BY name";
             $stmt = $db->prepare($query);
@@ -264,29 +264,6 @@ class WidgetRepository
             return $row['url'];
         } else {
             throw new Exception('No URL found for Widget #'.$widgetId);
-        }
-    }
-
-    /**
-     * Get Refresh Interval
-     *
-     * @param int $widgetId
-     * @return int
-     */
-    public static function getRefreshInterval($widgetId)
-    {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $query = "SELECT autoRefresh FROM widget_models wm, widgets w
-        		  WHERE wm.widget_model_id = w.widget_model_id
-        		  AND w.widget_id = :widget_id";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':widget_id', $widgetId);
-        $stmt->execute();
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetch();
-            return $row['autoRefresh'];
-        } else {
-            throw new Exception('No autoRefresh found for Widget #'.$widgetId);
         }
     }
 
@@ -603,21 +580,17 @@ class WidgetRepository
     public static function install($jsonFile)
     {
         $config = self::readConfigFile($jsonFile);
-        if (!$config['autoRefresh']) {
-            $config['autoRefresh'] = 0;
-        }
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $isactivated = 1;
         $isinstalled = 1;
-        $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, url, version,
-            author, email, website, keywords, screenshot, thumbnail, autoRefresh, isactivated, isinstalled)
+        $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, version,
+            author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled)
         	VALUES (:name, :shortname, :description, :url, :version, 
             :author, :email, :website, :keywords, :screenshot, :thumbnail, :autorefresh,
             :isactivated, :isinstalled)");
         $stmt->bindParam(':name', $config['name']);
         $stmt->bindParam(':shortname', $config['shortname']);
         $stmt->bindParam(':description', $config['description']);
-        $stmt->bindParam(':url', $config['url']);
         $stmt->bindParam(':version', $config['version']);
         $stmt->bindParam(':author', $config['author']);
         $stmt->bindParam(':email', $config['email']);
@@ -625,7 +598,6 @@ class WidgetRepository
         $stmt->bindParam(':keywords', $config['keywords']);
         $stmt->bindParam(':screenshot', $config['screenshot']);
         $stmt->bindParam(':thumbnail', $config['thumbnail']);
-        $stmt->bindParam(':autorefresh', $config['autoRefresh']);
         $stmt->bindParam(':isactivated', $isactivated);
         $stmt->bindParam(':isinstalled', $isinstalled);
         $stmt->execute();
@@ -753,13 +725,9 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $config = self::readConfigFile($widgetPath."/".$directory."/configs.xml");
-        if (!$config['autoRefresh']) {
-            $config['autoRefresh'] = 0;
-        }
         $query = "UPDATE widget_models SET
             title = :title
             description = :description
-        	url = :url
         	version = :version
         	author = :author
             email = :email
@@ -767,12 +735,10 @@ class WidgetRepository
             keywords = :keywords
             screenshot = :screenshot
             thumbnail = :thumbnail
-            autoRefresh = :autorefresh
         	WHERE directory = :directory";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':title', $config['title']);
         $stmt->bindParam(':description', $config['description']);
-        $stmt->bindParam(':url', $config['url']);
         $stmt->bindParam(':version', $config['version']);
         $stmt->bindParam(':author', $config['author']);
         $stmt->bindParam(':email', $config['email']);
@@ -780,7 +746,6 @@ class WidgetRepository
         $stmt->bindParam(':keywords', $config['keywords']);
         $stmt->bindParam(':screenshot', $config['screenshot']);
         $stmt->bindParam(':thumbnail', $config['thumbnail']);
-        $stmt->bindParam(':autorefresh', $config['autoRefresh']);
         $stmt->bindParam(':directory', $directory);
         $stmt->execute();
         $info = self::getWidgetInfoByDirectory($directory);

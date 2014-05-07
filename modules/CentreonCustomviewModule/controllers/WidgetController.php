@@ -73,7 +73,7 @@ class WidgetController extends \Centreon\Internal\Controller
         if (!isset($dir[0])) {
             throw new \Centreon\Internal\Exception(sprintf('Could not find directory %s', $commonName."Widget"));
         }
-        $filename = $dir[0] . $data['url'];
+        $filename = $dir[0] . $commonName . "Widget.php";
         if (file_exists($filename)) {
             include_once $filename;
         } else {
