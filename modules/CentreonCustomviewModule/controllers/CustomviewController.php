@@ -54,6 +54,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function customviewAction()
     {
+        $baseUrl = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'base_url'), '/');
         $template = \Centreon\Internal\Di::getDefault()->get('template');
         $template->addCss('jquery.gridster.min.css')
             ->addCss('centreon-widget.css')
@@ -82,8 +83,8 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsFunctionSavePos().'
                 '.$this->getJsFunctionRemoveWidget().'
                 '.$this->getJsInitGrid($jsonPosition, $jsonWidgets).'
-                '.$this->getJsEditView("#view_add", "/customview/updateview").'
-                '.$this->getJsEditView("#view_settings", "/customview/updateview/1").'
+                '.$this->getJsEditView("#view_add", "$baseUrl/customview/updateview").'
+                '.$this->getJsEditView("#view_settings", "$baseUrl/customview/updateview/1").'
                 '.$this->getJsDeleteView().'
                 '.$this->getJsDefault().'
                 '.$this->getJsBookmark().'
