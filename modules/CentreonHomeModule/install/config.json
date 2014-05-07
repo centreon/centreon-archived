@@ -1,0 +1,23 @@
+{
+    "name": "Centreon Home",
+    "shortname" : "centreon-home",
+    "version": "3.0.0",
+    "author" : [
+        "Merethis"
+    ],
+    "url" : "",
+    "description" : "Centreon Home Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        
+    ],
+    "program dependencies" : [
+        
+    ]
+}
