@@ -73,16 +73,16 @@ class WriteConfigFileRepository
     public static function writeObjectFile($content, $filename, $user = "Anonymous") 
     {
         /* Init File */
-        $handle = \CentreonConfiguration\Repository\WriteConfigFileRepository::initFile($filename);
+        $handle = static::initFile($filename);
 
         /* Write Data */
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::addHeader($handle, $user);
+        static::addHeader($handle, $user);
 
         /* Add Content to the configuration file */
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::addObjectsContent($handle, $content);
+        static::addObjectsContent($handle, $content);
 
         /* Close file */
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::closeFile($handle);
+        static::closeFile($handle);
     }
 
     /**
@@ -92,16 +92,16 @@ class WriteConfigFileRepository
     public static function writeParamsFile($content, $filename, $user = "Anonymous") 
     {
         /* Init File */
-        $handle = \CentreonConfiguration\Repository\WriteConfigFileRepository::initFile($filename);
+        $handle = static::initFile($filename);
         
         /* Write Data */
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::addHeader($handle, $user);
+        static::addHeader($handle, $user);
 
         /* Add Content to the configuration file */
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::addParamsContent($handle, $content);
+        static::addParamsContent($handle, $content);
 
         /* Close file */
-        \CentreonConfiguration\Repository\WriteConfigFileRepository::closeFile($handle);
+        static::closeFile($handle);
     }
     
     /**
@@ -122,11 +122,11 @@ class WriteConfigFileRepository
             foreach ($content as $object) {
                 /* Get the object type */
                 if (isset($object["type"])) {
-                    \CentreonConfiguration\Repository\WriteConfigFileRepository::startObject($handle, $object["type"]);
+                    static::startObject($handle, $object["type"]);
                     foreach ($object["content"] as $field => $value) {
-                        \CentreonConfiguration\Repository\WriteConfigFileRepository::addParameters($handle, $field, $value);
+                        static::addParameters($handle, $field, $value);
                     }
-                    \CentreonConfiguration\Repository\WriteConfigFileRepository::closeObject($handle);                
+                    static::closeObject($handle);                
                 } else {
                     /* Array is not well formated */
                     return array("status" => false, "message" => "Content array is not well formated");
@@ -155,10 +155,10 @@ class WriteConfigFileRepository
             foreach ($content as $field => $value) {
                 if (is_array($value)) {
                     foreach ($value as $v) {
-                        \CentreonConfiguration\Repository\WriteConfigFileRepository::addGlobalParameters($handle, $field, $v);
+                        static::addGlobalParameters($handle, $field, $v);
                     }
                 } else {
-                    \CentreonConfiguration\Repository\WriteConfigFileRepository::addGlobalParameters($handle, $field, $value);
+                    static::addGlobalParameters($handle, $field, $value);
                 }
             }
         } else {
