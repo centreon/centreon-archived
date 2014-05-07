@@ -1,0 +1,33 @@
+[
+    {
+      "name": "Dashboard",
+      "short_name": "dashboard",
+      "icon_class": "fa fa-dashboard",
+      "bgcolor": "lightgreen"
+    },
+    {
+      "name": "Performance",
+      "short_name": "performance",
+      "icon_class": "fa fa-bar-chart-o",
+      "bgcolor": "lightseagreen "
+    },
+    {
+      "name": "Administration",
+      "short_name": "administration",
+      "icon_class": "fa fa-folder-open",
+      "bgcolor": "#FA5858",
+      "menus" : [
+          {
+              "name": "Extensions",
+              "short_name": "extensions",
+              "menus" : [
+                  {
+                    "name" : "Modules",
+                    "short_name" : "modules",
+                    "route" : "/administration/extensions/module"
+                  }
+              ]
+          }
+      ]
+    }
+]

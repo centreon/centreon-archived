@@ -38,15 +38,20 @@ namespace Centreon\Internal\Install;
 class Upgrade
 {
     private static $coreModules = array(
+        'centreon-home',
         'centreon-security',
         'centreon-configuration',
         'centreon-realtime',
         'centreon-customview',
     );
     
-    public static function doUpgrade($origin = '3')
+    public static function doUpgrade($origin = '3.0.0')
     {
-        
+        if (version_compare($origin, '3.0.0','<')) {
+            self::upgradeFrom2X();
+        } else {
+            self::upgradeFrom3X();
+        }
     }
     
     public static function checkForUpdate()
@@ -59,20 +64,20 @@ class Upgrade
         
         \Centreon\Internal\Db\Installer::updateDb('migrate');
         
-        $config = $this->di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
-        $params = $this->getParams();
+        $di = \Centreon\Internal\Di::getDefault();
+        $config = $di->get('config');
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
         
         foreach (self::$coreModules as $coreModule) {
             $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $coreModule)));
 
             $moduleDirectory = $centreonPath
-                . 'modules/'
+                . '/modules/'
                 . $commonName
                 . 'Module/';
 
             if (!file_exists(realpath($moduleDirectory . 'install/config.json'))) {
-                throw new \Exception("The module is not valid because aof a missing configuration file");
+                throw new \Exception("The module $commonName is not valid because of a missing configuration file");
             }
             $moduleInfo = json_decode(file_get_contents($moduleDirectory . 'install/config.json'), true);
             // Launched Install
@@ -81,12 +86,7 @@ class Upgrade
 
             // Check if all dependencies are satisfied
             try {
-                $dependenciesCheckResult = $moduleInstaller->isDependenciesSatisfied();
-                if ($dependenciesCheckResult['success']) {
-                    $moduleInstaller->install();
-                } else {
-                    throw new Exception("Missing dependencies");
-                }
+                $moduleInstaller->install();
             } catch (\Exception $e) {
                 $moduleInstaller->remove();
                 echo '<pre>';
