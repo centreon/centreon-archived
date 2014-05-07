@@ -280,7 +280,7 @@ class WidgetRepository
         if (!isset($widgets[$viewId])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $widgets[$viewId] = array();
-            $query = "SELECT w.widget_id, w.title, wm.url
+            $query = "SELECT w.widget_id, w.title
                 FROM widgets w, widget_models wm
             	WHERE w.custom_view_id = :view_id
             	AND w.widget_model_id = wm.widget_model_id
