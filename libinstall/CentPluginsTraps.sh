@@ -94,6 +94,7 @@ ${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREONTRAPD_BINDIR"'|g' \
 	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
+	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	$TMP_DIR/src/centreontrapd.init.d > $TMP_DIR/work/centreontrapd.init.d
 check_result $? "$(gettext "Replace CentreonTrapd init script Macro")"
 
