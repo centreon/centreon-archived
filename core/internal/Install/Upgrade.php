@@ -38,8 +38,8 @@ namespace Centreon\Internal\Install;
 class Upgrade
 {
     private static $coreModules = array(
-        'centreon-security',
         'centreon-home',
+        'centreon-security',
         'centreon-configuration',
         'centreon-realtime',
         'centreon-customview',
@@ -47,7 +47,7 @@ class Upgrade
     
     public static function doUpgrade($origin = '3.0.0')
     {
-        if (version_compare($origin, '2.5.0', '>')) {
+        if (version_compare($origin, '2.5.0', >= 0)) {
             self::upgradeFrom3X();
         } else {
             self::upgradeFrom2X();
