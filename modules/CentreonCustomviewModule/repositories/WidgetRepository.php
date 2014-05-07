@@ -585,8 +585,8 @@ class WidgetRepository
         $isinstalled = 1;
         $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, version,
             author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled)
-        	VALUES (:name, :shortname, :description, :url, :version, 
-            :author, :email, :website, :keywords, :screenshot, :thumbnail, :autorefresh,
+        	VALUES (:name, :shortname, :description, :version, 
+            :author, :email, :website, :keywords, :screenshot, :thumbnail,
             :isactivated, :isinstalled)");
         $stmt->bindParam(':name', $config['name']);
         $stmt->bindParam(':shortname', $config['shortname']);
