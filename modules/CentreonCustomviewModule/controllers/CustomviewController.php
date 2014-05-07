@@ -82,7 +82,7 @@ class CustomviewController extends \Centreon\Internal\Controller
             $(function() {
                 '.$this->getJsFunctionSavePos($baseUrl).'
                 '.$this->getJsFunctionRemoveWidget($baseUrl).'
-                '.$this->getJsInitGrid($jsonPosition, $jsonWidgets).'
+                '.$this->getJsInitGrid($jsonPosition, $jsonWidgets, $baseUrl).'
                 '.$this->getJsEditView("#view_add", "$baseUrl/customview/updateview").'
                 '.$this->getJsEditView("#view_settings", "$baseUrl/customview/updateview/1").'
                 '.$this->getJsDeleteView($baseUrl).'
@@ -569,9 +569,10 @@ class CustomviewController extends \Centreon\Internal\Controller
      *
      * @param string $jsonPosition
      * @param string $jsonWidgets
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsInitGrid($jsonPosition, $jsonWidgets)
+    protected function getJsInitGrid($jsonPosition, $jsonWidgets, $baseUrl)
     {
         return 'var jsonPosition = '.$jsonPosition.'
                 var widgets = '.$jsonWidgets.'
@@ -603,7 +604,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         </span> \
                         </span> \
                         </div> \
-                        <iframe class="portlet-content" src="/widget/\' + this.widget_id + \'" \
+                        <iframe class="portlet-content" src="'.$baseUrl.'/widget/\' + this.widget_id + \'" \
                                 width="100%" height="100%" frameborder="0" style="overflow:hidden;"></iframe> \
                         </li>\',
                         (typeof jsonPosition[index] !== \'undefined\') ? jsonPosition[index].size_x : 5,
