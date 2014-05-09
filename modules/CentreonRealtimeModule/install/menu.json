@@ -6,6 +6,11 @@
         "bgcolor": "lightblue",
         "menus": [
             {
+                "name": "Services",
+                "short_name": "monitoring-services",
+                "route": "/realtime/service"
+            },
+            {
                 "name": "EventLogs",
                 "short_name": "eventlogs",
                 "route": "/realtime/eventlogs"
