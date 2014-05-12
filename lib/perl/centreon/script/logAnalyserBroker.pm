@@ -130,74 +130,74 @@ sub parseFile($$) {
 
                 if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
-                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id}));
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, $tab[5], '', '', $type_code{$tab[3]}, $tab[4], '0', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                    [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, $tab[5], undef, undef, $type_code{$tab[3]}, $tab[4], '0', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id})];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
                     next if (!defined($self->{cache_host}{$tab[0]}));
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, $tab[4], '', '', $type_code{$tab[2]}, $tab[3], '1', $instance_name, $self->{cache_host}{$tab[0]}, '')];
+                    [($cur_ctime, $tab[0], undef, $host_status_code{$tab[1]}, $tab[4], undef, undef, $type_code{$tab[2]}, $tab[3], '1', $instance_name, $self->{cache_host}{$tab[0]}, undef)];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
-                    next if (!defined($self->{cache_host_service}{$tab[1] . ":" . $tab[2]}->{'service_id'}));
+                    next if (!defined($self->{cache_host_service}{$tab[1] . ":" . $tab[2]}->{service_id}));
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[1], $tab[2], $svc_status_code{$tab[3]}, $tab[5], $tab[4], $tab[0], '', 0, '2', $instance_name, $self->{cache_host}{$tab[1]}, $self->{cache_host_service}{$tab[1] . ":" . $tab[2]}->{'service_id'})];
+                    [($cur_ctime, $tab[1], $tab[2], $svc_status_code{$tab[3]}, $tab[5], $tab[4], $tab[0], '', 0, '2', $instance_name, $self->{cache_host}{$tab[1]}, $self->{cache_host_service}{$tab[1] . ":" . $tab[2]}->{service_id})];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
                     next if (!defined($self->{cache_host}{$tab[1]}));
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[1], '', $host_status_code{$tab[2]}, $tab[4], $tab[3], $tab[0], '', 0, '3', $instance_name, $self->{cache_host}{$tab[1]}, '')];
+                    [($cur_ctime, $tab[1], undef, $host_status_code{$tab[2]}, $tab[4], $tab[3], $tab[0], '', 0, '3', $instance_name, $self->{cache_host}{$tab[1]}, undef)];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
                     next if (!defined($self->{cache_host}{$tab[0]}));
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, '', '', '', $type_code{$tab[2]}, 0, '7', $instance_name, $self->{cache_host}{$tab[0]}, '')];
+                    [($cur_ctime, $tab[0], undef, $host_status_code{$tab[1]}, undef, undef, undef, $type_code{$tab[2]}, 0, '7', $instance_name, $self->{cache_host}{$tab[0]}, undef)];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
-                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id}));
                     $cur_ctime = $1;
                     push @log_table_rows,
-                    [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, '', '', '',  $type_code{$tab[3]}, 0, '6', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                    [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, undef, undef, undef,  $type_code{$tab[3]}, 0, '6', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id})];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
                     next if (!defined($self->{cache_host}{$tab[0]}));
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, '', '', '', $type_code{$tab[2]}, 0, '9', $instance_name, $self->{cache_host}{$tab[0]}, '')];
+                    [($cur_ctime, $tab[0], undef, $host_status_code{$tab[1]}, undef, undef, undef, $type_code{$tab[2]}, 0, '9', $instance_name, $self->{cache_host}{$tab[0]}, undef)];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/) {
                     my @tab = split(/;/, $2);
-                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id}));
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, '', '', '', $type_code{$tab[3]}, 0, '8', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                    [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, undef, undef, undef, $type_code{$tab[3]}, 0, '8', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id})];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
                     $cur_ctime = $1;
                     my @tab = split(/;/, $2);
-                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                    next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id}));
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', 0, '10', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                    [($cur_ctime, $tab[0], $tab[1], undef, $tab[6], undef, $tab[5], undef, 0, '10', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{service_id})];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {
                     $cur_ctime = $1;
                     my @tab = split(/;/, $2);
                     next if (!defined($self->{cache_host}{$tab[0]}));
                     push @log_table_rows, 
-                    [($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', 0, '11', $instance_name, $self->{cache_host}{$tab[0]}, '')];
+                    [($cur_ctime, $tab[0], undef, undef, $tab[5], undef, $tab[4], undef, 0, '11', $instance_name, $self->{cache_host}{$tab[0]}, undef)];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/) {
                     my $tab = $2;
                     $cur_ctime = $1;
                     push @log_table_rows, 
-                    [($cur_ctime, '', '', '', $tab, '', '', '', 0, '4', $instance_name, '', '')];
+                    [($cur_ctime, undef, undef, undef, $tab, undef, undef, undef, 0, '4', $instance_name, undef, undef)];
                 } elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/ && (!$self->{msg_type5_disabled})) {
                     $cur_ctime = $1;
                     my $tab = $2;
                     push @log_table_rows, 
-                    [($cur_ctime, '', '', '', $tab, '', '', '', 0, '5', $instance_name, '', '')];
+                    [($cur_ctime, undef, undef, undef, $tab, undef, undef, undef, 0, '5', $instance_name, undef, undef)];
                 }
                 $counter++;
                 $nbqueries++;
@@ -255,7 +255,7 @@ sub parseArchive {
         if (!$data->{'log_archive_path'}) {
             die "Could not find local var log directory";
         }
-        $archives = $data->{'log_archive_path'};
+        $archives = $data->{log_archive_path};
     } else {
         $archives = $self->{centreon_config}->{VarLib} . "/log/$instance/archives/";
     }
