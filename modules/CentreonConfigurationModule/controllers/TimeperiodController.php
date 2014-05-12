@@ -45,6 +45,17 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
     protected $objectClass = '\CentreonConfiguration\Models\Timeperiod';
 
     /**
+     * List timeperiods
+     *
+     * @method get
+     * @route /configuration/timeperiod
+     */
+    public function listAction()
+    {
+        parent::listAction();
+    }
+    
+    /**
      * 
      * @method get
      * @route /configuration/timeperiod/formlist
@@ -52,5 +63,191 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
     public function formListAction()
     {
         parent::formListAction();
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/timeperiod/list
+     */
+    public function datatableAction()
+    {
+        parent::datatableAction();
+    }
+    
+    /**
+     * Create a new timeperiod
+     *
+     * @method post
+     * @route /configuration/timeperiod/add
+     */
+    public function createAction()
+    {
+        
+    }
+    
+    /**
+     * Update a timeperiod
+     *
+     *
+     * @method post
+     * @route /configuration/timeperiod/update
+     */
+    public function updateAction()
+    {
+        
+    }
+    
+    /**
+     * Add a timeperiod
+     *
+     * @method get
+     * @route /configuration/timeperiod/add
+     */
+    public function addAction()
+    {
+        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl->assign('validateUrl', '/configuration/timeperiod/add');
+        parent::addAction();
+    }
+    
+    /**
+     * Update a timeperiod
+     *
+     * @method get
+     * @route /configuration/timeperiod/[i:id]
+     */
+    public function editAction()
+    {
+        parent::editAction();
+    }
+    
+    /**
+     * Duplicate a timeperiod
+     *
+     * @method post
+     * @route /configuration/timeperiod/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/timeperiod/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+    
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/timeperiod/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/timeperiod/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Delete action for timeperiod
+     *
+     * @method post
+     * @route /configuration/timeperiod/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/timeperiod/[i:id]/include
+     */
+    public function includedTimeperiodAction()
+    {
+        $di = \Centreon\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $includedTimeperiodList = Timeperiodincluded::getMergedParameters(
+            array('tp_id', 'tp_name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('timeperiod_include_relations.timeperiod_id' => $requestParam['id']),
+            "AND"
+        );
+
+        $finalTimeperiodList = array();
+        foreach ($includedTimeperiodList as $includedTimeperiod) {
+            $finalTimeperiodList[] = array(
+                "id" => $includedTimeperiod['tp_id'],
+                "text" => $includedTimeperiod['tp_name'],
+                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                    $includedTimeperiod['tp_name']
+                ).' '.$includedTimeperiod['tp_name']
+            );
+        }
+        
+        $router->response()->json($finalTimeperiodList);
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/timeperiod/[i:id]/exclude
+     */
+    public function excludedTimeperiodAction()
+    {
+        $di = \Centreon\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $excludedTimeperiodList = Timeperiodexcluded::getMergedParameters(
+            array('tp_id', 'tp_name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('timeperiod_exclude_relations.timeperiod_id' => $requestParam['id']),
+            "AND"
+        );
+
+        $finalTimeperiodList = array();
+        foreach ($excludedTimeperiodList as $excludedTimeperiod) {
+            $finalTimeperiodList[] = array(
+                "id" => $excludedTimeperiod['tp_id'],
+                "text" => $excludedTimeperiod['tp_name'],
+                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                    $excludedTimeperiod['tp_name']
+                ).' '.$excludedTimeperiod['tp_name']
+            );
+        }
+        
+        $router->response()->json($finalTimeperiodList);
     }
 }
