@@ -35,7 +35,9 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use Models\Configuration\Timeperiod;
+use \CentreonConfiguration\Models\Timeperiod;
+use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
+use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
 
 class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -43,6 +45,11 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
     protected $objectName = 'timeperiod';
     protected $objectBaseUrl = '/configuration/timeperiod';
     protected $objectClass = '\CentreonConfiguration\Models\Timeperiod';
+    
+    public static $relationMap = array(
+        'tp_include' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded',
+        'tp_exclude' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded'
+    );
 
     /**
      * List timeperiods
@@ -95,7 +102,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
@@ -184,7 +191,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
      */
     public function includedTimeperiodAction()
     {
-        $di = \Centreon\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -204,10 +211,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
         foreach ($includedTimeperiodList as $includedTimeperiod) {
             $finalTimeperiodList[] = array(
                 "id" => $includedTimeperiod['tp_id'],
-                "text" => $includedTimeperiod['tp_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage(
-                    $includedTimeperiod['tp_name']
-                ).' '.$includedTimeperiod['tp_name']
+                "text" => $includedTimeperiod['tp_name']
             );
         }
         
@@ -221,7 +225,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
      */
     public function excludedTimeperiodAction()
     {
-        $di = \Centreon\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -241,10 +245,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
         foreach ($excludedTimeperiodList as $excludedTimeperiod) {
             $finalTimeperiodList[] = array(
                 "id" => $excludedTimeperiod['tp_id'],
-                "text" => $excludedTimeperiod['tp_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage(
-                    $excludedTimeperiod['tp_name']
-                ).' '.$excludedTimeperiod['tp_name']
+                "text" => $excludedTimeperiod['tp_name']
             );
         }
         

@@ -35,7 +35,7 @@
  */
 
 
-namespace CentreonConfiguration\Models\Relation\Host;
+namespace CentreonConfiguration\Models\Relation\Timeperiod;
 
 use \CentreonConfiguration\Models\Relation;
 
@@ -46,7 +46,7 @@ class Timeperiodincluded extends Relation
     protected static $secondKey = "timeperiod_include_id";
     public static $firstObject = "\CentreonConfiguration\Models\Timeperiod";
     public static $secondObject = "\CentreonConfiguration\Models\Timeperiod";
-
+    
     /**
      * Get Merged Parameters from seperate tables
      *
@@ -87,7 +87,7 @@ class Timeperiodincluded extends Relation
         }
         
         $sql = "SELECT ".$fString.$sString."
-        		FROM host, ".static::$relationTable."
+        		FROM timeperiod, ".static::$relationTable."
         		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
                 ." = ".static::$relationTable.".".static::$firstKey;
         $filterTab = array();
