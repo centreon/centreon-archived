@@ -1,6 +1,3 @@
-<script type="text/javascript" src="./include/common/javascript/jquery/jquery.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
-<script type="text/javascript">jQuery.noConflict();</script>
 <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
