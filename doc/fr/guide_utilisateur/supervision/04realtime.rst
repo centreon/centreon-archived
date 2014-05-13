@@ -529,7 +529,7 @@ Ce menu contextuel permet de visualiser des informations complémentaires telles
 par l'ordonnanceur, les commentaires ou les temps d'arrêt ajoutés aux objets .
 
 .. note::
-	Pour plus d'informations sur les commentaires ou sur les les temps d'arrêt, rendez-vous dans le :ref:`guide d'exploitation<exploitationguide>`.
+	Pour plus d'informations sur les commentaires ou sur les temps d'arrêt, rendez-vous dans le :ref:`guide d'exploitation<exploitationguide>`.
 
 File d'attente
 ==============
