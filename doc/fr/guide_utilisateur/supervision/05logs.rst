@@ -49,7 +49,7 @@ Statut de l'hôte ou du service
 ==============================
 
 .. note::
-    Les choix effectuées ici influencent les cases cochées dans **Type de message**. Il est également possible de visualiser les différents messages en sélectionnant manuellement les statuts désirés pour les hôtes ou les services.
+    Les choix effectués ici influencent les cases cochées dans **Type de message**. Il est également possible de visualiser les différents messages en sélectionnant manuellement les statuts désirés pour les hôtes ou les services.
 
 *************
 Les résultats

@@ -29,13 +29,13 @@ Informations générales
 
 * Le champ **Nom du Modèle** permet de définir un nom pour le modèle de graphe
 * Le champ **Label Vertical** contient la légende pour l'axe des ordonnées (type de données mesurées)
-* Les champs **Largeur** et **Hauteur** sont exprimés en pixels et expriment respectivement la largeur et la hauteur du modèle
+* Les champs **Largeur** et **Hauteur** sont exprimées en pixels et expriment respectivement la largeur et la hauteur du modèle
 * Le champ **Limite inférieure** définit la limite minimale de l'axe des ordonnées
 * Le champ **Limite supérieure** définit la limite maximale de l'axe des ordonnées
 * La liste **Base** définit la base de calcul pour les données lors de la mise à l'échelle des ordonnées du graphique. Utilisez 1024 pour des mesures comme l'octet (1 Ko = 1024 octets) et 1000 pour des mesures comme le volt (1 kV = 1000 Volts). 
 
 .. note::
-    Si la case "Taille max" est cochée, le graphique sera automatiquement mis à l'échelle de la valeur maximale des ordonnées présentées sur la prériode donnée.
+    Si la case "Taille max" est cochée, le graphique sera automatiquement mis à l'échelle de la valeur maximale des ordonnées présentées sur la période donnée.
 
 Légende
 -------
@@ -69,7 +69,7 @@ Les courbes
 Définition
 ==========
 
-Une courbe est la représentation de l'évolution des données de performances (métriques issues de la collecte) vibile via les graphiques de performance. Un graphique peut contenir plusieurs courbes.
+Une courbe est la représentation de l'évolution des données de performances (métriques issues de la collecte) visible via les graphiques de performance. Un graphique peut contenir plusieurs courbes.
 Il est possible de personnaliser les courbes en modifiant certains paramètres : l'allure des courbes, la position des courbes sur le graphique, la légende ainsi que les informations complémentaires (moyenne, valeur totale...).
 
 Configuration
@@ -89,7 +89,7 @@ Pour ajouter un nouveau modèle de courbes :
 * Le champ **Nom de la source de données** permet de sélectionner la métrique qui utilisera cette définition. La liste **Liste des métriques connues** permet de choisir les métriques déjà existantes utilisées par les services.
 * Si la case **Empiler** est cochée, cette courbe s'empilera ('stacking') sur les autres (utile pour voir la proportion d'une métrique par rapport à une autre).
 * Si la case **Empiler** est cochée, la liste **Ordre** permet de définir l'ordre d'affichage/empilage de la courbe (plus le nombre est petit, plus il sera proche de l'abscisse).
-* Si la case **Inverser** est cochée, la courbe est inversée ( opposée de la valeur absolue) par rapport à l'axe des ordonnées (utile pour voir la proportion du trafic entrant par rapport au trafic sortant).
+* Si la case **Inverser** est cochée, la courbe est inversée (opposée de la valeur absolue) par rapport à l'axe des ordonnées (utile pour voir la proportion du trafic entrant par rapport au trafic sortant).
 * La liste **Epaisseur** exprime l'épaisseur de la ligne du trait de la courbe (exprimée en pixels).
 * Le champ **Couleur de la courbe** définit la couleur de la courbe.
 * Le champ **Couleur de l'aire** concerne la couleur de remplissage de la courbe si l'option **Remplissage** est cochée, (voir ci-dessous). Elle contient 3 champs qui correspondent respectivement aux couleurs du statut OK, WARNING et CRITICAL.
@@ -106,7 +106,7 @@ Les attributs ci-dessous concernent les informations situées en dessous du grap
 * Si la case **Arrondir les valeurs minimales et maximales** est cochée, alors les valeurs minimales et maximales seront arrondies.
 * Si la case **Afficher la moyenne** est cochée, alors la moyenne des points de la courbe sera affichée.
 * Si la case **Afficher la dernière valeur** est cochée, alors la dernière valeur collectée de la courbe sera affichée.
-* Si la case **Afficher la valeur totale** est cochée, s'affiche alors la valeur totale (somme de toutes les valeurs de la courbe sur la prériode sélectionnée). 
+* Si la case **Afficher la valeur totale** est cochée, s'affiche alors la valeur totale (somme de toutes les valeurs de la courbe sur la période sélectionnée). 
 * Le champ **Commentaires** permet de commenter la courbe.
 
 Quelques exemples de courbes
@@ -134,14 +134,14 @@ Les métriques virtuelles
 Définition
 ==========
 
-Les métriques virtuelles sont l'affichage de courbes résultant du traitement / aggrégation de données issues d'un jeu de données.
+Les métriques virtuelles sont l'affichage de courbes résultant du traitement / agrégation de données issues d'un jeu de données.
 Le jeu de données correspond aux différentes valeurs des courbes sur la période de présentation du graphique.
 La création de métriques virtuelles repose sur le langage RPN (Reverse Polish Notation).
 
 Deux types de jeu de données sont disponibles :
 
-* CDEF : Cette commande crée un nouvel ensemble de points à partir d'une ou plusieurs séries de données. L'aggrégation est réalisée sur chaque point (données). 
-* VDEF : Le résultat de chaque aggrégation est une valeur et une composante temporelle. Ce résultant peut également être utilisé dans les divers éléments de graphique et d'impression. 
+* CDEF : Cette commande crée un nouvel ensemble de points à partir d'une ou plusieurs séries de données. L'agrégation est réalisée sur chaque point (données). 
+* VDEF : Le résultat de chaque agrégation est une valeur et une composante temporelle. Ce résultant peut également être utilisé dans les divers éléments de graphique et d'impression. 
 
 CDEF vs VDEF
 ------------

@@ -39,13 +39,13 @@ Les graphiques de performances
 Il existe plusieurs manières de visualiser les graphiques de performances :
 
 * Visualiser le graphique dans la liste des services (Menu **Supervision** ==> **Services**) en survolant l'icône |column-chart| 
-* Visualiser le graphique depuis la page de détails d'un obejts en cliquant sur l'icône |column-chart|
+* Visualiser le graphique depuis la page de détails d'un objet en cliquant sur l'icône |column-chart|
 * Se rendre dans le menu **Vues** ==> **Graphiques** pour visualiser un à plusieurs graphiques
 
 Les graphiques d'historique
 ===========================
 
-Comme pour les graphiques de performances, il existe diférentes façons d'accéder au graphique d'historique :
+Comme pour les graphiques de performances, il existe différentes façons d'accéder au graphique d'historique :
 
 * A partir de la page de détail d'un objet (voir le chapitre :ref:`supervision temps-réelle <realtime_monitoring>`)
 * A partir du menu **Vues** ==> **Graphiques**, en sélectionnant au préalable un service spécifique puis, en cochant la case **Affichage de l'état**.
@@ -61,7 +61,7 @@ Pour visualiser l'ensemble des graphiques, rendez-vous dans le menu **Vues** ==>
 Le menu de gauche permet de sélectionner les hôtes et/ou les services pour lesquels on souhaite visualiser les graphiques.
 
 La barre de recherche grise appelée **Période de visualisation** permet de sélectionner la période de temps sur laquelle on souhaite visualiser les graphiques.
-La liste déroulante permet de sélectionner des périodes de temps prédéfinies. Il est possible de choisir manuellement la période de temps en utilisant les champs **Du** et **Au**, ce qui remplacera la sélection préfédinie.
+La liste déroulante permet de sélectionner des périodes de temps prédéfinies. Il est possible de choisir manuellement la période de temps en utilisant les champs **Du** et **Au**, ce qui remplacera la sélection prédéfinie.
 
 Plusieurs actions sont possibles sur les graphiques :
 
