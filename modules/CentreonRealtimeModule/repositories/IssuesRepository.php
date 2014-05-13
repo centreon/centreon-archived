@@ -56,6 +56,7 @@ class IssuesRepository
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
+        $router = $di->get('router');
         $globalWheres = array();
         if (false === is_null($fromTime)) {
             $clause = 'i.start_time';
@@ -68,20 +69,28 @@ class IssuesRepository
             $globalWheres[] = $clause;
         }
 
+        /* Add filters to global */
+        /* @todo make better */
+        foreach ($filters as $key => $value) {
+            $globalWheres[] = $key . ' = "' . $value . '"';
+        }
+
         /* Subquery for hosts */
-        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time), he.state as state
-            FROM issues i, hosts h, hoststateevents he"
+        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, h.instance_id
+            FROM issues i, hosts h, hoststateevents he";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
-        $wheres[] = "i.host_id = se.host_id";
+        $wheres[] = "i.host_id = he.host_id";
         $wheres[] = "i.service_id IS NULL";
+        $wheres[] = "i.end_time IS NULL";
+        $wheres[] = "he.end_time IS NULL";
         $wheres = array_merge($wheres, $globalWheres);
         if (count($wheres) > 0) {
             $queryHosts .= ' WHERE ' . join(' AND ', $wheres);
         }
         
         /* Subquery for services */
-        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time), se.state as state
+        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, se.state as state, h.instance_id
             FROM issues i, hosts h, services s, servicestateevents se";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
@@ -90,13 +99,15 @@ class IssuesRepository
         $wheres[] = "se.host_id = i.host_id";
         $wheres[] = "se.service_id = i.service_id";
         $wheres[] = "i.service_id IS NOT NULL";
+        $wheres[] = "i.end_time IS NULL";
+        $wheres[] = "se.end_time IS NULL";
         $wheres = array_merge($wheres, $globalWheres);
         if (count($wheres) > 0) {
             $queryServices .= ' WHERE ' . join(' AND ', $wheres);
         }
 
         $query = $queryHosts . " UNION " . $queryServices;
-        $query .= ' ORDER BY i.start_time DESC';
+        $query .= ' ORDER BY start_time DESC';
         if (false === is_null($limit)) {
             $query .= ' LIMIT ' . $limit;
         }
@@ -124,13 +135,15 @@ class IssuesRepository
             }
             $lastDateCount++;
             $data[] = array(
+                'issue_id' => $row['issue_id'],
                 'instance_id' => $row['instance_id'],
                 'host_id' => $row['host_id'],
-                'host_name' => $row['host_name'],
-                'service_id' => $row['service_description'],
-                'service_desc' => $row['service_description'],
-                'start_time' => date('Y-m-d H:i:s', $row['start_time']),
-                'end_time' => date('Y-m-d H:i:s', $row['end_time']),
+                'host_name' => $row['name'],
+                'service_id' => $row['service_id'],
+                'service_desc' => $row['description'],
+                'start_time' => $row['start_time'],
+                'end_time' => $row['end_time'],
+                'url_graph' => $router->getPathFor('/realtime/issueGraph/[i:id]', array('id' => $row['issue_id'])),
                 'ticket' => ''
             );
         }
@@ -141,5 +154,146 @@ class IssuesRepository
             'recentTime' => $firstDate
         );
     }
-}
 
+    /**
+     * Get a issue information
+     *
+     * @param int $issueId The issue id
+     * @return array
+     */
+    public static function getIssue($issueId)
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $dbconn = $di->get('db_storage');
+
+        /* Query for host */
+        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, h.instance_id,
+                (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+                (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM issues i, hosts h, hoststateevents he";
+        $wheres = array();
+        $wheres[] = "i.host_id = h.host_id";
+        $wheres[] = "i.host_id = he.host_id";
+        $wheres[] = "i.service_id IS NULL";
+        $wheres[] = "i.end_time IS NULL";
+        $wheres[] = "he.end_time IS NULL";
+        $wheres[] = "i.issue_id = :issue_id";
+        if (count($wheres) > 0) {
+            $queryHosts .= ' WHERE ' . join(' AND ', $wheres);
+        }
+
+        /* Query for service */
+        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, se.state as state, h.instance_id,
+                (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+                (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM issues i, hosts h, services s, servicestateevents se";
+        $wheres = array();
+        $wheres[] = "i.host_id = h.host_id";
+        $wheres[] = "s.host_id = i.host_id";
+        $wheres[] = "s.service_id = i.service_id";
+        $wheres[] = "se.host_id = i.host_id";
+        $wheres[] = "se.service_id = i.service_id";
+        $wheres[] = "i.service_id IS NOT NULL";
+        $wheres[] = "i.end_time IS NULL";
+        $wheres[] = "se.end_time IS NULL";
+        $wheres[] = "i.issue_id = :issue_id";
+        if (count($wheres) > 0) {
+            $queryServices .= ' WHERE ' . join(' AND ', $wheres);
+        }
+
+        $query = $queryHosts . " UNION " . $queryServices;
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':issue_id', $issueId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        $issue = $row;
+        $stmt->closeCursor();
+
+        /* Get Parents */
+        $query = "SELECT i.issue_id, h.name, NULL as description
+            FROM issues i, issues_issues_parents iip, hosts h
+            WHERE i.issue_id = iip.parent_id
+                AND i.service_id IS NULL
+                AND i.host_id = h.host_id
+                AND i.end_time IS NULL
+                AND iip.child_id = :issue_id
+            UNION
+            SELECT i.issue_id, h.name, s.description
+            FROM issues i, issues_issues_parents iip, hosts h, services s
+            WHERE i.issue_id = iip.parent_id
+                AND i.service_id IS NOT NULL
+                AND i.host_id = h.host_id
+                AND i.host_id = s.host_id
+                AND i.service_id = s.service_id
+                AND i.end_time IS NULL
+                AND iip.child_id = :issue_id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':issue_id', $issueId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $issue['parents'] = array();
+        while ($row = $stmt->fetch()) {
+            $issue['parents'][] = $row;
+        }
+
+        return $issue;
+    }
+
+    /**
+     * Get the list of children for a issue
+     *
+     * @param int $issueId The issue ID
+     * @return array
+     */
+    public static function getChildren($issueId)
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $dbconn = $di->get('db_storage');
+
+        /* Query for host */
+        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, he.state,
+                (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+                (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM issues_issues_parents iip, issues i, hosts h, hoststateevents he";
+        $wheres = array();
+        $wheres[] = "i.host_id = h.host_id";
+        $wheres[] = "i.service_id IS NULL";
+        $wheres[] = "i.host_id = he.host_id";
+        $wheres[] = "he.end_time IS NULL";
+        $wheres[] = "i.issue_id = iip.child_id";
+        $wheres[] = "iip.parent_id = :issue_id";
+        if (count($wheres) > 0) {
+            $queryHosts .= ' WHERE ' . join(' AND ', $wheres);
+        }
+
+        /* Query for service */
+        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, se.state,
+                (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+                (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM issues_issues_parents iip, issues i, hosts h, services s, servicestateevents se";
+        $wheres = array();
+        $wheres[] = "i.host_id = h.host_id";
+        $wheres[] = "s.host_id = i.host_id";
+        $wheres[] = "s.service_id = i.service_id";
+        $wheres[] = "i.service_id IS NOT NULL";
+        $wheres[] = "i.host_id = se.host_id";
+        $wheres[] = "se.service_id = i.service_id";
+        $wheres[] = "se.end_time IS NULL";
+        $wheres[] = "i.issue_id = iip.child_id";
+        $wheres[] = "iip.parent_id = :issue_id";
+        if (count($wheres) > 0) {
+            $queryServices .= ' WHERE ' . join(' AND ', $wheres);
+        }
+
+        $query = $queryHosts . " UNION " . $queryServices;
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':issue_id', $issueId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $list = array();
+        while ($row = $stmt->fetch()) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+}

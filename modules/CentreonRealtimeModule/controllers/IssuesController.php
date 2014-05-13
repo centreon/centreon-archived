@@ -87,4 +87,124 @@ class IssuesController extends \Centreon\Internal\Controller
 
         $router->response()->json($listIssues);
     }
+
+    /**
+     * Display the graph map of issue
+     *
+     * @route /realtime/issueGraph/[i:id]
+     * @method GET
+     */
+    public function displayIssueGraphAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        $issueId = $router->request()->param('id');
+
+        $tmpl = $di->get('template');
+        $tmpl->addJs('jquery.jsPlumb-1.6.1-min.js');
+        $tmpl->addJs('centreon.issuesGraph.js');
+        $tmpl->addCss('centreon.issuesGraph.css');
+        $tmpl->assign('issue_id', $issueId);
+
+        $tmpl->display('file:[CentreonRealtimeModule]issue_graph.tpl');
+    }
+
+    /**
+     * Get information for a issue
+     *
+     * @route /realtime/issueGraph
+     * @method POST
+     */
+    public function getIssueGraphInfoAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        $response = array();
+
+        $action = $router->request()->param('action', null);
+        $issueId = $router->request()->param('issue_id', null);
+        if (is_null($issueId)) {
+            $router->response()->code(400);
+            return;
+        }
+        switch ($action) {
+            case 'get_info':
+                $issue = \CentreonRealtime\Repository\IssuesRepository::getIssue($issueId);
+                $fullname = $issue['name'];
+                if (false === is_null($issue['description'])) {
+                    $fullname .= ' - ' . $issue['description'];
+                }
+                $response = array(
+                    'id' => $issue['issue_id'],
+                    'name' => $fullname,
+                    'status' => self::getCssStatus($issue['state']),
+                    'output' => '',
+                    'last_update' => '',
+                    'has_children' => $issue['nb_children'] > 0 ? true : false,
+                    'has_parent' => $issue['nb_parents'] > 0 ? true : false,
+                    'parents' => array_map(function($values) {
+                        $parent = array();
+                        $parent['id'] = $values['issue_id'];
+                        $fullname = $values['name'];
+                        if (!is_null($values['description'])) {
+                            $fullname .= ' - ' . $values['description'];
+                        }
+                        $parent['name'] = $fullname;
+                        return $parent;
+                    }, $issue['parents'])
+                );
+                break;
+            case 'getChildren':
+                $listChildren = \CentreonRealtime\Repository\IssuesRepository::getChildren($issueId);
+                $response = array();
+                foreach ($listChildren as $child) {
+                    $fullname = $child['name'];
+                    if (false === is_null($child['description'])) {
+                        $fullname .= ' - ' . $child['description'];
+                    }
+                    $response[] = array(
+                        'id' => $child['issue_id'],
+                        'name' => $fullname,
+                        'status' => self::getCssStatus($child['state']),
+                        'output' => '',
+                        'last_update' => '',
+                        'has_children' => $child['nb_children'] > 0 ? true : false,
+                        'has_parent' => $child['nb_parents'] > 0 ? true : false
+                    );
+                }
+                break;
+            default:
+                $router->response()->code(400);
+                return;
+        }
+        $router->response()->json($response);
+    }
+
+    /**
+     * Get the status CSS for issue graph
+     *
+     * @param int $state The state number
+     */
+    public static function getCssStatus($state)
+    {
+        $status = "";
+        switch ($state) {
+            case 0:
+                $status = "panel-default";
+                break;
+            case 1:
+                $status = "panel-success";
+                break;
+            case 2:
+                $status = "panel-warning";
+                break;
+            case 3:
+                $status = "panel-warning";
+                break;
+            case 4:
+                $status = "panel-danger";
+                break;
+        }
+        return $status;
+    }
 }
