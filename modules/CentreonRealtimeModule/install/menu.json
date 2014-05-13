@@ -6,6 +6,11 @@
         "bgcolor": "lightblue",
         "menus": [
             {
+                "name": "Issues",
+                "short_name": "issues",
+                "route": "/realtime/issues"
+            },
+            {
                 "name": "Services",
                 "short_name": "monitoring-services",
                 "route": "/realtime/service"
