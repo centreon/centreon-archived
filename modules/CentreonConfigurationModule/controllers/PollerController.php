@@ -37,8 +37,12 @@ namespace CentreonConfiguration\Controllers;
 
 use \CentreonConfiguration\Models\Poller;
 
-class PollerController extends \Centreon\Internal\Controller
+class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
+    protected $objectDisplayName = 'Poller';
+    protected $objectName = 'poller';
+    protected $objectBaseUrl = '/configuration/poller';
+    protected $objectClass = '\CentreonConfiguration\Models\Poller';
 
     /**
      * List users
@@ -48,7 +52,17 @@ class PollerController extends \Centreon\Internal\Controller
      */
     public function listAction()
     {
-        
+        parent::listAction();
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/poller/list
+     */
+    public function datatableAction()
+    {
+        parent::datatableAction();
     }
     
     /**
@@ -76,5 +90,107 @@ class PollerController extends \Centreon\Internal\Controller
         }
         
         $router->response()->json($finalPollerList);
+    }
+    
+    /**
+     * Create a new poller
+     *
+     * @method post
+     * @route /configuration/poller/add
+     */
+    public function createAction()
+    {
+        
+    }
+    
+    /**
+     * Update a poller
+     *
+     *
+     * @method post
+     * @route /configuration/poller/update
+     */
+    public function updateAction()
+    {
+        parent::updateAction();
+    }
+    
+    /**
+     * Add a poller
+     *
+     * @method get
+     * @route /configuration/poller/add
+     */
+    public function addAction()
+    {
+        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl->assign('validateUrl', '/configuration/poller/add');
+        parent::addAction();
+    }
+    
+    /**
+     * Update a poller
+     *
+     * @method get
+     * @route /configuration/poller/[i:id]
+     */
+    public function editAction()
+    {
+        parent::editAction();
+    }
+    
+    /**
+     * Duplicate a poller
+     *
+     * @method post
+     * @route /configuration/poller/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/poller/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+    
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/poller/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/poller/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Delete action for poller
+     *
+     * @method post
+     * @route /configuration/poller/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }

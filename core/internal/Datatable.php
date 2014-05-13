@@ -220,4 +220,18 @@ class Datatable
         
         return $myElement;
     }
+    
+    /**
+     * 
+     * @param type $object
+     * @param type $fields
+     * @param type $values
+     * @param type $elementField
+     * @param type $element
+     * @return type
+     */
+    public static function addDate($object, $fields, $values, $elementField, $element)
+    {
+        return date($values['date'], $element[$fields]);
+    }
 }
