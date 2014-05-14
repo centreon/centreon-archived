@@ -54,6 +54,7 @@ class EventlogsController extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
 
         $tmpl = $di->get('template');
+        $tmpl->addJs('hogan-3.0.0.min.js');
         $tmpl->addJs('moment-with-langs.min.js');
         $tmpl->addJs('daterangepicker.js');
         $tmpl->addJs('jquery.select2/select2.min.js');
@@ -61,6 +62,7 @@ class EventlogsController extends \Centreon\Internal\Controller
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
+        $tmpl->addCss('centreon.status.css');
         $tmpl->display('file:[CentreonRealtimeModule]eventlogs.tpl');
     }
 
@@ -89,10 +91,11 @@ class EventlogsController extends \Centreon\Internal\Controller
             20,
             $filters
         );
+        $listEvents = $this->convertListEventLogs($listEvents);
         /* Purge data */
         if (isset($_SESSION['eventlogs_lasttime'])
             && count($listEvents['data']) > 0
-            && date('Y-m-d H:i:s', $_SESSION['eventlogs_lasttime'][0]) == $listEvents['data'][0]['datetime']) {
+            && $_SESSION['eventlogs_lasttime'][0] == $listEvents['data'][0]['datetime']) {
             for ($i = 0; $i < $_SESSION['eventlogs_lasttime'][1]; $i++) {
                 array_shift($listEvents['data']);
             }
@@ -126,6 +129,80 @@ class EventlogsController extends \Centreon\Internal\Controller
             null,
             $filters
         );
-        $router->response()->json($listEvents);
+        $router->response()->json(
+            $this->convertListEventLogs($listEvents)
+        );
+    }
+
+    /**
+     * Convert the list of events for web output
+     *
+     * @param array $listEvents The list of events
+     * @return array The datas for infinite scroll
+     */
+    private function convertListEventLogs($listEvents)
+    {
+        /* Convert data for output */
+        $lastDateCount = 0;
+        $lastDate = null;
+        $firstDate = null;
+        $data = array();
+        foreach ($listEvents as $log) {
+            if ($lastDate != $log['datetime']) {
+                $lastDate = $log['datetime'];
+                $lastDateCount = 0;
+            }
+            if (is_null($firstDate)) {
+                $firstDate = $log['datetime'];
+            }
+            $lastDateCount++;
+            if (false === is_null($log['host_id'])) {
+                $log['host_logo'] = \CentreonConfiguration\Repository\HostRepository::getIconImage($log['host']);
+            } else {
+                $log['host_logo'] = '';
+            }
+            if (false === is_null($log['service_id'])) {
+                $log['service_logo'] = \CentreonConfiguration\Repository\ServiceRepository::getIconImage($log['service']);
+            } else {
+                $log['service_logo'] = '';
+            }
+            /* Todo class utils */
+            $statusService = array(
+                0 => 'Ok',
+                1 => 'Warning',
+                2 => 'Critical',
+                3 => 'Unknown',
+                4 => 'Pending',
+                5 => 'Information'
+            );
+            $statusHost = array(
+                0 => 'Up',
+                1 => 'Down',
+                2 => 'Down',
+                3 => 'Unknown',
+                4 => 'Pending',
+                5 => 'Information'
+            );
+            if (false === is_null($log['service_id'])) {
+                $log['status_text'] = $statusService[$log['status']];
+            } else {
+                $log['status_text'] = $statusHost[$log['status']];
+            }
+
+            if ($log['msg_type'] != 1 && $log['msg_type'] != 0) {
+                $log['border_color'] = 'centreon-border-info';
+            } else {
+                $log['border_color'] = 'centreon-border-status-' . $log['status'];
+            }
+            $data[] = $log;
+        }
+
+        return  array(
+            'data' => $data,
+            'lastTimeEntry' => $lastDate,
+            'nbEntryForLastTime' => $lastDateCount,
+            'recentTime' => $firstDate,
+            'facets' => array()
+        );
     }
 }
