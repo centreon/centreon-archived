@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="bam_dep_child_relation" phpName="BamDepChildRelation" idMethod="native">
+        <column name="id_dcr" phpName="IdDcr" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="id_ba" phpName="IdBa" type="INTEGER" required="true"/>
+        <column name="id_dep" phpName="IdDep" type="INTEGER" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

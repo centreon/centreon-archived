@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="bam_impacts" phpName="BamImpacts" idMethod="native">
+        <column name="id_impact" phpName="IdImpact" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="code" phpName="Code" type="TINYINT" required="true"/>
+        <column name="impact" phpName="Impact" type="FLOAT" required="true"/>
+        <column name="color" phpName="Color" type="VARCHAR" size="7" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
