@@ -1,10 +1,10 @@
 {extends file="file:[Core]viewLayout.tpl"}
 
-{block name="title"}{t}Issues{/t}{/block}
+{block name="title"}{t}Incidents{/t}{/block}
 
 {block name="content"}
 <div class="content-container">
-  <table class="table table-striped table-condensed" id="issues">
+  <table class="table table-striped table-condensed" id="incidents">
   <thead>
     <tr>
       <th class="span-1">&nbsp;</th>
@@ -26,8 +26,8 @@
 {block name="javascript-bottom" append}
 <script>
 $(function() {
-  $("#issues").centreonTableInfiniteScroll({
-    "ajaxUrlGetScroll": "{url_for url="/realtime/issues"}",
+  $("#incidents").centreonTableInfiniteScroll({
+    "ajaxUrlGetScroll": "{url_for url="/realtime/incident"}",
     "templateRows": "<tr> \
       <td class='span-1'> \
         <a href='#' class='ext_infos' data-id='<%issue_id%>'><i class='fa fa-plus-square-o'></i></a> \
@@ -49,7 +49,7 @@ $(function() {
     </tr>"
   });
 
-  $("#issues > tbody").on("click", "a.ext_infos", function(e) {
+  $("#incidents > tbody").on("click", "a.ext_infos", function(e) {
     e.preventDefault();
     $elem = $(e.currentTarget);
     $("#ext_infos_" + $elem.data("id")).toggle();

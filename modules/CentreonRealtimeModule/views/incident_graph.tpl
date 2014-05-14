@@ -1,6 +1,6 @@
 {extends file="file:[Core]viewLayout.tpl"}
 
-{block name="title"}{t}Issue map{/t}{/block}
+{block name="title"}{t}Incident map{/t}{/block}
 
 {block name="content"}
 <div class="content-container graph">
@@ -13,10 +13,10 @@ $(function() {
   $( ".graph" ).height(
     $( "#main" ).height() - $( ".breadcrumb-bar" ).height()
   );
-  $( ".graph" ).centreonIssuesGraph({
-    urlGetInfo: "{url_for url='/realtime/issueGraph'}"
+  $( ".graph" ).centreonIncidentsGraph({
+    urlGetInfo: "{url_for url='/realtime/incident/graph'}"
   });
-  $( ".graph" ).centreonIssuesGraph( "loadIssue", {$issue_id} );
+  $( ".graph" ).centreonIncidentsGraph( "loadIncident", {$incident_id} );
 });
 </script>
 {/block}

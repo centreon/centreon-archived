@@ -30,7 +30,7 @@
   margin-top: 5px;
 }
 
-.issuesMinimap {
+.incidentsMinimap {
   position: absolute;
   top: 0;
   left: 0;
@@ -39,14 +39,14 @@
   z-index: 10;
 }
 
-.issuesMinimap-body {
+.incidentsMinimap-body {
   background-color: #f8f8f8;
   background-color: rgba(248, 248, 248, 0.8);
   position: relative;
   overflow: auto;
 }
 
-.issuesMinimap-button {
+.incidentsMinimap-button {
   margin-right: 10px;
   padding: 5px;
   background-color: #f8f8f8;
@@ -55,19 +55,19 @@
   border-bottom-left-radius: 5px;
 }
 
-.issuesMinimap .issue-thumb {
+.incidentsMinimap .incident-thumb {
   position: absolute;
   width: 40px;
   height: 25px;
 }
 
-.issuesMinimap .danger {
+.incidentsMinimap .danger {
   background-color: #a94442;
   border-color: #ebccd1;
   border-radius: 3px;
 }
 
-.issuesMinimap .warning {
+.incidentsMinimap .warning {
   background-color: #8a6d3b;
   border-color: #faebcc;
   border-radius: 3px;

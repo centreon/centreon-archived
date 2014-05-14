@@ -1,14 +1,14 @@
 /* global jQuery:false */
 /**
- * Draw a issues graph
+ * Draw a incidents graph
  */
 (function( $ ) {
-  function CentreonIssuesGraph( settings, $elem ) {
+  function CentreonIncidentsGraph( settings, $elem ) {
     var thisObj = this;
     this.settings = settings;
     this.$elem = $elem;
-    this.$currentIssue = undefined;
-    this.issues = {};
+    this.$currentIncident = undefined;
+    this.incidents = {};
     this.thumbsHeight = 0;
     /* Initialize jsPlumb defaults */
     this.jsPlumbInstance = jsPlumb.getInstance({
@@ -34,7 +34,7 @@
     this.$elem.on( "click", ".parent-link", function( e ) {
       var childId, data,
           $elem = $( e.currentTarget );
-      data = $elem.data( "centreonIssuesGraph" );
+      data = $elem.data( "centreonIncidentsGraph" );
       $elem.tooltip( "hide" );
       thisObj.moveTo( data.id );
     });
@@ -52,37 +52,37 @@
     return this;
   }
 
-  CentreonIssuesGraph.prototype = {
-    drawIssue: function( issue ) {
-      var $issueBox, $content,
-          $header = $( "<div></div>" ).addClass( "panel-heading" ).text( issue.name );
+  CentreonIncidentsGraph.prototype = {
+    drawIncident: function( incident ) {
+      var $incidentBox, $content,
+          $header = $( "<div></div>" ).addClass( "panel-heading" ).text( incident.name );
 
       /* Create content */
       $content = $( "<div></div>" )
         .addClass( "panel-body" )
         .append(
-          $( "<div></div>" ).addClass( "pull-right" ).addClass( "last-update" ).text( "Since : " + issue.last_update )
+          $( "<div></div>" ).addClass( "pull-right" ).addClass( "last-update" ).text( "Since : " + incident.last_update )
         )
         .append(
           $( "<i></i>" ).addClass( "expand" ).addClass( "fa" ).addClass( "fa-plus-circle" )
         )
         .append(
-          $( "<div></div>" ).addClass( "output" ).html( issue.output )
+          $( "<div></div>" ).addClass( "output" ).html( incident.output )
         )
         .append(
           $( "<div></div>" ).addClass( "row" ).addClass( "extended-info" ).css( "display",  "none" )
         );
 
-      $issueBox = $( "<div></div>")
-        .attr( "id", "issue_" + issue.id )
+      $incidentBox = $( "<div></div>")
+        .attr( "id", "incident_" + incident.id )
         .addClass( "panel" )
-        .addClass( issue.status )
+        .addClass( incident.status )
         .addClass( "service-box" )
         .append( $header )
         .append( $content );
-      return $issueBox;
+      return $incidentBox;
     },
-    loadIssue: function( issueId ) {
+    loadIncident: function( incidentId ) {
       var thisObj = this;
       $.ajax( {
         url: this.settings.urlGetInfo,
@@ -90,16 +90,16 @@
         type: "POST",
         data: {
           action: "get_info",
-          issue_id: issueId
+          incident_id: incidentId
         },
         success: function( data, textStatus, jqXHR ) {
-          var $issueParent, dataParent;
-          if ( $( "#issue_" + issueId).length === 0 ) {
-            $issueParent = thisObj.drawIssue( data ).appendTo( thisObj.$elem );
+          var $incidentParent, dataParent;
+          if ( $( "#incident_" + incidentId).length === 0 ) {
+            $incidentParent = thisObj.drawIncident( data ).appendTo( thisObj.$elem );
           } else {
-            $issueParent = $( $( "#issue_" + issueId)[0] );
+            $incidentParent = $( $( "#incident_" + incidentId)[0] );
           }
-          dataParent = $issueParent.data( "centreonIssuesGraph" );
+          dataParent = $incidentParent.data( "centreonIncidentsGraph" );
           if ( !dataParent ) {
             dataParent = {
               loaded: false,
@@ -121,36 +121,36 @@
               type: "POST",
               data: {
                 action: "getChildren",
-                issue_id: issueId
+                incident_id: incidentId
               },
               success: function( data, textStatus, jqXHR ) {
-                $.each( data, function( idx, issue ) {
+                $.each( data, function( idx, incident ) {
                   var $service;
-                  if ( $( "#issue_" + issue.id ).length === 0 ) {
-                    $service = thisObj.drawIssue( issue ).appendTo( thisObj.$elem );
-                    $service.data( "centreonIssuesGraph", {
+                  if ( $( "#incident_" + incident.id ).length === 0 ) {
+                    $service = thisObj.drawIncident( incident ).appendTo( thisObj.$elem );
+                    $service.data( "centreonIncidentsGraph", {
                       loaded: false,
                       children: [],
                       has_parent: true,
-                      has_children: issue.has_children,
+                      has_children: incident.has_children,
                       parents: undefined
                     } );
                   } else {
-                    $service = $( $( "#issue_" + issue.id )[0] );
+                    $service = $( $( "#incident_" + incident.id )[0] );
                   }
                   dataParent.children.push( $service );
                 } );
                 dataParent.loaded = true;
-                $issueParent.data( "centreonIssuesGraph", dataParent );
-                thisObj.$currentIssue = $issueParent;
+                $incidentParent.data( "centreonIncidentsGraph", dataParent );
+                thisObj.$currentIncident = $incidentParent;
                 thisObj.drawGraph();
               }     
             });
           } else {
             dataParent.has_parent = data.has_parent;
             dataParent.loaded = true;
-            $issueParent.data( "centreonIssuesGraph", dataParent );
-            thisObj.$currentIssue = $issueParent;
+            $incidentParent.data( "centreonIncidentsGraph", dataParent );
+            thisObj.$currentIncident = $incidentParent;
             thisObj.drawGraph();
           }
         }
@@ -161,56 +161,56 @@
           epChildren = [],
           posTop = 0,
           thisObj = this,
-          data = this.$currentIssue.data( "centreonIssuesGraph" );
+          data = this.$currentIncident.data( "centreonIncidentsGraph" );
 
       $( ".parent-link" ).remove();
       $( ".children-link" ).remove();
 
       /* Position children */
-      $.each( data.children, function( idx, $issue ) {
-        var dataChildren = $issue.data( "centreonIssuesGraph" );
+      $.each( data.children, function( idx, $incident ) {
+        var dataChildren = $incident.data( "centreonIncidentsGraph" );
         posTop += thisObj.settings.marginHeight;
-        $issue
+        $incident
           .css( "top", posTop + "px")
           .css( "right", thisObj.settings.offset + "px" )
           .css( "left", "" )
           .removeClass( "service-box-parent" )
           .addClass( "service-box-child" );
-        $issue.show();
+        $incident.show();
 
         /* Add icon if has children */
         if ( dataChildren.has_children ) {
           $( "<div></div>" )
             .addClass( "children-link" )
-            .attr( "id", "children_" + $issue.attr( "id" ).split( "_" )[1] )
+            .attr( "id", "children_" + $incident.attr( "id" ).split( "_" )[1] )
             .append(
               $( "<i></i>" )
                 .addClass( "fa" )
                 .addClass( "fa-arrow-circle-right" )
             )
             .css( "right", (thisObj.settings.offset - 6) + "px" )
-            .css( "top", posTop + $issue.height() / 2 )
+            .css( "top", posTop + $incident.height() / 2 )
             .appendTo( thisObj.$elem );
         }
-        posTop += $issue.height();
+        posTop += $incident.height();
       });
 
       /* Position parent */
-      parentTopPos = posTop / 2 - this.$currentIssue.height() / 2;
+      parentTopPos = posTop / 2 - this.$currentIncident.height() / 2;
       if ( parentTopPos <= 0 ) {
-        parentTopPos = this.$elem.height() / 2 - this.$currentIssue.height() / 2;
+        parentTopPos = this.$elem.height() / 2 - this.$currentIncident.height() / 2;
       }
-      this.$currentIssue
+      this.$currentIncident
         .css( "top", parentTopPos + "px" )
         .css( "left", thisObj.settings.offset + "px" )
         .css( "right", "" )
         .removeClass( "service-box-child" )
         .addClass( "service-box-parent" );
-      this.$currentIssue.show();
+      this.$currentIncident.show();
 
       /* Add icon if has parent */
       if ( data.has_parent ) {
-        parentLinkTopPos = parentTopPos + ( this.$currentIssue.height() / 2 - data.parents.length * 20 / 2 );
+        parentLinkTopPos = parentTopPos + ( this.$currentIncident.height() / 2 - data.parents.length * 20 / 2 );
         $.each( data.parents, function( idx, parent ) {
           $( "<div></div>" )
             .addClass( "parent-link" )
@@ -224,7 +224,7 @@
             .attr( "data-toggle", "tooltip" )
             .attr( "data-placement", "left" )
             .attr( "title", parent.name )
-            .data( "centreonIssuesGraph", { "id": parent.id } )
+            .data( "centreonIncidentsGraph", { "id": parent.id } )
             .appendTo( thisObj.$elem );
             parentLinkTopPos += 20;
         });
@@ -232,10 +232,10 @@
       }
 
       /* Add links */
-      $.each( data.children, function( idx, $issue ) {
+      $.each( data.children, function( idx, $incident ) {
         thisObj.jsPlumbInstance.connect({
-          source: thisObj.$currentIssue,
-          target: $issue,
+          source: thisObj.$currentIncident,
+          target: $incident,
           anchors: [ "RightMiddle", "LeftMiddle" ]
         });
       });
@@ -253,7 +253,7 @@
           type: "POST",
           data: {
             action: "get_extended_info",
-            issue_id: id
+            incident_id: id
           },
           success: function( data, textStatus, jqXHR ) {
             var fullsize,
@@ -333,29 +333,29 @@
         top: animation
       });
     },
-    moveTo: function( issueId ) {
-      var $issueElem = $( "#issue_" + issueId );
+    moveTo: function( incidentId ) {
+      var $incidentElem = $( "#incident_" + incidentId );
       $( ".parent-link" ).remove();
       $( ".children-link" ).remove();
       this.jsPlumbInstance.detachEveryConnection();
-      $( ".service-box" ).not( $issueElem ).hide();
-      this.loadIssue( issueId );
+      $( ".service-box" ).not( $incidentElem ).hide();
+      this.loadIncident( incidentId );
     },
-    drawMinimap: function( issueId ) {
+    drawMinimap: function( incidentId ) {
       var $elemMap,
         thisObj = this;
       $elemMap = $( "<div></div>" )
-        .addClass( "issuesMinimap" )
+        .addClass( "incidentsMinimap" )
         .append(
           $( "<div></div>" )
-            .addClass( "issuesMinimap-body" )
+            .addClass( "incidentsMinimap-body" )
         )
         .append(
           $( "<div></div>" )
             .append(
               $( "<div></div>" )
                 .addClass( "pull-right" )
-                .addClass( "issuesMinimap-button" )
+                .addClass( "incidentsMinimap-button" )
                 .html(
                   "<i class='fa fa-caret-down'></i> Minimap"
                 )
@@ -367,25 +367,25 @@
         dataType: "json",
         type: "POST",
         data: {
-            action: "issue_tree",
-            issue_id: issueId
+            action: "incident_tree",
+            incident_id: incidentId
         },
         success: function( data, textStatus, jqXHR ) {
           var miniInstance,
               posLeft = thisObj.settings.offset;
           $.each( data, function( idx, colList ) {
             var posTop = thisObj.settings.offset;
-            $.each( colList, function( idx, issue ) {
-              var $issueBox = $( "<div></div>" )
-                .attr( "id", "issueThumb_" + issue.id )
+            $.each( colList, function( idx, incident ) {
+              var $incidentBox = $( "<div></div>" )
+                .attr( "id", "incidentThumb_" + incident.id )
                 .attr( "data-toggle", "tooltip")
                 .attr( "data-placement", "bottom")
-                .attr( "title", issue.name )
-                .addClass( "issue-thumb" )
-                .addClass( issue.status )
+                .attr( "title", incident.name )
+                .addClass( "incident-thumb" )
+                .addClass( incident.status )
                 .css( "top", posTop )
                 .css( "left", posLeft )
-                .appendTo( $elemMap.find( ".issuesMinimap-body" ) );
+                .appendTo( $elemMap.find( ".incidentsMinimap-body" ) );
               posTop += 25 + thisObj.settings.offset;
             });
             if ( posTop > thisObj.thumbsHeight ) {
@@ -393,7 +393,7 @@
             }
             posLeft += 50 + thisObj.settings.offset * 2;
           });
-          $( ".issue-thumb" ).tooltip();
+          $( ".incident-thumb" ).tooltip();
           /* Init instance of jsPlumb */
           miniInstance = jsPlumb.getInstance({
             Endpoint: thisObj.settings.endPointForm,
@@ -408,11 +408,11 @@
             Connector:[ "Bezier", { curviness: 10 } ]
           });
           $.each( data, function( idx, colList ) {
-            $.each( colList, function( idx, issue ) {
-              $.each( issue.children, function( idx, child ) {
+            $.each( colList, function( idx, incident ) {
+              $.each( incident.children, function( idx, child ) {
                 miniInstance.connect({
-                  source: $( "#issueThumb_" + issue.id )[0],
-                  target: $( "#issueThumb_" + child )[0],
+                  source: $( "#incidentThumb_" + incident.id )[0],
+                  target: $( "#incidentThumb_" + child )[0],
                   anchors: [ "RightMiddle", "LeftMiddle" ]
                 });
               });
@@ -424,17 +424,17 @@
   };
 
   /* jQuery method */
-  $.fn.centreonIssuesGraph = function( options ) {
+  $.fn.centreonIncidentsGraph = function( options ) {
     var $set, methodReturn,
         args = Array.prototype.slice.call( arguments, 1 ),
-        settings = $.extend( {}, $.fn.centreonIssuesGraph.defaults, options );
+        settings = $.extend( {}, $.fn.centreonIncidentsGraph.defaults, options );
 
     $set = this.each( function() {
       var $this = $( this ),
-          data = $this.data( "centreonIssuesGraph" );
+          data = $this.data( "centreonIncidentsGraph" );
 
       if ( !data ) {
-        $this.data( "centreonIssuesGraph", ( data = new CentreonIssuesGraph( settings, $this ) ) );
+        $this.data( "centreonIncidentsGraph", ( data = new CentreonIncidentsGraph( settings, $this ) ) );
       }
       if ( typeof options === "string" ) {
         methodReturn = data[ options ].apply( data, args );
@@ -445,7 +445,7 @@
   };
 
   /* Default values */
-  $.fn.centreonIssuesGraph.defaults = {
+  $.fn.centreonIncidentsGraph.defaults = {
     offset: 20,
     marginHeight: 30,
     boxHeight: 160,

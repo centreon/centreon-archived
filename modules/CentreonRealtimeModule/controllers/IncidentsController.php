@@ -41,13 +41,13 @@ namespace CentreonRealtime\Controllers;
  * @package CentreonRealtime
  * @subpackage Controllers
  */
-class IssuesController extends \Centreon\Internal\Controller
+class IncidentsController extends \Centreon\Internal\Controller
 {
     /**
      * The page structure for display the list
      *
      * @method GET
-     * @route /realtime/issues
+     * @route /realtime/incident
      */
     public function displayListAction()
     {
@@ -56,16 +56,16 @@ class IssuesController extends \Centreon\Internal\Controller
         $tmpl = $di->get('template');
         $tmpl->addJs('hogan-3.0.0.min.js');
         $tmpl->addJs('centreon-table-infinite-scroll.js');
-        $tmpl->display('file:[CentreonRealtimeModule]issues_list.tpl');
+        $tmpl->display('file:[CentreonRealtimeModule]incidents_list.tpl');
     }
 
     /**
-     * Get the list of issues
+     * Get the list of incidents
      *
      * @method POST
-     * @route /realtime/issues
+     * @route /realtime/incident
      */
-    public function getListIssuesAction()
+    public function getListIncidentsAction()
     {
         $router = \Centreon\Internal\Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
@@ -78,70 +78,70 @@ class IssuesController extends \Centreon\Internal\Controller
         if (isset($params['startTime'])) {
             unset($filters['startTime']);
         }
-        $listIssues = \CentreonRealtime\Repository\IssuesRepository::getIssues(
+        $listIncidents = \CentreonRealtime\Repository\IncidentsRepository::getIncidents(
             $fromTime,
             'DESC',
             20,
             $filters
         );
 
-        $router->response()->json($listIssues);
+        $router->response()->json($listIncidents);
     }
 
     /**
-     * Display the graph map of issue
+     * Display the graph map of incident
      *
-     * @route /realtime/issueGraph/[i:id]
+     * @route /realtime/incident/graph/[i:id]
      * @method GET
      */
-    public function displayIssueGraphAction()
+    public function displayIncidentGraphAction()
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
-        $issueId = $router->request()->param('id');
+        $incidentId = $router->request()->param('id');
 
         $tmpl = $di->get('template');
         $tmpl->addJs('jquery.jsPlumb-1.6.1-min.js');
-        $tmpl->addJs('centreon.issuesGraph.js');
-        $tmpl->addCss('centreon.issuesGraph.css');
-        $tmpl->assign('issue_id', $issueId);
+        $tmpl->addJs('centreon.incidentsGraph.js');
+        $tmpl->addCss('centreon.incidentsGraph.css');
+        $tmpl->assign('incident_id', $incidentId);
 
-        $tmpl->display('file:[CentreonRealtimeModule]issue_graph.tpl');
+        $tmpl->display('file:[CentreonRealtimeModule]incident_graph.tpl');
     }
 
     /**
-     * Get information for a issue
+     * Get information for a incident for display graph
      *
-     * @route /realtime/issueGraph
+     * @route /realtime/incident/graph
      * @method POST
      */
-    public function getIssueGraphInfoAction()
+    public function getIncidentGraphInfoAction()
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         $response = array();
 
         $action = $router->request()->param('action', null);
-        $issueId = $router->request()->param('issue_id', null);
-        if (is_null($issueId)) {
+        $incidentId = $router->request()->param('incident_id', null);
+        if (is_null($incidentId)) {
             $router->response()->code(400);
             return;
         }
         switch ($action) {
             case 'get_info':
-                $issue = \CentreonRealtime\Repository\IssuesRepository::getIssue($issueId);
-                $fullname = $issue['name'];
-                if (false === is_null($issue['description'])) {
-                    $fullname .= ' - ' . $issue['description'];
+                $incident = \CentreonRealtime\Repository\IncidentsRepository::getIncident($incidentId);
+                $fullname = $incident['name'];
+                if (false === is_null($incident['description'])) {
+                    $fullname .= ' - ' . $incident['description'];
                 }
                 $response = array(
-                    'id' => $issue['issue_id'],
+                    'id' => $incident['issue_id'],
                     'name' => $fullname,
-                    'status' => self::getCssStatus($issue['state']),
+                    'status' => self::getCssStatus($incident['state']),
                     'output' => '',
                     'last_update' => '',
-                    'has_children' => $issue['nb_children'] > 0 ? true : false,
-                    'has_parent' => $issue['nb_parents'] > 0 ? true : false,
+                    'has_children' => $incident['nb_children'] > 0 ? true : false,
+                    'has_parent' => $incident['nb_parents'] > 0 ? true : false,
                     'parents' => array_map(function($values) {
                         $parent = array();
                         $parent['id'] = $values['issue_id'];
@@ -151,11 +151,11 @@ class IssuesController extends \Centreon\Internal\Controller
                         }
                         $parent['name'] = $fullname;
                         return $parent;
-                    }, $issue['parents'])
+                    }, $incident['parents'])
                 );
                 break;
             case 'getChildren':
-                $listChildren = \CentreonRealtime\Repository\IssuesRepository::getChildren($issueId);
+                $listChildren = \CentreonRealtime\Repository\IncidentsRepository::getChildren($incidentId);
                 $response = array();
                 foreach ($listChildren as $child) {
                     $fullname = $child['name'];
@@ -181,7 +181,7 @@ class IssuesController extends \Centreon\Internal\Controller
     }
 
     /**
-     * Get the status CSS for issue graph
+     * Get the status CSS for incident graph
      *
      * @param int $state The state number
      */

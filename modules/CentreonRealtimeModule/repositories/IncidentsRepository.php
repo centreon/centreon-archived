@@ -36,15 +36,15 @@
 namespace CentreonRealtime\Repository;
 
 /**
- * Repository for Issues
+ * Repository for incidents
  *
  * @author Maximilien Bersoult <mbersoult@merethis.com>
  * @version 3.0.0
  */
-class IssuesRepository
+class IncidentsRepository
 {
     /**
-     * Return the list of issues
+     * Return the list of incidents
      *
      * @param $fromTime string The start time in date format Y-m-d H:i:s
      * @param $order string The order for getting events : DESC or ASC
@@ -52,7 +52,7 @@ class IssuesRepository
      * @param $filters array The list of fitlers for event
      * @return array
      */
-    public static function getIssues($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
+    public static function getIncidents($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
@@ -82,6 +82,7 @@ class IssuesRepository
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "i.host_id = he.host_id";
         $wheres[] = "i.service_id IS NULL";
+	$wheres[] = "i.issue_id NOT IN (SELECT child_id FROM issues_issues_parents WHERE end_time IS NULL)";
         $wheres[] = "i.end_time IS NULL";
         $wheres[] = "he.end_time IS NULL";
         $wheres = array_merge($wheres, $globalWheres);
@@ -99,6 +100,7 @@ class IssuesRepository
         $wheres[] = "se.host_id = i.host_id";
         $wheres[] = "se.service_id = i.service_id";
         $wheres[] = "i.service_id IS NOT NULL";
+	$wheres[] = "i.issue_id NOT IN (SELECT child_id FROM issues_issues_parents WHERE end_time IS NULL)";
         $wheres[] = "i.end_time IS NULL";
         $wheres[] = "se.end_time IS NULL";
         $wheres = array_merge($wheres, $globalWheres);
@@ -143,7 +145,7 @@ class IssuesRepository
                 'service_desc' => $row['description'],
                 'start_time' => $row['start_time'],
                 'end_time' => $row['end_time'],
-                'url_graph' => $router->getPathFor('/realtime/issueGraph/[i:id]', array('id' => $row['issue_id'])),
+                'url_graph' => $router->getPathFor('/realtime/incident/graph/[i:id]', array('id' => $row['issue_id'])),
                 'ticket' => ''
             );
         }
@@ -156,12 +158,12 @@ class IssuesRepository
     }
 
     /**
-     * Get a issue information
+     * Get a incident information
      *
-     * @param int $issueId The issue id
+     * @param int $incidentId The incident id
      * @return array
      */
-    public static function getIssue($issueId)
+    public static function getIncident($incidentId)
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
@@ -203,10 +205,10 @@ class IssuesRepository
 
         $query = $queryHosts . " UNION " . $queryServices;
         $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':issue_id', $issueId, \PDO::PARAM_INT);
+        $stmt->bindParam(':issue_id', $incidentId, \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
-        $issue = $row;
+        $incident = $row;
         $stmt->closeCursor();
 
         /* Get Parents */
@@ -228,24 +230,24 @@ class IssuesRepository
                 AND i.end_time IS NULL
                 AND iip.child_id = :issue_id";
         $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':issue_id', $issueId, \PDO::PARAM_INT);
+        $stmt->bindParam(':issue_id', $incidentId, \PDO::PARAM_INT);
         $stmt->execute();
 
-        $issue['parents'] = array();
+        $incident['parents'] = array();
         while ($row = $stmt->fetch()) {
-            $issue['parents'][] = $row;
+            $incident['parents'][] = $row;
         }
 
-        return $issue;
+        return $incident;
     }
 
     /**
-     * Get the list of children for a issue
+     * Get the list of children for a incident
      *
-     * @param int $issueId The issue ID
+     * @param int $incidentId The incident ID
      * @return array
      */
-    public static function getChildren($issueId)
+    public static function getChildren($incidentId)
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
@@ -287,7 +289,7 @@ class IssuesRepository
 
         $query = $queryHosts . " UNION " . $queryServices;
         $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':issue_id', $issueId, \PDO::PARAM_INT);
+        $stmt->bindParam(':issue_id', $incidentId, \PDO::PARAM_INT);
         $stmt->execute();
 
         $list = array();

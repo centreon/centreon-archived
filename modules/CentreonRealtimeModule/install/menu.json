@@ -6,9 +6,9 @@
         "bgcolor": "lightblue",
         "menus": [
             {
-                "name": "Issues",
-                "short_name": "issues",
-                "route": "/realtime/issues"
+                "name": "Incidents",
+                "short_name": "incidents",
+                "route": "/realtime/incident"
             },
             {
                 "name": "Services",
