@@ -51,8 +51,8 @@ abstract class Controller
      */
     public function __construct($request)
     {
-        $this->init();
         $this->request = $request;
+        $this->init();
     }
     
     protected function getUri()

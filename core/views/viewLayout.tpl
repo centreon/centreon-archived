@@ -11,6 +11,7 @@
     <ul class="nav" id="menu1">
     </ul>
   </nav>
+  {hook name='displayLeftMenu' container='<nav><ul class="nav" id="hook-menu">[hook]</ul></nav>'}
 </aside>
 <div class="content" id="main">
 <div class="breadcrumb-bar">
@@ -39,6 +40,7 @@ $(document).ready(function() {
     });
     loadMenu('{url_for url="/menu/getmenu/"}', {get_environment_id});
     $('li.envmenu').on('click', function(e) {
+        $("#hook-menu").html("");
         loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'));
     });
     $('.env-menu').on('click', function(e) {

@@ -85,9 +85,10 @@ function toggleFooter() {
 
 /* Generate menu */
 function generateMenu($elParent, menu) {
-    var i = 0;
+    var i;
     var lenMenu = menu.length;
-    for (; i < lenMenu; i++) {
+
+    for (i = 0; i < lenMenu; i++) {
         var $li = $('<li></li>');
         $li.appendTo($elParent);
         var $link = $('<a></a>').attr('href', menu[i].url);
