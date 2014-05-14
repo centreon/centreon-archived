@@ -35,8 +35,6 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use Models\Configuration\Hostcategory;
-
 class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Hostcategory';

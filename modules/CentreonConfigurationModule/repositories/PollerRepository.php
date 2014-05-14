@@ -59,7 +59,6 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         'Localhost' => 'last_restart',
         'Is Running' => 'is_currently_running',
         'Has changed' => 'hasChanged',
-        'PID' => 'process_id',
         'Start time' => 'start_time',
         'Last Update' => 'last_restart',
         'Version' => 'version',
@@ -75,8 +74,13 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         'id',
         'name',
         'ns_ip_address',
-        'last_restart',
-        'monitoring_engine',
+        'localhost',
+        'is_currently_running',
+        'has_changed',
+        'program_start_time',
+        'last_update',
+        'version',
+        'is_default',
         'ns_activate'
     );
     
@@ -107,7 +111,7 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
                 'date' => 'd/m/Y H:i:s'
             )
         ),
-        'last_restart' => array(
+        'last_alive' => array(
             'type' => 'date',
             'parameters' => array(
                 'date' => 'd/m/Y H:i:s'
@@ -124,14 +128,14 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
             'type' => 'select',
             'parameters' => array(
                 '0' => 'No',
-                '1' => 'Yes'
+                '1' => '<span class="label label-warning">Yes</span>'
             )
         ),
         'is_currently_running' => array(
             'type' => 'select',
             'parameters' => array(
-                '0' => 'No',
-                '1' => 'Yes'
+                '0' => '<span class="label label-danger">No</span>',
+                '1' => '<span class="label label-success">Yes</span>'
             )
         ),
         'is_default' => array(
@@ -178,7 +182,6 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         ),
         'none',
         'none',
-        'none',
         'text',
         array(
             'select' => array(
@@ -223,16 +226,45 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $dbconnStorage = $di->get('db_storage');
+        $conditions = '';
+        $limitations = '';
+        
+        // Processing the limit
+        if ($params['iDisplayLength'] > 0) {
+            $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
+        }
+        
+        // Conditions (Recherche)
+        foreach ($params as $paramName => $paramValue) {
+            if (strpos($paramName, 'sSearch_') !== false) {
+                if (!empty($paramValue) || $paramValue === "0") {
+                    $colNumber = substr($paramName, strlen('sSearch_'));
+                    if (substr($c[$colNumber], 0, 11) !== '[SPECFIELD]') {
+                        $searchString = $c[$colNumber]." like '%".$paramValue."%' ";
+                    } else {
+                        $customSearchString = substr($c[$colNumber], 11);
+                        $searchString = str_replace('::search_value::', '%'.$paramValue.'%', $customSearchString);
+                    }
+                    
+                    if (empty($conditions)) {
+                        $conditions = "WHERE ".$searchString;
+                    } else {
+                        $conditions .= "AND ".$searchString;
+                    }
+                }
+            }
+        }
         
         // Get List of Nagios Servers
         $sqlNagiosServer = "SELECT SQL_CALC_FOUND_ROWS id, name, localhost, is_default, last_restart, ns_ip_address, ns_activate FROM nagios_server "
-            . ""
-            . "ORDER BY name";
+            . " $conditions"
+            . " ORDER BY name"
+            . " $limitations";
         $stmtNagiosServer = $dbconn->query($sqlNagiosServer);
         $resultNagiosServer = $stmtNagiosServer->fetchAll(\PDO::FETCH_ASSOC);
         
         
-        $sqlBroker = "SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances";
+        $sqlBroker = "SELECT start_time AS program_start_time, running AS is_currently_running, instance_id, name AS instance_name , last_alive FROM instances";
         $stmtBroker = $dbconnStorage->query($sqlBroker);
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
         
@@ -303,10 +335,9 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
             $resultSet[$i]['localhost'] = $cache[$i]['localhost'];
             $resultSet[$i]['is_currently_running'] = $cache[$i]['is_currently_running'];
             $resultSet[$i]['hasChanged'] = $cache[$i]['hasChanged'];
-            $resultSet[$i]['process_id'] = $cache[$i]['process_id'];
             $resultSet[$i]['program_start_time'] = $cache[$i]['program_start_time'];
-            $resultSet[$i]['last_restart'] = $cache[$i]['last_restart'];
-            $resultSet[$i]['version'] = $cache[$i]['program_name'] . ' ' . $cache[$i]['program_version'];
+            $resultSet[$i]['last_alive'] = $cache[$i]['last_alive'];
+            $resultSet[$i]['version'] = $cache[$i]['program_version'];
             $resultSet[$i]['is_default'] = $cache[$i]['is_default'];
             $resultSet[$i]['ns_activate'] = $cache[$i]['ns_activate'];
         }
