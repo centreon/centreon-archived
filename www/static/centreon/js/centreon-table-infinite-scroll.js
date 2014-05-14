@@ -128,37 +128,42 @@
           if ( data.data.length === 0 ) {
             $this.hasEvent = false;
             $this.loading = false;
-	    $this.recentTime = new Date().getTime() / 1000; /* @todo better */
+            $this.recentTime = new Date().getTime() / 1000; /* @todo better */
             return;
           }
           $.each( data.data, function( idx, values ) {
-	    var line;
-	    /* Insert with template */
-	    if ( $this.templateRows !== null ) {
-	      line = $this.templateRows.render( values );
-	      $this.$elem.children( "tbody" ).append( $( line ) );
-	    } else {
-	      /* Default insert line */
+            var line;
+            /* Insert with template */
+            if ( $this.templateRows !== null ) {
+              line = $this.templateRows.render( values );
+              $this.$elem.children( "tbody" ).append( $( line ) );
+            } else {
+              /* Default insert line */
               var $tr = $( "<tr></tr>" ),
                   i = 0;
               $.each( values, function( key, value ) {
-	        if ( key in $this.templateCols ) {
-		  value = $this.templateCols[ key ].render( values );
-		}
-		if ( i < $this.classes.length ) {
+                if ( key in $this.templateCols ) {
+                  value = $this.templateCols[ key ].render( values );
+                }
+                if ( i < $this.classes.length ) {
                   $( "<td></td>" )
                     .addClass( $this.classes[ i++ ] )
                     .html( value )
                     .appendTo( $tr );
-		}
+                }
               });
               $tr.appendTo( $this.$elem.children( "tbody" ) );
-	    }
+            }
           });
 
           $this.lastTime = data.lastTimeEntry;
           if ( $this.recentTime === null ) {
             $this.recentTime = data.recentTime;
+          }
+
+          /* Fix for time is 0 */
+          if ( data.data.length < $this.settings.limit ) {
+            $this.loading = false;
           }
 
           /* Continu to load in first call */
