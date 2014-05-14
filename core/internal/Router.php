@@ -190,18 +190,6 @@ class Router extends \Klein\Klein
     public function getPathFor($route_name, array $params = null, $flatten_regex = true)
     {
         $path = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/').$route_name;
-        $validPath = false;
-        foreach ($this->routes as $routeArr) {
-            foreach ($routeArr as $v) {
-                if (is_string($v) && $v == $path) {
-                    $validPath = true;
-                    break;
-                }
-            }
-        }
-        if (false === $validPath) {
-            throw new Exception('No such route with name: '. $path);
-        }
         if (preg_match_all(static::ROUTE_COMPILE_REGEX, $path, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 list($block, $pre, $inner_block, $type, $param, $optional) = $match;
@@ -217,5 +205,16 @@ class Router extends \Klein\Klein
         }
 
         return $path;
+    }
+
+    /**
+     * Return current URI without the base URL
+     *
+     * @return string
+     */
+    public function getCurrentUri()
+    {
+        $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
+        return preg_replace('/^'.preg_quote($baseUrl).'/', '', $this->request()->uri());
     }
 }

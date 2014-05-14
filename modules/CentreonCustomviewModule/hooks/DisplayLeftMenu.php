@@ -31,43 +31,36 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
+namespace CentreonCustomview;
 
-namespace CentreonCustomview\Install;
-
-/**
- * 
- */
-class Installer extends \Centreon\Custom\Module\AbstractModule
+class DisplayLeftMenuHook
 {
     /**
-     * 
-     * @param type $moduleInfo
+     * Execute hook
+     *
+     * @param array $params
      */
-    public function __construct($moduleDirectory, $moduleInfo)
+    public static function execute($params)
     {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
-        \Centreon\Internal\Hook::register(
-            $this->moduleId,
-            'displayLeftMenu',
-            'displayBookmarkedViews',
-            'Display bookmarked views in left menu'
-        ); 
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
-    {
-        
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        if (!preg_match("/^\/customview/", $router->getCurrentUri())) {
+            return;
+        }
+        $user = $_SESSION['user'];
+        $bookmarkedViews = \CentreonCustomview\Repository\CustomviewRepository::getCustomViewsOfUser($user->getId());
+        $publicViews = \CentreonCustomview\Repository\CustomviewRepository::getPublicViews();
+        foreach ($publicViews as $viewId => $view) {
+            if (isset($bookmarkedViews[$viewId])) {
+                unset($publicViews[$viewId]);
+            }
+        }
+        return array(
+            'displayLeftMenu.tpl',
+            array(
+                'bookmarkedViews' => $bookmarkedViews,
+                'publicViews' => $publicViews
+            )
+        );
     }
 }

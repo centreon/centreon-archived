@@ -6,9 +6,9 @@
         "bgcolor": "#CCC",
         "menus": [
             {
-                "name": "Custom views",
+                "name": "Home page",
                 "short_name": "customviews",
-                "route": "/customview"
+                "route": "/customview/"
             }
         ]
     },
