@@ -55,7 +55,8 @@
       <th class="span-2">{t}Host{/t}</th>
       <th class="span-2">{t}Service{/t}</th>
       <th class="span-2">{t}Instance{/t}</th>
-      <th class="span-4">{t}Message{/t}</th>
+      <th class="span-1">{t}Status{/t}</th>
+      <th class="span-3">{t}Message{/t}</th>
       <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
     </tr>
   </thead>
@@ -71,7 +72,15 @@ $(function() {
   $('#eventlogs').centreonTableInfiniteScroll({
     ajaxUrlGetScroll: "{url_for url="/realtime/eventlogs"}",
     ajaxUrlGetNew: "{url_for url="/realtime/eventlogs/refresh"}",
-    formFilter: "#filters"
+    formFilter: "#filters",
+    templateRows: "<tr class='<%border_color%>'> \
+      <td class='span-2'><%datetime%></td> \
+      <td class='span-2'><%host_logo%> <%host%></td> \
+      <td class='span-2'><%service_logo%> <%service%></td> \
+      <td class='span-2'><%instance%></td> \
+      <td class='span-1 centreon-status-<%status%>'><%status_text%></td> \
+      <td class='span-3'><%output%></td> \
+    </tr>"
   });
 
   $("input[name='period']").daterangepicker({

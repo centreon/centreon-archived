@@ -32,59 +32,35 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonRealtime\Controllers;
+namespace CentreonCustomview;
 
-/**
- * Display the logs of nagios
- *
- * @authors Maximilien Bersoult
- * @package CentreonRealtime
- * @subpackage Controllers
- */
-class IssuesController extends \Centreon\Internal\Controller
+class DisplayLeftMenuHook
 {
     /**
-     * The page structure for display the list
+     * Execute hook
      *
-     * @method GET
-     * @route /realtime/issues
+     * @param array $params
      */
-    public function displayListAction()
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        $tmpl = $di->get('template');
-        $tmpl->addJs('hogan-3.0.0.min.js');
-        $tmpl->addJs('centreon-table-infinite-scroll.js');
-        $tmpl->display('file:[CentreonRealtimeModule]issues_list.tpl');
-    }
-
-    /**
-     * Get the list of issues
-     *
-     * @method POST
-     * @route /realtime/issues
-     */
-    public function getListIssuesAction()
+    public static function execute($params)
     {
         $router = \Centreon\Internal\Di::getDefault()->get('router');
-        $params = $router->request()->paramsPost();
-        $filters = $params->all();
-
-        $fromTime = null;
-        if (isset($params['startTime']) && !is_null($params['startTime']) && $params['startTime'] !== '') {
-            $fromTime = $params['startTime'];
+        if (!preg_match("/^\/customview/", $router->getCurrentUri())) {
+            return;
         }
-        if (isset($params['startTime'])) {
-            unset($filters['startTime']);
+        $user = $_SESSION['user'];
+        $bookmarkedViews = \CentreonCustomview\Repository\CustomviewRepository::getCustomViewsOfUser($user->getId());
+        $publicViews = \CentreonCustomview\Repository\CustomviewRepository::getPublicViews();
+        foreach ($publicViews as $viewId => $view) {
+            if (isset($bookmarkedViews[$viewId])) {
+                unset($publicViews[$viewId]);
+            }
         }
-        $listIssues = \CentreonRealtime\Repository\IssuesRepository::getIssues(
-            $fromTime,
-            'DESC',
-            20,
-            $filters
+        return array(
+            'displayLeftMenu.tpl',
+            array(
+                'bookmarkedViews' => $bookmarkedViews,
+                'publicViews' => $publicViews
+            )
         );
-
-        $router->response()->json($listIssues);
     }
 }

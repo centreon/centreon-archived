@@ -233,14 +233,22 @@ class Hook
         $hooks = self::getModulesFromHook(self::TYPE_DISPLAY, $hookName);
         $hookData = array();
         $i = 0;
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         foreach ($hooks as $hook) {
-            $data = call_user_func(array("\\Modules\\".$hook['module'], $hookName), $params);
-            if (is_array($data) && count($data) && is_file($data[0])) {
-                $hookData[$i]['template'] = $data[0];
-                if (isset($data[1]) && is_array($data[1])) {
-                    $hookData[$i]['variables'] = $data[1];
+            $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $hook['module'])));
+            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hookName).".php"; 
+            if (file_exists($filename)) {
+                include_once $filename;
+                $data = call_user_func(array("\\".$commonName."\\".ucfirst($hookName)."Hook", "execute"), $params);
+                $templateFile = "$path/modules/{$commonName}Module/views/{$data[0]}";
+                if (is_array($data) && count($data) && is_file($templateFile)) {
+                    $hookData[$i]['template'] = $data[0];
+                    $hookData[$i]['variables'] = array();
+                    if (isset($data[1]) && is_array($data[1])) {
+                        $hookData[$i]['variables'] = $data[1];
+                    }
+                    $i++;
                 }
-                $i++;
             }
         }
         return $hookData;
