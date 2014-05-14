@@ -50,7 +50,7 @@ Il existe deux types de serveur central :
 Le serveur central master fonctionne normalement :
 
 * Le serveur Apache est chargé d'héberger l'interface web de Centreon
-* Plusieurs bases de données MySQL sont chargés de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
+* Plusieurs bases de données MySQL sont chargées de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
 * Le service CentCore est chargé d'exporter la configuration des moteurs de supervision vers le serveur central et satellites ainsi que du redémarrage des moteurs de supervision
 * Le moteur de supervision supervise le système d'informations
 * Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL

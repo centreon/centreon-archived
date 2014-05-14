@@ -19,11 +19,11 @@ ligne Si vous essayez de supprimer trop d'entrées simultanément, vous pourriez
 toute votre base de données pendant plusieurs heures.
 
 Quoi qu'il en soit, cela ne signifie pas que les données resteront dans votre base de données
-indéfiniment. Elles seront supprimée plus tard, en fonction de votre politique de rétention
-des données programmée.conservation.
+indéfiniment. Elles seront supprimées plus tard, en fonction de votre politique de rétention
+des données programmée.
 
-Aucun graphique semble être généré, que dois-je contrôler?
-==========================================================
+Aucun graphique ne semble être généré, que dois-je contrôler?
+=============================================================
 
 Il ya plusieurs choses à vérifier lorsque les RRDs ne semblent pas être générés.
 
@@ -44,14 +44,14 @@ Le processus qui écrit dans ce répertoire est soit **cdb** soit **centstorage*
 Plugins
 -------
 
-Est-ce que vos plugin génère correctement les ddonnées de performance ?
+Est-ce que vos plugin génère correctement les données de performance ?
 Se référer à la :ref:`documentation officielle <centreon-engine:centengine_plugin_api>` 
 pour plus d'informations. 
 
 Si vous utilisez NDOUtils
 -------------------------
 
-Vérifier que le processus **centstorage** est e ncours d'exécution :
+Vérifier que le processus **centstorage** est en cours d'exécution :
 
 ::
 
