@@ -209,15 +209,27 @@
               i, $tr;
           for ( ; nbEl >= 0; nbEl--) {
             values = data.data[nbEl];
-            $tr = $( "<tr></tr>" );
-            i = 0;
-            $.each( values, function( key, value ) {
-              $( "<td></td>" )
-                .addClass( $this.classes[ i++ ] )
-                .text( value )
-                .appendTo( $tr );
-            });
-            $tr.prependTo( $this.$elem.children( "tbody" ) );
+            /* Insert with template */
+            if ( $this.templateRows !== null ) {
+              line = $this.templateRows.render( values );
+              $this.$elem.children( "tbody" ).prepend( $( line ) );
+            } else {
+              /* Default insert line */
+              $tr = $( "<tr></tr>" );
+              i = 0;
+              $.each( values, function( key, value ) {
+                if ( key in $this.templateCols ) {
+                  value = $this.templateCols[ key ].render( values );
+                }
+                if ( i < $this.classes.length ) {
+                  $( "<td></td>" )
+                    .addClass( $this.classes[ i++ ] )
+                    .html( value )
+                    .appendTo( $tr );
+                }
+              });
+              $tr.prependTo( $this.$elem.children( "tbody" ) );
+            }
           }
 
           if ( data.data.length > 0 ) {
