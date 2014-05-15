@@ -73,7 +73,6 @@ class Router extends \Klein\Klein
      */
     public function parseRoutes($modules)
     {
-        // First Retrieve All Controllers
         $controllersList = array();
         
         // First get the Core one
@@ -215,6 +214,6 @@ class Router extends \Klein\Klein
     public function getCurrentUri()
     {
         $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
-        return preg_replace('/^'.preg_quote($baseUrl).'/', '', $this->request()->uri());
+        return preg_replace('/^'.preg_quote($baseUrl, '/').'/', '', $this->request()->uri());
     }
 }
