@@ -482,4 +482,143 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         return $finalRoute;
     }
+
+    public static function getTripleChoice() {
+        $content = array();
+        $content["service_max_check_attempts"] = 1;
+        $content["service_active_checks_enabled"] = 1;
+        $content["service_passive_checks_enabled"] = 1;
+        $content["service_obsess_over_host"] = 1;
+        $content["service_check_freshness"] = 1;
+        $content["service_event_handler_enabled"] = 1;
+        $content["service_flap_detection_enabled"] = 1;
+        $content["service_process_perf_data"] = 1;
+        $content["service_retain_status_information"] = 1;
+        $content["service_retain_nonstatus_information"] = 1;
+        $content["service_notifications_enabled"] = 1;
+        $content["service_stalking_options"] = 1;
+        $content["service_is_volatile"] = 1;
+        $content["service_parallelize_check"] = 1;
+        $content["service_obsess_over_service"] = 1;
+        return $content;
+    }
+
+    public static function generateServices(& $filesList, $poller_id, $path, $filename) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Field to not display */
+        $disableField = static::getTripleChoice();
+        $field = "s.service_id, h.host_id, h.host_name, s.service_description, s.service_alias, s.service_template_model_stm_id, s.command_command_id, s.command_command_id_arg, s.timeperiod_tp_id, s.command_command_id2, s.command_command_id_arg2, s.timeperiod_tp_id2, s.display_name, s.service_is_volatile, s.service_max_check_attempts, s.service_normal_check_interval, s.service_retry_check_interval, s.service_active_checks_enabled, s.service_passive_checks_enabled, s.initial_state, s.service_parallelize_check, s.service_obsess_over_service, s.service_check_freshness, s.service_freshness_threshold, s.service_event_handler_enabled, s.service_low_flap_threshold, s.service_high_flap_threshold, s.service_flap_detection_enabled, s.service_process_perf_data, s.service_retain_status_information, s.service_retain_nonstatus_information, s.service_notification_interval, s.service_notification_options, s.service_notifications_enabled, s.service_first_notification_delay, s.service_stalking_options ";
+        
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT $field FROM host h, service s, host_service_relation r WHERE h.host_id = r.host_host_id AND s.service_id = r.service_service_id AND service_activate = '1' AND service_register = '1' ORDER BY host_name, service_description";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "service");
+            $tmpData = array();
+            $args = "";
+            foreach ($row as $key => $value) {
+                if ($key == "service_id" || $key == "host_id") {
+                    $host_id = $row["host_id"];
+                    $service_id = $row["service_id"];
+                } else if ((!isset($disableField[$key]) && $value != "")) {
+                    if (isset($disableField[$key]) && $value != 2) {
+                        ;
+                    } else {
+                        if ($key != 'service_description') {
+                            $key = str_replace("service_", "", $key);
+                        }
+                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
+                            $args = $value;
+                        }
+                        if ($key == 'check_command' || $key == 'event_handler') {
+                            $value = CommandRepository::getCommandName($value).$args;
+                            $args = "";
+                        } 
+                        if ($key == "template_model_stm_id") {
+                            $value = ServicetemplateRepository::getTemplateName($value);
+                        } 
+                        if ($key == "contact_additive_inheritance") {
+                            $tmpContact = static::getContacts($service_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contacts"] = "+";
+                                }
+                                $tmpData["contacts"] .= $tmpContact; 
+                            }
+                        }
+                        if ($key == "cg_additive_inheritance") {
+                            $tmpContact = static::getContactGroups($service_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contactgroups"] = "+";
+                                }
+                                $tmpData["contactgroups"] .= $tmpContact; 
+                            }
+                        }
+                        $tmpData[$key] = $value;
+                    }
+                }
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */    
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        unset($content);
+    }
+    
+    public static function getContacts($service_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactList = "";
+
+        $query = "SELECT contact_alias FROM contact c, contact_service_relation cs WHERE service_service_id = 'service_id' AND c.contact_id = cs.contact_id ORDER BY contact_alias";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactList != "") {
+                $contactList .= ","; 
+            }
+            $contactList .= $row["contact_alias"];
+        }
+        return $contactList;
+    }
+
+    public static function getContactGroups($service_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactgroupList = "";
+
+        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgs WHERE service_service_id = 'service_id' AND cg.cg_id = cgs.contactgroup_cg_id ORDER BY cg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactgroupList != "") {
+                $contactgroupList .= ","; 
+            }
+            $contactgroupList .= $row["cg_name"];
+        }
+        return $contactgroupList;
+    }
+
+
 }
+
