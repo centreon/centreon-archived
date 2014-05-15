@@ -41,7 +41,7 @@ namespace Centreon\Custom\Module;
  *
  * @author lionel
  */
-class AbstractModule implements iModuleInstaller
+class AbstractInstaller implements iModuleInstaller
 {
     protected $moduleInfo;
     
