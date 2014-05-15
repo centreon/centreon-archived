@@ -2,8 +2,6 @@
     {
         "name": "Configuration",
         "short_name": "configuration",
-        "icon_class": "fa fa-gears",
-        "bgcolor": "#CCC",
         "menus": [
             {
                 "name": "BAM",

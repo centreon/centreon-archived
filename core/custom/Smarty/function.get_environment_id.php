@@ -47,10 +47,9 @@ function smarty_function_get_environment_id($params, $template)
 {
     $di = \Centreon\Internal\Di::getDefault();
     $router = $di->get('router');
-    $route = $router->request()->pathname();
-    $baseUrl = $di->get('config')->get('global', 'base_url');
-    $route = str_replace($baseUrl, '/', $route);
+    $route = $router->getCurrentUri();
     $db = $di->get('db_centreon');
+    
     /* Get environment */
     $queryGetParent = "SELECT parent_id FROM menus WHERE menu_id = :menu_id";
     $queryGetCurrent = "SELECT menu_id FROM menus WHERE url = :url";
