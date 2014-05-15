@@ -62,7 +62,7 @@ function logIn() {
         },
         success: function(data, textStatus, jqXHR) {
             if (data.status) {
-                window.location.href = $("input[name='redirect']").val();
+                window.location.href = data.redirectRoute;
             } else {
                 $("#login_error").text(data.error).show();
             }
