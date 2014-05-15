@@ -26,6 +26,12 @@
         <button type="button" class="btn btn-default btn-sm" id="view_rotation">
             <span class="fa fa-play"> {t}Rotation{/t}</span>
         </button>
+        <button type="button" class="btn btn-default btn-sm" id="view_filters">
+            <span class="fa fa-search"> {t}Filters{/t}</span>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" id="view_save">
+            <span class="fa fa-save"> {t}Save{/t}</span>
+        </button>
         <span class="custom-tag-label">
             <button type="button" class="btn btn-primary btn-sm">
                 Tags
@@ -35,6 +41,22 @@
         <span class="label label-primary custom-owner-label">{t}This view was created by admin{/t}</span>
     </div>
 </div>
+<div class="filter_zone" style="display:none;">
+    <hr/>
+    <div class="container">
+        <div class="row" id="filter-zone">
+            {$filterHtml}
+            <div class="col-md-1">
+                <button type="button" class="btn btn-default" id="add-filter">
+                    <span class="fa fa-search-plus"> </span>
+                </button>
+                <button type="button" class="btn btn-success" id="apply-filter">
+                    <span class="fa fa-search-plus"> {t}Apply{/t}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <hr/>
 <div class="gridster"><ul></ul></div>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
@@ -42,4 +64,24 @@
         <div class="modal-content"></div>
     </div>
 </div>
+{/block}
+{block name="javascript-bottom" append}
+<script>
+    $(function() {
+        $("#view_filters").click(function() {
+            $(".filter_zone").toggle('slow');
+        });
+        
+        $("#filter-zone").delegate('.remove-filter', 'click', function() {
+            var p = $(this).parent();
+            $(p).hide('slow', function() {
+                $(p).remove();
+            });
+        });
+
+        $("#add-filter").click(function() {
+            $('{$filterHtmlForJs}').insertBefore($(this).parent());
+        });
+    });
+</script>
 {/block}
