@@ -67,6 +67,29 @@ class CustomviewRepository
     }
 
     /**
+     * Get all the filters that are used by widgets that present in the view
+     *
+     * @param int $viewId
+     * @return array
+     */
+    public static function getViewFilters($viewId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $sql = "SELECT DISTINCT parameter_name, parameter_code_name
+            FROM widget_parameters wp, widgets w
+            WHERE wp.widget_model_id = w.widget_model_id
+            AND w.custom_view_id = ?
+            AND wp.is_filter = 1";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($viewId));
+        $result = array();
+        while ($row = $stmt->fetch()) {
+            $result[$row['parameter_code_name']] = $row['parameter_name'];
+        }
+        return $result;
+    }
+
+    /**
      * Check Permission
      * Checks if user is allowed to modify view
      * Returns true if user can, false otherwise

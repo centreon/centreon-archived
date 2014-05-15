@@ -111,6 +111,26 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsWidgetSettings().'
             });';
         $template->addCustomJs($gridJs);
+        $filters = CustomviewRepository::getViewFilters($this->currentView);
+        $options = '<option value=""></option>';
+        foreach ($filters as $k => $v) {
+            $options .= sprintf('<option value="%s">%s</option>', $k, $v);
+        }
+        $filterHtml = <<<EOF
+<div class="filter-div col-md-2"> 
+    <div class="remove-filter fa fa-times-circle"></div> 
+    <div> 
+        <select class="form-control input-sm"> 
+            $options
+        </select> 
+    </div> 
+    <div> 
+        <input type="text" class="form-control input-sm"></input> 
+    </div> 
+</div>
+EOF;
+        $template->assign('filterHtml', $filterHtml);
+        $template->assign('filterHtmlForJs', str_replace(array("\r", "\n"), "", $filterHtml));
         $template->display('file:[CentreonCustomviewModule]customview.tpl');
     }
 
@@ -602,6 +622,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         <span class="widgetTitle"> \
                         <span>\'+this.title+\'</span> \
                         <span class="portlet-ui-icon"> \
+                        <i class="fa fa-chain"></i> \
                         <i class="fa fa-refresh"></i> \
                         <i class="fa fa-gears widget-settings"></i> \
                         <i class="fa fa-trash-o widget-delete"></i> \
