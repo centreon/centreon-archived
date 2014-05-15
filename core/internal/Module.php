@@ -119,7 +119,7 @@ class Module
      */
     public static function setMenu($data)
     {
-        static $menus = null;
+        $menus = null;
 
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (is_null($menus)) {
@@ -141,7 +141,7 @@ class Module
         if (isset($data['parent']) && !isset($menus[$data['parent']])) {
             throw new Exception(sprintf('Parent %s does not exist', $data['parent']));
         }
-
+        
         if (!isset($menus[$data['short_name']])) {
             $sql = "INSERT INTO menus 
                 (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, module_id) VALUES

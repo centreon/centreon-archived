@@ -37,7 +37,7 @@
 namespace Centreon\Custom\Module;
 
 /**
- * Description of AbstractModule
+ * Description of AbstractInstaller
  *
  * @author lionel
  */
@@ -52,6 +52,7 @@ class AbstractInstaller implements iModuleInstaller
 
     /**
      * 
+     * @param type $moduleDirectory
      * @param type $moduleInfo
      */
     public function __construct($moduleDirectory, $moduleInfo)
@@ -73,11 +74,17 @@ class AbstractInstaller implements iModuleInstaller
         $this->postInstall();
     }
     
+    /**
+     * 
+     */
     public function customInstall()
     {
         
     }
     
+    /**
+     * 
+     */
     public function installMenu()
     {
         $filejson = $this->moduleDirectory . 'install/menu.json';
@@ -114,6 +121,9 @@ class AbstractInstaller implements iModuleInstaller
         }
     }
     
+    /**
+     * 
+     */
     public function removeForms()
     {
         \Centreon\Internal\Form\Installer::cleanDb($this->moduleId);
@@ -139,6 +149,10 @@ class AbstractInstaller implements iModuleInstaller
         );
     }
     
+    /**
+     * 
+     * @throws \Exception
+     */
     public function preInstall()
     {
         $newModuleId = \Centreon\Models\Module::getIdByParameter('name', $this->moduleInfo['shortname']);
@@ -180,6 +194,9 @@ class AbstractInstaller implements iModuleInstaller
         $this->postRemove();
     }
     
+    /**
+     * 
+     */
     public function customRemove()
     {
         

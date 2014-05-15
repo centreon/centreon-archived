@@ -5,7 +5,7 @@ namespace CentreonDummy\Install;
 /**
  * 
  */
-class Installer extends \Centreon\Custom\Module\AbstractModule
+class Installer extends \Centreon\Custom\Module\AbstractInstaller
 {
     /**
      * 

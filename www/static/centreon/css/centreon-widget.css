@@ -75,3 +75,7 @@ span.custom-owner-label {
 .remove-filter {
 	margin-left: -11px;
 }
+
+#add-filter {
+	margin-bottom: 10px;
+}

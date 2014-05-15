@@ -51,7 +51,7 @@
                     <span class="fa fa-search-plus"> </span>
                 </button>
                 <button type="button" class="btn btn-success" id="apply-filter">
-                    <span class="fa fa-search-plus"> {t}Apply{/t}</span>
+                    <span class="fa fa-check"> {t}Apply{/t}</span>
                 </button>
             </div>
         </div>
@@ -81,6 +81,30 @@
 
         $("#add-filter").click(function() {
             $('{$filterHtmlForJs}').insertBefore($(this).parent());
+        });
+
+        $("#apply-filter").click(function() {
+            var filterNames = new Array();
+            var filterValues = new Array();
+
+            $(".filter-name").each(function(index) {
+                filterNames[index] = $(this).val();
+            });
+            $(".filter-value").each(function(index) {
+                filterValues[index] = $(this).val();
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/customview/applyfilters',
+                data: {
+                    'filterNames': JSON.stringify(filterNames),
+                    'filterValues': JSON.stringify(filterValues)
+                },
+                success: function() {
+                    //@todo reload all widgets 
+                    console.log('success');
+                }
+            });
         });
     });
 </script>
