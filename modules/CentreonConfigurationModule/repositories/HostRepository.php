@@ -263,7 +263,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                         if ($key != 'host_name') {
                             $key = str_replace("host_", "", $key);
                         }
-                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg1') {
+                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
                             $args = $value;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {

@@ -120,12 +120,12 @@ class CustomviewController extends \Centreon\Internal\Controller
 <div class="filter-div col-md-2"> 
     <div class="remove-filter fa fa-times-circle"></div> 
     <div> 
-        <select class="form-control input-sm"> 
+        <select class="filter-name form-control input-sm"> 
             $options
         </select> 
     </div> 
     <div> 
-        <input type="text" class="form-control input-sm"></input> 
+        <input type="text" class="filter-value form-control input-sm"></input> 
     </div> 
 </div>
 EOF;
@@ -382,6 +382,31 @@ EOF;
             array('alertModalMessage', 'alertModalClose'),
             $form->generate()
         );
+    }
+
+    /**
+     * Apply global filters
+     *
+     * @method POST
+     * @route /customview/applyfilters
+     */
+    public function applyFiltersAction()
+    {
+        $_SESSION['customview_filters'] = array();
+        $params = $this->getParams('post');
+        if (isset($params['filterNames']) && isset($params['filterValues'])) {
+            $filterNames = json_decode($params['filterNames']);
+            $filterValues = json_decode($params['filterValues']);
+            foreach($filterNames as $index => $name) {
+                if ($name != "" && isset($filterValues[$index])) {
+                    $_SESSION['customview_filters'][$name] = $params['filterValues'][$index];
+                }
+            }
+        }
+        \Centreon\Internal\Di::getDefault()
+            ->get('router')
+            ->response()
+            ->json(array('success' => true));
     }
 
     /**
