@@ -84,17 +84,6 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     }
     
     /**
-     * Create a new servicetemplate
-     *
-     * @method post
-     * @route /configuration/servicetemplate/create
-     */
-    public function createAction()
-    {
-        
-    }
-
-    /**
      * Update a servicetemplate
      *
      *
@@ -113,9 +102,9 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
      * @method get
      * @route /configuration/servicetemplate/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

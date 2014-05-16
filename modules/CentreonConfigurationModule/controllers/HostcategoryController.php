@@ -76,18 +76,7 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
     {
         parent::datatableAction();
     }
-
-    /**
-     * Create a new hostcategory
-     *
-     * @method post
-     * @route /configuration/hostcategory/create
-     */
-    public function createAction()
-    {
-        
-    }
-
+    
     /**
      * Update a hostcategory
      *
@@ -107,9 +96,9 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
      * @method get
      * @route /configuration/hostcategory/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

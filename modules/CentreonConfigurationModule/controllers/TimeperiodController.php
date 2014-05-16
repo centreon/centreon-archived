@@ -90,7 +90,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
      */
     public function createAction()
     {
-        
+        parent::createAction();
     }
     
     /**

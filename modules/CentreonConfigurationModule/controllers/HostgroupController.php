@@ -78,17 +78,6 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
     
     /**
-     * Create a new hostgroup
-     *
-     * @method post
-     * @route /configuration/hostgroup/create
-     */
-    public function createAction()
-    {
-        
-    }
-
-    /**
      * Update a hostgroup
      *
      *
@@ -107,9 +96,9 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      * @method get
      * @route /configuration/hostgroup/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

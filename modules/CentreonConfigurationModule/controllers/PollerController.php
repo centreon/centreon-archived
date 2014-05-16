@@ -96,11 +96,11 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      * Create a new poller
      *
      * @method post
-     * @route /configuration/poller/add
+     * @route /configuration/poller/create
      */
     public function createAction()
     {
-        
+        parent::createAction();
     }
     
     /**

@@ -35,16 +35,10 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Host;
 use \CentreonConfiguration\Models\Relation\Host\Contact;
 use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
 use \CentreonConfiguration\Models\Relation\Host\Hostchild;
 use \CentreonConfiguration\Models\Relation\Host\Hostparent;
-use \CentreonConfiguration\Models\Relation\Host\Poller;
-use \CentreonConfiguration\Models\Timeperiod;
-use \CentreonConfiguration\Models\Command;
-use \Centreon\Form;
-use \Centreon\Form\Generator;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {

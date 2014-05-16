@@ -77,17 +77,6 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
     
     /**
-     * Create a new usergroup
-     *
-     * @method post
-     * @route /configuration/usergroup/create
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-
-    /**
      * Update a usergroup
      *
      *
@@ -106,9 +95,9 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      * @method get
      * @route /configuration/usergroup/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();    
+        parent::createAction();    
     }
     
     /**
