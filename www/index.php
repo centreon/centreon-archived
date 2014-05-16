@@ -51,7 +51,6 @@ try {
         var_dump(debug_backtrace());
         echo '</pre>';
     } else {
-        $tmpl = \Centreon\Internal\Di::getDefault()->get('template'); 
         $router->response()->body($tmpl->fetch('500.tpl'));
     }
     $router->response()->send();
