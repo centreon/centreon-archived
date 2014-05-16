@@ -15,3 +15,4 @@ CREATE TABLE `session` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE widget_preferences DROP FOREIGN KEY fk_widget_view_id;
 ALTER TABLE `options` ADD COLUMN `group` VARCHAR(255) NOT NULL DEFAULT 'default' FIRST;
+ALTER TABLE `widget_models` DROP `url`;

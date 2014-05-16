@@ -109,24 +109,26 @@ class Installer
      *
      * @param array $data
      */
-    public static function insertForm($data)
+    public static function insertForm($data, $moduleId)
     {
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$forms[$key])) {
-            $sql = 'INSERT INTO form (name, route, redirect, redirect_route) 
-              VALUES (:name, :route, :redirect, :redirect_route)';
+            $sql = 'INSERT INTO form (name, route, redirect, redirect_route, module_id) 
+              VALUES (:name, :route, :redirect, :redirect_route, :module)';
         } else {
             $sql = 'UPDATE form SET route = :route,
                 redirect = :redirect,
                 redirect_route = :redirect_route
-                WHERE name = :name';
+                WHERE name = :name
+                AND module_id = :module';
         }
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':route', $data['route']);
         $stmt->bindParam(':redirect', $data['redirect']);
         $stmt->bindParam(':redirect_route', $data['redirect_route']);
+        $stmt->bindParam(':module', $moduleId);
         $stmt->execute();
         if (!isset(self::$forms[$key])) {
             self::$forms[$key] = $db->lastInsertId('form', 'form_id');
@@ -283,9 +285,9 @@ class Installer
         $xml = simplexml_load_file($xmlFile);
         foreach ($xml as $form) {
             if ($form->getName() == 'form') {
-                self::processForm($moduleId, $form);
+                self::processForm($form, $moduleId);
             } elseif ($form->getName() == 'wizard') {
-                self::processWizard($form);
+                self::processWizard($form, $moduleId);
             }
         }
     }
@@ -295,17 +297,18 @@ class Installer
      *
      * @param array $data
      */
-    protected static function insertWizard($data)
+    protected static function insertWizard($data, $moduleId)
     {
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$wizards[$key])) {
-            $sql = 'INSERT INTO form_wizard (name, route) 
-              VALUES (:name, :route)';
+            $sql = 'INSERT INTO form_wizard (name, route, module_id) 
+              VALUES (:name, :route, :module)';
         } else {
             $sql = 'UPDATE form_wizard SET route = :route
                 WHERE name = :name 
-                AND wizard_id = :wizard_id';
+                AND wizard_id = :wizard_id
+                AND module_id = :module';
         }
         $stmt = $db->prepare($sql);
         if (isset(self::$wizards[$key])) {
@@ -313,6 +316,7 @@ class Installer
         }
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':route', $data['route']);
+        $stmt->bindParam(':module', $moduleId);
         $stmt->execute();
         if (!isset(self::$wizards[$key])) {
             self::$wizards[$key] = $db->lastInsertId('form_wizard', 'wizard_id');
@@ -378,7 +382,7 @@ class Installer
      *
      * @param SimpleXMLElement $wizard
      */
-    protected static function processWizard($wizard)
+    protected static function processWizard($wizard, $moduleId)
     {
         $insertedSteps = array();
         $insertedFields = array();
@@ -387,7 +391,7 @@ class Installer
             'name' => $wizard['name'],
             'route' => $wizard->route
         );
-        self::insertWizard(array_map('strval', $wizardData));
+        self::insertWizard(array_map('strval', $wizardData), $moduleId);
         $stepRank = 1;
         foreach ($wizard->step as $step) {
             $stepData = array(
@@ -421,7 +425,7 @@ class Installer
      *
      * @param SimpleXMLElement $form
      */
-    protected static function processForm($moduleId, $form)
+    protected static function processForm($form, $moduleId)
     {
         $insertedSections = array();
         $insertedBlocks = array();
@@ -433,7 +437,7 @@ class Installer
             'redirect' => $form->redirect,
             'redirect_route' => $form->redirect_route
         );
-        self::insertForm(array_map('strval', $formData));
+        self::insertForm(array_map('strval', $formData), $moduleId);
         $sectionRank = 1;
         foreach ($form->section as $section) {
             $sectionData = array(
@@ -618,32 +622,5 @@ class Installer
             }
         }
         $db->commit();
-    }
-    
-    /**
-     * 
-     */
-    public static function cleanDb($moduleId)
-    {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        
-        // Remove the field first
-        $sqlFields = "DELETE FROM form_field WHERE module_id = '$moduleId'";
-        $stmtRemoveFields = $db->query($sqlFields);
-        
-        // First clean the block
-        $sqlBlock = "DELETE FROM form_block WHERE NOT EXISTS (SELECT block_id FROM form_block_field_relation)";
-        $stmtRemoveBlock = $db->query($sqlBlock);
-        
-        // Second clean the section
-        $sqlSection = "DELETE FROM form_section WHERE NOT EXISTS (SELECT section_id FROM form_block)";
-        $stmtRemoveSection = $db->query($sqlSection);
-        
-        
-        // Then last but not least clean the form
-        $sqlForm = "DELETE FROM form WHERE NOT EXISTS (SELECT form_id FROM form_section)";
-        $stmtForm = $db->query($sqlForm);
-        
-        
     }
 }
