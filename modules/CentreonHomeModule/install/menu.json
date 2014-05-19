@@ -17,17 +17,17 @@
       "icon_class": "fa fa-folder-open",
       "bgcolor": "#FA5858",
       "menus" : [
-          {
+            {
               "name": "Extensions",
               "short_name": "extensions",
               "menus" : [
-                  {
-                    "name" : "Modules",
-                    "short_name" : "modules",
-                    "route" : "/administration/extensions/module"
-                  }
-              ]
-          }
-      ]
+                    {
+                        "name" : "Modules",
+                        "short_name" : "modules",
+                        "route" : "/administration/extensions/module"
+                    }
+                ]
+            }
+        ]
     }
 ]
