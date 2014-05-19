@@ -88,6 +88,7 @@ class ConfigGenerateRepository
 
         /* Monitoring Object files */
         HostRepository::generateHosts($this->filesDir, $poller_id, $this->path, "/objects/hosts.cfg");
+        ServiceRepository::generateServices($this->filesDir, $poller_id, $this->path, "/objects/services.cfg");
 
         /* Generate Main File */
         ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "/centengine.cfg");

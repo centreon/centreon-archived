@@ -78,26 +78,15 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
     }
     
     /**
-     * Create a new trap
-     *
-     * @method post
-     * @route /configuration/trap/create
-     */
-    public function createAction()
-    {
-        
-    }
-
-    /**
      * Update a trap
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/trap/update
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**
@@ -107,9 +96,9 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
      * @method get
      * @route /configuration/trap/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

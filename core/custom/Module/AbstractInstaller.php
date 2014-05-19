@@ -124,14 +124,6 @@ class AbstractInstaller implements iModuleInstaller
     /**
      * 
      */
-    public function removeForms()
-    {
-        \Centreon\Internal\Form\Installer::cleanDb($this->moduleId);
-    }
-    
-    /**
-     * 
-     */
     public function isDependenciesSatisfied()
     {
         $dependenciesSatisfied = true;
@@ -190,7 +182,6 @@ class AbstractInstaller implements iModuleInstaller
     {
         $this->preRemove();
         $this->removeDb();
-        $this->removeForms();
         $this->postRemove();
     }
     

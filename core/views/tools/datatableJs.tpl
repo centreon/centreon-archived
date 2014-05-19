@@ -20,6 +20,9 @@
                     }
                 ]
             },
+            "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                jQuery('td:eq(0)', nRow).css('text-align', 'center');
+            },
             "aoColumnDefs": [
                 { "bAutoWidth" : false, "bSortable": false, "sWidth": "10px", "aTargets": [0] }
             ]

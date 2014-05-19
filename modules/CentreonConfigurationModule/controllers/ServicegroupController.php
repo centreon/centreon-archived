@@ -78,17 +78,6 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
     {
         parent::datatableAction();
     }
-    
-    /**
-     * Create a new servicegroup
-     *
-     * @method post
-     * @route /configuration/servicegroup/create
-     */
-    public function createAction()
-    {
-        parent::createAction(); 
-    }
 
     /**
      * Update a servicegroup
@@ -109,9 +98,9 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
      * @method get
      * @route /configuration/servicegroup/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

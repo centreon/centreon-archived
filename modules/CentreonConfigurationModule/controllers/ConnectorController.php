@@ -75,18 +75,6 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     {
         parent::datatableAction();
     }
-    
-    /**
-     * Create a new connector
-     *
-     * @method post
-     * @route /configuration/connector/create
-     * @acl add
-     */
-    public function createAction()
-    {
-        var_dump($this->getParams());
-    }
 
     /**
      * Update a connector
@@ -128,9 +116,9 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
      * @route /configuration/connector/add
      * @acl add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**

@@ -30,11 +30,6 @@ interface iModuleInstaller
     /**
      * 
      */
-    public function removeForms();
-    
-    /**
-     * 
-     */
     public function installDb();
     
     /**

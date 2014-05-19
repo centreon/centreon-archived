@@ -2,7 +2,7 @@
     <thead>
         <tr class='header'>
         {foreach $datatableParameters.column.firstLevel as $column}
-            <th {$column.att} style="text-align:center;">{$column.lab}</th>
+            <th {$column.att} style="text-align:left;">{$column.lab}</th>
         {/foreach}
         </tr>
         

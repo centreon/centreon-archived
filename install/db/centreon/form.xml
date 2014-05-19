@@ -6,6 +6,10 @@
         <column name="route" phpName="Route" type="VARCHAR" size="255" required="true"/>
         <column name="redirect" phpName="Redirect" type="CHAR" required="true" defaultValue="0"/>
         <column name="redirect_route" phpName="RedirectRoute" type="VARCHAR" size="255" required="false"/>
+        <column name="module_id" phpName="ModuleId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
+        <foreign-key foreignTable="module" name="fk_form_module_1" onDelete="CASCADE" onUpdate="CASCADE">
+            <reference local="module_id" foreign="id"/>
+        </foreign-key>
         <unique name="route_UNIQUE">
             <unique-column name="route"/>
         </unique>

@@ -81,17 +81,6 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     }
     
     /**
-     * Create a new servicecategory
-     *
-     * @method post
-     * @route /configuration/servicecategory/create
-     */
-    public function createAction()
-    {
-        
-    }
-
-    /**
      * Update a servicecategory
      *
      *
@@ -128,9 +117,9 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
      * @method get
      * @route /configuration/servicecategory/add
      */
-    public function addAction()
+    public function createAction()
     {
-        parent::addAction();
+        parent::createAction();
     }
     
     /**
