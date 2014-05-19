@@ -43,6 +43,7 @@ class Upgrade
         'centreon-configuration',
         'centreon-realtime',
         'centreon-customview',
+        'centreon-bam',
     );
     
     public static function doUpgrade($origin = '3.0.0')
@@ -61,12 +62,13 @@ class Upgrade
     
     private static function upgradeFrom2X()
     {
-        
         \Centreon\Internal\Db\Installer::updateDb('migrate');
         
         $di = \Centreon\Internal\Di::getDefault();
         $config = $di->get('config');
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        
+        self::setUpFormValidators();
         
         foreach (self::$coreModules as $coreModule) {
             $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $coreModule)));
@@ -102,8 +104,21 @@ class Upgrade
         
     }
     
-    private static function setUpMenu()
+    private static function setUpFormValidators()
     {
+        $validators = array(
+            "INSERT INTO form_validator(name, action) VALUES ('email', '/validator/email')",
+            "INSERT INTO form_validator(name, action) VALUES ('resolveDns', '/validator/resolvedns')",
+            "INSERT INTO form_validator(name, action) VALUES ('ipAddress', '/validator/ipaddress')",
+            "INSERT INTO form_validator(name, action) VALUES ('unique', '/validator/unique')",
+            "INSERT INTO form_validator(name, action) VALUES ('forbiddenChar', '/validator/forbiddenchar')",
+            "INSERT INTO form_validator(name, action) VALUES ('circularDependency', '/validator/circular')"
+        );
         
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        
+        foreach ($validators as $validator) {
+            $db->exec($validator);
+        }
     }
 }

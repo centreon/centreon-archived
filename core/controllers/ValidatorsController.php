@@ -146,5 +146,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
             $params['object'],
             $params['id']
         );
+        
+        return $result;
     }
 }

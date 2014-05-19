@@ -12,6 +12,7 @@ class Installer
     protected static $steps;
     protected static $wizards;
     protected static $stepFields;
+    protected static $validators;
 
     /**
      * Init arrays
@@ -61,6 +62,17 @@ class Installer
             if (!isset(self::$blockFields[$block_field_key])) {
                 self::$blockFields[$block_field_key] = $row['block_id'] . ';' . $row['field_id'];
             }
+        }
+    }
+    
+    public static function initValidators()
+    {
+        self::$validators = array();
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->query("SELECT validator_id, name FROM form_validator");
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            self::$validators[$row['name']] = $row['validator_id'];
         }
     }
 
@@ -244,6 +256,8 @@ class Installer
         if (!isset(self::$fields[$key])) {
             self::$fields[$key] = $db->lastInsertId('form_field', 'field_id');
         }
+        
+        
     }
 
     /**
@@ -273,6 +287,34 @@ class Installer
         }
         $tmp = $key . ';' . $fname;
         self::$blockFields[$tmp] = self::$blocks[$key] . ';' . self::$fields[$fname];
+    }
+    
+    /**
+     * 
+     * @param type $data
+     */
+    public static function addValidatorsToField($data)
+    {
+        $fname = (string)$data['field_name'];
+        if (isset(self::$fields[$fname])) {
+            $validatorsList = explode(',', (string)$data['validators']);
+            foreach ($validatorsList as $validator) {
+                if (isset(self::$validators[$validator])) {
+                    $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+                    $stmt = $db->prepare('DELETE FROM form_field_validator_relation 
+                        WHERE validator_id = :validator_id AND field_id = :field_id');
+                    $stmt->bindParam(':validator_id', self::$validators[$validator]);
+                    $stmt->bindParam(':field_id', self::$fields[$fname]);
+                    $stmt->execute();
+
+                    $stmt = $db->prepare('REPLACE INTO form_field_validator_relation (validator_id, field_id) 
+                        VALUES (:validator_id, :field_id)');
+                    $stmt->bindParam(':validator_id', self::$validators[$validator]);
+                    $stmt->bindParam(':field_id', self::$fields[$fname]);
+                    $stmt->execute();
+                }
+            }
+        }
     }
 
     /**
@@ -387,6 +429,7 @@ class Installer
         $insertedSteps = array();
         $insertedFields = array();
         self::initWizard($wizard['name']);
+        self::initValidators();
         $wizardData = array(
             'name' => $wizard['name'],
             'route' => $wizard->route
@@ -431,6 +474,7 @@ class Installer
         $insertedBlocks = array();
         $insertedFields = array();
         self::initForm($form['name']);
+        self::initValidators();
         $formData = array(
             'name' => $form['name'],
             'route' => $form->route,
@@ -474,7 +518,7 @@ class Installer
                         'module_id' => $moduleId,
                         'child_actions' => $field->child_actions,
                         'attributes' => $attributes,
-                        'help' => $field->help
+                        'help' => $field->help,
                     );
                     self::insertField(array_map('strval', $fieldData));
                     $blockFieldData = array(
@@ -486,6 +530,11 @@ class Installer
                         'rank' => $fieldRank
                     );
                     self::addFieldToBlock(array_map('strval', $blockFieldData));
+                    $fieldValidators = array(
+                        'field_name' => $field['name'],
+                        'validators' => $field->validators
+                    );
+                    self::addValidatorsToField($fieldValidators);
                     $fieldRank++;
                     $insertedFields[] = implode(
                         ';', 
