@@ -25,6 +25,16 @@
 					</attributes>
 					<help></help>
 				</field>
+				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
+						<multiple>false</multiple>
+						<wizardRoute>/administration/media/image/add</wizardRoute>
+					</attributes>
+					<help></help>
+				</field>
 			</block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
@@ -278,20 +288,6 @@
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
-					</attributes>
-					<help></help>
-				</field>
-			</block>
-		</section>
-		<section name="Extended information">
-			<block name="Extended information">
-				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
-						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
 					<help></help>
 				</field>
