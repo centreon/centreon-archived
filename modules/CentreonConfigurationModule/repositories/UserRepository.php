@@ -128,14 +128,14 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
                 '1' => '<span class="label label-success">Enabled</span>'
             )
         ),
-        'contact_name' => array(
+        'contact_alias' => array(
             'type' => 'url',
             'parameters' => array(
                 'route' => '/configuration/user/[i:id]',
                 'routeParams' => array(
                     'id' => '::contact_id::'
                 ),
-                'linkName' => '::contact_name::'
+                'linkName' => '::contact_alias::'
             )
         )
     );
