@@ -38,7 +38,7 @@ $tpl = $this->getTemplate();
 $tpl->addCss('angled-headers.css');
 
 
-#echo "<pre>".print_r(\CentreonRealtime\Repository\EnvironmentRepository::getHostgroupAlerts(), true) . "</pre>";
+$params = $this->getWidgetParams();
 
 /* Datatable */
 $tpl->display('file:[EnvironmentMonitoringWidget]console.tpl');

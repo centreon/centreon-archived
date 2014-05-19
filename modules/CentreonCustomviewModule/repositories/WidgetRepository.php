@@ -403,14 +403,21 @@ class WidgetRepository
         $widgetData = self::getWidgetData($params['widget_id']);
         $db->beginTransaction();
         foreach ($params as $key => $val) {
-            $stmt = $db->prepare("INSERT INTO widget_preferences (widget_id, parameter_id, preference_value) 
-                VALUES (?, ?, ?)");
+            $stmt = $db->prepare("
+                INSERT INTO widget_preferences (widget_id, parameter_id, preference_value, comparator)
+                VALUES (?, ?, ?, ?)");
+            $cmpKey = 'cmp-'.$key;
+            $cmpVal = 0;
+            if (isset($params[$cmpKey])) {
+                $cmpVal = $params[$cmpKey];
+            }
             $parameterId = self::getParameterIdByName($widgetData['widget_model_id'], $key);
             if ($parameterId) {
                 $stmt->execute(array(
                     $params['widget_id'], 
                     $parameterId,
-                    $val
+                    $val,
+                    $cmpVal
                 ));
             }
         }
@@ -796,13 +803,27 @@ class WidgetRepository
             $tab[$row['parameter_code_name']] = $row['default_value'];
         }
 
-        $stmt = $db->prepare("SELECT pref.preference_value, param.parameter_code_name
+        $stmt = $db->prepare("SELECT pref.preference_value, param.parameter_code_name, pref.comparator
             FROM widget_preferences pref, widget_parameters param
            	WHERE param.parameter_id = pref.parameter_id
            	AND pref.widget_id = ?");
         $stmt->execute(array($widgetId));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tab[$row['parameter_code_name']] = $row['preference_value'];
+            if (!$row['comparator']) {
+                $tab[$row['parameter_code_name']] = $row['preference_value'];
+            } else {
+                $tab[$row['parameter_code_name']] = CustomviewRepository::getCmpString(
+                    $row['comparator'],
+                    $row['preference_value']
+                );
+            }
+        }
+        if (isset($_SESSION['customview_filters'])) {
+            foreach ($_SESSION['customview_filters'] as $key => $value) {
+                if ($value != "" && isset($_SESSION['customview_filters'])) {
+                    $tab[$key] = $value;
+                }
+            }
         }
         return $tab;
     }

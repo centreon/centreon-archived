@@ -35,7 +35,8 @@
 
 namespace Centreon\Internal\Form;
 
-use \CentreonCustomview\Repository\WidgetRepository;
+use \CentreonCustomview\Repository\WidgetRepository,
+    \CentreonCustomview\Repository\CustomviewRepository;
 
 /**
  * Manage widget settings
@@ -164,9 +165,9 @@ class Widget extends Generator
         $widgetId = $this->formRoute;
         $baseUrl = $di->get('config')->get('global', 'base_url');
 
-        $query = "SELECT w.title as wizard_name, header_title, parameter_name as label, 
+        $query = "SELECT w.title as wizard_name, header_title, parameter_name as label, wp.is_filter,
             parameter_code_name as name, default_value, ft_typename as type, is_connector,
-            wp.parameter_id, wr.preference_value
+            wp.parameter_id, wr.preference_value, wr.comparator
             FROM widgets w, widget_models wm, widget_parameters_field_type ft, widget_parameters wp
             LEFT JOIN widget_preferences wr ON (wr.parameter_id = wp.parameter_id AND wr.widget_id = :widget_id)
             WHERE w.widget_id = :widget_id
@@ -188,10 +189,20 @@ class Widget extends Generator
                 $this->formComponents[$row['header_title']]['default'] = array();
                 $header = $row['header_title'];
             }
-//            $this->formDefaults[$row['name']] = $row['default_value'];
             $this->formDefaults[$row['name']] = $row['preference_value'];
             $row['mandatory'] = 0;
-            list($row['type'], $row['attributes']) = $this->convertType($row);
+            if (!$row['is_filter']) {
+                list($row['type'], $row['attributes']) = $this->convertType($row);
+            } else {
+                $tmp = $row;
+                $tmp['type'] = 'text';
+                $tmp['name'] = 'cmp-'.$row['name'];
+                $tmp['label'] = $row['comparator'];
+                $this->addFieldToForm($tmp);
+                $this->formComponents[$header]['default'][] = $tmp;
+                $row['type'] = 'text';
+                $row['attributes'] = array();
+            }
             $this->addFieldToForm($row);
             $this->formComponents[$header]['default'][] = $row;
         }
@@ -212,6 +223,15 @@ class Widget extends Generator
         $tpl->assign('name', $this->formName);
         $tpl->assign('formElements', $formElements);
         $tpl->assign('steps', $this->formComponents);
-        return $tpl->fetch('tools/modalWizard.tpl');
+        $options[CustomviewRepository::EQUAL] = _('equal');
+        $options[CustomviewRepository::NOT_EQUAL] = _('not equal');
+        $options[CustomviewRepository::CONTAINS] = _('contains');
+        $options[CustomviewRepository::NOT_CONTAINS] = _('not contains');
+        $options[CustomviewRepository::GREATER] = _('greater than');
+        $options[CustomviewRepository::GREATER_EQUAL] = _('greater or equal');
+        $options[CustomviewRepository::LESSER] = _('lesser than');
+        $options[CustomviewRepository::LESSER_EQUAL] = _('lesser or equal');
+        $tpl->assign('cmpOptions', $options);
+        return $tpl->fetch('tools/modalWidget.tpl');
     }
 }

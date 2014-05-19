@@ -86,6 +86,7 @@
         $("#apply-filter").click(function() {
             var filterNames = new Array();
             var filterValues = new Array();
+            var filterCmp = new Array();
 
             $(".filter-name").each(function(index) {
                 filterNames[index] = $(this).val();
@@ -93,16 +94,22 @@
             $(".filter-value").each(function(index) {
                 filterValues[index] = $(this).val();
             });
+            $(".filter-cmp").each(function(index) {
+                filterCmp[index] = $(this).val();
+            });
             $.ajax({
                 type: 'POST',
                 url: '/customview/applyfilters',
                 data: {
                     'filterNames': JSON.stringify(filterNames),
-                    'filterValues': JSON.stringify(filterValues)
+                    'filterValues': JSON.stringify(filterValues),
+                    'filterCmp': JSON.stringify(filterCmp)
                 },
                 success: function() {
                     //@todo reload all widgets 
-                    console.log('success');
+                    $('.portlet-content').each(function() {
+                        $(this).attr('src', $(this).attr('src'))
+                    });
                 }
             });
         });

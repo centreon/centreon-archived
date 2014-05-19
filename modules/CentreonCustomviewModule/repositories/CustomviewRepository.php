@@ -49,6 +49,18 @@ use \Centreon\Internal\Exception;
 class CustomviewRepository
 {
     /**
+     * Comparators
+     */
+    const EQUAL = 1;
+    const NOT_EQUAL = 2;
+    const CONTAINS = 3;
+    const NOT_CONTAINS = 4;
+    const GREATER = 5;
+    const GREATER_EQUAL = 6;
+    const LESSER = 7;
+    const LESSER_EQUAL = 8;
+
+    /**
      * Return last inserted view id
      *
      * @return int
@@ -380,5 +392,46 @@ class CustomviewRepository
             $views[$row['custom_view_id']] = $row;
         }
         return $views;
+    }
+
+    /**
+     * Return the SQL cmp string
+     *
+     * @param string $comparator
+     * @param mixed $value
+     * @return string
+     */
+    public static function getCmpString($comparator, $value)
+    {
+        switch ($comparator) {
+            case self::EQUAL:
+                $cmp = is_numeric($value) ? " = %s " : " = '%s'";
+                break;
+            case self::NOT_EQUAL:
+                $cmp = is_numeric($value) ? " != %s " : " != '%s'";
+                break;
+            case self::CONTAINS:
+                $cmp = " LIKE '%%%s%%' ";
+                break;
+            case self::NOT_CONTAINS:
+                $cmp = " NOT LIKE '%%%s%%' ";
+                break;
+            case self::GREATER:
+                $cmp = " > %d ";
+                break;
+            case self::GREATER_EQUAL:
+                $cmp = " >= %d ";
+                break;
+            case self::LESSER:
+                $cmp = " < %d ";
+                break;
+            case self::LESSER_EQUAL:
+                $cmp = " <= %d ";
+                break;
+            default:
+                throw new \Centreon\Internal\Exception(sprintf('Unknown comparator %s', $comparator));
+                break;
+        } 
+        return sprintf($cmp, $value);
     }
 }
