@@ -60,8 +60,8 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static $datatableColumn = array(
         '<input id="allContact" class="allContact" type="checkbox">' => 'contact_id',
-        'Alias / Login' => 'contact_name',
-        'Full name' => 'contact_alias',
+        'Alias / Login' => 'contact_alias',
+        'Full name' => 'contact_name',
         'Email' => 'contact_email',
         'Notifications Period' => array(
             'Hosts' => 'contact_host_notification_options',
@@ -79,8 +79,8 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static $researchIndex = array(
         'contact_id',
-        'contact_name',
         'contact_alias',
+        'contact_name',
         'contact_email',
         'contact_host_notification_options',
         'contact_service_notification_options',
@@ -226,7 +226,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
                 )
             );
 
-            $myUserSet['contact_name'] = self::getUserIcon($myUserSet['contact_name'], $myUserSet['contact_email']);
+            $myUserSet['contact_alias'] = self::getUserIcon($myUserSet['contact_alias'], $myUserSet['contact_email']);
         }
     }
     
