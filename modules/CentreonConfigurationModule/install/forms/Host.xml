@@ -7,7 +7,10 @@
 		<section name="Host configuration">
 			<block name="General information">
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-                    <validators>unique</validators>
+                    <validators>
+                        <validator events="blur">unique</validator>
+                        <validator events="blur">forbiddenChar</validator>
+                    </validators>
 					<help>The host name defined here is used in host group and service definitions to reference this particular host.</help>
 				</field>
 				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -24,7 +27,9 @@
 						<multiple>true</multiple>
 						<ordered>true</ordered>
 					</attributes>
-                    <validators>circularDependency</validators>
+                    <validators>
+                        <validator events="blur">circularDependency</validator>
+                    </validators>
 					<help></help>
 				</field>
 				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
