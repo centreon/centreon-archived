@@ -38,10 +38,11 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         leftPanelHeight();
     });
-    loadMenu('{url_for url="/menu/getmenu/"}', {get_environment_id});
+    var mdata = {get_environment_id};
+    loadMenu('{url_for url="/menu/getmenu/"}', mdata.envid, mdata.subid, mdata.childid);
     $('li.envmenu').on('click', function(e) {
         $("#hook-menu").html("");
-        loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'));
+        loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'), 0, 0);
     });
     $('.env-menu').on('click', function(e) {
         e.stopPropagation();

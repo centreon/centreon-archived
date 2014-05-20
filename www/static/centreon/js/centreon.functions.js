@@ -84,14 +84,16 @@ function toggleFooter() {
 }
 
 /* Generate menu */
-function generateMenu($elParent, menu) {
-    var i;
+function generateMenu($elParent, menu, subLevelId, childId) {
     var lenMenu = menu.length;
 
-    for (i = 0; i < lenMenu; i++) {
+    for (var i = 0; i < lenMenu; i++) {
         var $li = $('<li></li>');
         $li.appendTo($elParent);
         var $link = $('<a></a>').attr('href', menu[i].url);
+        if (menu[i].menu_id == childId) {
+            $li.addClass('submenu-active');
+        }
         if (menu[i].icon_class != '') {
             $('<i></i>').addClass(menu[i].icon_class).appendTo($link);
         } else if (menu[i].icon_img != '') {
@@ -100,21 +102,31 @@ function generateMenu($elParent, menu) {
         $('<span></span>').text(menu[i].name).appendTo($link);
         $li.append($link);
         if (menu[i].children.length > 0) {
-            $('<i></i>').addClass('fa').addClass('fa-plus-square-o').addClass('toggle').addClass('pull-right').appendTo($link);
-            $link.addClass('accordion-toggle').addClass('collapsed');
-            var $childList = $('<ul></ul>').addClass('collapse').addClass('nav').addClass('submenu').appendTo($li);
+            var sign = 'fa-plus-square-o';
+            var mustToggle = false;
+            if (menu[i].menu_id == subLevelId) {
+                sign = 'fa-minus-square-o';
+                mustToggle = true;
+            }
+            $('<i></i>').addClass('fa').addClass(sign).addClass('toggle').addClass('pull-right').appendTo($link);
+            $link.addClass('accordion-toggle');
+            var $childList = $('<ul></ul>');
+            if (menu[i].menu_id == subLevelId) {
+                $childList.addClass('in');
+            }
+            $childList.addClass('collapse').addClass('nav').addClass('submenu').appendTo($li);
             $childList.collapse({ toggle: false });
-            generateMenu($childList, menu[i].children);
+            generateMenu($childList, menu[i].children, subLevelId, childId);
         }
     }
 }
 
 /* Load menu */
-function loadMenu(menuUrl, envName) {
+function loadMenu(menuUrl, envId, subLevelId, childId) {
     $.ajax({
         'url': menuUrl,
         'data': {
-            'menu_id': envName
+            'menu_id': envId
         },
         'dataType': 'json',
         'type': 'GET',
@@ -125,7 +137,7 @@ function loadMenu(menuUrl, envName) {
             }
             var $menuUl = $('#menu1');
             $menuUl.html("");
-            generateMenu($menuUl, data.menu);
+            generateMenu($menuUl, data.menu, subLevelId, childId);
         }
     });
 }
