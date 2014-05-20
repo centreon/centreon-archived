@@ -296,21 +296,22 @@ class Installer
     public static function addValidatorsToField($data)
     {
         $fname = (string)$data['field_name'];
-        if (isset(self::$fields[$fname])) {
-            $validatorsList = explode(',', (string)$data['validators']);
-            foreach ($validatorsList as $validator) {
-                if (isset(self::$validators[$validator])) {
+        $validators = $data['validators'];
+        if (isset(self::$fields[$fname]) && !is_null($validators->validator)) {
+            foreach ($validators->validator as $validator) {
+                if (isset(self::$validators[(string)$validator])) {
                     $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
                     $stmt = $db->prepare('DELETE FROM form_field_validator_relation 
                         WHERE validator_id = :validator_id AND field_id = :field_id');
-                    $stmt->bindParam(':validator_id', self::$validators[$validator]);
+                    $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
                     $stmt->execute();
 
-                    $stmt = $db->prepare('REPLACE INTO form_field_validator_relation (validator_id, field_id) 
-                        VALUES (:validator_id, :field_id)');
-                    $stmt->bindParam(':validator_id', self::$validators[$validator]);
+                    $stmt = $db->prepare('REPLACE INTO form_field_validator_relation (validator_id, field_id, client_side_event) 
+                        VALUES (:validator_id, :field_id, :client_side_event)');
+                    $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
+                    $stmt->bindParam(':client_side_event', $validator['events']);
                     $stmt->execute();
                 }
             }
@@ -454,6 +455,11 @@ class Installer
                     'rank' => $fieldRank
                 );
                 self::addFieldToStep(array_map('strval', $stepFieldData));
+                $fieldValidators = array(
+                    'field_name' => $field['name'],
+                    'validators' => $field->validators
+                );
+                self::addValidatorsToField($fieldValidators);
                 $fieldRank++;
                 $insertedFields[] = implode(';', array($wizard['name'], $step['name'], $field['name']));
             }
