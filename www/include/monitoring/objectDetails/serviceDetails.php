@@ -232,6 +232,7 @@ if (!is_null($host_id)) {
         }
         $DBRESULT->free();
 
+        $service_status[$host_name."_".$svc_description]["current_stateid"] = $service_status[$host_name."_".$svc_description]["current_state"];
         $service_status[$host_name."_".$svc_description]["current_state"] = $tab_status_service[$service_status[$host_name."_".$svc_description]["current_state"]];
 
         /*
@@ -315,8 +316,8 @@ if (!is_null($host_id)) {
 
         /*
          * Ajust data for beeing displayed in template
-	 */
-	$oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+         */
+        $oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $service_status[$host_name."_".$svc_description]["status_color"] = $oreon->optGen["color_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
         $service_status[$host_name."_".$svc_description]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"]);
         $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"]);
@@ -349,7 +350,6 @@ if (!is_null($host_id)) {
                     $i++;
                 }
             }
-
         }
 
         $service_status[$host_name."_".$svc_description]["plugin_output"] = $service_status[$host_name."_".$svc_description]["plugin_output"];
@@ -373,6 +373,8 @@ if (!is_null($host_id)) {
         if (isset($service_status[$host_name.'_'.$svc_description]["notes_url"]) && $service_status[$host_name.'_'.$svc_description]["notes_url"]) {
             $service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
             $service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["notes_url"]);
+            $service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICESTATE\$",  $service_status[$host_name.'_'.$svc_description]["current_state"], $service_status[$host_name.'_'.$svc_description]["notes_url"]);
+            $service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$SERVICESTATEID\$",  $service_status[$host_name.'_'.$svc_description]["current_stateid"], $service_status[$host_name.'_'.$svc_description]["notes_url"]);
             if ($host_id) {
                 $service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$host_name.'_'.$svc_description]["notes_url"]);
                 $service_status[$host_name.'_'.$svc_description]["notes_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$host_name.'_'.$svc_description]["notes_url"]);
@@ -381,6 +383,8 @@ if (!is_null($host_id)) {
         if (isset($service_status[$host_name.'_'.$svc_description]["action_url"]) && $service_status[$host_name.'_'.$svc_description]["action_url"]) {
             $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTNAME\$", $host_name, $service_status[$host_name.'_'.$svc_description]["action_url"]);
             $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$SERVICEDESC\$", $svc_description, $service_status[$host_name.'_'.$svc_description]["action_url"]);
+            $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$SERVICESTATE\$",  $service_status[$host_name.'_'.$svc_description]["current_state"], $service_status[$host_name.'_'.$svc_description]["action_url"]);
+            $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$SERVICESTATEID\$", $service_status[$host_name.'_'.$svc_description]["current_stateid"], $service_status[$host_name.'_'.$svc_description]["action_url"]);
             if ($host_id) {
                 $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTALIAS\$", $hostObj->getHostAlias($host_id), $service_status[$host_name.'_'.$svc_description]["action_url"]);
                 $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$host_name.'_'.$svc_description]["action_url"]);
@@ -637,16 +641,14 @@ if (!is_null($host_id)) {
         /*
          * Ext informations
          */
-        $notesurl = getMyServiceExtendedInfoField($service_id, "esi_notes_url");
-        $notesurl = $hostObj->replaceMacroInString($host_id, $notesurl);
-        $notesurl =  $svcObj->replaceMacroInString($service_id, $notesurl);
+        $notesurl = $hostObj->replaceMacroInString($host_id, $service_status[$host_name."_".$svc_description]["notes_url"]);
+        $notesurl = $svcObj->replaceMacroInString($service_id, $notesurl);
         if (isset($service_status[$host_name."_".$svc_description]["instance_name"])) {
             $notesurl = str_replace("\$INSTANCENAME\$", $service_status[$host_name."_".$svc_description]["instance_name"], $notesurl);
         }
 
-        $actionurl = getMyServiceExtendedInfoField($service_id, "esi_action_url");
-        $actionurl = $hostObj->replaceMacroInString($host_id, $actionurl);
-        $actionurl =  $svcObj->replaceMacroInString($service_id, $actionurl);
+        $actionurl = $hostObj->replaceMacroInString($host_id, $service_status[$host_name."_".$svc_description]["action_url"]);
+        $actionurl = $svcObj->replaceMacroInString($service_id, $actionurl);
         if (isset($service_status[$host_name."_".$svc_description]["instance_name"])) {
             $actionurl = str_replace("\$INSTANCENAME\$", $service_status[$host_name."_".$svc_description]["instance_name"], $actionurl);
         }

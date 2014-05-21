@@ -8,7 +8,7 @@ Au sein du menu **Configuration** il est possible d'effectuer certaines actions 
 Ajouter/Supprimer
 *****************
 
-L'ajout d'un nouvel objet se fait via l'instruction **Ajouter** à coté du menu **More actions...**.
+L'ajout d'un nouvel objet se fait via l'instruction **Ajouter** à côté du menu **More actions...**.
 
 Pour supprimer un objet :
 
@@ -75,8 +75,8 @@ Pour effectuer un changement massif :
 
 La fenêtre de changement s'ouvre, il existe deux types de changements :
 
-*	Incrémentale: signifie que la modification va s'ajouter aux options déjà existantes
-*	Remplacement: signifie que la modification va écraser les options déjà existantes
+*	Incrémentale : signifie que la modification va s'ajouter aux options déjà existantes
+*	Remplacement : signifie que la modification va écraser les options déjà existantes
 
 ******************
 Activer/Désactiver

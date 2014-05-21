@@ -31,7 +31,7 @@ Le serveur satellite contient les éléments suivants :
 Cette architecture a plusieurs intérêts :
 
 * Elle permet la répartition de la charge de supervision entre plusieurs serveurs de supervision
-* Isolation des flux réseaux : si votre infrastructure de supervision est chargée de superviser une DMZ il est plus simple (et sécurisant) de placer un serveur satellite sur le réseau DMZ
+* Isolation des flux réseaux : si votre infrastructure de supervision est chargée de superviser une DMZ, il est plus simple (et sécurisant) de placer un serveur satellite sur le réseau DMZ
 * Avoir une redondance au niveau des serveurs Centraux, si un serveur central tombe alors le second serveur central existe toujours et permet d'assurer une continuité de service
 * Disposer d'une interface web afin de pouvoir consulter les éléments supervisés par chaque serveur satellite
 
@@ -50,7 +50,7 @@ Il existe deux types de serveur central :
 Le serveur central master fonctionne normalement :
 
 * Le serveur Apache est chargé d'héberger l'interface web de Centreon
-* Plusieurs bases de données MySQL sont chargés de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
+* Plusieurs bases de données MySQL sont chargées de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
 * Le service CentCore est chargé d'exporter la configuration des moteurs de supervision vers le serveur central et satellites ainsi que du redémarrage des moteurs de supervision
 * Le moteur de supervision supervise le système d'informations
 * Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL

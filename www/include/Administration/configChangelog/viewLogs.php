@@ -121,12 +121,12 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $tabAction = array();
-$tabAction["a"] = _("Add");
-$tabAction["c"] = _("Change");
+$tabAction["a"] = _("Added");
+$tabAction["c"] = _("Changed");
 $tabAction["mc"] = _("Massive Change");
-$tabAction["enable"] = _("Enable");
-$tabAction["disable"] = _("Disable");
-$tabAction["d"] = _("Delete");
+$tabAction["enable"] = _("Enabled");
+$tabAction["disable"] = _("Disabled");
+$tabAction["d"] = _("Deleted");
                          
 $tpl->assign("date", _("Date"));
 $tpl->assign("type", _("Type"));
@@ -139,6 +139,8 @@ $tpl->assign("field_value", _("Field Value"));
 $tpl->assign("before", _("Before"));
 $tpl->assign("after", _("After"));
 $tpl->assign("logs", _("Logs for "));
+$tpl->assign("author", _("Author"));
+$tpl->assign("modification_type", _("Modification type"));
 $tpl->assign("objTypeLabel", _("Object type : "));
 $tpl->assign("objNameLabel", _("Object name : "));
 $tpl->assign("noModifLabel", _("No modification was made."));
@@ -261,7 +263,7 @@ $tpl->assign('time', _("Time"));
 $tpl->assign('contact', _("Contact"));
 
 // Set Color
-$tpl->assign("color", array(_('Add') => "#0BF30B", _('Change') => "#F3D30B", _('Massive Change') => '#F3D30B', _('Delete') => '#F90531', _('Enable') => '#06A1F8', _('Disable') => '#BA0EF0'));
+$tpl->assign("color", array(_("Added") => "#0BF30B", _("Changed") => "#F3D30B", _("Massive Change") => '#F3D30B', _("Deleted") => '#F90531', _("Enabled") => '#06A1F8', _("Disabled") => '#BA0EF0'));
 
 // Pagination 
 $tpl->assign('limit', $limit);

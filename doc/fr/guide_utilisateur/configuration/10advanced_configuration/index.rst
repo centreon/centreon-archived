@@ -11,4 +11,3 @@ Configuration avancée
    04notifications_escalation
    05recurrent_downtimes
    06traps
-   07poller

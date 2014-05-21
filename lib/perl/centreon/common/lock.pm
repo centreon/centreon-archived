@@ -52,10 +52,12 @@ sub is_set {
 sub set {
     my $self = shift;
 
-    for (my $i = 0; $self->is_set() && $i < $self->{timeout}; $i++) {
+    for (my $i = 0; $i < $self->{timeout}; $i++) {
+        return if (!$self->is_set());
         sleep 1;
     }
-    die "Failed to set lock for $self->{name}" if $self->is_set();
+
+    die "Failed to set lock for $self->{name}";
 }
 
 package centreon::common::lock::file;
@@ -126,11 +128,10 @@ sub is_set {
         return 0;
     }
     $self->{id} = $data->{id};
-    $data->{pid} = -1 if (!defined($data->{pid}));
-    $self->{pid} = $data->{pid};
+	my $pid = defined($data->{pid}) ? $data->{pid} : -1;
     $self->{previous_launch_time} = $data->{time_launch};
     if (defined $data->{running} && $data->{running} == 1) {
-        my $line = `ps -ef | grep -v grep | grep $self->{pid} | grep $self->{name}`;
+        my $line = `ps -ef | grep -v grep | grep -- $pid | grep $self->{name}`;
         return 0 if !length $line;
         return 1;
     }
@@ -171,7 +172,7 @@ sub DESTROY {
         my $exectime = time() - $self->{launch_time};
         $self->{dbc}->do(<<"EOQ");
 UPDATE cron_operation
-SET running = '0', last_execution_time = '$exectime', pid = '-1'
+SET last_execution_time = '$exectime'
 WHERE id = '$self->{id}'
 EOQ
     }

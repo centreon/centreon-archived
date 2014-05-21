@@ -1,7 +1,6 @@
 .. _dependancy:
 
 ===============
-i l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
 Les dépendances
 ===============
 
@@ -29,7 +28,7 @@ La configuration d'une dépendance physique se déroule au sein de l'onglet **Re
 
 Il est possible de définir deux paramètres :
 
-* Les hôtes parents : signifie que les hôtes sélectionnés sont parents de cet hôte (situé en amont). Si tous les hôtes parents sélectionnés deviennent indisponibles ou injoignable alors l'hôte sera considéré par l’ordonnanceur comme injoignable lui-même.
+* Les hôtes parents : signifie que les hôtes sélectionnés sont parents de cet hôte (situé en amont). Si tous les hôtes parents sélectionnés deviennent indisponibles ou injoignables alors l'hôte sera considéré par l’ordonnanceur comme injoignable lui-même.
 * Les hôtes enfants : signifie que l'hôte devient parent de tous les hôtes enfants sélectionnés.
 
 .. note:: 
@@ -42,7 +41,7 @@ Dans le cas où des relations de parentés ont été définies entre hôtes supe
 
 Pour empêcher l'établissement de cette relation de parenté, il est nécessaire de cocher la case **Activer le mode strict de gestion des relations de parentés** au sein du menu **Administration** ==> **Options**.
 
-A l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
+A l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établis.
 
 .. note::
     Ne cochez pas le filtre de notification "Injoignable" sur les hôtes ainsi que sur les contacts pour ne pas recevoir ce type de notification.
@@ -66,14 +65,14 @@ Pour configurer une dépendance logique :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/03hostdependance.png
    :align: center
 
-Dans ce cas, nous avons deux types d'hôtes qui entrent en jeu : un ou des hôtes (appelé hôtes maitres) dont le statut contrôle l'exécution et les notifications d'autres hôtes (appelés hôtes dépendants).
-Si vous utilisez Centreon Broker, il est également possible à partir des hôtes maitres de contrôler l'exécution et les notifications de services (appelés services dépendants)
+Dans ce cas, nous avons deux types d'hôtes qui entrent en jeu : un ou des hôtes (appelé hôtes maîtres) dont le statut contrôle l'exécution et les notifications d'autres hôtes (appelés hôtes dépendants).
+Si vous utilisez Centreon Broker, il est également possible à partir des hôtes maîtres de contrôler l'exécution et les notifications de services (appelés services dépendants).
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances de l'hôte maitre deviennent indisponibles, la dépendance en cours de création n'est plus prise en compte.
-* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des hôtes maitres qui empêcheront la vérification des hôtes ou des services dépendants
-* Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maitres qui empêcheront l'envoi de notifications pour les hôtes ou les services dépendants
-* La liste **Nom d'hôtes** défini le ou les hôtes maitres
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances de l'hôte maître deviennent indisponibles, la dépendance en cours de création n'est plus prise en compte.
+* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des hôtes maîtres qui empêcheront la vérification des hôtes ou des services dépendants
+* Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maîtres qui empêcheront l'envoi de notifications pour les hôtes ou les services dépendants
+* La liste **Nom d'hôtes** défini le ou les hôtes maîtres
 * La liste **Nom d'hôtes liés** défini les hôtes dépendants
 * La liste **Services dépendants** défini les services dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
@@ -90,14 +89,14 @@ Pour ajouter une dépendance au niveau des services :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/03servicedependance.png
    :align: center
 
-Dans ce cas, nous avons deux entités qui entrent en jeu : les services (dits maitres) qui contrôlent l'exécution et les notifications d'autres services (dits dépendants).
+Dans ce cas, nous avons deux entités qui entrent en jeu : les services (dits maîtres) qui contrôlent l'exécution et les notifications d'autres services (dits dépendants).
 Si vous utilisez Centreon Broker, il est également possible de contrôler l'exécution et les notifications d'autres hôtes.
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du service maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
-* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des services maitres qui empêcheront la vérification des hôtes ou des services dépendants
-* Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des services maitres qui empêcheront l'envoi de notifications pour les hôtes ou les services dépendants
-* La liste **Services** définie le ou les services maitres
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du service maître deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
+* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du (ou des) service(s) maître(s) qui empêchera(ront) la vérification des hôtes ou des services dépendants
+* Le champ **Critères d'échec de notification** indique quels sont les statuts du (ou des) service(s) maître(s) qui empêchera(ront) l'envoi de notifications pour les hôtes ou les services dépendants
+* La liste **Services** définie le ou les services maîtres
 * La liste **Services dépendants** définie les services dépendants
 * La liste **Hôtes dépendants** définie les hôtes dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
@@ -114,13 +113,13 @@ Pour ajouter une dépendance au niveau des groupes d'hôtes :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/03hostgroupdependance.png
    :align: center
 
-Deux types de groupes d'hôtes : Un groupe d'hôtes est dit maitre s'il contrôle l'exécution et la notification d'autres groupes d'hôtes (dit dépendants).
+Deux types de groupes d'hôtes : Un groupe d'hôtes est dit maître s'il contrôle l'exécution et la notification d'autres groupes d'hôtes (dit dépendants).
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe d'hôte maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
-* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des groupes d'hôtes maitres qui empêcheront la vérification des groupes d'hôtes dépendants
-* Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maitres qui empêcheront l'envoi de notifications pour des groupes d'hôtes dépendants
-* La liste **Nom du groupe d'hôte** définie le ou les groupes d'hôtes maitres
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe d'hôte maître deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
+* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des groupes d'hôtes maîtres qui empêcheront la vérification des groupes d'hôtes dépendants
+* Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maîtres qui empêcheront l'envoi de notifications pour des groupes d'hôtes dépendants
+* La liste **Nom du groupe d'hôte** définie le ou les groupes d'hôtes maîtres
 * La liste **Nom des groupes d'hôtes liés** définie le ou les groupes d'hôtes dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
 
@@ -136,13 +135,13 @@ Pour ajouter une dépendance au niveau des groupes de services :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/03servicegroupdependance.png
    :align: center
 
-Deux types de groupes de services : Un groupe de services est dit maitre s'il contrôle l'exécution et la notification d'autres groupes de services (dit dépendants).
+Deux types de groupes de services : Un groupe de services est dit maître s'il contrôle l'exécution et la notification d'autres groupes de services (dit dépendants).
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe de service maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
-* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des groupes de services maitres qui empêcheront la vérification des groupes de services dépendants
-* Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maitres qui empêcheront l'envoi de notifications pour des groupes de services dépendants
-* La liste **Nom des groupes de services** définie le ou les groupes de services maitres
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du groupe de service maître deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
+* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des groupes de services maîtres qui empêcheront la vérification des groupes de services dépendants
+* Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des hôtes maîtres qui empêcheront l'envoi de notifications pour des groupes de services dépendants
+* La liste **Nom des groupes de services** définie le ou les groupes de services maîtres
 * La liste **Nom des groupes de services liés** définie le ou les groupes de services dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
 
@@ -155,12 +154,12 @@ Pour ajouter une dépendance au niveau des méta-services :
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Méta-services**
 #. Cliquez sur **Ajouter**
 
-Deux types de méta-services : Un méta-service est dit maitre s'il contrôle l'exécution et la notification d'autres méta-services (dit dépendants).
+Deux types de méta-services : Un méta-service est dit maître s'il contrôle l'exécution et la notification d'autres méta-services (dit dépendants).
 
 * Les champs **Nom** et **Description** indiquent le nom et la description de la dépendance
-* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du méta-service maitre deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
-* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des méta-services maitres qui empêcheront la vérification des méta-services dépendants
+* Le champ **Relation de parenté** est à ignorer si vous utilisez Centreon Engine. S'il est activé, alors si les liens de dépendances du méta-service maître deviennent indisponibles la dépendance en cours de création n'est plus prise en compte.
+* Le champ **Critères d'échec d'exécution** indique quels sont les statuts du ou des méta-services maîtres qui empêcheront la vérification des méta-services dépendants
 * Le champ **Critères d'échec de notification** indique quels sont les statuts du ou des méta-services qui empêcheront l'envoi de notifications pour des méta-services dépendants
-* La liste **Nom du méta-service** définie le ou les méta-services maitres
-* La liste **Nom des méta-services liés** définie le ou les méta-services dépendants
+* La liste **Nom du méta-service** définie le (ou les) méta-service(s) maître(s)
+* La liste **Nom des méta-services liés** définie le (ou les) méta-service(s) dépendant(s)
 * Le champ **Commentaire** permet de commenter la dépendance

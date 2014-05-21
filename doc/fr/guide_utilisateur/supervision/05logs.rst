@@ -27,7 +27,7 @@ Le menu de gauche permet de sélectionner les hôtes et/ou les services pour les
 La barre de recherche grise appelée **Période de visualisation** permet de sélectionner la période de temps pour laquelle on souhaite visualiser les évènements.
 La liste déroulante permet de sélectionner des périodes de temps génériques. Si la liste déroulante est vide alors il est possible de choisir manuellement la période de temps en utilisant les champs **Du** et **Au**.
 
-La barre de recherche grisée située en dessous permet de sélectionner filtres de recherche afin d'afficher les évènements souhaités.
+La barre de recherche grisée située en dessous permet de sélectionner les filtres de recherche afin d'afficher les évènements souhaités.
 
 Le tableau permet de visualiser les résultats.
 
@@ -49,7 +49,7 @@ Statut de l'hôte ou du service
 ==============================
 
 .. note::
-    Les choix effectuées ici influencent les cases cochées dans **Type de message**. Il est également possible de visualiser les différents messages en sélectionnant manuellement les statuts désirés pour les hôtes ou les services.
+    Les choix effectués ici influencent les cases cochées dans **Type de message**. Il est également possible de visualiser les différents messages en sélectionnant manuellement les statuts désirés pour les hôtes ou les services.
 
 *************
 Les résultats
@@ -74,8 +74,8 @@ Le tableau ci-dessous décrit les différentes colonnes du tableau de résultats
 +---------------------+------------------------------------------------------------------------------------------------------------+
 | Statut détaillé     | Affiche le message expliquant le statut de l'hôte ou du service                                            |
 +---------------------+------------------------------------------------------------------------------------------------------------+
-| Contact             | Affiche le contact ayant été contacté (n'est renseigné que si il s'agit d'une notification)                |
+| Contact             | Affiche le contact ayant été contacté (n'est renseigné que s'il s'agit d'une notification)                 |
 +---------------------+------------------------------------------------------------------------------------------------------------+
-| Commande            | Affiche la commande utilisée pour alerter le contact (n'est renseigné que si il s'agit d'une notification) |
+| Commande            | Affiche la commande utilisée pour alerter le contact (n'est renseigné que s'il s'agit d'une notification)  |
 +---------------------+------------------------------------------------------------------------------------------------------------+
 

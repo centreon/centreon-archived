@@ -204,10 +204,10 @@ function construct_selecteList_ndo_instance(id){
      */
     if ($broker == "broker") {
     	if ($oreon->user->admin || !count($pollerArray)) {
-	        $instanceQuery = "SELECT instance_id, name FROM `instances` ORDER BY name";
+	        $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = '1' ORDER BY name";
 		} else {
 		    $instanceQuery = "SELECT instance_id, name  ".
-		    				 "FROM `instances` WHERE name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY name";
+		    				 "FROM `instances` WHERE running = '1' AND name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY name";
 		}
 		$DBRESULT = $pearDBO->query($instanceQuery);
    		 while ($nagios_server = $DBRESULT->fetchRow())	{   ?>
@@ -301,7 +301,7 @@ function construct_HostGroupSelectList(id) {
 		}
 
 		if ($broker == 'broker') {
-			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta_%' AND enabled = 1 ORDER BY `name`");
+			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.enabled = 1 AND hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta_%' AND enabled = 1 ORDER BY `name`");
 		} else {
 			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias , `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
 		}

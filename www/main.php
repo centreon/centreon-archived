@@ -103,95 +103,91 @@
 	 * Init URL
 	 */
 	$url = "";
-	if (!isset($_GET["doc"])){
-		$acl_page = $centreon->user->access->page($p, true);
-		if ($acl_page == 1 || $acl_page == 2) {
-			if ($redirect["topology_page"] < 100){
-				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-				if (!$ret['topology_page']){
-					if (file_exists($redirect["topology_url"])){
-						$url = $redirect["topology_url"];
-						reset_search_page($url);
-					} else {
-						$url = "./alt_error.php";
-					}
-				} else {
-					$ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
-					if ($ret2["topology_url_opt"])	{
-						if (!$o) {
-							$tab = preg_split("/\=/", $ret2["topology_url_opt"]);
-							$o = $tab[1];
-						}
-						$p = $ret2["topology_page"];
-					}
-					if (file_exists($ret2["topology_url"])){
-						$url = $ret2["topology_url"];
-						reset_search_page($url);
-						if ($ret2["topology_url_opt"]){
-							$tab = preg_split("/\=/", $ret2["topology_url_opt"]);
-							$o = $tab[1];
-						}
-					} elseif ($ret['topology_url']) {
-						$url = $ret['topology_url'];
-					} else {
-					    $url = "./alt_error.php";
-					}
-				}
-			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
-				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-				if (!$ret['topology_page']) {
-					if (file_exists($redirect["topology_url"])){
-						$url = $redirect["topology_url"];
-						reset_search_page($url);
-					} else {
-						$url = "./alt_error.php";
-					}
-				} else {
-					if ($ret["topology_url_opt"]){
-						if (!$o) {
-							$tab = preg_split("/\=/", $ret["topology_url_opt"]);
-							$o = $tab[1];
-						}
-						$p = $ret["topology_page"];
-					}
-					if (file_exists($ret["topology_url"])){
-						$url = $ret["topology_url"];
-						reset_search_page($url);
-					} else {
-						$url = "./alt_error.php";
-					}
-				}
-			} else if ($redirect["topology_page"] >= 1000) {
-				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-				if (!$ret['topology_page']){
-					if (file_exists($redirect["topology_url"])){
-						$url = $redirect["topology_url"];
-						reset_search_page($url);
-					} else {
-						$url = "./alt_error.php";
-					}
-				} else {
-					if (file_exists($redirect["topology_url"]) && $ret['topology_page']){
-						$url = $redirect["topology_url"];
-						reset_search_page($url);
-					} else {
-						$url = "./alt_error.php";
-					}
-				}
-			}
-			if (isset($o) && $acl_page == 2) {
-				if ($o == 'c') {
-					$o = 'w';
-				} elseif ($o == 'a') {
-					$url = "./alt_error.php";
-				}
-			}
-		} else {
-			$url = "./alt_error.php";
-		}
-	} else {
-		$url = "./include/doc/index.php";
-	}
+    $acl_page = $centreon->user->access->page($p, true);
+    if ($acl_page == 1 || $acl_page == 2) {
+        if ($redirect["topology_page"] < 100){
+            $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
+            if (!$ret['topology_page']){
+                if (file_exists($redirect["topology_url"])){
+                    $url = $redirect["topology_url"];
+                    reset_search_page($url);
+                } else {
+                    $url = "./alt_error.php";
+                }
+            } else {
+                $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
+                if ($ret2["topology_url_opt"])	{
+                    if (!$o) {
+                        $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
+                        $o = $tab[1];
+                    }
+                    $p = $ret2["topology_page"];
+                }
+                if (file_exists($ret2["topology_url"])){
+                    $url = $ret2["topology_url"];
+                    reset_search_page($url);
+                    if ($ret2["topology_url_opt"]){
+                        $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
+                        $o = $tab[1];
+                    }
+                } elseif ($ret['topology_url']) {
+                    $url = $ret['topology_url'];
+                } else {
+                    $url = "./alt_error.php";
+                }
+            }
+        } else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
+            $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
+            if (!$ret['topology_page']) {
+                if (file_exists($redirect["topology_url"])){
+                    $url = $redirect["topology_url"];
+                    reset_search_page($url);
+                } else {
+                    $url = "./alt_error.php";
+                }
+            } else {
+                if ($ret["topology_url_opt"]){
+                    if (!$o) {
+                        $tab = preg_split("/\=/", $ret["topology_url_opt"]);
+                        $o = $tab[1];
+                    }
+                    $p = $ret["topology_page"];
+                }
+                if (file_exists($ret["topology_url"])){
+                    $url = $ret["topology_url"];
+                    reset_search_page($url);
+                } else {
+                    $url = "./alt_error.php";
+                }
+            }
+        } else if ($redirect["topology_page"] >= 1000) {
+            $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
+            if (!$ret['topology_page']){
+                if (file_exists($redirect["topology_url"])){
+                    $url = $redirect["topology_url"];
+                    reset_search_page($url);
+                } else {
+                    $url = "./alt_error.php";
+                }
+            } else {
+                if (file_exists($redirect["topology_url"]) && $ret['topology_page']){
+                    $url = $redirect["topology_url"];
+                    reset_search_page($url);
+                } else {
+                    $url = "./alt_error.php";
+                }
+            }
+        }
+        if (isset($o) && $acl_page == 2) {
+            if ($o == 'c') {
+                $o = 'w';
+            } elseif ($o == 'a') {
+                $url = "./alt_error.php";
+            }
+        }
+    } else {
+        $url = "./alt_error.php";
+    }
 
 	/*
 	 *  Header HTML
@@ -259,8 +255,6 @@
 		if (isset($_POST["limit"]))
 			$centreon->historyLimit[$url] = $_POST["limit"];
 	}
-
-
 
 	/*
 	 * Display Footer

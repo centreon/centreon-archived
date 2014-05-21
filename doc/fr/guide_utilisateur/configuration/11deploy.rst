@@ -1,3 +1,5 @@
+.. _deployconfiguration:
+
 ==========================
 Déployer une configuration
 ==========================
@@ -7,7 +9,7 @@ Procédure
 *********
 
 Lors de la création/suppression/modification des objets via l'interface de configuration, les changements effectués ne sont pas appliqués de manière automatique aux serveurs de supervision.
-Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de suivre la procédure suivante ci dessous.
+Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de suivre la procédure suivante ci-dessous.
 
 .. note::
    Celle-ci doit toujours être déroulée en 2 étapes.
@@ -15,14 +17,14 @@ Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de s
 Première étape
 ==============
  #.	Rendez-vous dans le menu **Configuration** ==> **Moteurs de supervision** ==> **Générer**
- #.	Selectionner le **Collecteur** dans la liste déroulant.
+ #.	Sélectionner le **Collecteur** dans la liste déroulant.
  #.	Cochez les cases **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
  #. Cliquez sur **Exporter**
  
 .. image :: /images/guide_utilisateur/configuration/11step1.png
    :align: center 
 
-Vérifier qu'aucune erreur n'apparait lors de la génération :
+Vérifier qu'aucune erreur n'apparait lors de la génération. 
 
 .. note::
     Si cela est le cas, corriger les erreurs et refaire la première étape.

@@ -1,3 +1,5 @@
+.. _firststepsces3:
+
 ========================
 Premier pas avec CES 3.0
 ========================
@@ -35,16 +37,16 @@ Pourquoi choisir Centreon Engine et Broker ?
 
 Performances
 ------------
-Les différents tests effectués par les équipes de MERETHIS et quelques blogueurs indépendants démontrent sans équivoque
+Les différents tests effectués par les équipes de MERETHIS et quelques utilisateurs indépendants démontrent sans équivoque
 que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performants que le couple Nagios/NDOUtils.
 
 Meilleure intégration à Centreon
 --------------------------------
-L'interface de Centreon est de plus en plus orientée vers l'utilisation du broker Centreon Broker. Quelques exemples :
+L'interface de Centreon est de plus en plus orientée vers l'utilisation du broker, Centreon Broker. Quelques exemples :
 
 *	Il existe un assistant de configuration pour Centreon Broker
 *   Les performances d'affichage sont grandement améliorées
-*   Certains filtres de sélection ne sont disponibles qu'avec le broker Centreon Broker
+*   Certains filtres de sélection ne sont disponibles qu'avec le broker, Centreon Broker
 *	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
 
 Nouvelles fonctionnalités
@@ -58,29 +60,29 @@ Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker
 *   Possibilité de flux unidirectionnels entre le serveur Centreon et ses collecteurs (uniquement des flux LAN vers DMZ par exemple)
  
 **********
-Pré-requis
+Prérequis
 **********
 
-Le tableau ci-dessous donne les pré-requis pour l'installation de CES 3.0 :
+Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.0 :
 
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
 |  Nombre de services    |  Nombre de collecteurs   | Processeur du serveur central | Mémoire vive du serveur central | Processeur du serveur satellite | Mémoire vive du serveur satellite |
 +========================+==========================+===============================+=================================+=================================+===================================+
-|        < 500           |        1 central         |          1 * 2,5 Ghz          |               1 Go              |                                 |                                   |
+|        < 500           |        1 central         |          1 * 2,5 GHz          |               1 Go              |                                 |                                   |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      500 - 1000        |        1 central         |          2 * 2,5 Ghz          |               2 Go              |                                 |                                   |
+|      500 - 1000        |        1 central         |          2 * 2,5 GHz          |               2 Go              |                                 |                                   |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      1000 - 2000       |        1 central         |          4 * 2,5 Ghz          |               4 Go              |                                 |                                   |
+|      1000 - 2000       |        1 central         |          4 * 2,5 GHz          |               4 Go              |                                 |                                   |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      2000 - 5000       |        1 central         |          8 * 2,5 Ghz          |               8 Go              |                                 |                                   |
+|      2000 - 5000       |        1 central         |          8 * 2,5 GHz          |               8 Go              |                                 |                                   |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      5000 - 10000      | 1 central + 1 satellite  |          4 * 2,5 Ghz          |               8 Go              |           8 * 2,5 Ghz           |                4 Go               |
+|      5000 - 10000      | 1 central + 1 satellite  |          4 * 2,5 GHz          |               8 Go              |           8 * 2,5 GHz           |                4 Go               |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|     10000 - 25000      | 1 central + 1 satellite  |          4 * 2,5 Ghz          |               8 Go              |           8 * 2,5 Ghz           |                4 Go               |
+|     10000 - 25000      | 1 central + 1 satellite  |          4 * 2,5 GHz          |               8 Go              |           8 * 2,5 GHz           |                4 Go               |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
 
 .. note:: 
-    Ces informations tiennent comptes du fait que toutes les optimisations aient été réalisé pour l'ordonnanceur Centreon Engine, que les transactions aient été activé dans Centreon Broker et que les optimisations aient été réalisé pour le SGBD MariaDB.  
+    Ces informations tiennent compte du fait que toutes les optimisations aient été réalisées pour l'ordonnanceur Centreon Engine, que les transactions aient été activées dans Centreon Broker et que les optimisations aient été réalisées pour le SGBD MariaDB.  
 
 ************
 Installation
@@ -89,7 +91,7 @@ Installation
 Etape 1 : Démarrage
 ====================
 
-Afin d'installer Centreon, démarrez votre serveur sur le DVD de Centreon Enterprise Server.
+Afin d'installer Centreon, démarrez votre serveur sur le support (créé à partir du fichier ISO) de Centreon Enterprise Server.
 
 Démarrez avec l'option **Install or upgrade an existing system** 
 
@@ -191,8 +193,8 @@ Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 Configuration
 *************
 
-Découverte de l'interface web
-=============================
+Via l'interface web
+===================
 
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
 L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**. 
@@ -230,8 +232,8 @@ Définissez les informations concernant l'utilisateur admin, cliquez sur **Next*
 .. image :: /images/guide_utilisateur/aadmininfo.png
    :align: center
 
-Par défaut, le serveur 'localhost' est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
-Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon, à savoir 'centreon', cliquez sur **Next**.
+Par défaut, le serveur 'localhost' est défini et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
+Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur accédant aux bases de données Centreon, à savoir 'centreon', cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/adbinfo.png
    :align: center
@@ -239,7 +241,7 @@ Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
 
-1.	Connectez vous avec l'utilisateur 'root' sur votre serveur
+1.	Connectez-vous avec l'utilisateur 'root' sur votre serveur
 2.	Editez le fichier suivant 
 
 ::
@@ -316,13 +318,13 @@ La supervision est maintenant opérationnelle.
 Découverte de l'interface web
 =============================
 
-L'interface web de Centreon est composé de plusieurs menus, chaque menu a une fonction bien précise :
+L'interface web de Centreon est composée de plusieurs menus, chaque menu à une fonction bien précise :
 
 .. image :: /images/guide_utilisateur/amenu.png
    :align: center
 
 *	Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
-*	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différés au travers de la visualisation des logs
+*	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différé au travers de la visualisation des logs
 *	Le menu **Vues** permet de visualiser et de configurer les graphiques de performances pour chaque élément du système d'informations
 *	Le menu **Rapports** permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
 *	Le menu **Configuration** permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision

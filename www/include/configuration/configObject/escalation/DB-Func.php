@@ -371,7 +371,7 @@
 		$ret = array();
 		$ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hServices');
 		for($i = 0; $i < count($ret); $i++)	{
-			$exp = explode("_", $ret[$i]);
+			$exp = explode("-", $ret[$i]);
 			if (count($exp) == 2)	{
 				$rq = "INSERT INTO escalation_service_relation ";
 				$rq .= "(escalation_esc_id, service_service_id, host_host_id) ";

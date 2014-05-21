@@ -54,7 +54,7 @@ sub new {
     $self->{"centreonDownTime"} = shift;
     $self->{"dbLayer"} = shift;
     bless $self, $class;
-    
+
     return $self;
 }
 
@@ -71,13 +71,13 @@ sub parseServiceLog {
     my $nagiosLog = $self->{"nagiosLog"};
     my $events = $self->{"serviceEvents"};
     my $centreonDownTime = $self->{"centreonDownTime"};
-       
+
     my ($allIds, $allNames) = $service->getAllServices();
     my $currentEvents = $events->getLastStates($allNames);
     my $logs = $nagiosLog->getLogOfServices($start, $end);
     my $downTime = $centreonDownTime->getDownTime($allIds, $start, $end, 2);
-    
-    while(my $row = $logs->fetchrow_hashref()) {
+
+    while (my $row = $logs->fetchrow_hashref()) {
         my $id  = $row->{'host_name'}.";;".$row->{'service_description'};
         if (defined($allIds->{$id})) {
             my $statusCode = $row->{'status'};            
@@ -91,7 +91,7 @@ sub parseServiceLog {
                     if ($eventInfos->[2] != 0) {
                         # If eventId of log is defined, update the last day event
                         $events->updateEventEndTime($id, $hostId, $serviceId, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 0, $downTime);
-                    }else {
+                    } else {
                         if ($row->{'ctime'} > $eventInfos->[0]) {
                             $events->insertEvent($id, $hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
                         }
@@ -107,10 +107,10 @@ sub parseServiceLog {
                 @tab = ($row->{'ctime'}, $statusCode, 0, 0);                
                 $currentEvents->{$id} = \@tab;
             }
-            
+
         }
     }
-    
+
     $self->insertLastServiceEvents($end, $currentEvents, $allIds, $downTime);
 }
 
@@ -120,20 +120,22 @@ sub parseServiceLog {
 # $end: period end 
 sub parseHostLog {
     my $self = shift;
+
     # parameters:
     my ($start ,$end) = (shift,shift);
+
     my %hostStates = ("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2, "UNKNOWN" => 3, "PENDING" => 4);
     my $host = $self->{"host"};
     my $nagiosLog = $self->{"nagiosLog"};
     my $events = $self->{"hostEvents"};
     my $centreonDownTime = $self->{"centreonDownTime"};
-    
+
     my ($allIds, $allNames) = $host->getAllHosts();
     my $currentEvents = $events->getLastStates($allNames);
     my $logs = $nagiosLog->getLogOfHosts($start, $end);
     my $downTime = $centreonDownTime->getDownTime($allIds, $start, $end, 1);
 
-    while(my $row = $logs->fetchrow_hashref()) {
+    while (my $row = $logs->fetchrow_hashref()) {
         my $id  = $row->{'host_name'};
         if (defined($allIds->{$id})) {
             my $statusCode = $row->{'status'};            
@@ -146,7 +148,7 @@ sub parseHostLog {
                     if ($eventInfos->[2] != 0) {
                         # If eventId of log is defined, update the last day event
                         $events->updateEventEndTime($id, $allIds->{$id}, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2],$eventInfos->[3], 0, $downTime);
-                    }else {
+                    } else {
                         if ($row->{'ctime'} > $eventInfos->[0]) {
                             $events->insertEvent($id, $allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
                         }
@@ -157,7 +159,7 @@ sub parseHostLog {
                     $eventInfos->[3] = 0;
                     $currentEvents->{$id} = $eventInfos;
                 }
-            }else {
+            } else {
                 my @tab = ($row->{'ctime'}, $statusCode, 0, 0);
                 $currentEvents->{$id} = \@tab;
             }
@@ -175,14 +177,15 @@ sub parseHostLog {
 sub insertLastServiceEvents {
     my $self = shift;
     my $events = $self->{"serviceEvents"};
+
     # parameters:
     my ($end,$currentEvents, $allIds, $downTime)  = (shift, shift, shift, shift);
-    
-    while(my ($id, $eventInfos) = each (%$currentEvents)) {
+
+    while (my ($id, $eventInfos) = each (%$currentEvents)) {
         my ($hostId, $serviceId) = split (";;", $allIds->{$id});
         if ($eventInfos->[2] != 0) {
             $events->updateEventEndTime($id, $hostId, $serviceId, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime);
-        }else {
+        } else {
             $events->insertEvent($id, $hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime);
         }
     }
@@ -196,13 +199,14 @@ sub insertLastServiceEvents {
 sub insertLastHostEvents {
     my $self = shift;
     my $events = $self->{"hostEvents"};
+
     # parameters:
     my ($end, $currentEvents, $allIds, $downTime)  = (shift, shift, shift, shift, shift);
-    
-    while(my ($id, $eventInfos) = each (%$currentEvents)) {
+
+    while (my ($id, $eventInfos) = each (%$currentEvents)) {
         if ($eventInfos->[2] != 0) {
             $events->updateEventEndTime($id, $allIds->{$id}, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime);
-        }else {
+        } else {
             $events->insertEvent($id, $allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime);
         }
     }

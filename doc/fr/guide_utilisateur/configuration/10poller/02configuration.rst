@@ -1,27 +1,3 @@
-=======================
-Les serveurs satellites
-=======================
-
-************
-Présentation
-************
-
-Les serveurs satellites (aussi appelé collecteurs) sont des serveurs de supervision équipés d'un ordonnanceur et d'un module broker. 
-Ils sont chargés de superviser les équipements et de renvoyer les résultats vers le serveur Centreon central (pour la visualisation des résultats...).
-
-*************
-Mise en place
-*************
-
-Installation
-============
-
-Le processus d'installation est identique à celui d'un serveur Centreon central.
-A la question **Which server type would you like to install ?** il faut choisir l'option **Poller server**.
-
-.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07installpoller.png
-   :align: center 
-
 Configuration de l'ordonnanceur
 ===============================
 
@@ -137,3 +113,6 @@ Exportation de la configuration
 ===============================
 
 Il ne reste plus qu'à exporter la configuration afin de vérifier que l'installation du serveur satellite s'est bien déroulée.
+
+.. note::
+    Référez-vous à la documentation :ref:`Déployer la configuration<deployconfiguration>`

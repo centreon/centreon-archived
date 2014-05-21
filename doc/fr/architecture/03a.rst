@@ -6,7 +6,7 @@ Architecture simple
 Fonctionnement
 **************
 
-L'architecture simple consiste à avoir toutes les entités de supervision au sein du même serveur à savoir :
+L'architecture simple consiste à avoir toutes les entités de supervision au sein du même serveur, à savoir :
 
 * L'interface web de Centreon
 * La base de données (MySQL + RRD)

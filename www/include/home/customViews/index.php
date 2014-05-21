@@ -70,7 +70,7 @@ try {
             $views[$key]['icon'] = "unlocked";
 		}
 		$views[$key]['default'] = "";
-		if ($viewObj->getDefaultViewId()) {
+		if ($viewObj->getDefaultViewId() == $key) {
 			$views[$key]['default'] = sprintf(" (%s)", _('default'));
 			$views[$key]['default'] = '<span class="ui-icon ui-icon-star" style="float:left;"></span>';
 		}

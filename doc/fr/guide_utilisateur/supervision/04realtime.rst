@@ -48,26 +48,26 @@ Le tableau ci-dessous résume l'ensemble des statuts possibles pour un service.
 Statuts avancés
 ===============
 
-En plus des statuts standard, de nouveaux statuts  permettent d'ajouter des informations complémentaires :
-* Le statut PENDING est un statut qui est affiché pour un service ou un hôte qui est fraîchement configuré mais n'a pas encore été contrôlé par l'ordonnanceur.
+En plus des statuts standards, de nouveaux statuts  permettent d'ajouter des informations complémentaires :
+
+* Le statut PENDING est un statut affiché pour un service ou un hôte fraîchement configuré mais qui n'a pas encore été contrôlé par l'ordonnanceur.
 * Le statut UNREACHABLE est un statut indiquant que l'hôte est situé (relation de parenté) en aval d'un hôte dans un statut DOWN.
 * Le statut FLAPPING (bagotant) est un statut indiquant que le pourcentage de changement de statut de l'objet est très élevé. Ce pourcentage est obtenu à partir de calculs effectués par le moteur de supervision.
 * Le statut ACKNOWLEDGED est un statut indiquant que l'incident du service ou de l'hôte est pris en compte par un utilisateur.
 * Le statut DOWNTIME est un statut indiquant que l'incident du service ou de l'hôte est survenu durant une période de temps d'arrêt programmé.
 
-******************
 Etats SOFT et HARD
-******************
+==================
 
 Un hôte ou un service peut avoir deux états :
 
-* SOFT : Signifie qu'un incident vient d'être détecté et qu'il y a besoin d'être confirmé.
-* HARD : Signifie que le statut de l'incident est confirmé. Lorsque le statut est confirmé le processus de notification est enclenchée (envoi d'un mail, SMS, ...)
+* SOFT : Signifie qu'un incident vient d'être détecté et que ce dernier doit être confirmé.
+* HARD : Signifie que le statut de l'incident est confirmé. Lorsque le statut est confirmé, le processus de notification est enclenché (envoi d'un mail, SMS, ...).
 
 Confirmation d'un statut
 ========================
 
-Un incident (statut non-OK) est confirmé à partir du moment ou le nombre d'essai de validation est arrivé à son terme.
+Un incident (statut non-OK) est confirmé à partir du moment où le nombre d'essai de validation est arrivé à son terme.
 La configuration d'un objet (hôte ou service) implique un intervalle de contrôle régulier, un nombre d'essai pour valider un état non-OK ainsi qu'un intervalle non-régulier de contrôle.
 Dès la détection du premier incident, le statut est dans un état "SOFT" jusqu'à sa validation en état "HARD" déclenchant le processus de notification.
 
@@ -83,30 +83,30 @@ Imaginons le scénario suivant :
 
  * Instant t + 0 : Le service est vérifié, il a le statut OK.
  * Instant t + 5 : La seconde vérification montre que le service a le statut CRITICAL. Le service passe en état SOFT (essai 1/3).
- * Instant t + 6 : La troisième vérification a lieu, le service a toujours le statut CRITICAL en état SOFT (essai 2/3).
+ * Instant t + 6 : La troisième vérification à lieu, le service a toujours le statut CRITICAL en état SOFT (essai 2/3).
  * Instant t + 7 : La quatrième vérification montre que le service a toujours le statut CRITICAL (essai 3/3). Le nombre d'essais a été atteint, le statut est configuré (état HARD). Le processus de notification est enclenché.
  * Instant t + 8 : Le service retrouve le statut OK. Il passe directement en état HARD. Le processus de notification est enclenché.
  * Instant t + 13 : Le service a le statut WARNING. Il passe en état SOFT (essai 1/3).
  * Instant t + 14 : Le service a toujours le statut WARNING (essai 2/3).
- * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut
+ * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut.
 
 ******************
 Actions génériques
 ******************
 
-Par défaut, lors de la visualisation des statuts des hôtes ou des services, les données de supervision sont rafraichies automatiquement (15 secondes par défaut).
+Par défaut, lors de la visualisation des statuts des hôtes ou des services, les données de supervision sont rafraîchies automatiquement (15 secondes par défaut).
 Cependant, plusieurs icônes permettent de contrôler le rafraichissement des données.
 Le tableau ci-dessous résume les différentes fonctions de ces icônes :
 
-+------------+----------------------------------------------------------------------+
-|   Icône    |   Description                                                        | 
-+============+======================================================================+
-| |refresh|  | Permet de rafraichir manuellement les résultats                      |
-+------------+----------------------------------------------------------------------+
-| |pause|    | Permet de mettre en pause le rafrachissement automatique des données |
-+------------+----------------------------------------------------------------------+
-| |resume|   | Permet de reprendre le rafrachissement automatique des données       |
-+------------+----------------------------------------------------------------------+
++------------+-----------------------------------------------------------------------+
+|   Icône    |   Description                                                         | 
++============+=======================================================================+
+| |refresh|  | Permet de rafraîchir manuellement les résultats                       |
++------------+-----------------------------------------------------------------------+
+| |pause|    | Permet de mettre en pause le rafraîchissement automatique des données |
++------------+-----------------------------------------------------------------------+
+| |resume|   | Permet de reprendre le rafraîchissement automatique des données       |
++------------+-----------------------------------------------------------------------+
 
 *****
 Hôtes
@@ -218,7 +218,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Statut détaillé                          | Affiche le message associé au statut de l'hôte                                                      |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Données de performance                   | Affiche les données de performances renvoyée par la sonde                                           |
+| Données de performance                   | Affiche les données de performances renvoyées par la sonde                                          |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Tentative                                | Affiche le nombre de tentative avant validation de l'état                                           |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -230,7 +230,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Latence                                  | Affiche le temps de latence entre la programmation de l'exécution et l'exécution réelle de la sonde |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Temps d'exécution                        | Affiche le temps d'éxécution de la sonde                                                            |
+| Temps d'exécution                        | Affiche le temps d'exécution de la sonde                                                            |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Changement du dernier état               | Affiche la date et l'heure depuis laquelle l'hôte est dans l'état actuel                            |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -246,7 +246,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Pourcentage de changement de statut      | Affiche le pourcentage de changement d'état                                                         |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Planification d'arrêt en cours?          | Indique si l'hote est concerné par un temps d'arrêt                                                 |
+| Planification d'arrêt en cours?          | Indique si l'hôte est concerné par un temps d'arrêt                                                 |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Dernière mise à jour                     | Affiche la date et l'heure de la dernière mise à jour                                               |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -315,7 +315,7 @@ Le menu de gauche permet de modifier les services visibles au sein du tableau :
 * Pour visualiser les services rencontrant un problème validé (état "HARD") mais étant non acquittés, cliquez sur **Problèmes non acquittés**
 * Pour visualiser tous les services rencontrant un problème (validé ou non, acquittés ou non), cliquez sur **Problèmes en cours**
 * Pour visualiser tous les services, cliquez sur **Tous les services**
-* Pour visualiser tous les services (classés par hôtes), quelque soit le statut, cliquez sur **Détails** (en dessous d'hôtes)
+* Pour visualiser tous les services (classés par hôtes), quel que soit le statut, cliquez sur **Détails** (en dessous d'hôtes)
 
 .. image :: /images/guide_utilisateur/supervision/04servicelistbyhostdetail.png
    :align: center
@@ -362,7 +362,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +--------------------+-------------------------------------------------------------------------------------------------------------------------+
 | Hôtes              | Affiche le nom de l'hôte. L'icône |url_link| permet d'accéder à une page web décrivant l'hôte                           |
 +--------------------+-------------------------------------------------------------------------------------------------------------------------+
-| Services           | Affiche le nom du service. L'icône |nonotifications| indique que les notifications pour ce service sont désactivées     |
+| Services           | Affiche le nom du service. L'icône |nonotifications| indique que les notifications pour ce service sont désactivées.    |
 |                    | L'icône |graphperformances| permet de visualiser le graphique de performance lié à ce service.                          |
 |                    | L'icône |url_link| permet d'accéder à une page web décrivant le service                                                 |
 +--------------------+-------------------------------------------------------------------------------------------------------------------------+
@@ -395,7 +395,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Statut                       | Affiche le statut de l'hôte                                                                                                          |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-| Informations sur les services| Affiche le statut des services (Mode détaillé) ou le nombre de services classés par statut (Mode résumé)                            |
+| Informations sur les services| Affiche le statut des services (Mode détaillé) ou le nombre de services classés par statut (Mode résumé)                             |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 Tableaux des méta-services
@@ -529,7 +529,7 @@ Ce menu contextuel permet de visualiser des informations complémentaires telles
 par l'ordonnanceur, les commentaires ou les temps d'arrêt ajoutés aux objets .
 
 .. note::
-	Pour plus d'informations sur les commentaires ou sur les les temps d'arrêt, rendez-vous dans le :ref:`guide d'exploitation<exploitationguide>`.
+	Pour plus d'informations sur les commentaires ou sur les temps d'arrêt, rendez-vous dans le :ref:`guide d'exploitation<exploitationguide>`.
 
 File d'attente
 ==============
@@ -539,7 +539,7 @@ La file d'attente présente l'ordonnancement prévu des contrôles à réaliser 
 Pour visualiser la file d'attente :
 
 #. Rendez-vous dans le menu **Supervision  ==> Hôtes** ou **Services**
-#. Dans le menu de gauche, sous **Moteur de supervision** cliquez sur **File d'attente**
+#. Dans le menu de gauche, sous **Moteur de supervision**, cliquez sur **File d'attente**
 
 .. image :: /images/guide_utilisateur/supervision/04waitingqueue.png
    :align: center
@@ -578,7 +578,7 @@ Les temps d'arrêts
 Pour visualiser les temps d'arrêts en cours sur les ressources :
 
 #. Rendez-vous dans le menu **Supervision** ==> **Hôtes** ou **Services**
-#. Dans le menu de gauche, sous **Moteur de supervision** cliquez sur **Temps d'arrêt**
+#. Dans le menu de gauche, sous **Moteur de supervision**, cliquez sur **Temps d'arrêt**
 
 .. image :: /images/guide_utilisateur/supervision/04downtimelist.png
    :align: center

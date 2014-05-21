@@ -805,7 +805,7 @@
 		$form->setDefaults(array('host_flap_detection_enabled' => '2'));
 
 	$form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
-	$form->addElement('text', 'host_low_flap_threshold', _("Low Flap threshold"), $attrsText2);
+	$form->addElement('text', 'host_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
 	$form->addElement('text', 'host_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
 	$hostPPD[] = HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, _("Yes"), '1');

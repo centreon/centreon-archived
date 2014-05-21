@@ -39,8 +39,8 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/class/centreonInstance.class.php";
-        include_once $centreon_path . "www/class/centreonCriticality.class.php";
-        include_once $centreon_path . "www/class/centreonMedia.class.php";
+    include_once $centreon_path . "www/class/centreonCriticality.class.php";
+    include_once $centreon_path . "www/class/centreonMedia.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	/*
@@ -374,6 +374,10 @@
 			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
 			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
 			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+
+            $str = str_replace("\$HOSTSTATEID\$", $ndo['current_state'], $str);
+            $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['current_state']], $str);
+
 			$str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
 		    $obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["host_name"], $str));
 		} else {
@@ -386,6 +390,10 @@
 			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
 			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
 			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+            
+            $str = str_replace("\$HOSTSTATEID\$", $ndo['current_state'], $str);
+            $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$ndo['current_state']], $str);
+
 			$str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
 	        $obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["host_name"], $str));
 		} else {

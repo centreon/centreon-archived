@@ -98,7 +98,7 @@
 
 	if ($search)
 		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '".CentreonDB::escape($search)."')";
-	$rq .= " LIMIT ".$num * $limit.", ".$limit;
+	$rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);

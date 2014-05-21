@@ -244,7 +244,7 @@
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -256,7 +256,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -272,7 +272,7 @@
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -284,7 +284,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}

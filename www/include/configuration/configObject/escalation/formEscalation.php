@@ -48,19 +48,6 @@
                                                                             'get_row' => 'host_name',
                                                                             'order'   => array('host.host_name')));
         
-        /* services */
-        if (!$oreon->user->admin) {
-            $hServices = array();
-            $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
-                                    CONCAT(host_name, ' / ', service_description) as v
-                    FROM $dbmon.centreon_acl 
-                    WHERE group_id IN (".$acl->getAccessGroupsString().")";
-            $res = $pearDB->query($sql);
-            while ($row = $res->fetchRow()) {
-                $hServices[$row['k']] = $row['v'];
-            }
-        }
-        
         /* notification contact groups */
         $notifCgs = array();
         $cg = new CentreonContactgroup($pearDB);
@@ -140,10 +127,24 @@
                 }
 		$DBRESULT->free();
 
+		$query = "SELECT host_id, host_name, service_id, service_description
+        	FROM service s, escalation_service_relation esr, host h
+	        WHERE s.service_id = esr.service_service_id
+    	    AND esr.host_host_id = h.host_id
+        	AND h.host_register = '1'
+	        AND esr.escalation_esc_id = " . $esc_id;
+    	$res = $pearDB->query($query);
+	    while ($row = $res->fetchRow()) {
+    	    $k = $row['host_id']."-".$row['service_id'];
+        	if (!in_array($k, $initialValues['esc_hServices'])) {
+            	$hServices[$k] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
+	        }
+    	}	
+
 		# Set Host Service
 		$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
 		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
-                    $key = $services["host_host_id"]."_".$services["service_service_id"];
+                    $key = $services["host_host_id"]."-".$services["service_service_id"];
                     if (!$oreon->user->admin && !isset($hServices[$key])) {
                         $initialValues['esc_hServices'][] = $key;
                     } else {
@@ -176,21 +177,6 @@
 	while($host = $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
-	#
-	# Services comes from DB -> Store in $hServices Array
-	if (!isset($hServices)) {
-            $hServices = array();
-            $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-            while ($elem = $DBRESULT->fetchRow())	{
-                    $services = getMyHostServices($elem["host_id"]);
-                    foreach ($services as $key=>$index)	{
-                            $index = str_replace('#S#', "/", $index);
-                            $index = str_replace('#BS#', "\\", $index);
-                            $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
-                    }
-            }
-            $DBRESULT->free();
-        }
 
 	# Meta Services comes from DB -> Store in $metas Array
 	$metas = array();
@@ -282,6 +268,31 @@
 	## Sort 3
 	#
 	$form->addElement('header', 'services', _("Implied Services"));
+	$hostFilter = array(
+		null => null,
+		0    => sprintf('__%s__', _('ALL'))
+	);
+	$hostFilter = ($hostFilter + $acl->getHostAclConf(null,
+                                                 $oreon->broker->getBroker(),
+                                                 array('fields'  => array('host.host_id', 'host.host_name'),
+                                                       'keys'    => array('host_id'),
+                                                       'get_row' => 'host_name',
+                                                       'order'   => array('host.host_name')),
+                                                 true));
+	$form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
+
+
+	if (isset($_REQUEST['esc_hServices']) && count($_REQUEST['esc_hServices'])) {
+   		$sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
+           WHERE h.host_id = hsr.host_host_id
+           AND hsr.service_service_id = s.service_id
+           AND CONCAT_WS('-', h.host_id, s.service_id) IN ('".implode("','", $_REQUEST['esc_hServices'])."')";
+	   	$res = $pearDB->query($sql);
+		while ($row = $res->fetchRow()) {
+        	$k = $row['host_id'] . '-' . $row['service_id'];
+	        $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
+   		}
+	}
 
 	$ams1 = $form->addElement('advmultiselect', 'esc_hServices', array(_("Services by Host"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -420,3 +431,70 @@
 		$tpl->display("formEscalation.ihtml");
 	}
 ?>
+<script type='text/javascript'>
+function hostFilterSelect(elem)
+{
+    var arg = 'host_id='+elem.value;
+
+    if (window.XMLHttpRequest) {
+        var xhr = new XMLHttpRequest();
+    } else if(window.ActiveXObject){
+        try {
+            var xhr = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+    } else {
+        var xhr = false;
+    }
+
+    xhr.open("POST","./include/configuration/configObject/escalation/getServiceXml.php", true);
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.send(arg);
+
+    xhr.onreadystatechange = function()
+    {
+        if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
+            var response = xhr.responseXML.documentElement;
+            var _services = response.getElementsByTagName("services");
+            var _selbox;
+
+            if (document.getElementById("esc_hServices-f")) {
+                _selbox = document.getElementById("esc_hServices-f");
+                _selected = document.getElementById("esc_hServices-t");
+            } else if (document.getElementById("__esc_hServices")) {
+                _selbox = document.getElementById("__esc_hServices");
+                _selected = document.getElementById("_esc_hServices");
+            }
+
+            while ( _selbox.options.length > 0 ){
+                _selbox.options[0] = null;
+            }
+
+            if (_services.length == 0) {
+                _selbox.setAttribute('disabled', 'disabled');
+            } else {
+                _selbox.removeAttribute('disabled');
+            }
+
+            for (var i = 0 ; i < _services.length ; i++) {
+                var _svc 		 = _services[i];
+                var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+                var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+                var validFlag = true;
+
+                for (var j = 0; j < _selected.length; j++) {
+                    if (_id == _selected.options[j].value) {
+                        validFlag = false;
+                    }
+                }
+
+                if (validFlag == true) {
+                    new_elem = new Option(_description,_id);
+                    _selbox.options[_selbox.length] = new_elem;
+                }
+            }
+        }
+    }
+}
+</script>

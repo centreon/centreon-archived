@@ -124,10 +124,8 @@
 	 </table>
 {/if}
 </div>
-<script type="text/javascript" src="./include/common/javascript/jquery/jquery.js"></script>
 {literal}
 <script type="text/javascript">
-jQuery.noConflict();
 function toggleInfoBlock(id) {
 	jQuery('#' + id).slideToggle('show');
 }
