@@ -63,6 +63,8 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         'Name' => 'host_name',
         'Description' => 'host_alias',
         'IP Address / DNS' => 'host_address',
+        'Interval' => 'host_check_interval', 
+        'Retry' => 'host_max_check_attempts',
         'Status' => 'host_activate'
     );
     
@@ -75,6 +77,8 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         'host_name',
         'host_alias',
         'host_address',
+        'host_check_interval',
+        'host_max_check_attempts',
         'host_activate'
     );
     
@@ -89,6 +93,8 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         'search_name',
         'search_description',
         'search_address',
+        'interval', 
+        'retry',
         array('select' => array(
                 'Enabled' => '1',
                 'Disabled' => '0',
@@ -137,6 +143,8 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         'search_name',
         'search_description',
         'search_address',
+        'interval', 
+        'retry',
         array(
             'select' => array(
                 'Enabled' => '1',
@@ -250,27 +258,51 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $content = array();
             $tmp = array("type" => "host");
             $tmpData = array();
             $args = "";
+
+            /* Write Host Properties */
             foreach ($row as $key => $value) {
                 if ($key == "host_id") {
                     $host_id = $row["host_id"];
+                    $host_name = "";
                 } else if ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
                     } else {
                         if ($key != 'host_name') {
                             $key = str_replace("host_", "", $key);
+                        } else {
+                            $host_name = $value;
                         }
+
                         if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
                             $args = $value;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
                             $value = CommandRepository::getCommandName($value).$args;
                             $args = "";
-                        } 
-                        if ($key == "name") {
+                        }
+
+                        if ($key == "contact_additive_inheritance") {
+                            $tmpContact = static::getContacts($host_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contacts"] = "+";
+                                }
+                                $tmpData["contacts"] .= $tmpContact; 
+                            }
+                        } else if ($key == "cg_additive_inheritance") {
+                            $tmpContact = static::getContactGroups($host_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contactgroups"] = "+";
+                                }
+                                $tmpData["contactgroups"] .= $tmpContact; 
+                            }
+                        } else if ($key == "name") {
                             $tmpData[$key] = $value;
                             $template = HosttemplateRepository::getTemplates($host_id);
                             if ($template != "") {
@@ -280,15 +312,68 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                             $tmpData[$key] = $value;
                         }
                     }
-                }
+                }                
             }
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
+            
+            /* Write Service Properties */
+            $services = ServiceRepository::generateServices($host_id);
+            foreach ($services as $contentService) {
+                $content[] = $contentService;
+            }
+            
+            /* Write Check-Command configuration file */
+            print "Write : ".$path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg \n<br>";
+            WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg", $filesList, $user = "API");
+           
         }
 
-        /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+
         unset($content);
     }
+
+    public static function getContacts($host_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactList = "";
+
+        $query = "SELECT contact_alias FROM contact c, contact_host_relation ch WHERE host_host_id = '$host_id' AND c.contact_id = ch.contact_id ORDER BY contact_alias";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactList != "") {
+                $contactList .= ","; 
+            }
+            $contactList .= $row["contact_alias"];
+        }
+        return $contactList;
+    }
+
+    public static function getContactGroups($host_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactgroupList = "";
+
+        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_host_relation cgh WHERE host_host_id = '$host_id' AND cg.cg_id = cgh.contactgroup_cg_id ORDER BY cg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactgroupList != "") {
+                $contactgroupList .= ","; 
+            }
+            $contactgroupList .= $row["cg_name"];
+        }
+        return $contactgroupList;
+    }
+
 
 }
