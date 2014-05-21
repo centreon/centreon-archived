@@ -503,7 +503,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         return $content;
     }
 
-    public static function generateServices(& $filesList, $poller_id, $path, $filename) 
+    public static function generateServices($host_id) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -518,7 +518,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM host h, service s, host_service_relation r WHERE h.host_id = r.host_host_id AND s.service_id = r.service_service_id AND service_activate = '1' AND service_register = '1' ORDER BY host_name, service_description";
+        $query = "SELECT $field FROM host h, service s, host_service_relation r WHERE h.host_id = $host_id AND h.host_id = r.host_host_id AND s.service_id = r.service_service_id AND service_activate = '1' AND service_register = '1' ORDER BY host_name, service_description";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -571,9 +571,8 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
         }
+        return $content;
 
-        /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }
     
@@ -586,7 +585,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         $contactList = "";
 
-        $query = "SELECT contact_alias FROM contact c, contact_service_relation cs WHERE service_service_id = 'service_id' AND c.contact_id = cs.contact_id ORDER BY contact_alias";
+        $query = "SELECT contact_alias FROM contact c, contact_service_relation cs WHERE service_service_id = '$service_id' AND c.contact_id = cs.contact_id ORDER BY contact_alias";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -607,7 +606,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         $contactgroupList = "";
 
-        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgs WHERE service_service_id = 'service_id' AND cg.cg_id = cgs.contactgroup_cg_id ORDER BY cg_name";
+        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgs WHERE service_service_id = '$service_id' AND cg.cg_id = cgs.contactgroup_cg_id ORDER BY cg_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
