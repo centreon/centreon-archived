@@ -64,7 +64,7 @@ sub create_rrd_database {
     my ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd, $data_source_type) = @_;
 
     my $lsource_type;
-    if (defined($data_source_type) && defined()) {
+    if (defined($data_source_type) && defined($rrd_dst[$data_source_type])) {
         $lsource_type = $rrd_dst[$data_source_type];
     } else {
         $lsource_type = $rrd_dst[0];
