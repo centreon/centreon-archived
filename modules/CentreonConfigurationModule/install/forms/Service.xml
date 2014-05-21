@@ -148,7 +148,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
+				<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/servicegroup/formlist</defaultValuesRoute>
