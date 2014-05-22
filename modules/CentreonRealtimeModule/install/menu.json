@@ -16,6 +16,11 @@
                 "route": "/realtime/service"
             },
             {
+                "name": "Hosts",
+                "short_name": "monitoring-hosts",
+                "route": "/realtime/host"
+            },
+            {
                 "name": "EventLogs",
                 "short_name": "eventlogs",
                 "route": "/realtime/eventlogs"
