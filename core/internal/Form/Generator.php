@@ -237,8 +237,9 @@ class Generator
     protected function generateHtml()
     {
         $formElements = $this->formHandler->toSmarty();
+
         
-        $htmlRendering = '<div class="row">';
+        $htmlRendering = '<br><div class="row">';
         
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
@@ -256,7 +257,7 @@ class Generator
         $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].'>';
         
         $formRendering = '';
-        
+
         $tabRendering = '<ul class="nav nav-tabs" id="formHeader">';
         
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
@@ -269,7 +270,7 @@ class Generator
                 . '</li>';
         }
         $formRendering .= '</ul>';
-        
+        /*
         $formRendering .= '<div class="tab-content">';
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
             $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
@@ -285,6 +286,28 @@ class Generator
                     }
                 }
                 $formRendering .= '</div>';
+                $formRendering .= '</div>';
+            }
+            $formRendering .= '</div>';
+        }
+        $formRendering .= '</div>';
+        */
+
+        $formRendering .= '<div class="tab-content">';
+        foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
+            $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
+            foreach ($sectionComponents as $blockLabel => $blockComponents) {
+                //$formRendering .= '<div class="panel panel-default">';
+                //$formRendering .= '<div class="panel-heading">';
+                $formRendering .= '<h4 class="page-header" style="padding-top:0px;">'.$blockLabel.'</h4>';
+                //$formRendering .= '</div>';
+                $formRendering .= '<div class="panel-body">';
+                foreach ($blockComponents as $component) {
+                    if (isset($formElements[$component['name']]['html'])) {
+                        $formRendering .= $formElements[$component['name']]['html'];
+                    }
+                }
+                //$formRendering .= '</div>';
                 $formRendering .= '</div>';
             }
             $formRendering .= '</div>';
