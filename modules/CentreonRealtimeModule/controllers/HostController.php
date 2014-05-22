@@ -50,10 +50,8 @@ class HostController extends \Centreon\Internal\Controller
      * @route /realtime/host
      * @todo work on ajax refresh
      */
-    public function displayServicesAction()
+    public function displayHostsAction()
     {
-        //$tpl = \Centreon\Internal\Di::getDefault()->get('template');
-
         /* Load css */
         $this->tpl->addCss('dataTables.css')
         	->addCss('dataTables.bootstrap.css')
@@ -79,7 +77,7 @@ class HostController extends \Centreon\Internal\Controller
     /**
      * The page structure for display
      *
-     * @method get
+      * @method get
      * @route /realtime/host/list
      */
     public function listAction()
@@ -102,5 +100,6 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function hostDetailAction()
     {
+
     }
 }
