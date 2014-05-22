@@ -87,7 +87,7 @@ class Installer
         $sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
         
         // to sent to verify
-        $tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
+        //$tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
         
         \PropelSQLParser::executeString($strDiff, $db);
     }

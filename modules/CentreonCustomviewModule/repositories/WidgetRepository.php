@@ -572,11 +572,11 @@ class WidgetRepository
      * @param string $formName
      * @param int $widgetModelId
      */
-    public static function insertWidgetWizard($formName, $widgetModelId)
+    public static function insertWidgetWizard($formName, $widgetModelId, $moduleId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("INSERT INTO form_wizard (name, route) VALUES (?, ?)");
-        $stmt->execute(array($formName, "/customview/widgetsettings/$widgetModelId"));
+        $stmt = $db->prepare("INSERT INTO form_wizard (name, route, module_id) VALUES (?, ?, ?)");
+        $stmt->execute(array($formName, "/customview/widgetsettings/$widgetModelId", $moduleId));
     }
 
     /**
@@ -584,17 +584,20 @@ class WidgetRepository
      *
      * @param string $jsonFile
      */
-    public static function install($jsonFile)
+    public static function install($jsonFile, $moduleName)
     {
         $config = self::readConfigFile($jsonFile);
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $isactivated = 1;
         $isinstalled = 1;
+        
+        $module = \Centreon\Custom\Module\ModuleInformations::getModuleIdByName($moduleName);
+        
         $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, version,
-            author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled)
+            author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled, module_id)
         	VALUES (:name, :shortname, :description, :version, 
             :author, :email, :website, :keywords, :screenshot, :thumbnail,
-            :isactivated, :isinstalled)");
+            :isactivated, :isinstalled, :module)");
         $stmt->bindParam(':name', $config['name']);
         $stmt->bindParam(':shortname', $config['shortname']);
         $stmt->bindParam(':description', $config['description']);
@@ -607,10 +610,11 @@ class WidgetRepository
         $stmt->bindParam(':thumbnail', $config['thumbnail']);
         $stmt->bindParam(':isactivated', $isactivated);
         $stmt->bindParam(':isinstalled', $isinstalled);
+        $stmt->bindParam(':module', $module);
         $stmt->execute();
         $lastId = self::getLastInsertedWidgetModelId($config['name']);
         self::insertWidgetPreferences($lastId, $config);
-        self::insertWidgetWizard($config['name'], $lastId);
+        self::insertWidgetWizard($config['name'], $lastId, $module);
     }
 
 

@@ -130,6 +130,17 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      * @method get
      * @route /configuration/service/add
      */
+    public function addAction()
+    {
+        parent::addAction();
+    }
+    
+    /**
+     * Add a service
+     *
+     * @method post
+     * @route /configuration/service/add
+     */
     public function createAction()
     {
         parent::createAction();

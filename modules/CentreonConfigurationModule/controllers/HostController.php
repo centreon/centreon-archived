@@ -135,8 +135,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/host/add');
+        $this->tpl->assign('validateUrl', '/configuration/host/add');
         parent::addAction();
     }
     
@@ -418,5 +417,27 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for host
+     * 
+     * @method get
+     * @route /configuration/host/[i:id]/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction();
+    }
+    
+    /**
+     * Disable action for host
+     * 
+     * @method get
+     * @route /configuration/host/[i:id]/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction();
     }
 }

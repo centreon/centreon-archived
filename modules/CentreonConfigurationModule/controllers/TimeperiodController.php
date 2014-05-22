@@ -113,8 +113,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/timeperiod/add');
+        $this->tpl->assign('validateUrl', '/configuration/timeperiod/add');
         parent::addAction();
     }
     

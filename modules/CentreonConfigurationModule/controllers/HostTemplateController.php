@@ -127,7 +127,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     public function createAction()
     {
         $givenParameters = $this->getParams('post');
-        $givenParameters['host_register'] = 1;
+        $givenParameters['host_register'] = 0;
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
@@ -161,8 +161,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/hosttemplate/add');
+        $this->tpl->assign('validateUrl', '/configuration/hosttemplate/add');
         parent::addAction();
     }
     

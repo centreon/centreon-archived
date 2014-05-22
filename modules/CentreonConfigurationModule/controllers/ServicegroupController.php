@@ -98,6 +98,19 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
      * @method get
      * @route /configuration/servicegroup/add
      */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/servicegroup/add');
+        parent::addAction();
+    }
+    
+    /**
+     * Add a servicegroup
+     *
+     *
+     * @method post
+     * @route /configuration/servicegroup/add
+     */
     public function createAction()
     {
         parent::createAction();

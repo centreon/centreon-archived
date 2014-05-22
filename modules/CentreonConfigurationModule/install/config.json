@@ -5,6 +5,8 @@
     "author" : [
         "Merethis"
     ],
+    "isuninstallable" : false,
+    "isdisableable" : true,
     "url" : "",
     "description" : "Centreon Configuration Module",
     "core version" : "3.0.0",

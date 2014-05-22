@@ -1,6 +1,6 @@
 <?php
 
-namespace CentreonHome\Install;
+namespace CentreonMain\Install;
 
 /**
  * 

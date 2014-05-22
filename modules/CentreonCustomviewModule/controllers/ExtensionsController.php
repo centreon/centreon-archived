@@ -41,8 +41,8 @@ class ExtensionsController extends \Centreon\Internal\Controller
     public static $objectName = 'WidgetModel';
     public static $objectDisplayName = 'WidgetModel';
     public static $moduleName = 'CentreonCustomview';
-    private $di;
-    private $tpl;
+    protected $di;
+    protected $tpl;
 
     /**
      * 
@@ -93,10 +93,18 @@ class ExtensionsController extends \Centreon\Internal\Controller
             throw new \Centreon\Internal\Exception("Could not find widget directory");
         }
         $jsonFile = $dir[0] . 'install/config.json';
+        
+        
+        preg_match('/\/([a-zA-Z]+Module)\//', $dir[0], $matches);
+        $moduleRawName = trim($matches[0], '/');
+        $moduleName = str_replace('Module', '', $moduleRawName);
+        preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
+        $moduleShortName = strtolower(implode('-', $myMatches[0]));
+        
         if (!file_exists(realpath($jsonFile))) {
             throw new \Centreon\Internal\Exception("The widget is not valid because of a missing configuration file");
         }
-        \CentreonCustomview\Repository\WidgetRepository::install($jsonFile);
+        \CentreonCustomview\Repository\WidgetRepository::install($jsonFile, $moduleShortName);
         
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);

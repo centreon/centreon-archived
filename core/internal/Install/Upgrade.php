@@ -38,8 +38,9 @@ namespace Centreon\Internal\Install;
 class Upgrade
 {
     private static $coreModules = array(
-        'centreon-home',
+        'centreon-main',
         'centreon-security',
+        'centreon-administration',
         'centreon-configuration',
         'centreon-realtime',
         'centreon-customview',

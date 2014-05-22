@@ -172,7 +172,18 @@ class AbstractInstaller implements iModuleInstaller
      */
     public function postInstall()
     {
-        \Centreon\Models\Module::update($this->moduleId, array('isactivated' => '1','isinstalled' => '1'));
+        $isinstalled = 1;
+        $isactivated = 1;
+        
+        if (isset($this->moduleInfo['isuninstallable']) && ($this->moduleInfo['isuninstallable'] === false)) {
+            $isinstalled = 2;
+        }
+        
+        if (isset($this->moduleInfo['isdisableable']) && ($this->moduleInfo['isdisableable'] === false)) {
+            $isactivated = 2;
+        }
+        
+        \Centreon\Models\Module::update($this->moduleId, array('isactivated' => $isactivated,'isinstalled' => $isinstalled));
     }
     
     /**

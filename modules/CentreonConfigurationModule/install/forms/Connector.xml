@@ -29,4 +29,13 @@
 			</block>
 		</section>
 	</form>
+    <wizard name="add_connector">
+		<route>/configuration/connector/add</route>
+		<step name="General">
+			<field name="name" mandatory="1"></field>
+			<field name="description" mandatory="1"></field>
+			<field name="command_line" mandatory="1"></field>
+			<field name="enabled" mandatory="1"></field>
+		</step>
+	</wizard>
 </forms>

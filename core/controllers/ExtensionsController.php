@@ -42,8 +42,8 @@ class ExtensionsController extends \Centreon\Internal\Controller
     public static $objectName = 'Module';
     public static $objectDisplayName = 'Module';
     public static $moduleName = 'Centreon';    
-    private $di;
-    private $tpl;
+    protected $di;
+    protected $tpl;
 
     /**
      * 
@@ -110,10 +110,14 @@ class ExtensionsController extends \Centreon\Internal\Controller
             }
         } catch (\Exception $e) {
             $moduleInstaller->remove();
-            echo '<pre>';
-            echo $e->getMessage();
-            var_dump(debug_backtrace());
-            echo '</pre>';
+            if ("dev" === \Centreon\Internal\Di::getDefault()->get('config')->get('global', 'env')) {
+                echo '<pre>';
+                echo $e->getMessage();
+                var_dump(debug_backtrace());
+                echo '</pre>';
+            } else {
+                $router->response()->body($this->tpl->fetch('500.tpl'));
+            }
         }
         
         $backUrl = $router->getPathFor('/administration/extensions/module');
@@ -223,6 +227,8 @@ class ExtensionsController extends \Centreon\Internal\Controller
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('centreon-wizard.js');
+        
+        parent::init();
 
         /* Set Cookie */
         $token = \Centreon\Internal\Form::getSecurityToken();

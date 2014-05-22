@@ -181,9 +181,8 @@
     <wizard name="add_ba">
 		<route>/bam/business-activity/add</route>
 		<step name="General">
-			<field name="host_name" mandatory="1"></field>
-			<field name="host_address" mandatory="0"></field>
-			<field name="host_hosttemplates" mandatory="0"></field>
+			<field name="name" mandatory="1"></field>
+			<field name="description" mandatory="0"></field>
 		</step>
 	</wizard>
 </forms>

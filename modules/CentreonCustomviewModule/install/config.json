@@ -5,6 +5,8 @@
     "author" : [
         "Merethis"
     ],
+    "isuninstallable" : false,
+    "isdisableable" : true,
     "url" : "",
     "description" : "Centreon Custom Views Module",
     "core version" : "3.0.0",

@@ -33,4 +33,11 @@
 			</block>
 		</section>
 	</form>
+    <wizard name="add_contactgroup">
+		<route>/configuration/usergroup/add</route>
+		<step name="General">
+			<field name="cg_name" mandatory="1"></field>
+			<field name="cg_alias" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>

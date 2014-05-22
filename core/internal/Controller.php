@@ -34,7 +34,6 @@
  *
  */
 
-
 namespace Centreon\Internal;
 
 abstract class Controller
@@ -43,18 +42,88 @@ abstract class Controller
      *
      * @var type 
      */
+    protected $db;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $request;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $router;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $tpl;
+    
+    /**
+     *
+     * @var string 
+     */
+    public static $moduleName = 'Core';
 
     /**
      * 
-     * @param type $request
      */
     public function __construct($request)
     {
+        $this->db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $this->tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $this->router = \Centreon\Internal\Di::getDefault()->get('router');
         $this->request = $request;
         $this->init();
     }
     
+    /**
+     * 
+     * @param string $varname
+     * @param mixed $value
+     */
+    protected function assignVarToTpl($varname, $value)
+    {
+        $this->tpl->assign($varname, $value);
+    }
+    
+    /**
+     * 
+     * @param string $cssFile
+     * @param string $origin
+     */
+    protected function addCssToTpl($cssFile, $origin = 'current')
+    {
+        $this->tpl->addCss($cssFile);
+    }
+    
+    /**
+     * 
+     * @param string $jsFile
+     * @param string $origin
+     */
+    protected function addJsToTpl($jsFile, $origin = 'current')
+    {
+        $this->tpl->addJs($jsFile);
+    }
+    
+    /**
+     * 
+     * @param string $tplFile
+     */
+    protected function display($tplFile)
+    {
+        $tplDirectory = 'file:['. static::$moduleName . 'Module]';
+        $this->tpl->display($tplDirectory . $tplFile);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
     protected function getUri()
     {
         return $this->request->uri();
@@ -86,26 +155,6 @@ abstract class Controller
     }
 
     /**
-     *
-     */
-    protected function init()
-    {
-        $tpl = Di::getDefault()->get('template');
-        $md5Email = "";
-        if (isset($_SESSION['user'])) {
-            try {
-                $md5Email = md5($_SESSION['user']->getEmail());
-            } catch (Exception $e) {
-                ;
-            }
-        }
-        /*
-         * Set md5Email for Gravatar
-         */
-        $tpl->assign("md5Email", $md5Email);
-    }
-
-    /**
      * Get routes
      *
      * @return array
@@ -133,5 +182,46 @@ abstract class Controller
             }
         }
         return $tempo;
+    }
+    
+    /**
+     *
+     */
+    protected function init()
+    {
+        $md5Email = "";
+        if (isset($_SESSION['user'])) {
+            try {
+                $md5Email = md5($_SESSION['user']->getEmail());
+            } catch (Exception $e) {
+                ;
+            }
+        }
+        /*
+         * Set md5Email for Gravatar
+         */
+        $this->tpl->assign("md5Email", $md5Email);
+    }
+    
+    /**
+     * 
+     * @param string $route
+     * @param integer $returnCode
+     */
+    protected function redirect($route, $returnCode = 200)
+    {
+        $redirectUrl = $this->router->getPathFor($route);
+        $this->router->response()->redirect($redirectUrl, $returnCode);
+    }
+    
+    /**
+     * 
+     * @param array $response
+     */
+    protected function sendResponse(array $response = array())
+    {
+        if (isset($response['json']) && is_array($response['json'])) {
+            $this->router->response()->json($response['json']);
+        }
     }
 }

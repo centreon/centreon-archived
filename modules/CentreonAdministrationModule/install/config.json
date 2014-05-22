@@ -1,12 +1,14 @@
 {
-    "name": "Centreon Home",
-    "shortname" : "centreon-home",
+    "name": "Centreon Administration",
+    "shortname" : "centreon-administration",
     "version": "3.0.0",
     "author" : [
         "Merethis"
     ],
+    "isuninstallable" : false,
+    "isdisableable" : false,
     "url" : "",
-    "description" : "Centreon Home Module",
+    "description" : "Centreon Administration Module",
     "core version" : "3.0.0",
     "dependencies" : [
         

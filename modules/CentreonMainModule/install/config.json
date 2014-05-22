@@ -1,6 +1,6 @@
 {
-    "name": "Centreon Security",
-    "shortname" : "centreon-security",
+    "name": "Centreon Main",
+    "shortname" : "centreon-main",
     "version": "3.0.0",
     "author" : [
         "Merethis"
@@ -8,7 +8,7 @@
     "isuninstallable" : false,
     "isdisableable" : false,
     "url" : "",
-    "description" : "Centreon Security Module",
+    "description" : "Centreon Main Module",
     "core version" : "3.0.0",
     "dependencies" : [
         
