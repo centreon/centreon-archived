@@ -42,6 +42,8 @@ namespace CentreonMain\Controllers;
  */
 class MainController extends \Centreon\Internal\Controller
 {
+    public static $moduleName = 'CentreonMain';
+    
     /**
      * Action for home page
      *

@@ -241,7 +241,7 @@
 		</section>
 	</form>
     <wizard name="add_hosttemplates">
-		<route>/configuration/host/add</route>
+		<route>/configuration/hosttemplate/add</route>
 		<step name="General">
 			<field name="host_name" mandatory="1"></field>
 			<field name="host_hosttemplates" mandatory="0"></field>
