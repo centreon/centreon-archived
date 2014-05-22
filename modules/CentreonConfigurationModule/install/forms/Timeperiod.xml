@@ -40,4 +40,20 @@
 			</block>
 		</section>
 	</form>
+    <wizard name="add_timeperiod">
+		<route>/configuration/timeperiod/add</route>
+		<step name="General Informations">
+			<field name="tp_name" mandatory="1"></field>
+			<field name="tp_alias" mandatory="1"></field>
+		</step>
+        <step name="Time range">
+			<field name="tp_sunday" mandatory="0"></field>
+			<field name="tp_monday" mandatory="0"></field>
+			<field name="tp_tuesday" mandatory="0"></field>
+			<field name="tp_wednesday" mandatory="0"></field>
+			<field name="tp_thursday" mandatory="0"></field>
+			<field name="tp_friday" mandatory="0"></field>
+			<field name="tp_saturday" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>
