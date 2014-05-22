@@ -50,6 +50,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $objectName = 'host';
     protected $objectBaseUrl = '/configuration/host';
     protected $objectClass = '\CentreonConfiguration\Models\Host';
+    
     public static $relationMap = array(
         'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
         'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',

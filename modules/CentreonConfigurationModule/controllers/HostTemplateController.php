@@ -131,10 +131,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
-        $id = parent::createAction();
-        if ($givenParameters['host_create_services_from_template']) {
-            \CentreonConfiguration\Models\Host::deployServices($id);
-        }
+        parent::createAction();
     }
 
     /**
