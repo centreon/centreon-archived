@@ -52,4 +52,11 @@
 			</block>
 		</section>
 	</form>
+	<wizard name="add_hostcategory">
+		<route>/configuration/hostcategory/add</route>
+		<step name="General">
+			<field name="hc_name" mandatory="1"></field>
+			<field name="hc_alias" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>
