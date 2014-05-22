@@ -161,9 +161,11 @@ abstract class Repository
         foreach (static::$datatableColumn as $field) {
             if (!is_array($field) && (substr($field, 0, 11) !== '[SPECFIELD]')) {
                 $field_list .= $field.',';
+            } else {
+                $field_list .= substr($field, 11).", ";
             }
         }
-        
+
         foreach (static::$additionalColumn as $field) {
             $field_list .= $field.',';
         }
@@ -226,7 +228,6 @@ abstract class Repository
             . "SQL_CALC_FOUND_ROWS $field_list "
             . "FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
-        
         $stmt = $dbconn->query($finalRequest);
         
         // Returning the result
