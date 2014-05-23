@@ -37,7 +37,7 @@ $(function() {
       </tb> \
       <td class='span-2'><%host_name%></td> \
       <td class='span-2'><%service_desc%></td> \
-      <td class='span-1 centreon-status-<%status_num%>'><%status%></td> \
+      <td class='span-1 centreon-status-<%state%>'><%status%></td> \
       <td class='span-2'><%start_time%></td> \
       <td class='span-2'><%duration%></td> \
       <td class='span-2'><%output%></td> \

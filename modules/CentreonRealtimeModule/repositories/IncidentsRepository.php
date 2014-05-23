@@ -76,13 +76,13 @@ class IncidentsRepository
         }
 
         /* Subquery for hosts */
-        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, h.instance_id
+        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, h.instance_id, h.output
             FROM issues i, hosts h, hoststateevents he";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "i.host_id = he.host_id";
         $wheres[] = "i.service_id IS NULL";
-	$wheres[] = "i.issue_id NOT IN (SELECT child_id FROM issues_issues_parents WHERE end_time IS NULL)";
+        $wheres[] = "i.issue_id NOT IN (SELECT child_id FROM issues_issues_parents WHERE end_time IS NULL)";
         $wheres[] = "i.end_time IS NULL";
         $wheres[] = "he.end_time IS NULL";
         $wheres = array_merge($wheres, $globalWheres);
@@ -91,7 +91,7 @@ class IncidentsRepository
         }
         
         /* Subquery for services */
-        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, se.state as state, h.instance_id
+        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, se.state as state, h.instance_id, s.output
             FROM issues i, hosts h, services s, servicestateevents se";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
@@ -100,7 +100,7 @@ class IncidentsRepository
         $wheres[] = "se.host_id = i.host_id";
         $wheres[] = "se.service_id = i.service_id";
         $wheres[] = "i.service_id IS NOT NULL";
-	$wheres[] = "i.issue_id NOT IN (SELECT child_id FROM issues_issues_parents WHERE end_time IS NULL)";
+        $wheres[] = "i.issue_id NOT IN (SELECT child_id FROM issues_issues_parents WHERE end_time IS NULL)";
         $wheres[] = "i.end_time IS NULL";
         $wheres[] = "se.end_time IS NULL";
         $wheres = array_merge($wheres, $globalWheres);
@@ -134,6 +134,8 @@ class IncidentsRepository
                 'service_desc' => $row['description'],
                 'start_time' => $row['start_time'],
                 'end_time' => $row['end_time'],
+                'state' => $row['state'],
+                'output' => $row['output'],
                 'url_graph' => $router->getPathFor('/realtime/incident/graph/[i:id]', array('id' => $row['issue_id'])),
                 'ticket' => ''
             );

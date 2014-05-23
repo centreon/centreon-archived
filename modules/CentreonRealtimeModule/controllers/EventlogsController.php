@@ -166,27 +166,25 @@ class EventlogsController extends \Centreon\Internal\Controller
             } else {
                 $log['service_logo'] = '';
             }
-            /* Todo class utils */
-            $statusService = array(
-                0 => 'Ok',
-                1 => 'Warning',
-                2 => 'Critical',
-                3 => 'Unknown',
-                4 => 'Pending',
-                5 => 'Information'
-            );
-            $statusHost = array(
-                0 => 'Up',
-                1 => 'Down',
-                2 => 'Down',
-                3 => 'Unknown',
-                4 => 'Pending',
-                5 => 'Information'
-            );
-            if (false === is_null($log['service_id'])) {
-                $log['status_text'] = $statusService[$log['status']];
+            /* Translate the status id */
+            if (false === is_null($log['service_id']) && false === is_null($log['host_id'])) {
+		        $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                    $log['status'],
+                    \Centreon\Internal\Utils\Status::TYPE_HOST,
+                    true
+                );
+            } elseif (false === is_null($log['service_id'])) {
+		        $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                    $log['status'],
+                    \Centreon\Internal\Utils\Status::TYPE_SERVICE,
+                    true
+                );
             } else {
-                $log['status_text'] = $statusHost[$log['status']];
+		        $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                    $log['status'],
+                    \Centreon\Internal\Utils\Status::TYPE_EVENT,
+                    true
+                );
             }
 
             if ($log['msg_type'] != 1 && $log['msg_type'] != 0) {

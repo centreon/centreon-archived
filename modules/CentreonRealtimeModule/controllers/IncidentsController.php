@@ -56,6 +56,7 @@ class IncidentsController extends \Centreon\Internal\Controller
         $tmpl = $di->get('template');
         $tmpl->addJs('hogan-3.0.0.min.js');
         $tmpl->addJs('centreon-table-infinite-scroll.js');
+        $tmpl->addCss('centreon.status.css');
         $tmpl->display('file:[CentreonRealtimeModule]incidents_list.tpl');
     }
 
@@ -98,11 +99,27 @@ class IncidentsController extends \Centreon\Internal\Controller
                 $firstDate = $incident['start_time'];
             }
             $lastDateCount++;
+
+            /* Convert to human readable the duration */
             $incident['duration'] = \Centreon\Internal\Datetime::humanReadable(
                 time() - strtotime($incident['start_time']),
                 \Centreon\Internal\Datetime::PRECISION_FORMAT,
                 2
             );
+            /* Translate the status */
+            if (false === is_null($incident['service_id'])) {
+                $incident['status'] = \Centreon\Internal\Utils\Status::numToString(
+                    $incident['state'],
+                    \Centreon\Internal\Utils\Status::TYPE_SERVICE,
+                    true
+                );
+            } else {
+                $incident['status'] = \Centreon\Internal\Utils\Status::numToString(
+                    $incident['state'],
+                    \Centreon\Internal\Utils\Status::TYPE_HOST,
+                    true
+                );
+            }
             $data[] = $incident;
         }
 
