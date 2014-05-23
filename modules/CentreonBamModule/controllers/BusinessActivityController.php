@@ -71,30 +71,13 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
      * @method get
      * @route /bam/business-activity/formlist
      */
-    /*public function formListAction()
+    public function formListAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $pollerObj = new Poller();
-        $filters = array('name' => $requestParams['q'].'%');
-        $pollerList = $pollerObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalPollerList = array();
-        foreach ($pollerList as $poller) {
-            $finalPollerList[] = array(
-                "id" => $poller['id'],
-                "text" => $poller['name']
-            );
-        }
-        
-        $router->response()->json($finalPollerList);
-    }*/
+        parent::formListAction();
+    }
     
     /**
-     * Create a new poller
+     * Create a new business activity
      *
      * @method post
      * @route /bam/business-activity/add
@@ -105,7 +88,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     }
     
     /**
-     * Update a poller
+     * Update a business activity
      *
      *
      * @method post
@@ -117,7 +100,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     }
     
     /**
-     * Add a poller
+     * Add a business activity
      *
      * @method get
      * @route /bam/business-activity/add
@@ -130,7 +113,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     }
     
     /**
-     * Update a poller
+     * Update a business activity
      *
      * @method get
      * @route /bam/business-activity/[i:id]
@@ -141,7 +124,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     }
     
     /**
-     * Duplicate a poller
+     * Duplicate a business activity
      *
      * @method post
      * @route /bam/business-activity/duplicate
@@ -185,7 +168,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     }
 
     /**
-     * Delete action for poller
+     * Delete action for business activity
      *
      * @method post
      * @route /bam/business-activity/delete
