@@ -1,5 +1,39 @@
 [
     {
+      "name": "Administration",
+      "short_name": "administration",
+      "icon_class": "fa fa-folder-open",
+      "bgcolor": "#FA5858",
+      "menus" : [
+            {
+                "name": "ACL",
+                "short_name": "acl",
+                "menus" : [
+                    {
+                        "name" : "ACL action",
+                        "short_name" : "acl_action",
+                        "route" : "/administration/aclgroup"
+                    },
+                    {
+                        "name" : "ACL group",
+                        "short_name" : "acl_group",
+                        "route" : "/administration/aclaction"
+                    },
+                    {
+                        "name" : "ACL menu",
+                        "short_name" : "acl_menu",
+                        "route" : "/administration/aclmenu"
+                    },
+                    {
+                        "name" : "ACL resource",
+                        "short_name" : "acl_resource",
+                        "route" : "/administration/aclresource"
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "name": "Configuration",
         "short_name": "configuration",
         "icon_class": "fa fa-gears",

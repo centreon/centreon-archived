@@ -112,7 +112,7 @@ class BusinessviewRepository extends \CentreonConfiguration\Repository\Repositor
         'id_ba_group' => array(
             'type' => 'checkbox',
             'parameters' => array(
-                'displayName' => '::ba_ba_group_name::'
+                'displayName' => '::ba_group_name::'
             )
         ),
         'ba_group_name' => array(

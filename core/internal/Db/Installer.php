@@ -70,7 +70,7 @@ class Installer
         // get Current Db State
         $currentDbAppData = new \AppData($platform);
         $currentDbAppData->setGeneratorConfig(new \GeneratorConfig($configParams));
-        $currentDb = $currentDbAppData->addDatabase($targetDbName);
+        $currentDb = $currentDbAppData->addDatabase(array('name' => $targetDbName));
         $propelDb->parse($currentDb);
         
         // Retreive target DB State

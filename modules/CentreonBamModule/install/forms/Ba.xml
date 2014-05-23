@@ -86,7 +86,7 @@
 				</field>
             </block>
         </section>
-        <section name="Escalations / Dependencies">
+        <section name="Escalations and Dependencies">
             <block name="Escalations">
                 <field name="business_activity_escalations" label="Escalations" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
@@ -133,7 +133,7 @@
                 <field name="parent_business_activity" label="Parent Business Activity" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/bam/business-activity/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
@@ -142,7 +142,7 @@
                 <field name="child_business_activity" label="Child Business Activity" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/bam/business-activity/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
@@ -155,7 +155,7 @@
                 <field name="business_activity_linked_groups" label=" Linked Business Activity Groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/bam/business-view/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
@@ -164,7 +164,7 @@
             </block>
         </section>
         <section name="Extended Information">
-            <block name="Business Activity Group">
+            <block name="Visual settings">
                 <field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
