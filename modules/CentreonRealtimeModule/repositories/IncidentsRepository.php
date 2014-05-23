@@ -124,18 +124,7 @@ class IncidentsRepository
         /* Data */
         $data = array();
         /* Get number events for last time for remove duplicate */
-        $lastDateCount = 0;
-        $lastDate = null;
-        $firstDate = null;
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($lastDate != $row['start_time']) {
-                $lastDate = $row['start_time'];
-                $lastDateCount = 0;
-            }
-            if (is_null($firstDate)) {
-                $firstDate = $row['start_time'];
-            }
-            $lastDateCount++;
             $data[] = array(
                 'issue_id' => $row['issue_id'],
                 'instance_id' => $row['instance_id'],
@@ -149,12 +138,7 @@ class IncidentsRepository
                 'ticket' => ''
             );
         }
-        return  array(
-            'data' => $data,
-            'lastTimeEntry' => $lastDate,
-            'nbEntryForLastTime' => $lastDateCount,
-            'recentTime' => $firstDate
-        );
+        return $data;
     }
 
     /**

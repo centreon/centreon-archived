@@ -85,7 +85,33 @@ class IncidentsController extends \Centreon\Internal\Controller
             $filters
         );
 
-        $router->response()->json($listIncidents);
+        $data = array();
+        $lastDateCount = 0;
+        $lastDate = null;
+        $firstDate = null;
+        foreach ($listIncidents as $incident) {
+            if ($lastDate != $incident['start_time']) {
+                $lastDate = $incident['start_time'];
+                $lastDateCount = 0;
+            }
+            if (is_null($firstDate)) {
+                $firstDate = $incident['start_time'];
+            }
+            $lastDateCount++;
+            $incident['duration'] = \Centreon\Internal\Datetime::humanReadable(
+                time() - strtotime($incident['start_time']),
+                \Centreon\Internal\Datetime::PRECISION_FORMAT,
+                2
+            );
+            $data[] = $incident;
+        }
+
+        $router->response()->json(array(
+            'data' => $data,
+            'lastTimeEntry' => $lastDate,
+            'nbEntryForLastTime' => $lastDateCount,
+            'recentTime' => $firstDate
+        ));
     }
 
     /**
