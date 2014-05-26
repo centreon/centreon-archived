@@ -132,6 +132,49 @@ class IncidentsController extends \Centreon\Internal\Controller
     }
 
     /**
+     * Get extended information for a issue
+     *
+     * @route /realtime/incident/extented_info
+     * @method POST
+     */
+    public function getIncidentExtInfoAction()
+    {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $incidentId = $router->request()->param('id');
+
+        /* Get the list of children */
+        $listChildren = \CentreonRealtime\Repository\IncidentsRepository::getChildren($incidentId);
+        $children = array();
+
+        /* Convert format */
+        foreach ($listChildren as $child) {
+            $fullname = $child['name'];
+            if (false === is_null($child['description'])) {
+                $fullname .= ' - ' . $child['description'];
+            }
+            $children[] = array(
+                "name" => $fullname,
+                "output" => $child['output'],
+                "status" => $child['state']
+            );
+        }
+        $children[] = array(
+            "name" => "Test1",
+            "output" => "Output 1",
+            "status" => 2
+        );
+        $children[] = array(
+            "name" => "Test2",
+            "output" => "Output 2",
+            "status" => 1
+        );
+
+        $router->response()->json(array(
+            "children" => $children
+        ));
+    }
+
+    /**
      * Display the graph map of incident
      *
      * @route /realtime/incident/graph/[i:id]
@@ -181,7 +224,7 @@ class IncidentsController extends \Centreon\Internal\Controller
                     'id' => $incident['issue_id'],
                     'name' => $fullname,
                     'status' => self::getCssStatus($incident['state']),
-                    'output' => '',
+                    'output' => $incident['output'],
                     'last_update' => '',
                     'has_children' => $incident['nb_children'] > 0 ? true : false,
                     'has_parent' => $incident['nb_parents'] > 0 ? true : false,
@@ -209,7 +252,7 @@ class IncidentsController extends \Centreon\Internal\Controller
                         'id' => $child['issue_id'],
                         'name' => $fullname,
                         'status' => self::getCssStatus($child['state']),
-                        'output' => '',
+                        'output' => $child['output'],
                         'last_update' => '',
                         'has_children' => $child['nb_children'] > 0 ? true : false,
                         'has_parent' => $child['nb_parents'] > 0 ? true : false
