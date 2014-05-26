@@ -55,14 +55,14 @@
   CentreonIncidentsGraph.prototype = {
     drawIncident: function( incident ) {
       var $incidentBox, $content,
-          $header = $( "<div></div>" ).addClass( "panel-heading" ).text( incident.name );
+          $header = $( "<div></div>" ).addClass( "panel-heading" ).text( incident.name )
+            .append(
+              $( "<div></div>" ).addClass( "pull-right" ).addClass( "last-update" ).text( "Since : " + incident.last_update )
+            );
 
       /* Create content */
       $content = $( "<div></div>" )
         .addClass( "panel-body" )
-        .append(
-          $( "<div></div>" ).addClass( "pull-right" ).addClass( "last-update" ).text( "Since : " + incident.last_update )
-        )
         .append(
           $( "<i></i>" ).addClass( "expand" ).addClass( "fa" ).addClass( "fa-plus-circle" )
         )
