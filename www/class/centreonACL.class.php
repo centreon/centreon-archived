@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -30,6 +30,7 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
+ *
  *
  */
 
@@ -1313,7 +1314,7 @@ class CentreonACL
                     }
                 }
 
-                $requests['conditions'] .= $clause . " " . $key . " " . $op . " '" . $pearDB->escape($value)."' ";
+                $requests['conditions'] .= $clause . " " .$key . " " . $op . " '" . $pearDB->escape($value)."' ";
             }
             if (!$first) {
                 $requests['conditions'] .= ') ';
@@ -1518,7 +1519,15 @@ class CentreonACL
                 $searchSTR = "(host.host_name LIKE '%$search%' OR host.host_alias LIKE '%$search%') AND";
             }
             if ($host_empty) {
-                $empty_exists = 'AND EXISTS (SELECT * FROM host_service_relation, hostgroup_relation WHERE (host_service_relation.host_host_id = host.host_id AND host_service_relation.service_service_id IS NOT NULL) OR (host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id AND host_service_relation.service_service_id IS NOT NULL))';
+                $empty_exists = 'AND EXISTS (SELECT * 
+    FROM host_service_relation
+    WHERE host_service_relation.host_host_id = host.host_id 
+    AND host_service_relation.service_service_id IS NOT NULL)
+OR EXISTS (SELECT * 
+        FROM host_service_relation, hostgroup_relation 
+        WHERE host.host_id = hostgroup_relation.host_host_id 
+        AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id 
+        AND host_service_relation.service_service_id IS NOT NULL)';
             }
             $query = "SELECT " . $request['fields'] . " FROM host ".
                 " WHERE $searchSTR host_activate = '1' AND host_register = '1' $empty_exists".
