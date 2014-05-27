@@ -190,6 +190,7 @@ class IncidentsController extends \Centreon\Internal\Controller
         $tmpl->addJs('jquery.jsPlumb-1.6.1-min.js');
         $tmpl->addJs('centreon.incidentsGraph.js');
         $tmpl->addCss('centreon.incidentsGraph.css');
+        $tmpl->addCss('centreon.status.css');
         $tmpl->assign('incident_id', $incidentId);
 
         $tmpl->display('file:[CentreonRealtimeModule]incident_graph.tpl');
@@ -225,7 +226,7 @@ class IncidentsController extends \Centreon\Internal\Controller
                     'name' => $fullname,
                     'status' => self::getCssStatus($incident['state']),
                     'output' => $incident['output'],
-                    'last_update' => '',
+                    'last_update' => date('Y-m-d H:i:s', $incident['last_state_change']),
                     'has_children' => $incident['nb_children'] > 0 ? true : false,
                     'has_parent' => $incident['nb_parents'] > 0 ? true : false,
                     'parents' => array_map(function($values) {
@@ -253,11 +254,55 @@ class IncidentsController extends \Centreon\Internal\Controller
                         'name' => $fullname,
                         'status' => self::getCssStatus($child['state']),
                         'output' => $child['output'],
-                        'last_update' => '',
+                        'last_update' => date('Y-m-d H:i:s', $child['last_state_change']),
                         'has_children' => $child['nb_children'] > 0 ? true : false,
                         'has_parent' => $child['nb_parents'] > 0 ? true : false
                     );
                 }
+                break;
+            case 'get_extended_info':
+                $status = \CentreonRealtime\Repository\IncidentsRepository::getListStatus($incidentId);
+                $statusList = array();
+                foreach ($status as $tmp) {
+                    if (false === is_null($tmp['service_id'])) {
+                        $statusType = \Centreon\Internal\Utils\Status::TYPE_SERVICE;
+                    } else {
+                        $statusType = \Centreon\Internal\Utils\Status::TYPE_HOST;
+                    }
+                    $statusList[] = array(
+                        'id' => $tmp['state'],
+                        'text' => \Centreon\Internal\Utils\Status::numToString(
+                            $tmp['state'],
+                            $statusType,
+                            true
+                        ),
+                        'datetime' => $tmp['start_time']
+                    );
+                }
+                $response = array(
+                    'status' => array(
+                        array(
+                            'id' => 2,
+                            'text' => 'Critical',
+                            'datetime' => '2014-05-12 01:03:11'
+                        ),
+                        array(
+                            'id' => 2,
+                            'text' => 'Critical',
+                            'datetime' => '2014-05-12 01:03:11'
+                        ),
+                        array(
+                            'id' => 2,
+                            'text' => 'Critical',
+                            'datetime' => '2014-05-12 01:03:11'
+                        ),
+                        array(
+                            'id' => 2,
+                            'text' => 'Critical',
+                            'datetime' => '2014-05-12 01:03:11'
+                        )
+                    )
+                );
                 break;
             default:
                 $router->response()->code(400);

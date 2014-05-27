@@ -155,7 +155,7 @@ class IncidentsRepository
         $dbconn = $di->get('db_storage');
 
         /* Query for host */
-        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, h.instance_id, h.output,
+        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, h.instance_id, h.output, h.last_state_change,
                 (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
                 (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
             FROM issues i, hosts h, hoststateevents he";
@@ -171,7 +171,7 @@ class IncidentsRepository
         }
 
         /* Query for service */
-        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, se.state as state, h.instance_id, s.output,
+        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, se.state as state, h.instance_id, s.output, s.last_state_change,
                 (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
                 (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
             FROM issues i, hosts h, services s, servicestateevents se";
@@ -239,7 +239,7 @@ class IncidentsRepository
         $dbconn = $di->get('db_storage');
 
         /* Query for host */
-        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, he.state, h.output,
+        $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, he.state, h.output, h.last_state_change,
                 (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
                 (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
             FROM issues_issues_parents iip, issues i, hosts h, hoststateevents he";
@@ -255,7 +255,7 @@ class IncidentsRepository
         }
 
         /* Query for service */
-        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, se.state, s.output,
+        $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, se.state, s.output, s.last_state_change,
                 (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
                 (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
             FROM issues_issues_parents iip, issues i, hosts h, services s, servicestateevents se";
@@ -283,5 +283,41 @@ class IncidentsRepository
             $list[] = $row;
         }
         return $list;
+    }
+
+    /**
+     * Get the list of status for incident
+     *
+     * @param int $incidentId The incident ID
+     * @return array
+     */
+    public static function getListStatus($incidentId)
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $dbconn = $di->get('db_storage');
+
+        /* Get list of status for incident id */
+        $queryHost = "SELECT hs.state, hs.start_time, NULL as service_id
+            FROM hoststateevents hs, issues i
+            WHERE i.issue_id = :issue_id
+                AND hs.start_time >= i.start_time
+                AND hs.host_id = i.host_id
+                AND hs.end_time IS NOT NULL";
+        $queryService = "SELECT ss.state, ss.start_time, i.service_id
+            FROM servicestateevents ss, issues i
+            WHERE i.issue_id = :issue_id
+                AND ss.service_id = i.service_id
+                AND ss.host_id = i.host_id
+                AND ss.start_time >= i.start_time
+                AND ss.end_time IS NOT NULL";
+        $query = $queryHost . " UNION " .$queryService;
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam('issue_id', $incidentId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $listStatus = array();
+        while ($row = $stmt->fetch()) {
+            $listStatus[] = $row;
+        }
+        return $listStatus;
     }
 }
