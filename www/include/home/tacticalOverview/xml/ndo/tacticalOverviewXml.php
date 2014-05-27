@@ -103,7 +103,7 @@
 
 	$resNdo1 = $dbb->query($rq1);
 
-	$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0);
+	$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($ndo = $resNdo1->fetchRow()) {
 		$hostStatus[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
 	}
@@ -192,7 +192,7 @@
 	}
 	$resNdoHosts->free();
     
-    $hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3]);
+    $hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3], 4=>$hostStatus[4]);
 	/*
 	 * Get the id's of problem hosts
 	*/

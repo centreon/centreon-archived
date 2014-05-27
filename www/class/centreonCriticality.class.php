@@ -151,7 +151,58 @@ class CentreonCriticality {
         }
         return $elements;
     }
-    
+
+    /**
+     * Get real time host criticality id
+     *
+     */
+    public function getRealtimeHostCriticalityId($db, $hostId)
+    {
+        static $ids = null;
+
+        if (is_null($ids)) {
+            $sql = "SELECT cvs.host_id, cvs.value as criticality
+                FROM customvariables cvs 
+                WHERE cvs.name='CRITICALITY_ID'
+                AND cvs.service_id IS NULL";
+            $res = $db->query($sql);
+            $ids = array();
+            while ($row = $res->fetchRow()) {
+                $ids[$row['host_id']] = $row['criticality'];
+            }
+        }
+        if (isset($ids[$hostId])) {
+            return $ids[$hostId];
+        }
+        return 0;
+    }
+
+
+    /**
+     * Get real time service criticality id
+     *
+     */
+    public function getRealtimeServiceCriticalityId($db, $serviceId)
+    {
+        static $ids = null;
+
+        if (is_null($ids)) {
+            $sql = "SELECT cvs.service_id, cvs.value as criticality 
+                FROM customvariables cvs 
+                WHERE cvs.name='CRITICALITY_ID'
+                AND cvs.service_id IS NOT NULL";
+            $res = $db->query($sql);
+            $ids = array();
+            while ($row = $res->fetchRow()) {
+                $ids[$row['service_id']] = $row['criticality'];
+            }
+        }
+        if (isset($ids[$serviceId])) {
+            return $ids[$serviceId];
+        }
+        return 0;
+    } 
+
     /**
      * Get list of host criticalities
      * 
