@@ -112,7 +112,7 @@
     }
 	$resNdo1 = $dbb->query($rq1);
 
-	$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0);
+	$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($ndo = $resNdo1->fetchRow()) {
 		$hostStatus[$ndo["state"]] = $ndo["count(state)"];
 	}
@@ -213,11 +213,11 @@
                          "WHERE cvs.host_id = '".$ndo['host_id']."' ".
                          "AND cvs.name='CRITICALITY_ID'";
         
-        $resCriticality = $dbb->query($rqCriticality);
-        while ($crit = $resCriticality->fetchRow()){
-            $infoC = $criticality->getData($crit["criticality"]);
-            if (isset($infoC))
-            {
+		$resCriticality = $dbb->query($rqCriticality);
+		$critId = $criticality->getRealtimeHostCriticalityId($dbb, $ndo['host_id']);
+		if ($critId) {
+            $infoC = $criticality->getData($critId);
+            if (isset($infoC)) {
                 $availableHostCriticalities = 1;
                 $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
             }
@@ -227,7 +227,7 @@
 	}
 	$resNdoHosts->free();
 
-	$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3]);
+	$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3], 4=>$hostStatus[4]);
 	/*
 	 * Get the id's of problem hosts
 	*/
@@ -605,16 +605,10 @@
             
             // Check if service has criticality
             $tab_svccriticality[$j] = '';
-            $rqCriticality = "SELECT cvs.value as criticality ".
-                             "FROM customvariables cvs ".
-                             "WHERE cvs.service_id = '".$ndo['service_id']."' ".
-                             "AND cvs.name='CRITICALITY_ID'";
-            
-            $resCriticality = $dbb->query($rqCriticality);
-            while ($crit = $resCriticality->fetchRow()){
-                $infoC = $criticality->getData($crit["criticality"]);
-                if (isset($infoC))
-                {
+			$critId = $criticality->getRealtimeServiceCriticalityId($dbb, $ndo['service_id']);
+			if ($critId) {
+                $infoC = $criticality->getData($critId, true);
+                if (isset($infoC)) {
                     $availableSvcCriticalities = 1;
                     $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
                 }
