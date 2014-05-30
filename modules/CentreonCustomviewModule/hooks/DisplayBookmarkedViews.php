@@ -34,7 +34,7 @@
  */
 namespace CentreonCustomview;
 
-class DisplayLeftMenuHook
+class DisplayBookmarkedViews
 {
     /**
      * Execute hook

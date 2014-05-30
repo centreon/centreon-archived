@@ -198,7 +198,7 @@ class Hook
     public static function getModulesFromHook($hookType = null, $hookName = null)
     {
         $filters = array();
-        $sql = "SELECT m.name AS module, h.hook_name
+        $sql = "SELECT m.name AS module, h.hook_name, module_hook_name
             FROM module m, hooks h, module_hooks mh 
             WHERE m.id = mh.module_id
             AND mh.hook_id = h.hook_id";
@@ -236,10 +236,10 @@ class Hook
         $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         foreach ($hooks as $hook) {
             $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $hook['module'])));
-            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hookName).".php"; 
+            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php"; 
             if (file_exists($filename)) {
                 include_once $filename;
-                $data = call_user_func(array("\\".$commonName."\\".ucfirst($hookName)."Hook", "execute"), $params);
+                $data = call_user_func(array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"), $params);
                 $templateFile = "$path/modules/{$commonName}Module/views/{$data[0]}";
                 if (is_array($data) && count($data) && is_file($templateFile)) {
                     $hookData[$i]['template'] = $data[0];
