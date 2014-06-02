@@ -35,6 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
+use \Centreon\Internal\Hook;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -53,7 +55,13 @@ abstract class Repository
      * @var string
      */
     public static $objectName = '';
-    
+
+    /**
+     *
+     * @var string
+     */
+    public static $objectId = '';
+
     /**
      *
      * @var string
@@ -130,9 +138,20 @@ abstract class Repository
      */
     public static function getParametersForDatatable()
     {
+        $columns = static::$datatableColumn;
+        $headers = static::$datatableHeader;
+        if (isset(static::$hook) && static::$hook) {
+            $hookData = Hook::execute(static::$hook, array());
+            foreach ($hookData as $data) {
+                $columnName = $data['columnName'];
+                $columns[$columnName]= true;
+                $headers[] = 'none';
+            }
+        } 
+
         return array(
-            'column' => static::$datatableColumn,
-            'header' => static::$datatableHeader,
+            'column' => $columns,
+            'header' => $headers,
             'footer' => static::$datatableFooter,
             'hasCategory' => static::$hasCategory,
             'groupname' => _(static::$groupname)
@@ -232,6 +251,10 @@ abstract class Repository
         
         // Returning the result
         $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Fill with hooks contents
+        static::processHooks($resultSet);
+
         $countTab = count($resultSet);
         $objectTab = array();
         for ($i=0; $i<$countTab; $i++) {
@@ -242,7 +265,7 @@ abstract class Repository
         }
         
         static::formatDatas($resultSet);
-        
+
         return self::arrayValuesRecursive(
             \array_values(
                 \Centreon\Internal\Datatable::removeUnwantedFields(
@@ -264,9 +287,35 @@ abstract class Repository
      */
     public static function formatDatas(&$resultSet)
     {
-        
     }
-    
+
+    /**
+     *
+     * @param array $resultSet
+     */
+    public static function processHooks(&$resultSet)
+    {
+        $arr = array();
+        foreach ($resultSet as $set) {
+            if (isset($set[static::$objectId])) {
+                $arr[] = $set[static::$objectId];
+            }
+        }
+        if (isset(static::$hook) && static::$hook) {
+            $hookData = Hook::execute(static::$hook, $arr);
+            foreach ($hookData as $data) {
+                $columnName = $data['columnName'];
+                foreach ($data['values'] as $k => $value) {
+                    foreach ($resultSet as $key => $set) {
+                        if ($set[static::$objectId] == $k) {
+                            $resultSet[$key][$columnName] = $value;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * 
      * @param array $params
