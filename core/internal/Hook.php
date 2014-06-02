@@ -240,6 +240,11 @@ class Hook
             if (file_exists($filename)) {
                 include_once $filename;
                 $data = call_user_func(array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"), $params);
+                /* has no template */
+                $hookData[$i] = $data;
+                $i++;
+                continue;
+                /* has template */
                 $templateFile = "$path/modules/{$commonName}Module/views/{$data[0]}";
                 if (is_array($data) && count($data) && is_file($templateFile)) {
                     $hookData[$i]['template'] = $data[0];

@@ -53,7 +53,19 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      * @var string
      */
     public static $objectName = 'Service';
-    
+
+    /**
+     *
+     * @var string
+     */
+    public static $objectId = 'service_id';
+
+    /**
+     *
+     * @var string
+     */
+    public static $hook = 'displayServiceRtColumn';
+
     /**
      *
      * @var array Default column for datatable
@@ -174,6 +186,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 'Pending' => 4
             )
         ),
+        'text'
     );
     
     /**

@@ -53,7 +53,19 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
      * @var string
      */
     public static $objectName = 'Host';
-    
+
+    /**
+     *
+     * @var string
+     */
+    public static $objectId = 'host_id';
+
+    /**
+     *
+     * @var string
+     */
+    public static $hook = 'displayHostRtColumn'; 
+
     /**
      *
      * @var array Default column for datatable
