@@ -168,4 +168,155 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         return -1;
     }
 
+    public static function getTripleChoice() {
+        $content = array();
+        $content["service_max_check_attempts"] = 1;
+        $content["service_active_checks_enabled"] = 1;
+        $content["service_passive_checks_enabled"] = 1;
+        $content["service_obsess_over_host"] = 1;
+        $content["service_check_freshness"] = 1;
+        $content["service_event_handler_enabled"] = 1;
+        $content["service_flap_detection_enabled"] = 1;
+        $content["service_process_perf_data"] = 1;
+        $content["service_retain_status_information"] = 1;
+        $content["service_retain_nonstatus_information"] = 1;
+        $content["service_notifications_enabled"] = 1;
+        $content["service_stalking_options"] = 1;
+        $content["service_is_volatile"] = 1;
+        $content["service_parallelize_check"] = 1;
+        $content["service_obsess_over_service"] = 1;
+        return $content;
+    }
+
+
+    public static function generateServiceTemplates(& $filesList, $poller_id, $path, $filename) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Field to not display */
+        $disableField = static::getTripleChoice();
+        $field = "service_id, service_description, service_alias, service_template_model_stm_id, command_command_id AS check_command, command_command_id_arg, timeperiod_tp_id AS check_period, command_command_id2 AS event_handler, command_command_id_arg2, timeperiod_tp_id2 AS notification_period, display_name, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, service_notification_options, service_notifications_enabled, service_first_notification_delay, service_stalking_options ";
+        
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT $field FROM service WHERE service_activate = '1' AND service_register = '0' ORDER BY service_description";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "service");
+            $tmpData = array();
+            $args = "";
+            foreach ($row as $key => $value) {
+                if ($key == "service_id") {
+                    $service_id = $row["service_id"];
+                } else if ((!isset($disableField[$key]) && $value != "")) {
+                    if (isset($disableField[$key]) && $value != 2) {
+                        ;
+                    } else {
+                        $key = str_replace("service_", "", $key);
+                        if ($key == 'description') {
+                            $key = "name";
+                        }
+                        if ($key == 'alias') {
+                            $key = "service_description";
+                        }
+                        if ($key == 'normal_check_interval') {
+                            $key = "check_interval";
+                        }
+                        if ($key == 'retry_check_interval') {
+                            $key = "retry_interval";
+                        }
+                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
+                            $args = $value;
+                        }
+                        if ($key == 'check_command' || $key == 'event_handler') {
+                            $value = CommandRepository::getCommandName($value).$args;
+                            $args = "";
+                        } 
+                        if ($key == 'check_period' || $key == 'notification_period') {
+                            $value = TimeperiodRepository::getPeriodName($value);
+                        } 
+                        if ($key == "template_model_stm_id") {
+                            $key = "use";
+                            $value = static::getTemplateName($value);
+                        } 
+                        if ($key == "contact_additive_inheritance") {
+                            $tmpContact = static::getContacts($service_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contacts"] = "+";
+                                }
+                                $tmpData["contacts"] .= $tmpContact; 
+                            }
+                        }
+                        if ($key == "cg_additive_inheritance") {
+                            $tmpContact = static::getContactGroups($service_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contactgroups"] = "+";
+                                }
+                                $tmpData["contactgroups"] .= $tmpContact; 
+                            }
+                        }
+                        $tmpData[$key] = $value;
+                    }
+                }
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+        
+        /* Write Check-Command configuration file */    
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        unset($content);
+    }
+    
+    public static function getContacts($service_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactList = "";
+
+        $query = "SELECT contact_alias FROM contact c, contact_service_relation cs WHERE service_service_id = '$service_id' AND c.contact_id = ccontact_id ORDER BY contact_alias";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactList != "") {
+                $contactList .= ","; 
+            }
+            $contactList .= $row["contact_alias"];
+        }
+        return $contactList;
+    }
+
+    public static function getContactGroups($service_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactgroupList = "";
+
+        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgs WHERE service_service_id = '$service_id' AND cg.cg_id = cgs.contactgroup_cg_id ORDER BY cg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactgroupList != "") {
+                $contactgroupList .= ","; 
+            }
+            $contactgroupList .= $row["cg_name"];
+        }
+        return $contactgroupList;
+    }
+
+
 }
