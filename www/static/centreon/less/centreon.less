@@ -166,14 +166,14 @@ aside {
     }
 }
 
-.submenu-active {
+.submenu-active a {
      border-left: @left-cursor-width solid #428bca;
      font-weight: bold;
-}
-
-.submenu-active a {
      color: #428bca !important;
-     margin-left: -@left-cursor-width;
+
+     span {
+         margin-left: 5px - @left-cursor-width !important;
+     }
 }
 
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
