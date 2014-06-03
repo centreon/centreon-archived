@@ -56,8 +56,8 @@ class DisplayBookmarkedViews
             }
         }
         return array(
-            'displayLeftMenu.tpl',
-            array(
+            'template' => 'displayLeftMenu.tpl',
+            'variables' => array(
                 'bookmarkedViews' => $bookmarkedViews,
                 'publicViews' => $publicViews
             )

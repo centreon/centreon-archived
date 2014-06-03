@@ -85,6 +85,7 @@ class ConfigGenerateRepository
 
         /* Templates config files */
         HosttemplateRepository::generateHostTemplates($this->filesDir, $poller_id, $this->path, "/objects/hostTemplates.cfg");
+        ServicetemplateRepository::generateServiceTemplates($this->filesDir, $poller_id, $this->path, "/objects/serviceTemplates.cfg");
 
         /* Monitoring Object files */
         HostRepository::generateHosts($this->filesDir, $poller_id, $this->path, "/objects/");

@@ -144,4 +144,22 @@ class TimeperiodRepository extends \CentreonConfiguration\Repository\Repository
         'none',
         'none'
     );
+
+    public static function getPeriodName($tp_id)
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        $contactList = "";
+
+        $query = "SELECT tp_name FROM timeperiod WHERE tp_id = '$tp_id'";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return $row["tp_name"];
+        }
+        return "";
+    }
 }

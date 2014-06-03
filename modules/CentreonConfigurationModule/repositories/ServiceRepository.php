@@ -544,6 +544,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                             $args = "";
                         } 
                         if ($key == "template_model_stm_id") {
+                            $key = "use";
                             $value = ServicetemplateRepository::getTemplateName($value);
                         } 
                         if ($key == "contact_additive_inheritance") {

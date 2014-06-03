@@ -149,7 +149,13 @@ class WriteConfigFileRepository
             preg_match('/\/([a-zA-Z0-9\_\-\.]*\.cfg)/', $newFile, $matches);
             $newFile = str_replace($matches[1], "", $newFile); 
         }
-        $filesList[$type][] = $newFile;
+
+        if ($type == "cfg_dir" && count($filesList[$type]) == 0) {
+            $filesList[$type][] = $newFile;
+        } else if ($type != "cfg_dir") {
+            $filesList[$type][] = $newFile;
+        }
+        
     }
     
     /**

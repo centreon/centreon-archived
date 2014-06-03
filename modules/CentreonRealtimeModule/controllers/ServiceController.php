@@ -57,7 +57,8 @@ class ServiceController extends \Centreon\Internal\Controller
         /* Load css */
         $tpl->addCss('dataTables.css')
         	->addCss('dataTables.bootstrap.css')
-        	->addCss('dataTables-TableTools.css');
+            ->addCss('dataTables-TableTools.css')
+            ->addCss('jquery.qtip.min.css');
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
@@ -67,7 +68,8 @@ class ServiceController extends \Centreon\Internal\Controller
         	->addJs('jquery.dataTables.columnFilter.js')
         	->addJs('jquery.select2/select2.min.js')
         	->addJs('jquery.validate.min.js')
-        	->addJs('additional-methods.min.js');
+            ->addJs('additional-methods.min.js')
+            ->addJs('jquery.qtip.min.js');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
@@ -103,4 +105,16 @@ class ServiceController extends \Centreon\Internal\Controller
     public function serviceDetailAction()
     {
     }
+
+    /**
+     * Service tooltip
+     *
+     * @method get
+     * @route /realtime/service/[i:id]/tooltip
+     */
+    public function serviceTooltipAction()
+    {
+
+    }
+
 }

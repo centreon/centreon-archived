@@ -102,4 +102,15 @@ class HostController extends \Centreon\Internal\Controller
     {
 
     }
+
+    /**
+     * Host tooltip
+     *
+     * @method get
+     * @route /realtime/host/[i:id]/tooltip
+     */
+    public function hostTooltipAction()
+    {
+
+    }
 }
