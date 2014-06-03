@@ -57,36 +57,33 @@
   <div id="main">
   </div>
   {/block}
-  <nav class="navbar navbar-default navbar-static-bottom bottombar">
-  <div class="footer">
-      <div class="pull-left">Centreon - Copyright &copy; 2005 - 2014 Merethis</div>
-      <div class="pull-right">
-          <a href="#" id="footer-button"><i class="fa fa-chevron-circle-up"></i></a>
+  <div class="bottombar">
+      <div class="label-button pull-right">
+        Centreon &copy; 2005-2014 <a href="#" id="footer-button"><i class="fa fa-chevron-circle-up"></i></a>
       </div>
+      <div class="footer-extended">
+        <div>
+            <ul class="center-block list-inline">
+                <li><a href="http://documentation.centreon.com/">{t}Documentation{/t}</a></li>
+                <li><a href="http://forge.centreon.com/projects/centreon/issues/new">{t}Found a bug ?{/t}</a></li>
+                <li><a href="http://forge.centreon.com">{t}Forge{/t}</a></li>
+            </ul>
+        </div>
+        <div>
+            <ul class="center-block list-inline">
+                <li><a href="http://www.centreon.com/">Centreon</a></li>
+                <li><a href="http://www.merethis.com/">Merethis</a></li>
+            </ul>
+        </div>
+        <div>
+            <ul class="center-block list-inline">
+                <li><a href="https://twitter.com/Centreon"><i class="fa fa-twitter-square"></i></a></li>
+                <li><a href="https://plus.google.com/u/0/s/centreon"><i class="fa fa-google-plus-square"></i></a></li>
+                <li><a href="https://www.facebook.com/groups/6316094758/?fref=ts"><i class="fa fa-facebook-square"></i></a></li>
+            </ul>
+        </div>
+     </div>
   </div>
-  <div class="footer-extended">
-      <div>
-          <ul class="center-block list-inline">
-              <li><a href="http://documentation.centreon.com/">{t}Documentation{/t}</a></li>
-              <li><a href="http://forge.centreon.com/projects/centreon/issues/new">{t}Found a bug ?{/t}</a></li>
-              <li><a href="http://forge.centreon.com">{t}Forge{/t}</a></li>
-          </ul>
-      </div>
-      <div>
-          <ul class="center-block list-inline">
-              <li><a href="http://www.centreon.com/">Centreon</a></li>
-              <li><a href="http://www.merethis.com/">Merethis</a></li>
-          </ul>
-      </div>
-      <div>
-          <ul class="center-block list-inline">
-              <li><a href="https://twitter.com/Centreon"><i class="fa fa-twitter-square"></i></a></li>
-              <li><a href="https://plus.google.com/u/0/s/centreon"><i class="fa fa-google-plus-square"></i></a></li>
-              <li><a href="https://www.facebook.com/groups/6316094758/?fref=ts"><i class="fa fa-facebook-square"></i></a></li>
-          </ul>
-      </div>
-  </div>
-  </nav>
 </div>
 {foreach from=$jsBottomFileList item='jsFile'}
 {$jsFile|js}
