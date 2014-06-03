@@ -117,7 +117,9 @@ function generateMenu($elParent, menu, subLevelId, childId) {
             $childList.addClass('collapse').addClass('nav').addClass('submenu').appendTo($li);
             $childList.collapse({ toggle: false });
             generateMenu($childList, menu[i].children, subLevelId, childId);
-        }
+        } else if (childId === 0 && menu[i].menu_id == subLevelId) {
+            $li.addClass('active');
+	    }
     }
 }
 

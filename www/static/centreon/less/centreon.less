@@ -128,6 +128,19 @@ aside {
     .nav > li > a:hover {
         color: @navbar-default-link-hover-color;
     }
+
+    .nav > li.active {
+        border-left: @left-cursor-width solid #428bca;
+        font-weight: bold;
+
+        a {
+            color: #428bca;
+
+            span {
+                margin-left: 5px - @left-cursor-width;
+            }
+        }
+    }
 }
 
 .submenu {
