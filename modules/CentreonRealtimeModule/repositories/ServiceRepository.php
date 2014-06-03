@@ -35,6 +35,9 @@
 
 namespace CentreonRealtime\Repository;
 
+use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
+    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+
 /**
  * @author Sylvestre Ho <sho@merethis.com>
  * @package CentreonRealtime
@@ -82,7 +85,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      *
      * @var type 
      */
-    public static $additionalColumn = array();
+    public static $additionalColumn = array('h.host_id');
     
     /**
      *
@@ -203,10 +206,15 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 $myServiceSet['name'] = '';
             } else {
                 $previousHost = $myServiceSet['name'];
-                $myServiceSet['name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
-                    $myServiceSet['name']
-                ).'&nbsp;'.$myServiceSet['name'];
+                $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
+                $myServiceSet['name'] = '<span class="rt-tooltip">'.
+                    $icon.
+                    '&nbsp;'.$myServiceSet['name'].'</span>';
             }
+            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
+            $myServiceSet['description'] = '<span class="rt-tooltip">'.
+                $icon.
+                '&nbsp;'.$myServiceSet['description'].'</span>';
         }
     }
 }

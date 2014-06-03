@@ -266,7 +266,7 @@ abstract class Repository
         
         static::formatDatas($resultSet);
 
-        return self::arrayValuesRecursive(
+        $tmp = self::arrayValuesRecursive(
             \array_values(
                 \Centreon\Internal\Datatable::removeUnwantedFields(
                     static::$moduleName,
@@ -279,6 +279,8 @@ abstract class Repository
                 )
             )
         );
+        file_put_contents('/tmp/resultset', print_r($tmp,true));
+        return $tmp;
     }
     
     /**
