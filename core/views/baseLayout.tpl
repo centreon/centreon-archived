@@ -40,13 +40,13 @@
             <li><a href="#"><i class="fa fa-cog"></i> {t}Settings{/t}</a></li>
             <li><a href="#"><i class="fa fa-envelope"></i> {t}Messages{/t}</a></li>
             <li class='divider'></li>
-            <li>
+            <!-- <li>
               <div class="btn-group btn-group-sm">
                 <button type="button" class="btn btn-light">Light</button>
                 <button type="button" class="btn btn-dark">Dark</button>
               </div>
             </li>
-            <li class='divider'></li>
+            <li class='divider'></li> -->
             <li><a href="#" id="logout"><i class="glyphicon glyphicon-off"></i> {t}Logout{/t}</a></li>
           </ul>
         </li>
