@@ -77,7 +77,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         '<input id="allService" class="allService" type="checkbox">' => 'service_id',
         'Host Name' => 'name',
         'Name' => 'description',
+        'Ico' => "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
         'Status' => 'services.state',
+        'Last Check' => 'services.last_check',
+        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state) AS duration',
+        'Retry' => "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
         'Output' => 'services.output'
     );
     
@@ -95,7 +99,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         'service_id',
         'name',
         'description',
+        "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
+        'services.last_check',
         'services.state',
+        '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state) AS duration',
+        "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
         'services.output'
     );
     
@@ -119,6 +127,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         'none',
         'text',
         'text',
+        'none',
         array('select' => array(
                 'OK' => 0,
                 'Warning' => 1,
@@ -127,6 +136,9 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 'Pending' => 4
             )
         ),
+        'text',
+        'text',
+        'text',
         'text'
     );
     
@@ -181,6 +193,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         'none',
         'text',
         'text',
+        'text',
         array('select' => array(
                 'OK' => 0,
                 'Warning' => 1,
@@ -189,6 +202,9 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 'Pending' => 4
             )
         ),
+        'text', 
+        'text',
+        'text',
         'text'
     );
     
