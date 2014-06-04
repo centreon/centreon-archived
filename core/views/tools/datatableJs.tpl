@@ -7,6 +7,9 @@
             "bServerSide": true,
             "iDisplayLength": 25,
             "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
+            "oLanguage": {
+                "sLengthMenu": "_MENU_"
+            },
             "sPaginationType": "bootstrap",
             "bSortCellsTop": true,
             'sDom': "<'row'r<'clear'><'col-sm-6'l><'col-sm-6'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
@@ -44,6 +47,8 @@
                 {/foreach}
             ]
         });
+        
+        console.log($('#datatable{$object}_length label'));
     });
 
     setInterval(function () { 
