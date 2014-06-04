@@ -26,7 +26,6 @@
 						}
 					},
 					show: {
-						event: event.type,
 						ready: true
 					},
 					style: {
