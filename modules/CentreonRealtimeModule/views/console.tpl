@@ -28,6 +28,16 @@
 					show: {
 						event: event.type,
 						ready: true
+					},
+					style: {
+						classes: 'qtip-light qtip-boootstrap qtip-shadow centreon-qtip',
+						width: 'auto'
+					},
+					position: {
+						viewport: $(window),
+						adjust: {
+							screen: true
+						}
 					}
 				});
 			});

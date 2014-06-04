@@ -34,6 +34,10 @@
  */
 namespace CentreonRealtime\Controllers;
 
+use \CentreonRealtime\Repository\ServicedetailRepository,
+    \Centreon\Internal\Utils\Status,
+    \Centreon\Internal\Utils\Date;
+
 /**
  * Display service monitoring states
  *
@@ -58,7 +62,8 @@ class ServiceController extends \Centreon\Internal\Controller
         $tpl->addCss('dataTables.css')
         	->addCss('dataTables.bootstrap.css')
             ->addCss('dataTables-TableTools.css')
-            ->addCss('jquery.qtip.min.css');
+            ->addCss('jquery.qtip.min.css')
+            ->addCss('centreon.qtip.css');
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
@@ -114,7 +119,104 @@ class ServiceController extends \Centreon\Internal\Controller
      */
     public function serviceTooltipAction()
     {
-
+        $params = $this->getParams();
+        $rawdata = ServicedetailRepository::getRealtimeData($params['id']);
+        if (isset($rawdata[0])) {
+            $data = $this->transformRawData($rawdata[0]);
+            $this->tpl->assign('title', $rawdata[0]['host_name'] . ' - ' . $rawdata[0]['service_description']);
+            $this->tpl->assign('state', $rawdata[0]['state']);
+            $this->tpl->assign('data', $data);
+        } else {
+            $this->tpl->assign('error', sprintf(_('No data found for service id:%s'), $params['id']));
+        }
+        $this->tpl->display('file:[CentreonRealtimeModule]service_tooltip.tpl');
     }
 
+    /**
+     * Transform raw data
+     *
+     * @param array $rawdata
+     * @return array
+     */
+    protected function transformRawData($rawdata)
+    {
+        $data = array();
+
+       /* Instance */
+        $data[] = array(
+            'label' => _('Poller'),
+            'value' => $rawdata['instance_name']
+        ); 
+
+        /* State */
+        $data[] = array(
+            'label' => _('State'),
+            'value' => Status::numToString(
+                $rawdata['state'], 
+                Status::TYPE_SERVICE, 
+                true
+            ) . " (" . ($rawdata['state_type'] ? "HARD" : "SOFT") . ")"
+        );
+
+        /* Output */
+        $data[] = array(
+            'label' => _('Output'),
+            'value' => $rawdata['output']
+        );
+
+        /* Perfdata */
+        if ($rawdata['perfdata']) {
+            $perfdata = explode(' ', $rawdata['perfdata']);
+            foreach ($perfdata as &$perf) {
+                $perf = preg_replace(
+                    "/([a-zA-Z0-9_-]+)(=)(.*)/i",
+                    '<span class="btn btn-xs btn-info perfdata">$1</span>
+                    <span class="btn btn-xs btn-default perfdata">$3</span>',
+                    $perf
+                );
+            }
+            $data[] = array(
+                'label' => _('Performance'),
+                'value' => implode("<br />", $perfdata)
+            );
+        }
+
+        /* Acknowledged */
+        $data[] = array(
+            'label' => _('Acknowledged'),
+            'value' => $rawdata['acknowledged'] ? _('Yes') : _('No')
+        );
+
+        /* Downtime */
+        $data[] = array(
+            'label' => _('In downtime'),
+            'value' => $rawdata['scheduled_downtime_depth'] ? _('Yes') : _('No')
+        );
+
+        /* Latency */
+        $data[] = array(
+            'label' => _('Latency'),
+            'value' => $rawdata['latency'] . ' s'
+        );
+
+        /* Check period */
+        $data[] = array(
+            'label' => _('Check period'),
+            'value' => $rawdata['check_period']
+        );
+
+        /* Last check */
+        $data[] = array(
+            'label' => _('Last check'),
+            'value' => Date::format($rawdata['last_check'])
+        );
+
+        /* Next check */
+        $data[] = array(
+            'label' => _('Next check'),
+            'value' => Date::format($rawdata['next_check'])
+        );
+
+        return $data;
+    }
 }
