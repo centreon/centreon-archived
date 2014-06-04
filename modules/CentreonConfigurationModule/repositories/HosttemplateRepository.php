@@ -165,7 +165,6 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
 
     public static function getTripleChoice() {
         $content = array();
-        $content["host_max_check_attempts"] = 1;
         $content["host_active_checks_enabled"] = 1;
         $content["host_passive_checks_enabled"] = 1;
         $content["host_obsess_over_host"] = 1;
@@ -189,7 +188,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
 
         /* Field to not display */
         $disableField = static::getTripleChoice();
-        $field = "host_id, host_name, host_alias, host_address, display_name, host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, host_notification_interval, host_notification_options, timeperiod_tp_id2 AS notification_period, host_stalking_options, host_register ";
+        $field = "host_id, host_name, host_alias, host_address, display_name, host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, host_notification_interval, host_notification_options, cg_additive_inheritance, contact_additive_inheritance, timeperiod_tp_id2 AS notification_period, host_stalking_options, host_register ";
         
         /* Init Content Array */
         $content = array();
@@ -205,21 +204,44 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
             foreach ($row as $key => $value) {
                 if ($key == "host_id") {
                     $host_id = $row["host_id"];
+                    
+                    /* Get Template List */
+                    $tmpData["use"] = "generic-host";
                 } else if ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
                     } else {
                         $key = str_replace("host_", "", $key);
-                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg1') {
+
+                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
                             $args = $value;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
                             $value = CommandRepository::getCommandName($value).$args;
                             $args = "";
+                        }
+                        if ($key == 'check_period' || $key == 'notification_period') {
+                            $value = TimeperiodRepository::getPeriodName($value);
                         } 
-                        if ($key == "name") {
+                        if ($key == "contact_additive_inheritance") {
+                            $tmpContact = static::getContacts($host_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contacts"] = "+";
+                                }
+                                $tmpData["contacts"] .= $tmpContact; 
+                            }
+                        } else if ($key == "cg_additive_inheritance") {                            
+                            $tmpContact = static::getContactGroups($host_id);
+                            if ($tmpContact != "") {
+                                if ($value = 1) {
+                                    $tmpData["contact_groups"] = "+";
+                                }
+                                $tmpData["contact_groups"] .= $tmpContact; 
+                            }
+                        } else if ($key == "name") {
                             $tmpData[$key] = $value;
-                            $template = static::getTemplates($host_id);
+                            $template = HosttemplateRepository::getTemplates($host_id);
                             if ($template != "") {
                                 $tmpData["use"] = $template; 
                             }
@@ -260,6 +282,47 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         }
         return $hostTemplates;
     }
-    
+
+    public static function getContacts($host_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactList = "";
+
+        $query = "SELECT contact_alias FROM contact c, contact_host_relation ch WHERE host_host_id = '$host_id' AND c.contact_id = ch.contact_id ORDER BY contact_alias";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactList != "") {
+                $contactList .= ","; 
+            }
+            $contactList .= $row["contact_alias"];
+        }
+        return $contactList;
+    }
+
+    public static function getContactGroups($host_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        $contactgroupList = "";
+
+        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_host_relation cgh WHERE host_host_id = '$host_id' AND cg.cg_id = cgh.contactgroup_cg_id ORDER BY cg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($contactgroupList != "") {
+                $contactgroupList .= ","; 
+            }
+            $contactgroupList .= $row["cg_name"];
+        }
+        return $contactgroupList;
+    }    
 
 }

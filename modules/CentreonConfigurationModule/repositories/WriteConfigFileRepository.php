@@ -150,8 +150,16 @@ class WriteConfigFileRepository
             $newFile = str_replace($matches[1], "", $newFile); 
         }
 
-        if ($type == "cfg_dir" && count($filesList[$type]) == 0) {
-            $filesList[$type][] = $newFile;
+        if ($type == "cfg_dir") {
+            $flag = 0;
+            foreach ($filesList[$type] as $key => $value) {
+                if ($value == $newFile) {
+                    $flag = 1;
+                }
+            } 
+            if (!$flag) {
+                $filesList[$type][] = $newFile;
+            }
         } else if ($type != "cfg_dir") {
             $filesList[$type][] = $newFile;
         }

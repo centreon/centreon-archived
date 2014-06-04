@@ -170,7 +170,6 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
 
     public static function getTripleChoice() {
         $content = array();
-        $content["service_max_check_attempts"] = 1;
         $content["service_active_checks_enabled"] = 1;
         $content["service_passive_checks_enabled"] = 1;
         $content["service_obsess_over_host"] = 1;
@@ -198,7 +197,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
 
         /* Field to not display */
         $disableField = static::getTripleChoice();
-        $field = "service_id, service_description, service_alias, service_template_model_stm_id, command_command_id AS check_command, command_command_id_arg, timeperiod_tp_id AS check_period, command_command_id2 AS event_handler, command_command_id_arg2, timeperiod_tp_id2 AS notification_period, display_name, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, service_notification_options, service_notifications_enabled, service_first_notification_delay, service_stalking_options ";
+        $field = "service_id, service_description, service_alias, service_template_model_stm_id, command_command_id_arg, command_command_id AS check_command, timeperiod_tp_id AS check_period,  command_command_id_arg2, command_command_id2 AS event_handler, timeperiod_tp_id2 AS notification_period, display_name, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, service_notification_options, service_notifications_enabled, service_first_notification_delay, service_stalking_options ";
         
         /* Init Content Array */
         $content = array();
@@ -215,6 +214,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                 if ($key == "service_id") {
                     $service_id = $row["service_id"];
                 } else if ((!isset($disableField[$key]) && $value != "")) {
+                    $writeParam = 1;
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
                     } else {
@@ -231,11 +231,12 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                         if ($key == 'retry_check_interval') {
                             $key = "retry_interval";
                         }
-                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
+                        if ($key == 'command_command_id_arg' || $key == 'command_command_id_arg2') {
                             $args = $value;
+                            $writeParam = 0;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandRepository::getCommandName($value).$args;
+                            $value = CommandRepository::getCommandName($value).html_entity_decode($args);
                             $args = "";
                         } 
                         if ($key == 'check_period' || $key == 'notification_period') {
@@ -263,7 +264,9 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                                 $tmpData["contactgroups"] .= $tmpContact; 
                             }
                         }
-                        $tmpData[$key] = $value;
+                        if ($writeParam == 1) {
+                            $tmpData[$key] = $value;
+                        }
                     }
                 }
             }
