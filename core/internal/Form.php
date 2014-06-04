@@ -309,7 +309,7 @@ class Form
                                     solo: "true"
                                 },
                                 style: {
-                                    classes: "qtip-shadow qtip-rounded qtip-bootstrap"
+                                    classes: "qtip-bootstrap"
                                 },
                                 hide: {
                                     event: "unfocus"
