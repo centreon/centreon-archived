@@ -60,6 +60,7 @@ class LoginController extends \Centreon\Internal\Controller
         
         $tmpl->assign('csrf', \Centreon\Internal\Form::getSecurityToken());
         $tmpl->assign('redirect', $redirectUrl);
+        $tmpl->assign('base_url', $di->get('config')->get('global', 'base_url'));
         $tmpl->display('file:[CentreonSecurityModule]login.tpl');
     }
 

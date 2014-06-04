@@ -79,9 +79,8 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
      * Action to get info a specific host
      * @param    int   $id    ID of object
      * @param    mixed   $host    Name of object
-     * @param    string   $ipAddress
      */
-    public function showAction($host, $ipAddress)
+    public function showAction($host)
     {
         /*
          * Query parameter

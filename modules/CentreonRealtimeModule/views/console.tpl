@@ -26,8 +26,17 @@
 						}
 					},
 					show: {
-						event: event.type,
 						ready: true
+					},
+					style: {
+						classes: 'qtip-bootstrap centreon-qtip',
+						width: 'auto'
+					},
+					position: {
+						viewport: $(window),
+						adjust: {
+							screen: true
+						}
 					}
 				});
 			});
