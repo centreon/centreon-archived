@@ -29,7 +29,7 @@
 						ready: true
 					},
 					style: {
-						classes: 'qtip-light qtip-boootstrap qtip-shadow centreon-qtip',
+						classes: 'qtip-bootstrap centreon-qtip',
 						width: 'auto'
 					},
 					position: {
