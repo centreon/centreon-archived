@@ -1,0 +1,61 @@
+#!/usr/bin/php -q
+<?php
+
+    require_once "../../core/commandLine/bootstrap.php";
+
+    // Init Var
+    $parametersLine = null;
+    $helpMode = false;
+    $requireAuthentication = false;
+
+    // Get Options
+    $shortOpts = "hu::p::";
+    $options = getopt($shortOpts);
+
+    // Remove options from the list of arguments
+    foreach($options as $o => $a)
+    {
+        while($k = array_search("-" . $o . $a, $argv))
+        {
+            if ($k) {
+                unset($argv[$k]);
+            }
+            if (preg_match("/^.*".$o.":.*$/i", $shortOpts)) {
+                unset($argv[$k+1]);
+            }
+        }
+    }
+    $argv = array_merge( $argv );
+
+    // Get Arguments
+    $requestLine = $argv[1];
+    if (isset($argv[2])) {
+        $parametersLine = $argv[2];
+    }
+
+    // Check Options
+    if (isset($options['h'])) {
+        $helpMode = true;
+    }
+    if (isset($options['u'])) {
+        $requireAuthentication = true;
+    }
+
+    try {
+        $commandeLineManager = new \Centreon\Internal\Command($requestLine, $parametersLine);
+        if ($helpMode) {
+            $commandeLineManager->getHelp();
+        } else {
+            if ($requireAuthentication) {
+                $password = '';
+                if (isset($options['p'])) {
+                    $password = $options['p'];
+                }
+                $commandeLineManager->authenticate($options['u'], $password);
+            }
+            $commandeLineManager->executeRequest();
+        }
+    } catch(\Exception $e) {
+        echo '[Error ' . $e->getCode() . '] => ' . $e->getMessage() . "\n";
+    }
+?>

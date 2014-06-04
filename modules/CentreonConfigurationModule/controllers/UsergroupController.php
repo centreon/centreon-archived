@@ -124,6 +124,28 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     {
         parent::editAction(); 
     }
+    
+    /**
+     * Enable action for contact
+     * 
+     * @method post
+     * @route /configuration/usergroup/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('cg_activate');
+    }
+    
+    /**
+     * Disable action for contact
+     * 
+     * @method post
+     * @route /configuration/usergroup/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('cg_activate');
+    }
 
     /**
      * Get list of contacts for a specific contact group

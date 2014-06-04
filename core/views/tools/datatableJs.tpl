@@ -7,6 +7,9 @@
             "bServerSide": true,
             "iDisplayLength": 25,
             "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
+            "oLanguage": {
+                "sLengthMenu": "_MENU_"
+            },
             "sPaginationType": "bootstrap",
             "bSortCellsTop": true,
             'sDom': "<'row'r<'clear'><'col-sm-6'l><'col-sm-6'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
@@ -44,6 +47,8 @@
                 {/foreach}
             ]
         });
+        
+        console.log($('#datatable{$object}_length label'));
     });
 
     setInterval(function () { 
@@ -388,6 +393,152 @@
         });
 
         $('#modal').modal();
+    });
+    {/if}
+
+    /* Enable modal */
+    {if isset($objectEnableUrl)}
+    $('#modalEnable').on('click', function(e) {
+        e.preventDefault();
+        $('#modal .modal-content').text('');
+
+        /* Enable modal header */
+        var $EnableHeader = $('<div></div>').addClass('modal-header');
+        $('<button></button>')
+            .attr('type', 'button')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('close')
+            .html('&times;')
+            .appendTo($EnableHeader);
+        $('<h4></h4>').addClass('modal-title').text("{t}Enable{/t}").appendTo($EnableHeader);
+        $EnableHeader.appendTo('#modal .modal-content');
+
+        /* Enable modal body */
+        var $EnableBody = $('<div></div>').addClass('modal-body');
+        $('<span></span>').text('{t}Are you sure to Enable ?{/t}').appendTo($EnableBody);
+        var $listElement = $('<ul></ul>').addClass('list-unstyled');
+        $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').each(function(k, v) {
+            $('<li></li>').html($(v).data('name')).appendTo($listElement);
+        });
+        $listElement.appendTo($EnableBody);
+        $EnableBody.appendTo('#modal .modal-content');
+
+        var $EnableFooter = $('<div></div>').addClass('modal-footer');
+        $('<a></a>')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('btn').addClass('btn-default')
+            .text('{t}Cancel{/t}')
+            .appendTo($EnableFooter);
+        var $EnableBtn = $('<button></button>')
+            .attr('type', 'button')
+            .addClass('btn')
+            .addClass('btn-danger')
+            .text('{t}Enable{/t}')
+            .appendTo($EnableFooter);
+        $EnableFooter.appendTo('#modal .modal-content');
+        $EnableBtn.on('click', function(e) {
+            var ids = [];
+            $.each($('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked'), function(k, v) {
+                ids.push($(v).val());
+            });
+            $.ajax({
+                url: '{url_for url=$objectEnableUrl}',
+                type: 'POST',
+                data: {
+                    'ids': ids
+                },
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    $('#modal').modal('hide');
+                    alertClose();
+                    if (data.success) {
+                        $('.dataTable').dataTable().fnDraw();
+                        alertMessage('{t}The objects have been successfully Enabled{/t}', 'alert-success');
+                    } else {
+                        alertMessage(data.errorMessage, 'alert-danger');
+                    }
+                }
+            });
+        });
+        
+        $('#modal')
+            .removeData('bs.modal')
+            .modal();
+    });
+    {/if}
+
+    /* Disable modal */
+    {if isset($objectDisableUrl)}
+    $('#modalDisable').on('click', function(e) {
+        e.preventDefault();
+        $('#modal .modal-content').text('');
+
+        /* Disable modal header */
+        var $DisableHeader = $('<div></div>').addClass('modal-header');
+        $('<button></button>')
+            .attr('type', 'button')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('close')
+            .html('&times;')
+            .appendTo($DisableHeader);
+        $('<h4></h4>').addClass('modal-title').text("{t}Disable{/t}").appendTo($DisableHeader);
+        $DisableHeader.appendTo('#modal .modal-content');
+
+        /* Disable modal body */
+        var $DisableBody = $('<div></div>').addClass('modal-body');
+        $('<span></span>').text('{t}Are you sure to Disable ?{/t}').appendTo($DisableBody);
+        var $listElement = $('<ul></ul>').addClass('list-unstyled');
+        $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').each(function(k, v) {
+            $('<li></li>').html($(v).data('name')).appendTo($listElement);
+        });
+        $listElement.appendTo($DisableBody);
+        $DisableBody.appendTo('#modal .modal-content');
+
+        var $DisableFooter = $('<div></div>').addClass('modal-footer');
+        $('<a></a>')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('btn').addClass('btn-default')
+            .text('{t}Cancel{/t}')
+            .appendTo($DisableFooter);
+        var $DisableBtn = $('<button></button>')
+            .attr('type', 'button')
+            .addClass('btn')
+            .addClass('btn-danger')
+            .text('{t}Disable{/t}')
+            .appendTo($DisableFooter);
+        $DisableFooter.appendTo('#modal .modal-content');
+        $DisableBtn.on('click', function(e) {
+            var ids = [];
+            $.each($('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked'), function(k, v) {
+                ids.push($(v).val());
+            });
+            $.ajax({
+                url: '{url_for url=$objectDisableUrl}',
+                type: 'POST',
+                data: {
+                    'ids': ids
+                },
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    $('#modal').modal('hide');
+                    alertClose();
+                    if (data.success) {
+                        $('.dataTable').dataTable().fnDraw();
+                        alertMessage('{t}The objects have been successfully Disabled{/t}', 'alert-success');
+                    } else {
+                        alertMessage(data.errorMessage, 'alert-danger');
+                    }
+                }
+            });
+        });
+        
+        $('#modal')
+            .removeData('bs.modal')
+            .modal();
     });
     {/if}
 </script>
