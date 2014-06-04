@@ -51,6 +51,8 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
         'service_contactgroups' => '\CentreonConfiguration\Models\Relation\Service\Contactgroup',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List servicetemplates
@@ -172,6 +174,28 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for service template
+     * 
+     * @method post
+     * @route /configuration/servicetemplate/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('service_activate');
+    }
+    
+    /**
+     * Disable action for service template
+     * 
+     * @method post
+     * @route /configuration/servicetemplate/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('service_activate');
     }
     
     /**

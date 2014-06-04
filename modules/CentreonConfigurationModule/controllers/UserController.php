@@ -49,6 +49,8 @@ class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
         'contact_servicecommands' => '\CentreonConfiguration\Models\Relation\Contact\Servicecommand',
         'contact_aclgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Contact'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List users
@@ -170,6 +172,28 @@ class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for contact
+     * 
+     * @method post
+     * @route /configuration/user/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('contact_activate');
+    }
+    
+    /**
+     * Disable action for contact
+     * 
+     * @method post
+     * @route /configuration/user/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('contact_activate');
     }
 
     /**

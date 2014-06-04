@@ -45,6 +45,8 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     public static $relationMap = array(
         'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List hostgroups
@@ -170,7 +172,7 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
 
     /**
-     * Delete action for host
+     * Delete action for hostgroup
      *
      * @method post
      * @route /configuration/hostgroup/delete
@@ -178,6 +180,28 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for hostcategory
+     * 
+     * @method post
+     * @route /configuration/hostgroup/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('hg_activate');
+    }
+    
+    /**
+     * Disable action for hostgroup
+     * 
+     * @method post
+     * @route /configuration/hostgroup/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('hg_activate');
     }
     
     /**
