@@ -34,6 +34,9 @@
  */
 namespace CentreonRealtime\Controllers;
 
+use \Centreon\Internal\Utils\Datetime,
+    \Centreon\Internal\Utils\Status;
+
 /**
  * Display the logs of nagios
  *
@@ -101,22 +104,22 @@ class IncidentsController extends \Centreon\Internal\Controller
             $lastDateCount++;
 
             /* Convert to human readable the duration */
-            $incident['duration'] = \Centreon\Internal\Datetime::humanReadable(
+            $incident['duration'] = Datetime::humanReadable(
                 time() - strtotime($incident['start_time']),
-                \Centreon\Internal\Datetime::PRECISION_FORMAT,
+                Datetime::PRECISION_FORMAT,
                 2
             );
             /* Translate the status */
             if (false === is_null($incident['service_id'])) {
-                $incident['status'] = \Centreon\Internal\Utils\Status::numToString(
+                $incident['status'] = Status::numToString(
                     $incident['state'],
-                    \Centreon\Internal\Utils\Status::TYPE_SERVICE,
+                    Status::TYPE_SERVICE,
                     true
                 );
             } else {
-                $incident['status'] = \Centreon\Internal\Utils\Status::numToString(
+                $incident['status'] = Status::numToString(
                     $incident['state'],
-                    \Centreon\Internal\Utils\Status::TYPE_HOST,
+                    Status::TYPE_HOST,
                     true
                 );
             }
@@ -226,7 +229,7 @@ class IncidentsController extends \Centreon\Internal\Controller
                     'name' => $fullname,
                     'status' => self::getCssStatus($incident['state']),
                     'output' => $incident['output'],
-                    'last_update' => date('Y-m-d H:i:s', $incident['last_state_change']),
+                    'last_update' => Datetime::format($incident['last_state_change']),
                     'has_children' => $incident['nb_children'] > 0 ? true : false,
                     'has_parent' => $incident['nb_parents'] > 0 ? true : false,
                     'parents' => array_map(function($values) {
@@ -254,7 +257,7 @@ class IncidentsController extends \Centreon\Internal\Controller
                         'name' => $fullname,
                         'status' => self::getCssStatus($child['state']),
                         'output' => $child['output'],
-                        'last_update' => date('Y-m-d H:i:s', $child['last_state_change']),
+                        'last_update' => Datetime::format($child['last_state_change']),
                         'has_children' => $child['nb_children'] > 0 ? true : false,
                         'has_parent' => $child['nb_parents'] > 0 ? true : false
                     );
@@ -265,13 +268,13 @@ class IncidentsController extends \Centreon\Internal\Controller
                 $statusList = array();
                 foreach ($status as $tmp) {
                     if (false === is_null($tmp['service_id'])) {
-                        $statusType = \Centreon\Internal\Utils\Status::TYPE_SERVICE;
+                        $statusType = Status::TYPE_SERVICE;
                     } else {
-                        $statusType = \Centreon\Internal\Utils\Status::TYPE_HOST;
+                        $statusType = Status::TYPE_HOST;
                     }
                     $statusList[] = array(
                         'id' => $tmp['state'],
-                        'text' => \Centreon\Internal\Utils\Status::numToString(
+                        'text' => Status::numToString(
                             $tmp['state'],
                             $statusType,
                             true

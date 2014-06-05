@@ -30,30 +30,44 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
  */
 namespace Centreon\Internal\Utils;
 
 /**
- * Utils class for managing dates
+ * Class for simulate DateInterval and fix bug https://bugs.php.net/bug.php?id=45545
  *
- * @author Sylvestre Ho
- * @package Centreon
- * @subpackage Utils
+ * @authors Maximilien Bersoult
+ * @package CentreonRealtime
+ * @subpackage Controllers
  */
-class Date
+class DateInterval
 {
+    public $y = 0;
+    public $m = 0;
+    public $d = 0;
+    public $h = 0;
+    public $i = 0;
+    public $s = 0;
+
     /**
-     * Format date depending on locale
+     * Constructor
      *
-     * @param int $timestamp Unix timestamp
-     * @return string
-     * @todo handle other locales
+     * Load a interval from a time in second
+     *
+     * @param int $timestamp time in second
      */
-    public static function format($timestamp)
+    public function __construct($timestamp)
     {
-        $format = 'Y-m-d H:i:s';
-        $date = date($format, $timestamp);
-        return $date;
+        $this->y = intval($timestamp / (60 * 60 * 24 * 365));
+        $timestamp -= $this->y * 60 * 60 * 24 * 365;
+        $this->m = intval($timestamp / (60 * 60 * 24 * 30));
+        $timestamp -= $this->m * 60 * 60 * 24 * 30;
+        $this->d = intval($timestamp / (60 * 60 * 24));
+        $timestamp -= $this->d * 60 * 60 * 24;
+        $this->h = intval($timestamp / (60 * 60));
+        $timestamp -= $this->h * 60 * 60;
+        $this->i = intval($timestamp / 60);
+        $timestamp -= $this->i * 60;
+        $this->s = $timestamp;
     }
 }
