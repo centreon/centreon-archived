@@ -42,4 +42,11 @@
 			</block>
 		</section>
 	</form>
+    <wizard name="add_servicecategory">
+		<route>/configuration/servicecategory/add</route>
+		<step name="General">
+			<field name="sc_name" mandatory="1"></field>
+			<field name="sc_alias" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>
