@@ -36,7 +36,7 @@ namespace CentreonRealtime\Controllers;
 
 use \CentreonRealtime\Repository\HostdetailRepository,
     \Centreon\Internal\Utils\Status,
-    \Centreon\Internal\Utils\Date;
+    \Centreon\Internal\Utils\Datetime;
 
 
 /**
@@ -194,13 +194,13 @@ class HostController extends \Centreon\Internal\Controller
         /* Last check */
         $data[] = array(
             'label' => _('Last check'),
-            'value' => Date::format($rawdata['last_check'])
+            'value' => Datetime::format($rawdata['last_check'])
         );
 
         /* Next check */
         $data[] = array(
             'label' => _('Next check'),
-            'value' => Date::format($rawdata['next_check'])
+            'value' => Datetime::format($rawdata['next_check'])
         );
 
         return $data;

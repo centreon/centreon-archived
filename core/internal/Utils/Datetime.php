@@ -99,6 +99,20 @@ class Datetime
         }
         return $formatedStr;
     }
+
+    /**
+     * Convert timestamp into human readable date time
+     *
+     * @param int $timestamp
+
+     * @todo handle locales
+     */
+    public static function format($timestamp)
+    {
+        $format = 'Y-m-d H:i:s';
+        $datetime = date($format, $timestamp);
+        return $datetime;
+    }
 }
 
 /**

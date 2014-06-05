@@ -101,9 +101,9 @@ class IncidentsController extends \Centreon\Internal\Controller
             $lastDateCount++;
 
             /* Convert to human readable the duration */
-            $incident['duration'] = \Centreon\Internal\Datetime::humanReadable(
+            $incident['duration'] = \Centreon\Internal\Utils\Datetime::humanReadable(
                 time() - strtotime($incident['start_time']),
-                \Centreon\Internal\Datetime::PRECISION_FORMAT,
+                \Centreon\Internal\Utils\Datetime::PRECISION_FORMAT,
                 2
             );
             /* Translate the status */
