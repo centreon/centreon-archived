@@ -127,7 +127,7 @@ sub get_oids {
         if (defined($ref_result->{$_}->{traps_advanced_treatment}) && $ref_result->{$_}->{traps_advanced_treatment} == 1) {
             ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties
                                             LEFT JOIN service_categories ON (service_categories.sc_id = traps_matching_properties.severity_id)
-                                            WHERE trap_id = " . $_ . " ORDER BY tmo_id ASC");
+                                            WHERE trap_id = " . $_ . " ORDER BY tmo_order ASC");
             return -1 if ($dstatus == -1);
             $ref_result->{$_}->{traps_matching_properties} = $sth->fetchall_hashref("tmo_id");
         }
