@@ -31,7 +31,7 @@
  *
  * For more information : contact@centreon.com
  */
-namespace Centreon\Internal;
+namespace Centreon\Internal\Utils;
 
 /**
  * Class for funtions to manipulate date and time
