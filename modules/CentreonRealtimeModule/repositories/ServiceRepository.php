@@ -36,7 +36,8 @@
 namespace CentreonRealtime\Repository;
 
 use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
-    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository,
+    \Centreon\Internal\Utils\Datetime;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -231,6 +232,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
             $myServiceSet['description'] = '<span class="rt-tooltip">'.
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span>';
+            $myServiceSet['duration'] = Datetime::humanReadable(
+                                                                $myServiceSet['duration'],
+                                                                Datetime::PRECISION_FORMAT,
+                                                                2
+                                                                ); 
         }
     }
 }
