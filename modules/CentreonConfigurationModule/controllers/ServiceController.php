@@ -73,7 +73,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function formListAction()
     {
-        $di = \Centreon\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
         $requestParams = $this->getParams('get');
