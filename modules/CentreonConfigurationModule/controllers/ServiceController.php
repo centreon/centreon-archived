@@ -52,6 +52,8 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
         'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Service'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List services
@@ -203,7 +205,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     }
 
     /**
-     * Delete action for hosttemplate
+     * Delete action for service
      *
      * @method post
      * @route /configuration/service/delete
@@ -211,6 +213,28 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for service
+     * 
+     * @method post
+     * @route /configuration/service/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('service_activate');
+    }
+    
+    /**
+     * Disable action for service
+     * 
+     * @method post
+     * @route /configuration/service/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('service_activate');
     }
     
     /**

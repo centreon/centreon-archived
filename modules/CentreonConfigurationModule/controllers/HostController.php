@@ -60,6 +60,8 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List hosts
@@ -423,22 +425,22 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     /**
      * Enable action for host
      * 
-     * @method get
-     * @route /configuration/host/[i:id]/enable
+     * @method post
+     * @route /configuration/host/enable
      */
     public function enableAction()
     {
-        parent::enableAction();
+        parent::enableAction('host_activate');
     }
     
     /**
      * Disable action for host
      * 
-     * @method get
-     * @route /configuration/host/[i:id]/disable
+     * @method post
+     * @route /configuration/host/disable
      */
     public function disableAction()
     {
-        parent::disableAction();
+        parent::disableAction('host_activate');
     }
 }

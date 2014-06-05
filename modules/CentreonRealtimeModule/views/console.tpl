@@ -7,4 +7,39 @@
 {/block}
 {block name="javascript-bottom" append}
 	{datatablejs module=$moduleName object=$objectName objectUrl=$objectListUrl}
+	<script>
+		$(function() {
+			$(document).delegate('.rt-tooltip', 'mouseover', function() {
+				var url = $(this).parent("a").attr("href");
+				$(this).qtip({
+					overwrite: false,
+					content: {
+						text: function(event, api) {
+							$.ajax({
+								url: url + '/tooltip'
+							})
+							.then(function(content) {
+								api.set('content.text', content);
+							}, function(xhr, status, error) {
+								api.set('content.text', status + ':' + error);
+							});
+						}
+					},
+					show: {
+						ready: true
+					},
+					style: {
+						classes: 'qtip-bootstrap centreon-qtip',
+						width: 'auto'
+					},
+					position: {
+						viewport: $(window),
+						adjust: {
+							screen: true
+						}
+					}
+				});
+			});
+		});
+	</script>
 {/block}

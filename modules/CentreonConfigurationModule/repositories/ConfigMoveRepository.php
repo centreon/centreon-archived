@@ -33,36 +33,45 @@
  *
  */
 
-namespace CentreonConfiguration\Api\Rest;
+namespace  CentreonConfiguration\Repository;
 
 /**
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers                                   
+ * Factory for ConfigTest Engine
+ *
+ * @author Julien Mathis <jmathis@merethis.com>
+ * @version 3.0.0
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+
+class ConfigMoveRepository
 {
-    /**
-     * Action for Generating configuration files
-     *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+    private $di;
+    private $stdout;
+    private $status;
+    private $warning;
+    
+    /*
+     * Methode tests
+     * @return value
      */
-    public function generateAction()
+    public function __construct($poller_id) 
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
+        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->status = true;
+        $this->warning = false;
+    }
 
-        $param = $router->request()->paramsNamed();
+    public function moveConfig($poller_id) 
+    {
+        /* Get Path */
+        $config = $this->di->get('config');
+        $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
-
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+        system("rm -rf /etc/centreon-engine/");
+        system("cp -Rf $tmpdir/$poller_id/* /etc/centreon-engine/");
+        
+        /* return status */
+        return array(
+                     'status' => $this->status, 
+                     'stdout' => $this->stdout);
     }
 }

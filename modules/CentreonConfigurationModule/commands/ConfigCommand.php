@@ -33,36 +33,38 @@
  *
  */
 
-namespace CentreonConfiguration\Api\Rest;
+namespace CentreonConfiguration\Commands;
 
 /**
  * @authors Julien Mathis
  * @package Centreon
  * @subpackage Controllers                                   
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+class ConfigCommand extends \Centreon\Internal\Command\AbstractCommand
 {
     /**
      * Action for Generating configuration files
-     *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+     * @param type $id
      */
-    public function generateAction()
+    public function generateAction($id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
+        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($id);
+        echo $obj->getStepStatus();
+    }
 
-        $param = $router->request()->paramsNamed();
+    /**
+     * Action for Move configuration files
+     */
+    public function moveAction()
+    {
+        echo "Not implemented yet";
+    }
 
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
-
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+    /**
+     * Action for testing configuration files
+     */
+    public function testAction()
+    {
+        echo "Not implemented yet";
     }
 }

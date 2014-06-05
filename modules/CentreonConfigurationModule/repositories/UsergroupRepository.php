@@ -143,4 +143,37 @@ class UsergroupRepository extends \CentreonConfiguration\Repository\Repository
             )
         )
     );
+
+    public static function generateUserGroup(& $filesList, $poller_id, $path, $filename) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT cg_name, cg_alias FROM contactgroup WHERE cg_activate = '1' ORDER BY cg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "contactgroup");
+            $tmpData = array();
+            foreach ($row as $key => $value) {
+                if ($key == 'cg_name') {
+                    $key = 'contactgroup_name';
+                }
+                $key = str_replace("cg_", "", $key);
+                $tmpData[$key] = $value;
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */    
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        unset($content);
+    }
 }

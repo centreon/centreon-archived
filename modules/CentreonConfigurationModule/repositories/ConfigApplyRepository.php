@@ -33,36 +33,65 @@
  *
  */
 
-namespace CentreonConfiguration\Api\Rest;
+namespace  CentreonConfiguration\Repository;
 
 /**
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers                                   
+ * Factory for ConfigTest Engine
+ *
+ * @author Julien Mathis <jmathis@merethis.com>
+ * @version 3.0.0
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+
+class ConfigApplyRepository
 {
-    /**
-     * Action for Generating configuration files
-     *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+    private $di;
+    private $stdout;
+    private $output;
+    private $status;
+    
+    /*
+     * Methode tests
+     * @return value
      */
-    public function generateAction()
+    public function __construct($poller_id) 
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
+        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->status = true;
+        $this->warning = false;
+    }
 
-        $param = $router->request()->paramsNamed();
+    public function action($poller_id, $method) 
+    {
+        $this->$method($poller_id);
+    }
 
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
+    public function applyConfig($poller_id, $method) 
+    {
+        $command = "sudo /etc/init.d/centengine $method";
 
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+        /* Launch Command */
+        $this->stdout = exec($command, $this->output, $this->status);
+        $this->stdout = htmlentities($this->stdout);
+
+        /* Return status */
+        return array(
+                     'status' => $this->status, 
+                     'command_line' => $command,
+                     'stdout' => $this->stdout);
+    }
+
+    public function restart($poller_id) 
+    {
+        return static::applyConfig($poller_id, "restart");
+    }
+
+    public function reload($poller_id) 
+    {
+        return static::applyConfig($poller_id, "reload");
+    }
+
+    public function forcereload($poller_id) 
+    {
+        return static::applyConfig($poller_id, "force-reload");
     }
 }

@@ -79,19 +79,24 @@ class ConfigGenerateRepository
         ConfigGenerateTimeperiodRepository::generateTimeperiod($this->filesDir, $poller_id, $this->path, "timeperiods.cfg");
         ConnectorRepository::generateConnectors($this->filesDir, $poller_id, $this->path, "connectors.cfg");
 
+        UserRepository::generateUser($this->filesDir, $poller_id, $this->path, "objects/contacts.cfg");
+        UsergroupRepository::generateUserGroup($this->filesDir, $poller_id, $this->path, "objects/contactgroups.cfg");
+
         /* Generate config Object */
-        HostgroupRepository::generateHostgroup($this->filesDir, $poller_id, $this->path, "/objects/hostgroups.cfg");
-        ServicegroupRepository::generateServicegroup($this->filesDir, $poller_id, $this->path, "/objects/servicegroups.cfg");
+        HostgroupRepository::generateHostgroup($this->filesDir, $poller_id, $this->path, "objects/hostgroups.cfg");
+        ServicegroupRepository::generateServicegroup($this->filesDir, $poller_id, $this->path, "objects/servicegroups.cfg");
 
         /* Templates config files */
-        HosttemplateRepository::generateHostTemplates($this->filesDir, $poller_id, $this->path, "/objects/hostTemplates.cfg");
-        ServicetemplateRepository::generateServiceTemplates($this->filesDir, $poller_id, $this->path, "/objects/serviceTemplates.cfg");
+        HosttemplateRepository::generateHostTemplates($this->filesDir, $poller_id, $this->path, "objects/hostTemplates.cfg");
+        ServicetemplateRepository::generateServiceTemplates($this->filesDir, $poller_id, $this->path, "objects/serviceTemplates.cfg");
 
-        /* Monitoring Object files */
-        HostRepository::generateHosts($this->filesDir, $poller_id, $this->path, "/objects/");
+        /* Monitoring Resources files */
+        HostRepository::generateHosts($this->filesDir, $poller_id, $this->path, "resources/");
 
         /* Generate Main File */
-        ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "/centengine.cfg");
+        ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "centengine.cfg");
+        /* Generate Debugging Main File */
+        ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "centengine-testing.cfg", 1);
 
         /*
          * Create Buffers for objects

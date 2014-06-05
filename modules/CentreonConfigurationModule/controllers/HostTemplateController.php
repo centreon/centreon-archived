@@ -86,6 +86,8 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List hosts
@@ -458,5 +460,27 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for host template
+     * 
+     * @method post
+     * @route /configuration/hosttemplate/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('host_activate');
+    }
+    
+    /**
+     * Disable action for host template
+     * 
+     * @method post
+     * @route /configuration/hosttemplate/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('host_activate');
     }
 }

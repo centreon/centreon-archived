@@ -45,6 +45,8 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
         'hc_hosts' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
         'hc_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List hostcategories
@@ -179,6 +181,28 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for hostcategory
+     * 
+     * @method post
+     * @route /configuration/hostcategory/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('hc_activate');
+    }
+    
+    /**
+     * Disable action for hostcategory
+     * 
+     * @method post
+     * @route /configuration/hostcategory/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('hc_activate');
     }
 
     /**

@@ -32,37 +32,28 @@
  * For more information : contact@centreon.com
  *
  */
-
-namespace CentreonConfiguration\Api\Rest;
+namespace Centreon\Internal\Utils;
 
 /**
- * @authors Julien Mathis
+ * Utils class for managing dates
+ *
+ * @author Sylvestre Ho
  * @package Centreon
- * @subpackage Controllers                                   
+ * @subpackage Utils
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+class Date
 {
     /**
-     * Action for Generating configuration files
+     * Format date depending on locale
      *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+     * @param int $timestamp Unix timestamp
+     * @return string
+     * @todo handle other locales
      */
-    public function generateAction()
+    public static function format($timestamp)
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        $param = $router->request()->paramsNamed();
-
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
-
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+        $format = 'Y-m-d H:i:s';
+        $date = date($format, $timestamp);
+        return $date;
     }
 }

@@ -33,36 +33,36 @@
  *
  */
 
-namespace CentreonConfiguration\Api\Rest;
+namespace CentreonRealtime\Repository;
 
 /**
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers                                   
+ * Repository for service data
+ *
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @version 3.0.0
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+class ServicedetailRepository
 {
     /**
-     * Action for Generating configuration files
-     *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+     * Get real time data of a service
+     * 
+     * @param int $serviceId
+     * @return array
      */
-    public function generateAction()
+    public static function getRealtimeData($serviceId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        $param = $router->request()->paramsNamed();
-
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
-
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+        $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
+        $sql = 'SELECT h.name as host_name, s.acknowledged, s.scheduled_downtime_depth, s.output, s.latency,
+            s.last_check, s.next_check, s.check_period, i.name as instance_name, s.state, 
+            s.description as service_description, s.state_type, s.perfdata
+            FROM hosts h, services s, instances i
+            WHERE i.instance_id = h.instance_id
+            AND h.host_id = s.host_id
+            AND s.enabled = 1
+            AND s.service_id = ?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($serviceId));
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
+

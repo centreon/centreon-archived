@@ -48,6 +48,8 @@ class ContacttemplateController extends \CentreonConfiguration\Controllers\Objec
         'contact_hostcommands' => '\CentreonConfiguration\Models\Relation\Contact\Hostcommand',
         'contact_servicecommands' => '\CentreonConfiguration\Models\Relation\Contact\Servicecommand'
     );
+    
+    public static $isDisableable = true;
 
     /**
      * List contact templates
@@ -169,6 +171,28 @@ class ContacttemplateController extends \CentreonConfiguration\Controllers\Objec
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+    
+    /**
+     * Enable action for contact template
+     * 
+     * @method post
+     * @route /configuration/contacttemplate/enable
+     */
+    public function enableAction()
+    {
+        parent::enableAction('contact_activate');
+    }
+    
+    /**
+     * Disable action for contact template
+     * 
+     * @method post
+     * @route /configuration/contacttemplate/disable
+     */
+    public function disableAction()
+    {
+        parent::disableAction('contact_activate');
     }
 
     /**

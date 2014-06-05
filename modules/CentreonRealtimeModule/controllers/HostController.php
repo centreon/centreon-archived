@@ -34,6 +34,11 @@
  */
 namespace CentreonRealtime\Controllers;
 
+use \CentreonRealtime\Repository\HostdetailRepository,
+    \Centreon\Internal\Utils\Status,
+    \Centreon\Internal\Utils\Date;
+
+
 /**
  * Display service monitoring states
  *
@@ -101,5 +106,103 @@ class HostController extends \Centreon\Internal\Controller
     public function hostDetailAction()
     {
 
+    }
+
+    /**
+     * Host tooltip
+     *
+     * @method get
+     * @route /realtime/host/[i:id]/tooltip
+     */
+    public function hostTooltipAction()
+    {
+        $params = $this->getParams();
+        $rawdata = HostdetailRepository::getRealtimeData($params['id']);
+        if (isset($rawdata[0])) {
+            $data = $this->transformRawData($rawdata[0]);
+            $this->tpl->assign('title', $rawdata[0]['host_name']);
+            $this->tpl->assign('state', $rawdata[0]['state']);
+            $this->tpl->assign('data', $data);
+        } else {
+            $this->tpl->assign('error', sprintf(_('No data found for host id:%s'), $params['id']));
+        }
+        $this->tpl->display('file:[CentreonRealtimeModule]host_tooltip.tpl');
+    }
+
+    /**
+     * Transform raw data
+     *
+     * @param array $rawdata
+     * @return array
+     */
+    protected function transformRawData($rawdata)
+    {
+        $data = array();
+
+        /* Address */
+        $data[] = array(
+            'label' => _('Address'),
+            'value' => $rawdata['host_address']
+        ); 
+
+       /* Instance */
+        $data[] = array(
+            'label' => _('Poller'),
+            'value' => $rawdata['instance_name']
+        ); 
+
+        /* State */
+        $data[] = array(
+            'label' => _('State'),
+            'value' => Status::numToString(
+                $rawdata['state'], 
+                Status::TYPE_HOST, 
+                true
+            ) . " (" . ($rawdata['state_type'] ? "HARD" : "SOFT") . ")"
+        );
+
+        /* Output */
+        $data[] = array(
+            'label' => _('Output'),
+            'value' => $rawdata['output']
+        );
+
+        /* Acknowledged */
+        $data[] = array(
+            'label' => _('Acknowledged'),
+            'value' => $rawdata['acknowledged'] ? _('Yes') : _('No')
+        );
+
+        /* Downtime */
+        $data[] = array(
+            'label' => _('In downtime'),
+            'value' => $rawdata['scheduled_downtime_depth'] ? _('Yes') : _('No')
+        );
+
+        /* Latency */
+        $data[] = array(
+            'label' => _('Latency'),
+            'value' => $rawdata['latency'] . ' s'
+        );
+
+        /* Check period */
+        $data[] = array(
+            'label' => _('Check period'),
+            'value' => $rawdata['check_period']
+        );
+
+        /* Last check */
+        $data[] = array(
+            'label' => _('Last check'),
+            'value' => Date::format($rawdata['last_check'])
+        );
+
+        /* Next check */
+        $data[] = array(
+            'label' => _('Next check'),
+            'value' => Date::format($rawdata['next_check'])
+        );
+
+        return $data;
     }
 }

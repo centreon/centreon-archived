@@ -33,36 +33,35 @@
  *
  */
 
-namespace CentreonConfiguration\Api\Rest;
+namespace CentreonRealtime\Repository;
 
 /**
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers                                   
+ * Repository for host data
+ *
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @version 3.0.0
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+class HostdetailRepository
 {
     /**
-     * Action for Generating configuration files
-     *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+     * Get real time data of a host
+     * 
+     * @param int $hostId
+     * @return array
      */
-    public function generateAction()
+    public static function getRealtimeData($hostId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        $param = $router->request()->paramsNamed();
-
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
-
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+        $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
+        $sql = 'SELECT h.name as host_name, acknowledged, scheduled_downtime_depth, output, latency,
+            last_check, next_check, check_period, i.name as instance_name, state, h.address as host_address,
+            h.state_type
+            FROM hosts h, instances i
+            WHERE h.instance_id = i.instance_id
+            AND h.enabled = 1
+            AND h.host_id = ?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($hostId));
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
+

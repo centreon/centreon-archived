@@ -31,38 +31,32 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Api\Rest;
-
-/**
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers                                   
+/*
+ * Smarty plugin
+ * -------------------------------------------------------------
+ * File:     modifier.service_color.php
+ * Type:     modifier
+ * Name:     service_color
+ * Purpose:  outputs a class name depending on service status
+ * -------------------------------------------------------------
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
-{
-    /**
-     * Action for Generating configuration files
-     *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
-     */
-    public function generateAction()
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        $param = $router->request()->paramsNamed();
-
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
-
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+function smarty_modifier_service_color($state) {
+    switch ($state) {
+        case 0:
+            $class = "success";
+            break;
+        case 1:
+            $class = "warning";
+            break;
+        case 2:
+            $class = "danger";
+            break;
+        default:
+            $class = "default";
+            break;
     }
+    return $class;
 }

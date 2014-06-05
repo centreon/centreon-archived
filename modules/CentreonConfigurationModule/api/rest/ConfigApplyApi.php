@@ -40,29 +40,71 @@ namespace CentreonConfiguration\Api\Rest;
  * @package Centreon
  * @subpackage Controllers                                   
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+class ConfigApplyApi extends \Centreon\Internal\Controller
 {
     /**
-     * Action for Generating configuration files
+     * Generic function
      *
-     * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
      */
-    public function generateAction()
+    public function genericAction($action)
     {
         $di = \Centreon\Internal\Di::getDefault();
+
         $router = $di->get('router');
 
         $param = $router->request()->paramsNamed();
 
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
+        $obj = new \CentreonConfiguration\Repository\ConfigApplyRepository($param["id"]);
+        
+        $router->response()->json(array(
+                                                   "api-version" => $param["version"],
+                                                   "data" => $obj->$action($param["id"])
+                                                   )
+                                             );
+    }
 
-        $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+    /**
+     * Action for Testing configuration files
+     *
+     * @method GET
+     * @route /api/configuration/[a:version]/applycfg/[i:id]
+     */
+    public function applyAction()
+    {
+        return $this->genericAction("apply");
+    }
+
+
+    /**
+     * Action for Testing configuration files
+     *
+     * @method GET
+     * @route /api/configuration/[a:version]/restartcfg/[i:id]
+     */
+    public function restartAction()
+    {
+        return $this->genericAction("restart");
+    }
+
+    /**
+     * Action for Testing configuration files
+     *
+     * @method GET
+     * @route /api/configuration/[a:version]/reloadcfg/[i:id]
+     */
+    public function reloadAction()
+    {
+        return $this->genericAction("reload");
+    }
+
+    /**
+     * Action for Testing configuration files
+     *
+     * @method GET
+     * @route /api/configuration/[a:version]/forcereloadcfg/[i:id]
+     */
+    public function forcereloadAction()
+    {
+        return $this->genericAction("forcereload");
     }
 }

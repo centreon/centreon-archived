@@ -31,58 +31,56 @@
  *
  * For more information : contact@centreon.com
  *
- */
-
-namespace  CentreonConfiguration\Repository;
-
-/**
- * Factory for ConfigGenerate Engine For commands
  *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
  */
 
-class ConfigGenerateTimeperiodRepository
+namespace Centreon\Internal\Command;
+
+abstract class AbstractCommand
 {
-    /*
-     * Methode tests
-     * @return value
+    /**
+     *
+     * @var type 
      */
-    public function generateTimeperiod(& $filesList, $poller_id, $path, $filename) 
+    protected $db;
+    
+    /**
+     *
+     * @var string 
+     */
+    public static $moduleName = 'Core';
+
+    /**
+     * 
+     */
+    public function __construct()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        $enableField = array("tp_id" => 1);
-        
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT * FROM timeperiod ORDER BY tp_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tmp = array("type" => "timeperiod");
-            $tmpData = array();
-            foreach ($row as $key => $value) {
-                if ($key == 'tp_name') {
-                    $key = "timeperiod_name";
-                }
-                if (!isset($enableField[$key]) && $value != "") {
-                    $key = str_replace("tp_", "", $key);
-                    $tmpData[$key] = $value;
-                }
-            }
-            $tmp["content"] = $tmpData;
-            $content[] = $tmp;
-        }
-
-        /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
+        $this->db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
     }
-}
+    
+    /**
+     * 
+     * @param string $method
+     * @param array $args
+     * @return mixed
+     */
+    public function __named($method, array $args)
+    {
+        $classReflection = new \ReflectionClass($this);
+        $methodReflection = $classReflection->getMethod($method);
 
+        $pass = array(); 
+        foreach($methodReflection->getParameters() as $param) {
+            if(isset($args[$param->getName()])) {
+                $pass[] = $args[$param->getName()]; 
+            } elseif ($param->isOptional()) {
+                $pass[] = $param->getDefaultValue();
+            } else {
+                throw new \Exception('The parameter "' . $param->getName(). '" is missing');
+            }
+        }
+        
+        $methodReflection->invokeArgs($this, $pass);
+    }
+    
+}

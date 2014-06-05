@@ -40,28 +40,28 @@ namespace CentreonConfiguration\Api\Rest;
  * @package Centreon
  * @subpackage Controllers                                   
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+class ConfigTestApi extends \Centreon\Internal\Controller
 {
     /**
-     * Action for Generating configuration files
+     * Action for Testing configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+     * @route /api/configuration/[a:version]/testcfg/[i:id]
      */
-    public function generateAction()
+    public function testAction()
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
 
         $param = $router->request()->paramsNamed();
 
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
+        $obj = new \CentreonConfiguration\Repository\ConfigTestRepository($param["id"]);
 
         $router->response()->json(
                                   array(
-                                        "api-version" => 1,
+                                        "api-version" => $param["version"],
                                         "status" => true,
-                                        "data" => $obj->getStepStatus()
+                                        "data" => $obj->checkConfig($param["id"])
                                         )
                                   );
     }
