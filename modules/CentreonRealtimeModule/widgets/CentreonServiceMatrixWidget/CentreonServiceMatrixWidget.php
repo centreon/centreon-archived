@@ -50,7 +50,7 @@ $leftCol = array();
 $tabHostID = array();
 
 /* Get Data */
-$query = "SELECT s.host_id, h.name, s.service_id, s.description, s.state, s.output FROM services s, hosts h WHERE h.host_id = s.host_id AND h.enabled = 1 AND s.enabled = 1 ORDER BY name, description";
+$query = "SELECT s.host_id, h.name, s.service_id, s.description, s.state, s.output FROM services s, hosts h WHERE h.host_id = s.host_id AND h.enabled = '1' AND s.enabled = '1' ORDER BY name, description";
 $stmt = $db->prepare($query);
 $stmt->execute();
 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -74,10 +74,14 @@ while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 foreach ($leftCol as $key => $value) {
     foreach ($topLine as $k => $v) {
         if (!isset($data[$key][$k])) {
-            $data[$key][$k] = 0;
+            $data[$key][$k] = -1;
         }
     }
+    ksort($data[$key]);
 }
+
+
+ksort($topLine);
 
 /* Assign infos */
 $tpl->assign("data", $data);
