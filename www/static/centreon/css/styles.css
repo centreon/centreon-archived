@@ -26,6 +26,14 @@
  *     ../images/ - relative to this CSS file.
  */
 
+/* 
+ * Global Vars
+ */
+hr {
+   padding:0px;
+   
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables features
  */

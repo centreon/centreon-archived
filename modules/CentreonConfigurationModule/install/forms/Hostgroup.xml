@@ -7,7 +7,7 @@
 		<section name="General">
 			<block name="General information">
 				<field name="hg_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-				<field name="hg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="hg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Relations">
 				<field name="hg_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
@@ -21,7 +21,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="hg_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
+				<field name="hg_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0"></field>
 				<field name="hg_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
