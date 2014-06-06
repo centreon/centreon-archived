@@ -64,7 +64,7 @@ class Installer extends \Centreon\Custom\Module\AbstractInstaller
     public function customInstall()
     {
         if (false === function_exists('rrd_xport')) {
-            throw new Exception("The PHP rrd module is not installed");
+            throw new \Exception("The PHP rrd module is not installed");
         }
     }
     
