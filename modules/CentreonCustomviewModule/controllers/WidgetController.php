@@ -141,6 +141,6 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     protected function getMonitoringDb()
     {
-        return \Centreon\Internal\Di::getDefault()->get('db_centstorage');
+        return \Centreon\Internal\Di::getDefault()->get('db_storage');
     }
 }
