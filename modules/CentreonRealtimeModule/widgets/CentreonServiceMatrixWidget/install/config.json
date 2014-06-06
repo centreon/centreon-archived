@@ -1,0 +1,54 @@
+{
+    "name": "Service Matrix",
+    "shortname": "CentreonServiceMatrix",
+    "author": "Merethis",
+    "email": "contact@merethis.com",
+    "website": "http://www.merethis.com",
+    "description": "Widget that displays monitored services into a matrix",
+    "version": "1.0.0",
+    "keywords": "Service Matrix, monitoring, centreon",
+    "screenshot": "",
+    "thumbnail": "resources/logoCentreon.png",
+    "preferences": [
+        {
+            "label": "text preference",
+            "name": "text_preference",
+            "defaultValue": "default value",
+            "type": "text"
+        },
+        {
+            "label": "boolean preference",
+            "name": "boolean_preference",
+            "defaultValue": "1",
+            "type": "boolean"
+        },
+        {
+            "label": "date preference",
+            "name": "date_preference",
+            "defaultValue": "",
+            "type": "date"
+        },
+        {
+            "label": "host preference",
+            "name": "host_preference",
+            "defaultValue": "",
+            "type": "host"
+        },
+        {
+            "label": "list preference",
+            "name": "list_preference",
+            "defaultValue": "",
+            "type": "list",
+            "options": [
+                {
+                    "value": "all",
+                    "label": "all"
+                },
+                {
+                    "value": "none",
+                    "label": "none"
+                }
+            ]
+        }
+    ]
+}
