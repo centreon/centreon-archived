@@ -1,0 +1,18 @@
+{
+    "name": "Service Graph widget",
+    "shortname": "graph-service",
+    "author": "Centreon",
+    "email": "contact@centreon.com",
+    "website": "http://www.centreon.com",
+    "description": "Display a service graph",
+    "version": "1.0.0",
+    "keywords": "graph service",
+    "thumbnail": "resources/logoCentreon.png",
+    "preferences": [
+      {
+          "label": "Service",
+          "name": "service_id",
+          "type": "service"
+      }
+    ]
+}
