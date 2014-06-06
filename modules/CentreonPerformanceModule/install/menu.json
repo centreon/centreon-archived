@@ -1,0 +1,13 @@
+[
+    {
+        "name": "Performance",
+        "short_name": "performance",
+        "icon_class": "fa fa-bar-chart-o",
+        "bgcolor": "lightseagreen",
+	"menus": [ {
+            "name" : "Graph",
+            "short_name" : "graph",
+            "route" : "/graph"
+	}]
+    }
+]
