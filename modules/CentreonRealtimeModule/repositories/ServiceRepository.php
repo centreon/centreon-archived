@@ -36,7 +36,8 @@
 namespace CentreonRealtime\Repository;
 
 use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
-    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository,
+    \Centreon\Internal\Utils\Datetime;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -76,11 +77,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
     public static $datatableColumn = array(
         '<input id="allService" class="allService" type="checkbox">' => 'service_id',
         'Host Name' => 'name',
-        'Name' => 'description',
+        'Service Name' => 'description',
         'Ico' => "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
         'Status' => 'services.state',
         'Last Check' => 'services.last_check',
-        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state) AS duration',
+        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state_change) AS duration',
         'Retry' => "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
         'Output' => 'services.output'
     );
@@ -102,7 +103,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
         'services.last_check',
         'services.state',
-        '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state) AS duration',
+        '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state_change) AS duration',
         "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
         'services.output'
     );
@@ -231,6 +232,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
             $myServiceSet['description'] = '<span class="rt-tooltip">'.
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span>';
+            $myServiceSet['duration'] = Datetime::humanReadable(
+                                                                $myServiceSet['duration'],
+                                                                Datetime::PRECISION_FORMAT,
+                                                                2
+                                                                ); 
         }
     }
 }

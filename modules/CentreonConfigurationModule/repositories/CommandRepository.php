@@ -62,7 +62,9 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         '<input id="allCommand" class="allCommand" type="checkbox">' => 'command_id',
         'Name' => 'command_name',
         'Command Line' => 'command_line',
-        'Type' => 'command_type'
+        'Type' => 'command_type',
+        'Host Use' => 'NULL AS host_use',
+        'Service Use' => 'NULL AS svc_use',
     );
     
     /**
@@ -73,7 +75,9 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         'command_id',
         'command_name',
         'command_line',
-        'command_type'
+        'command_type',
+        'none',
+        'none'
     );
     
     public static $columnCast = array(
@@ -118,8 +122,10 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
                 'Notifications' => '1',
                 'Miscelleanous' => '3',
                 'Discovery' => '4'
-            )
-        )
+                              )
+              ),
+        'none',
+        'none'
     );
     
     /**
@@ -131,13 +137,28 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         'search',
         'search',
         array('select' => array(
-                'Check' => '2',
-                'Notifications' => '1',
-                'Miscelleanous' => '3',
-                'Discovery' => '4'
-            )
-        )
+                                'Check' => '2',
+                                'Notifications' => '1',
+                                'Miscelleanous' => '3',
+                                'Discovery' => '4'
+                                )
+              ),
+        'none',
+        'none'
+        
     );
+
+    /**
+     * 
+     * @param array $resultSet
+     */
+    public static function formatDatas(&$resultSet)
+    {
+        foreach ($resultSet as &$myCmdSet) {
+            $myCmdSet['host_use'] = static::getUseNumber($myCmdSet["command_id"], "host");
+            $myCmdSet['svc_use'] = static::getUseNumber($myCmdSet["command_id"], "service");
+        }
+    }
     
     public static function getCommandName($id) 
     {
@@ -155,5 +176,30 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         } else {
             return -1;
         }
+    }
+
+    public static function getUseNumber($id, $object) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        $result = "";
+
+        /* Get Object Stats */
+        for ($i = 1; $i != -1; $i--) {
+            $stmt = $dbconn->prepare("SELECT count(*) AS number FROM $object WHERE (command_command_id = '$id' OR command_command_id2 = '$id') AND ".$object."_register = '$i'");
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (isset($row["number"])) {
+                if ($i) {
+                    $result .= $row["number"];
+                } else {
+                    $result .= " (".$row["number"].")";
+                }
+            } 
+        }
+        return $result;
     }
 }
