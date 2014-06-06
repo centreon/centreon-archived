@@ -161,11 +161,13 @@ class Template extends \Smarty
         $this->addCss('bootstrap.min.css');
         $this->addCss('font-awesome.min.css');
         $this->addCss('centreon.css');
-        $this->addCss('jquery-ui.min.css');
+        // TODO : check that jquery-ui 
+        //        $this->addCss('jquery-ui.min.css');
         $this->addCss('jquery.qtip.min.css');
         /* Load javascript */
         $this->addJs('jquery.min.js');
-        $this->addJs('jquery-ui.min.js');
+        // TODO : check that jquery-ui 
+        //        $this->addJs('jquery-ui.min.js');
         $this->addJs('jquery.qtip.min.js');
         $this->addJs('bootstrap.min.js');
         $this->addJs('jquery.ba-resize.js');
