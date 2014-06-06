@@ -64,7 +64,6 @@ class GraphController extends \Centreon\Internal\Controller
         $tmpl->addJs('moment-with-langs.min.js');
         $tmpl->addJs('daterangepicker.js');
         $tmpl->addCss('c3.css');
-        $tmpl->addCss('c3.css');
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
