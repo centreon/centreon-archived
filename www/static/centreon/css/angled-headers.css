@@ -57,7 +57,7 @@
 
 .angled-headers table td {
   width: 40px;
-  height: 35px;
+  /* height: 35px; */
   text-align: center;
   vertical-align: middle;
   border: 1px solid #CCCCCC;
