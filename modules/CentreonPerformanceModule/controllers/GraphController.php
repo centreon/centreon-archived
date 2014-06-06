@@ -125,8 +125,8 @@ class GraphController extends \Centreon\Internal\Controller
                 }
                 return $data;
             }, $metric['data']);
+            $metric['data'] = HumanReadable::convertArrayWithFactor($metric['data'], $metric['unit'], $units[$metric['unit']], 3);
             if (in_array($metric['unit'], array_keys(HumanReadable::$units))) {
-                $metric['data'] = HumanReadable::convertArrayWithFactor($metric['data'], $metric['unit'], $units[$metric['unit']]);
                 $metric['unit'] = HumanReadable::$units[$metric['unit']]['units'][$units[$metric['unit']]];
             }
             $data['metrics'][] = $metric;

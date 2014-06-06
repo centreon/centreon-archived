@@ -98,8 +98,12 @@ class HumanReadable
      */
     public static function convertArrayWithFactor($values, $unit, $factor, $decimal = null)
     {
-        if (false === in_array($unit, array_keys(self::$units))) {
+        if (false === in_array($unit, array_keys(self::$units)) && is_null($decimal)) {
             return $values;
+        } elseif (false === in_array($unit, array_keys(self::$units))) {
+            return array_map(function($value) use ($decimal) {
+                return sprintf("%.{$decimal}f", $value);
+            }, $values);
         }
         if (isset(self::$units[$unit]['divider'])) {
             $divider = self::$units[$unit]['divider'];
@@ -110,7 +114,7 @@ class HumanReadable
                 if (is_null($decimal)) {
                     return $value / pow($divider, $factor);
                 } else {
-                    return sprintf("%.{$decimals}f", $value / pow($divider, $factor));
+                    return sprintf("%.{$decimal}f", $value / pow($divider, $factor));
                 }
             }, $values);
         }
@@ -124,7 +128,7 @@ class HumanReadable
      */
     public static function getFactor($values)
     {
-        $max = max($values);
+        $max = intval(max($values));
         if ($max > 0) {
             return floor((strlen($max) - 1) / 3);
         }
