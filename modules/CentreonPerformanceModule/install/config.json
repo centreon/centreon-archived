@@ -1,0 +1,25 @@
+{
+    "name": "Centreon Performance",
+    "shortname" : "centreon-performance",
+    "version": "3.0.0",
+    "author" : [
+        "Merethis"
+    ],
+    "isuninstallable" : false,
+    "isdisableable" : true,
+    "url" : "",
+    "description" : "Centreon Performance Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        "php-rrd"
+    ],
+    "program dependencies" : [
+        "rrdtools"
+    ]
+}
