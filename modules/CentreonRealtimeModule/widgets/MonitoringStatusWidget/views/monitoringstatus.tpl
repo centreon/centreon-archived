@@ -3,7 +3,7 @@
 {block name="title"}{t}Graphs{/t}{/block}
 
 {block name="content"}
-<div class="container-fluid">
+<div class="container">
   <div class="row">
     <div class="col-xs-6 text-center">
       <strong>{t}Hosts{/t}</strong>
