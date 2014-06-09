@@ -51,8 +51,11 @@ function smarty_function_datatable($params, $smarty)
         $smarty->assign('objectAddUrl', $params['objectAddUrl']);
     }
     
-    $datatableParameters = \Centreon\Internal\Datatable::getConfiguration($params['module'], $params['object']);
-    $datatableParameters['nbFixedTr'] = 1;
+    $datatableParameters = array();
+    $datatableParameters['header'] = $params['datatableObject']::getHeader();
+    $datatableParameters['configuration'] = $params['datatableObject']::getConfiguration();
+    //$datatableParameters = \Centreon\Internal\Datatable::getConfiguration($params['module'], $params['object']);
+    /*$datatableParameters['nbFixedTr'] = 1;
     
     // Process Column
     $dCol = array();
@@ -74,11 +77,12 @@ function smarty_function_datatable($params, $smarty)
     }
     $datatableParameters['column'] = $dCol;
     unset($dCol);
-    
+    */
     $smarty->assign('datatableParameters', $datatableParameters);
     
     if ($params['configuration']) {
         return $smarty->fetch('tools/datatable.tpl');
     }
+    
     return $smarty->fetch('tools/datatable-table.tpl');
 }

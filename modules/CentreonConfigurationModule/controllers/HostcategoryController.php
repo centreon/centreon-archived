@@ -46,6 +46,7 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
         'hc_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory'
     );
     
+    protected $datatableObject = '\CentreonConfiguration\Internal\HostCategoryDatatable';
     public static $isDisableable = true;
 
     /**
