@@ -47,8 +47,6 @@
                 {/foreach}
             ]
         });
-        
-        console.log($('#datatable{$object}_length label'));
     });
 
     setInterval(function () { 

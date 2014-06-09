@@ -43,6 +43,23 @@ namespace CentreonRealtime\Repository;
  */
 class HostdetailRepository
 {
+    const SCHEDULE_CHECK = 101;
+
+    /* deprecated ? */
+    const SCHEDULE_FORCED_CHECK = 102;
+
+    const ACKNOWLEDGE = 103;
+
+    const REMOVE_ACKNOWLEDGE = 104;
+
+    const DOWNTIME = 105;
+
+    const REMOVE_DOWNTIME = 106;
+
+    const ENABLE_CHECK = 107;
+
+    const DISABLE_CHECK = 108;
+
     /**
      * Get real time data of a host
      * 
@@ -62,6 +79,24 @@ class HostdetailRepository
         $stmt = $db->prepare($sql);
         $stmt->execute(array($hostId));
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get list of monitoring actions for services
+     *
+     * @param array
+     */
+    public static function getMonitoringActions()
+    {
+        $actions = array();
+        $actions[self::SCHEDULE_CHECK] = _('Schedule check');
+        //$actions[self::ACKNOWLEDGE] = _('Acknowledge');
+        //$actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
+        //$actions[self::DOWNTIME] = _('Set downtime');
+        //$actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
+        $actions[self::ENABLE_CHECK] = _('Enable check');
+        $actions[self::DISABLE_CHECK] = _('Disable check');
+        return $actions;
     }
 }
 
