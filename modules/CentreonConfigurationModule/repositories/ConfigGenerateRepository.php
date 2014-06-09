@@ -73,8 +73,8 @@ class ConfigGenerateRepository
         }
 
         /* Generate Configuration files */
-        ConfigGenerateCommandRepository::generateCheckCommand($this->filesDir, $poller_id, $this->path, "check-command.cfg");
-        ConfigGenerateCommandRepository::generateMiscCommand($this->filesDir, $poller_id, $this->path, "misc-command.cfg");
+        CommandRepository::generateCheckCommand($this->filesDir, $poller_id, $this->path, "check-command.cfg");
+        CommandRepository::generateMiscCommand($this->filesDir, $poller_id, $this->path, "misc-command.cfg");
         ConfigGenerateResourcesRepository::generateResources($this->filesDir, $poller_id, $this->path, "resources.cfg");
         TimeperiodRepository::generateTimeperiod($this->filesDir, $poller_id, $this->path, "timeperiods.cfg");
         ConnectorRepository::generateConnectors($this->filesDir, $poller_id, $this->path, "connectors.cfg");
