@@ -83,7 +83,8 @@ class CustomviewController extends \Centreon\Internal\Controller
             ->addCss('centreon-widget.css')
             ->addCss('centreon-wizard.css')
             ->addCss('select2.css')
-            ->addCss('select2-bootstrap.css');
+            ->addCss('select2-bootstrap.css')
+            ->addCss('overlay-fix.css'); /* Fixes an iFrame resizing issue */
         $template->addJs('jquery.gridster.min.js')
             ->addJs('jquery.gridster.with-extras.min.js')
             ->addJs('centreon-wizard.js')
@@ -651,11 +652,23 @@ class CustomviewController extends \Centreon\Internal\Controller
                     widget_base_dimensions: [w, h],
                     draggable: {
                         handle: ".portlet-header",
-                        stop: function() { savepos(); }
+                        stop: function() { 
+                            $(".overlay_fix").hide();
+                            savepos(); 
+                        },
+                        start: function() {
+                            $(".overlay_fix").show();
+                        }
                     },
                     resize: {
                         enabled: true,
-                        stop: function() { savepos(); }
+                        stop: function() { 
+                            $(".overlay_fix").hide();
+                            savepos(); 
+                        },
+                        start: function() {
+                            $(".overlay_fix").show();
+                        }
                     }
                 }).data("gridster");
 
@@ -663,6 +676,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 $.each(widgets, function(index) {
                     gridster.add_widget(
                         \'<li style="overflow:hidden;" data-index=\'+index+\' data-widget-id=\'+this.widget_id+\' > \
+                        <div class="overlay_fix"></div> \
                         <div class="portlet-header bg-primary"> \
                         <span class="widgetTitle"> \
                         <span>\'+this.title+\'</span> \
