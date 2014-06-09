@@ -35,68 +35,30 @@
 
 namespace CentreonRealtime\Repository;
 
+use \Centreon\Internal\Di,
+    \Centreon\Internal\Exception;
+
 /**
- * Repository for host data
+ * Repository for host and object
  *
  * @author Sylvestre Ho <sho@merethis.com>
  * @version 3.0.0
  */
-class HostdetailRepository extends ObjectdetailRepository
+class ObjectdetailRepository
 {
-    const SCHEDULE_CHECK = 101;
-
-    /* deprecated ? */
-    const SCHEDULE_FORCED_CHECK = 102;
-
-    const ACKNOWLEDGE = 103;
-
-    const REMOVE_ACKNOWLEDGE = 104;
-
-    const DOWNTIME = 105;
-
-    const REMOVE_DOWNTIME = 106;
-
-    const ENABLE_CHECK = 107;
-
-    const DISABLE_CHECK = 108;
-
     /**
-     * Get real time data of a host
-     * 
-     * @param int $hostId
-     * @return array
-     */
-    public static function getRealtimeData($hostId)
-    {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
-        $sql = 'SELECT h.name as host_name, acknowledged, scheduled_downtime_depth, output, latency,
-            last_check, next_check, check_period, i.name as instance_name, state, h.address as host_address,
-            h.state_type
-            FROM hosts h, instances i
-            WHERE h.instance_id = i.instance_id
-            AND h.enabled = 1
-            AND h.host_id = ?';
-        $stmt = $db->prepare($sql);
-        $stmt->execute(array($hostId));
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Get list of monitoring actions for services
+     * Send command to service
      *
-     * @param array
+     * @param int $cmdId
+     * @param array $params
+     * @todo retrieve centcorecmd path
      */
-    public static function getMonitoringActions()
+    public static function sendCommand($cmdId, $params)
     {
-        $actions = array();
-        $actions[self::SCHEDULE_CHECK] = _('Schedule check');
-        //$actions[self::ACKNOWLEDGE] = _('Acknowledge');
-        //$actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
-        //$actions[self::DOWNTIME] = _('Set downtime');
-        //$actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
-        $actions[self::ENABLE_CHECK] = _('Enable check');
-        $actions[self::DISABLE_CHECK] = _('Disable check');
-        return $actions;
+        $centcorecmd = '/var/lib/centreon/centcore.cmd';
+        $prefix = sprintf("[%u] ", time());
+        $command = $prefix . static::getCommandString($cmdId) . ";" .implode(';', $params) . "\n";
+        file_put_contents($centcorecmd, $command, FILE_APPEND);
     }
 }
 

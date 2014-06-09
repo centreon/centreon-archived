@@ -44,7 +44,7 @@ use \Centreon\Internal\Di,
  * @author Sylvestre Ho <sho@merethis.com>
  * @version 3.0.0
  */
-class ServicedetailRepository
+class ServicedetailRepository extends ObjectdetailRepository
 {
     const SCHEDULE_CHECK = 1;
 
@@ -160,24 +160,6 @@ class ServicedetailRepository
                 );
             }
         }
-    }
-
-    /**
-     * Send command to service
-     *
-     * @param int $cmdId
-     * @param array $params
-     * @todo retrieve centcorecmd path
-     */
-    public static function sendCommand($cmdId, $params)
-    {
-        $centcorecmd = '/tmp/centcore.cmd';
-        if (!is_file($centcorecmd)) {
-            throw new Exception('Centcore command file not found.');
-        }
-        $prefix = sprintf("[%u] ", time());
-        $command = $prefix . self::getCommandString($cmdId) . ";" .implode(';', $params) . "\n";
-        file_put_contents($centcorecmd, $command, FILE_APPEND);
     }
 
     /**
