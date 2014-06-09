@@ -35,6 +35,7 @@
 namespace CentreonRealtime\Controllers;
 
 use \CentreonRealtime\Repository\ServicedetailRepository,
+    \CentreonRealtime\Repository\HostdetailRepository,
     \Centreon\Internal\Utils\Status,
     \Centreon\Internal\Utils\Datetime;
 
@@ -63,7 +64,8 @@ class ServiceController extends \Centreon\Internal\Controller
         	->addCss('dataTables.bootstrap.css')
             ->addCss('dataTables-TableTools.css')
             ->addCss('jquery.qtip.min.css')
-            ->addCss('centreon.qtip.css');
+            ->addCss('centreon.qtip.css')
+            ->addCss('daterangepicker-bs3.css');
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
@@ -74,12 +76,26 @@ class ServiceController extends \Centreon\Internal\Controller
         	->addJs('jquery.select2/select2.min.js')
         	->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
-            ->addJs('jquery.qtip.min.js');
+            ->addJs('jquery.qtip.min.js')
+            ->addJs('moment-with-langs.min.js')
+            ->addJs('daterangepicker.js');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
         $tpl->assign('objectName', 'Service');
         $tpl->assign('objectListUrl', '/realtime/service/list');
+
+        $actions = array();
+        $actions[] = array(
+            'group' => _('Services'),
+            'actions' => ServicedetailRepository::getMonitoringActions()
+        );
+        $actions[] = array(
+            'group' => _('Hosts'),
+            'actions' => HostdetailRepository::getMonitoringActions()
+        );
+        $tpl->assign('actions', $actions); 
+
         $tpl->display('file:[CentreonRealtimeModule]console.tpl');
     }
 
