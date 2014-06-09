@@ -1,0 +1,12 @@
+{
+    "name": "Monitoring Status",
+    "shortname": "monitoring-status",
+    "author": "Merethis",
+    "email": "contact@merethis.com",
+    "website": "http://www.merethis.com",
+    "description": "Display monitoring status",
+    "version": "1.0.0",
+    "keywords": "monitoring, centreon",
+    "screenshot": "",
+    "thumbnail": "resources/logoCentreon.png"
+}

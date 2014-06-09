@@ -511,7 +511,8 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
 
         /* Field to not display */
         $disableField = static::getTripleChoice();
-        $field = "s.service_id, h.host_id, h.host_name, s.service_description, s.service_alias, s.service_template_model_stm_id, s.command_command_id, s.command_command_id_arg, s.timeperiod_tp_id, s.command_command_id2, s.command_command_id_arg2, s.timeperiod_tp_id2, s.display_name, s.service_is_volatile, s.service_max_check_attempts, s.service_normal_check_interval, s.service_retry_check_interval, s.service_active_checks_enabled, s.service_passive_checks_enabled, s.initial_state, s.service_parallelize_check, s.service_obsess_over_service, s.service_check_freshness, s.service_freshness_threshold, s.service_event_handler_enabled, s.service_low_flap_threshold, s.service_high_flap_threshold, s.service_flap_detection_enabled, s.service_process_perf_data, s.service_retain_status_information, s.service_retain_nonstatus_information, s.service_notification_interval, s.service_notification_options, s.service_notifications_enabled, s.service_first_notification_delay, s.service_stalking_options ";
+        $field = "host_id, h.host_name, service_id, service_description, service_alias, service_template_model_stm_id, command_command_id_arg, s.command_command_id AS check_command, s.timeperiod_tp_id AS check_period, s.command_command_id_arg2, s.command_command_id2 AS event_handler, s.timeperiod_tp_id2 AS notification_period, s.display_name, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, s.initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, service_notification_options, service_notifications_enabled, service_first_notification_delay, service_stalking_options ";
+
         
         /* Init Content Array */
         $content = array();
@@ -538,12 +539,22 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                         if ($key != 'service_description') {
                             $key = str_replace("service_", "", $key);
                         }
-                        if ($key == 'command_command_id_arg1' || $key == 'command_command_id_arg2') {
+                        if ($key == 'normal_check_interval') {
+                            $key = "check_interval";
+                        }
+                        if ($key == 'retry_check_interval') {
+                            $key = "retry_interval";
+                        }
+                        if ($key == 'command_command_id_arg' || $key == 'command_command_id_arg2') {
                             $args = $value;
+                            $writeParam = 0;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandRepository::getCommandName($value).$args;
+                            $value = CommandRepository::getCommandName($value).html_entity_decode($args);
                             $args = "";
+                        } 
+                        if ($key == 'check_period' || $key == 'notification_period') {
+                            $value = TimeperiodRepository::getPeriodName($value);
                         } 
                         if ($key == "template_model_stm_id") {
                             $key = "use";

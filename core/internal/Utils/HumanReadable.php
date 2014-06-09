@@ -102,6 +102,9 @@ class HumanReadable
             return $values;
         } elseif (false === in_array($unit, array_keys(self::$units))) {
             return array_map(function($value) use ($decimal) {
+                if (is_null($value)) {
+                    return $value;
+                }
                 return sprintf("%.{$decimal}f", $value);
             }, $values);
         }

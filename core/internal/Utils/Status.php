@@ -109,7 +109,7 @@ class Status
         if ($translate) {
             return _(self::$status[$typeStatus][$numStatus]);
         }
-        self::$status[$typeStatus][$numStatus];
+        return self::$status[$typeStatus][$numStatus];
     }
 
     /**
