@@ -95,9 +95,9 @@ class ServicedetailRepository extends ObjectdetailRepository
         $actions = array();
         $actions[self::SCHEDULE_CHECK] = _('Schedule check');
         $actions[self::ACKNOWLEDGE] = _('Acknowledge');
-        //$actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
+//        $actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
         $actions[self::DOWNTIME] = _('Set downtime');
-        //$actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
+//        $actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
         $actions[self::ENABLE_CHECK] = _('Enable check');
         $actions[self::DISABLE_CHECK] = _('Disable check');
         return $actions;
@@ -112,53 +112,13 @@ class ServicedetailRepository extends ObjectdetailRepository
      */
     public static function processCommand($cmdId, $serviceIds, $additionalParams = array())
     {
-        $db = Di::getDefault()->get('db_storage');
         if (count($serviceIds)) {
             $list = implode(',', $serviceIds);
             $sql = "SELECT h.name, s.description 
                 FROM services s, hosts h 
                 WHERE h.host_id = s.host_id 
                 AND s.service_id IN ($list)";
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                switch ($cmdId) {
-                    case self::SCHEDULE_CHECK:
-                        $options = array(time());
-                        break;
-                    case self::ACKNOWLEDGE:
-                        $options = array(
-                            isset($additionalParams['sticky']) ? 1 : 0,
-                            isset($additionalParams['notify']) ? 1 : 0,
-                            isset($additionalParams['persistent']) ? 1 : 0,
-                            $additionalParams['author'],
-                            $additionalParams['comment']
-                        );
-                        break;
-                    case self::DOWNTIME:
-                        $options = array(
-                            $additionalParams['start_time'],
-                            $additionalParams['end_time'],
-                            isset($additionalParams['fixed']) ? 1 : 0,
-                            0,
-                            $additionalParams['duration'],
-                            $additionalParams['author'],
-                            $additionalParams['comment']
-                        );
-                        break;
-                    case self::REMOVE_ACKNOWLEDGE:
-                        break;
-                    case self::REMOVE_DOWNTIME:
-                        break;
-                    default:
-                        $options = array();
-                        break;
-                }
-                self::sendCommand(
-                    $cmdId,
-                    array_merge($row, $options)
-                );
-            }
+            self::doCommand($cmdId, $sql, $additionalParams);
         }
     }
 
@@ -186,6 +146,29 @@ class ServicedetailRepository extends ObjectdetailRepository
             return $commands[$cmdId];
         }
         throw new Exception('Unknown command');
+    }
+
+    /**
+     * Get array of host ids from an array of service ids
+     *
+     * @param array $serviceIds
+     * @return array
+     */
+    public static function getHostIdFromServiceId($serviceIds)
+    {
+        $db = Di::getDefault()->get('db_storage');
+        $arr = array();
+        if (count($serviceIds)) {
+            $sql = "SELECT DISTINCT host_id 
+                FROM services 
+                WHERE service_id IN (".implode(",", $serviceIds).")";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $arr[] = $row['host_id'];
+            }
+        }
+        return $arr;
     }
 }
 

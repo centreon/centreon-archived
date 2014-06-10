@@ -85,6 +85,7 @@ class HostController extends \Centreon\Internal\Controller
         $this->tpl->assign('moduleName', 'CentreonRealtime');
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('objectName', 'Host');
+        $this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/realtime/host/list');
         $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
     }

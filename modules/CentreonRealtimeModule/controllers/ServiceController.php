@@ -94,6 +94,7 @@ class ServiceController extends \Centreon\Internal\Controller
         $tpl->assign('moduleName', 'CentreonRealtime');
         $tpl->assign('datatableObject', $this->datatableObject);
         $tpl->assign('objectName', 'Service');
+        $tpl->assign('consoleType', 1); // service console
         $tpl->assign('objectListUrl', '/realtime/service/list');
 
         $actions = array();

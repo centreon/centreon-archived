@@ -42,6 +42,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $objectDisplayName = 'Poller';
     protected $objectName = 'poller';
     protected $objectBaseUrl = '/configuration/poller';
+    protected $datatableObject = '\CentreonConfiguration\Internal\PollerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Poller';
 
     /**
