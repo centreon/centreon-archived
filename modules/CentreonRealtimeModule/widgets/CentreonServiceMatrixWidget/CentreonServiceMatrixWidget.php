@@ -41,7 +41,8 @@ $tpl->addCss('angled-headers.css');
 $params = $this->getWidgetParams();
 
 /* Get DB */
-$db = $this->getMonitoringDb();
+$dbM = $this->getMonitoringDb();
+$db = $this->getConfigurationDb();
 
 /* Init Params */
 $data = array();
@@ -51,7 +52,7 @@ $tabHostID = array();
 
 /* Get Data */
 $query = "SELECT s.host_id, h.name, s.service_id, s.description, s.state, s.output FROM services s, hosts h WHERE h.host_id = s.host_id AND h.enabled = '1' AND s.enabled = '1' ORDER BY name, description";
-$stmt = $db->prepare($query);
+$stmt = $dbM->prepare($query);
 $stmt->execute();
 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
     if (!isset($leftCol[$row["name"]])) {
@@ -80,15 +81,27 @@ foreach ($leftCol as $key => $value) {
     ksort($data[$key]);
 }
 
-
+/* Sort TopLine */
 ksort($topLine);
+
+/* Table in order to convert status and color (id to name) */
+$convert = array("ok" => 0, 'warning' => 1, "critical" => 2, "unknown" => 3, "pending" => 4);
+
+/* Get colors */
+$query = "select * FROM options WHERE `key` LIKE 'color_%'";
+$stmt = $db->query($query);
+while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+    if (isset($convert[str_replace('color_', '', $row['key'])])) {
+        $statusColor[$convert[str_replace('color_', '', $row['key'])]] = $row["value"];
+    }
+}
 
 /* Assign infos */
 $tpl->assign("data", $data);
 $tpl->assign("leftCol", $leftCol);
 $tpl->assign("topLine", $topLine);
 $tpl->assign("hostID", $tabHostID);
-$tpl->assign("status", array(0 => "green", 1 => "orange", 2 => "red", 3 => "grey", 4 => "blue"));
+$tpl->assign("status", $statusColor);
 
 /* Display */
 $tpl->display('file:[CentreonServiceMatrixWidget]console.tpl');
