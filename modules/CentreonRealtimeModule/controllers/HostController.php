@@ -105,7 +105,26 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function hostDetailAction()
     {
+        /* Load css */
+        $this->tpl->addCss('dataTables.css')
+        	->addCss('dataTables.bootstrap.css')
+        	->addCss('dataTables-TableTools.css');
 
+        /* Load js */
+        $this->tpl->addJs('jquery.min.js')
+        	->addJs('jquery.dataTables.min.js')
+        	->addJs('jquery.dataTables.TableTools.min.js')
+        	->addJs('bootstrap-dataTables-paging.js')
+        	->addJs('jquery.dataTables.columnFilter.js')
+        	->addJs('jquery.select2/select2.min.js')
+        	->addJs('jquery.validate.min.js')
+        	->addJs('additional-methods.min.js');
+
+        /* Datatable */
+        $this->tpl->assign('moduleName', 'CentreonRealtime');
+        $this->tpl->assign('objectName', 'Host');
+
+        $this->tpl->display('file:[CentreonRealtimeModule]host_detail.tpl');
     }
 
     /**

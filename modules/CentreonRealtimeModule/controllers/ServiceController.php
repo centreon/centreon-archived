@@ -125,6 +125,34 @@ class ServiceController extends \Centreon\Internal\Controller
      */
     public function serviceDetailAction()
     {
+        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+
+        /* Load css */
+        $tpl->addCss('dataTables.css')
+        	->addCss('dataTables.bootstrap.css')
+            ->addCss('dataTables-TableTools.css')
+            ->addCss('jquery.qtip.min.css')
+            ->addCss('centreon.qtip.css')
+            ->addCss('daterangepicker-bs3.css');
+
+        /* Load js */
+        $tpl->addJs('jquery.min.js')
+        	->addJs('jquery.dataTables.min.js')
+        	->addJs('jquery.dataTables.TableTools.min.js')
+        	->addJs('bootstrap-dataTables-paging.js')
+        	->addJs('jquery.dataTables.columnFilter.js')
+        	->addJs('jquery.select2/select2.min.js')
+        	->addJs('jquery.validate.min.js')
+            ->addJs('additional-methods.min.js')
+            ->addJs('jquery.qtip.min.js')
+            ->addJs('moment-with-langs.min.js')
+            ->addJs('daterangepicker.js');
+
+        /* Datatable */
+        $tpl->assign('moduleName', 'CentreonRealtime');
+        $tpl->assign('objectName', 'Service');
+
+        $tpl->display('file:[CentreonRealtimeModule]service_detail.tpl');        
     }
 
     /**
