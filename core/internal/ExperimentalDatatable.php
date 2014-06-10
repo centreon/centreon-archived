@@ -42,6 +42,10 @@ namespace Centreon\Internal;
  */
 class ExperimentalDatatable
 {
+    protected static $hook = '';
+    protected static $objectId = '';
+    protected static $objectName = '';
+
     /**
      *
      * @var string 
@@ -136,6 +140,8 @@ class ExperimentalDatatable
      */
     protected function prepareDatasForSending($datasToSend)
     {
+	static::processHooks($datasToSend['datas']);
+
         $datasToSend['datas'] = $this->castResult($datasToSend['datas']);
         
         // format the data before returning
@@ -158,6 +164,15 @@ class ExperimentalDatatable
         $columnHeader = "";
         $columnSearch = "";
         $nbFixedTr = count(static::$columns);
+
+	if (isset(static::$hook) && static::$hook) {
+            $hookData = Hook::execute(static::$hook, array());
+            foreach ($hookData as $data) {
+                $columnName = $data['columnName'];
+		static::$columns[] = array('name' => $columnName, 'title' => $columnName, 'data' => $columnName);
+            }
+        } 
+
         foreach (static::$columns as $column) {
             static::$fieldList[] = $column['name'];
             $currentName = $column['name'];
@@ -311,9 +326,9 @@ class ExperimentalDatatable
     public static function addCheckbox($field, $values, $cast)
     {
         $object = ucwords(str_replace('_', '', $field));
-        $input = '<input class="all'. $object .'Box" '
-            . 'id="'. $object .'::'. $field .'::" '
-            . 'name="'. $object .'[]" '
+        $input = '<input class="all'. static::$objectName .'Box" '
+            . 'id="'. static::$objectName .'::'. $field .'::" '
+            . 'name="'. static::$objectName .'[]" '
             . 'type="checkbox" '
             . 'value="::'. $field .'::" '
             . 'data-name="' . $field . '" '
@@ -361,5 +376,28 @@ class ExperimentalDatatable
     public static function addDate($field, $values, $cast)
     {
         return date($cast['date'], $values[$field]);
+    }
+
+    public static function processHooks(&$resultSet)
+    {
+        $arr = array();
+        foreach ($resultSet as $set) {
+            if (isset($set[static::$objectId])) {
+                $arr[] = $set[static::$objectId];
+            }
+        }
+        if (isset(static::$hook) && static::$hook) {
+            $hookData = Hook::execute(static::$hook, $arr);
+            foreach ($hookData as $data) {
+                $columnName = $data['columnName'];
+                foreach ($data['values'] as $k => $value) {
+                    foreach ($resultSet as $key => $set) {
+                        if ($set[static::$objectId] == $k) {
+                            $resultSet[$key][$columnName] = $value;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -47,6 +47,10 @@ use \CentreonConfiguration\Repository\HostRepository as HostConfigurationReposit
  */
 class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
 {
+    protected static $hook = 'displayServiceRtColumn';
+    protected static $objectId = 'service_id';
+    protected static $objectName = 'Service';
+
     /**
      *
      * @var array 
@@ -183,6 +187,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
     /**
      * 
      * @param array $resultSet
+     * @todo fix getIconImage() (perf issue)
      */
     protected function formatDatas(&$resultSet)
     {
@@ -198,10 +203,10 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     $icon.
                     '&nbsp;'.$myServiceSet['name'].'</span>';
             }*/
-            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
+/*            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
             $myServiceSet['description'] = '<span class="rt-tooltip">'.
                 $icon.
-                '&nbsp;'.$myServiceSet['description'].'</span>';
+                '&nbsp;'.$myServiceSet['description'].'</span>';*/
             $myServiceSet['duration'] = Datetime::humanReadable(
                                                                 $myServiceSet['duration'],
                                                                 Datetime::PRECISION_FORMAT,
