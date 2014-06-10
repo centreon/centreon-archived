@@ -36,7 +36,8 @@
 
 namespace CentreonPerformance\Controllers;
 
-use \Centreon\Internal\Utils\HumanReadable;
+use \Centreon\Internal\Utils\HumanReadable,
+    \CentreonPerformance\Repository\GraphView;
 
 /**
  * Controller for display graphs
@@ -132,5 +133,105 @@ class GraphController extends \Centreon\Internal\Controller
         }
 
         $router->response()->json($data);
+    }
+
+    /**
+     * Save a graph view
+     *
+     * @route /graph/view
+     * @method POST
+     */
+    public function saveViewAction()
+    {
+        /* Get params */
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+
+        $listGraph = $router->request()->param('graphs');
+        $viewId = $router->request()->param('viewId');
+        if ("" === $viewId) {
+            $viewName = $router->request()->param('viewName');
+            $viewPrivacy = $router->request()->param('viewPrivacy');
+            try {
+                $viewId = GraphView::add($viewName, $viewPrivacy);
+            } catch (\Exception $e) {
+                $router->response()->json(array(
+                    'success' => false
+                ));
+                return;
+            }
+        }
+        try {
+            GraphView::update($viewId, $listGraph);
+        } catch (\Exception $e) {
+            $router->response()->json(array(
+                'success' => false
+            ));
+            return;
+        }
+        $router->response()->json(array(
+            'success' => true
+        ));
+    }
+
+    /**
+     * Save a graph view
+     *
+     * @route /graph/view
+     * @method GET
+     */
+    public function getListViewAction()
+    {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+
+        $list = GraphView::getList();
+        $response = array();
+        foreach ($list as $id => $text) {
+            $response[] = array(
+                'id' => $id,
+                'text' => $text
+            );
+        }
+        $router->response()->json($response);
+    }
+
+    /**
+     * Load the list of graph for a view
+     *
+     * @route /graph/view/[i:id]
+     * @method GET
+     */
+    public function getListGraphAction()
+    {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $viewId = $router->request()->param('id');
+
+        $router->response()->json(array(
+            'graphs' => GraphView::getListGraph($viewId)
+        ));
+    }
+
+    /**
+     * Delete a graph view
+     *
+     * @route /graph/view/[i:id]
+     * @method DELETE
+     */
+    public function deleteGraphViewAction()
+    {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $viewId = $router->request()->param('id');
+
+        try {
+            GraphView::delete($viewId);
+        } catch (\Exception $e) {
+            $router->response()->json(array(
+                'success' => false
+            ));
+            return;
+        }
+        $router->response()->json(array(
+            'success' => true
+        ));
     }
 }

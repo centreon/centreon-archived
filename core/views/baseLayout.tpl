@@ -7,6 +7,7 @@
     {foreach from=$cssFileList item='cssFile'}
     {$cssFile|css}
     {/foreach}
+    {block name="style-head"}{/block}
 </head>
 <body>
 <div id="wrapper">
