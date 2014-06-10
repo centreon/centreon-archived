@@ -647,7 +647,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 var h = Math.round($(window).height() / 5);
         
                 var gridster = $(".gridster ul").gridster({
-                    widget_margins: [10, 10],
+                    widget_margins: [7, 7],
                     widget_base_dimensions: [w, h],
                     draggable: {
                         handle: ".portlet-header",
