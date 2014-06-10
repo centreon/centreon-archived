@@ -2,7 +2,20 @@
  * Jquery portlet style
  */
 .portlet { margin: 0 0.2em 0.7em 0.2em; overflow: hidden; }
-.portlet-header { margin: 0; padding-bottom: 4px; padding-left: 0.5em; padding-top: 0.3em; cursor: move ; }
+
+.portlet-header { 
+	margin: 0; 
+	padding: 0.3em 0 4px 0.5em; 
+	cursor: move ; 
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	opacity: 0.8;
+	display: none;
+	z-index: 2;
+}
+
 .portlet-ui-icon { float: right; cursor: pointer; padding-right: 0.5em;}
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder { visibility: hidden; }
@@ -24,7 +37,7 @@
 
 div.gridster ul li {
 	list-style-type: none;
-	border: 1px solid #A9A9A9;
+	border: 2px solid #A9A9A9;
 }
 
 .gridster .preview-holder {
@@ -78,4 +91,27 @@ span.custom-owner-label {
 
 #add-filter {
 	margin-bottom: 10px;
+}
+
+.overlay_fix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100000;
+    opacity: 0;
+    display: none;
+}
+
+li.widget-li {
+	overflow: hidden;
+}
+
+.portlet-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1;
 }

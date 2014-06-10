@@ -33,13 +33,88 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Datatable\Dataprovider;
 
 /**
  * Description of CentreonStorageDb
  *
  * @author lionel
  */
-class CentreonStorageDb
+class CentreonStorageDb implements iDataprovider
 {
-    //put your code here
+    public static function loadDatas($params, array $columns, array $specialFields, $modelClass = '', $additionnalClass = null)
+    {
+        // Get Fields to be request
+        $fields = "";
+        $otherFields = "";
+        $specialFieldsKeys = array_keys($specialFields);
+        foreach($columns as $column) {
+            if (!in_array($column['name'], $specialFieldsKeys)) {
+                if (isset($column['source'])) {
+                    $otherFields .= $column['name'] . ',';
+                } else {
+                    $fields .= $column['name'] . ',';
+                }
+            } elseif (in_array($column['name'], $specialFieldsKeys) && $specialFields[$column['name']]['sameSource']) {
+                $fields .= $specialFields[$column['name']]['source'] . ',';
+            }
+        }
+        $fields = rtrim($fields, ',');
+        $otherFields = rtrim($otherFields, ',');
+        
+        $conditions = array();
+        
+        $a = array();
+        
+        if (isset($additionnalClass)) {
+                
+            $result = $additionnalClass::getMergedParameters(
+                explode(',', $fields),
+                explode (',', $otherFields),
+                $params['iDisplayLength'],
+                $params['iDisplayStart'],
+                $columns[$params['iSortCol_0']]['name'],
+                $params['sSortDir_0'],
+                $conditions,
+                "AND"
+            );
+            
+            $result2 = $additionnalClass::getMergedParameters(
+                explode(',', $fields),
+                array(),
+                -1,
+                0,
+                null,
+                'ASC',
+                $conditions,
+                "AND"
+            );
+            $a['nbOfTotalDatas'] = count($result2);
+        } else {
+            $result = $modelClass::getList(
+                $fields,
+                $params['iDisplayLength'],
+                $params['iDisplayStart'],
+                $columns[$params['iSortCol_0']]['name'],
+                $params['sSortDir_0'],
+                $conditions,
+                "AND"
+            );
+            
+            $result2 = $modelClass::getList(
+                'count(*)',
+                -1,
+                0,
+                null,
+                'ASC',
+                $conditions,
+                "AND"
+            );
+            $a['nbOfTotalDatas'] = $result2[0]['count(*)'];
+        }
+        
+        $a['datas'] = $result;
+        
+        return $a;
+    }
 }

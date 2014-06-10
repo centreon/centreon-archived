@@ -247,6 +247,7 @@ abstract class Repository
             . "SQL_CALC_FOUND_ROWS $field_list "
             . "FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
+        
         $stmt = $dbconn->query($finalRequest);
         
         // Returning the result

@@ -41,6 +41,7 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $objectName = 'trap';
     protected $objectBaseUrl = '/configuration/trap';
     protected $objectClass = '\CentreonConfiguration\Models\Trap';
+    protected $datatableObject = '\CentreonConfiguration\Internal\TrapDatatable';
     public static $relationMap = array(
         'trap_services' => '\CentreonConfiguration\Models\Relation\Trap\Service',
         'trap_servicetemplates' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate'

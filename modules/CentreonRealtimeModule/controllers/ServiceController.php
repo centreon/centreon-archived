@@ -48,6 +48,10 @@ use \CentreonRealtime\Repository\ServicedetailRepository,
  */
 class ServiceController extends \Centreon\Internal\Controller
 {
+    protected $datatableObject = '\CentreonRealtime\Internal\ServiceDatatable';
+    
+    protected $objectClass = '\CentreonRealtime\Models\Service';
+    
     /**
      * Display services
      *
@@ -60,9 +64,11 @@ class ServiceController extends \Centreon\Internal\Controller
         $tpl = \Centreon\Internal\Di::getDefault()->get('template');
 
         /* Load css */
-        $tpl->addCss('dataTables.css')
-        	->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css')
+        $tpl->addCss('dataTables.tableTools.min.css')
+            ->addCss('dataTables.colVis.min.css')
+            ->addCss('dataTables.colReorder.min.css')
+            ->addCss('dataTables.fixedHeader.min.css')
+            ->addCss('dataTables.bootstrap.css')
             ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')
             ->addCss('daterangepicker-bs3.css');
@@ -70,9 +76,13 @@ class ServiceController extends \Centreon\Internal\Controller
         /* Load js */
         $tpl->addJs('jquery.min.js')
         	->addJs('jquery.dataTables.min.js')
-        	->addJs('jquery.dataTables.TableTools.min.js')
-        	->addJs('bootstrap-dataTables-paging.js')
-        	->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('dataTables.tableTools.min.js')
+            ->addJs('dataTables.colVis.min.js')
+            ->addJs('dataTables.colReorder.min.js')
+            ->addJs('dataTables.fixedHeader.min.js')
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('dataTables.bootstrap.js')
         	->addJs('jquery.select2/select2.min.js')
         	->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
@@ -82,6 +92,7 @@ class ServiceController extends \Centreon\Internal\Controller
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
+        $tpl->assign('datatableObject', $this->datatableObject);
         $tpl->assign('objectName', 'Service');
         $tpl->assign('objectListUrl', '/realtime/service/list');
 
@@ -107,14 +118,22 @@ class ServiceController extends \Centreon\Internal\Controller
      */
     public function listAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+        
+        $router->response()->json($myDataForDatatable);
+        
+        /*$router = \Centreon\Internal\Di::getDefault()->get('router');
         $router->response()->json(
             \Centreon\Internal\Datatable::getDatas(
                 'CentreonRealtime',
                 'service',
                 $this->getParams('get')
             )
-        );
+        );*/
     }
 
     /**

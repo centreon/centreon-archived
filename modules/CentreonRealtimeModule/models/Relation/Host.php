@@ -34,16 +34,14 @@
  *
  */
 
-namespace CentreonRealtime\Models;
 
-/**
- * Used for interacting with hosts
- *
- * @author sylvestre
- */
-class Host extends \Centreon\Models\CentreonStorageBaseModel
+namespace CentreonRealtime\Models\Relation\Service;
+
+class Host extends \CentreonRealtime\Models\Relation
 {
-    protected static $table = "hosts";
-    protected static $primaryKey = "host_id";
-    protected static $uniqueLabelField = "name";
+    protected static $relationTable = "host_service_relation";
+    protected static $firstKey = "service_service_id";
+    protected static $secondKey = "host_host_id";
+    public static $firstObject = "\CentreonRealtime\Models\Service";
+    public static $secondObject = "\CentreonRealtime\Models\Host";
 }
