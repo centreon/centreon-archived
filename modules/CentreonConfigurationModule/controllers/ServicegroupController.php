@@ -124,7 +124,7 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
      *
      *
      * @method get
-     * @route /configuration/servicegroup/[i:id]/[i:advanced]
+     * @route /configuration/servicegroup/[i:id]
      */
     public function editAction()
     {
