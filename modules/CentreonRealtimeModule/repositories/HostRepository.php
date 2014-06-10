@@ -151,7 +151,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         ),
         'state' => array(
             'type' => 'select',
-            'parameters' =>array(
+            'parameters' => array(
                 '0' => '<span class="label label-success">OK</span>',
                 '1' => '<span class="label label-warning">Warning</span>',
                 '2' => '<span class="label label-danger">Critical</span>',
