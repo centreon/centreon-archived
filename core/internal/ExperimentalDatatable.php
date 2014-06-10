@@ -138,8 +138,7 @@ class ExperimentalDatatable
      */
     protected function prepareDatasForSending($datasToSend)
     {
-	static::processHooks($datasToSend['datas']);
-
+        static::processHooks($datasToSend['datas']);
         $datasToSend['datas'] = $this->castResult($datasToSend['datas']);
         
         // format the data before returning
@@ -179,7 +178,7 @@ class ExperimentalDatatable
             foreach ($column as $key=>$value) {
                 
                 if (is_string($value)) {
-                    $columnHeader .= '"' . $key . '":"' . $value . '",';
+                    $columnHeader .= '"' . $key . '":"' . addslashes($value) . '",';
                 } elseif (is_bool($value)) {
                     if ($value === true) {
                         $columnHeader .= '"' . $key . '":true,';
@@ -191,7 +190,7 @@ class ExperimentalDatatable
                 }
                 
                 if ($key === 'searchable') {
-                    $columnSearch .= '{name: "' . $currentName . '", ';
+                    $columnSearch .= '{name: "' . addslashes($currentName) . '", ';
                     if ($value) {
                         $columnSearch .= 'type: "cleanup" }';
                     } else {
@@ -263,7 +262,14 @@ class ExperimentalDatatable
             foreach($datas as &$singleData) {
                 $originalData = $singleData;
                 foreach($columnsToCast as $colName=>$colCast) {
-                    $singleData[$colName] =  self::$colCast['caster']($colName, $originalData, $colCast['parameters']);
+                    if (strpos('.', $colName)) {
+                        $a = explode('.', $colName);
+                        array_shift($a);
+                        $a = implode('.', $a);
+                    } else {
+                        $a = $colName;
+                    }
+                    $singleData[$a] =  self::$colCast['caster']($a, $originalData, $colCast['parameters']);
                 }
             }
             

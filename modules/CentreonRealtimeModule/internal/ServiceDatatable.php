@@ -57,7 +57,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('description', 'asc')
+            array('h.name', 'asc'),
+            array('s.description', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -92,9 +93,44 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             ),
             'className' => 'datatable-align-center'
         ),
+         array (
+            'title' => 'Name',
+            'name' => 'h.name',
+            'data' => 'name',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'source' => array(
+                'table' => 'hosts h',
+                'condition' => array(
+                    'first' => 'h.host_id',
+                    'second' => 's.host_id'
+                )
+            ),
+            'cast' => array(
+                'type' => 'url',
+                'parameters' => array(
+                    'route' => '/realtime/host/[i:id]',
+                    'routeParams' => array(
+                        'id' => '::host_id::'
+                    ),
+                    'linkName' => '::name::'
+                )
+            )
+        ),
+        array (
+            'title' => "Host id",
+            'name' => 's.host_id',
+            'data' => 'host_id',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => false
+        ),
         array (
             'title' => 'Service',
-            'name' => 'description',
+            'name' => 's.description',
             'data' => 'description',
             'orderable' => true,
             'searchable' => true,
@@ -113,7 +149,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'state',
+            'name' => 's.state',
             'data' => 'state',
             'orderable' => true,
             'searchable' => true,
@@ -138,7 +174,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
         ),
         array (
             'title' => 'Last Check',
-            'name' => 'last_check',
+            'name' => 's.last_check',
             'data' => 'last_check',
             'orderable' => true,
             'searchable' => true,
@@ -147,7 +183,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
         ),
         array (
             'title' => 'Duration',
-            'name' => '(unix_timestamp(NOW())-services.last_hard_state_change) AS duration',
+            'name' => '(unix_timestamp(NOW())-s.last_hard_state_change) AS duration',
             'data' => 'duration',
             'orderable' => true,
             'searchable' => true,
@@ -156,7 +192,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
         ),
         array (
             'title' => 'Retry',
-            'name' => 'CONCAT(services.check_attempt, " / ", services.max_check_attempts) as retry',
+            'name' => 'CONCAT(s.check_attempt, " / ", s.max_check_attempts) as retry',
             'data' => 'retry',
             'orderable' => true,
             'searchable' => true,
@@ -165,7 +201,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
         ),
         array (
             'title' => 'Output',
-            'name' => 'output',
+            'name' => 's.output',
             'data' => 'output',
             'orderable' => true,
             'searchable' => true,

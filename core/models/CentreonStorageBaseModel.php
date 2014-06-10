@@ -318,26 +318,51 @@ abstract class CentreonStorageBaseModel
      */
     public static function getList(
         $parameterNames = "*",
+        $additionnalTables = "",
         $count = -1,
         $offset = 0,
         $order = null,
         $sort = "ASC",
         $filters = array(),
-        $filterType = "OR"
+        $filterType = "OR",
+        $filterForTables = array()
     ) {
         if ($filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         }
+        
         if (is_array($parameterNames)) {
             $params = implode(",", $parameterNames);
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params FROM " . static::$table;
+        
+        if (is_array($additionnalTables)) {
+            $tables = implode(",", $additionnalTables);
+        } else {
+            $tables = $additionnalTables;
+        }
+        
+        $tablesFilter = '';
+        if (!empty($tables)) {
+            $tables = ', ' . $tables;
+            $firstFilter = true;
+            foreach ($filterForTables as $key => $rawvalue) {
+                $value = trim($rawvalue);
+                if ($firstFilter) {
+                    $tablesFilter .= " WHERE $key = $value ";
+                } else {
+                    $tablesFilter .= " $filterType $key = '$value' ";
+                }
+            }
+        }
+        
+        $sql = "SELECT $params FROM " . static::$table . $tables . $tablesFilter;
         $filterTab = array();
+        $firstFilter = true;
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
-                if (!count($filterTab)) {
+                if ($firstFilter) {
                     $sql .= " WHERE $key LIKE ? ";
                 } else {
                     $sql .= " $filterType $key LIKE ? ";
@@ -347,6 +372,7 @@ abstract class CentreonStorageBaseModel
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);
                 $filterTab[] = $value;
+                $firstFilter = false;
             }
         }
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
