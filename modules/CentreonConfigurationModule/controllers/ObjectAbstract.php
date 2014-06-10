@@ -67,18 +67,25 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $tpl = $di->get('template');
 
         /* Load CssFile */
-        $tpl->addCss('dataTables.css')
+        $tpl->addCss('jquery.dataTables.min.css')
+            ->addCss('dataTables.tableTools.min.css')
+            ->addCss('dataTables.colVis.min.css')
+            ->addCss('dataTables.colReorder.min.css')
+            ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
 
         /* Load JsFile */
         $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
+            ->addJs('dataTables.tableTools.min.js')
+            ->addJs('dataTables.colVis.min.js')
+            ->addJs('dataTables.colReorder.min.js')
+            ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('dataTables.bootstrap.js')
             ->addJs('jquery.select2/select2.min.js')
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
@@ -90,6 +97,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         
         /* Display variable */
         $tpl->assign('objectName', $this->objectDisplayName);
+        $tpl->assign('datatableObject', $this->datatableObject);
         $tpl->assign('moduleName', static::$moduleName);
         $tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
         $tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
@@ -388,13 +396,10 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
-        $router->response()->json(
-            \Centreon\Internal\Datatable::getDatas(
-                static::$moduleName,
-                $this->objectName,
-                $this->getParams('get')
-            )
-        );
+        $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+        
+        $router->response()->json($myDataForDatatable);
     }
 
     /**

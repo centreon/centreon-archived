@@ -42,6 +42,7 @@ class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $objectDisplayName = 'User';
     protected $objectName = 'user';
     protected $objectBaseUrl = '/configuration/user';
+    protected $datatableObject = '\CentreonConfiguration\Internal\UserDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Contact';
     public static $relationMap = array(
         'contact_contactgroups' => '\CentreonConfiguration\Models\Relation\Contact\Contactgroup',

@@ -43,11 +43,13 @@ use \CentreonConfiguration\Models\Relation\Host\Hostparent;
 use \CentreonConfiguration\Models\Relation\Host\Poller;
 use \CentreonConfiguration\Models\Timeperiod;
 use \CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Internal\HostDatatable;
 
 class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Host';
     protected $objectName = 'host';
+    protected $datatableObject = '\CentreonConfiguration\Internal\HostDatatable';
     protected $objectBaseUrl = '/configuration/host';
     protected $objectClass = '\CentreonConfiguration\Models\Host';
     
@@ -91,7 +93,13 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function datatableAction()
     {
-        parent::datatableAction();
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+        
+        $router->response()->json($myDataForDatatable);
     }
     
     /**

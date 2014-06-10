@@ -97,7 +97,7 @@ class HostgroupRepository extends \CentreonConfiguration\Repository\Repository
             'parameters' =>array(
                 '0' => '<span class="label label-danger">Disabled</span>',
                 '1' => '<span class="label label-success">Enabled</span>',
-        )
+            )
         ),
         'hg_id' => array(
             'type' => 'checkbox',

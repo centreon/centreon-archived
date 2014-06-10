@@ -42,6 +42,12 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectBaseUrl = '/configuration/hostgroup';
     protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
     
+    /**
+     *
+     * @var type 
+     */
+    protected $datatableObject = '\CentreonConfiguration\Internal\HostGroupDatatable';
+    
     public static $relationMap = array(
         'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
     );
