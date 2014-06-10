@@ -83,8 +83,7 @@ class CustomviewController extends \Centreon\Internal\Controller
             ->addCss('centreon-widget.css')
             ->addCss('centreon-wizard.css')
             ->addCss('select2.css')
-            ->addCss('select2-bootstrap.css')
-            ->addCss('overlay-fix.css'); /* Fixes an iFrame resizing issue */
+            ->addCss('select2-bootstrap.css');
         $template->addJs('jquery.gridster.min.js')
             ->addJs('jquery.gridster.with-extras.min.js')
             ->addJs('centreon-wizard.js')
@@ -675,7 +674,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 gridster.remove_all_widgets();
                 $.each(widgets, function(index) {
                     gridster.add_widget(
-                        \'<li style="overflow:hidden;" data-index=\'+index+\' data-widget-id=\'+this.widget_id+\' > \
+                        \'<li class="widget-li" data-index=\'+index+\' data-widget-id=\'+this.widget_id+\' > \
                         <div class="overlay_fix"></div> \
                         <div class="portlet-header bg-primary"> \
                         <span class="widgetTitle"> \
@@ -696,7 +695,15 @@ class CustomviewController extends \Centreon\Internal\Controller
                         (typeof jsonPosition[index] !== \'undefined\') ? jsonPosition[index].col : 1,
                         (typeof jsonPosition[index] !== \'undefined\') ? jsonPosition[index].row : 1
                     );
-                });';
+                });
+
+                $(".widget-li").mouseenter(function() {
+                    $(this).children(".portlet-header").show();
+                }).mouseleave(function() {
+                    $(this).children(".portlet-header").hide();
+                })
+
+                ';
     }
 
     /**
