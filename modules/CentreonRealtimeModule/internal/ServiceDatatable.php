@@ -98,13 +98,13 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-                'type' => 'select',
-                'parameters' =>array(
-                    '0' => '<span class="label label-success">OK</span>',
-                    '1' => '<span class="label label-warning">Warning</span>',
-                    '2' => '<span class="label label-danger">Critical</span>',
-                    '3' => '<span class="label label-default">Unknown</span>',
-                    '4' => '<span class="label label-info">Pending</span>',
+                'type' => 'url',
+                'parameters' => array(
+                    'route' => '/realtime/service/[i:id]',
+                    'routeParams' => array(
+                        'id' => '::service_id::'
+                    ),
+                    'linkName' => '::description::'
                 )
             ),
         ),
@@ -118,10 +118,12 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'visible' => true,
             'cast' => array(
                 'type' => 'select',
-                'parameters' =>array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
-                    '2' => '<span class="label label-warning">Trash</span>',
+                'parameters' => array(
+                    '0' => '<span class="label label-success">OK</span>',
+                    '1' => '<span class="label label-warning">Warning</span>',
+                    '2' => '<span class="label label-danger">Critical</span>',
+                    '3' => '<span class="label label-default">Unknown</span>',
+                    '4' => '<span class="label label-info">Pending</span>',
                 )
             ),
             'searchtype' => 'select',
