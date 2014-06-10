@@ -33,13 +33,100 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Datatable\Dataprovider;
 
 /**
  * Description of CentreonStorageDb
  *
  * @author lionel
  */
-class CentreonStorageDb
+class CentreonStorageDb implements iDataprovider
 {
-    //put your code here
+    public static function loadDatas($params, array $columns, array $specialFields, $modelClass = '', $additionnalClass = null)
+    {
+        // Get Fields to be request
+        $fields = "";
+        $otherFields = "";
+        $otherTables = "";
+        $conditions = array();
+        $conditionsForTable = array();
+        
+        $specialFieldsKeys = array_keys($specialFields);
+        foreach($columns as $column) {
+            if (!in_array($column['name'], $specialFieldsKeys)) {
+                if (isset($column['source'])) {
+                    if (is_array($column['source'])) {
+                        $otherTables .= $column['source']['table'] . ',';
+                        $conditionsForTable[$column['source']['condition']['first']] = $column['source']['condition']['second'];
+                        $fields .= $column['name'] . ',';
+                    }
+                    $otherFields .= $column['name'] . ',';
+                } else {
+                    $fields .= $column['name'] . ',';
+                }
+            } elseif (in_array($column['name'], $specialFieldsKeys) && $specialFields[$column['name']]['sameSource']) {
+                $fields .= $specialFields[$column['name']]['source'] . ',';
+            }
+        }
+        $fields = rtrim($fields, ',');
+        $otherFields = rtrim($otherFields, ',');
+        $otherTables = rtrim($otherTables, ',');
+        
+        $a = array();
+        
+        if (isset($additionnalClass)) {
+                
+            $result = $additionnalClass::getMergedParameters(
+                explode(',', $fields),
+                explode (',', $otherFields),
+                $params['iDisplayLength'],
+                $params['iDisplayStart'],
+                $columns[$params['iSortCol_0']]['name'],
+                $params['sSortDir_0'],
+                $conditions,
+                "AND"
+            );
+            
+            $result2 = $additionnalClass::getMergedParameters(
+                explode(',', $fields),
+                array(),
+                -1,
+                0,
+                null,
+                'ASC',
+                $conditions,
+                "AND"
+            );
+            $a['nbOfTotalDatas'] = count($result2);
+        } else {
+            $result = $modelClass::getList(
+                $fields,
+                explode (',', $otherTables),
+                $params['iDisplayLength'],
+                $params['iDisplayStart'],
+                $columns[$params['iSortCol_0']]['name'],
+                $params['sSortDir_0'],
+                $conditions,
+                "AND",
+                $conditionsForTable
+            );
+            
+            $result2 = $modelClass::getList(
+                'count(*)',
+                explode (',', $otherTables),
+                -1,
+                0,
+                null,
+                'ASC',
+                $conditions,
+                "AND",
+                $conditionsForTable
+            );
+            $a['nbOfTotalDatas'] = $result2[0]['count(*)'];
+        }
+        
+        $a['datas'] = $result;
+        
+        return $a;
+    }
 }

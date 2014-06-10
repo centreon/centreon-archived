@@ -3,7 +3,7 @@
 	{t}Service monitoring{/t}
 {/block}
 {block name="content"}
-	{datatable module=$moduleName object=$objectName configuration=false}
+	{datatable module=$moduleName object=$objectName configuration=false datatableObject=$datatableObject}
 	<div class="modal fade" role="dialog" id="modal-console">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content" id="modal-console-content"></div>
@@ -11,7 +11,7 @@
 	</div>
 {/block}
 {block name="javascript-bottom" append}
-	{datatablejs module=$moduleName object=$objectName objectUrl=$objectListUrl}
+	{datatablejs module=$moduleName object=$objectName objectUrl=$objectListUrl datatableObject=$datatableObject}
 	<script>
 		$(function() {
 			/* tooltips */
@@ -80,7 +80,7 @@
 
 				$.ajax({
 					type: 'POST',
-					url: 'externalcommands/' + $(this).val(),
+					url: 'externalcommands/' + $(this).val() + '/{$consoleType}',
 					data: { ids: selectedItems }
 				}).done(function(html) {
 					$("#modal-console-content").html(html);

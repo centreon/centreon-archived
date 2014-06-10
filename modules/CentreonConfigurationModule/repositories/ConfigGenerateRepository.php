@@ -98,6 +98,8 @@ class ConfigGenerateRepository
         /* Generate Debugging Main File */
         ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "centengine-testing.cfg", 1);
 
+
+        ConfigCorrelationRepository::generateFile($poller_id);
         /*
          * Create Buffers for objects
          */

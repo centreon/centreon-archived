@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2005-2011 MERETHIS
+/*
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,6 +31,17 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-echo "<img src='./resources/logoCentreon.png'/>";
+
+namespace CentreonRealtime\Models\Relation\Service;
+
+class Host extends \CentreonRealtime\Models\Relation
+{
+    protected static $relationTable = "host_service_relation";
+    protected static $firstKey = "service_service_id";
+    protected static $secondKey = "host_host_id";
+    public static $firstObject = "\CentreonRealtime\Models\Service";
+    public static $secondObject = "\CentreonRealtime\Models\Host";
+}

@@ -11,7 +11,7 @@
 	top: 0;
 	left: 0;
 	right: 0;
-	opacity: 100;
+	opacity: 0.8;
 	display: none;
 	z-index: 2;
 }
@@ -37,7 +37,7 @@
 
 div.gridster ul li {
 	list-style-type: none;
-	border: 1px solid #A9A9A9;
+	border: 2px solid #A9A9A9;
 }
 
 .gridster .preview-holder {
