@@ -264,7 +264,7 @@ class ExperimentalDatatable
             foreach($datas as &$singleData) {
                 $originalData = $singleData;
                 foreach($columnsToCast as $colName=>$colCast) {
-                    if (strpos('.', $colName)) {
+                    if (preg_match('/[A-z]\./', $colName)) {
                         $a = explode('.', $colName);
                         array_shift($a);
                         $a = implode('.', $a);
