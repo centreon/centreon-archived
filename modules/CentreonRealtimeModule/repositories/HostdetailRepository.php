@@ -35,6 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
+use \Centreon\Internal\Di;
+
 /**
  * Repository for host data
  *
@@ -68,7 +70,7 @@ class HostdetailRepository extends ObjectdetailRepository
      */
     public static function getRealtimeData($hostId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
+        $db = Di::getDefault()->get('db_storage');
         $sql = 'SELECT h.name as host_name, acknowledged, scheduled_downtime_depth, output, latency,
             last_check, next_check, check_period, i.name as instance_name, state, h.address as host_address,
             h.state_type
@@ -82,6 +84,24 @@ class HostdetailRepository extends ObjectdetailRepository
     }
 
     /**
+     * Process command
+     * 
+     * @param int $cmdId
+     * @param array $serviceIds
+     * @param array $additionalParams
+     */
+    public static function processCommand($cmdId, $hostIds, $additionalParams = array())
+    {
+        if (count($hostIds)) {
+            $list = implode(',', $hostIds);
+            $sql = "SELECT h.name
+                FROM hosts h 
+                WHERE h.host_id IN ($list)";
+            self::doCommand($cmdId, $sql, $additionalParams);
+        }
+    }
+
+    /**
      * Get list of monitoring actions for services
      *
      * @param array
@@ -90,13 +110,39 @@ class HostdetailRepository extends ObjectdetailRepository
     {
         $actions = array();
         $actions[self::SCHEDULE_CHECK] = _('Schedule check');
-        //$actions[self::ACKNOWLEDGE] = _('Acknowledge');
-        //$actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
-        //$actions[self::DOWNTIME] = _('Set downtime');
-        //$actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
+        $actions[self::ACKNOWLEDGE] = _('Acknowledge');
+//        $actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
+        $actions[self::DOWNTIME] = _('Set downtime');
+//        $actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
         $actions[self::ENABLE_CHECK] = _('Enable check');
         $actions[self::DISABLE_CHECK] = _('Disable check');
         return $actions;
+    }
+
+    /**
+     * Get string of a given command
+     *
+     * @param int $cmdId
+     * @throws \Centreon\Internal\Exception
+     */
+    public static function getCommandString($cmdId)
+    {
+        static $commands = null;
+
+        if (is_null($commands)) {
+            $commands = array();
+            $commands[self::SCHEDULE_CHECK] = "SCHEDULE_HOST_CHECK";
+            $commands[self::ACKNOWLEDGE] = "ACKNOWLEDGE_HOST_PROBLEM";
+            $commands[self::REMOVE_ACKNOWLEDGE] = "REMOVE_HOST_ACKNOWLEDGEMENT";
+            $commands[self::DOWNTIME] = "SCHEDULE_HOST_DOWNTIME";
+            $commands[self::REMOVE_DOWNTIME] = "DEL_HOST_DOWNTIME";
+            $commands[self::ENABLE_CHECK] = "ENABLE_HOST_CHECK";
+            $commands[self::DISABLE_CHECK] = "DISABLE_HOST_CHECK";
+        }
+        if (isset($commands[$cmdId])) {
+            return $commands[$cmdId];
+        }
+        throw new Exception('Unknown command');
     }
 }
 

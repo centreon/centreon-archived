@@ -50,9 +50,11 @@ class ExternalcommandController extends \Centreon\Internal\Controller
 {
     /**
      * Send external command
+     * source defines whether actions comes from the service console
+     * or the host console
      *
      * @method post
-     * @route /realtime/externalcommands/[i:cmdid]
+     * @route /realtime/externalcommands/[i:cmdid]/[i:source]
      */
     public function sendCommandAction()
     {
@@ -82,21 +84,30 @@ class ExternalcommandController extends \Centreon\Internal\Controller
                 $this->displayConfirmationBox(
                     '\CentreonRealtime\Repository\HostdetailRepository', 
                     $cmdId, 
-                    $params['ids']
+                    $this->getHostIds($params['ids'], $params['source'])
                 );
                 break;
             case ServicedetailRepository::ACKNOWLEDGE:
-            case HostdetailRepository::ACKNOWLEDGE:
                 $this->displayAcknowledgementBox(
                     $cmdId,
                     $params['ids']
                 );
                 break;
+            case HostdetailRepository::ACKNOWLEDGE:
+                $this->displayAcknowledgementBox(
+                    $cmdId,
+                    $this->getHostIds($params['ids'], $params['source'])
+                );
+                break;
             case ServicedetailRepository::DOWNTIME:
-            case HostdetailRepository::DOWNTIME:
                 $this->displayDowntimeBox(
                     $cmdId,
                     $params['ids']
+                );
+            case HostdetailRepository::DOWNTIME:
+                $this->displayDowntimeBox(
+                    $cmdId,
+                    $this->getHostIds($params['ids'], $params['source'])
                 );
                 break;
  
@@ -121,7 +132,16 @@ class ExternalcommandController extends \Centreon\Internal\Controller
                 $params['start_time'] = strtotime($start);
                 $params['end_time'] = strtotime($end);;
             }
-            ServicedetailRepository::processCommand($cmdId, $params['ids'], $params);
+            switch ($cmdId) {
+                case ServicedetailRepository::DOWNTIME:
+                case ServicedetailRepository::ACKNOWLEDGE:
+                    ServicedetailRepository::processCommand($cmdId, $params['ids'], $params);
+                    break;
+                case HostdetailRepository::DOWNTIME:
+                case HostdetailRepository::ACKNOWLEDGE:
+                    HostdetailRepository::processCommand($cmdId, $params['ids'], $params);
+                    break;
+            }
             $router->response()->json(array('message' => _('Command has been successfully submitted')));
         } catch (Exception $e) {
             $router->response()->json(array('message' => $e->getMessage()));
@@ -158,6 +178,7 @@ class ExternalcommandController extends \Centreon\Internal\Controller
         $template = Di::getDefault()->get('template');
         $user = $_SESSION['user'];
         $template->assign('user', $user->getName());
+
         $template->assign('ids', $objectIds);
         $template->assign('cmdid', $cmdId);
         $template->display('file:[CentreonRealtimeModule]action_acknowledgement.tpl');
@@ -178,5 +199,21 @@ class ExternalcommandController extends \Centreon\Internal\Controller
         $template->assign('ids', $objectIds);
         $template->assign('cmdid', $cmdId);
         $template->display('file:[CentreonRealtimeModule]action_downtime.tpl');
+    }
+
+    /**
+     * Convert ids when necessary
+     * Service ids could be received while we want to perform actions on hosts
+     *
+     * @param array $objectIds
+     * @param int $source
+     */
+    protected function getHostIds($objectIds, $source)
+    {
+        /* we come from service console, need conversion */
+        if ($source == 1) {
+            return ServicedetailRepository::getHostIdFromServiceId($objectIds);
+        }
+        return $objectIds;
     }
 }

@@ -60,5 +60,57 @@ class ObjectdetailRepository
         $command = $prefix . static::getCommandString($cmdId) . ";" .implode(';', $params) . "\n";
         file_put_contents($centcorecmd, $command, FILE_APPEND);
     }
+
+    /**
+     * Send command for each object returned by the sql query.
+     *
+     * @param int $cmdId
+     * @param str $sql
+     * @param array $additionalParams
+     */
+    public static function doCommand($cmdId, $sql, $additionalParams)
+    {
+        $db = Di::getDefault()->get('db_storage');
+        $stmt = $db->prepare($sql);
+        $stmt->execute(); 
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            switch ($cmdId) {
+                case static::SCHEDULE_CHECK:
+                    $options = array(time());
+                    break;
+                case static::ACKNOWLEDGE:
+                    $options = array(
+                        isset($additionalParams['sticky']) ? 1 : 0,
+                        isset($additionalParams['notify']) ? 1 : 0,
+                        isset($additionalParams['persistent']) ? 1 : 0,
+                        $additionalParams['author'],
+                        $additionalParams['comment']
+                    );
+                    break;
+                case static::DOWNTIME:
+                    $options = array(
+                        $additionalParams['start_time'],
+                        $additionalParams['end_time'],
+                        isset($additionalParams['fixed']) ? 1 : 0,
+                        0,
+                        $additionalParams['duration'],
+                        $additionalParams['author'],
+                        $additionalParams['comment']
+                    );
+                    break;
+                case static::REMOVE_ACKNOWLEDGE:
+                    break;
+                case static::REMOVE_DOWNTIME:
+                    break;
+                default:
+                    $options = array();
+                    break;
+            }
+            self::sendCommand(
+                $cmdId,
+                array_merge($row, $options)
+            );
+        }
+    }
 }
 

@@ -80,7 +80,7 @@
 
 				$.ajax({
 					type: 'POST',
-					url: 'externalcommands/' + $(this).val(),
+					url: 'externalcommands/' + $(this).val() + '/{$consoleType}',
 					data: { ids: selectedItems }
 				}).done(function(html) {
 					$("#modal-console-content").html(html);
