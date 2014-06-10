@@ -44,6 +44,8 @@ class ExperimentalDatatable
 {
     protected static $hook = '';
     protected static $objectId = '';
+    protected static $objectName = '';
+
     /**
      *
      * @var string 
@@ -324,9 +326,9 @@ class ExperimentalDatatable
     public static function addCheckbox($field, $values, $cast)
     {
         $object = ucwords(str_replace('_', '', $field));
-        $input = '<input class="all'. $object .'Box" '
-            . 'id="'. $object .'::'. $field .'::" '
-            . 'name="'. $object .'[]" '
+        $input = '<input class="all'. static::$objectName .'Box" '
+            . 'id="'. static::$objectName .'::'. $field .'::" '
+            . 'name="'. static::$objectName .'[]" '
             . 'type="checkbox" '
             . 'value="::'. $field .'::" '
             . 'data-name="' . $field . '" '

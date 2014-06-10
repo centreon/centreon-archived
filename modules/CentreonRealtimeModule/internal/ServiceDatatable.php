@@ -49,6 +49,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
 {
     protected static $hook = 'displayServiceRtColumn';
     protected static $objectId = 'service_id';
+    protected static $objectName = 'Service';
 
     /**
      *
