@@ -140,6 +140,7 @@ class ExperimentalDatatable
      */
     protected function prepareDatasForSending($datasToSend)
     {
+        static::addAdditionnalDatas($datasToSend['datas']);
         static::processHooks($datasToSend['datas']);
         $datasToSend['datas'] = $this->castResult($datasToSend['datas']);
         
@@ -152,6 +153,15 @@ class ExperimentalDatatable
         );
         
         return $finalDatas;
+    }
+    
+    /**
+     * 
+     * @param type $resultSet
+     */
+    protected static function addAdditionnalDatas(&$resultSet)
+    {
+        
     }
     
     /**
@@ -362,7 +372,7 @@ class ExperimentalDatatable
     {
         if (isset($cast['selecttype']) && ($cast['selecttype'] != 'none')) {
             $subCaster = 'add'.ucwords($cast['selecttype']);
-            $myElement = static::$subCaster($field, $values, $cast['parameters']);
+            $myElement = static::$subCaster($field, $values, $cast['parameters'][$values[$field]]['parameters']);
         } else {
             $myElement = $cast[$values[$field]];
         }
@@ -384,6 +394,10 @@ class ExperimentalDatatable
         return date($cast['date'], $values[$field]);
     }
 
+    /**
+     * 
+     * @param type $resultSet
+     */
     public static function processHooks(&$resultSet)
     {
         $arr = array();
