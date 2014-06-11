@@ -56,7 +56,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
      * @var array 
      */
     protected static $configuration = array(
-        'autowidth' => true,
+        'autowidth' => false,
         'order' => array(
             array('h.name', 'asc'),
             array('s.description', 'asc')
@@ -92,7 +92,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::description::'
                 )
             ),
-            'className' => 'datatable-align-center'
+            'className' => 'datatable-align-center', 
+            'width' => '15px'
         ),
          array (
             'title' => 'Name',
@@ -171,7 +172,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'Enabled' => '1',
                 'Disabled' => '0',
                 'Trash' => '2'
-            )
+                                    ),
+            'width' => '50px'
         ),
         array (
             'title' => 'Last Check',
@@ -180,7 +182,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '10%'
         ),
         array (
             'title' => 'Duration',
@@ -189,7 +192,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '10%'
         ),
         array (
             'title' => 'Retry',
@@ -198,7 +202,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '25px'
         ),
         array (
             'title' => 'Output',
@@ -207,7 +212,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
         ),
     );
     
