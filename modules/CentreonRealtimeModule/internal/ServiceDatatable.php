@@ -217,6 +217,15 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'type' => 'string',
             'visible' => true,
         ),
+        array (
+            'title' => 'Perfdata',
+            'name' => 's.perfdata',
+            'data' => 'perfdata',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => false,
+        ),
     );
     
     /**
