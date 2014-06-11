@@ -535,6 +535,13 @@
                 .modal();
         });
         {/if}
+
+        new $.fn.dataTable.FixedColumns( oTable );
+        $(window).bind('resize', function () {
+            oTable.fnAdjustColumnSizing();
+        });
     });
+    
+    
     
 </script>
