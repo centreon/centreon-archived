@@ -107,7 +107,6 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     /**
      * Update a poller
      *
-     *
      * @method post
      * @route /configuration/poller/update
      */

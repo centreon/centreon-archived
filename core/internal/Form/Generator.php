@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal\Form;
 
+use \Centreon\Internal\Exception;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -123,7 +125,11 @@ class Generator
         $queryForm = "SELECT form_id, name, redirect, redirect_route FROM form WHERE route = '$this->formRoute'";
         $stmtForm = $dbconn->query($queryForm);
         $formInfo = $stmtForm->fetchAll();
-        
+
+        if (!isset($formInfo[0])) {
+            throw new Exception(sprintf('Could not find form with route %s', $this->formRoute));
+        }
+
         $formId = $formInfo[0]['form_id'];
         $this->formName = $formInfo[0]['name'];
         $this->formRedirect = $formInfo[0]['redirect'];
