@@ -1,6 +1,6 @@
 <div class="first-content">
-    <div class="col-sm-12 col-md-6">
-      <button class="btn btn-default" id="modalAdd">{t}Add{/t}</button>
+    <div class="col-sm-12 col-md-7 configuration-actions">
+      <div><button class="btn btn-default" id="modalAdd">{t}Add{/t}</button></div>
       <div class="btn-group" id="selected_option" style="display: none;">
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -17,15 +17,15 @@
             <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>
           </ul>
         </div>
-        {if $datatableParameters.groupname || $datatableParameters.hasCategory}
+        {if isset($datatableParameters.groupname) || isset($datatableParameters.hasCategory)}
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             {t}Add to{/t}
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            {if $datatableParameters.groupname }<li><a href="#">{$datatableParameters.groupname}</a></li>{/if}
-            {if $datatableParameters.hasCategory}<li><a href="#">{t}Category{/t}</a></li>{/if}
+            {if isset($datatableParameters.groupname) }<li><a href="#">{$datatableParameters.groupname}</a></li>{/if}
+            {if isset($datatableParameters.hasCategory) }<li><a href="#">{t}Category{/t}</a></li>{/if}
           </ul>
         </div>
         {/if}

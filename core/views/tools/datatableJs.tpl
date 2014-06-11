@@ -1,5 +1,13 @@
 <script>
     $(document).ready(function() {
+
+        /* Remove the label next to pagination dropdown */
+        var labelToRemove = 'label[for=datatable{$object}_length_select]';
+        $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
+            $(labelToRemove).hide();
+            $("#datatable{$object}_length").append($(".configuration-actions"));
+        });
+
         var oTable = $('#datatable{$object}').dataTable({
             "bProcessing": true,
             "sAjaxSource": "{url_for url=$objectUrl}",
