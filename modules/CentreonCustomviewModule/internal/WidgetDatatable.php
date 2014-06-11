@@ -34,14 +34,14 @@
  * 
  */
 
-namespace Centreon\Internal\Datatable;
+namespace CentreonCustomview\Internal;
 
 /**
- * Description of ModuleDatatable
+ * Description of WidgetDatatable
  *
  * @author lionel
  */
-class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
+class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -49,7 +49,7 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonConfiguration\Models\Module';
+    protected static $datasource = '\CentreonCustomview\Models\WidgetModel';
     
     /**
      *
@@ -59,7 +59,7 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
         'autowidth' => true,
         'order' => array(
             array('name', 'asc'),
-            array('id', 'asc')
+            array('widget_model_id', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -71,9 +71,9 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
      */
     protected static $columns = array(
         array (
-            'title' => "<input id='allModuleid' class='allModuleid' type='checkbox'>",
-            'name' => 'id',
-            'data' => 'id',
+            'title' => "<input id='allWidgetid' class='allWidgetid' type='checkbox'>",
+            'name' => 'widget_model_id',
+            'data' => 'widget_model_id',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -96,13 +96,22 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/extensions/module/[i:id]',
+                    'route' => '/administration/extensions/widgets/[i:id]',
                     'routeParams' => array(
                         'id' => '::id::'
                     ),
                     'linkName' => '::name::'
                 )
             )
+        ),
+        array (
+            'title' => 'Shortname',
+            'name' => 'shortname',
+            'data' => 'shortname',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
         ),
         array (
             'title' => 'Description',
@@ -217,7 +226,7 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
                                 'routeParams' => array(
                                     'id' => '::id::'
                                 ),
-                                'linkName' => 'Core Module',
+                                'linkName' => 'Core Widget',
                                 'styleClass' => 'btn btn-primary btn-block'
                             )
                         ),
@@ -242,35 +251,43 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
      */
     protected static function addAdditionnalDatas(&$resultSet)
     {
-        static::getFilesystemModule($resultSet);
+        static::getFilesystemWidget($resultSet);
     }
     
-    private static function getFilesystemModule(& $resultSet)
+    private static function getFilesystemWidget(& $resultSet)
     {
-        // Get current moduleName
-        $moduleNameList = \Centreon\Custom\Module\ModuleInformations::getModuleList();
-        
-        /*echo '<pre>';
-        var_dump($moduleNameList);
-        var_dump($resultSet);
-        echo '</pre>';
-        die();*/
-        
-        $rawModuleList = glob(__DIR__."/../../modules/*Module/");
-        foreach ($rawModuleList as $module) {
-            if (file_exists(realpath($module . 'install/config.json'))) {
-                $b = json_decode(file_get_contents($module . 'install/config.json'), true);
-                if (!in_array($b['shortname'], $moduleNameList)) {
-                    $resultSet[] = array(
-                        'id' => 0,
-                        'name' => $b['shortname'],
-                        'description' => $b['name'],
-                        'version' => $b['version'],
-                        'author' => implode(", ", $b['author']),
-                        'isactivated' => 0,
-                        'isinstalled' => 0,
-                        'alias' => $b['name'],
-                    );
+       // Get current moduleName
+        $widgetNameList = array();
+        foreach($resultSet as $cWidget) {
+            $widgetNameList[] = $cWidget['shortname'];
+        }
+
+        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        // Add file system repo
+        $possibleWidgetDir = array(
+            $path . "/widgets/*Widget/",
+            $path . "/modules/*Module/widgets/*Widget/"
+        );
+        foreach ($possibleWidgetDir as $d) {
+            $rawWidgetList = glob($d);
+            foreach ($rawWidgetList as $widget) {
+                if ($widget == "." || $widget == "..") {
+                    continue;
+                }
+                if (file_exists(realpath($widget . '/install/config.json'))) {
+                    $info = json_decode(file_get_contents($widget . '/install/config.json'), true);
+                    if (!in_array($info['shortname'], $widgetNameList)) {
+                        $resultSet[] = array(
+                            'widget_model_id' => 0,
+                            'name' => $info['name'],
+                            'shortname' => $info['shortname'],
+                            'description' => $info['description'],
+                            'version' => $info['version'],
+                            'author' => $info['author'],
+                            'isactivated' => 0,
+                            'isinstalled' => 0
+                        );
+                    }
                 }
             }
         }

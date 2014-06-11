@@ -54,30 +54,7 @@ function smarty_function_datatable($params, $smarty)
     $datatableParameters = array();
     $datatableParameters['header'] = $params['datatableObject']::getHeader();
     $datatableParameters['configuration'] = $params['datatableObject']::getConfiguration();
-    //$datatableParameters = \Centreon\Internal\Datatable::getConfiguration($params['module'], $params['object']);
-    /*$datatableParameters['nbFixedTr'] = 1;
     
-    // Process Column
-    $dCol = array();
-    $depth = arrayDepth($datatableParameters['column']);
-    foreach ($datatableParameters['column'] as $columnLabel => $columnContent) {
-        if (is_array($columnContent)) {
-            $datatableParameters['nbFixedTr'] = 2;
-            $dCol['firstLevel'][$columnLabel]['lab'] = $columnLabel;
-            $dCol['firstLevel'][$columnLabel]['att'] = 'colspan="'.count($columnContent).'"';
-            foreach ($columnContent as $subColumnLabel => $subColumnName) {
-                $dCol['search'][$subColumnLabel]['lab'] = $subColumnLabel;
-                $dCol['secondLevel'][]['lab'] = $subColumnLabel;
-            }
-        } else {
-            $dCol['search'][$columnLabel]['lab'] = $columnLabel;
-            $dCol['firstLevel'][$columnLabel]['lab'] = $columnLabel;
-            $dCol['firstLevel'][$columnLabel]['att'] = 'rowspan="'.$depth.'"';
-        }
-    }
-    $datatableParameters['column'] = $dCol;
-    unset($dCol);
-    */
     $smarty->assign('datatableParameters', $datatableParameters);
     
     if ($params['configuration']) {

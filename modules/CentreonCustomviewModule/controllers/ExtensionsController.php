@@ -41,6 +41,8 @@ class ExtensionsController extends \Centreon\Internal\Controller
     public static $objectName = 'WidgetModel';
     public static $objectDisplayName = 'WidgetModel';
     public static $moduleName = 'CentreonCustomview';
+    protected $datatableObject = '\CentreonCustomview\Internal\WidgetDatatable';
+    protected $objectClass = '\CentreonCustomview\Models\WidgetModel';
     protected $di;
     protected $tpl;
 
@@ -163,15 +165,13 @@ class ExtensionsController extends \Centreon\Internal\Controller
      */
     public function datatableAction()
     {
-        $router = $this->di->get('router');
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
         
-        $router->response()->json(
-            \Centreon\Internal\Datatable::getDatas(
-                self::$moduleName,
-                self::$objectName,
-                $this->getParams('get')
-            )
-        );
+        $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+        
+        $router->response()->json($myDataForDatatable);
     }
     
     /**
@@ -185,22 +185,31 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $this->tpl = $this->di->get('template');
         
         /* Load CssFile */
-        $this->tpl->addCss('dataTables.css')
+        $this->tpl->addCss('jquery.dataTables.min.css')
+            ->addCss('dataTables.tableTools.min.css')
+            ->addCss('dataTables.colVis.min.css')
+            ->addCss('dataTables.colReorder.min.css')
+            ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
 
         /* Load JsFile */
         $this->tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
+            ->addJs('dataTables.tableTools.min.js')
+            ->addJs('dataTables.colVis.min.js')
+            ->addJs('dataTables.colReorder.min.js')
+            ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('dataTables.bootstrap.js')
             ->addJs('jquery.select2/select2.min.js')
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('centreon-wizard.js');
+        
+        $this->tpl->assign('datatableObject', $this->datatableObject);
 
         /* Set Cookie */
         $token = \Centreon\Internal\Form::getSecurityToken();
