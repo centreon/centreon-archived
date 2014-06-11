@@ -242,21 +242,15 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
      */
     protected static function addAdditionnalDatas(&$resultSet)
     {
-        static::getFilesystemModule($resultSet);
+        self::getFilesystemModule($resultSet);
     }
     
     private static function getFilesystemModule(& $resultSet)
     {
         // Get current moduleName
         $moduleNameList = \Centreon\Custom\Module\ModuleInformations::getModuleList();
-        
-        /*echo '<pre>';
-        var_dump($moduleNameList);
-        var_dump($resultSet);
-        echo '</pre>';
-        die();*/
-        
-        $rawModuleList = glob(__DIR__."/../../modules/*Module/");
+        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $rawModuleList = glob($path."/modules/*Module/");
         foreach ($rawModuleList as $module) {
             if (file_exists(realpath($module . 'install/config.json'))) {
                 $b = json_decode(file_get_contents($module . 'install/config.json'), true);
