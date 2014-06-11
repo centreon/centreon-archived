@@ -133,9 +133,10 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/realtime/service/[i:id]',
+                    'route' => '/realtime/service/[i:hid]/[i:sid]',
                     'routeParams' => array(
-                        'id' => '::service_id::'
+                                           'hid' => '::host_id::',
+                                           'sid' => '::service_id::'
                     ),
                     'linkName' => '::description::'
                 )

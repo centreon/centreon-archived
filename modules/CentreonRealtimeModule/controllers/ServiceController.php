@@ -179,12 +179,12 @@ class ServiceController extends \Centreon\Internal\Controller
      * Service tooltip
      *
      * @method get
-     * @route /realtime/service/[i:id]/tooltip
+     * @route /realtime/service/[i:hid]/[i:sid]/tooltip
      */
     public function serviceTooltipAction()
     {
         $params = $this->getParams();
-        $rawdata = ServicedetailRepository::getRealtimeData($params['id']);
+        $rawdata = ServicedetailRepository::getRealtimeData($params['hid'], $params['sid']);
         if (isset($rawdata[0])) {
             $data = $this->transformRawData($rawdata[0]);
             $this->tpl->assign('title', $rawdata[0]['host_name'] . ' - ' . $rawdata[0]['service_description']);
