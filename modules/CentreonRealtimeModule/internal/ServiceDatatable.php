@@ -93,7 +93,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                 )
             ),
             'className' => 'datatable-align-center', 
-            'width' => '15px'
+            'width' => '15px',
+            'styleClass' => 'cell_center'
         ),
          array (
             'title' => 'Name',
