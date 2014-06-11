@@ -278,7 +278,7 @@
                                                        'keys'    => array('host_id'),
                                                        'get_row' => 'host_name',
                                                        'order'   => array('host.host_name')),
-                                                 true));
+                                                 false));
 	$form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
 
 
