@@ -18,6 +18,9 @@
             "oLanguage": {
                 "sLengthMenu": "_MENU_"
             },
+            "initComplete": function(settings, json) {
+                new $.fn.dataTable.FixedHeader(this);
+            },
             {$datatableParameters.configuration}
             "bSortCellsTop": true,
             'sDom': "R<'row'r<'clear'><'col-sm-4'l><'col-sm-4'C><'col-sm-4'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
@@ -34,15 +37,7 @@
                     }
                 ]
             },
-        }).columnFilter({
-            sPlaceHolder: 'head:after',
-            nbFixedTr: {$datatableParameters.header.nbFixedTr},
-            aoColumns: [
-                {$datatableParameters.header.columnSearch}
-            ]
-        });
-    
-        new $.fn.dataTable.FixedHeader(oTable);
+        })
     
         $.extend($.fn.dataTableExt.oStdClasses, {
             "sSortAsc": "header headerSortDown",
