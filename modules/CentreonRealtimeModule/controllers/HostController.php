@@ -98,14 +98,13 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function listAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
-        $router->response()->json(
-            \Centreon\Internal\Datatable::getDatas(
-                'CentreonRealtime',
-                'host',
-                $this->getParams('get')
-            )
-        );
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+        
+        $router->response()->json($myDataForDatatable);
     }
 
     /**

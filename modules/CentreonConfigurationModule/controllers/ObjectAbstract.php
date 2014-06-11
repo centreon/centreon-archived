@@ -342,6 +342,8 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         
         $router = \Centreon\Internal\Di::getDefault()->get('router');
         if ($updateSuccessful) {
+            unset($_SESSION['form_token']);
+            unset($_SESSION['form_token_time']);
             $router->response()->json(array('success' => true));
             $this->postSave($id, 'update');
         } else {

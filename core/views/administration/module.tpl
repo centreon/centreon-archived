@@ -3,7 +3,7 @@
 {block name="title"}{$objectName}{/block}
 
 {block name="content"}
-    {datatable module=$moduleName object=$objectName configuration=false}
+    {datatable module=$moduleName object=$objectName datatableObject=$datatableObject configuration=false}
 {/block}
 
 {block name="javascript-bottom" append}
