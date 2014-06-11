@@ -20,7 +20,7 @@
             },
             {$datatableParameters.configuration}
             "bSortCellsTop": true,
-            'sDom': "R<'row'r<'clear'><'col-sm-4'l><'col-sm-4'C><'col-sm-4'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            'sDom': "R<'row'r<'clear'><'col-sm-4'l><'col-sm-1 pull-right'C><'col-sm-1 pull-right'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             "columns": [
                 {$datatableParameters.header.columnHeader}
             ],
@@ -47,8 +47,11 @@
         $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
             $(labelToRemove).hide();
             $("#datatable{$object}_length").append($(".configuration-actions"));
+            $(".configuration-actions").show();
             new $.fn.dataTable.FixedHeader(oTable);
         }); 
+
+        $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
         setInterval(function () { 
                 oTable.fnDraw(false);
