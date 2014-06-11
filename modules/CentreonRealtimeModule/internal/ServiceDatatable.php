@@ -230,7 +230,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
         $previousHost = '';
         foreach ($resultSet as &$myServiceSet) {
             // Set host_name
-            /*if ($myServiceSet['name'] === $previousHost) {
+            if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {
                 $previousHost = $myServiceSet['name'];
@@ -238,11 +238,11 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                 $myServiceSet['name'] = '<span class="rt-tooltip">'.
                     $icon.
                     '&nbsp;'.$myServiceSet['name'].'</span>';
-            }*/
-/*            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
+            }
+            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
             $myServiceSet['description'] = '<span class="rt-tooltip">'.
                 $icon.
-                '&nbsp;'.$myServiceSet['description'].'</span>';*/
+                '&nbsp;'.$myServiceSet['description'].'</span>';
             $myServiceSet['duration'] = Datetime::humanReadable(
                                                                 $myServiceSet['duration'],
                                                                 Datetime::PRECISION_FORMAT,
