@@ -121,9 +121,8 @@
 	// Get Hosts Problems
 	if ($is_admin) {
         $rq1 = 	" SELECT DISTINCT h.host_id, h.name, h.notes, h.notes_url, h.action_url, h.state, h.last_check, h.output, h.icon_image, h.address, h.last_state_change AS lsc, i.name as instance_name " .
-			" FROM hosts h, instances i, hosts_hosts_parents hph " .
+			" FROM hosts h, instances i " .
 			" WHERE h.enabled = 1 " .
-            " AND hph.parent_id = h.host_id " .
             " AND h.state_type = 1" .
             " AND h.instance_id = i.instance_id" .
 			" AND h.state != 0" .
@@ -134,9 +133,8 @@
 			" ORDER by h.state LIMIT ". $hostLimit;
     } else {
         $rq1 = 	" SELECT DISTINCT h.host_id, h.name, h.notes, h.notes_url, h.action_url, h.state, h.last_check, h.output, h.icon_image, h.address, h.last_state_change AS lsc, i.name as instance_name " .
-			" FROM hosts h, instances i, hosts_hosts_parents hph, centreon_acl acl " .
+			" FROM hosts h, instances i, centreon_acl acl " .
 			" WHERE h.enabled = 1" .
-            " AND hph.parent_id = h.host_id " .
             " AND acl.host_id = h.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND h.state_type = 1" .
