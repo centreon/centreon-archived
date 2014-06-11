@@ -34,7 +34,6 @@
                 });
                 
                 if ($myFormGroupLength === $hidden) {
-                    console.log($(v).prev());
                     $(v).prev().css("display", "none");
                 } else {
                     $(v).prev().css("display", "block");
