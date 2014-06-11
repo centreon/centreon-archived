@@ -1,8 +1,9 @@
 {extends file="file:[Core]viewLayout.tpl"}
 {block name="title"}
-	{t}Service monitoring{/t}
+	{t}Monitoring{/t}
 {/block}
 {block name="content"}
+    <div class="first-content"></div>
 	{datatable module=$moduleName object=$objectName configuration=false datatableObject=$datatableObject}
 	<div class="modal fade" role="dialog" id="modal-console">
 		<div class="modal-dialog modal-lg">
