@@ -22,20 +22,21 @@
     <script>
         function hideEmptyBlocks()
         {
-            $(".panel .panel-body").each(function(i, v) {
+            $(".panel-body").each(function(i, v) {
+                
                 var $myFormGroupLength = $(v).children(".form-group").length;
                 var $hidden = 0;
 
                 $(v).children(".form-group").each(function(j, w) {
-                  if ($(w).css("display") === "none") {
-                      $hidden += 1;
-                  }
+                    if ($(w).css("display") === "none") {
+                        $hidden += 1;
+                    }
                 });
-
+                
                 if ($myFormGroupLength === $hidden) {
-                  $(v).parent().css("display", "none");
+                    $(v).prev().css("display", "none");
                 } else {
-                  $(v).parent().css("display", "block");
+                    $(v).prev().css("display", "block");
                 }
             });
         }
@@ -47,9 +48,9 @@
         $("#advanced_mode_switcher").on("click", function (event) {
             $(".advanced").toggleClass("advanced-display");
             if ($(".advanced").hasClass('advanced-display')) {
-                $(this).text("{t}Switch to advanced mode{/t}");
-            } else {
                 $(this).text("{t}Switch to simple mode{/t}");
+            } else {
+                $(this).text("{t}Switch to advanced mode{/t}");
             }
             hideEmptyBlocks();
         });
