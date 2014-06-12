@@ -46,5 +46,5 @@ class WidgetModel extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "widget_models";
     protected static $primaryKey = "widget_model_id";
-    protected static $uniqueLabelField = "title";
+    protected static $uniqueLabelField = "name";
 }
