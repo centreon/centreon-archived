@@ -204,7 +204,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                             'parameters' => array(
                                 'route' => '/administration/extensions/widgets/[*:shortname]/install',
                                 'routeParams' => array(
-                                    'shortname' => '::name::'
+                                    'shortname' => '::shortname::'
                                 ),
                                 'linkName' => 'Uninstalled',
                                 'styleClass' => 'btn btn-danger btn-block'
