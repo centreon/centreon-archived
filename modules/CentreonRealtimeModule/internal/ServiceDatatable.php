@@ -56,7 +56,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
      * @var array 
      */
     protected static $configuration = array(
-        'autowidth' => true,
+        'autowidth' => false,
         'order' => array(
             array('h.name', 'asc'),
             array('s.description', 'asc')
@@ -92,7 +92,9 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::description::'
                 )
             ),
-            'className' => 'datatable-align-center'
+            'className' => 'datatable-align-center', 
+            'width' => '15px',
+            'styleClass' => 'cell_center'
         ),
          array (
             'title' => 'Name',
@@ -121,15 +123,6 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             )
         ),
         array (
-            'title' => "Host id",
-            'name' => 's.host_id',
-            'data' => 'host_id',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false
-        ),
-        array (
             'title' => 'Service',
             'name' => 's.description',
             'data' => 'description',
@@ -140,13 +133,24 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/realtime/service/[i:id]',
+                    'route' => '/realtime/service/[i:hid]/[i:sid]',
                     'routeParams' => array(
-                        'id' => '::service_id::'
+                                           'hid' => '::host_id::',
+                                           'sid' => '::service_id::'
                     ),
                     'linkName' => '::description::'
                 )
             ),
+        ),
+        array (
+            'title' => "",
+            'name' => 's.host_id',
+            'data' => 'ico',
+            'orderable' => false,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+            "width" => '15px'
         ),
         array (
             'title' => 'Status',
@@ -170,17 +174,19 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchvalues' => array(
                 'Enabled' => '1',
                 'Disabled' => '0',
-                'Trash' => '2'
-            )
+                                    ),
+            'width' => '50px',
+            'class' => 'cell_center'
         ),
         array (
             'title' => 'Last Check',
-            'name' => 's.last_check',
+            'name' => '(unix_timestamp(NOW())-s.last_check) AS last_check',
             'data' => 'last_check',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '10%'
         ),
         array (
             'title' => 'Duration',
@@ -189,7 +195,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '10%'
         ),
         array (
             'title' => 'Retry',
@@ -198,12 +205,22 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
+            'width' => '25px'
         ),
         array (
             'title' => 'Output',
             'name' => 's.output',
             'data' => 'output',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+        ),
+        array (
+            'title' => 'Perfdata',
+            'name' => 's.perfdata',
+            'data' => 'perfdata',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -243,6 +260,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             $myServiceSet['description'] = '<span class="rt-tooltip">'.
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span>';
+            $myServiceSet['ico'] = "<i class='fa fa-bar-chart-o'></i>"; 
             $myServiceSet['duration'] = Datetime::humanReadable(
                                                                 $myServiceSet['duration'],
                                                                 Datetime::PRECISION_FORMAT,
@@ -253,6 +271,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                                                                 Datetime::PRECISION_FORMAT,
                                                                 2
                                                                 );
+            //$myServiceSet['last_check'] = date("d/m/Y - H:i:s", $myServiceSet['last_check']);
         }
     }
+
 }
