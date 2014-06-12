@@ -49,7 +49,7 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonConfiguration\Models\Module';
+    protected static $datasource = '\Centreon\Models\Module';
     
     /**
      *
