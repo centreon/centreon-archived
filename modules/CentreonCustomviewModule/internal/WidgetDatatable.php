@@ -155,7 +155,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'parameters' => array(
                         '0' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]/enable',
+                                'route' => '/administration/extensions/widgets/[i:id]/enable',
                                 'routeParams' => array(
                                     'id' => '::id::'
                                 ),
@@ -165,7 +165,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                         ),
                         '1' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]/disable',
+                                'route' => '/administration/extensions/widgets/[i:id]/disable',
                                 'routeParams' => array(
                                     'id' => '::id::'
                                 ),
@@ -175,7 +175,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                         ),
                         '2' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]',
+                                'route' => '/administration/extensions/widgets/[i:id]',
                                 'routeParams' => array(
                                     'id' => '::id::'
                                 ),
@@ -202,7 +202,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'parameters' => array(
                         '0' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/module/[*:shortname]/install',
+                                'route' => '/administration/extensions/widgets/[*:shortname]/install',
                                 'routeParams' => array(
                                     'shortname' => '::name::'
                                 ),
@@ -212,7 +212,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                         ),
                         '1' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]/uninstall',
+                                'route' => '/administration/extensions/widgets/[i:id]/uninstall',
                                 'routeParams' => array(
                                     'id' => '::id::'
                                 ),
@@ -222,7 +222,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                         ),
                         '2' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]',
+                                'route' => '/administration/extensions/widgets/[i:id]',
                                 'routeParams' => array(
                                     'id' => '::id::'
                                 ),
