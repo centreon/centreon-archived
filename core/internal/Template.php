@@ -128,21 +128,21 @@ class Template extends \Smarty
 
         // Add standalone widget dir
         foreach (glob($path . "/widgets/*Widget/views") as $widgetTemplateDir) {
-            if (preg_match('/\/([a-zA-Z]+Widget)\//', $widgetTemplateDir, $matches)) {
+            if (preg_match('/\/([a-zA-Z0-9]+Widget)\//', $widgetTemplateDir, $matches)) {
                 $widgetTemplateDir = realpath($widgetTemplateDir);
                 $templateDirList[$matches[1]] = $widgetTemplateDir;
             }
         }
         // Add Module Template Dir
         foreach (glob($path . "/modules/*Module/views") as $moduleTemplateDir) {
-            if (preg_match('/\/([a-zA-Z]+Module)\//', $moduleTemplateDir, $matches)) {
+            if (preg_match('/\/([a-zA-Z0-9]+Module)\//', $moduleTemplateDir, $matches)) {
                 $moduleTemplateDir = realpath($moduleTemplateDir);
                 $templateDirList[$matches[1]] = $moduleTemplateDir;
             }
         }
         // Add Widget Template Dir
         foreach (glob($path . "/modules/*Module/widgets/*Widget/views") as $widgetTemplateDir) {
-            if (preg_match('/\/([a-zA-Z]+Widget)\//', $widgetTemplateDir, $matches)) {
+            if (preg_match('/\/([a-zA-Z0-9]+Widget)\//', $widgetTemplateDir, $matches)) {
                 $widgetTemplateDir = realpath($widgetTemplateDir);
                 $templateDirList[$matches[1]] = $widgetTemplateDir;
             }
