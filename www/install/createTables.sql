@@ -1800,7 +1800,7 @@ CREATE TABLE `nagios_server` (
   `centreonconnector_path` varchar(255) DEFAULT NULL,
   `ssh_port` int(11) DEFAULT NULL,
   `ssh_private_key` varchar(255) DEFAULT NULL,
-  `init_script_snmptt` varchar(255) DEFAULT NULL,
+  `init_script_centreontrapd` varchar(255) DEFAULT NULL,
   `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
   `engine_name` varchar(255) DEFAULT NULL,
   `engine_version` varchar(255) DEFAULT NULL,
