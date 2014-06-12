@@ -69,7 +69,7 @@ class ServicedetailRepository extends ObjectdetailRepository
      * @param int $serviceId
      * @return array
      */
-    public static function getRealtimeData($serviceId)
+    public static function getRealtimeData($hostId, $serviceId)
     {
         $db = Di::getDefault()->get('db_storage');
         $sql = 'SELECT h.name as host_name, s.acknowledged, s.scheduled_downtime_depth, s.output, s.latency,
@@ -79,9 +79,10 @@ class ServicedetailRepository extends ObjectdetailRepository
             WHERE i.instance_id = h.instance_id
             AND h.host_id = s.host_id
             AND s.enabled = 1
-            AND s.service_id = ?';
+            AND s.service_id = ?
+            AND s.host_id = ?';
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($serviceId));
+        $stmt->execute(array($serviceId, $hostId));
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
