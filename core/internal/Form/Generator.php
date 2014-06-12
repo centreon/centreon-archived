@@ -244,7 +244,7 @@ class Generator
         $formElements = $this->formHandler->toSmarty();
 
         
-        $htmlRendering = '<br><div class="row">';
+        $htmlRendering = '<div class="row">';
         
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
