@@ -102,7 +102,6 @@ class Generator
     /**
      * 
      * @param string $formRoute
-     * @param boolean $advanced
      * @param array $extraParams
      */
     public function __construct($formRoute, $extraParams = array())
@@ -264,7 +263,7 @@ class Generator
         
         $formRendering = '';
 
-        $tabRendering = '<ul class="nav nav-tabs" id="formHeader">';
+        $tabRendering = '<div class="form-tabs-header"><div class="inline-block"><ul class="nav nav-tabs" id="formHeader">';
         
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
             $tabRendering .= '<li>'
@@ -275,7 +274,7 @@ class Generator
                 .'</a>'
                 . '</li>';
         }
-        $formRendering .= '</ul>';
+        $formRendering .= '</ul></div></div>';
         /*
         $formRendering .= '<div class="tab-content">';
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {

@@ -95,6 +95,9 @@
         
         $(function () {
             $('#formHeader a:first').tab('show');
+            $("#formHeader").parent().after(
+                $('<div class="pull-right inline-block"></div>').append($("#advanced_mode_switcher"))
+            );
         });
     </script>
 {/block}
