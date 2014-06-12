@@ -86,7 +86,7 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::name::'
                 )
             ),
-            'className' => 'datatable-align-center',
+            'className' => 'cell_center',
             'width' => "20px"
         ),
         array (
