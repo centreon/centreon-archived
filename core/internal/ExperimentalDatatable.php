@@ -174,11 +174,11 @@ class ExperimentalDatatable
         $columnSearch = "";
         $nbFixedTr = count(static::$columns);
 
-	if (isset(static::$hook) && static::$hook) {
+        if (isset(static::$hook) && static::$hook) {
             $hookData = Hook::execute(static::$hook, array());
             foreach ($hookData as $data) {
                 $columnName = $data['columnName'];
-		static::$columns[] = array('name' => $columnName, 'title' => $columnName, 'data' => $columnName);
+                static::$columns[] = array('name' => $columnName, 'title' => $columnName, 'data' => $columnName);
             }
         } 
 
