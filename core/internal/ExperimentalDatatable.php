@@ -341,13 +341,15 @@ class ExperimentalDatatable
      */
     public static function addCheckbox($field, $values, $cast)
     {
+        $datasource = static::$datasource;
+        $uniqueField = $datasource::getUniqueLabelField();
         $object = ucwords(str_replace('_', '', $field));
         $input = '<input class="all'. static::$objectName .'Box" '
             . 'id="'. static::$objectName .'::'. $field .'::" '
             . 'name="'. static::$objectName .'[]" '
             . 'type="checkbox" '
             . 'value="::'. $field .'::" '
-            . 'data-name="' . $cast['displayName'] . '" '
+            . 'data-name="' . htmlentities($values[$uniqueField]) . '"'
             . '/>';
         $castedElement = \array_map(
             function ($n) {
