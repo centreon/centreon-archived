@@ -176,7 +176,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'Disabled' => '0',
                                     ),
             'width' => '50px',
-            'class' => 'cell_center'
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Last Check',
