@@ -45,6 +45,8 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $datatableObject = '\CentreonConfiguration\Internal\PollerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Poller';
 
+    public static $relationMap = array(); 
+
     /**
      * List users
      *
@@ -94,17 +96,6 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     }
     
     /**
-     * Create a new poller
-     *
-     * @method post
-     * @route /configuration/poller/create
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
      * Update a poller
      *
      * @method post
@@ -127,7 +118,18 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $tpl->assign('validateUrl', '/configuration/poller/add');
         parent::addAction();
     }
-    
+
+    /**
+     * Create a new poller
+     *
+     * @method post
+     * @route /configuration/poller/add
+     */
+    public function createAction()
+    {
+        parent::createAction();
+    }
+
     /**
      * Update a poller
      *

@@ -1,4 +1,6 @@
 <script>
+    var oTable;
+
     $(document).ready(function() {
 
         /* Remove the label next to pagination dropdown */
@@ -8,7 +10,7 @@
             $("#datatable{$object}_length").append($(".configuration-actions"));
         });
 
-        var oTable = $('#datatable{$object}').dataTable({
+        oTable = $('#datatable{$object}').dataTable({
             "bProcessing": true,
             "sAjaxSource": "{url_for url=$objectUrl}",
             "bStateSave": false,
@@ -167,7 +169,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -255,7 +257,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully duplicated{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -352,7 +354,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The changes have been applied{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -451,7 +453,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully Enabled{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
@@ -524,7 +526,7 @@
                         $('#modal').modal('hide');
                         alertClose();
                         if (data.success) {
-                            $('.dataTable').dataTable().fnDraw();
+                            oTable.fnDraw();
                             alertMessage('{t}The objects have been successfully Disabled{/t}', 'alert-success');
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');

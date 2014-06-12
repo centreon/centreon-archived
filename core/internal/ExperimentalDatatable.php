@@ -175,11 +175,11 @@ class ExperimentalDatatable
         $columnSearch = "";
         $nbFixedTr = count(static::$columns);
 
-	if (isset(static::$hook) && static::$hook) {
+        if (isset(static::$hook) && static::$hook) {
             $hookData = Hook::execute(static::$hook, array());
             foreach ($hookData as $data) {
                 $columnName = $data['columnName'];
-		static::$columns[] = array('name' => $columnName, 'title' => $columnName, 'data' => $columnName);
+                static::$columns[] = array('name' => $columnName, 'title' => $columnName, 'data' => $columnName);
             }
         } 
 
@@ -370,13 +370,15 @@ class ExperimentalDatatable
      */
     public static function addCheckbox($field, $values, $cast)
     {
+        $datasource = static::$datasource;
+        $uniqueField = $datasource::getUniqueLabelField();
         $object = ucwords(str_replace('_', '', $field));
         $input = '<input class="all'. static::$objectName .'Box" '
             . 'id="'. static::$objectName .'::'. $field .'::" '
             . 'name="'. static::$objectName .'[]" '
             . 'type="checkbox" '
             . 'value="::'. $field .'::" '
-            . 'data-name="' . $field . '" '
+            . 'data-name="' . htmlentities($values[$uniqueField]) . '"'
             . '/>';
         $castedElement = \array_map(
             function ($n) {

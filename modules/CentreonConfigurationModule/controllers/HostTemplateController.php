@@ -64,7 +64,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      *
      * @var string 
      */
-    protected $objectClass = '\CentreonConfiguration\Models\Host';
+    protected $objectClass = '\CentreonConfiguration\Models\Hosttemplate';
     
     /**
      *

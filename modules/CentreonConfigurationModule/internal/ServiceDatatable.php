@@ -50,7 +50,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
      * @var array 
      */
     protected static $configuration = array(
-        'autowidth' => true,
+        'autowidth' => false,
         'order' => array(
             array('host_name', 'asc'),
             array('service_description', 'asc')
@@ -95,7 +95,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::service_description::'
                 )
             ),
-            'className' => 'datatable-align-center'
+            'className' => 'cell_center',
+            'width' => "20px"
         ),
         array (
             'title' => 'Host Id',
@@ -155,6 +156,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
             'title' => 'Retry',
@@ -164,15 +167,19 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
-            'title' => 'Max atp',
+            'title' => 'Atp',
             'name' => 'service_max_check_attempts',
             'data' => 'service_max_check_attempts',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
             'title' => 'Notifications',
@@ -189,7 +196,9 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     '1' => '<span class="label label-success">Enabled</span>',
                     '2' => '<span class="label label-info">Default</span>',
                 )
-            )
+            ),
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
         array (
             'title' => 'Parent Template',
@@ -221,7 +230,9 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'Enabled' => '1',
                 'Disabled' => '0',
                 'Trash' => '2'
-            )
+                                    ),
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
     );
     
@@ -256,7 +267,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     $myServiceSet['host_name']
                 ).'&nbsp;'.$myServiceSet['host_name'];
             }
-            
+                        
             // Set Scheduling
             $myServiceSet['service_normal_check_interval'] = \CentreonConfiguration\Repository\ServiceRepository::formatNotificationOptions(
                 \CentreonConfiguration\Repository\ServiceRepository::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
@@ -310,6 +321,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             
             $myServiceSet['service_description'] = \CentreonConfiguration\Repository\ServiceRepository::getIconImage($myServiceSet['service_id']).
                 '&nbsp;'.$myServiceSet['service_description'];
+            $myServiceSet['service_description'] .= "</a><a href='#'>";
+            $myServiceSet['service_description'] .= \CentreonRealtime\Repository\ServiceRepository::getStatus($myServiceSet["host_id"], $myServiceSet["service_id"]);
             
             $myServiceSet['service_activate'] = $save;
         }
