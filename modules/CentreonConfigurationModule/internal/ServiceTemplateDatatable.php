@@ -72,7 +72,7 @@ class ServiceTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
      */
     protected static $columns = array(
         array (
-            'title' => "<input id='allServiceTemplate' class='allServiceTemplate' type='checkbox'>",
+            'title' => "<input id='allService' class='allService' type='checkbox'>",
             'name' => 'service_id',
             'data' => 'service_id',
             'orderable' => false,
@@ -85,7 +85,8 @@ class ServiceTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
                     'displayName' => '::service_description::'
                 )
             ),
-            'className' => 'datatable-align-center'
+            'className' => 'cell_center',
+            'width' => "20px"
         ),
         array (
             'title' => 'Name',
@@ -108,9 +109,61 @@ class ServiceTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
             ),
         ),
         array (
-            'title' => 'Alias',
-            'name' => 'service_alias',
-            'data' => 'service_alias',
+            'title' => 'Interval',
+            'name' => 'service_normal_check_interval',
+            'data' => 'service_normal_check_interval',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
+        ),
+        array (
+            'title' => 'Retry',
+            'name' => 'service_retry_check_interval',
+            'data' => 'service_retry_check_interval',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
+        ),
+        array (
+            'title' => 'Atp',
+            'name' => 'service_max_check_attempts',
+            'data' => 'service_max_check_attempts',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            "className" => 'cell_center',
+            "width" => '40px'
+        ),
+        array (
+            'title' => 'Notifications',
+            'name' => 'service_notifications_enabled',
+            'data' => 'service_notifications_enabled',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'cast' => array(
+                'type' => 'select',
+                'parameters' =>array(
+                    '0' => '<span class="label label-danger">Disabled</span>',
+                    '1' => '<span class="label label-success">Enabled</span>',
+                    '2' => '<span class="label label-info">Default</span>',
+                )
+            ),
+            "className" => 'cell_center',
+            "width" => '40px'
+        ),
+        array (
+            'title' => 'Parent Template',
+            'name' => 'service_template_model_stm_id',
+            'data' => 'service_template_model_stm_id',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -137,7 +190,9 @@ class ServiceTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'Enabled' => '1',
                 'Disabled' => '0',
                 'Trash' => '2'
-            )
+                                    ),
+            "className" => 'cell_center',
+            "width" => '40px'
         ),
     );
     
@@ -148,5 +203,35 @@ class ServiceTemplateDatatable extends \Centreon\Internal\ExperimentalDatatable
     public function __construct($params, $objectModelClass = '')
     {
         parent::__construct($params, $objectModelClass);
+    }
+
+    /**
+     * 
+     * @param array $resultSet
+     */
+    protected function formatDatas(&$resultSet)
+    {
+        foreach ($resultSet as &$myServiceSet) {
+            // Set Tpl Chain
+            $tplStr = null;
+            if (isset($myServiceSet["service_template_model_stm_id"])) {
+                $tplArr = \CentreonConfiguration\Repository\ServicetemplateRepository::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
+                $tplRoute = str_replace(
+                                        "//",
+                                        "/",
+                                        \Centreon\Internal\Di::getDefault()
+                                        ->get('router')
+                                        ->getPathFor(
+                                                     '/configuration/servicetemplate/[i:id]',
+                                                     array('id' => $tplArr['id'])
+                                                     )
+                                        );
+                if (isset($tplArr['description'])) {
+                    $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";
+                }
+            }
+            $myServiceSet['service_template_model_stm_id'] = $tplStr;
+
+        }
     }
 }

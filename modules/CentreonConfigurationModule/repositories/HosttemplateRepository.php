@@ -283,6 +283,30 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         return $hostTemplates;
     }
 
+    public static function getTemplateList($host_id) 
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+        
+        /* Init Array to return */
+        $hostTemplates = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT host_tpl_id, host_name, host_id, `order` FROM host h, host_template_relation hr WHERE h.host_id = hr.host_tpl_id AND hr.host_host_id = '$host_id' AND host_activate = '1' AND host_register = '0' ORDER BY `order` ASC";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $hostTemplates[] = array(
+                                     'id' => $row["host_id"], 
+                                     'name' => $row["host_name"], 
+                                     'ico' => 'fa-shield');
+        }
+        return $hostTemplates;
+    }
+
+
     public static function getContacts($host_id) 
     {
         $di = \Centreon\Internal\Di::getDefault();

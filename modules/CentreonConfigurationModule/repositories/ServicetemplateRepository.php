@@ -321,5 +321,26 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         return $contactgroupList;
     }
 
-
+    /**
+     * 
+     * @param type $service_template_id
+     * @return type
+     */
+    public static function getMyServiceTemplateModels($service_template_id)
+    {        
+        // Initializing connection
+        $di = \Centreon\Internal\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $stmt = $dbconn->query("SELECT service_description FROM service WHERE service_id = '".$service_template_id."' LIMIT 1");
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (isset($row["service_description"])) {
+            $tplArr = array(
+                            'id' => $service_template_id,
+                            'description' => \html_entity_decode($row["service_description"], ENT_QUOTES, "UTF-8")
+                            );
+            return $tplArr;
+        } 
+        return array('id' => $service_template_id);
+    }
 }

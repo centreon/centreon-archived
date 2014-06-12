@@ -379,8 +379,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
      * @return type
      */
     public static function getMyServiceTemplateModels($service_template_id)
-    {
-        
+    {        
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
