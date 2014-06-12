@@ -5,7 +5,7 @@
 {block name="content"}
     <div class="content-container">
         <div class="row">
-            <a id="advanced_mode_switcher" href="#" class="btn btn-default">{t}Switch to advanced mode{/t}</a>
+            <a id="advanced_mode_switcher" href="#" class="btn btn-primary">{t}Switch to advanced mode{/t}</a>
         </div>
         {$form}
     </div>
@@ -96,6 +96,9 @@
         
         $(function () {
             $('#formHeader a:first').tab('show');
+            $("#formHeader").parent().after(
+                $('<div class="pull-right inline-block"></div>').append($("#advanced_mode_switcher"))
+            );
         });
     </script>
 {/block}

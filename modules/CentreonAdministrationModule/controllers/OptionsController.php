@@ -55,13 +55,18 @@ class OptionsController extends \Centreon\Internal\Controller
         $tpl = $di->get('template');
         
         // 
-        $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = '/administration/options/centreon/update';
         
         $myForm = new Generator($objectFormUpdateUrl);
         
         // get object Current Values
-        //$myForm->setDefaultValues($this->objectClass);
+        $defaultValues = array();
+        $rawDefaultValues = \CentreonAdministration\Models\Options::getList();
+        foreach ($rawDefaultValues as $valuesToKeep) {
+            $defaultValues[$valuesToKeep['key']] = $valuesToKeep['value'];
+        }
+        
+        $myForm->setDefaultValues($defaultValues);
         
         // Display page
         $tpl->assign('pageTitle', 'Centreon Options');
@@ -78,18 +83,33 @@ class OptionsController extends \Centreon\Internal\Controller
     public function updateAction()
     {
         $givenParameters = clone $this->getParams('post');
-        $createSuccessful = true;
-        $createErrorMessage = '';
+        $updateSuccessful = true;
+        $updateErrorMessage = '';
         
         $validationResult = \Centreon\Internal\Form::validate("form", $this->getUri(), $givenParameters);
-        
-        var_dump($givenParameters);
-        if (isset($givenParameters['token'])) {
-            unset($givenParameters['token']);
+        if ($validationResult['success']) {
+            if (isset($givenParameters['token'])) {
+                unset($givenParameters['token']);
+            }
+
+            $optionsToSave = array();
+            foreach ($givenParameters as $key=>$value) {
+                $optionsToSave[$key]= $value;
+            }
+
+            \CentreonAdministration\Models\Options::update($optionsToSave);
+        } else {
+            $updateSuccessful = false;
+            $updateErrorMessage = $validationResult['error'];
         }
         
-        foreach ($givenParameters as $key=>$value) {
-            echo $key . " => " . $value . "\n";
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        if ($updateSuccessful) {
+            unset($_SESSION['form_token']);
+            unset($_SESSION['form_token_time']);
+            $router->response()->json(array('success' => true));
+        } else {
+            $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
 }

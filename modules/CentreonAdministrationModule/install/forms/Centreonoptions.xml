@@ -2,7 +2,7 @@
 <forms>
 	<form name="centreonoptions_form">
 		<route>/administration/options/centreon/update</route>
-		<redirect>1</redirect>
+		<redirect>0</redirect>
 		<redirect_route>/administration/options/centreon</redirect_route>
 		<section name="General Options">
 			<block name="Sessions Properties">
