@@ -74,6 +74,22 @@ class CentreonStorageDb implements iDataprovider
         
         $a = array();
         
+        // Get 
+        $fieldList = array();
+        foreach ($datatableClass::$columns as $column) {
+            $fieldList[] = $column['name'];
+        }
+        
+        // Get the field label for the search
+        foreach($params as $key=>$value) {
+            if (substr($key, 0, 7) == 'sSearch') {
+                if (!empty($value)) {
+                    $b = explode('_', $key);
+                    $conditions[$fieldList[$b[1]]] = $value;
+                }
+            }
+        }
+        
         if (isset($additionnalClass)) {
                 
             $result = $additionnalClass::getMergedParameters(
