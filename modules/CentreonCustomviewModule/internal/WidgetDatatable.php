@@ -98,7 +98,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'parameters' => array(
                     'route' => '/administration/extensions/widgets/[i:id]',
                     'routeParams' => array(
-                        'id' => '::id::'
+                        'id' => '::widget_model_id::'
                     ),
                     'linkName' => '::name::'
                 )
@@ -157,7 +157,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                             'parameters' => array(
                                 'route' => '/administration/extensions/widgets/[i:id]/enable',
                                 'routeParams' => array(
-                                    'id' => '::id::'
+                                    'id' => '::widget_model_id::'
                                 ),
                                 'linkName' => 'Disabled',
                                 'styleClass' => 'btn btn-danger btn-block'
@@ -167,7 +167,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                             'parameters' => array(
                                 'route' => '/administration/extensions/widgets/[i:id]/disable',
                                 'routeParams' => array(
-                                    'id' => '::id::'
+                                    'id' => '::widget_model_id::'
                                 ),
                                 'linkName' => 'Enabled',
                                 'styleClass' => 'btn btn-success btn-block'
@@ -177,7 +177,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                             'parameters' => array(
                                 'route' => '/administration/extensions/widgets/[i:id]',
                                 'routeParams' => array(
-                                    'id' => '::id::'
+                                    'id' => '::widget_model_id::'
                                 ),
                                 'linkName' => 'Not Disableable',
                                 'styleClass' => 'btn btn-primary btn-block'
@@ -214,7 +214,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                             'parameters' => array(
                                 'route' => '/administration/extensions/widgets/[i:id]/uninstall',
                                 'routeParams' => array(
-                                    'id' => '::id::'
+                                    'id' => '::widget_model_id::'
                                 ),
                                 'linkName' => 'Installed',
                                 'styleClass' => 'btn btn-success btn-block'
@@ -224,7 +224,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
                             'parameters' => array(
                                 'route' => '/administration/extensions/widgets/[i:id]',
                                 'routeParams' => array(
-                                    'id' => '::id::'
+                                    'id' => '::widget_model_id::'
                                 ),
                                 'linkName' => 'Core Widget',
                                 'styleClass' => 'btn btn-primary btn-block'
