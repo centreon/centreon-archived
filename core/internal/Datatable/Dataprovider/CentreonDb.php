@@ -42,7 +42,7 @@ namespace Centreon\Internal\Datatable\Dataprovider;
  */
 class CentreonDb implements iDataprovider
 {
-    public static function loadDatas($params, array $columns, array $specialFields, $modelClass = '', $additionnalClass = null)
+    public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '', $additionnalClass = null)
     {
         // Get Fields to be request
         $fields = "";
@@ -65,6 +65,22 @@ class CentreonDb implements iDataprovider
         $conditions = array();
         
         $a = array();
+        
+        // Get 
+        $fieldList = array();
+        foreach ($datatableClass::$columns as $column) {
+            $fieldList[] = $column['name'];
+        }
+        
+        // Get the field label for the search
+        foreach($params as $key=>$value) {
+            if (substr($key, 0, 7) == 'sSearch') {
+                if (!empty($value)) {
+                    $b = explode('_', $key);
+                    $conditions[$fieldList[$b[1]]] = $value;
+                }
+            }
+        }
         
         if (isset($additionnalClass)) {
                 

@@ -71,7 +71,7 @@ class UserDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allUserGroupid' class='allUserGroupid' type='checkbox'>",
             'name' => 'contact_id',

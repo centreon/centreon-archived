@@ -58,7 +58,7 @@ class ExperimentalDatatable
      */
     protected static $dataprovider = '';
     
-    protected static $fieldList = array();
+    public static $fieldList = array();
     
     /**
      *
@@ -70,7 +70,7 @@ class ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array();
+    public static $columns = array();
     
     /**
      *
@@ -116,6 +116,7 @@ class ExperimentalDatatable
             $this->params,
             static::$columns,
             $this->specialFields,
+            get_class($this),
             $this->objectModelClass,
             static::$additionnalDatasource
         );
@@ -232,11 +233,11 @@ class ExperimentalDatatable
         foreach (static::$configuration as $configName => $configEntry) {
             
             if ($configName == 'order') {
-                $line = "[";
-                foreach ($configEntry as $order) {
-                    $line .= "[" . array_search($order[0], static::$fieldList) . ", '". $order[1] ."'],";
-                }
-                $configEntry = rtrim($line, ',') . ']';
+                $configEntry = self::initOrder($configEntry);
+            }
+            
+            if ($configName == 'searchCols') {
+                $configEntry = self::initSearch($configEntry);
             }
             
             $configEntry = (is_array($configEntry)) ? json_encode($configEntry) : $configEntry;
@@ -255,6 +256,34 @@ class ExperimentalDatatable
         return trim($configurationParams);
     }
     
+    private static function initSearch($configEntry)
+    {
+        $rawSeachTable = array();
+        $listOfSearchField = array_keys(static::$configuration['searchCols']);
+        foreach (static::$columns as $column) {
+            if (in_array($column['name'], $listOfSearchField)) {
+                $rawSeachTable[] = array('sSearch' => $configEntry[$column['name']]);
+            } else {
+                $rawSeachTable[] = null;
+            }
+        }
+        return $rawSeachTable;
+    }
+    
+    /**
+     * 
+     * @param type $configEntry
+     * @return type
+     */
+    private static function initOrder($configEntry)
+    {
+        $line = "[";
+        foreach ($configEntry as $order) {
+            $line .= "[" . array_search($order[0], static::$fieldList) . ", '". $order[1] ."'],";
+        }
+        return rtrim($line, ',') . ']';
+    }
+
     /**
      * 
      * @param type $datas

@@ -71,7 +71,7 @@ class PollerDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => '<input id="allPoller" class="allPoller" type="checkbox">',
             'name' => 'id',

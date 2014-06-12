@@ -71,7 +71,7 @@ class ConnectorDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allConnectorid' class='allConnectorid' type='checkbox'>",
             'name' => 'id',

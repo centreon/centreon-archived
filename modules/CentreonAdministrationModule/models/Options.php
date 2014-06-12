@@ -33,13 +33,33 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal\Datatable\Dataprovider;
+namespace CentreonAdministration\Models;
 
 /**
+ * Description of Options
  *
  * @author lionel
  */
-interface iDataprovider
+class Options
 {
-    public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '');
+    public static function getList()
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->query("SELECT `key`, `value` FROM `options`");
+        return  $stmt->fetchAll();
+    }
+    
+    /**
+     * 
+     * @param type $values
+     */
+    public static function update($values)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        
+        foreach ($values as $key=>$value) {
+            $sql = "UPDATE `options` SET `value`='$value' WHERE `key`='$key'";
+            $db->exec($sql);
+        }
+    }
 }

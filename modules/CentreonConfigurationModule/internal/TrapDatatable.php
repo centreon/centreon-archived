@@ -71,7 +71,7 @@ class TrapDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allTrapid' class='allTrapid' type='checkbox'>",
             'name' => 'traps_id',

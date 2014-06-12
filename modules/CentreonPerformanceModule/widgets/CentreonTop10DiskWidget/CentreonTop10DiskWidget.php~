@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright 2005-2014 MERETHIS
+/**
+ * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,22 +32,31 @@
  * For more information : contact@centreon.com
  *
  */
+$tpl = $this->getTemplate();
 
-namespace Centreon\Controllers;
+/* Load css */
+$tpl->addCss('angled-headers.css');
 
-class MainController extends \Centreon\Internal\Controller
-{
-    /**
-     * Action for home page
-     *
-     * @method GET
-     * @route /
-     */
-    public function indexAction()
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-        $backUrl = $router->getPathFor('/customview');
-        $router->response()->redirect($backUrl, 200);
-    }
+/* Get Param */
+$params = $this->getWidgetParams();
+
+/* Get DB */
+$dbM = $this->getMonitoringDb();
+$db = $this->getConfigurationDb();
+
+/* Init Params */
+$data = array();
+
+/* Get Data */
+$query = "SELECT host_name, service_description, service_id, host_id, size.current_value AS size, used.current_value AS used, (size.current_value/used.current_value*100) AS percent FROM index_data, metrics used, metrics size WHERE service_description LIKE 'Disk%' AND used.index_id = id AND size.index_id = id AND size.metric_name = 'used' AND used.metric_name = 'size' ORDER BY percent DESC";
+$stmt = $dbM->prepare($query);
+$stmt->execute();
+while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+    $data[] = $row;
 }
+
+/* Assign infos */
+$tpl->assign("data", $data);
+
+/* Display */
+$tpl->display('file:[CentreonTop10DiskWidget]console.tpl');

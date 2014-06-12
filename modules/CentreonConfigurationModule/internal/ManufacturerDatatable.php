@@ -71,7 +71,7 @@ class ManufacturerDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allManufacturerid' class='allManufacturerid' type='checkbox'>",
             'name' => 'id',

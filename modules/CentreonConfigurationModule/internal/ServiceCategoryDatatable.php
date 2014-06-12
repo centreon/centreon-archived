@@ -70,7 +70,7 @@ class ServiceCategoryDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allServiceCategory' class='allServiceCategory' type='checkbox'>",
             'name' => 'sc_id',

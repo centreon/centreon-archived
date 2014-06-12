@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="centreonoptions_form">
+		<route>/administration/options/centreon/update</route>
+		<redirect>0</redirect>
+		<redirect_route>/administration/options/centreon</redirect_route>
+		<section name="General Options">
+			<block name="Sessions Properties">
+				<field name="session_expire" label="Sessions Expiration Time" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <help>Life duration of sessions.</help>
+			</block>
+		</section>
+	</form>
+</forms>

@@ -71,7 +71,7 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allHost' class='allHost' type='checkbox'>",
             'name' => 'host_id',
