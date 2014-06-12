@@ -72,8 +72,8 @@ $(function() {
           alertModalMessage("The object has been successfully saved", "alert-success");
         {/if}
         $('#modal').modal('hide');
-        if ($('.dataTable').length) {
-          $('.dataTable').dataTable().fnDraw();
+        if (typeof oTable != 'undefined') {
+          oTable.fnDraw();
         }
       } else {
         alertModalMessage(data.error, "alert-danger");

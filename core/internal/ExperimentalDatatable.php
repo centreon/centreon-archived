@@ -347,7 +347,7 @@ class ExperimentalDatatable
             . 'name="'. static::$objectName .'[]" '
             . 'type="checkbox" '
             . 'value="::'. $field .'::" '
-            . 'data-name="' . $field . '" '
+            . 'data-name="' . $cast['displayName'] . '" '
             . '/>';
         $castedElement = \array_map(
             function ($n) {
