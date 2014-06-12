@@ -71,7 +71,7 @@ class TimeperiodDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allTimeperiodid' class='allTimeperiodid' type='checkbox'>",
             'name' => 'tp_id',

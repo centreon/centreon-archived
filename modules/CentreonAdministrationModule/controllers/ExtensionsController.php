@@ -35,7 +35,7 @@
  */
 
 
-namespace Centreon\Controllers;
+namespace CentreonAdministration\Controllers;
 
 class ExtensionsController extends \Centreon\Internal\Controller
 {

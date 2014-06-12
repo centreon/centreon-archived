@@ -69,7 +69,7 @@ class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allWidgetid' class='allWidgetid' type='checkbox'>",
             'name' => 'widget_model_id',

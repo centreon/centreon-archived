@@ -69,7 +69,7 @@ class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allModuleid' class='allModuleid' type='checkbox'>",
             'name' => 'id',

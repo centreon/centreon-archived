@@ -71,7 +71,7 @@ class CommandDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var array 
      */
-    protected static $columns = array(
+    public static $columns = array(
         array (
             'title' => "<input id='allCommandid' class='allCommandid' type='checkbox'>",
             'name' => 'command_id',

@@ -6,13 +6,39 @@
       "bgcolor": "#FA5858",
       "menus" : [
             {
-              "name": "Extensions",
-              "short_name": "extensions",
-              "menus" : [
+                "name": "Extensions",
+                "short_name": "extensions",
+                "menus" : [
                     {
                         "name" : "Modules",
                         "short_name" : "modules",
                         "route" : "/administration/extensions/module"
+                    }
+                ]
+            },
+            {
+                "name": "Options",
+                "short_name": "options",
+                "menus" : [
+                    {
+                        "name" : "Centreon",
+                        "short_name" : "centreon-options",
+                        "route" : "/administration/options/centreon"
+                    },
+                    {
+                        "name" : "Monitoring",
+                        "short_name" : "monitoring-options",
+                        "route" : "/administration/options/monitoring"
+                    },
+                    {
+                        "name" : "Centcore",
+                        "short_name" : "centreon-options",
+                        "route" : "/administration/options/centcore"
+                    },
+                    {
+                        "name" : "RRDTool",
+                        "short_name" : "rrdtool-options",
+                        "route" : "/administration/options/rrdtool"
                     }
                 ]
             }

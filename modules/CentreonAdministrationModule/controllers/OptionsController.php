@@ -33,13 +33,63 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal\Datatable\Dataprovider;
+namespace CentreonAdministration\Controllers;
+
+use \Centreon\Internal\Form\Generator;
 
 /**
+ * Description of OptionsController
  *
  * @author lionel
  */
-interface iDataprovider
+class OptionsController extends \Centreon\Internal\Controller
 {
-    public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '');
+    /**
+     * @method get
+     * @route /administration/options/centreon
+     */
+    public function centreonAction()
+    {
+        // Init template
+        $di = \Centreon\Internal\Di::getDefault();
+        $tpl = $di->get('template');
+        
+        // 
+        $requestParam = $this->getParams('named');
+        $objectFormUpdateUrl = '/administration/options/centreon/update';
+        
+        $myForm = new Generator($objectFormUpdateUrl);
+        
+        // get object Current Values
+        //$myForm->setDefaultValues($this->objectClass);
+        
+        // Display page
+        $tpl->assign('pageTitle', 'Centreon Options');
+        $tpl->assign('form', $myForm->generate());
+        $tpl->assign('formName', $myForm->getName());
+        $tpl->assign('validateUrl', $objectFormUpdateUrl);
+        $tpl->display('file:[CentreonAdministrationModule]editoptions.tpl');
+    }
+    
+    /**
+     * @method post
+     * @route /administration/options/centreon/update
+     */
+    public function updateAction()
+    {
+        $givenParameters = clone $this->getParams('post');
+        $createSuccessful = true;
+        $createErrorMessage = '';
+        
+        $validationResult = \Centreon\Internal\Form::validate("form", $this->getUri(), $givenParameters);
+        
+        var_dump($givenParameters);
+        if (isset($givenParameters['token'])) {
+            unset($givenParameters['token']);
+        }
+        
+        foreach ($givenParameters as $key=>$value) {
+            echo $key . " => " . $value . "\n";
+        }
+    }
 }

@@ -42,7 +42,7 @@ namespace Centreon\Internal\Datatable\Dataprovider;
  */
 class CentreonStorageDb implements iDataprovider
 {
-    public static function loadDatas($params, array $columns, array $specialFields, $modelClass = '', $additionnalClass = null)
+    public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '', $additionnalClass = null)
     {
         // Get Fields to be request
         $fields = "";
