@@ -5,7 +5,9 @@
 {block name="content"}
     <div class="content-container">
         <div class="row">
-            <a id="advanced_mode_switcher" href="#" class="btn btn-default">{t}Switch to advanced mode{/t}</a>
+            <a id="advanced_mode_switcher" href="#" class="btn btn-default">
+                <i class="fa fa-gears"></i> {t}Advanced mode{/t}
+            </a>
         </div>
         {$form}
     </div>
@@ -48,9 +50,9 @@
         $("#advanced_mode_switcher").on("click", function (event) {
             $(".advanced").toggleClass("advanced-display");
             if ($(".advanced").hasClass('advanced-display')) {
-                $(this).text("{t}Switch to simple mode{/t}");
+                $(this).html('<i class="fa fa-gear"></i> {t}Simple mode{/t}');
             } else {
-                $(this).text("{t}Switch to advanced mode{/t}");
+                $(this).html('<i class="fa fa-gears"></i> {t}Advanced mode{/t}');
             }
             hideEmptyBlocks();
         });
