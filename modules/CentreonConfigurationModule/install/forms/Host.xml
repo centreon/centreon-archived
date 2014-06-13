@@ -13,13 +13,14 @@
                     </validators>
 					<help>The host name defined here is used in host group and service definitions to reference this particular host.</help>
 				</field>
-				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-					<help></help>
+				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+					<help>The alias is used to define a longer name or description for the host.</help>
 				</field>
 				<field name="host_address" label="IP address / DNS" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
-					<help></help>
+					<help>Define the address of the host here. Normally, this should be an IP address, but a FQDN can be used to identify the host instead. If DNS services are not reachable a FQDN could cause problems.</help>
 				</field>
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help>This is where you specify the template that you want to inherit properties/variables from. Inherited properties doesn't need to be specified again. "Local" object variables always take precedence over variables defined in the template object. Objects can inherit properties/variables from multiple levels of template objects. When defining multiple sources, the first template specified takes precedence over the later one, in the case where a property is defined in both.</help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/hosttemplate/formlist</defaultValuesRoute>
@@ -30,9 +31,9 @@
                     <validators>
                         <validator events="blur">circularDependency</validator>
                     </validators>
-					<help></help>
 				</field>
 				<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+					<help>Define the image that should be associated with this host here. This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.</help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
@@ -40,27 +41,26 @@
 						<multiple>false</multiple>
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help>This directive is used to specify the time period during which active checks of this host can be executed.</help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/checkperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_check_command" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
+						<help>Specify the command that should be used to check if the host is up or down. Typically, this command would try and ping the host to see if it is "alive". On a non-OK state monitoring engine will assume the host is down. A blank argument disables active checks for the host status and Monitoring Engine will always assume the host is up. This is useful if you are monitoring printers or other devices that are frequently turned off.</help>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/checkcommand</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_max_check_attempts" label="Max check attempts" default_value="" advanced="1" type="integer" parent_field="" mandatory="1">
 					<help></help>
@@ -72,6 +72,7 @@
 					<help></help>
 				</field>
 				<field name="host_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					<help>Enable or disable active checks (either regularly scheduled or on-demand) of this host here. By default active host checks are enabled.</help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -79,9 +80,9 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					<help>Enable or disable passive checks here. When disabled submitted states will be not accepted.</help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -89,7 +90,6 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
             <block name="Macros">
@@ -97,7 +97,7 @@
             </block>
 			<block name="Additional information">
 				<field name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0">
-					<help></help>
+					<help>Macros are used as object-specific variables/properties, which can be referenced in commands and extended infos. Example: a macro named MACADDRESS can be referenced as $_HOSTMACADDRESS$.</help>
 				</field>
 				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
@@ -106,13 +106,13 @@
                             <Disabled>0</Disabled>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
         </section>
    		<section name="Notification">
 			<block name="Notification">
 				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="0" type="radio" parent_field="" mandatory="0">
+					<help>Specify whether or not notifications for this host are enabled.</help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -120,25 +120,24 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help>This is a list of contacts that should be notified whenever there are problems (or recoveries) with this host. Useful if you want notifications to go to just a few people and don't want to configure contact groups.</help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/contact</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help>This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this host.</help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/contactgroup</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_notification_interval" label="Notification interval" default_value="0" advanced="0" type="integer" parent_field="" mandatory="1">
 					<help>If this value is set to 0, the notification will be sent only one time.</help>
@@ -150,9 +149,9 @@
 						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_notification_options" label="Notification options" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
                         <choices>
                             <Down>1</Down>
@@ -162,7 +161,6 @@
                             <Downtime_Scheduled>1</Downtime_Scheduled>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
 					<help></help>
@@ -172,30 +170,52 @@
 		<section name="Relations">
 			<block name="Host group relations">
 				<field name="host_hostgroups" label="Parent host groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/hostgroup/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/hostgroup</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
 			<block name="Host category relations">
-				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field name="host_categories" label="Parent host categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
+			<block name="Parentships">
+				<field name="hosts_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help></help>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/parent</listValuesRoute>
+						<multiple>true</multiple>			
+					</attributes>
+				</field>
+				<field name="hosts_childs" label="Childs Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help></help>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/child</listValuesRoute>
+						<multiple>true</multiple>			
+					</attributes>
+				</field>
+			</block>
+
 		</section>
 		<section name="Data processing">
 			<block name="Event handler">
 				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+				 <help></help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -206,17 +226,18 @@
 					<help></help>
 				</field>
 				<field name="host_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
 			<block name="Freshness control options">
 				<field name="host_check_freshness" label="Check freshness" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					 <help></help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -224,7 +245,6 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
 					<help></help>
@@ -232,6 +252,7 @@
 			</block>
 			<block name="Flapping options">
 				<field name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					 <help></help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -239,7 +260,6 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
 					<help></help>
@@ -250,6 +270,7 @@
 			</block>
 			<block name="History options">
 				<field name="host_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -257,9 +278,9 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -267,9 +288,9 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 				<field name="host_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
                         <choices>
                             <Up>1</Up>
@@ -277,11 +298,11 @@
                             <Unreachable>1</Unreachable>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
 			<block name="Data processing">
 				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					<help></help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -289,7 +310,6 @@
                             <Default>2</Default>
                         </choices>
 					</attributes>
-					<help></help>
 				</field>
 			</block>
 		</section>
@@ -298,7 +318,7 @@
 		<route>/configuration/host/add</route>
 		<step name="General">
 			<field name="host_name" mandatory="1"></field>
-			<field name="host_address" mandatory="0"></field>
+			<field name="host_address" mandatory="1"></field>
 			<field name="host_hosttemplates" mandatory="0"></field>
 		</step>
 	</wizard>
