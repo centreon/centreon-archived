@@ -129,13 +129,19 @@ sub get_oids {
                                             LEFT JOIN service_categories ON (service_categories.sc_id = traps_matching_properties.severity_id)
                                             WHERE trap_id = " . $_ . " ORDER BY tmo_order ASC");
             return -1 if ($dstatus == -1);
-            $ref_result->{$_}->{traps_matching_properties} = $sth->fetchall_hashref("tmo_id");
+            $ref_result->{$_}->{traps_matching_properties} = [];
+            while (my $row = $sth->fetchrow_hashref()) {
+                push @{$ref_result->{$_}->{traps_matching_properties}}, $row;
+            }
         }
         
         # Get Trap PREEXEC Commands
         ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_preexec WHERE trap_id = " . $_ . " ORDER BY tpe_order ASC");
         return -1 if ($dstatus == -1);
-        $ref_result->{$_}->{traps_preexec} = $sth->fetchall_hashref("tpe_order");
+        $ref_result->{$_}->{traps_preexec} = [];
+        while (my $row = $sth->fetchrow_hashref()) {
+            push @{$ref_result->{$_}->{traps_preexec}}, $row;
+        }
         
         # Get Associated Host
         # TODO
