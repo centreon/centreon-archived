@@ -37,9 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Contact;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Servicecommand extends Relation
+class Servicecommand extends CentreonRelationModel
 {
     protected static $relationTable = "contact_servicecommands_relation";
     protected static $firstKey = "command_command_id";

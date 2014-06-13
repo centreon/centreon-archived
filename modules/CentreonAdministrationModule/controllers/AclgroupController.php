@@ -32,9 +32,8 @@
  * For more information : contact@centreon.com
  *
  */
-
-
-namespace Centreon\Controllers;
+    
+namespace CentreonAdministration\Controllers;
 
 use \Centreon\Internal\Form;
 
@@ -43,7 +42,7 @@ class AclgroupController extends \CentreonConfiguration\Controllers\ObjectAbstra
     protected $objectDisplayName = 'AclGroup';
     protected $objectName = 'aclgroup';
     protected $objectBaseUrl = '/administration/aclgroup';
-    protected $objectClass = '\CentreonConfiguration\Models\Acl\Group';
+    protected $objectClass = '\CentreonAdministration\Models\Aclgroup';
     public static $relationMap = array(
         'aclgroup_contacts' => '\CentreonConfiguration\Models\Relation\Aclgroup\Contact',
         'aclgroup_contactgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Contactgroup',
@@ -51,6 +50,8 @@ class AclgroupController extends \CentreonConfiguration\Controllers\ObjectAbstra
         'aclgroup_aclmenus' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclmenu',
         'aclgroup_aclactions' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclaction'
     );
+    protected $datatableObject = '\CentreonAdministration\Internal\AclgroupDatatable';
+    public static $isDisableable = true;
     
     /**
      * List aclgroups

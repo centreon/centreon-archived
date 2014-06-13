@@ -37,9 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Host;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Hostchild extends Relation
+class Hostchild extends CentreonRelationModel
 {
     protected static $relationTable = "host_hostparent_relation";
     protected static $firstKey = "host_host_id";

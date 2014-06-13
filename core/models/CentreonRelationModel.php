@@ -35,14 +35,14 @@
  */
 
 
-namespace CentreonConfiguration\Models;
+namespace Centreon\Models;
 
 /**
  * Centreon Object Relation
  *
  * @author sylvestre
  */
-abstract class Relation
+abstract class CentreonRelationModel
 {
     /**
      * Relation Table

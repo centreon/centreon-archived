@@ -37,9 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Timeperiod;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Timeperiodincluded extends Relation
+class Timeperiodincluded extends CentreonRelationModel
 {
     protected static $relationTable = "timeperiod_include_relations";
     protected static $firstKey = "timeperiod_id";

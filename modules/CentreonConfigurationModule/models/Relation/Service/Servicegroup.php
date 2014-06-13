@@ -37,9 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Service;
 
-use \CentreonConfiguration\Models\Relation;
+use \Centreon\Models\CentreonRelationModel;
 
-class Servicegroup extends Relation
+class Servicegroup extends CentreonRelationModel
 {
     protected static $relationTable = "servicegroup_relation";
     protected static $firstKey = "servicegroup_sg_id";

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+  <form name="poller_form">
+	<route>/configuration/poller/update</route>
+	<redirect>1</redirect>
+	<redirect_route>/configuration/poller</redirect_route>
+	<section name="General">
+	  <block name="General settings">
+		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>Name which will be used for identifying the poller.</help>
+		</field>
+		<field name="ns_ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
+		  <help>IP address of the poller which must be relative to the local poller.</help>
+		</field>
+	  </block>
+	  <block name="Monitoring settings">
+		<field name="init_script" label="Engine init script" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+		  <help>Init script of the monitoring engine.</help>
+		</field>
+		<field name="nagios_bin" label="Engine binary" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+		  <help>Engine binary path.</help>
+		</field>
+		<field name="centreonconnector_path" label="Connector path" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+		  <help>Directory for the engine's connectors.</help>
+		</field>
+	  </block>
+	  <block name="Broker settings">
+		<field name="centreonbroker_cfg_path" label="Broker configuration path" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+		  <help>Path for broker configuration files.</help>
+		</field>
+		<field name="centreonbroker_module_path" label="Broker module path" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+		  <help>Path for broker modules.</help>
+		</field>
+	  </block>
+	  <block name="Additinonal information">
+		<field name="ns_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+		  <attributes>
+			<choices>
+			  <Enabled>1</Enabled>
+			  <Disabled>0</Disabled>
+			</choices>
+		  </attributes>
+		</field>
+	  </block>
+	</section>
+	<section name="Main configuration">
+	</section>
+	<section name="Broker configuration">
+	</section>
+  </form>
+  <wizard name="add_poller">
+	<route>/configuration/poller/add</route>
+	<step name="General">
+	  <field name="name" mandatory="1"></field>
+	  <field name="ns_ip_address" mandatory="1"></field>
+	</step>
+  </wizard>
+</forms>

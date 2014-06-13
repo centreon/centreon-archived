@@ -35,15 +35,15 @@
  */
 
 
-namespace CentreonConfiguration\Models\Relation\Host;
+namespace \CentreonAdministation\Models\Aclgroup;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
-class Contact extends CentreonRelationModel
+class Aclaction extends CentreonRelationModel
 {
-    protected static $relationTable = "contact_host_relation";
-    protected static $firstKey = "contact_id";
-    protected static $secondKey = "host_host_id";
-    public static $firstObject = "\CentreonConfiguration\Models\Contact";
-    public static $secondObject = "\CentreonConfiguration\Models\Host";
+    protected static $relationTable = "acl_group_actions_relations";
+    protected static $firstKey = "acl_group_id";
+    protected static $secondKey = "acl_action_id";
+    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
+    public static $secondObject = "\\Models\\Configuration\\Acl\\Action";
 }
