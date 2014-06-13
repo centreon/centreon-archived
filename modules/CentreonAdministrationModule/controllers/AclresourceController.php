@@ -43,10 +43,12 @@ class AclresourceController extends \CentreonConfiguration\Controllers\ObjectAbs
     protected $objectDisplayName = 'AclResource';
     protected $objectName = 'aclresource';
     protected $objectBaseUrl = '/administration/aclresource';
-    protected $objectClass = '\CentreonConfiguration\Models\Acl\Resource';
+    protected $objectClass = '\CentreonAdministration\Models\Aclresource';
     public static $relationMap = array(
     );
-    
+    protected $datatableObject = '\CentreonAdministration\Internal\AclresourceDatatable';
+    public static $isDisableable = true;
+
     /**
      * List aclresources
      *
@@ -100,34 +102,8 @@ class AclresourceController extends \CentreonConfiguration\Controllers\ObjectAbs
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Internal\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('aclresourceForm');
-        $form->addText('name', _('Name'));
-        $form->addText('description', _('Description'));
-        $form->addTextarea('command_line', _('Commande Line'));
-        
-        $radios['list'] = array(
-          array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-          ),
-          array(
-              'name' => 'Disabled',
-              'label' => 'Disabled',
-              'value' => '0'
-          )
-        );
-        $form->addRadio('status', _("Status"), 'status', '&nbsp;', $radios);
-        
-        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('configuration/aclresource/edit.tpl');
+         $this->tpl->assign('validateUrl', '/administration/aclresource/add');
+         parent::addAction();
     }
     
     /**

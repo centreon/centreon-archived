@@ -42,10 +42,12 @@ class AclmenuController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     protected $objectDisplayName = 'AclMenu';
     protected $objectName = 'aclmenu';
     protected $objectBaseUrl = '/administration/aclmenu';
-    protected $objectClass = '\CentreonConfiguration\Models\Acl\Menu';
+    protected $objectClass = '\CentreonAdministration\Models\Aclmenu';
     public static $relationMap = array(
-        'aclmenu_aclgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclmenu'
+        'aclmenu_aclgroups' => '\CentreonAdministration\Models\Relation\Aclgroup\Aclmenu'
     );
+    protected $datatableObject = '\CentreonAdministration\Internal\AclmenuDatatable';
+    public static $isDisableable = true;
 
     /**
      * List aclmenu
@@ -177,33 +179,8 @@ class AclmenuController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Internal\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('aclmenuForm');
-        $form->addText('name', _('Name'));
-        $form->addText('description', _('Description'));
-        
-        $radios['list'] = array(
-          array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-          ),
-          array(
-              'name' => 'Disabled',
-              'label' => 'Disabled',
-              'value' => '0'
-          )
-        );
-        $form->addRadio('enabled', _("Status"), 'status', '&nbsp;', $radios);
-        
-        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('administration/aclmenu/edit.tpl');
+        $this->tpl->assign('validateUrl', '/administration/aclmenu/add');
+        parent::addAction();
     }
     
     /**

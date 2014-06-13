@@ -39,11 +39,11 @@ namespace CentreonAdministration\Internal;
 use \Centreon\Internal\Datatable\Datasource\CentreonDb;
 
 /**
- * Repository for Acl group listing
+ * Repository for Acl resource listing
  *
  * @author Sylvestre Ho
  */
-class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
+class AclresourceDatatable extends \Centreon\Internal\ExperimentalDatatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -51,7 +51,7 @@ class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonAdministration\Models\Aclgroup';
+    protected static $datasource = '\CentreonAdministration\Models\Aclresource';
     
     /**
      *
@@ -60,8 +60,8 @@ class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('acl_group_name', 'asc'),
-            array('acl_group_id', 'asc')
+            array('acl_res_name', 'asc'),
+            array('acl_res_id', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -74,8 +74,8 @@ class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
     public static $columns = array(
         array (
             'title' => 'Id',
-            'name' => 'acl_group_id',
-            'data' => 'acl_group_id',
+            'name' => 'acl_res_id',
+            'data' => 'acl_res_id',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -84,14 +84,14 @@ class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'checkbox',
                 'parameters' => array(
-                    'displayName' => '::acl_group_name::'
+                    'displayName' => '::acl_res_name::'
                 )
             )
         ),
         array (
             'title' => 'Name',
-            'name' => 'acl_group_name',
-            'data' => 'acl_group_name',
+            'name' => 'acl_res_name',
+            'data' => 'acl_res_name',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -99,18 +99,18 @@ class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/aclgroup/[i:id]',
+                    'route' => '/administration/aclresource/[i:id]',
                     'routeParams' => array(
-                        'id' => '::acl_group_id::'
+                        'id' => '::acl_res_id::'
                     ),
-                    'linkName' => '::acl_group_name::'
+                    'linkName' => '::acl_res_name::'
                 )
             )
         ),
         array (
             'title' => 'Description',
-            'name' => 'acl_group_alias',
-            'data' => 'acl_group_alias',
+            'name' => 'acl_res_alias',
+            'data' => 'acl_res_alias',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -118,8 +118,8 @@ class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'acl_group_activate',
-            'data' => 'acl_group_activate',
+            'name' => 'acl_res_status',
+            'data' => 'acl_res_status',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',

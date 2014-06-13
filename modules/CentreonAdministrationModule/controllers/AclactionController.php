@@ -42,10 +42,12 @@ class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectDisplayName = 'AclAction';
     protected $objectName = 'aclaction';
     protected $objectBaseUrl = '/administration/aclaction';
-    protected $objectClass = '\CentreonConfiguration\Models\Acl\Action';
+    protected $objectClass = '\CentreonAdministration\Models\Aclaction';
     public static $relationMap = array(
-        'aclaction_aclgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclaction'
+        'aclaction_aclgroups' => '\CentreonAdministration\Models\Relation\Aclgroup\Aclaction'
     );
+    protected $datatableObject = '\CentreonAdministration\Internal\AclactionDatatable';
+    public static $isDisableable = true;
 
     /**
      * List aclaction
@@ -100,33 +102,8 @@ class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Internal\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('aclactionForm');
-        $form->addText('name', _('Name'));
-        $form->addText('description', _('Description'));
-        
-        $radios['list'] = array(
-          array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-          ),
-          array(
-              'name' => 'Disabled',
-              'label' => 'Disabled',
-              'value' => '0'
-          )
-        );
-        $form->addRadio('enabled', _("Status"), 'status', '&nbsp;', $radios);
-        
-        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('administration/aclaction/edit.tpl');
+        $this->tpl->assign('validateUrl', '/administration/aclaction/add');
+        parent::addAction();
     }
     
     /**

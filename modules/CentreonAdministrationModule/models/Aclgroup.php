@@ -36,12 +36,14 @@
 
 namespace CentreonAdministration\Models;
 
+use \Centreon\Models\CentreonBaseModel;
+
 /**
  * Used for interacting with ACL groups
  *
  * @author sylvestre
  */
-class Aclgroup extends \Centreon\Models\CentreonBaseModel
+class Aclgroup extends CentreonBaseModel
 {
     protected static $table = "acl_groups";
     protected static $primaryKey = "acl_group_id";
