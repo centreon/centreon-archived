@@ -33,107 +33,15 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonAdministration\Repository;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class AclmenuRepository extends \CentreonConfiguration\Repository\Repository
+class AclmenuRepository
 {
-    /**
-     *
-     * @var string
-     */
-    public static $tableName = 'acl_menus';
-
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Aclmenu';
-
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allAclGroups" class="allAclMenus" type="checkbox">' => 'acl_menu_id',
-        'Name' => 'name',
-        'Description' => 'description',
-        'Status' => 'enabled'
-    );
-
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'acl_menu_id',
-        'name',
-        'description',
-        'enabled'
-    );
-
-    public static $columnCast = array(
-        'enabled' => array(
-            'type' => 'select',
-            'parameters' => array(
-                '1' => '<span class="label label-success">Enabled</span>',
-                '0' => '<span class="label label-danger">Disabled</span>',
-            )
-        ),
-        'acl_menu_id' => array(
-            'type' => 'checkbox',
-             'parameters' => array(
-                'displayName' => '::acl_menu_name::'
-            )
-        ),
-        'name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/administration/aclmenu/[i:id]',
-                'routeParams' => array(
-                    'id' => '::acl_menu_id::'
-                ),
-                'linkName' => '::name::'
-            )
-        )
-    );
-
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_alias',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search_name',
-        'search_alias',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-
-
     /**
      * Get ACL level by Acl Menu ID
      *

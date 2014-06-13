@@ -106,34 +106,8 @@ class AclgroupController extends \CentreonConfiguration\Controllers\ObjectAbstra
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Internal\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('aclgroupForm');
-        $form->addText('name', _('Name'));
-        $form->addText('description', _('Description'));
-        $form->addTextarea('command_line', _('Commande Line'));
-        
-        $radios['list'] = array(
-          array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-          ),
-          array(
-              'name' => 'Disabled',
-              'label' => 'Disabled',
-              'value' => '0'
-          )
-        );
-        $form->addRadio('status', _("Status"), 'status', '&nbsp;', $radios);
-        
-        $form->add('save_form', 'submit', _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('configuration/aclgroup/edit.tpl');
+        $this->tpl->assign('validateUrl', '/administration/aclgroup/add');
+        parent::addAction();
     }
     
     /**
