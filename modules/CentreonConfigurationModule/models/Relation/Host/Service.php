@@ -34,10 +34,11 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Host;
 
-class Service extends \CentreonConfiguration\Models\Relation
+use \Centreon\Models\CentreonRelationModel;
+
+class Service extends CentreonRelationModel
 {
     protected static $relationTable = "host_service_relation";
     protected static $firstKey = "host_host_id";

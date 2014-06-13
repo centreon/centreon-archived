@@ -37,7 +37,9 @@
 
 namespace CentreonConfiguration\Models\Relation\Hostgroup;
 
-class Service extends \CentreonConfiguration\Models\Relation
+use \Centreon\Models\CentreonRelationModel;
+
+class Service extends CentreonRelationModel
 {
     protected static $relationTable = "host_service_relation";
     protected static $firstKey = "hostgroup_hg_id";
