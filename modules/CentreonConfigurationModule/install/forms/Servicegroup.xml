@@ -13,7 +13,7 @@
 				<field name="sg_services" label="Services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/service/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/configuration/service/formlistcomplete</defaultValuesRoute>
 						<listValuesRoute>/configuration/servicegroup/[i:id]/service</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>

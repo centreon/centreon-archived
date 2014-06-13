@@ -105,6 +105,45 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         }
         $router->response()->json($finalList);
     }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/service/formlistcomplete
+     */
+    public function formListCompleteAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParams = $this->getParams('get');
+        $serviceId = \CentreonConfiguration\Models\Service::getPrimaryKey();
+        $serviceDescription = \CentreonConfiguration\Models\Service::getUniqueLabelField();
+        $hostId = \CentreonConfiguration\Models\Host::getPrimaryKey();
+        $hostName = \CentreonConfiguration\Models\Host::getUniqueLabelField();
+        $filters = array(
+            $serviceDescription => '%'.$requestParams['q'].'%',
+            $hostName => '%'.$requestParams['q'].'%',
+        );
+        $list = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
+            array($hostId, $hostName),
+            array($serviceId, $serviceDescription), 
+            -1, 
+            0, 
+            null, 
+            "ASC", 
+            $filters, 
+            "OR"
+        );
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$serviceId] . '_' . $obj[$hostId],
+                "text" => $obj[$hostName] . ' ' . $obj[$serviceDescription]
+            );
+        }
+        $router->response()->json($finalList);
+    }
 
     /**
      * 
