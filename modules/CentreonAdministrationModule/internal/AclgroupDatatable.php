@@ -99,7 +99,7 @@ class AclgroupDatatable extends \Centreon\Internal\ExperimentalDatatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/aclgroup/[i:id]',
+                    'route' => '/administration/aclgroup/[i:id]',
                     'routeParams' => array(
                         'id' => '::acl_group_id::'
                     ),

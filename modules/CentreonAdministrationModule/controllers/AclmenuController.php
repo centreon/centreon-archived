@@ -42,10 +42,12 @@ class AclmenuController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     protected $objectDisplayName = 'AclMenu';
     protected $objectName = 'aclmenu';
     protected $objectBaseUrl = '/administration/aclmenu';
-    protected $objectClass = '\CentreonConfiguration\Models\Acl\Menu';
+    protected $objectClass = '\CentreonAdministration\Models\Aclmenu';
     public static $relationMap = array(
-        'aclmenu_aclgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclmenu'
+        'aclmenu_aclgroups' => '\CentreonAdministration\Models\Relation\Aclgroup\Aclmenu'
     );
+    protected $datatableObject = '\CentreonAdministration\Internal\AclmenuDatatable';
+    public static $isDisableable = true;
 
     /**
      * List aclmenu

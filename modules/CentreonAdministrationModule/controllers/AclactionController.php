@@ -42,10 +42,12 @@ class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectDisplayName = 'AclAction';
     protected $objectName = 'aclaction';
     protected $objectBaseUrl = '/administration/aclaction';
-    protected $objectClass = '\CentreonConfiguration\Models\Acl\Action';
+    protected $objectClass = '\CentreonAdministration\Models\Aclaction';
     public static $relationMap = array(
-        'aclaction_aclgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Aclaction'
+        'aclaction_aclgroups' => '\CentreonAdministration\Models\Relation\Aclgroup\Aclaction'
     );
+    protected $datatableObject = '\CentreonAdministration\Internal\AclactionDatatable';
+    public static $isDisableable = true;
 
     /**
      * List aclaction

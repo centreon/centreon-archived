@@ -43,10 +43,12 @@ class AclresourceController extends \CentreonConfiguration\Controllers\ObjectAbs
     protected $objectDisplayName = 'AclResource';
     protected $objectName = 'aclresource';
     protected $objectBaseUrl = '/administration/aclresource';
-    protected $objectClass = '\CentreonConfiguration\Models\Acl\Resource';
+    protected $objectClass = '\CentreonAdministration\Models\Aclresource';
     public static $relationMap = array(
     );
-    
+    protected $datatableObject = '\CentreonAdministration\Internal\AclresourceDatatable';
+    public static $isDisableable = true;
+
     /**
      * List aclresources
      *
