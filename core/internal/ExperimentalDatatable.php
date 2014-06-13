@@ -121,6 +121,8 @@ class ExperimentalDatatable
             static::$additionnalDatasource
         );
         
+        static::addAdditionnalDatas($datasFromDb['datas']);
+        static::processHooks($datasFromDb['datas']);
         $this->formatDatas($datasFromDb['datas']);
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
         
@@ -141,8 +143,6 @@ class ExperimentalDatatable
      */
     protected function prepareDatasForSending($datasToSend)
     {
-        static::addAdditionnalDatas($datasToSend['datas']);
-        static::processHooks($datasToSend['datas']);
         $datasToSend['datas'] = $this->castResult($datasToSend['datas']);
         
         // format the data before returning
