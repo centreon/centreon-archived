@@ -239,7 +239,8 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
         
-        $stmt = $dbconn->query('SELECT last_hard_state as state FROM services WHERE host_id = '.$host_id.' AND enabled = 1 LIMIT 1');
+        $stmt = $dbconn->query('SELECT state as state FROM hosts WHERE host_id = '.$host_id.' AND enabled = 1 LIMIT 1');
+        
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             return static::getBadgeStatus($row['state']);
         }
@@ -263,7 +264,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         } else if ($status == 4) {
             $status = "label-info";
         }
-        return "<span class='label $status pull-right'>&nbsp;</span>";
+        return "<span class='label $status pull-right'>&nbsp;<!--<i class='fa fa-check-square-o'>--></i></span>";
     }
 
 }

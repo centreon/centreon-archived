@@ -94,7 +94,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             ),
             'className' => 'datatable-align-center', 
             'width' => '15px',
-            'styleClass' => 'cell_center'
+            'className' => 'cell_center'
         ),
          array (
             'title' => 'Name',
@@ -150,7 +150,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            "width" => '15px'
+            "width" => '15px',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Status',
@@ -196,7 +197,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => '10%'
+            'width' => '10%',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Retry',
@@ -206,7 +208,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => '25px'
+            'width' => '25px',
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Output',
