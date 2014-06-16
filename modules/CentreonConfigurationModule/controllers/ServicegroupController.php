@@ -217,6 +217,24 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function servicesForServicegroupAction()
     {
-        parent::getRelations(static::$relationMap['sg_services']);
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $relObj = static::$relationMap['sg_services'];
+        $listOfServices = $relObj::getHostIdServiceIdFromServicegroupId($requestParam['id']);
+        
+        //
+        $finalList = array();
+        foreach ($listOfServices as $obj) {
+            $serviceDescription = \CentreonConfiguration\Models\Service::getParameters($obj['service_id'], 'service_description');
+            $hostName = \CentreonConfiguration\Models\Host::getParameters($obj['host_id'], 'host_name');
+            $finalList[] = array(
+                "id" => $obj['service_id'] . '_' . $obj['host_id'],
+                "text" => $hostName['host_name'] . ' ' . $serviceDescription['service_description']
+            );
+        }
+        $router->response()->json($finalList);
     }
 }
