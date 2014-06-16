@@ -77,7 +77,7 @@
 		</section>
 	</form>
 	<wizard name="add_aclgroup">
-		<route>/administation/aclgroup/add</route>
+		<route>/administration/aclgroup/add</route>
 		<step name="General">
 			<field name="acl_group_name" mandatory="1"></field>
 			<field name="acl_group_contacts" mandatory="0"></field>
