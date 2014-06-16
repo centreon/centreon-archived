@@ -643,8 +643,8 @@ class CustomviewController extends \Centreon\Internal\Controller
     {
         return 'var jsonPosition = '.$jsonPosition.'
                 var widgets = '.$jsonWidgets.'
-                var w = Math.round($(window).width() / 8);
-                var h = 140;
+                var w = Math.ceil($(".content").width() / 6.5);
+                var h = 220;
         
                 var gridster = $(".gridster ul").gridster({
                     max_cols: 6,
