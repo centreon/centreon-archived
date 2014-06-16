@@ -24,4 +24,11 @@
 			</block>
 		</section>
 	</form>
+	<wizard name="add_aclmenu">
+		<route>/administration/aclmenu/add</route>
+		<step name="General">
+			<field name="name" mandatory="1"></field>
+			<field name="description" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>

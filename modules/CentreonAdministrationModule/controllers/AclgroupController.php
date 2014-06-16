@@ -78,7 +78,7 @@ class AclgroupController extends \CentreonConfiguration\Controllers\ObjectAbstra
      * Create a new ACL group
      *
      * @method post
-     * @route /administration/aclgroup/create
+     * @route /administration/aclgroup/add
      */
     public function createAction()
     {
@@ -100,7 +100,6 @@ class AclgroupController extends \CentreonConfiguration\Controllers\ObjectAbstra
     /**
      * Add a aclgroup
      *
-     *
      * @method get
      * @route /administration/aclgroup/add
      */
@@ -109,7 +108,7 @@ class AclgroupController extends \CentreonConfiguration\Controllers\ObjectAbstra
         $this->tpl->assign('validateUrl', '/administration/aclgroup/add');
         parent::addAction();
     }
-    
+
     /**
      * Update a aclgroup
      *

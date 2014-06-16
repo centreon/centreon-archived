@@ -9,7 +9,7 @@
         <column name="all_servicegroups" phpName="AllServicegroups" type="CHAR" sqlType="enum('0','1')" required="false"/>
         <column name="acl_res_activate" phpName="AclResActivate" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="acl_res_comment" phpName="AclResComment" type="LONGVARCHAR" required="false"/>
-        <column name="acl_res_status" phpName="AclResStatus" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="acl_res_status" phpName="AclResStatus" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
         <column name="changed" phpName="Changed" type="INTEGER" required="false"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

@@ -74,7 +74,7 @@ class AclmenuController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      * Create a new ACL menu
      *
      * @method post
-     * @route /administration/aclmenu/create
+     * @route /administration/aclmenu/add
      */
     public function createAction()
     {
