@@ -4,7 +4,7 @@
         <column name="acl_action_id" phpName="AclActionId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="acl_action_name" phpName="AclActionName" type="VARCHAR" size="255" required="false"/>
         <column name="acl_action_description" phpName="AclActionDescription" type="VARCHAR" size="255" required="false"/>
-        <column name="acl_action_activate" phpName="AclActionActivate" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="acl_action_activate" phpName="AclActionActivate" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="1"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
