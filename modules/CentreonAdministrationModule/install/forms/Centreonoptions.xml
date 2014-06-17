@@ -30,6 +30,7 @@
                 <field name="Helpdesk_contact_email" label="Helpdesk Contact Email" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
                   <help>This is the helpdesk contact email that users can use in order to contact your helpdesk.</help>
                 </field>
+            </block>
 		</section>
 	</form>
 </forms>
