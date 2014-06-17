@@ -116,6 +116,10 @@ class ModuleInformations
         return $returnValue;
     }
     
+    /**
+     * 
+     * @return array
+     */
     public static function getModuleList()
     {
         $moduleList = array();
@@ -126,5 +130,20 @@ class ModuleInformations
         }
         
         return $moduleList;
+    }
+    
+    public static function getCoreModuleList()
+    {
+        $coreModuleList = array(
+            'centreon-main',
+            'centreon-security',
+            'centreon-administration',
+            'centreon-configuration',
+            'centreon-realtime',
+            'centreon-customview',
+            'centreon-bam',
+        );
+        
+        return $coreModuleList;
     }
 }
