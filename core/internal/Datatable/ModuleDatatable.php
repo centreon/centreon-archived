@@ -41,7 +41,7 @@ namespace Centreon\Internal\Datatable;
  *
  * @author lionel
  */
-class ModuleDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ModuleDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

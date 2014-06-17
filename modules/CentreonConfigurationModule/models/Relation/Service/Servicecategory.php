@@ -46,4 +46,42 @@ class Servicecategory extends CentreonRelationModel
     protected static $secondKey = "service_service_id";
     public static $firstObject = "\CentreonConfiguration\Models\Servicecategory";
     public static $secondObject = "\CentreonConfiguration\Models\Service";
+    
+    /**
+     * 
+     * @param type $firstTableParams
+     * @param type $secondTableParams
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param type $filters
+     * @param type $filterType
+     * @param type $relationTableParams
+     * @return type
+     */
+    public static function getMergedParametersBySearch(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR",
+        $relationTableParams = array()
+    ) {
+        $filters['service_register'] = '1';
+        return parent::getMergedParametersBySearch(
+            $firstTableParams,
+            $secondTableParams,
+            $count,
+            $offset,
+            $order,
+            $sort,
+            $filters,
+            $filterType,
+            $relationTableParams
+        );
+    }
 }

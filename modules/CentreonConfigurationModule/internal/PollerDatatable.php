@@ -43,7 +43,7 @@ use \Centreon\Internal\Utils\Datetime;
  *
  * @author lionel
  */
-class PollerDatatable extends \Centreon\Internal\ExperimentalDatatable
+class PollerDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

@@ -1,38 +1,38 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
  * Foundation ; either version 2 of the License.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
+ * 
+ * You should have received a copy of the GNU General Public License along with 
  * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
  * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give MERETHIS
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- *
+ * 
  * For more information : contact@centreon.com
- *
+ * 
  */
-
 namespace Centreon\Internal;
 
 /**
@@ -43,31 +43,151 @@ namespace Centreon\Internal;
 class Datatable
 {
     /**
-     * 
+     *
+     * @var string 
      */
-    public function __construct()
+    protected static $hook = '';
+    
+    /**
+     *
+     * @var string 
+     */
+    protected static $objectId = '';
+    
+    /**
+     *
+     * @var string 
+     */
+    protected static $objectName = '';
+
+    /**
+     *
+     * @var string 
+     */
+    protected $objectModelClass;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected static $dataprovider = '';
+    
+    /**
+     *
+     * @var array 
+     */
+    public static $fieldList = array();
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $options = array();
+    
+    /**
+     *
+     * @var array 
+     */
+    public static $columns = array();
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static $configuration = array();
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $specialFields = array();
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $params = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $rawDatasFromDb;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected static $additionnalDatasource = null;
+    
+    /**
+     *
+     * @var array 
+     */
+    private static $nonDatatableParams = array(
+        'cast',
+        'searchParam',
+    );
+    
+    /**
+     * 
+     * @param array $params
+     * @param string $objectModelClass
+     */
+    public function __construct($params, $objectModelClass = '')
+    {
+        $this->params = $params;
+        $this->objectModelClass = $objectModelClass;
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getDatas()
+    {
+        $provider = static::$dataprovider;
+        $datasFromDb = $provider::loadDatas(
+            $this->params,
+            static::$columns,
+            $this->specialFields,
+            get_class($this),
+            $this->objectModelClass,
+            static::$additionnalDatasource
+        );
+        
+        static::addAdditionnalDatas($datasFromDb['datas']);
+        static::processHooks($datasFromDb['datas']);
+        $this->formatDatas($datasFromDb['datas']);
+        $sendableDatas = $this->prepareDatasForSending($datasFromDb);
+        
+        return $sendableDatas;
+    }
+    
+    /**
+     * 
+     * @param array $datasToFormat
+     */
+    protected function formatDatas(&$datasToFormat)
     {
         
     }
     
     /**
      * 
-     * @param string $object
-     * @param array $params
-     * @return json
+     * @param array $datasToSend
+     * @return array
      */
-    public static function getDatas($module, $object, $params = array())
+    protected function prepareDatasForSending($datasToSend)
     {
-        // Get connection
-        $objectToCall = '\\' . $module . '\\Repository\\'.ucwords(strtolower($object)).'Repository';
-        $datasToSend = $objectToCall::getDatasForDatatable($params);
+        $datasToSend['datas'] = $this->castResult($datasToSend['datas']);
         
         // format the data before returning
         $finalDatas = array(
-            "sEcho" => intval($params['sEcho']),
-            "iTotalRecords" => count($datasToSend),
-            "iTotalDisplayRecords" => $objectToCall::getTotalRecordsForDatatable($params),
-            "aaData" => $datasToSend
+            "sEcho" => intval($this->params['sEcho']),
+            "iTotalRecords" => count($datasToSend['datas']),
+            "iTotalDisplayRecords" => $datasToSend['nbOfTotalDatas'],
+            "aaData" => $datasToSend['datas']
         );
         
         return $finalDatas;
@@ -75,62 +195,233 @@ class Datatable
     
     /**
      * 
-     * @param string $object
-     * @return array
+     * @param array $resultSet
      */
-    public static function getConfiguration($module, $object)
+    protected static function addAdditionnalDatas(&$resultSet)
     {
-        // Get connection
-        $objectToCall = '\\' . $module . '\\Repository\\'.ucwords(strtolower($object)).'Repository';
-        return $objectToCall::getParametersForDatatable();
+        
     }
     
     /**
      * 
-     * @param type $object
-     * @param type $resultSet
-     * @return type
-     */
-    public static function removeUnwantedFields($module, $object, $resultSet)
-    {
-        $objectToCall = '\\' . $module . '\\Repository\\'.ucwords(strtolower($object)).'Repository';
-        foreach ($objectToCall::$additionalColumn as $c) {
-            if (preg_match('/^[a-zA-Z1-9_-]+\.([a-zA-Z1-9_-]+)/', $c, $matches)) {
-                $c = $matches[1];
-            }
-            foreach ($resultSet as &$set) {
-                if (isset($set[$c])) {
-                    unset($set[$c]);
-                }    
-            }
-        }
-        return $resultSet;
-    }
-    
-    /**
-     * 
-     * @param array $element
-     * @param string $object
      * @return array
      */
-    public static function castResult($element, $params)
+    public static function getHeader()
     {
-        try {
-            $elementField = array_keys($element);
-            $originalElement = $element;
-            $object = ucwords(strtolower($params[0]));
-            $objectToCall = '\\' . $params[1] . '\\Repository\\'.$object.'Repository';
-            foreach ($objectToCall::$columnCast as $castField => $castParameters) {
-                $subCaster = 'add'.ucwords($castParameters['type']);
-                $element[$castField] = self::$subCaster(
-                    $object,
-                    $castField,
-                    $castParameters['parameters'],
-                    $elementField,
-                    $originalElement
+        $columnHeader = "";
+        $columnSearchIndex = array();
+        $nbFixedTr = count(static::$columns);
+
+        if (isset(static::$hook) && static::$hook) {
+            $hookData = Hook::execute(static::$hook, array());
+            foreach ($hookData as $data) {
+                $columnName = $data['columnName'];
+                static::$columns[] = array(
+                    'name' => $columnName, 
+                    'title' => $columnName, 
+                    'data' => $columnName, 
+                    'orderable' => false,
+                    'searchable' => false
                 );
             }
-            return $element;
+        } 
+
+        foreach (static::$columns as $column) {
+            static::$fieldList[] = $column['name'];
+            $columnHeader .= '{';
+            $searchable = false;
+            
+            foreach ($column as $key=>$value) {
+                
+                if (in_array($key, self::$nonDatatableParams)) {
+                    continue;
+                }
+                
+                if (is_string($value)) {
+                    $columnHeader .= '"' . $key . '":"' . addslashes($value) . '",';
+                } elseif (is_bool($value)) {
+                    if ($value === true) {
+                        $columnHeader .= '"' . $key . '":true,';
+                    } else {
+                        $columnHeader .= '"' . $key . '":false,';
+                    }
+                } else {
+                    $columnHeader .= '"' . $key . '":' . (string)$value . ',';
+                }
+                
+                if (($key === 'searchable')) {
+                    $searchable = $value;
+                }
+            }
+            
+            $columnHeader .= "},\n";
+            //
+            if ($searchable) {
+                $searchParam = array ('type' => 'text');
+                if (isset($column['searchParam'])) {
+                    $searchParam = $column['searchParam'];
+                }
+                $searchParam['title'] = $column['title'];
+                $columnSearchIndex[addslashes($column['name'])] = $searchParam;
+            }
+            
+        }
+        
+        $columnSearch = self::getHtmlSearchField($columnSearchIndex);  
+        unset($columnSearchIndex);
+        
+        return array(
+            'columnHeader' => $columnHeader,
+            'columnSearch' => $columnSearch,
+            'nbFixedTr' => $nbFixedTr
+        );
+    }
+    
+    /**
+     * 
+     * @param array $columnSearch
+     * @return string
+     */
+    public static function getHtmlSearchField(array $columnSearch)
+    {
+        $finalHtml = '<div class="panel-group" id="accordion" style:"width:85%">'
+            . '<div class="panel panel-default">'
+                . '<div class="panel-heading">'
+                    . '<h4 class="panel-title">'
+                        . '<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">'
+                            . 'Search bar'
+                        . '</a>'
+                    . '</h4>'
+                . '</div>'
+            . '<div id="collapseOne" class="panel-collapse collapse">'
+                . '<div class="panel-body">';
+        
+        foreach ($columnSearch as $colName=>$colSearch) {
+            $myInput = '<div class="input-group">';
+            $myInput .= '<span class="input-group-addon">' . $colSearch['title'] . '</span>';
+            switch (strtolower($colSearch['type'])) {
+                default:
+                case 'text': 
+                    $myInput .= '<input class="centreon-search form-control" data-column-index="%2$d" name="%1$s" placeholder="%3$s" type="text" />';
+                    break;
+                case 'select':
+                    $myInput .= '<select class="centreon-search form-control" data-column-index="%2$d" placeholder="%3$s" name="%1$s">';
+                    $myInput .= '<option value=""></option>';
+                    foreach ($colSearch['additionnalParams'] as $optionName=>$optionValue) {
+                        $myInput .= '<option value="' . $optionValue . '">' . $optionName . '</option>';
+                    }
+                    $myInput .= '</select>';
+                    break;
+            }
+            $myInput .= '</div>';
+            
+            $colIndex = array_search($colName, static::$fieldList);
+            
+            $myInput = sprintf($myInput, $colName, $colIndex, $colSearch['title']);
+            $finalHtml .= $myInput;
+        }
+        
+        $finalHtml .= '</div></div></div>';
+        return $finalHtml ;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public static function getConfiguration()
+    {
+        $configurationParams = "";
+        foreach (static::$configuration as $configName => $configEntry) {
+            
+            if ($configName == 'order') {
+                $configEntry = self::initOrder($configEntry);
+            }
+            
+            if ($configName == 'searchCols') {
+                $configEntry = self::initSearch($configEntry);
+            }
+            
+            $configEntry = (is_array($configEntry)) ? json_encode($configEntry) : $configEntry;
+            
+            if (is_bool($configEntry)) {
+                if ($configEntry === true) {
+                    $configEntry = 'true';
+                } else {
+                    $configEntry = 'false';
+                }
+            }
+            
+            $configurationParams .= '"' . $configName . '":' . $configEntry . ",\n";
+        }
+        
+        return trim($configurationParams);
+    }
+
+    /**
+     * 
+     * @param type $configEntry
+     * @return array
+     */
+    private static function initSearch($configEntry)
+    {
+        $rawSeachTable = array();
+        $listOfSearchField = array_keys(static::$configuration['searchCols']);
+        foreach (static::$columns as $column) {
+            if (in_array($column['name'], $listOfSearchField)) {
+                $rawSeachTable[] = array('sSearch' => $configEntry[$column['name']]);
+            } else {
+                $rawSeachTable[] = null;
+            }
+        }
+        return $rawSeachTable;
+    }
+    
+    /**
+     * 
+     * @param type $configEntry
+     * @return type
+     */
+    private static function initOrder($configEntry)
+    {
+        $line = "[";
+        foreach ($configEntry as $order) {
+            $line .= "[" . array_search($order[0], static::$fieldList) . ", '". $order[1] ."'],";
+        }
+        return rtrim($line, ',') . ']';
+    }
+
+    /**
+     * 
+     * @param type $datas
+     * @return type
+     */
+    public static function castResult($datas)
+    {
+        try {
+            $columnsToCast = array();
+            foreach(static::$columns as $column) {
+                if (isset($column['cast'])) {
+                    $columnsToCast[$column['name']] = $column['cast'];
+                    $columnsToCast[$column['name']]['caster'] = 'add'.ucwords($column['cast']['type']);
+                }
+            }
+
+            foreach($datas as &$singleData) {
+                $originalData = $singleData;
+                foreach($columnsToCast as $colName=>$colCast) {
+                    if (preg_match('/[A-z]\./', $colName)) {
+                        $a = explode('.', $colName);
+                        array_shift($a);
+                        $a = implode('.', $a);
+                    } else {
+                        $a = $colName;
+                    }
+                    $singleData[$a] =  self::$colCast['caster']($a, $originalData, $colCast['parameters']);
+                }
+            }
+            
+            return $datas;
         } catch (\Exception $e) {
             var_dump($e);
         }
@@ -138,25 +429,23 @@ class Datatable
 
     /**
      * 
-     * @param type $object
-     * @param type $fields
+     * @param type $field
      * @param type $values
-     * @param type $elementField
-     * @param type $element
+     * @param type $cast
      * @return type
      */
-    public static function addUrl($object, $fields, $values, $elementField, $element)
+    public static function addUrl($field, $values, $cast)
     {
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
             },
-            $elementField
+            array_keys($values)
         );
         
         $routeParams = array();
-        if (isset($values['routeParams']) && is_array($values['routeParams'])) {
-            $routeParams = str_replace($castedElement, $element, $values['routeParams']);
+        if (isset($cast['routeParams']) && is_array($cast['routeParams'])) {
+            $routeParams = str_replace($castedElement, $values, $cast['routeParams']);
         }
         
         $finalRoute = str_replace(
@@ -164,14 +453,14 @@ class Datatable
             "/",
             \Centreon\Internal\Di::getDefault()
                 ->get('router')
-                ->getPathFor($values['route'], $routeParams)
+                ->getPathFor($cast['route'], $routeParams)
         );
         
-        $linkName =  str_replace($castedElement, $element, $values['linkName']);
+        $linkName =  str_replace($castedElement, $values, $cast['linkName']);
         
         $class = '';
-        if (isset($values['styleClass'])) {
-            $class .=$values['styleClass'];
+        if (isset($cast['styleClass'])) {
+            $class .=$cast['styleClass'];
         }
         
         return '<a class="' . $class . '" href="' . $finalRoute . '">' . $linkName . '</a>';
@@ -179,48 +468,47 @@ class Datatable
     
     /**
      * 
-     * @param type $object
-     * @param type $fields
+     * @param type $field
      * @param type $values
-     * @param type $elementField
-     * @param type $element
+     * @param type $cast
      * @return type
      */
-    public static function addCheckbox($object, $fields, $values, $elementField, $element)
+    public static function addCheckbox($field, $values, $cast)
     {
-        $input = '<input class="all'. $object .'Box" '
-            . 'id="'. $object .'::'. $fields .'::" '
-            . 'name="'. $object .'[]" '
+        $datasource = static::$datasource;
+        $uniqueField = $datasource::getUniqueLabelField();
+        $object = ucwords(str_replace('_', '', $field));
+        $input = '<input class="all'. static::$objectName .'Box" '
+            . 'id="'. static::$objectName .'::'. $field .'::" '
+            . 'name="'. static::$objectName .'[]" '
             . 'type="checkbox" '
-            . 'value="::'. $fields .'::" '
-            . 'data-name="' . $values['displayName'] . '" '
+            . 'value="::'. $field .'::" '
+            . 'data-name="' . htmlentities($values[$uniqueField]) . '"'
             . '/>';
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
             },
-            $elementField
+            array_keys($values)
         );
-        return str_replace($castedElement, $element, $input);
+        
+        return str_replace($castedElement, $values, $input);
     }
     
     /**
      * 
-     * @param type $object
-     * @param type $fields
+     * @param type $field
      * @param type $values
-     * @param type $elementField
-     * @param type $element
+     * @param type $cast
      * @return type
      */
-    public static function addSelect($object, $fields, $values, $elementField, $element)
+    public static function addSelect($field, $values, $cast)
     {
-        if (isset($values['selecttype']) && ($values['selecttype'] != 'none')) {
-            $subElementValues = $values['parameters'][$element[$fields]]['parameters'];
-            $subCaster = 'add'.ucwords($values['selecttype']);
-            $myElement = static::$subCaster($object, $fields, $subElementValues, $elementField, $element);
+        if (isset($cast['selecttype']) && ($cast['selecttype'] != 'none')) {
+            $subCaster = 'add'.ucwords($cast['selecttype']);
+            $myElement = static::$subCaster($field, $values, $cast['parameters'][$values[$field]]['parameters']);
         } else {
-            $myElement = $values[$element[$fields]];
+            $myElement = $cast[$values[$field]];
         }
         
         return $myElement;
@@ -228,15 +516,40 @@ class Datatable
     
     /**
      * 
-     * @param type $object
-     * @param type $fields
+     * @param type $field
      * @param type $values
-     * @param type $elementField
-     * @param type $element
+     * @param type $cast
      * @return type
      */
-    public static function addDate($object, $fields, $values, $elementField, $element)
+    public static function addDate($field, $values, $cast)
     {
-        return date($values['date'], $element[$fields]);
+        return date($cast['date'], $values[$field]);
+    }
+
+    /**
+     * 
+     * @param type $resultSet
+     */
+    public static function processHooks(&$resultSet)
+    {
+        $arr = array();
+        foreach ($resultSet as $set) {
+            if (isset($set[static::$objectId])) {
+                $arr[] = $set[static::$objectId];
+            }
+        }
+        if (isset(static::$hook) && static::$hook) {
+            $hookData = Hook::execute(static::$hook, $arr);
+            foreach ($hookData as $data) {
+                $columnName = $data['columnName'];
+                foreach ($data['values'] as $k => $value) {
+                    foreach ($resultSet as $key => $set) {
+                        if ($set[static::$objectId] == $k) {
+                            $resultSet[$key][$columnName] = $value;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

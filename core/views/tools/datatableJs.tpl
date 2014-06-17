@@ -56,7 +56,7 @@
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
         setInterval(function () { 
-                oTable.fnDraw(false);
+                oTable.api().ajax.reload(null, false);
         }, 60000);
 
         function toggleSelectedAction() {

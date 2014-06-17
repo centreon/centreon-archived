@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author Sylvestre Ho
  */
-class AclresourceDatatable extends \Centreon\Internal\ExperimentalDatatable
+class AclresourceDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
