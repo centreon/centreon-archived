@@ -36,9 +36,9 @@
 namespace CentreonConfiguration\Commands;
 
 /**
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers                                   
+ * @authors Lionel Assepo
+ * @package CentreonConfiguration
+ * @subpackage Commands                                 
  */
 class ConfigCommand extends \Centreon\Internal\Command\AbstractCommand
 {

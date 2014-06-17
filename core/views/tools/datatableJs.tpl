@@ -541,6 +541,29 @@
         });
         {/if}
 
+        var requestSent = true;
+        $('input.centreon-search').on('keyup', function(e) {
+            if (this.value.length > 2) {
+                oTable.api().column($(this).data('column-index'))
+                    .search(this.value)
+                    .draw();
+                requestSent = false;
+            } else {
+                if (!requestSent) {
+                    oTable.api().column($(this).data('column-index'))
+                        .search(' ')
+                        .draw();
+                    requestSent = true;
+                }
+            }
+        });
+        
+        $('select.centreon-search').on('change', function(e) {
+            oTable.api().column($(this).data('column-index'))
+                .search(this.value)
+                .draw();
+        });
+
 /*        new $.fn.dataTable.FixedColumns( oTable );
         $(window).bind('resize', function () {
             oTable.fnAdjustColumnSizing();

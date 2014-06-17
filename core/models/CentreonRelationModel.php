@@ -202,6 +202,80 @@ abstract class CentreonRelationModel
         return $result;
     }
 
+    /**
+     * 
+     * @param type $firstTableParams
+     * @param type $secondTableParams
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param type $filters
+     * @param type $filterType
+     * @param type $relationTableParams
+     * @return type
+     */
+    public static function getMergedParametersBySearch(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR",
+        $relationTableParams = array()
+    ) {
+        $fString = "";
+        $sString = "";
+        $rString = "";
+        $firstObj = static::$firstObject;
+        foreach ($firstTableParams as $fparams) {
+            if ($fString != "") {
+                $fString .= ",";
+            }
+            $fString .= $firstObj::getTableName().".".$fparams;
+        }
+        $secondObj = static::$secondObject;
+        foreach ($secondTableParams as $sparams) {
+            if ($fString != "" || $sString != "") {
+                $sString .= ",";
+            }
+            $sString .= $secondObj::getTableName().".".$sparams;
+        }
+        foreach ($relationTableParams as $rparams) {
+            if ($fString != "" || $sString != "" || $rString != "") {
+                $rString .= ",";
+            }
+            $rString .= static::$relationTable.".".$rparams;
+        }
+        $sql = "SELECT $fString $sString $rString
+        		FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
+        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
+                    ." = ".static::$relationTable.".".static::$firstKey."
+        		AND ".static::$relationTable.".".static::$secondKey
+                    ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey();
+        $filterTab = array();
+        if (count($filters)) {
+            foreach ($filters as $key => $rawvalue) {
+                $sql .= " $filterType $key LIKE ? ";
+                $value = trim($rawvalue);
+                $value = str_replace("\\", "\\\\", $value);
+                $value = str_replace("_", "\_", $value);
+                $value = str_replace(" ", "\ ", $value);
+                $filterTab[] = '%'.$value.'%';
+            }
+        }
+        if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
+            $sql .= " ORDER BY $order $sort ";
+        }
+        if (isset($count) && $count != -1) {
+            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $sql = $db->limit($sql, $count, $offset);
+        }
+        $result = static::getResult($sql, $filterTab);
+        return $result;
+    }
 
     /**
      * Get target id from source id

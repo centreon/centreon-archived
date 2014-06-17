@@ -71,4 +71,28 @@ class Servicetemplate extends \Centreon\Models\CentreonBaseModel
         $filters['service_register'] = '0';
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $filters['service_register'] = '0';
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+    }
 }

@@ -42,8 +42,22 @@ namespace Centreon\Internal;
  */
 class ExperimentalDatatable
 {
+    /**
+     *
+     * @var string 
+     */
     protected static $hook = '';
+    
+    /**
+     *
+     * @var string 
+     */
     protected static $objectId = '';
+    
+    /**
+     *
+     * @var string 
+     */
     protected static $objectName = '';
 
     /**
@@ -54,10 +68,14 @@ class ExperimentalDatatable
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected static $dataprovider = '';
     
+    /**
+     *
+     * @var array 
+     */
     public static $fieldList = array();
     
     /**
@@ -85,7 +103,8 @@ class ExperimentalDatatable
     protected $specialFields = array();
     
     /**
-     * 
+     *
+     * @var array 
      */
     protected $params = array();
     
@@ -95,10 +114,25 @@ class ExperimentalDatatable
      */
     protected $rawDatasFromDb;
     
+    /**
+     *
+     * @var string 
+     */
     protected static $additionnalDatasource = null;
     
     /**
+     *
+     * @var array 
+     */
+    private static $nonDatatableParams = array(
+        'cast',
+        'searchParam',
+    );
+    
+    /**
      * 
+     * @param array $params
+     * @param string $objectModelClass
      */
     public function __construct($params, $objectModelClass = '')
     {
@@ -108,6 +142,7 @@ class ExperimentalDatatable
     
     /**
      * 
+     * @return array
      */
     public function getDatas()
     {
@@ -131,7 +166,7 @@ class ExperimentalDatatable
     
     /**
      * 
-     * @param type $datasToFormat
+     * @param array $datasToFormat
      */
     protected function formatDatas(&$datasToFormat)
     {
@@ -140,6 +175,8 @@ class ExperimentalDatatable
     
     /**
      * 
+     * @param array $datasToSend
+     * @return array
      */
     protected function prepareDatasForSending($datasToSend)
     {
@@ -158,7 +195,7 @@ class ExperimentalDatatable
     
     /**
      * 
-     * @param type $resultSet
+     * @param array $resultSet
      */
     protected static function addAdditionnalDatas(&$resultSet)
     {
@@ -172,7 +209,7 @@ class ExperimentalDatatable
     public static function getHeader()
     {
         $columnHeader = "";
-        $columnSearch = "";
+        $columnSearchIndex = array();
         $nbFixedTr = count(static::$columns);
 
         if (isset(static::$hook) && static::$hook) {
@@ -191,10 +228,14 @@ class ExperimentalDatatable
 
         foreach (static::$columns as $column) {
             static::$fieldList[] = $column['name'];
-            $currentName = $column['name'];
             $columnHeader .= '{';
+            $searchable = false;
             
             foreach ($column as $key=>$value) {
+                
+                if (in_array($key, self::$nonDatatableParams)) {
+                    continue;
+                }
                 
                 if (is_string($value)) {
                     $columnHeader .= '"' . $key . '":"' . addslashes($value) . '",';
@@ -208,25 +249,80 @@ class ExperimentalDatatable
                     $columnHeader .= '"' . $key . '":' . (string)$value . ',';
                 }
                 
-                if ($key === 'searchable') {
-                    $columnSearch .= '{name: "' . addslashes($currentName) . '", ';
-                    if ($value) {
-                        $columnSearch .= 'type: "cleanup" }';
-                    } else {
-                        $columnSearch .= 'type: "cleanup" }';
-                    }
+                if (($key === 'searchable')) {
+                    $searchable = $value;
                 }
             }
             
             $columnHeader .= "},\n";
-            $columnSearch .= ",\n";
+            //
+            if ($searchable) {
+                $searchParam = array ('type' => 'text');
+                if (isset($column['searchParam'])) {
+                    $searchParam = $column['searchParam'];
+                }
+                $searchParam['title'] = $column['title'];
+                $columnSearchIndex[addslashes($column['name'])] = $searchParam;
+            }
+            
         }
+        
+        $columnSearch = self::getHtmlSearchField($columnSearchIndex);  
+        unset($columnSearchIndex);
         
         return array(
             'columnHeader' => $columnHeader,
             'columnSearch' => $columnSearch,
             'nbFixedTr' => $nbFixedTr
         );
+    }
+    
+    /**
+     * 
+     * @param array $columnSearch
+     * @return string
+     */
+    public static function getHtmlSearchField(array $columnSearch)
+    {
+        $finalHtml = '<div class="panel-group" id="accordion" style:"width:85%">'
+            . '<div class="panel panel-default">'
+                . '<div class="panel-heading">'
+                    . '<h4 class="panel-title">'
+                        . '<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">'
+                            . 'Search bar'
+                        . '</a>'
+                    . '</h4>'
+                . '</div>'
+            . '<div id="collapseOne" class="panel-collapse collapse">'
+                . '<div class="panel-body">';
+        
+        foreach ($columnSearch as $colName=>$colSearch) {
+            $myInput = '<div class="input-group">';
+            $myInput .= '<span class="input-group-addon">' . $colSearch['title'] . '</span>';
+            switch (strtolower($colSearch['type'])) {
+                default:
+                case 'text': 
+                    $myInput .= '<input class="centreon-search form-control" data-column-index="%2$d" name="%1$s" placeholder="%3$s" type="text" />';
+                    break;
+                case 'select':
+                    $myInput .= '<select class="centreon-search form-control" data-column-index="%2$d" placeholder="%3$s" name="%1$s">';
+                    $myInput .= '<option value=""></option>';
+                    foreach ($colSearch['additionnalParams'] as $optionName=>$optionValue) {
+                        $myInput .= '<option value="' . $optionValue . '">' . $optionName . '</option>';
+                    }
+                    $myInput .= '</select>';
+                    break;
+            }
+            $myInput .= '</div>';
+            
+            $colIndex = array_search($colName, static::$fieldList);
+            
+            $myInput = sprintf($myInput, $colName, $colIndex, $colSearch['title']);
+            $finalHtml .= $myInput;
+        }
+        
+        $finalHtml .= '</div></div></div>';
+        return $finalHtml ;
     }
 
     /**
@@ -261,7 +357,12 @@ class ExperimentalDatatable
         
         return trim($configurationParams);
     }
-    
+
+    /**
+     * 
+     * @param type $configEntry
+     * @return array
+     */
     private static function initSearch($configEntry)
     {
         $rawSeachTable = array();
@@ -328,11 +429,9 @@ class ExperimentalDatatable
 
     /**
      * 
-     * @param type $object
-     * @param type $fields
+     * @param type $field
      * @param type $values
-     * @param type $elementField
-     * @param type $element
+     * @param type $cast
      * @return type
      */
     public static function addUrl($field, $values, $cast)
@@ -398,11 +497,9 @@ class ExperimentalDatatable
     
     /**
      * 
-     * @param type $object
-     * @param type $fields
+     * @param type $field
      * @param type $values
-     * @param type $elementField
-     * @param type $element
+     * @param type $cast
      * @return type
      */
     public static function addSelect($field, $values, $cast)
@@ -419,11 +516,9 @@ class ExperimentalDatatable
     
     /**
      * 
-     * @param type $object
-     * @param type $fields
+     * @param type $field
      * @param type $values
-     * @param type $elementField
-     * @param type $element
+     * @param type $cast
      * @return type
      */
     public static function addDate($field, $values, $cast)
