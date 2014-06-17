@@ -11,10 +11,10 @@
         </field>
       </block>
       <block name="Object Naming">
-		<field name="illegal_macro_output_chars" label="Illegal Macro Output chars" default_value="`~$^&\"|'<>" advanced="0" type="text" parent_field="" mandatory="0">
+		<field name="illegal_macro_output_chars" label="Illegal Macro Output chars" default_value="`~$^&amp;&quot;'|&lt;&gt;" advanced="0" type="text" parent_field="" mandatory="0">
           <help></help>
         </field>
-		<field name="illegal_object_name_chars" label="Illegal Object Name Chars" default_value="~!$%^&*\"|'<>?,()=" advanced="0" type="text" parent_field="" mandatory="0">
+		<field name="illegal_object_name_chars" label="Illegal Object Name Chars" default_value="~!$%^&amp;*&quot;'|&lt;&gt;?,()=" advanced="0" type="text" parent_field="" mandatory="0">
           <help>Life duration of sessions.</help>
         </field>
 	  </block>
