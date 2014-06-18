@@ -46,6 +46,12 @@ abstract class AbstractCommand
     
     /**
      *
+     * @var type 
+     */
+    protected $di;
+    
+    /**
+     *
      * @var string 
      */
     public static $moduleName = 'Core';
@@ -55,7 +61,8 @@ abstract class AbstractCommand
      */
     public function __construct()
     {
-        $this->db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->db = $this->di->get('db_centreon');
     }
     
     /**

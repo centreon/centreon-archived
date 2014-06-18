@@ -54,8 +54,8 @@
 					</attributes>
 				</field>
 				<field name="host_check_command" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<help>Specify the command that should be used to check if the host is up or down. Typically, this command would try and ping the host to see if it is "alive". On a non-OK state monitoring engine will assume the host is down. A blank argument disables active checks for the host status and Monitoring Engine will always assume the host is up. This is useful if you are monitoring printers or other devices that are frequently turned off.</help>
+					<help>Specify the command that should be used to check if the host is up or down. Typically, this command would try and ping the host to see if it is "alive". On a non-OK state monitoring engine will assume the host is down. A blank argument disables active checks for the host status and Monitoring Engine will always assume the host is up. This is useful if you are monitoring printers or other devices that are frequently turned off.</help>
+                    <attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/checkcommand</listValuesRoute>

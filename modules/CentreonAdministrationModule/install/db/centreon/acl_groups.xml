@@ -1,4 +1,4 @@
-o<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" defaultIdMethod="native">
     <table name="acl_groups" phpName="AclGroups" idMethod="native">
         <column name="acl_group_id" phpName="AclGroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>

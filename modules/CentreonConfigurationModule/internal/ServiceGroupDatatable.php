@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class ServiceGroupDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ServiceGroupDatatable extends \Centreon\Internal\Datatable
 {
     /**
      *

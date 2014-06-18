@@ -41,7 +41,7 @@ namespace CentreonCustomview\Internal;
  *
  * @author lionel
  */
-class WidgetDatatable extends \Centreon\Internal\ExperimentalDatatable
+class WidgetDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

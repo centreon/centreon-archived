@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ServiceDatatable extends \Centreon\Internal\Datatable
 {
     /**
      *
@@ -86,7 +86,7 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'name' => 'service_id',
             'data' => 'service_id',
             'orderable' => false,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(
@@ -102,8 +102,8 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
             'title' => 'Host Id',
             'name' => 'host_id',
             'data' => 'host_id',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => false,
             'source' => 'relation',
@@ -225,12 +225,14 @@ class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
                     '2' => '<span class="label label-warning">Trash</span>',
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-                                    ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0',
+                    'Trash' => '2'
+                )
+            ),
             "className" => 'cell_center',
             "width" => '40px'
         ),

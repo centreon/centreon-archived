@@ -74,8 +74,9 @@ class CentreonDb implements iDataprovider
         
         // Get the field label for the search
         foreach($params as $key=>$value) {
+            $value = trim($value);
             if (substr($key, 0, 7) == 'sSearch') {
-                if (!empty($value)) {
+                if (!empty($value) || is_numeric($value)) {
                     $b = explode('_', $key);
                     $conditions[$fieldList[$b[1]]] = $value;
                 }
@@ -84,7 +85,7 @@ class CentreonDb implements iDataprovider
         
         if (isset($additionnalClass)) {
                 
-            $result = $additionnalClass::getMergedParameters(
+            $result = $additionnalClass::getMergedParametersBySearch(
                 explode(',', $fields),
                 explode (',', $otherFields),
                 $params['iDisplayLength'],
@@ -95,7 +96,7 @@ class CentreonDb implements iDataprovider
                 "AND"
             );
             
-            $result2 = $additionnalClass::getMergedParameters(
+            $result2 = $additionnalClass::getMergedParametersBySearch(
                 explode(',', $fields),
                 array(),
                 -1,
@@ -107,7 +108,7 @@ class CentreonDb implements iDataprovider
             );
             $a['nbOfTotalDatas'] = count($result2);
         } else {
-            $result = $modelClass::getList(
+            $result = $modelClass::getListBySearch(
                 $fields,
                 $params['iDisplayLength'],
                 $params['iDisplayStart'],
@@ -117,7 +118,7 @@ class CentreonDb implements iDataprovider
                 "AND"
             );
             
-            $result2 = $modelClass::getList(
+            $result2 = $modelClass::getListBySearch(
                 'count(*)',
                 -1,
                 0,

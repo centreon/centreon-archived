@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class TimeperiodDatatable extends \Centreon\Internal\ExperimentalDatatable
+class TimeperiodDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

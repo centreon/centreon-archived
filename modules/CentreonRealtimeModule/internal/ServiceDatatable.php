@@ -45,7 +45,7 @@ use \CentreonConfiguration\Repository\HostRepository as HostConfigurationReposit
  *
  * @author lionel
  */
-class ServiceDatatable extends \Centreon\Internal\ExperimentalDatatable
+class ServiceDatatable extends \Centreon\Internal\Datatable
 {
     protected static $hook = 'displayServiceRtColumn';
     protected static $objectId = 'service_id';

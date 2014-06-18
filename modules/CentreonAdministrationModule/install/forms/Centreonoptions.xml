@@ -6,9 +6,31 @@
 		<redirect_route>/administration/options/centreon</redirect_route>
 		<section name="General Options">
 			<block name="Sessions Properties">
-				<field name="session_expire" label="Sessions Expiration Time" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
-                <help>Life duration of sessions.</help>
+				<field name="session_expire" label="Sessions Expiration Time" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>Life duration of sessions.</help>
+                </field>
 			</block>
+			<block name="Listing properties">
+                <field name="listing_limit_per_page" label="Limit per page for listing" default_value="25" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>The limit of number line per page for all listing of Centreon.</help>
+                </field>
+                <field name="listing_refresh_interval" label="Listing refresh interval" default_value="60" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>The refresh interval for all listing of Centreon.</help>
+                </field>
+            </block>
+			<block name="Timezone">
+                <field name="enable_timezone" label="Enable Timezone" default_value="0" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>Enable timezone in Centreon in order to scale used information regarding his timezone.</help>
+                </field>
+                <field name="default_timezone" label="Default Timezone" default_value="0" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>This is the default timezone proposed by the Centreon UI in host and contact forms.</help>
+                </field>
+            </block>
+			<block name="Misc">
+                <field name="Helpdesk_contact_email" label="Helpdesk Contact Email" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>This is the helpdesk contact email that users can use in order to contact your helpdesk.</help>
+                </field>
+            </block>
 		</section>
 	</form>
 </forms>

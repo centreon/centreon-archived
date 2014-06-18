@@ -82,6 +82,7 @@ class Hosttemplate extends \Centreon\Models\CentreonBaseModel
             ),
             'AND'
         );
+        
         foreach ($services as $service) {
             if (is_null($hostTemplateId)) {
                 $deployedServices[$hostId][$service['service_description']] =  true;
@@ -98,16 +99,29 @@ class Hosttemplate extends \Centreon\Models\CentreonBaseModel
                 $deployedServices[$hostId][$service['service_alias']] = true;
             }
         }
+        
         $templates = \CentreonConfiguration\Models\Relation\Host\Hosttemplate::getTargetIdFromSourceId(
             'host_tpl_id',
             'host_host_id',
             $hid
         );
+        
         foreach ($templates as $tplId) {
             self::deployServices($hostId, $tplId);
         }
     }
     
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
     public static function getList(
         $parameterNames = "*",
         $count = -1,
@@ -119,5 +133,29 @@ class Hosttemplate extends \Centreon\Models\CentreonBaseModel
     ) {
         $filters['host_register'] = '0';
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+    }
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $filters['host_register'] = '0';
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 }

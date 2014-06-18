@@ -44,7 +44,7 @@ use \CentreonConfiguration\Repository\HostRepository as HostConfigurationReposit
  *
  * @author lionel
  */
-class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
+class HostDatatable extends \Centreon\Internal\Datatable
 {
     /**
      *

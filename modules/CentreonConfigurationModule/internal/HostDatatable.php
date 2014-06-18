@@ -42,7 +42,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
+class HostDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -85,7 +85,7 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                 'parameters' => array(
                     'displayName' => '::host_name::'
                 )
-                            ),
+            ),
             'className' => "cell_center"
         ),
         array (
@@ -105,7 +105,7 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
                     ),
                     'linkName' => '::host_name::'
                 )
-            )
+            ),
         ),
         array (
             'title' => 'Description',
@@ -177,13 +177,21 @@ class HostDatatable extends \Centreon\Internal\ExperimentalDatatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-                            'type' => 'select',
-                            'parameters' => array(
-                                                  '0' => '<span class="label label-danger">Disabled</span>',
-                                                  '1' => '<span class="label label-success">Enabled</span>',
-                                                  '2' => 'Trash',
-                                                  )
-                            ),
+                'type' => 'select',
+                'parameters' => array(
+                    '0' => '<span class="label label-danger">Disabled</span>',
+                    '1' => '<span class="label label-success">Enabled</span>',
+                    '2' => 'Trash',
+                )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0',
+                    'Trash' => '2'
+                )
+            ),
             'className' => "cell_center",
             'width' => '50px'
         ),
