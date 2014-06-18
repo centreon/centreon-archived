@@ -23,25 +23,34 @@
                 </div>
                 {else}
                 {/if}
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-plus-square-o"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="collapseOne" class="panel-collapse collapse">
-            <div class="panel-body">
-                {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
-                    <div class="input-group">
-                        <span class="input-group-addon">{$colSearch.title}</span>
-                        {if $colSearch.type == 'select'}
-                            <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}">
-                                <option value=""></option>
-                                {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
-                                    <option value="{$optionValue}">{$optionName}</option>
-                                {/foreach}
-                            </select>
-                        {else}
-                            <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" />
-                        {/if}
+            <div class="panel-body search-body">
+                <div class="row">
+                    {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">{$colSearch.title}</span>
+                            {if $colSearch['type'] == 'select'}
+                                <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}">
+                                    <option value=""></option>
+                                    {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
+                                        <option value="{$optionValue}">{$optionName}</option>
+                                    {/foreach}
+                                </select>
+                            {else}
+                                <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" />
+                            {/if}
+                        </div>
                     </div>
-                {/foreach}
+                    {/foreach}
+                </div>
             </div>
         </div>
     </div>
