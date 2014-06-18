@@ -90,7 +90,7 @@
         break;
 
       case 27: // escape
-        this.cleanChoises();
+        this.cleanChoices();
         break;
 
       default:
@@ -116,22 +116,22 @@
            }
          });
          if ( valid.length > 0 ) {
-           this.displayChoises( valid );
+           this.displayChoices( valid );
          } else {
-           this.cleanChoises(); 
+           this.cleanChoices(); 
          }
        /* Search for informations */
        } else {
-         this.cleanChoises();
+         this.cleanChoices();
          var typeSearch = lastElement.substring( 0, sepPos );
          this.currentTag = typeSearch;
          var searchStr = lastElement.substring( sepPos + 1 );
-         var listChoises = [];
+         var listChoices = [];
          if ( $.inArray( typeSearch, Object.keys( this.tags ) ) != -1 &&
            searchStr.length >= this.options.minChars ) {
            if ( typeof( this.tags[ typeSearch ] ) == "function" ) {
              /* Is a function */
-             listChoises = this.tags[ typeSearch ]( searchStr );
+             listChoices = this.tags[ typeSearch ]( searchStr );
            } else if ( typeof( this.tags[ typeSearch ] ) == "string" ) {
              /* Is a select */
              var children = $( this.tags[ typeSearch ] ).children( "option" );
@@ -144,28 +144,28 @@
              var i = 0;
              for ( i; i < tmpList.length; i++ ) {
                if ( typeof( $( tmpList[ i ] ).val() ) == "string") {
-                 listChoises.push( $( tmpList[ i ] ).val() );
+                 listChoices.push( $( tmpList[ i ] ).val() );
                }
              }
            } else if ( typeof( this.tags[ typeSearch ] ) == "object" ) {
              /* Is a object : array */
-             listChoises = this.tags[ typeSearch ].filter( function( e l) {
+             listChoices = this.tags[ typeSearch ].filter( function( e l) {
                if ( el.substring( 0, searchStr.length ).toLowerCase() == searchStr.toLowerCase() ) {
                  return true;
                }
              });
            }
-           if ( listChoises.length > 0 ) {
-             this.displayChoises( listChoises );
+           if ( listChoices.length > 0 ) {
+             this.displayChoices( listChoices );
            }
          }
        }
     } else {
-      this.cleanChoises();
+      this.cleanChoices();
     }
   };
   
-  $.CentreonSearch.prototype.displayChoises = function( list ) {
+  $.CentreonSearch.prototype.displayChoices = function( list ) {
     this.active = true;
     var self = this;
     this.dom.$results.html( "" );
@@ -178,7 +178,7 @@
     this.position();
   };
 
-  $.CentreonSearch.prototype.cleanChoises = function() {
+  $.CentreonSearch.prototype.cleanChoices = function() {
     this.dom.$results.hide();
     this.dom.$results.html( "" );
     this.active = false;
@@ -249,7 +249,7 @@
       }
       this.currentList[ this.currentList.length - 1 ] = concat;
       this.dom.$elem.val( this.currentList.join( " " ) );
-      this.cleanChoises();
+      this.cleanChoices();
     } else {
       console.log( "action filter" );
     }
@@ -261,7 +261,7 @@
 
   $.CentreonSearch.prototype.blur = function() {
     if ( !this.mousedover ) {
-      this.cleanChoises();
+      this.cleanChoices();
     }
   };
 })( jQuery );
