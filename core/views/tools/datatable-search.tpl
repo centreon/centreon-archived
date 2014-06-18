@@ -3,6 +3,7 @@
         <div class="panel-heading">
             <div class="row">
                 {$clsOffset=""}
+                {$searchAdv=true}
                 {if false }
                 <div class="col-md-8 form-group">
                     <div class=" input-group">
@@ -13,6 +14,7 @@
                     </div>
                 </div>
                 {else}
+                    {$searchAdv=false}
                     {$nbMain=0}
                     {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
                         {if $colSearch.main == "true" && $nbMain < 2}
@@ -61,7 +63,7 @@
             <div class="panel-body search-body">
                 <div class="row">
                     {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
-                    {if $colSearch.main != "true" }
+                    {if (!$searchAdv && $colSearch.main != "true") || $searchAdv }
                     <div class="col-md-4">
                         <div class="input-group">
                             <span class="input-group-addon">{$colSearch.title}</span>
