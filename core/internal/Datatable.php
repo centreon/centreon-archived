@@ -255,74 +255,23 @@ class Datatable
             }
             
             $columnHeader .= "},\n";
-            //
             if ($searchable) {
                 $searchParam = array ('type' => 'text');
                 if (isset($column['searchParam'])) {
                     $searchParam = $column['searchParam'];
                 }
                 $searchParam['title'] = $column['title'];
+                $searchParam['colIndex'] = array_search($column['name'], static::$fieldList);
                 $columnSearchIndex[addslashes($column['name'])] = $searchParam;
             }
             
         }
         
-        $columnSearch = self::getHtmlSearchField($columnSearchIndex);  
-        unset($columnSearchIndex);
-        
         return array(
             'columnHeader' => $columnHeader,
-            'columnSearch' => $columnSearch,
+            'columnSearch' => $columnSearchIndex,
             'nbFixedTr' => $nbFixedTr
         );
-    }
-    
-    /**
-     * 
-     * @param array $columnSearch
-     * @return string
-     */
-    public static function getHtmlSearchField(array $columnSearch)
-    {
-        $finalHtml = '<div class="panel-group" id="accordion" style:"width:85%">'
-            . '<div class="panel panel-default">'
-                . '<div class="panel-heading">'
-                    . '<h4 class="panel-title">'
-                        . '<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">'
-                            . 'Search bar'
-                        . '</a>'
-                    . '</h4>'
-                . '</div>'
-            . '<div id="collapseOne" class="panel-collapse collapse">'
-                . '<div class="panel-body">';
-        
-        foreach ($columnSearch as $colName=>$colSearch) {
-            $myInput = '<div class="input-group">';
-            $myInput .= '<span class="input-group-addon">' . $colSearch['title'] . '</span>';
-            switch (strtolower($colSearch['type'])) {
-                default:
-                case 'text': 
-                    $myInput .= '<input class="centreon-search form-control" data-column-index="%2$d" name="%1$s" placeholder="%3$s" type="text" />';
-                    break;
-                case 'select':
-                    $myInput .= '<select class="centreon-search form-control" data-column-index="%2$d" placeholder="%3$s" name="%1$s">';
-                    $myInput .= '<option value=""></option>';
-                    foreach ($colSearch['additionnalParams'] as $optionName=>$optionValue) {
-                        $myInput .= '<option value="' . $optionValue . '">' . $optionName . '</option>';
-                    }
-                    $myInput .= '</select>';
-                    break;
-            }
-            $myInput .= '</div>';
-            
-            $colIndex = array_search($colName, static::$fieldList);
-            
-            $myInput = sprintf($myInput, $colName, $colIndex, $colSearch['title']);
-            $finalHtml .= $myInput;
-        }
-        
-        $finalHtml .= '</div></div></div>';
-        return $finalHtml ;
     }
 
     /**
@@ -379,8 +328,8 @@ class Datatable
     
     /**
      * 
-     * @param type $configEntry
-     * @return type
+     * @param array $configEntry
+     * @return string
      */
     private static function initOrder($configEntry)
     {
