@@ -1,9 +1,29 @@
-<div class="panel-group" id="accordion" style="width:85%">
+<div class="panel-group" id="accordion">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Search bar</a>
-            </h4>
+            <div class="row">
+                {if true }
+                <div class="col-md-8 form-group">
+                    <div class=" input-group">
+                        <input type="text" name="advsearch" class="form-control">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 form-group">
+                    <div class=" input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="loadView" data-original-title="Load"><i class="fa fa-upload"></i></button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="saveView" data-original-title="Save"><i class="fa fa-floppy-o"></i></button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="deleteView" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
+                        </span>
+                        <input type="text" name="filters" class="form-control">
+                    </div>
+                </div>
+                {else}
+                {/if}
+            </div>
         </div>
         <div id="collapseOne" class="panel-collapse collapse">
             <div class="panel-body">
