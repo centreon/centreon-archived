@@ -35,7 +35,10 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form;
+use \Centreon\Internal\Form,
+    \Centreon\Internal\Form\Generator,
+    \CentreonAdministration\Repository\AclactionRepository,
+    \Centreon\Internal\Di;
 
 class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -84,12 +87,13 @@ class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstr
     /**
      * Update an acl action
      *
-     *
      * @method post
      * @route /administration/aclaction/update
      */
     public function updateAction()
     {
+        $params = $this->getParams('post');
+        AclactionRepository::updateRules($params['object_id'], $params);
         parent::updateAction();
     }
     
@@ -109,13 +113,42 @@ class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstr
     /**
      * Update a aclaction
      *
-     *
      * @method get
      * @route /administration/aclaction/[i:id]
      */
     public function editAction()
     {
-        parent::editAction();
+        $tpl = Di::getDefault()->get('template');
+
+        $requestParam = $this->getParams('named');
+        $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
+
+        $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
+        $myForm->addHiddenComponent('object_id', $requestParam['id']);
+        $myForm->addHiddenComponent('object', $this->objectName);
+
+        $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
+
+        /* action rules */
+        $rules = AclactionRepository::getRulesFromActionId($requestParam['id']);
+        $myForm->setDefaultValues($rules);
+
+        $formModeUrl = \Centreon\Internal\Di::getDefault()
+                        ->get('router')
+                        ->getPathFor(
+                            $this->objectBaseUrl.'/[i:id]',
+                            array(
+                                'id' => $requestParam['id']
+                            )
+                        );
+
+        $tpl->assign('pageTitle', $this->objectDisplayName);
+        $tpl->assign('form', $myForm->generate());
+        $tpl->assign('advanced', $requestParam['advanced']);
+        $tpl->assign('formModeUrl', $formModeUrl);
+        $tpl->assign('formName', $myForm->getName());
+        $tpl->assign('validateUrl', $objectFormUpdateUrl);
+        $tpl->display('file:[CentreonConfigurationModule]edit.tpl');
     }
 
     /**
