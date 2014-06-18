@@ -73,7 +73,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function listAction()
     {
-        $this->tpl->addJs('host.overlay.js', 'bottom', 'centreon-configuration');
+        //$this->tpl->addJs('host.overlay.js', 'bottom', 'centreon-configuration');
         parent::listAction();
     }
     
