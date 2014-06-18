@@ -106,6 +106,9 @@ class HostDatatable extends \Centreon\Internal\Datatable
                     'linkName' => '::host_name::'
                 )
             ),
+            'searchParam' => array(
+                'main' => 'true',
+            )
         ),
         array (
             'title' => 'Description',
@@ -185,6 +188,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
                 )
             ),
             'searchParam' => array(
+                'main' => 'true',
                 'type' => 'select',
                 'additionnalParams' => array(
                     'Enabled' => '1',

@@ -56,7 +56,7 @@
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
         setInterval(function () { 
-                oTable.api().ajax.reload(null, false);
+            oTable.api().ajax.reload(null, false);
         }, 60000);
 
         function toggleSelectedAction() {
@@ -73,16 +73,7 @@
                 $('#selected_option').hide();
             }
         }
-
-        $(".search_field").keyup(function() {
-            row = $(this).parent().parent().children().index($(this).parent());
-            oTable.fnFilter(this.value, row);
-        });
-
-        $(".search_type").change(function() {
-            oTable.fnFilter(this.value, jQuery(".search_type").index(this));
-        });
-
+        
         $('table[id^="datatable"] thead input[id^="all"]').on('click', function(e) {
             var $checkbox = $(e.currentTarget);
             $checkbox.parents('table').find('tbody input[type="checkbox"][class^="all"]').each(function() {
@@ -563,11 +554,6 @@
                 .search(this.value)
                 .draw();
         });
-
-/*        new $.fn.dataTable.FixedColumns( oTable );
-        $(window).bind('resize', function () {
-            oTable.fnAdjustColumnSizing();
-        });*/
     });
     
     
