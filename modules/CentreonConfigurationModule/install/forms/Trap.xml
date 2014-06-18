@@ -4,7 +4,7 @@
 		<route>/configuration/trap/update</route>
 		<redirect>1</redirect>
 		<redirect_route>/configuration/trap</redirect_route>
-		<section name="Host configuration">
+		<section name="Trap configuration">
 			<block name="General information">
 				<field name="traps_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="traps_oid" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
@@ -30,7 +30,7 @@
 						</choices>
 					</attributes>
 				</field>
-				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
+				<field name="traps_advanced_treatment" label="Advanced matching mode" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Enabled>1</Enabled>
@@ -38,7 +38,7 @@
 						</choices>
 					</attributes>
 				</field>
-				<field name="traps_advanced_treatment_default" label="If no matched rules" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
+				<field name="traps_advanced_treatment_default" label="If no matched rules" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Submit_result>0</Submit_result>
@@ -48,7 +48,7 @@
 				</field>
 			</block>
 			<block name="Submit result to monitoring engine">
-				<field name="traps_submit_result_enable" label="Submit result" default_value="1" advanced="0" type="radio" parent_field="" mandatory="0">
+				<field name="traps_submit_result_enable" label="Submit result" default_value="1" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Yes>1</Yes>
@@ -58,7 +58,7 @@
 				</field>
 			</block>
 			<block name="Force service check rescheduling">
-				<field name="traps_reschedule_svc_enable" label="Reschedule service check" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
+				<field name="traps_reschedule_svc_enable" label="Reschedule service check" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
 						<choices>
 							<Yes>1</Yes>
@@ -68,7 +68,7 @@
 				</field>
 			</block>
 			<block name="Command execution">
-				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
+				<field name="traps_execution_command_enable" label="Special command execution" default_value="" advanced="1" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -76,9 +76,9 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="traps_execution_command" label="Special command" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
+				<field name="traps_execution_command" label="Special command" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0"></field>
 			</block>
-			<block name="Additional information">
+			<block name="Additional information">	
 				<field name="traps_comments" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
 			</block>
 		</section>

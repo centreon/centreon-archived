@@ -43,6 +43,9 @@
 					</attributes>
 				</field>
 			</block>
+            <block name="Macros">
+                <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
+            </block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help>This directive is used to specify the time period during which active checks of this host can be executed.</help>
@@ -92,9 +95,6 @@
 					</attributes>
 				</field>
 			</block>
-            <block name="Macros">
-                <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
-            </block>
 			<block name="Additional information">
 				<field name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0">
 					<help>Macros are used as object-specific variables/properties, which can be referenced in commands and extended infos. Example: a macro named MACADDRESS can be referenced as $_HOSTMACADDRESS$.</help>
@@ -139,7 +139,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="host_notification_interval" label="Notification interval" default_value="0" advanced="0" type="integer" parent_field="" mandatory="1">
+				<field name="host_notification_interval" label="Notification interval" default_value="0" advanced="1" type="integer" parent_field="" mandatory="0">
 					<help>If this value is set to 0, the notification will be sent only one time.</help>
 				</field>
 				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">

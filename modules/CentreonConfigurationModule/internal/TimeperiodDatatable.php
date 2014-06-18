@@ -98,7 +98,7 @@ class TimeperiodDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/usergroup/[i:id]',
+                    'route' => '/configuration/timeperiod/[i:id]',
                     'routeParams' => array(
                         'id' => '::tp_id::'
                     ),

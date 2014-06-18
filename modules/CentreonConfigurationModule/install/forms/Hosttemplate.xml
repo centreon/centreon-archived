@@ -7,7 +7,7 @@
 		<section name="Host configuration">
 			<block name="General information">
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
@@ -16,7 +16,16 @@
 						<multiple>true</multiple>
 						<ordered>true</ordered>
 					</attributes>
-				</field>			
+				</field>
+				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+                                                <listValuesRoute>/configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
+						<multiple>false</multiple>
+						<wizardRoute>/administration/media/image/add</wizardRoute>
+					</attributes>
+				</field>
 			</block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
@@ -118,6 +127,17 @@
 			</block>
 		</section>
 		<section name="Relations">
+		        <block name="Service templates relations">
+		                <field name="service_template_model_stm_id" label="Linked Service Templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		                  <attributes>
+		                    <object_type>object</object_type>
+		                    <defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
+		                    <listValuesRoute>/configuration/service/[i:id]/servicetemplate</listValuesRoute>
+		                    <multiple>true</multiple>
+		                  </attributes>
+		                <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
+		                </field>
+		        </block>
 			<block name="Host category relations">
 				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
@@ -151,7 +171,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+				<field name="host_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Flapping options">
 				<field name="host_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
@@ -163,8 +183,8 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
-				<field name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
+				<field name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Perfdata options">
 				<field name="host_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
@@ -227,17 +247,6 @@
 			</block>
 		</section>
 		<section name="Extended information">
-			<block name="Extended information">
-				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-                        <listValuesRoute>/configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
-						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add</wizardRoute>
-					</attributes>
-				</field>
-			</block>
 		</section>
 	</form>
     <wizard name="add_hosttemplates">

@@ -258,10 +258,15 @@ class Datatable
             if ($searchable) {
                 $searchParam = array ('type' => 'text');
                 if (isset($column['searchParam'])) {
-                    $searchParam = $column['searchParam'];
+                    $searchParam = array_merge($searchParam, $column['searchParam']);
                 }
                 $searchParam['title'] = $column['title'];
                 $searchParam['colIndex'] = array_search($column['name'], static::$fieldList);
+                
+                if (!isset($searchParam['main'])) {
+                    $searchParam['main'] = false;
+                }
+                
                 $columnSearchIndex[addslashes($column['name'])] = $searchParam;
             }
             
