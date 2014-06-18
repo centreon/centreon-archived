@@ -18,6 +18,15 @@
 		  </attributes>
           <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
 		</field>
+		<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+		  <attributes>
+			<object_type>object</object_type>
+			<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+			<listValuesRoute>/configuration/service/[i:id]/eventhandler</listValuesRoute>
+			<multiple>false</multiple>
+			<wizardRoute>/administration/media/image/add</wizardRoute>
+		  </attributes>
+		</field>
 		<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 		  <attributes>
 			<object_type>object</object_type>
@@ -56,13 +65,13 @@
 		  </attributes>
           <help>Specify the command that monitoring engine will run in order to check the status of the service.</help>
 		</field>
-		<field name="service_max_check_attempts" label="Max check attempts" default_value="" advanced="0" type="integer" parent_field="" mandatory="1">
+		<field name="service_max_check_attempts" label="Max check attempts" default_value="5" advanced="1" type="integer" parent_field="" mandatory="1">
           <help>Define the number of times that monitoring engine will retry the service check command if it returns any state other than an OK state. Setting this value to 1 will cause monitoring engine to generate an alert without retrying the service check again.</help>
         </field>
-		<field name="service_check_interval" label="Normal check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="1">
+		<field name="service_check_interval" label="Normal check interval" default_value="5" advanced="1" type="integer" parent_field="" mandatory="0">
           <help>Define the number of "time units" between regularly scheduled checks of the service. With the default time unit of 60s, this number will mean multiples of 1 minute. "Regular" checks are those that occur when the service is in an OK state or when the service is in a non-OK state, but has already been rechecked max_check_attempts number of times.</help>
         </field>
-		<field name="service_retry_check_interval" label="Retry check interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="1">
+		<field name="service_retry_check_interval" label="Retry check interval" default_value="1" advanced="1" type="integer" parent_field="" mandatory="0">
           <help>Define the number of "time units" to wait before scheduling a re-check for this service after a non-OK state was detected. With the default time unit of 60s, this number will mean multiples of 1 minute. Once the service has been retried max_check_attempts times without a change in its status, it will revert to being scheduled at its "normal" check interval rate.</help>
         </field>
 		<field name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
@@ -96,6 +105,9 @@
           <help>This directive is used to denote whether the service is "volatile". A volatile service resets its state to OK with every query. Services are normally not volatile.</help>
 		</field>
 	  </block>
+	  <block name="Macros">
+	    <field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
+	  </block>
 	  <block name="Relations">
 		<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  <attributes>
@@ -105,7 +117,7 @@
 			<multiple>true</multiple>
 		  </attributes>
 		</field>
-		<field name="service_servicecategories" label="Linked with service categories" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
+		<field name="service_servicecategories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/configuration/servicecategory/formlist</defaultValuesRoute>
@@ -115,7 +127,7 @@
 		</field>
 	  </block>
 	  <block name="SNMP traps">
-		<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/configuration/trap/formlist</defaultValuesRoute>
@@ -128,6 +140,7 @@
     <section name="Notification">
 	  <block name="Notification Options">
 		<field name="service_notifications_enabled" label="Notification enabled" default_value="2" advanced="0" type="radio" parent_field="" mandatory="0">
+		  <help></help>
 		  <attributes>
             <choices>
               <Yes>1</Yes>
@@ -136,8 +149,11 @@
             </choices>
 		  </attributes>
 		</field>
-		<field name="service_notification_interval" label="Notification interval" default_value="" advanced="0" type="integer" parent_field="" mandatory="1"></field>
+		<field name="service_notification_interval" label="Notification interval" default_value="30" advanced="1" type="integer" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
 		<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		  <help></help>
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
@@ -157,8 +173,11 @@
             </choices>
 		  </attributes>
 		</field>
-		<field name="service_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
+		<field name="service_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
 		<field name="service_inherit_contacts_from_host" label="Inherit contacts from hosts" default_value="1" advanced="0" type="radio" parent_field="" mandatory="0">
+		  <help></help>
 		  <attributes>
             <choices>
               <Yes>1</Yes>
@@ -167,6 +186,7 @@
 		  </attributes>
 		</field>
 		<field name="contact_additive_inheritance" label="Contact additive inheritance" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
+		  <help></help>
 		  <attributes>
             <choices>
               <Yes>1</Yes>
@@ -175,6 +195,7 @@
 		  </attributes>
 		</field>
 		<field name="service_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		  <help></help>
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
@@ -191,6 +212,7 @@
 		  </attributes>
 		</field>
 		<field name="service_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		  <help></help>
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
@@ -224,7 +246,7 @@
             </choices>
 		  </attributes>
 		</field>
-		<field name="service_freshness_threshold" label="Freshness threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+		<field name="service_freshness_threshold" label="Freshness threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 	  </block>
 	  <block name="Flapping Detection Options">
 		<field name="service_flap_detection_enabled" label="Flap detection enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
@@ -236,8 +258,8 @@
             </choices>
 		  </attributes>
 		</field>
-		<field name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
-		<field name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+		<field name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
+		<field name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 	  </block>
 	  <block name="History options">
 		<field name="service_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
@@ -291,15 +313,6 @@
 	</section>
 	<section name="Extended information">
 	  <block name="Extended information">
-		<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
-		  <attributes>
-			<object_type>object</object_type>
-			<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/eventhandler</listValuesRoute>
-			<multiple>false</multiple>
-			<wizardRoute>/administration/media/image/add</wizardRoute>
-		  </attributes>
-		</field>
 	  </block>
 	</section>
   </form>

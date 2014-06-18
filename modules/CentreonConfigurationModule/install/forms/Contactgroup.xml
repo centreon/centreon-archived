@@ -7,7 +7,7 @@
 		<section name="General">
 			<block name="General information">
 				<field name="cg_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-				<field name="cg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="cg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Relations">
 				<field name="contactgroup_contacts" label="Contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
