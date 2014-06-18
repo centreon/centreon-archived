@@ -256,8 +256,8 @@ class Template extends \Smarty
         }
 
         $config = Di::getDefault()->get('config');
-        $baseUrl = $config->get('global', 'base_url');
-        $fileName = $baseUrl . 'static/'  . $module . '/css/' . $fileName;
+        $baseUrl = rtrim($config->get('global', 'base_url'), '/');
+        $fileName = $baseUrl . '/static/'  . $module . '/css/' . $fileName;
 
         if (!in_array($fileName, $this->cssResources)) {
             $this->cssResources[] = $fileName;
@@ -291,8 +291,8 @@ class Template extends \Smarty
         }
 
         $config = Di::getDefault()->get('config');
-        $baseUrl = $config->get('global', 'base_url');
-        $fileName = $baseUrl . 'static/' . $module . '/js/' . $fileName;
+        $baseUrl = rtrim($config->get('global', 'base_url'), '/');
+        $fileName = $baseUrl . '/static/' . $module . '/js/' . $fileName;
 
         if (!in_array($fileName, $this->$jsArray)) {
             $this->{$jsArray}[] = $fileName;
