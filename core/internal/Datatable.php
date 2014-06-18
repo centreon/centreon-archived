@@ -256,7 +256,7 @@ class Datatable
             
             $columnHeader .= "},\n";
             if ($searchable) {
-                $searchParam = array ('type' => 'text');
+                $searchParam = array ('type' => 'text', 'main' => 'false');
                 if (isset($column['searchParam'])) {
                     $searchParam = $column['searchParam'];
                 }
