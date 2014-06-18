@@ -30,7 +30,7 @@
                 {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
                     <div class="input-group">
                         <span class="input-group-addon">{$colSearch.title}</span>
-                        {if $colSearch['type'] == 'select'}
+                        {if $colSearch.type == 'select'}
                             <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}">
                                 <option value=""></option>
                                 {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
