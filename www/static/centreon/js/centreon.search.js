@@ -1,12 +1,22 @@
 ( function( $ ) {
   $.fn.centreonsearch = function( options ) {
+    var args = Array.prototype.slice.call( arguments, 1 ),
+        settings = $.extend( {}, $.fn.centreonsearch.defaults, options ),
+        methodReturn; 
     return this.each( function() {
       var $this = $( this ),
-          opts = $.extend( {}, $.fn.centreonsearch.defaults, options );
-      $this.data( "centreonsearch", new $.CentreonSearch(
-          $this,
-          $.meta ? $.extend( {}, opts, $this.data() ) : opts
-      ));
+          data = $this.data( "centreonsearch" );
+
+      if ( !data ) {
+        $this.data( "centreonsearch", new $.CentreonSearch(
+            $this,
+            $.meta ? $.extend( {}, settings, $this.data() ) : settings
+        ));
+      }
+
+      if ( typeof options === "string" ) {
+        data[ options ].apply( data, args );
+      }
     });
   };
 
