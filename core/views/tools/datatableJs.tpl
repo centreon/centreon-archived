@@ -564,7 +564,7 @@
                 {else}
                     {$fieldname="input[name='$colName']"}
                 {/if}
-                {$colName}: "{$fieldname}",
+                "{$colName}": "{$fieldname}",
             {/foreach}
             },
             associateFields: {
@@ -574,9 +574,19 @@
                 {else}
                     {$fieldname="input[name='$colName']"}
                 {/if}
-                {$colName}: "{$fieldname}",
+                "{$colName}": "{$fieldname}",
             {/foreach}
             }
+        });
+
+        $("#btnSearch").on("click", function(e) {
+            $("input[name='advsearch']").centreonsearch("fillAssociateFields");
+            e.preventDefault();
+            $('.centreon-search').each(function(idx, element) {
+                oTable.api().column($(element).data('column-index'))
+                    .search($(element).val());
+            });
+            oTable.api().draw();
         });
     });
     

@@ -255,14 +255,19 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             } else {
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span class="rt-tooltip">'.
+                $myServiceSet['name'] = '<span data-overlay-url="/realtime/host/'.
+                    $myServiceSet['host_id'].
+                    '/tooltip"><span class="overlay">'.
                     $icon.
-                    '&nbsp;'.$myServiceSet['name'].'</span>';
+                    '&nbsp;'.$myServiceSet['name'].'</span></span>';
             }
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
-            $myServiceSet['description'] = '<span class="rt-tooltip">'.
+            $myServiceSet['description'] = '<span data-overlay-url="/realtime/service/'.
+                $myServiceSet['host_id'].
+                '/'.$myServiceSet['service_id'].
+                '/tooltip"><span class="overlay">'.
                 $icon.
-                '&nbsp;'.$myServiceSet['description'].'</span>';
+                '&nbsp;'.$myServiceSet['description'].'</span></span>';
             $myServiceSet['ico'] = "<i class='fa fa-bar-chart-o'></i>"; 
             $myServiceSet['duration'] = Datetime::humanReadable(
                                                                 $myServiceSet['duration'],
