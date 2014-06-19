@@ -94,7 +94,7 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
      * Add a trap
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/trap/add
      */
     public function createAction()
@@ -112,6 +112,18 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function editAction()
     {
         parent::editAction();
+    }
+    
+    /**
+     * Add a trap
+     *
+     * @method get
+     * @route /configuration/trap/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/trap/add');
+        parent::addAction();
     }
 
     /**

@@ -100,12 +100,24 @@ class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
      * Add a user
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/user/add
      */
     public function createAction()
     {
         parent::createAction();
+    }
+    
+    /**
+     * Add a user
+     *
+     * @method get
+     * @route /configuration/user/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/user/add');
+        parent::addAction();
     }
     
     /**

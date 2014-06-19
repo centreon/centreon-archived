@@ -7,7 +7,7 @@
 	<section name="General">
 	  <block name="General information">
 		<field name="tp_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-		<field name="tp_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+		<field name="tp_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 	  </block>
 	  <block name="Time range">
 		<field name="tp_sunday" label="Sunday" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>

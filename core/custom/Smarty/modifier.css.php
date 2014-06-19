@@ -44,11 +44,8 @@
  * -------------------------------------------------------------
  */
 function smarty_modifier_css($cssFile) {
-    $di = \Centreon\Internal\Di::getDefault();
-    $config = $di->get('config');
-    $cssPath = rtrim($config->get('global','base_url'), '/').'/static/centreon/css/';
     $cssIncludeLine = '<link href="'.
-            $cssPath.$cssFile.
+            $cssFile.
             '" rel="stylesheet" type="text/css"/>';
     return $cssIncludeLine;
 }

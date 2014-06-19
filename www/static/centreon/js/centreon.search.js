@@ -94,7 +94,7 @@
         break;
 
       case 27: // escape
-        this.cleanChoises();
+        this.cleanChoices();
         break;
 
       default:
@@ -122,22 +122,22 @@
            }
          });
          if ( valid.length > 0 ) {
-           this.displayChoises( valid );
+           this.displayChoices( valid );
          } else {
-           this.cleanChoises(); 
+           this.cleanChoices(); 
          }
        /* Search for informations */
        } else {
-         this.cleanChoises();
+         this.cleanChoices();
          typeSearch = lastElement.substring( 0, sepPos );
          this.currentTag = typeSearch;
          searchStr = lastElement.substring( sepPos + 1 );
-         listChoises = [];
+         listChoices = [];
          if ( $.inArray( typeSearch, Object.keys( this.tags ) ) != -1 &&
            searchStr.length >= this.options.minChars ) {
            if ( typeof( this.tags[ typeSearch ] ) == "function" ) {
              /* Is a function */
-             listChoises = this.tags[ typeSearch ]( searchStr );
+             listChoices = this.tags[ typeSearch ]( searchStr );
            } else if ( typeof( this.tags[ typeSearch ] ) == "string" ) {
              /* Is a select */
              children = $( this.tags[ typeSearch ] ).children( "option" );
@@ -150,31 +150,32 @@
              i = 0;
              for ( i; i < tmpList.length; i++ ) {
                if ( typeof( $( tmpList[ i ] ).val() ) == "string") {
-                 listChoises.push( $( tmpList[ i ] ).val() );
+                 listChoices.push( $( tmpList[ i ] ).val() );
                }
              }
            } else if ( typeof( this.tags[ typeSearch ] ) == "object" ) {
              /* Is a object : array */
-             listChoises = this.tags[ typeSearch ].filter( function( el ) {
+             listChoices = this.tags[ typeSearch ].filter( function( el ) {
                if ( el.substring( 0, searchStr.length ).toLowerCase() == searchStr.toLowerCase() ) {
                  return true;
                }
              });
            }
-           if ( listChoises.length > 0 ) {
-             this.displayChoises( listChoises );
+           if ( listChoices.length > 0 ) {
+             this.displayChoices( listChoices );
            }
          }
        }
     } else {
-      this.cleanChoises();
+      this.cleanChoices();
     }
   };
   
-  $.CentreonSearch.prototype.displayChoises = function( list ) {
+  $.CentreonSearch.prototype.displayChoices = function( list ) {
     var $li,
         self = this;
     this.active = true;
+    var self = this;
     this.dom.$results.html( "" );
     $.each( list, function( idx, value ) {
       $li = $( "<li></li>" ).css( "cursor", "pointer" );
@@ -185,7 +186,7 @@
     this.position();
   };
 
-  $.CentreonSearch.prototype.cleanChoises = function() {
+  $.CentreonSearch.prototype.cleanChoices = function() {
     this.dom.$results.hide();
     this.dom.$results.html( "" );
     this.active = false;
@@ -228,10 +229,9 @@
   };
 
   $.CentreonSearch.prototype.focusPrev = function() {
-    var newActive,
-        el = this.dom.$results.children( ".active" );
+    var el = this.dom.$results.children( ".active" );
     if ( el.length > 0 ) {
-      newActive = $( el ).prev( "li" );
+      var newActive = $( el ).prev( "li" );
       $( el ).removeClass( "active" );
       if ( newActive.length === 0 ) {
         this.dom.$results.children( ":last" ).addClass( "active" );
@@ -271,7 +271,7 @@
 
   $.CentreonSearch.prototype.blur = function() {
     if ( !this.mousedover ) {
-      this.cleanChoises();
+      this.cleanChoices();
     }
   };
 

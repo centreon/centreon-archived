@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal;
 
+use \Centreon\Internal\Di;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -120,7 +122,7 @@ class Template extends \Smarty
     
     private function buildTemplateDirList()
     {
-        $config = \Centreon\Internal\Di::getDefault()->get('config');
+        $config = Di::getDefault()->get('config');
         $path = rtrim($config->get('global', 'centreon_path'), '/');
 
         $templateDirList = array();
@@ -243,15 +245,20 @@ class Template extends \Smarty
     /**
      * 
      * @param string $fileName $fileName CSS file to add
+     * @param string $module
      * @return \Centreon\Template
      * @throws Exception
      */
-    public function addCss($fileName)
+    public function addCss($fileName, $module = 'centreon')
     {
-        if ($this->isStaticFileExist('css', $fileName)) {
+        if ($this->isStaticFileExist('css', $fileName, $module) === false) {
             throw new Exception(_('The given file does not exist'));
         }
-        
+
+        $config = Di::getDefault()->get('config');
+        $baseUrl = rtrim($config->get('global', 'base_url'), '/');
+        $fileName = $baseUrl . '/static/'  . $module . '/css/' . $fileName;
+
         if (!in_array($fileName, $this->cssResources)) {
             $this->cssResources[] = $fileName;
         }
@@ -263,12 +270,13 @@ class Template extends \Smarty
      * 
      * @param string $fileName Javascript file to add
      * @param string $loadingLocation
+     * @param string $module
      * @return \Centreon\Template
      * @throws Exception
      */
-    public function addJs($fileName, $loadingLocation = 'bottom')
+    public function addJs($fileName, $loadingLocation = 'bottom', $module = 'centreon')
     {
-        if ($this->isStaticFileExist('js', $fileName)) {
+        if ($this->isStaticFileExist('js', $fileName, $module) === false) {
             throw new Exception(_('The given file does not exist'));
         }
         
@@ -281,7 +289,11 @@ class Template extends \Smarty
                 $jsArray = 'jsTopResources';
                 break;
         }
-        
+
+        $config = Di::getDefault()->get('config');
+        $baseUrl = rtrim($config->get('global', 'base_url'), '/');
+        $fileName = $baseUrl . '/static/' . $module . '/js/' . $fileName;
+
         if (!in_array($fileName, $this->$jsArray)) {
             $this->{$jsArray}[] = $fileName;
         }
@@ -310,33 +322,26 @@ class Template extends \Smarty
      * 
      * @param string $type
      * @param string $filename
+     * @param string $module
      * @return boolean
      * @throws \Centreon\Exception
      */
-    private function isStaticFileExist($type, $filename)
+    private function isStaticFileExist($type, $filename, $module)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
-        $basePath = trim($config->get('global', 'base_path'), '/');
-        
-        switch(strtolower($type)) {
-            case 'css':
-                $staticFilePath = trim($config->get('static_file', 'css_path'), '/');
-                break;
-            case 'js':
-                $staticFilePath = trim($config->get('static_file', 'js_path'), '/');
-                break;
-            case 'img':
-                $staticFilePath = trim($config->get('static_file', 'img_path'), '/');
-                break;
-            default:
-                throw new Exception(_('The given filetype is not supported'));
-        }
-        
-        if (!file_exists($basePath.'/'.$staticFilePath.'/'.$filename)) {
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        $basePath = $centreonPath . '/www/static/' . $module . '/' . strtolower($type) . '/';
+        if (!file_exists($basePath . $filename)) {
+            if (strtolower($type) == 'css') {
+                $filename = $centreonPath . '/www/static/' . $module . '/less/' . 
+                    str_replace('.css', '.less', $filename);
+                if (file_exists($filename)) {
+                    return true;
+                }
+            }
             return false;
         }
-        
         return true;
     }
 
