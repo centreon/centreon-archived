@@ -7,10 +7,10 @@
 		<section name="General">
 			<block name="General information">
 				<field name="sg_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-				<field name="sg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="sg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Relations">
-				<field name="sg_services" label="Services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field name="sg_services" label="Linked Host Services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/service/formlistcomplete</defaultValuesRoute>
@@ -38,8 +38,11 @@
 		<redirect>1</redirect>
 		<redirect_route>/configuration/servicegroup</redirect_route>
 		<step name="General">
-			<field name="sg_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-			<field name="sg_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+			<field name="sg_name" label="Name" default_value="" mandatory="1"></field>
+			<field name="sg_alias" label="Alias" default_value="" mandatory="0"></field>
+		</step>
+		<step name="Relations">
+			<field name="sg_services" label="Linked Host Services" default_value="" mandatory="0"></field>
 		</step>
 	</wizard>
 </forms>

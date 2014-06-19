@@ -311,9 +311,17 @@
 		</field>
 	  </block>
 	</section>
-	<section name="Extended information">
-	  <block name="Extended information">
-	  </block>
-	</section>
   </form>
+  <wizard name="add_service">
+    <route>/configuration/service/add</route>
+    	<step name="General">
+    	<field name="service_description" mandatory="1"></field>
+    	<field name="service_template_model_stm_id" mandatory="0"></field>
+    	<field name="service_custommacros" mandatory="0"></field>
+    </step>
+    <step name="Relation">
+    <field name="service_hosts" mandatory="0"></field>
+    <field name="service_servicegroups" mandatory="0"></field>
+    </step>
+  </wizard>
 </forms>

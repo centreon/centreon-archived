@@ -1,12 +1,22 @@
 ( function( $ ) {
   $.fn.centreonsearch = function( options ) {
+    var args = Array.prototype.slice.call( arguments, 1 ),
+        settings = $.extend( {}, $.fn.centreonsearch.defaults, options ),
+        methodReturn; 
     return this.each( function() {
       var $this = $( this ),
-          opts = $.extend( {}, $.fn.centreonsearch.defaults, options );
-      $this.data( "centreonsearch", new $.CentreonSearch(
-          $this,
-          $.meta ? $.extend( {}, opts, $this.data() ) : opts
-      ));
+          data = $this.data( "centreonsearch" );
+
+      if ( !data ) {
+        $this.data( "centreonsearch", new $.CentreonSearch(
+            $this,
+            $.meta ? $.extend( {}, settings, $this.data() ) : settings
+        ));
+      }
+
+      if ( typeof options === "string" ) {
+        data[ options ].apply( data, args );
+      }
     });
   };
 
@@ -146,15 +156,15 @@
              /* Is a select */
              children = $( this.tags[ typeSearch ] ).children( "option" );
              tmpList = children.filter( function( el, list ) {
-               tmpStr = $( list ).val();
+               tmpStr = $( list ).text();
                if ( tmpStr.substring( 0, searchStr.length ).toLowerCase() == searchStr.toLowerCase() ) {
                  return true;
                }
              });
              i = 0;
              for ( i; i < tmpList.length; i++ ) {
-               if ( typeof( $( tmpList[ i ] ).val() ) == "string") {
-                 listChoices.push( $( tmpList[ i ] ).val() );
+               if ( typeof( $( tmpList[ i ] ).text() ) == "string") {
+                 listChoices.push( $( tmpList[ i ] ).text() );
                }
              }
            } else if ( typeof( this.tags[ typeSearch ] ) == "object" ) {
@@ -282,8 +292,20 @@
     var listUsedTags = {},
         self = this,
         input = this.dom.$elem;
+    /* Clean all fields */
+    $.each( self.associateFields, function( tagName, element ) {
+      if ( typeof( element ) == "string" ) {
+        $( element ).val( "" );
+      } else if ( typeof( element ) == "object" && element instanceof jQuery ) {
+        element.val( "" );
+      } else if ( typeof( element ) == "function" ) {
+        element( "" );
+      }
+    });
+
     /* Get list of tags */
     this.currentList = $( input ).val().split( " " );
+    /* Found values */
     $.each( this.currentList, function( idx, element ) {
       var tagName,
           sepPos = element.indexOf( ":" );
@@ -297,14 +319,30 @@
         }
       }
     });
+    /* Fill the fields with information */
     $.each( listUsedTags, function( tagName, values ) {
       var elTarget = self.associateFields[ tagName ];
       if ( typeof( elTarget ) == "string" ) {
-        $( elTarget ).val( values.join( " " ) );
-      } else if ( typeof( elTarget ) == "object" ) {
-        elTarget.val( values.join( " " ) );
+        elTarget = $( elTarget );
       } else if ( typeof( elTarget ) == "function" ) {
         elTarget( values );
+      }
+      if ( typeof( elTarget ) == "object" && elTarget instanceof jQuery ) {
+        if ( elTarget.is( "input" ) ) {
+          elTarget.val( values.join( " " ) );
+        } else if ( elTarget.is( "select" ) ) {
+          elTarget.val( function() {
+            var listValuesId = [];
+            elTarget.find( "option" ).filter( function( idx, element ) {
+              $.each( values, function( idx, value ) {
+                if ( $( element ).text().toLowerCase() == value.toLowerCase() ) {
+                  listValuesId.push( $( element ).val() );
+                }
+              });
+            });
+            return listValuesId;
+          });
+        }
       }
     });
   };

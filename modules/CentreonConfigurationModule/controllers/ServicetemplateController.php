@@ -90,12 +90,12 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
      * Update a servicetemplate
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/servicetemplate/update
      */
     public function updateAction()
     {
-        
+        parent::updateAction();
     }
     
     /**

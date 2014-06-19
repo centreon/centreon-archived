@@ -554,6 +554,40 @@
                 .search(this.value)
                 .draw();
         });
+
+        $("input[name='advsearch']").centreonsearch({
+            minChars: 2,
+            tags: {
+            {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
+                {if $colSearch['type'] == 'select'}
+                    {$fieldname="select[name='$colName']"}
+                {else}
+                    {$fieldname="input[name='$colName']"}
+                {/if}
+                {$colName}: "{$fieldname}",
+            {/foreach}
+            },
+            associateFields: {
+            {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
+                {if $colSearch['type'] == 'select'}
+                    {$fieldname="select[name='$colName']"}
+                {else}
+                    {$fieldname="input[name='$colName']"}
+                {/if}
+                {$colName}: "{$fieldname}",
+            {/foreach}
+            }
+        });
+
+        $("#btnSearch").on("click", function(e) {
+            $("input[name='advsearch']").centreonsearch("fillAssociateFields");
+            e.preventDefault();
+            $('.centreon-search').each(function(idx, element) {
+                oTable.api().column($(element).data('column-index'))
+                    .search($(element).val());
+            });
+            oTable.api().draw();
+        });
     });
     
     
