@@ -35,6 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
+use \Centreon\Internal\Di;
 use \CentreonConfiguration\Models\Host;
 use \CentreonConfiguration\Models\Relation\Host\Contact;
 use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
@@ -73,7 +74,10 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function listAction()
     {
-        //$this->tpl->addJs('host.overlay.js', 'bottom', 'centreon-configuration');
+        $this->tpl->addJs('centreon.overlay.js')
+            ->addJs('jquery.qtip.min.js')
+            ->addCss('jquery.qtip.min.css')
+            ->addCss('centreon.qtip.css');
         parent::listAction();
     }
     
@@ -94,7 +98,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function datatableAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
@@ -135,7 +139,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $givenParameters = $this->getParams('post');
         parent::updateAction();
         if ($givenParameters['host_create_services_from_template']) {
-            \CentreonConfiguration\Models\Host::deployServices($givenParameters['object_id']);
+            Host::deployServices($givenParameters['object_id']);
         }
     }
     
@@ -451,5 +455,19 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function disableAction()
     {
         parent::disableAction('host_activate');
+    }
+
+    /**
+     * Display the configuration snapshot of a host
+     * with template inheritance
+     *
+     * @method get
+     * @route /configuration/host/snapshot/[i:id]
+     */
+    public function snapshotAction()
+    {
+        $params = $this->getParams();
+        $this->tpl->assign('id', $params['id']);
+        $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 }
