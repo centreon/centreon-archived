@@ -94,13 +94,27 @@ class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      * Add a command
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/command/add
      * @acl add
      */
     public function createAction()
     {
         parent::createAction();
+    }
+    
+    /**
+     * Add a command
+     *
+     *
+     * @method get
+     * @route /configuration/command/add
+     * @acl add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/command/add');
+        parent::addAction();
     }
     
     /**

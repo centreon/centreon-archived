@@ -1,8 +1,8 @@
 ( function( $ ) {
   $.fn.centreonsearch = function( options ) {
     return this.each( function() {
-      var $this = $( this );
-      var opts = $.extend( {}, $.fn.centreonsearch.defaults, options );
+      var $this = $( this ),
+          opts = $.extend( {}, $.fn.centreonsearch.defaults, options );
       $this.data( "centreonsearch", new $.CentreonSearch(
           $this,
           $.meta ? $.extend( {}, opts, $this.data() ) : opts
@@ -11,7 +11,9 @@
   };
 
   $.fn.centreonsearch.defaults = {
-    minChars: 3
+    minChars: 3,
+    tags: {},
+    associateFields: {}
   };
 
   $.CentreonSearch = function( $elem, options ) {
@@ -19,6 +21,8 @@
     this.options = options;
 
     this.tags = this.options.tags;
+
+    this.associateFields = this.options.associateFields;
 
     this.active = false;
 
@@ -90,7 +94,11 @@
         break;
 
       case 27: // escape
-        this.cleanChoises();
+        this.cleanChoices();
+        break;
+
+      case 32: // space
+        this.fillAssociateFields();
         break;
 
       default:
@@ -100,77 +108,80 @@
   };
 
   $.CentreonSearch.prototype.search = function() {
-    var self = this;
-    var input = this.dom.$elem;
+    var typeSearch, lastElement, valid, sepPos, searchStr, listChoices,
+        children, tmpList, tmpStr, i,
+        self = this,
+        input = this.dom.$elem;
     this.currentList = $( input ).val().split( " " );
-    var lastElement = this.currentList[ this.currentList.length - 1 ];
+    lastElement = this.currentList[ this.currentList.length - 1 ];
     /* Action only if more than 'minChars' characters */
     if ( lastElement.length >= this.options.minChars ) {
-       var sepPos = lastElement.indexOf( ":" );
+       sepPos = lastElement.indexOf( ":" );
        /* Search for tags */
        if ( sepPos == -1 ) {
          this.currentTag = null;
-         var valid = Object.keys( this.tags ).filter( function( el ) {
+         valid = Object.keys( this.tags ).filter( function( el ) {
            if ( el.substring( 0, lastElement.length ) == lastElement ) {
              return el;
            }
          });
          if ( valid.length > 0 ) {
-           this.displayChoises( valid );
+           this.displayChoices( valid );
          } else {
-           this.cleanChoises(); 
+           this.cleanChoices(); 
          }
        /* Search for informations */
        } else {
-         this.cleanChoises();
-         var typeSearch = lastElement.substring( 0, sepPos );
+         this.cleanChoices();
+         typeSearch = lastElement.substring( 0, sepPos );
          this.currentTag = typeSearch;
-         var searchStr = lastElement.substring( sepPos + 1 );
-         var listChoises = [];
+         searchStr = lastElement.substring( sepPos + 1 );
+         listChoices = [];
          if ( $.inArray( typeSearch, Object.keys( this.tags ) ) != -1 &&
            searchStr.length >= this.options.minChars ) {
            if ( typeof( this.tags[ typeSearch ] ) == "function" ) {
              /* Is a function */
-             listChoises = this.tags[ typeSearch ]( searchStr );
+             listChoices = this.tags[ typeSearch ]( searchStr );
            } else if ( typeof( this.tags[ typeSearch ] ) == "string" ) {
              /* Is a select */
-             var children = $( this.tags[ typeSearch ] ).children( "option" );
-             var tmpList = children.filter( function( el, list ) {
-               var tmpStr = $( list ).val();
+             children = $( this.tags[ typeSearch ] ).children( "option" );
+             tmpList = children.filter( function( el, list ) {
+               tmpStr = $( list ).val();
                if ( tmpStr.substring( 0, searchStr.length ).toLowerCase() == searchStr.toLowerCase() ) {
                  return true;
                }
              });
-             var i = 0;
+             i = 0;
              for ( i; i < tmpList.length; i++ ) {
                if ( typeof( $( tmpList[ i ] ).val() ) == "string") {
-                 listChoises.push( $( tmpList[ i ] ).val() );
+                 listChoices.push( $( tmpList[ i ] ).val() );
                }
              }
            } else if ( typeof( this.tags[ typeSearch ] ) == "object" ) {
              /* Is a object : array */
-             listChoises = this.tags[ typeSearch ].filter( function( e l) {
+             listChoices = this.tags[ typeSearch ].filter( function( el ) {
                if ( el.substring( 0, searchStr.length ).toLowerCase() == searchStr.toLowerCase() ) {
                  return true;
                }
              });
            }
-           if ( listChoises.length > 0 ) {
-             this.displayChoises( listChoises );
+           if ( listChoices.length > 0 ) {
+             this.displayChoices( listChoices );
            }
          }
        }
     } else {
-      this.cleanChoises();
+      this.cleanChoices();
     }
   };
   
-  $.CentreonSearch.prototype.displayChoises = function( list ) {
+  $.CentreonSearch.prototype.displayChoices = function( list ) {
+    var $li,
+        self = this;
     this.active = true;
-    var self = this;
     this.dom.$results.html( "" );
     $.each( list, function( idx, value ) {
-      var $li = $( "<li></li>" ).css( "cursor", "pointer" );
+      $li = $( "<li></li>" ).css( "cursor", "pointer" );
       $( "<a></a>" ).text( value ).appendTo( $li );
       $li.appendTo( self.dom.$results );
     });
@@ -178,24 +189,25 @@
     this.position();
   };
 
-  $.CentreonSearch.prototype.cleanChoises = function() {
+  $.CentreonSearch.prototype.cleanChoices = function() {
     this.dom.$results.hide();
     this.dom.$results.html( "" );
     this.active = false;
   };
 
   $.CentreonSearch.prototype.position = function() {
-    var offset = this.dom.$elem.offset();
-    var height = this.dom.$results.outerHeight();
-    var totalHeight = $( window ).outerHeight();
-    var inputBottom = offset.top + this.dom.$elem.outerHeight();
-    var bottomIfDown = inputBottom + height;
-    var position = {
-      top: inputBottom,
-      left: offset.left
-    };
+    var topIfUp,
+        offset = this.dom.$elem.offset(),
+        height = this.dom.$results.outerHeight(),
+        totalHeight = $( window ).outerHeight(),
+        inputBottom = offset.top + this.dom.$elem.outerHeight(),
+        bottomIfDown = inputBottom + height,
+        position = {
+          top: inputBottom,
+          left: offset.left
+        };
     if ( bottomIfDown > totalHeight ) {
-      var topIfUp = offset.top - height;
+      topIfUp = offset.top - height;
       if ( topIfUp >= 0 ) {
         position.top = topIfUp;
       }
@@ -204,9 +216,10 @@
   };
 
   $.CentreonSearch.prototype.focusNext = function() {
-    var el = this.dom.$results.children( ".active" );
+    var newActive,
+        el = this.dom.$results.children( ".active" );
     if ( el.length > 0 ) {
-      var newActive = $( el ).next( "li" );
+      newActive = $( el ).next( "li" );
       $( el ).removeClass( "active" );
       if ( newActive.length === 0 ) {
         this.dom.$results.children( ":first" ).addClass( "active" );  
@@ -234,14 +247,14 @@
   };
 
   $.CentreonSearch.prototype.valid = function ( el ) {
-    var activeEl;
+    var activeEl, concat;
     if ( typeof( el ) == "undefined" ) {
       activeEl = this.dom.$results.children( ".active" );
     } else {
       activeEl = el;
     }
     if ( activeEl.length > 0 ) {
-      var concat = activeEl.children( "a" ).text();
+      concat = activeEl.children( "a" ).text();
       if ( this.currentTag !== null ) {
         concat = this.currentTag + ":" + concat;
       } else {
@@ -249,9 +262,9 @@
       }
       this.currentList[ this.currentList.length - 1 ] = concat;
       this.dom.$elem.val( this.currentList.join( " " ) );
-      this.cleanChoises();
+      this.cleanChoices();
     } else {
-      console.log( "action filter" );
+      this.fillAssociateFields();
     }
   };
 
@@ -261,7 +274,38 @@
 
   $.CentreonSearch.prototype.blur = function() {
     if ( !this.mousedover ) {
-      this.cleanChoises();
+      this.cleanChoices();
     }
+  };
+
+  $.CentreonSearch.prototype.fillAssociateFields = function() {
+    var listUsedTags = {},
+        self = this,
+        input = this.dom.$elem;
+    /* Get list of tags */
+    this.currentList = $( input ).val().split( " " );
+    $.each( this.currentList, function( idx, element ) {
+      var tagName,
+          sepPos = element.indexOf( ":" );
+      if ( sepPos != -1 ) {
+        tagName = element.substring( 0, sepPos );
+        if ( $.inArray( tagName, Object.keys( self.associateFields ) ) != -1 ) {
+          if ( $.inArray( tagName, Object.keys( listUsedTags ) ) == -1 ) {
+            listUsedTags[tagName] = [];
+          }
+          listUsedTags[tagName].push( element.substring( sepPos + 1, element.lenght ) );
+        }
+      }
+    });
+    $.each( listUsedTags, function( tagName, values ) {
+      var elTarget = self.associateFields[ tagName ];
+      if ( typeof( elTarget ) == "string" ) {
+        $( elTarget ).val( values.join( " " ) );
+      } else if ( typeof( elTarget ) == "object" ) {
+        elTarget.val( values.join( " " ) );
+      } else if ( typeof( elTarget ) == "function" ) {
+        elTarget( values );
+      }
+    });
   };
 })( jQuery );

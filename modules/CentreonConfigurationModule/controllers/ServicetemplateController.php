@@ -102,12 +102,24 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
      * Add a service template
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/servicetemplate/add
      */
     public function createAction()
     {
         parent::createAction();
+    }
+    
+    /**
+     * Add a servicetemplate
+     *
+     * @method get
+     * @route /configuration/servicetemplate/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/servicetemplate/add');
+        parent::addAction();
     }
     
     /**

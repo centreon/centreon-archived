@@ -90,12 +90,24 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\ObjectAb
      * Add a manufacturer
      *
      *
-     * @method get
+     * @method post
      * @route /configuration/manufacturer/add
      */
     public function createAction()
     {
         parent::createAction();
+    }
+    
+    /**
+     * Add a manufacturer
+     *
+     * @method get
+     * @route /configuration/manufacturer/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/manufacturer/add');
+        parent::addAction();
     }
     
     /**
