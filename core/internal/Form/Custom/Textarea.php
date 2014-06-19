@@ -48,7 +48,7 @@ class Textarea extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['html']) ? $value = 'value="'.$element['html'].'" ' :  $value = '');
+        $value = (isset($element['html']) ? ''.$element['html'].' ' : '');
         
         if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
             $element['label'] = $element['name'];
@@ -75,6 +75,11 @@ class Textarea extends Customobject
                     $placeholder.
                     '>'.$value.'</textarea>';
         
-        return $inputHtml;
+        $myJs = '';
+        
+        return array(
+            'html' => $inputHtml,
+            'js' => $myJs
+        );
     }
 }

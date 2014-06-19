@@ -214,9 +214,6 @@ class Generator
             default:
                 $this->formHandler->addStatic($field, $this->extraParams);
                 break;
-            case 'textarea':
-                $this->formHandler->addTextarea($field['name'], $field['label']);
-                break;
         }
     }
     

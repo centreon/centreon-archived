@@ -224,7 +224,6 @@ class Form
     private function renderAsHtml(&$element)
     {
         switch ($element['type']) {
-            case 'textarea':
             default:
                 $element['input'] = $this->renderHtmlTextarea($element);
                 $element['label'] = $this->renderHtmlLabel($element);
@@ -264,6 +263,11 @@ class Form
         }
     }
     
+    /**
+     * 
+     * @param type $inputElement
+     * @return type
+     */
     public function renderFinalHtml($inputElement)
     {
         $helpButton = '';
@@ -285,6 +289,11 @@ class Form
                 '</div>';
     }
     
+    /**
+     * 
+     * @param type $inputElement
+     * @return string
+     */
     private function renderHelp($inputElement)
     {
         $helpButton = '';
@@ -665,12 +674,10 @@ class Form
      */
     public function add($field, $extraParams = array())
     {
+        var_dump($field);
         switch ($field['type']) {
             default:
                 $this->addStatic($field, $extraParams);
-                break;
-            case 'textarea':
-                $this->addTextarea($field['name'], $field['label']);
                 break;
             case 'radio':
                 $values = json_decode($field['attributes']);

@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Servicetemplate extends CentreonRelationModel
 {
-    protected static $relationTable = "trap_service_relation";
+    protected static $relationTable = "traps_service_relation";
     protected static $firstKey = "traps_id";
     protected static $secondKey = "service_id";
     public static $firstObject = "\CentreonConfiguration\Models\Trap";
