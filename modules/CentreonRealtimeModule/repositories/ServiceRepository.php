@@ -37,7 +37,8 @@ namespace CentreonRealtime\Repository;
 
 use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
     \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository,
-    \Centreon\Internal\Utils\Datetime;
+    \Centreon\Internal\Utils\Datetime,
+    \Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -245,38 +246,56 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      *
      * @param int $host_id
      * @param int $service_id
+     * @return mixed
      */
     public static function getStatus($host_id, $service_id)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_storage');
         
-        $stmt = $dbconn->query('SELECT last_hard_state as state FROM services WHERE service_id = '.$service_id.' and host_id = '.$host_id.' AND enabled = 1 LIMIT 1');
+        $stmt = $dbconn->prepare('SELECT last_hard_state as state 
+            FROM services 
+            WHERE service_id = ? 
+            AND host_id = ? 
+            AND enabled = 1 
+            LIMIT 1');
+        $stmt->execute(array($service_id, $host_id));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            return static::getBadgeStatus($row['state']);
+            return $row['state'];
         }
+        return -1;
     }
 
     /**
      * Format small badge status
      *
      * @param int $status
+     * @return string
      */
-    public static function getBadgeStatus($status) 
+    public static function getStatusBadge($status) 
     {
-        if ($status == 0) {
-            $status = "label-success";
-        } else if ($status == 1) {
-            $status = "label-warning";
-        } else if ($status == 2) {
-            $status = "label-danger";
-        } else if ($status == 3) {
-            $status = "label-default";
-        } else if ($status == 4) {
-            $status = "label-info";
+        switch ($status) {
+            case 0:
+                $status = "label-success";
+                break;
+            case 1:
+                $status = "label-warning";
+                break;
+            case 2:
+                $status = "label-danger";
+                break;
+            case 3:
+                $status = "label-default";
+                break;
+            case 4:
+                $status = "label-info";
+                break;
+            default:
+                $status = "";
+                break;
         }
-        return "<span class='label $status pull-right'>&nbsp;</span>";
+        return "<span class='label $status pull-right overlay'>&nbsp;</span>";
     }
 
      

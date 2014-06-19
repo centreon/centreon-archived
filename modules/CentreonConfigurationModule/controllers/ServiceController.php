@@ -64,6 +64,10 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function listAction()
     {
+        $this->tpl->addJs('centreon.overlay.js')
+            ->addJs('jquery.qtip.min.js')
+            ->addCss('jquery.qtip.min.css')
+            ->addCss('centreon.qtip.css');
         parent::listAction();
     }
 
@@ -405,5 +409,19 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     public function trapForServiceAction()
     {
         parent::getRelations(static::$relationMap['service_traps']);
+    }
+
+    /**
+     * Display the configuration snapshot of a service
+     * with template inheritance
+     *
+     * @method get
+     * @route /configuration/service/snapshot/[i:id]
+     */
+    public function snapshotAction()
+    {
+        $params = $this->getParams();
+        $this->tpl->assign('id', $params['id']);
+        $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
     }
 }

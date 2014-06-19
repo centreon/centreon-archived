@@ -231,7 +231,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
      * Get service status
      *
      * @param int $hostId
-     * @return int
+     * @return mixed
      */
     public static function getStatus($hostId)
     {
@@ -245,7 +245,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             return $row['state'];
         }
-        return null;
+        return -1;
     }
 
     /**
