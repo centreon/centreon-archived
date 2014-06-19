@@ -97,6 +97,10 @@
         this.cleanChoices();
         break;
 
+      case 32: // space
+        this.fillAssociateFields();
+        break;
+
       default:
         this.search();
         break;
@@ -104,7 +108,7 @@
   };
 
   $.CentreonSearch.prototype.search = function() {
-    var typeSearch, lastElement, valid, sepPos, searchStr, listChoises,
+    var typeSearch, lastElement, valid, sepPos, searchStr, listChoices,
         children, tmpList, tmpStr, i,
         self = this,
         input = this.dom.$elem;
@@ -175,7 +179,6 @@
     var $li,
         self = this;
     this.active = true;
-    var self = this;
     this.dom.$results.html( "" );
     $.each( list, function( idx, value ) {
       $li = $( "<li></li>" ).css( "cursor", "pointer" );
@@ -259,7 +262,7 @@
       }
       this.currentList[ this.currentList.length - 1 ] = concat;
       this.dom.$elem.val( this.currentList.join( " " ) );
-      this.cleanChoises();
+      this.cleanChoices();
     } else {
       this.fillAssociateFields();
     }
