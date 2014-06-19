@@ -7,7 +7,7 @@
 		<section name="General">
 			<block name="General information">
 				<field name="sc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-				<field name="sc_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="sc_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="icon_id" label="Icon" default_value="" advanced="0" type="deprecated" parent_field="" mandatory="0"></field>
 			</block>
 			<block name="Relations">
@@ -31,7 +31,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="sc_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
+				<field name="sc_activate" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -47,6 +47,10 @@
 		<step name="General">
 			<field name="sc_name" mandatory="1"></field>
 			<field name="sc_description" mandatory="0"></field>
+		</step>
+		<step name="Relations">
+			<field name="sc_services" mandatory="0"></field>
+			<field name="sc_servicetemplates" mandatory="0"></field>
 		</step>
 	</wizard>
 </forms>
