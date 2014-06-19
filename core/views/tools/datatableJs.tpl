@@ -564,7 +564,7 @@
                 {else}
                     {$fieldname="input[name='$colName']"}
                 {/if}
-                {$colName}: "{$fieldname}",
+                "{$colName}": "{$fieldname}",
             {/foreach}
             },
             associateFields: {
@@ -574,7 +574,7 @@
                 {else}
                     {$fieldname="input[name='$colName']"}
                 {/if}
-                {$colName}: "{$fieldname}",
+                "{$colName}": "{$fieldname}",
             {/foreach}
             }
         });

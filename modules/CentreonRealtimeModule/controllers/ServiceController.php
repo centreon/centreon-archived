@@ -75,7 +75,7 @@ class ServiceController extends \Centreon\Internal\Controller
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
-        	->addJs('jquery.dataTables.min.js')
+            ->addJs('jquery.dataTables.min.js')
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
@@ -83,12 +83,13 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('dataTables.bootstrap.js')
-        	->addJs('jquery.select2/select2.min.js')
-        	->addJs('jquery.validate.min.js')
+            ->addJs('jquery.select2/select2.min.js')
+            ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-langs.min.js')
-            ->addJs('daterangepicker.js');
+            ->addJs('daterangepicker.js')
+            ->addJs('centreon.search.js');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
@@ -149,7 +150,7 @@ class ServiceController extends \Centreon\Internal\Controller
 
         /* Load css */
         $tpl->addCss('dataTables.css')
-        	->addCss('dataTables.bootstrap.css')
+            ->addCss('dataTables.bootstrap.css')
             ->addCss('dataTables-TableTools.css')
             ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')
@@ -157,12 +158,12 @@ class ServiceController extends \Centreon\Internal\Controller
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
-        	->addJs('jquery.dataTables.min.js')
-        	->addJs('jquery.dataTables.TableTools.min.js')
-        	->addJs('bootstrap-dataTables-paging.js')
-        	->addJs('jquery.dataTables.columnFilter.js')
-        	->addJs('jquery.select2/select2.min.js')
-        	->addJs('jquery.validate.min.js')
+            ->addJs('jquery.dataTables.min.js')
+            ->addJs('jquery.dataTables.TableTools.min.js')
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('jquery.select2/select2.min.js')
+            ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-langs.min.js')
