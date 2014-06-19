@@ -222,6 +222,12 @@ class ServiceController extends \Centreon\Internal\Controller
             ) . " (" . ($rawdata['state_type'] ? "HARD" : "SOFT") . ")"
         );
 
+        /* Command line */
+        $data[] = array(
+            'label' => _('Command line'),
+            'value' => chunk_split($rawdata['command_line'], 80, "<br/>")
+        );
+
         /* Output */
         $data[] = array(
             'label' => _('Output'),
