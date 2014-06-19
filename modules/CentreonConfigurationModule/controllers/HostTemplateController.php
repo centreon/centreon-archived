@@ -489,4 +489,17 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     {
         parent::disableAction('host_activate');
     }
+
+    /**
+     * Display host template configuration in a popin window
+     *
+     * @method get
+     * @route /configuration/hosttemplate/viewconf/[i:id]
+     */
+    public function displayConfAction()
+    {
+        $params = $this->getParams();
+        $this->tpl->assign('id', $params['id']);
+        $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+    }
 }

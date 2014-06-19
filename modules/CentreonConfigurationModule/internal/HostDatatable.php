@@ -35,7 +35,10 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use \Centreon\Internal\Datatable\Datasource\CentreonDb,
+    \CentreonRealtime\Repository\HostRepository as RealTimeHostRepository,
+    \CentreonConfiguration\Repository\HostRepository,
+    \CentreonConfiguration\Repository\HosttemplateRepository;
 
 /**
  * Description of HostDatatable
@@ -219,16 +222,29 @@ class HostDatatable extends \Centreon\Internal\Datatable
         $router = \Centreon\Internal\Di::getDefault()->get('router');
             
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;'.$myHostSet['host_name'];
-            $myHostSet['host_name'] .= "</a><a href='#'>";
-            $myHostSet['host_name'] .= \CentreonRealtime\Repository\HostRepository::getStatus($myHostSet['host_id']);
+            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
+                '&nbsp;<span data-overlay-url="/configuration/host/snapshot/'.
+                $myHostSet['host_id'].
+                '"><span class="overlay">'.
+                $myHostSet['host_name'].
+                '</span></span>';
+            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="/realtime/host/'.
+                $myHostSet['host_id'].
+                '/tooltip">';
+            $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
+                RealTimeHostRepository::getStatus($myHostSet['host_id'])
+            );
 
             /* Templates */
             $myHostSet['host_template']  = "";
-            $templates = \CentreonConfiguration\Repository\HosttemplateRepository::getTemplateList($myHostSet['host_id']);
+            $templates = HosttemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= "<span class='badge alert-success'><a href='".$router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id']))."'><i class='fa ".$template['ico']."'></i></a></span>";
+                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="/configuration/hosttemplate/viewconf/'.
+                    $template['id'].'"><a class="overlay" href="'.
+                    $router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
+                    '"><i class="fa '.
+                    $template['ico'].
+                    '"></i></a></span>';
             } 
         }
     }
