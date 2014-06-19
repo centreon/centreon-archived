@@ -12,4 +12,12 @@
 			</block>
 		</section>
 	</form>
+	<wizard name="add_manufacturer">
+		<route>/configuration/manufacturer/add</route>
+		<step name="General">
+			<field name="name" mandatory="1"></field>
+			<field name="alias" mandatory="0"></field>
+			<field name="description" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>
