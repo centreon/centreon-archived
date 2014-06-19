@@ -329,4 +329,17 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     {
         parent::getSimpleRelation('service_template_model_stm_id', '\CentreonConfiguration\Models\Servicetemplate');
     }
+
+    /**
+     * Display service template configuration in a popin window
+     *
+     * @method get
+     * @route /configuration/servicetemplate/viewconf/[i:id]
+     */
+    public function displayConfAction()
+    {
+        $params = $this->getParams();
+        $this->tpl->assign('id', $params['id']);
+        $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
+    }
 }

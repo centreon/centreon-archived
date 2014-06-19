@@ -73,7 +73,7 @@ class ServicedetailRepository extends ObjectdetailRepository
     {
         $db = Di::getDefault()->get('db_storage');
         $sql = 'SELECT h.name as host_name, s.acknowledged, s.scheduled_downtime_depth, s.output, s.latency,
-            s.last_check, s.next_check, s.check_period, i.name as instance_name, s.state, 
+            s.last_check, s.next_check, s.check_period, i.name as instance_name, s.state, s.command_line,
             s.description as service_description, s.state_type, s.perfdata
             FROM hosts h, services s, instances i
             WHERE i.instance_id = h.instance_id
