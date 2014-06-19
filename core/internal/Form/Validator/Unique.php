@@ -47,7 +47,7 @@ class Unique implements Ivalidator
      */
     public static function validate($value, $objectName = "", $id = null, $fieldname = '')
     {
-        $callableObject = '\\CentreonConfiguration\\Models\\'.ucwords($objectName);
+        $callableObject = '\CentreonConfiguration\Models\\'.ucwords($objectName);
         if ($callableObject::isUnique($value, $id)) {
             $result = array('success' => true);
         } else {

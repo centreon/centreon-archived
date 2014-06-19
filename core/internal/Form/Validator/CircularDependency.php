@@ -39,14 +39,14 @@ namespace Centreon\Internal\Form\Validator;
  * @package Centreon
  * @subpackage Core
  */
-class Circular implements Ivalidator
+class CircularDependency implements Ivalidator
 {
     /**
      * 
      */
     public static function validate($value, $objectName = '', $id = null, $fieldname = '')
     {
-        $controller = '\\Controllers\\Configuration\\' . ucfirst($objectName) . 'Controller';
+        $controller = '\CentreonConfiguration\Controllers\\' . ucfirst($objectName) . 'Controller';
         $result = true;
         $resultError = 'Redondance circulaire détectée';
         

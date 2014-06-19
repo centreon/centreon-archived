@@ -575,11 +575,14 @@ class Form
      */
     public static function getValidatorsQuery($origin, $uri)
     {
+        $di = \Centreon\Internal\Di::getDefault();
+        $baseUrl = $di->get('config')->get('global', 'base_url');
+        $uri = substr($uri, strlen($baseUrl));
         switch ($origin) {
             default:
             case 'form':
                 $validatorsQuery = "SELECT
-                        `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                        fv.`name` as validator_name, `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
                     FROM
                         form_validator fv, form_field_validator_relation ffv, form_field ff
                     WHERE
@@ -606,7 +609,7 @@ class Form
                 break;
             case 'wizard':
                 $validatorsQuery = "SELECT
-                        `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                        fv.`name` as validator_name, `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
                     FROM
                         form_validator fv, form_field_validator_relation ffv, form_field ff
                     WHERE
@@ -647,11 +650,10 @@ class Form
         $validatorsFinalList = array();
         foreach ($validatorsRawList as $validator) {
             $validatorsFinalList[$validator['field_name']][] = array(
-                'call' => $validator['validator'],
+                'call' => $validator['validator_name'],
                 'label' => $validator['field_label']
             );
         }
-        
         return $validatorsFinalList;
     }
     
@@ -1154,7 +1156,7 @@ class Form
             foreach ($validatorsList as $validatorKey => $validatorsForField) {
                 $nbOfValidators = count($validatorsForField);
                 for ($i=0; $i<$nbOfValidators; $i++) {
-                    $validatorCall = '\\Centreon\\Internal\\Form\\Validator\\'.ucfirst($validatorsForField[$i]['call']);
+                    $validatorCall = '\Centreon\Internal\Form\Validator\\'.ucfirst($validatorsForField[$i]['call']);
                     $resultValidate = $validatorCall::validate(
                         $submittedValues[$validatorKey],
                         $submittedValues['object'],
