@@ -371,7 +371,7 @@ abstract class CentreonStorageBaseModel
                 $value = str_replace("\\", "\\\\", $value);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = $value;
+                $filterTab[] = '%'.$value.'%';
                 $firstFilter = false;
             }
         }
