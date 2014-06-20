@@ -50,7 +50,6 @@
             $(labelToRemove).hide();
             $("#datatable{$object}_length").append($(".configuration-actions"));
             $(".configuration-actions").show();
-            new $.fn.dataTable.FixedHeader(oTable);
         }); 
 
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
