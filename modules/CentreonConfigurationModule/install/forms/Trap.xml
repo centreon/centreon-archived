@@ -6,14 +6,14 @@
 		<redirect_route>/configuration/trap</redirect_route>
 		<section name="Trap configuration">
 			<block name="General information">
-				<field name="traps_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-				<field name="traps_oid" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="traps_oid" label="OID" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/manufacturer/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/trap/[i:id]/manufacturer</listValuesRoute>
-						<multiple>true</multiple>
+						<multiple>false</multiple>
 						<ordered>true</ordered>
 					</attributes>
 				</field>
@@ -145,4 +145,17 @@
 			</block>
 		</section>
 	</form>
+	<wizard name="add_host">
+		<route>/configuration/trap/add</route>
+		<step name="General">
+			<field name="traps_name" mandatory="1"></field>
+			<field name="traps_oid" mandatory="1"></field>
+			<field name="manufacturer_id" mandatory="1"></field>
+			<field name="traps_args" mandatory="1"></field>
+			<field name="traps_status" mandatory="1"></field>
+		</step>
+		<step name="Relations">
+			<field name="trap_servicetemplates" mandatory="1"></field>
+		</step>
+	</wizard>
 </forms>

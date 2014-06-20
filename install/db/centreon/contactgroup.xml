@@ -5,7 +5,7 @@
         <column name="cg_name" phpName="CgName" type="VARCHAR" size="200" required="false"/>
         <column name="cg_alias" phpName="CgAlias" type="VARCHAR" size="200" required="false"/>
         <column name="cg_comment" phpName="CgComment" type="LONGVARCHAR" required="false"/>
-        <column name="cg_activate" phpName="CgActivate" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="cg_activate" phpName="CgActivate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
         <column name="cg_type" phpName="CgType" type="VARCHAR" size="10" required="false" defaultValue="local"/>
         <column name="cg_ldap_dn" phpName="CgLdapDn" type="VARCHAR" size="255" required="false"/>
         <column name="ar_id" phpName="ArId" type="INTEGER" required="false"/>

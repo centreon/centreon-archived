@@ -320,7 +320,7 @@
     	<field name="service_custommacros" mandatory="0"></field>
     </step>
     <step name="Relation">
-    <field name="service_hosts" mandatory="0"></field>
+    <field name="service_hosts" mandatory="1"></field>
     <field name="service_servicegroups" mandatory="0"></field>
     </step>
   </wizard>

@@ -166,4 +166,21 @@
 			</block>
 		</section>
 	</form>
+	<wizard name="add_contact">
+		<route>/configuration/user/add</route>
+		<step name="General">
+			<field name="contact_alias" mandatory="1"></field>
+			<field name="contact_name" mandatory="1"></field>
+			<field name="contact_email" mandatory="1"></field>
+			<field name="contact_template_id" mandatory="0"></field>
+			<field name="contact_contactgroups" mandatory="0"></field>
+		</step>
+		<step name="Access">
+			<field name="contact_oreon" mandatory="1"></field>
+			<field name="contact_passwd" mandatory="1"></field>
+			<field name="contact_passwd_confirm" mandatory="1"></field>
+			<field name="contact_admin" mandatory="1"></field>
+			<field name="contact_auth_type" mandatory="0"></field>
+		</step>
+        </wizard>
 </forms>
