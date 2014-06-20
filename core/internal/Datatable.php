@@ -267,7 +267,7 @@ class Datatable
                     $searchParam['main'] = false;
                 }
                 
-                $columnSearchIndex[addslashes($column['name'])] = $searchParam;
+                $columnSearchIndex[addslashes($column['data'])] = $searchParam;
             }
             
         }
