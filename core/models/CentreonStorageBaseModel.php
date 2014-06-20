@@ -343,10 +343,10 @@ abstract class CentreonStorageBaseModel
             $tables = $additionnalTables;
         }
         
+        $firstFilter = true;
         $tablesFilter = '';
         if (!empty($tables)) {
             $tables = ', ' . $tables;
-            $firstFilter = true;
             foreach ($filterForTables as $key => $rawvalue) {
                 $value = trim($rawvalue);
                 if ($firstFilter) {
@@ -354,12 +354,12 @@ abstract class CentreonStorageBaseModel
                 } else {
                     $tablesFilter .= " $filterType $key = '$value' ";
                 }
+                $firstFilter = false;
             }
         }
         
         $sql = "SELECT $params FROM " . static::$table . $tables . $tablesFilter;
         $filterTab = array();
-        $firstFilter = true;
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 if ($firstFilter) {
