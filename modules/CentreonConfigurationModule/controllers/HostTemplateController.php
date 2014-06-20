@@ -35,10 +35,11 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Relation\Host\Contact;
-use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
-use \CentreonConfiguration\Models\Relation\Host\Hostchild;
-use \CentreonConfiguration\Models\Relation\Host\Hostparent;
+use \CentreonConfiguration\Models\Relation\Host\Contact,
+    \CentreonConfiguration\Models\Relation\Host\Contactgroup,
+    \CentreonConfiguration\Models\Relation\Host\Hostchild,
+    \CentreonConfiguration\Models\Relation\Host\Hostparent,
+    \CentreonConfiguration\Repository\HostRepository;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -499,7 +500,10 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     public function displayConfAction()
     {
         $params = $this->getParams();
-        $this->tpl->assign('id', $params['id']);
+        $data = HostRepository::getConfigurationData($params['id']);
+        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $this->tpl->assign('checkdata', $checkdata);
+        $this->tpl->assign('notifdata', $notifdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 }

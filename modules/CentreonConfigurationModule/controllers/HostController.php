@@ -35,16 +35,17 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Di;
-use \CentreonConfiguration\Models\Host;
-use \CentreonConfiguration\Models\Relation\Host\Contact;
-use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
-use \CentreonConfiguration\Models\Relation\Host\Hostchild;
-use \CentreonConfiguration\Models\Relation\Host\Hostparent;
-use \CentreonConfiguration\Models\Relation\Host\Poller;
-use \CentreonConfiguration\Models\Timeperiod;
-use \CentreonConfiguration\Models\Command;
-use CentreonConfiguration\Internal\HostDatatable;
+use \Centreon\Internal\Di,
+    \CentreonConfiguration\Models\Host,
+    \CentreonConfiguration\Models\Relation\Host\Contact,
+    \CentreonConfiguration\Models\Relation\Host\Contactgroup,
+    \CentreonConfiguration\Models\Relation\Host\Hostchild,
+    \CentreonConfiguration\Models\Relation\Host\Hostparent,
+    \CentreonConfiguration\Models\Relation\Host\Poller,
+    \CentreonConfiguration\Models\Timeperiod,
+    \CentreonConfiguration\Models\Command,
+    \CentreonConfiguration\Internal\HostDatatable,
+    \CentreonConfiguration\Repository\HostRepository;
 
 class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -467,7 +468,10 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function snapshotAction()
     {
         $params = $this->getParams();
-        $this->tpl->assign('id', $params['id']);
+        $data = HostRepository::getConfigurationData($params['id']);
+        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $this->tpl->assign('checkdata', $checkdata);
+        $this->tpl->assign('notifdata', $notifdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 }
