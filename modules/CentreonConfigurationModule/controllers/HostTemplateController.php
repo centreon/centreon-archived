@@ -85,10 +85,10 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      * @var array 
      */
     public static $relationMap = array(
-        'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
-        'host_contacts' => '\CentreonConfiguration\Models\Relation\Host\Contact',
-        'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
-        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate'
+        'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory',
+        'host_contacts' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contact',
+        'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup',
+        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate'
     );
     
     public static $isDisableable = true;
