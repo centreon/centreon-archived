@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models\Acl;
  *
  * @author sylvestre
  */
-class Menu extends \CentreonConfiguration\Models\Object
+class Menu extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "acl_menus";
     protected static $primaryKey = "acl_menu_id";

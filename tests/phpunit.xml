@@ -19,6 +19,18 @@
             <directory suffix="Test.php">../modules/*/tests/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <blacklist>
+            <directory suffix=".php">../vendor/</directory>
+	    <directory suffix=".php">../tests/</directory>
+	    <directory suffix=".php">../core/tests/</directory>
+	    <directory suffix=".php">../modules/*/tests/</directory>
+        </blacklist>
+	<!-- <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../modules</directory>
+            <directory suffix=".php">../core</directory>
+	</whitelist> -->
+    </filter>
     <logging>
         <log type="coverage-html" target="../build/coverage" title="Centreon" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70"/>
         <log type="coverage-clover" target="../build/logs/clover.xml"/>
