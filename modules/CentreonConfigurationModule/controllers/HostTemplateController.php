@@ -85,10 +85,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      * @var array 
      */
     public static $relationMap = array(
-        'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
         'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
-        'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparent',
-        'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchild',
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Host\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate'

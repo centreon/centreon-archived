@@ -35,9 +35,9 @@
  */
 
 
-namespace \CentreonAdministation\Models\Aclgroup;
+namespace CentreonAdministation\Models\Aclgroup;
 
-use Centreon\Models\CentreonRelationModel;
+use \Centreon\Models\CentreonRelationModel;
 
 class Aclaction extends CentreonRelationModel
 {
