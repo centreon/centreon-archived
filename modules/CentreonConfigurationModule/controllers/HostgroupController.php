@@ -49,7 +49,7 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $datatableObject = '\CentreonConfiguration\Internal\HostGroupDatatable';
     
     public static $relationMap = array(
-        'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
+        'hg_hosts' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
     );
     
     public static $isDisableable = true;
@@ -219,6 +219,6 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function hostForHostGroupAction()
     {
-        parent::getRelations(static::$relationMap['host_hostgroups']);
+        parent::getRelations(static::$relationMap['hg_hosts']);
     }
 }

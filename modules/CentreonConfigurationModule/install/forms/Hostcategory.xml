@@ -63,5 +63,8 @@
 			<field name="hc_name" mandatory="1"></field>
 			<field name="hc_alias" mandatory="0"></field>
 		</step>
+		<step name="Relations">
+			<field name="hc_hosts" mandatory="0"></field>
+		</step>
 	</wizard>
 </forms>

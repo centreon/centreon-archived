@@ -46,6 +46,22 @@ class Hostchild extends CentreonRelationModel
     protected static $secondKey = "host_parent_hp_id";
     public static $firstObject = "\CentreonConfiguration\Models\Host";
     public static $secondObject = "\CentreonConfiguration\Models\Host";
+    
+    /**
+     * Used for inserting relation into database
+     *
+     * @param int $fkey
+     * @param int $skey
+     * @return void
+     */
+    public static function insert($fkey, $skey = null)
+    {
+        $sql = "INSERT INTO " . static::$relationTable . " ( " . static::$firstKey . ", " . static::$secondKey . ") 
+            VALUES (?, ?)";
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($skey, $fkey));
+    }
 
     /**
      * Get Merged Parameters from seperate tables

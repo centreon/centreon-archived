@@ -291,7 +291,7 @@
 		<section name="Extended information">
 		</section>
 	</form>
-	<wizard name="add_host">
+	<wizard name="add_servicetemplate">
 	  <route>/configuration/servicetemplate/add</route>
 	  <step name="General">
 	    <field name="service_description" mandatory="1"></field>
