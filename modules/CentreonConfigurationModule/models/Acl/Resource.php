@@ -42,7 +42,7 @@ namespace CentreonConfiguration\Models\Acl;
  *
  * @author sylvestre
  */
-class Resource extends \CentreonConfiguration\Models\Object
+class Resource extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "acl_resources";
     protected static $primaryKey = "acl_res_id";
