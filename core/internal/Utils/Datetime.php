@@ -66,11 +66,7 @@ class Datetime
             'i' => array('min', 'min'),
             's' => array('sec', 'sec')
         );
-        if (version_compare(phpversion(), '5.4.0', '<')) {
-            $dateInterval = new DateInterval($diff);
-        } else {
-            $dateInterval = new \DateInterval('PT' . $diff . 'S');
-        }
+        $dateInterval = new DateInterval($diff);
         $formatedStr = '';
         $newFormatedStr = '';
         $count = 0;
