@@ -258,6 +258,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
     protected function formatDatas(&$resultSet)
     {
         $previousHost = '';
+        $router = Di::getDefault()->get('router');
         foreach ($resultSet as &$myServiceSet) {
             
             // Keep up
@@ -269,7 +270,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = '<span data-overlay-url="/configuration/host/snapshot/'.
+                $myServiceSet['host_name'] = '<span data-overlay-url="'.$router->getPathFor('/configuration/host/snapshot/').
                     $myServiceSet['host_id'].
                     '"><span class="overlay">'.
                     HostRepository::getIconImage(
@@ -304,15 +305,13 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             $tplRoute = str_replace(
                 "//",
                 "/",
-                Di::getDefault()
-                    ->get('router')
-                    ->getPathFor(
-                        '/configuration/servicetemplate/[i:id]',
-                        array('id' => $tplArr['id'])
-                    )
+                $router->getPathFor(
+                    '/configuration/servicetemplate/[i:id]',
+                    array('id' => $tplArr['id'])
+                )
             );
             
-            $tplStr .= '<span data-overlay-url="/configuration/servicetemplate/viewconf/'.
+            $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/configuration/servicetemplate/viewconf/').
                 $myServiceSet['service_template_model_stm_id'].
                 '"><a href="'.
                 $tplRoute.
@@ -322,14 +321,14 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
             
-            $myServiceSet['service_description'] = '<span data-overlay-url="/configuration/service/snapshot/'.
+            $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor('/configuration/service/snapshot/').
                 $myServiceSet['service_id'].
                 '"><span class="overlay">'.
                 ServiceRepository::getIconImage($myServiceSet['service_id']).
                 '&nbsp;'.
                 $myServiceSet['service_description'].
                 '</span></span>';
-            $myServiceSet['service_description'] .= '</a><a href="#" data-overlay-url="/realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip">';
+            $myServiceSet['service_description'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor('/realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip').'">';
             $myServiceSet['service_description'] .= ServiceRealTimeRepository::getStatusBadge(
                 ServiceRealTimeRepository::getStatus($myServiceSet["host_id"], $myServiceSet["service_id"])
             );
