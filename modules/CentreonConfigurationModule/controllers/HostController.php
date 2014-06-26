@@ -233,7 +233,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function parentForHostAction()
     {
-        $di = \Centreon\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -254,7 +254,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
             $finalHostList[] = array(
                 "id" => $hostparent['host_id'],
                 "text" => $hostparent['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                "theming" => HostRepository::getIconImage(
                     $hostparent['host_name']
                 ).' '.$hostparent['host_name']
             );
@@ -270,7 +270,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function childForHostAction()
     {
-        $di = \Centreon\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -291,7 +291,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
             $finalHostList[] = array(
                 "id" => $hostchild['host_id'],
                 "text" => $hostchild['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                "theming" => HostRepository::getIconImage(
                     $hostchild['host_name']
                 ).' '.$hostchild['host_name']
             );
@@ -378,7 +378,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function pollerForHostAction()
     {
-        $di = \Centreon\Di::getDefault();
+        $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');

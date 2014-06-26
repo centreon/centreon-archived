@@ -200,16 +200,27 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
                         if (!isset($givenParameters[$k])) {
                             continue;
                         }
-                        $arr = explode(',', $givenParameters[$k]);
+                        if ($rel::$firstObject == $this->objectClass) {
+                            $rel::delete($id);
+                        } else {
+                            $rel::delete(null, $id);
+                        }
+                        $arr = explode(',', ltrim($givenParameters[$k], ','));
                         $db->beginTransaction();
+                        
                         foreach ($arr as $relId) {
-                            if (!is_numeric($relId)) {
-                                continue;
-                            }
-                            if ($rel::$firstObject == $this->objectClass) {
-                                $rel::insert($id, $relId);
-                            } else {
-                                $rel::insert($relId, $id);
+                            $relId = trim($relId);
+                            if (is_numeric($relId)) {
+                                if ($rel::$firstObject == $this->objectClass) {
+                                    $rel::insert($id, $relId);
+                                } else {
+                                    $rel::insert($relId, $id);
+                                }
+                            } elseif (!empty($relId)) {
+                                $complexeRelId = explode('_', $relId);
+                                if ($rel::$firstObject == $this->objectClass) {
+                                    $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
+                                }
                             }
                         }
                         $db->commit();
@@ -306,9 +317,11 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
                         } else {
                             $rel::delete(null, $id);
                         }
-                        $arr = explode(',', $givenParameters[$k]);
+                        $arr = explode(',', ltrim($givenParameters[$k], ','));
                         $db->beginTransaction();
+                        
                         foreach ($arr as $relId) {
+                            $relId = trim($relId);
                             if (is_numeric($relId)) {
                                 if ($rel::$firstObject == $this->objectClass) {
                                     $rel::insert($id, $relId);
