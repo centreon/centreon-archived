@@ -60,6 +60,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
             'type' => 'checkbox',
             'label' => 'Simple checkbox',
             'name' => 'testCheckbox',
+            'attributes' => json_encode(array('choices' => array('test' => 1))),
             'mandatory' => false
         );
         $form->addStatic($arr);
@@ -67,44 +68,10 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $tpl->assign('form', $sm['testCheckbox']['html']);
         $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
-            '<div class="form-group">'.
-            '<label class="sr-only" for="testClassiqueCheckbox">Test Checkbox</label>'.
-            '<input id="testClassiqueCheckbox" '.
-            'type="checkbox" name="testClassiqueCheckbox" class="form-controler" />'.
-            '</div>',
-            $printedResult
-        );
-    }
-    
-    public function testGroupCheckbox()
-    {
-        $tpl = Di::getDefault()->get('template');
-        $form = new Form('testForm');
-        $checkboxes['list'] = array(
-          array(
-              'name' => 'Checkbox1',
-              'label' => 'Checkbox1',
-              'value' => 'Checkbox1'
-          ),
-          array(
-              'name' => 'Checkbox2',
-              'label' => 'Checkbox2',
-              'value' => 'Checkbox2'
-          )
-        );
-        $form->addCheckBox('testClassiqueCheckbox', 'testClassiqueCheckbox', '&nbsp;', $checkboxes);
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch($this->formTpl);
-        $this->assertContains(
-            '<div class="form-group">'.
-            '<label class="sr-only" for="testClassiqueCheckbox">testClassiqueCheckbox</label>'.
-            '<div class="input-group">'.
-            '<input id="testClassiqueCheckbox[Checkbox1]" '.
-            'type="checkbox" name="testClassiqueCheckbox[Checkbox1]" class="form-controler" />'.
-            '<input id="testClassiqueCheckbox[Checkbox2]" '.
-            'type="checkbox" name="testClassiqueCheckbox[Checkbox2]" class="form-controler" />'.
-            '</div>'.
-            '</div>',
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testCheckbox">Simple checkbox</label>'.
+            '</div><div class="col-sm-9"><label class="label-controller" for="testCheckbox1">&nbsp;'.
+            '<input id="testCheckbox1" type="checkbox" name="testCheckbox" value=1  /> test</label>&nbsp;&nbsp;</div></div>',
             $printedResult
         );
     }
@@ -113,50 +80,24 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
-        $form->addRadio('testClassiqueRadio', _("Test Radio"), 'testRadio', _("Test Radio"));
-        $tpl->assign('form', $form->toSmarty());
+        $arr = array(
+            'type' => 'radio',
+            'label' => 'Simple radio',
+            'name' => 'testRadio',
+            'attributes' => json_encode(array('choices' => array('test' => 1))),
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testRadio']['html']);
         $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
-            '<div class="form-group">'.
-                '<label class="sr-only" for="testClassiqueRadio">Test Radio</label>'.
-                '<input id="testClassiqueRadio" '.
-                    'type="radio" name="testClassiqueRadio" value="Test Radio" class="form-controler" />'.
-            '</div>',
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testRadio">Simple radio</label></div>'.
+            '<div class="col-sm-9"><label class="label-controller" for="testRadio1">&nbsp;'.
+            '<input id="testRadio1" type="radio" name="testRadio" value=1  /> test</label>&nbsp;&nbsp;</div></div>',
             $printedResult
-        );
-    }
-    
-    public function testGroupRadio()
-    {
-        $tpl = Di::getDefault()->get('template');
-        $form = new Form('testForm');
-        $radios['list'] = array(
-          array(
-              'name' => 'Radio1',
-              'label' => 'Radio1',
-              'value' => 'Radio1'
-          ),
-          array(
-              'name' => 'Radio2',
-              'label' => 'Radio2',
-              'value' => 'Radio2'
-          )
-        );
-        $form->addRadio('testClassiqueRadio', _("Test Radio"), 'testRadio', '&nbsp;', $radios);
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch($this->formTpl);
-        $this->assertContains(
-            '<div class="form-group">'.
-                '<label class="sr-only" for="testClassiqueRadio">Test Radio</label>'.
-                '<div class="input-group">'.
-                    '<input id="testClassiqueRadio[Radio1]" '.
-                        'type="radio" name="testClassiqueRadio[Radio1]" value="Radio1" class="form-controler" />'.
-                    '<input id="testClassiqueRadio[Radio2]" '.
-                        'type="radio" name="testClassiqueRadio[Radio2]" value="Radio2" class="form-controler" />'.
-                '</div>'.
-            '</div>',
-            $printedResult
-        );
+        ); 
     }
     
     /*public function testSimpleSelect()
@@ -210,7 +151,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
             '</div>',
             $printedResult
         );
-    }*/
+    }
     
     public function testAddHidden()
     {
@@ -244,21 +185,28 @@ class FormTest extends \PHPUnit_Framework_TestCase
             '</div>',
             $printedResult
         );
-    }
+    }*/
     
     public function testAddText()
     {
         $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
-        $form->add('testClassiqueInput');
-        $tpl->assign('form', $form->toSmarty());
+        $arr = array(
+            'type' => 'text',
+            'label' => 'Test',
+            'name' => 'testText',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testText']['html']);
         $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
-            '<div class="form-group">'.
-            '<label class="sr-only" for="testClassiqueInput">testClassiqueInput</label>'.
-            '<input id="testClassiqueInput" '.
-            'type="text" name="testClassiqueInput" class="form-controler" placeholder="testClassiqueInput" />'.
-            '</div>',
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testText">Test</label></div>'.
+            '<div class="col-sm-9"><span>'.
+            '<input id="testText" type="text" name="testText" value="" class="form-control " placeholder="Test" />'.
+            '<span></div></div>',
             $printedResult
         );
     }
