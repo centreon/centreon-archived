@@ -9,7 +9,7 @@
 		<field name="command_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
           <help>The command name is used to identify and display this command in contact, host and service definitions.</help>
         </field>
-		<field name="command_type" label="Type" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+		<field name="command_type" label="Type" default_value="2" advanced="0" type="radio" parent_field="" mandatory="1">
 		  <attributes>
             <choices>
               <Notification>1</Notification>

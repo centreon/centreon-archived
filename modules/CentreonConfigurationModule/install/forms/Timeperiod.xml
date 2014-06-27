@@ -48,7 +48,7 @@
 	<route>/configuration/timeperiod/add</route>
 	<step name="General Informations">
 	  <field name="tp_name" mandatory="1"></field>
-	  <field name="tp_alias" mandatory="1"></field>
+	  <field name="tp_alias" mandatory="0"></field>
 	</step>
     <step name="Time range">
 	  <field name="tp_sunday" mandatory="0"></field>
