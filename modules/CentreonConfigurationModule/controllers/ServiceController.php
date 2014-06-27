@@ -178,6 +178,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function addAction()
     {
+        $this->tpl->assign('validateUrl', '/configuration/service/add');
         parent::addAction();
     }
     

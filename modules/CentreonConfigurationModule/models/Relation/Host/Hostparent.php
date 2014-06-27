@@ -62,7 +62,7 @@ class Hostparent extends CentreonRelationModel
         $stmt = $db->prepare($sql);
         $stmt->execute(array($skey, $fkey));
     }
-
+    
     /**
      * Get Merged Parameters from seperate tables
      *

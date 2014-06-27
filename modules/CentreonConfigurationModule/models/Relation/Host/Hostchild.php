@@ -62,6 +62,32 @@ class Hostchild extends CentreonRelationModel
         $stmt = $db->prepare($sql);
         $stmt->execute(array($skey, $fkey));
     }
+    
+    /**
+     * Used for deleting relation from database
+     *
+     * @param int $fkey
+     * @param int $skey
+     * @return void
+     */
+    public static function delete($skey, $fkey = null)
+    {
+        if (isset($fkey) && isset($skey)) {
+            $sql = "DELETE FROM " . static::$relationTable .
+                "WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
+            $args = array($fkey, $skey);
+        } elseif (isset($skey)) {
+            $sql = "DELETE FROM " . static::$relationTable . " WHERE ". static::$secondKey . " = ?";
+            $args = array($skey);
+        } else {
+            $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
+            $args = array($fkey);
+        }
+        
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sql);
+        $stmt->execute($args);
+    }
 
     /**
      * Get Merged Parameters from seperate tables

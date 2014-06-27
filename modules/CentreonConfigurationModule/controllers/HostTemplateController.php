@@ -35,10 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Relation\Host\Contact,
-    \CentreonConfiguration\Models\Relation\Host\Contactgroup,
-    \CentreonConfiguration\Models\Relation\Host\Hostchild,
-    \CentreonConfiguration\Models\Relation\Host\Hostparent,
+use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact,
+    \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup,
     \CentreonConfiguration\Repository\HostRepository;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
@@ -88,7 +86,8 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
         'host_categories' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory',
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup',
-        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate'
+        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate',
+        'hosttemplate_servicetemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate'
     );
     
     public static $isDisableable = true;
@@ -209,7 +208,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
             $finalContactList[] = array(
                 "id" => $contact['contact_id'],
                 "text" => $contact['contact_name'],
-                "theming" => \Centreon\Repository\UserRepository::getUserIcon(
+                "theming" => \CentreonConfiguration\Repository\UserRepository::getUserIcon(
                     $contact['contact_name'],
                     $contact['contact_email']
                 )
@@ -228,31 +227,19 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function contactgroupForHostTemplateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $contactgroupList = Contactgroup::getMergedParameters(
-            array('cg_id', 'cg_name'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('host.host_id' => $requestParam['id']),
-            "AND"
-        );
-        
-        $finalContactgroupList = array();
-        foreach ($contactgroupList as $contactgroup) {
-            $finalContactgroupList[] = array(
-                "id" => $contactgroup['cg_id'],
-                "text" => $contactgroup['cg_name']
-            );
-        }
-        
-        $router->response()->json($finalContactgroupList);
+        parent::getRelations(static::$relationMap['host_contactgroups']);
+    }
+    
+    /**
+     * Get list of hostgroups for a specific host template
+     *
+     *
+     * @method get
+     * @route /configuration/hosttemplate/[i:id]/servicetemplate
+     */
+    public function servicetemplateForHostTemplateAction()
+    {
+        parent::getRelations(static::$relationMap['hosttemplate_servicetemplates']);
     }
     
     /**

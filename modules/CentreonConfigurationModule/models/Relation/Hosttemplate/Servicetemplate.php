@@ -34,31 +34,30 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Hosttemplate;
 
 use \Centreon\Models\CentreonRelationModel;
 
-class Hostcategory extends CentreonRelationModel
+class Servicetemplate extends CentreonRelationModel
 {
-    protected static $relationTable = "hostcategories_relation";
-    protected static $firstKey = "hostcategories_hc_id";
-    protected static $secondKey = "host_host_id";
-    public static $firstObject = "\CentreonConfiguration\Models\Hostcategory";
-    public static $secondObject = "\CentreonConfiguration\Models\Hosttemplate";
+    protected static $relationTable = "host_service_relation";
+    protected static $firstKey = "host_host_id";
+    protected static $secondKey = "service_service_id";
+    public static $firstObject = "\CentreonConfiguration\Models\Hosttemplate";
+    public static $secondObject = "\CentreonConfiguration\Models\Servicetemplate";
     
     /**
-     * Get Merged Parameters from seperate tables
-     *
-     * @param array $firstTableParams
-     * @param array $secondTableParams
-     * @param int $count
-     * @param string $order
-     * @param string $sort
-     * @param array $filters
-     * @param string $filterType
-     * @param array $relationTableParams
-     * @return array
+     * 
+     * @param type $firstTableParams
+     * @param type $secondTableParams
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param type $filters
+     * @param type $filterType
+     * @param type $relationTableParams
+     * @return type
      */
     public static function getMergedParameters(
         $firstTableParams = array(),
@@ -95,22 +94,29 @@ class Hostcategory extends CentreonRelationModel
             $rString .= static::$relationTable.".".$rparams;
         }
         $sql = "SELECT $fString $sString $rString
-        		FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
-        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
-                    ." = ".static::$relationTable.".".static::$firstKey."
-        		AND ".static::$relationTable.".".static::$secondKey
-                    ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey()."
-                AND ".$secondObj::getTableName().".host_register = '0'";
+            FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
+            WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey."
+            AND ".static::$relationTable.".".static::$secondKey ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey() . "
+            AND host_register = '0'
+            AND service_register = '0' ";
         $filterTab = array();
         if (count($filters)) {
+            $sql .= " AND ( ";
+            $first = true;
             foreach ($filters as $key => $rawvalue) {
-                $sql .= " $filterType $key LIKE ? ";
+                if ($first) {
+                    $first = false;
+                } else {
+                    $sql .= $filterType;
+                }
+                $sql .= " $key LIKE ? ";
                 $value = trim($rawvalue);
                 $value = str_replace("\\", "\\\\", $value);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);
                 $filterTab[] = $value;
             }
+            $sql .= " ) ";
         }
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
@@ -122,32 +128,5 @@ class Hostcategory extends CentreonRelationModel
         $result = static::getResult($sql, $filterTab);
         return $result;
     }
-    
-    /**
-     * Used for deleting relation from database
-     *
-     * @param int $fkey
-     * @param int $skey
-     * @return void
-     */
-    public static function delete($fkey, $skey = null)
-    {
-        if (isset($fkey) && isset($skey)) {
-            $sql = "DELETE FROM " . static::$relationTable .
-                "WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
-            $args = array($fkey, $skey);
-        } elseif (isset($skey)) {
-            $sql = "DELETE FROM " . static::$relationTable . " WHERE ". static::$secondKey . " = ?";
-            $args = array($skey);
-        } else {
-            $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
-            $args = array($fkey);
-        }
-        
-        $sql .= "AND host_host_id IN (SELECT host_id FROM host WHERE host.host_register = '0')";
-        
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare($sql);
-        $stmt->execute($args);
-    }
+
 }

@@ -39,7 +39,7 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="host_check_command" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
@@ -131,11 +131,11 @@
 		</section>
 		<section name="Relations">
 		        <block name="Service templates relations">
-		                <field name="service_template_model_stm_id" label="Linked Service Templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		                <field name="hosttemplate_servicetemplates" label="Linked Service Templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		                  <attributes>
 		                    <object_type>object</object_type>
 		                    <defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
-		                    <listValuesRoute>/configuration/service/[i:id]/servicetemplate</listValuesRoute>
+		                    <listValuesRoute>/configuration/hosttemplate/[i:id]/servicetemplate</listValuesRoute>
 		                    <multiple>true</multiple>
 		                  </attributes>
 		                <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
@@ -239,7 +239,7 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="host_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+				<field name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
@@ -262,7 +262,7 @@
 			<field name="host_custommacros" mandatory="0"></field>
 		</step>
 		<step name="Relations">
-			<field name="service_template_model_stm_id" mandatory="0"></field>
+			<field name="hosttemplate_servicetemplates" mandatory="0"></field>
 		</step>
 	</wizard>
 </forms>

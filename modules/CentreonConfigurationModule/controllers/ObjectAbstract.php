@@ -186,9 +186,10 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
                 $columns = $class::getColumns();
                 $insertParams = array();
                 foreach ($givenParameters as $key => $value) {
-                    $value = trim($value);
-                    if (in_array($key, $columns) && (!empty($value))) {
-                        $insertParams[$key] = trim($value);
+                    if (in_array($key, $columns)) {
+                        if (!is_array($value) && !empty($value)) {
+                            $insertParams[$key] = trim($value);
+                        }
                     }
                 }
                 $id = $class::insert($insertParams);
