@@ -20,15 +20,19 @@
         </testsuite>
     </testsuites>
     <filter>
-	    <whitelist processUncoveredFilesFromWhitelist="true">
+        <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../</directory>
             <exclude>
                 <directory suffix=".php">../vendor/</directory>
-    	        <directory suffix=".php">../tests/</directory>
-    	        <directory suffix=".php">../core/tests/</directory>
-	            <directory suffix=".php">../modules/*/tests/</directory>
+                <directory suffix=".php">../tests/</directory>
+                <directory suffix=".php">../core/tests/</directory>
+                <directory suffix=".php">../modules/*/tests/</directory>
+                <directory suffix=".php">../modules/*/widgets/</directory>
+                <directory suffix=".php">../www/</directory>
+                <file>../bootstrap.php</file>
+                <file>../core/commandLine/bootstrap.php</file>
             </exclude>
-    	</whitelist>
+        </whitelist>
     </filter>
     <logging>
         <log type="coverage-html" target="../build/coverage" title="Centreon" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70"/>
