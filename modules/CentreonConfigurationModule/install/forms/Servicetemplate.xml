@@ -3,7 +3,7 @@
 	<form name="servicetemplate_form">
 		<route>/configuration/servicetemplate/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/service</redirect_route>
+		<redirect_route>/configuration/servicetemplate</redirect_route>
 		<section name="Service configuration">
 			<block name="General information">
 				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
