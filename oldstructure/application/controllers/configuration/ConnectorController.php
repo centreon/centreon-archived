@@ -85,7 +85,7 @@ class ConnectorController extends \Controllers\ObjectAbstract
      */
     public function createAction()
     {
-        var_dump($this->getParams());
+        parent::createAction();
     }
 
     /**
