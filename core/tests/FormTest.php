@@ -4,7 +4,8 @@ namespace Test\Centreon;
 use Centreon\Internal\Config,
     Centreon\Internal\Di,
     Centreon\Internal\Template,
-    Centreon\Internal\Form;
+    Centreon\Internal\Form,
+    Centreon\Internal\Router;
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,12 +22,23 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $tpl = new Template();
         $di->setShared('template', $tpl);
         $tpl->setTemplateDir(CENTREON_PATH . '/core/tests/views/');
+        $di->set(
+            'router',
+            function () {
+                $modulesToParse = array();
+                foreach (glob(CENTREON_PATH . "/modules/*Module") as $moduleTemplateDir) {
+                    $modulesToParse[] = basename($moduleTemplateDir);
+                }
+                $router = new Router();
+                $router->parseRoutes($modulesToParse);
+                return $router;
+            }
+        );
         parent::setUp();
     }
     
     public function tearDown()
     {
-        Di::reset();
     }
     
     public function testAddButton()
@@ -100,93 +112,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
         ); 
     }
     
-    /*public function testSimpleSelect()
-    {
-        $tpl = Di::getDefault()->get('template');
-        $form = new Form('testForm');
-        $form->addSelect('testClassiqueSelect',  _("Test Select"), array(
-            'This is test 1' => 'test1', 'This is test 2' => 'test2'));
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddSimpleSelect.tpl');
-        $this->assertContains(
-            '<div class="form-group">'.
-            '<label class="sr-only" for="testClassiqueSelect">Test Select</label>'.
-            '<select name="testClassiqueSelect">'.
-            '<option value="test1">This is test 1</option>'.
-            '<option value="test2">This is test 2</option>'.
-            '</select>'.
-            '</div>',
-            $printedResult
-        );
-    }
-    
-    public function testMultiSelect()
-    {
-        $tpl = Di::getDefault()->get('template');
-        $form = new Form('testForm');
-        $selects['list'] = array(
-          array(
-              'name' => 'Select1',
-              'label' => 'Select1',
-              'value' => 'Select1'
-          ),
-          array(
-              'name' => 'Select2',
-              'label' => 'Select2',
-              'value' => 'Select2'
-          )
-        );
-        $form->addMultiSelect('testClassiqueSelect', 'testClassiqueSelect', '&nbsp;', $selects);
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddSimpleSelect.tpl');
-        $this->assertContains(
-            '<div class="form-group">'.
-            '<label class="sr-only" for="testClassiqueSelect">testClassiqueSelect</label>'.
-            '<div class="input-group">'.
-            '<input id="testClassiqueSelect[Select1]" '.
-            'type="select" name="testClassiqueSelect[Select1]" class="form-controler" />'.
-            '<input id="testClassiqueSelect[Select2]" '.
-            'type="select" name="testClassiqueSelect[Select2]" class="form-controler" />'.
-            '</div>'.
-            '</div>',
-            $printedResult
-        );
-    }
-    
-    public function testAddHidden()
-    {
-        $tpl = Di::getDefault()->get('template');
-        $form = new Form('testForm');
-        $form->add('o', 'hidden', '', array('value' => '0'));
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch('form/testAddHidden.tpl');
-        $this->assertContains(
-            '<input '
-            . 'name="o" '
-            . 'type="hidden" '
-            . 'value="0" '
-            . '/>',
-            $printedResult
-        );
-    }
-    
-    public function testAddReset()
-    {
-        $tpl = Di::getDefault()->get('template');
-        $form = new Form('testForm');
-        $form->add('testClassiqueInput', 'reset', _("Reset"));
-        $tpl->assign('form', $form->toSmarty());
-        $printedResult = $tpl->fetch($this->formTpl);
-        $this->assertContains(
-            '<div class="form-group">'.
-            '<label class="sr-only" for="testClassiqueInput">testClassiqueInput</label>'.
-            '<input id="testClassiqueInput" '.
-            'type="reset" name="testClassiqueInput" value="Reset" class="form-controler" />'.
-            '</div>',
-            $printedResult
-        );
-    }*/
-    
     public function testAddText()
     {
         $tpl = Di::getDefault()->get('template');
@@ -210,4 +135,171 @@ class FormTest extends \PHPUnit_Framework_TestCase
             $printedResult
         );
     }
+
+    /**
+     *
+     * @todo
+     */
+    public function testAddEmail()
+    {
+        /*
+        $tpl = Di::getDefault()->get('template');
+        $form = new Form('testForm');
+        $arr = array(
+            'type' => 'email',
+            'label' => 'Test',
+            'name' => 'testEmail',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testEmail']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
+        $this->assertContains(
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testEmail">Test</label></div>'.
+            '<div class="col-sm-9"><span>'.
+            '<input id="testEmail" type="text" name="testEmail" value="" class="form-control " placeholder="Test" />'.
+            '<span></div></div>',
+            $printedResult
+        );
+         */
+    }
+
+    public function testAddFloat()
+    {
+        $tpl = Di::getDefault()->get('template');
+        $form = new Form('testForm');
+        $arr = array(
+            'type' => 'float',
+            'label' => 'Test',
+            'name' => 'testFloat',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testFloat']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
+        $this->assertContains(
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testFloat">Test</label></div>'.
+            '<div class="col-sm-9"><span>'.
+            '<input id="testFloat" type="text" name="testFloat" value="" class="form-control " placeholder="Test" />'.
+            '<span></div></div>',
+            $printedResult
+        );
+    }
+
+    public function testAddInt()
+    {
+        $tpl = Di::getDefault()->get('template');
+        $form = new Form('testForm');
+        $arr = array(
+            'type' => 'integer',
+            'label' => 'Test',
+            'name' => 'testInt',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testInt']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
+        $this->assertContains(
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testInt">Test</label></div>'.
+            '<div class="col-sm-9"><span>'.
+            '<input id="testInt" type="text" name="testInt" value="" class="form-control " placeholder="Test" />'.
+            '<span></div></div>',
+            $printedResult
+        );
+    }
+
+    /**
+     *
+     * @todo
+     */
+    public function testAddIp()
+    {
+/*        $tpl = Di::getDefault()->get('template');
+        $form = new Form('testForm');
+        $arr = array(
+            'type' => 'ipaddress',
+            'label' => 'Test',
+            'name' => 'testIp',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testIp']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
+        $this->assertContains(
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testIp">Test</label></div>'.
+            '<div class="col-sm-9"><span>'.
+            '<input id="testIp" type="text" name="testIp" value="" class="form-control " placeholder="Test" />'.
+            '<span></div></div>',
+            $printedResult
+        );*/
+    }
+
+    /**
+     *
+     * @todo
+     */
+    public function testAddPassword()
+    {
+        /*$tpl = Di::getDefault()->get('template');
+        $form = new Form('testForm');
+        $arr = array(
+            'type' => 'password',
+            'label' => 'Test',
+            'name' => 'testPass',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testPass']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
+        $this->assertContains(
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testPass">Test</label></div>'.
+            '<div class="col-sm-9">'.
+            '<input id="testPass" type="password" name="testPass" class="form-control" placeholder="testPass" />'.
+            '</div></div>',
+            $printedResult
+        );*/
+    }
+
+    /**
+     *
+     * @todo
+     */
+    public function testSelect()
+    {
+
+    }
+
+    public function testAddTextarea()
+    {
+        $tpl = Di::getDefault()->get('template');
+        $form = new Form('testForm');
+        $arr = array(
+            'type' => 'textarea',
+            'label' => 'Test',
+            'name' => 'testTextarea',
+            'mandatory' => false
+        );
+        $form->addStatic($arr);
+        $sm = $form->toSmarty();
+        $tpl->assign('form', $sm['testTextarea']['html']);
+        $printedResult = $tpl->fetch($this->formTpl);
+        $this->assertContains(
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
+            '<label class="label-controller" for="testTextarea">Test</label></div>'.
+            '<div class="col-sm-9">'.
+            '<textarea id="testTextarea" name="testTextarea" class="form-control " rows="3" placeholder="testTextarea" > </textarea></div></div>',
+            $printedResult
+        );
+    }
+
 }
