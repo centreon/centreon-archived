@@ -36,7 +36,7 @@
 $centreon_path = dirname(__DIR__);
 
 /* Define the path to configuration files */
-define('CENTREON_ETC', '../config/');
+define('CENTREON_ETC', $centreon_path . '/config/');
 
 ini_set('display_errors', 'On');
 
