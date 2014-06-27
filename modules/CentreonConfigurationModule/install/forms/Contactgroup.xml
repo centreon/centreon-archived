@@ -13,7 +13,7 @@
 				<field name="contactgroup_contacts" label="Contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/usergroup/[i:id]/contact</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>

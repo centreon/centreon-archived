@@ -45,8 +45,17 @@
 		</field>
 	  </block>
 	  <block name="Additional information">
-		<field name="command_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0"></field>
+		<field name="command_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
       </block>
     </section>
   </form>
+	<wizard name="add_command">
+		<route>/configuration/command/add</route>
+		<step name="General">
+			<field name="command_name" mandatory="1"></field>
+			<field name="command_type" mandatory="1"></field>
+			<field name="command_line" mandatory="1"></field>
+			<field name="connector_id" mandatory="0"></field>
+		</step>
+	</wizard>
 </forms>
