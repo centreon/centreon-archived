@@ -85,7 +85,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      * @var array 
      */
     public static $relationMap = array(
-        'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory',
+        'host_categories' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory',
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate'
@@ -276,7 +276,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function hostcategoryForHostTemplateAction()
     {
-        parent::getRelations(static::$relationMap['host_hostcategories']);
+        parent::getRelations(static::$relationMap['host_categories']);
     }
 
     /**
