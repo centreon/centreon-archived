@@ -1,9 +1,0 @@
-/.project
-/.buildpath
-/.settings
-/vendor
-composer.phar
-composer.lock
-phpunit.xml
-.DS_Store
-*~
