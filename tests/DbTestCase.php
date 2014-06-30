@@ -2,6 +2,10 @@
 
 namespace Test\Centreon;
 
+/**
+ *
+ * @todo use mysql
+ */
 class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 {
     private $conn = null;
