@@ -301,7 +301,7 @@
             </choices>
 		  </attributes>
 		</field>
-		<field name="service_event_handler" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+		<field name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
