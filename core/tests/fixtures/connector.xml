@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+	<table name="connector">
+		<column>id</column>
+		<column>name</column>
+		<column>description</column>
+		<column>command_line</column>
+		<column>enabled</column>
+		<column>created</column>
+		<column>modified</column>
+		<row>
+			<value>1</value>
+			<value>Perl Connector</value>
+			<value></value>
+			<value>centreon_connector_perl</value>
+			<value>1</value>
+			<value>1396529747</value>
+			<value>1396529747</value>
+		</row>
+	</table>
+</dataset>
