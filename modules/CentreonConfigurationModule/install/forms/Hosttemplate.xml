@@ -6,7 +6,12 @@
 		<redirect_route>/configuration/hosttemplate</redirect_route>
 		<section name="Host configuration">
 			<block name="General information">
-				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+					<validators>
+				 		<validator events="blur">unique</validator>
+						<validator events="blur">forbiddenChar</validator>
+					</validators>
+				</field>
 				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
@@ -69,6 +74,19 @@
 					</attributes>
 				</field>
 			</block>
+			<block name="Additional information">
+				<field name="host_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
+				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
+					<attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+					</attributes>
+				</field>
+			</block>
+		</section>
+		<section name="Notification">
 			<block name="Notification">
 				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
@@ -112,18 +130,6 @@
                             <Recovery>1</Recovery>
                             <Flapping>1</Flapping>
                             <Downtime_Scheduled>1</Downtime_Scheduled>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="host_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
-			</block>
-			<block name="Additional information">
-				<field name="host_comment" label="Comments" default_value="" advanced="0" type="textarea" parent_field="" mandatory="0"></field>
-				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
-					<attributes>
-                        <choices>
-                            <Enabled>1</Enabled>
-                            <Disabled>0</Disabled>
                         </choices>
 					</attributes>
 				</field>

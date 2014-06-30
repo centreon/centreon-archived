@@ -6,7 +6,12 @@
 		<redirect_route>/configuration/user</redirect_route>
 		<section name="General">
 			<block name="General information">
-				<field name="contact_alias" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="contact_alias" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+					<validators>
+						<validator events="blur">unique</validator>
+						<validator events="blur">forbiddenChar</validator>
+					</validators>
+				</field>
 				<field name="contact_name" label="Full name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="contact_email" label="E-mail address" default_value="" advanced="0" type="email" parent_field="" mandatory="1"></field>
 				<field name="contact_template_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">

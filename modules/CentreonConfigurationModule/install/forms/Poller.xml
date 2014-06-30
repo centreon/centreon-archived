@@ -7,6 +7,10 @@
 	<section name="General">
 	  <block name="General settings">
 		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+			<validators>
+				<validator events="blur">unique</validator>
+				<validator events="blur">forbiddenChar</validator>
+			</validators>
           <help>Name which will be used for identifying the poller.</help>
 		</field>
 		<field name="ns_ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">

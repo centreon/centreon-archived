@@ -386,7 +386,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function serviceCategoryForServiceAction()
     {
-        parent::getRelations(static::$relationMap['service_servicecategories']);
+        parent::getRelations(static::$relationMap['service_categories']);
     }
     
     /**

@@ -6,7 +6,12 @@
 		<redirect_route>/configuration/trap</redirect_route>
 		<section name="Trap configuration">
 			<block name="General information">
-				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+				    <validators>
+				        <validator events="blur">unique</validator>
+						<validator events="blur">forbiddenChar</validator>
+				    </validators>
+				</field>
 				<field name="traps_oid" label="OID" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
