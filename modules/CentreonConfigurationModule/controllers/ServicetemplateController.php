@@ -50,7 +50,8 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
         'service_childs' => '\CentreonConfiguration\Models\Relation\Service\Servicechild',
         'service_contacts' => '\CentreonConfiguration\Models\Relation\Service\Contact',
         'service_contactgroups' => '\CentreonConfiguration\Models\Relation\Service\Contactgroup',
-        'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate'
+        'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
+        'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate'
     );
     
     public static $isDisableable = true;
@@ -313,7 +314,7 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
      * @method get
      * @route /configuration/servicetemplate/[i:id]/servicecategory
      */
-    public function serviceCategoryForServiceAction()
+    public function serviceCategoryForServiceTemplateAction()
     {
         parent::getRelations(static::$relationMap['service_servicecategories']);
     }
@@ -328,6 +329,18 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     public function serviceTemplateForServiceTemplateAction()
     {
         parent::getSimpleRelation('service_template_model_stm_id', '\CentreonConfiguration\Models\Servicetemplate');
+    }
+    
+    /**
+     * Get list of service categories for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/servicetemplate/[i:id]/trap
+     */
+    public function trapForServiceTemplateAction()
+    {
+        parent::getRelations(static::$relationMap['service_traps']);
     }
 
     /**

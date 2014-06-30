@@ -175,8 +175,8 @@
 				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/snmptraps/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/servicetemplate/[i:id]/snmptraps</listValuesRoute>
+						<defaultValuesRoute>/configuration/trap/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/servicetemplate/[i:id]/trap</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>

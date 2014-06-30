@@ -65,9 +65,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         /* Init template */
         $di = \Centreon\Internal\Di::getDefault();
         $tpl = $di->get('template');
+        
+        // Load CssFile
+        $tpl->addCss('jquery.fileupload.css');
 
         /* Load CssFile */
         $tpl->addCss('jquery.dataTables.min.css')
+            ->addCss('jquery.fileupload.css')
             ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
@@ -90,6 +94,14 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('centreon.search.js')
+            ->addJs('tmpl.min.js')
+            ->addJs('load-image.min.js')
+            ->addJs('canvas-to-blob.min.js')
+            ->addJs('jquery.fileupload.js')
+            ->addJs('jquery.fileupload-process.js')
+            ->addJs('jquery.fileupload-image.js')
+            ->addJs('jquery.fileupload-validate.js')
+            ->addJs('jquery.fileupload-ui.js')
             ->addJs('centreon-wizard.js');
 
         /* Set Cookie */
