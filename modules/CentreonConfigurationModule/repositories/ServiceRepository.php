@@ -471,7 +471,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
             if (!is_null($esiResult['esi_icon_image'])) {
                 $finalRoute .= "<img src='".$finalRoute.$esiResult['esi_icon_image'].">";
                 break;
-            } elseif (is_null($esiResult['esi_icon_image']) && !is_null($esiResult['service_template_model_stm_id'])) {
+            } elseif (is_null($esiResult['esi_icon_image']) && is_null($esiResult['service_template_model_stm_id'])) {
                 $finalRoute = "<i class='fa fa-gear'></i>";
                 break;
             }
