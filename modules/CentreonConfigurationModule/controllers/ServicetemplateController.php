@@ -35,6 +35,9 @@
 
 namespace CentreonConfiguration\Controllers;
 
+/**
+ * 
+ */
 class ServicetemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'ServiceTemplate';
@@ -43,17 +46,19 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceTemplateDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
     public static $relationMap = array(
-        'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
-        'service_hosts' => '\CentreonConfiguration\Models\Relation\Service\Host',
-        'service_categories' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
-        'service_parents' => '\CentreonConfiguration\Models\Relation\Service\Serviceparent',
-        'service_childs' => '\CentreonConfiguration\Models\Relation\Service\Servicechild',
-        'service_contacts' => '\CentreonConfiguration\Models\Relation\Service\Contact',
-        'service_contactgroups' => '\CentreonConfiguration\Models\Relation\Service\Contactgroup',
+        'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup',
+        'service_template_hosts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Hosttemplate',
+        'service_template_service_categories' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicecategory',
+        'service_contacts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Contact',
+        'service_contactgroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Contactgroup',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
         'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate'
     );
     
+    /**
+     *
+     * @var boolean 
+     */
     public static $isDisableable = true;
 
     /**
@@ -288,11 +293,11 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/host
+     * @route /configuration/servicetemplate/[i:id]/hosttemplate
      */
-    public function hostForServiceAction()
+    public function hosttemplateForServiceAction()
     {
-        parent::getRelations(static::$relationMap['service_hosts']);
+        parent::getRelations(static::$relationMap['service_template_hosts']);
     }
     
     /**
@@ -316,7 +321,7 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
      */
     public function serviceCategoryForServiceTemplateAction()
     {
-        parent::getRelations(static::$relationMap['service_servicecategories']);
+        parent::getRelations(static::$relationMap['service_template_service_categories']);
     }
     
     /**

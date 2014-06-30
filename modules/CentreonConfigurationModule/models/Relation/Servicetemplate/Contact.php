@@ -39,12 +39,12 @@ namespace CentreonConfiguration\Models\Relation\Servicetemplate;
 
 use \Centreon\Models\CentreonRelationModel;
 
-class Servicecategory extends CentreonRelationModel
+class Contact extends CentreonRelationModel
 {
-    protected static $relationTable = "service_categories_relation";
-    protected static $firstKey = "sc_id";
+    protected static $relationTable = "contact_service_relation";
+    protected static $firstKey = "contact_id";
     protected static $secondKey = "service_service_id";
-    public static $firstObject = "\CentreonConfiguration\Models\Servicecategory";
+    public static $firstObject = "\CentreonConfiguration\Models\Contact";
     public static $secondObject = "\CentreonConfiguration\Models\Servicetemplate";
     
     /**
@@ -109,7 +109,7 @@ class Servicecategory extends CentreonRelationModel
         $filterType = "OR",
         $relationTableParams = array()
     ) {
-        $filters['service_register'] = '0';
+        $filters['service_register'] = '1';
         return parent::getMergedParametersBySearch(
             $firstTableParams,
             $secondTableParams,

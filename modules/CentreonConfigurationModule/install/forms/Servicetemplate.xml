@@ -161,7 +161,7 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="service_servicecategories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+				<field name="service_template_service_categories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/servicecategory/formlist</defaultValuesRoute>

@@ -35,55 +35,17 @@
  */
 
 
-namespace CentreonConfiguration\Models\Relation\Servicetemplate;
+namespace CentreonConfiguration\Models\Relation\Service;
 
 use \Centreon\Models\CentreonRelationModel;
 
-class Servicecategory extends CentreonRelationModel
+class Servicegroup extends CentreonRelationModel
 {
-    protected static $relationTable = "service_categories_relation";
-    protected static $firstKey = "sc_id";
+    protected static $relationTable = "servicegroup_relation";
+    protected static $firstKey = "servicegroup_sg_id";
     protected static $secondKey = "service_service_id";
-    public static $firstObject = "\CentreonConfiguration\Models\Servicecategory";
-    public static $secondObject = "\CentreonConfiguration\Models\Servicetemplate";
-    
-    /**
-     * 
-     * @param type $firstTableParams
-     * @param type $secondTableParams
-     * @param type $count
-     * @param type $offset
-     * @param type $order
-     * @param type $sort
-     * @param type $filters
-     * @param type $filterType
-     * @param type $relationTableParams
-     * @return type
-     */
-    public static function getMergedParameters(
-        $firstTableParams = array(),
-        $secondTableParams = array(),
-        $count = -1,
-        $offset = 0,
-        $order = null,
-        $sort = "ASC",
-        $filters = array(),
-        $filterType = "OR",
-        $relationTableParams = array()
-    ) {
-        $filters['service_register'] = '0';
-        return parent::getMergedParameters(
-            $firstTableParams,
-            $secondTableParams,
-            $count,
-            $offset,
-            $order,
-            $sort,
-            $filters,
-            $filterType,
-            $relationTableParams
-        );
-    }
+    public static $firstObject = "\CentreonConfiguration\Models\Servicegroup";
+    public static $secondObject = "\CentreonConfiguration\Models\Service";
     
     /**
      * 
@@ -109,7 +71,7 @@ class Servicecategory extends CentreonRelationModel
         $filterType = "OR",
         $relationTableParams = array()
     ) {
-        $filters['service_register'] = '0';
+        $filters['service_register'] = '1';
         return parent::getMergedParametersBySearch(
             $firstTableParams,
             $secondTableParams,
