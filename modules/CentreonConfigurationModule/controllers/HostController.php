@@ -62,7 +62,8 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchild',
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Host\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
-        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate'
+        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
+        'icon' => '\CentreonConfiguration\Models\Relation\Host\Icon'
     );
     
     public static $isDisableable = true;
@@ -213,6 +214,44 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function hostcategoryForHostAction()
     {
         parent::getRelations(static::$relationMap['host_hostcategories']);
+    }
+    
+    /**
+     * Get list of hostcategories for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/icon
+     */
+    public function iconForHostAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $objCall = static::$relationMap['icon'];
+        $icon = $objCall::getIconForHost($requestParam['id']);
+        $finalIconList = array();
+        if (count($icon) > 0) {
+            $filenameExploded = explode('.', $icon['filename']);
+            $nbOfOccurence = count($filenameExploded);
+            $fileFormat = $filenameExploded[$nbOfOccurence-1];
+            $filenameLength = strlen($icon['filename']);
+            $routeAttr = array(
+                'image' => substr($icon['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                'format' => '.'.$fileFormat
+            );
+            $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+            $finalIconList = array(
+                "id" => $icon['binary_id'],
+                "text" => $icon['filename'],
+                "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$icon['filename']
+            );
+        }
+        
+        $router->response()->json($finalIconList);
+        
     }
 
     /**
