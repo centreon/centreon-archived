@@ -63,7 +63,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Host\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-        'icon' => '\CentreonConfiguration\Models\Relation\Host\Icon'
+        'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon'
     );
     
     public static $isDisableable = true;
@@ -230,7 +230,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $objCall = static::$relationMap['icon'];
+        $objCall = static::$relationMap['host_icon'];
         $icon = $objCall::getIconForHost($requestParam['id']);
         $finalIconList = array();
         if (count($icon) > 0) {
