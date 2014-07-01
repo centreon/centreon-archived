@@ -1,4 +1,4 @@
-$('.clone-trigger').click(function() {
+$("body").on("click", ".clone-trigger", function() {
     
     $('.clone_template').clone()
             .css("display", "block").removeClass('clone_template').addClass('cloned_element')
