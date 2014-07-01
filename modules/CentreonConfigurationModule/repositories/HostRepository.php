@@ -59,8 +59,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         
-        $config = \Centreon\Internal\Di::getDefault()->get('config');
-        $finalRoute = rtrim($config->get('global', 'base_url'), '/');
+        $finalRoute = "";
         
         while (1) {
             $stmt = $dbconn->query(
@@ -90,11 +89,11 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                     'image' => substr($ehiResult['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
                     'format' => '.'.$fileFormat
                 );
-                $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]/thumb', $routeAttr);
+                $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
                 $finalRoute .= '<img src="'.$imgSrc.'" style="width:20px;height:20px;">';
                 break;
             } elseif (is_null($ehiResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
-                $finalRoute = "<i class='fa fa-hdd-o'></i>";
+                $finalRoute .= "<i class='fa fa-hdd-o'></i>";
                 break;
             }
             
