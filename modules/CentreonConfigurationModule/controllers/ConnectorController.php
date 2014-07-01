@@ -45,7 +45,9 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     
     public static $isDisableable = true;
     
-    public static $relationMap = array();
+    public static $relationMap = array(
+        'connector_command' => '\CentreonConfiguration\Models\Relation\Connector\Command'
+    );
 
     /**
      * List connectors
