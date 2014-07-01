@@ -177,7 +177,7 @@ class ToolsController extends \Centreon\Internal\Controller
                     'filetype' => 1,
                     'binary_content' => file_get_contents($fileDestination)
                 );
-                \Models\File::insert($fileParam);
+                \Centreon\Models\File::insert($fileParam);
                 
                 $fileUploadResult = array(
                     'url' => $baseUrl.$uploadedFile['name'],
@@ -209,7 +209,7 @@ class ToolsController extends \Centreon\Internal\Controller
                     
                     $thumbDestination = realpath(__DIR__.'/../../www/uploads/imagesthumb/').'/'.$uploadedFile['name'];
                     $thumbBaseUrl = rtrim($config->get('global', 'base_url'), '/').'/uploads/imagesthumb/';
-
+                    
                     // Calcul des nouvelles dimensions
                     list($width, $height) = getimagesize($fileDestination);
                     if (($width > 80) || ($height > 80)) {

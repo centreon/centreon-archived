@@ -94,6 +94,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('centreon.search.js')
+            ->addJs('centreon-clone.js')
             ->addJs('tmpl.min.js')
             ->addJs('load-image.min.js')
             ->addJs('canvas-to-blob.min.js')

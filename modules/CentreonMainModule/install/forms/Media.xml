@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="hosttemplate_form">
+		<route>/administration/media/image/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/administration/media/image</redirect_route>
+		<section name="Media">
+			<block name="Add Media">
+				<field name="media_file" label="Media file" default_value="" advanced="0" type="file" parent_field="" mandatory="0"></field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_media">
+		<route>/administration/media/image/add</route>
+		<step name="Add Media">
+			<field name="media_file" mandatory="0"></field>
+		</step>
+	</wizard>
+</forms>
