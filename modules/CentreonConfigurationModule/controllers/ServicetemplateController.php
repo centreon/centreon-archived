@@ -52,7 +52,8 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
         'service_contacts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Contact',
         'service_contactgroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Contactgroup',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
-        'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate'
+        'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate',
+        'service_icon' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Icon'
     );
     
     /**
@@ -346,6 +347,43 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     public function trapForServiceTemplateAction()
     {
         parent::getRelations(static::$relationMap['service_traps']);
+    }
+    
+    /**
+     * Get list of icons for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/servicetemplate/[i:id]/icon
+     */
+    public function iconForServiceTemplateAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $objCall = static::$relationMap['service_icon'];
+        $icon = $objCall::getIconForService($requestParam['id']);
+        $finalIconList = array();
+        if (count($icon) > 0) {
+            $filenameExploded = explode('.', $icon['filename']);
+            $nbOfOccurence = count($filenameExploded);
+            $fileFormat = $filenameExploded[$nbOfOccurence-1];
+            $filenameLength = strlen($icon['filename']);
+            $routeAttr = array(
+                'image' => substr($icon['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                'format' => '.'.$fileFormat
+            );
+            $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+            $finalIconList = array(
+                "id" => $icon['binary_id'],
+                "text" => $icon['filename'],
+                "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$icon['filename']
+            );
+        }
+        
+        $router->response()->json($finalIconList);
     }
 
     /**

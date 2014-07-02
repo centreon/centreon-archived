@@ -55,233 +55,6 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     public static $objectName = 'Service';
     
     /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allService" class="allService" type="checkbox">' => 'service_id',
-        'Host Name' => 'host_name',
-        'Name' => 'service_description',
-        'Scheduling' => array(
-            'Interval' => 'service_normal_check_interval',
-            'Retry Interval' => 'service_retry_check_interval',
-            'Max Atp' => 'service_max_check_attempts'
-        ),
-        'Notifications' => '[SPECFIELD]',
-        'Parent Template' => "[SPECFIELD]service_template_model_stm_id IN (SELECT service_id FROM service WHERE service_description LIKE '::search_value::')",
-        'Status' => 'service_activate'
-    );
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $additionalColumn = array(
-        'host_id',
-        'service_template_model_stm_id'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'service_id',
-        'host_name',
-        'service_description',
-        'service_normal_check_interval',
-        'service_retry_check_interval',
-        'service_max_check_attempts',
-        '[SPECFIELD]',
-        "[SPECFIELD]service_template_model_stm_id IN (SELECT service_id FROM service WHERE service_description LIKE '::search_value::')",
-        'service_activate'
-    );
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = "h.host_id = hsr.host_host_id AND service_id=hsr.service_service_id AND service_register = '1' ";
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $linkedTables = "host h, host_service_relation hsr";
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'text',
-        'text',
-        'none',
-        'none',
-        'none',
-        'none',
-        'text',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array(
-        'service_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
-                '2' => '<span class="label label-warning">Trash</span>',
-            )
-        ),
-        'service_notifications' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
-                '2' => '<span class="label label-info">Default</span>',
-            )
-        ),
-        'service_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::service_description::'
-            )
-        ),
-        'service_description' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/service/[i:id]',
-                'routeParams' => array(
-                    'id' => '::service_id::',
-                    'advanced' => '0'
-                ),
-                'linkName' => '::service_description::'
-            )
-        ),
-        'host_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/host/[i:id]',
-                'routeParams' => array(
-                    'id' => '::host_id::'
-                ),
-                'linkName' => '::host_name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'text',
-        'text',
-        'none',
-        'none',
-        'none',
-        'text',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
-        )
-    );
-    
-    /**
-     * 
-     * @param array $resultSet
-     */
-    public static function formatDatas(&$resultSet)
-    {
-        $previousHost = '';
-        foreach ($resultSet as &$myServiceSet) {
-            
-            // Keep up
-            $save = $myServiceSet['service_activate'];
-            unset($myServiceSet['service_activate']);
-            
-            // Set host_name
-            if ($myServiceSet['host_name'] === $previousHost) {
-                $myServiceSet['host_name'] = '';
-            } else {
-                $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
-                    $myServiceSet['host_name']
-                ).'&nbsp;'.$myServiceSet['host_name'];
-            }
-            
-            // Set Scheduling
-            $myServiceSet['service_normal_check_interval'] = self::formatNotificationOptions(
-                self::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
-            );
-            $myServiceSet['service_retry_check_interval'] = self::formatNotificationOptions(
-                self::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
-            );
-            $myServiceSet['service_max_check_attempts'] = self::getMyServiceField(
-                $myServiceSet['service_id'],
-                'service_max_check_attempts'
-            );
-            $myServiceSet['service_notifications'] = self::getNotificicationsStatus($myServiceSet['service_id']);
-            
-            // Get Real Service Description
-            if (!$myServiceSet["service_description"]) {
-                $myServiceSet["service_description"] = self::getMyServiceAlias(
-                    $myServiceSet['service_template_model_stm_id']
-                );
-            } else {
-                $myServiceSet["service_description"] = str_replace(
-                    '#S#',
-                    "/",
-                    $myServiceSet["service_description"]
-                );
-                $myServiceSet["service_description"] = str_replace(
-                    '#BS#',
-                    "\\",
-                    $myServiceSet["service_description"]
-                );
-            }
-            
-            // Set Tpl Chain
-            $tplStr = null;
-            $tplArr = self::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
-            $tplArr['description'] = str_replace('#S#', "/", $tplArr['description']);
-            $tplArr['description'] = str_replace('#BS#', "\\", $tplArr['description']);
-            $tplRoute = str_replace(
-                "//",
-                "/",
-                \Centreon\Internal\Di::getDefault()
-                    ->get('router')
-                    ->getPathFor(
-                        '/configuration/servicetemplate/[i:id]',
-                        array('id' => $tplArr['id'])
-                    )
-            );
-            
-            $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";
-            $myServiceSet['parent_template'] = $tplStr;
-            
-            $myServiceSet['service_description'] = self::getIconImage($myServiceSet['service_id']).
-                '&nbsp;'.$myServiceSet['service_description'];
-            
-            $myServiceSet['service_activate'] = $save;
-        }
-    }
-    
-    /**
      * 
      * @param integer $interval
      * @return string
@@ -455,24 +228,34 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
         
         $config = \Centreon\Internal\Di::getDefault()->get('config');
-        $finalRoute = rtrim($config->get('global', 'base_url'), '/');
+        $finalRoute = "";
         
         while (1) {
             $stmt = $dbconn->query(
-                "SELECT esi_icon_image, service_template_model_stm_id "
-                . "FROM service, extended_service_information "
-                . "WHERE service_service_id = '$service_id' "
-                . "AND service_id = service_service_id"
+                "SELECT b.filename, s.service_template_model_stm_id "
+                . "FROM service s, service_image_relation sir, binaries b "
+                . "WHERE s.service_id = '$service_id' "
+                . "AND s.service_id = sir.service_id"
             );
             $esiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            if (!is_null($esiResult['esi_icon_image'])) {
-                $finalRoute .= "<img src='".$finalRoute.$esiResult['esi_icon_image'].">";
+            if (!is_null($esiResult['filename'])) {
+                $filenameExploded = explode('.', $esiResult['filename']);
+                $nbOfOccurence = count($filenameExploded);
+                $fileFormat = $filenameExploded[$nbOfOccurence-1];
+                $filenameLength = strlen($esiResult['filename']);
+                $routeAttr = array(
+                    'image' => substr($esiResult['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                    'format' => '.'.$fileFormat
+                );
+                $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+                $finalRoute .= '<img src="'.$imgSrc.'" style="width:20px;height:20px;">';
                 break;
-            } elseif (is_null($esiResult['esi_icon_image']) && is_null($esiResult['service_template_model_stm_id'])) {
-                $finalRoute = "<i class='fa fa-gear'></i>";
+            } elseif (is_null($esiResult['filename']) && is_null($esiResult['service_template_model_stm_id'])) {
+                $finalRoute .= "<i class='fa fa-gear'></i>";
                 break;
             }
             
