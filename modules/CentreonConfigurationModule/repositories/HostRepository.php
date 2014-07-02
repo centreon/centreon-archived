@@ -222,6 +222,11 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         unset($content);
     }
 
+    /**
+     * 
+     * @param int $host_id
+     * @return type
+     */
     public static function getContacts($host_id) 
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -243,6 +248,11 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         return $contactList;
     }
 
+    /**
+     * 
+     * @param int $host_id
+     * @return type
+     */
     public static function getContactGroups($host_id) 
     {
         $di = \Centreon\Internal\Di::getDefault();
