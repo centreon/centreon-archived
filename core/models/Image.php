@@ -52,9 +52,16 @@ class Image extends File
      */
     public static function insert($file)
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        $binaryId = parent::insert($file);
+        parent::insert($file);
+    }
+    
+    /**
+     * 
+     * @param int $iconId
+     * @return array
+     */
+    public static function getIcon($iconId)
+    {
+        return parent::getFilename($iconId);
     }
 }

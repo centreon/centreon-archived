@@ -67,6 +67,27 @@ class File
     
     /**
      * 
+     * @param int $fileId
+     */
+    public static function getFilename($fileId)
+    {
+        $sql = "SELECT binary_id, filename FROM binaries WHERE binary_id  = ?";
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($fileId));
+        $rawIconList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $finalIconList = array();
+        
+        if (count($rawIconList) > 0) {
+            $finalIconList = $rawIconList[0];
+        }
+        
+        return $finalIconList;
+    }
+    
+    /**
+     * 
      * @param string $fields
      * @param array $binaryParam
      * @return int
