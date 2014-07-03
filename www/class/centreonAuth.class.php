@@ -185,7 +185,6 @@ class CentreonAuth {
                         }
                     }
                 }
-                $cnt++;
             }
         } elseif ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
             if ($this->autologin && $this->userInfos["contact_autologin_key"] && $this->userInfos["contact_autologin_key"] == $token) {
