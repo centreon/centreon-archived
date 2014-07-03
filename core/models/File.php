@@ -68,6 +68,7 @@ class File
     /**
      * 
      * @param int $fileId
+     * @return array
      */
     public static function getFilename($fileId)
     {

@@ -63,8 +63,8 @@ class Radio extends Customobject
         $myJs = '';
         $i = 1;
         
-        if (isset($element['label_choices'])) { 
-            foreach ($element['label_choices'] as $key=>$choice) {
+        if (isset($element['label_choices'])) {
+            foreach ($element['label_choices'] as $key => $choice) {
                 $htmlSelected = '';
                 if ($value == $choice) {
                     $htmlSelected = 'checked=checked';

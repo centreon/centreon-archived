@@ -103,7 +103,12 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         return $finalRoute;
     }
 
-    public static function getTripleChoice() {
+    /**
+     * 
+     * @return array
+     */
+    public static function getTripleChoice()
+    {
         $content = array();
         $content["host_active_checks_enabled"] = 1;
         $content["host_passive_checks_enabled"] = 1;
@@ -119,6 +124,13 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         return $content;
     }
     
+    /**
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     */
     public static function generateHosts(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -128,7 +140,16 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
 
         /* Field to not display */
         $disableField = static::getTripleChoice();
-        $field = "host_id, host_name, host_alias, host_address, display_name, host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, host_notification_interval, cg_additive_inheritance, contact_additive_inheritance, host_notification_options, timeperiod_tp_id2 AS notification_period, host_stalking_options, host_register ";
+        $field = "host_id, host_name, host_alias, host_address, display_name, host_max_check_attempts, "
+            . "host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, "
+            . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
+            . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
+            . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
+            . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, "
+            . "host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, "
+            . "host_notification_interval, cg_additive_inheritance, contact_additive_inheritance, "
+            . "host_notification_options, timeperiod_tp_id2 AS notification_period, host_stalking_options, "
+            . "host_register ";
         
         /* Init Content Array */
         $content = array();
@@ -200,7 +221,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                             }
                         }
                     }
-                }                
+                }
             }
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
@@ -217,8 +238,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg", $filesList, $user = "API");
            
         }
-
-
+        
         unset($content);
     }
 
@@ -276,8 +296,9 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
 
     /**
      * Get configuration data of a host
-     *
+     * 
      * @param int $hostId
+     * @return array
      */
     public static function getConfigurationData($hostId)
     {

@@ -40,10 +40,16 @@ namespace Centreon\Internal\Datatable\Dataprovider;
  *
  * @author lionel
  */
-class CentreonStorageDb implements iDataprovider
+class CentreonStorageDb implements DataProviderInterface
 {
-    public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '', $additionnalClass = null)
-    {
+    public static function loadDatas(
+        $params,
+        array $columns,
+        array $specialFields,
+        $datatableClass,
+        $modelClass = '',
+        $additionnalClass = null
+    ) {
         // Get Fields to be request
         $fields = "";
         $otherFields = "";
@@ -52,12 +58,13 @@ class CentreonStorageDb implements iDataprovider
         $conditionsForTable = array();
         
         $specialFieldsKeys = array_keys($specialFields);
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             if (!in_array($column['name'], $specialFieldsKeys)) {
                 if (isset($column['source'])) {
                     if (is_array($column['source'])) {
                         $otherTables .= $column['source']['table'] . ',';
-                        $conditionsForTable[$column['source']['condition']['first']] = $column['source']['condition']['second'];
+                        $conditionsForTable[$column['source']['condition']['first']] =
+                            $column['source']['condition']['second'];
                         $fields .= $column['name'] . ',';
                     }
                     $otherFields .= $column['name'] . ',';
@@ -74,14 +81,14 @@ class CentreonStorageDb implements iDataprovider
         
         $a = array();
         
-        // Get 
+        // Get
         $fieldList = array();
         foreach ($datatableClass::$columns as $column) {
             $fieldList[] = $column['name'];
         }
         
         // Get the field label for the search
-        foreach($params as $key=>$value) {
+        foreach ($params as $key => $value) {
             if (substr($key, 0, 7) == 'sSearch') {
                 if (!empty($value)) {
                     $b = explode('_', $key);
@@ -94,7 +101,7 @@ class CentreonStorageDb implements iDataprovider
                 
             $result = $additionnalClass::getMergedParameters(
                 explode(',', $fields),
-                explode (',', $otherFields),
+                explode(',', $otherFields),
                 $params['iDisplayLength'],
                 $params['iDisplayStart'],
                 $columns[$params['iSortCol_0']]['name'],
@@ -117,7 +124,7 @@ class CentreonStorageDb implements iDataprovider
         } else {
             $result = $modelClass::getList(
                 $fields,
-                explode (',', $otherTables),
+                explode(',', $otherTables),
                 $params['iDisplayLength'],
                 $params['iDisplayStart'],
                 $columns[$params['iSortCol_0']]['name'],
@@ -129,7 +136,7 @@ class CentreonStorageDb implements iDataprovider
             
             $result2 = $modelClass::getList(
                 'count(*)',
-                explode (',', $otherTables),
+                explode(',', $otherTables),
                 -1,
                 0,
                 null,

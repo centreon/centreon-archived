@@ -35,10 +35,10 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form,
-    \Centreon\Internal\Form\Generator,
-    \CentreonAdministration\Repository\AclactionRepository,
-    \Centreon\Internal\Di;
+use \Centreon\Internal\Form;
+use \Centreon\Internal\Form\Generator;
+use \CentreonAdministration\Repository\AclactionRepository;
+use \Centreon\Internal\Di;
 
 class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {

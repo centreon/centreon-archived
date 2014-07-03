@@ -236,10 +236,13 @@ class Hook
         $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         foreach ($hooks as $hook) {
             $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $hook['module'])));
-            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php"; 
+            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php";
             if (file_exists($filename)) {
                 include_once $filename;
-                $data = call_user_func(array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"), $params);
+                $data = call_user_func(
+                    array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"),
+                    $params
+                );
                 /* has no template */
                 $hookData[$i] = $data;
                 $i++;
@@ -270,13 +273,16 @@ class Hook
         $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         foreach ($hooks as $hook) {
             $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $hook['module'])));
-            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php"; 
+            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php";
             if (file_exists($filename)) {
                 include_once $filename;
                 $emitter->on(
                     $hook['hook_name'],
                     function ($params) use ($hook, $commonName) {
-                        call_user_func(array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"), $params);
+                        call_user_func(
+                            array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"),
+                            $params
+                        );
                     }
                 );
             }

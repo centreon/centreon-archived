@@ -230,7 +230,6 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         
-        $config = \Centreon\Internal\Di::getDefault()->get('config');
         $finalRoute = "";
         
         while (1) {

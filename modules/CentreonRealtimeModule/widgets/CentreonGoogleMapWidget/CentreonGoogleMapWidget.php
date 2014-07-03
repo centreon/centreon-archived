@@ -1,3 +1,5 @@
+<?php
+?>
 <html>
 <head>
 	<title>Google Map</title>

@@ -54,7 +54,7 @@ class OptionsController extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $tpl = $di->get('template');
         
-        // 
+        //
         $objectFormUpdateUrl = '/administration/options/centreon/update';
         
         $myForm = new Generator($objectFormUpdateUrl);
@@ -93,7 +93,7 @@ class OptionsController extends \Centreon\Internal\Controller
             }
 
             $optionsToSave = array();
-            foreach ($givenParameters as $key=>$value) {
+            foreach ($givenParameters as $key => $value) {
                 $optionsToSave[$key]= $value;
             }
 

@@ -57,7 +57,7 @@ class Options
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         
-        foreach ($values as $key=>$value) {
+        foreach ($values as $key => $value) {
             $sql = "UPDATE `options` SET `value`='$value' WHERE `key`='$key'";
             $db->exec($sql);
         }

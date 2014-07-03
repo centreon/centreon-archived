@@ -150,10 +150,13 @@ class Router extends \Klein\Klein
             }
             
         }
-        $this->respond('404', function ($request, $response) {
-            $tmpl = \Centreon\Internal\Di::getDefault()->get('template'); 
-            $response->body($tmpl->fetch('404.tpl'));
-        });
+        $this->respond(
+            '404',
+            function ($request, $response) {
+                $tmpl = \Centreon\Internal\Di::getDefault()->get('template');
+                $response->body($tmpl->fetch('404.tpl'));
+            }
+        );
     }
 
     /**

@@ -49,7 +49,7 @@ class Upgrade
     
     public static function doUpgrade($origin = '3.0.0')
     {
-        if (version_compare($origin, '3.0.0','<')) {
+        if (version_compare($origin, '3.0.0', '<')) {
             self::upgradeFrom2X();
         } else {
             self::upgradeFrom3X();

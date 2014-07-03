@@ -41,7 +41,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
 {
     public static $objectName = 'Module';
     public static $objectDisplayName = 'Module';
-    public static $moduleName = 'Centreon';    
+    public static $moduleName = 'Centreon';
     protected $datatableObject = '\Centreon\Internal\Datatable\ModuleDatatable';
     protected $objectClass = '\Centreon\Models\Module';
     protected $di;
@@ -72,7 +72,9 @@ class ExtensionsController extends \Centreon\Internal\Controller
     {
         $params = $this->getParams();
         $module = \Centreon\Models\Module::get($params['id']);
-        echo "<pre>"; var_dump($module); echo "<pre>";
+        echo "<pre>";
+            var_dump($module);
+        echo "<pre>";
     }
     
     /**

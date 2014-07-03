@@ -168,8 +168,9 @@ class Module
         if (!isset($menus[$data['short_name']])) {
             $menus[$data['short_name']] = $db->lastInsertId('menus', 'menu_id');
             if (!isset($data['order']) && isset($data['parent'])) {
-                $stmt = $db->prepare("SELECT (MAX(menu_order) + 1) as max_order 
-                    FROM menus WHERE parent_id = :parent_id");
+                $stmt = $db->prepare(
+                    "SELECT (MAX(menu_order) + 1) as max_order FROM menus WHERE parent_id = :parent_id"
+                );
                 $stmt->bindParam(':parent_id', $menus[$data['parent']]);
                 $stmt->execute();
                 $row = $stmt->fetch();

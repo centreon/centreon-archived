@@ -75,9 +75,7 @@ class AclactionRepository
     public static function getRulesFromActionId($actionId)
     {
         $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT acl_action_name 
-            FROM acl_actions_rules
-            WHERE acl_action_rule_id = ?");
+        $stmt = $db->prepare("SELECT acl_action_name FROM acl_actions_rules WHERE acl_action_rule_id = ?");
         $stmt->execute(array($actionId));
         $arr = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

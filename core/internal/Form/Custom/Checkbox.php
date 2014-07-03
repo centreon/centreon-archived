@@ -63,7 +63,7 @@ class Checkbox extends Customobject
         $myJs = '';
         $i = 1;
         
-        foreach ($element['label_choices'] as $key=>$choice) {
+        foreach ($element['label_choices'] as $key => $choice) {
             $htmlSelected = '';
             if ($value == $choice) {
                 $htmlSelected = 'checked=checked';
