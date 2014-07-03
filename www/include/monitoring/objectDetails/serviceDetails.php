@@ -85,12 +85,17 @@ if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["servic
 $host_id = getMyHostID($host_name);
 
 if (!is_null($host_id)) {
-    $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO));
-
-    if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
+    $can_display = 1;
+    $service_id = getMyServiceID($svc_description, $host_id);
+    if (!$is_admin) {
+        $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO), $host_name);
+        if (!isset($lcaHost["LcaHost"][$service_id])) {
+            $can_display = 0;
+        }
+    }
+    if ($can_display == 0) {
         include_once("alt_error.php");
     } else {
-
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
                                    $oreon->user->access->queryBuilder("AND", "host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO))));
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
@@ -98,7 +103,6 @@ if (!is_null($host_id)) {
         }
         $DBRESULT->free();
 
-        $service_id = getMyServiceID($svc_description, $host_id);
         if (isset($service_id) && $service_id) {
             $proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
             $proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
