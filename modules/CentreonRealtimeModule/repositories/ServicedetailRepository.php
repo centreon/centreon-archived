@@ -35,8 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Di,
-    \Centreon\Internal\Exception;
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
 
 /**
  * Repository for service data
@@ -96,9 +96,9 @@ class ServicedetailRepository extends ObjectdetailRepository
         $actions = array();
         $actions[self::SCHEDULE_CHECK] = _('Schedule check');
         $actions[self::ACKNOWLEDGE] = _('Acknowledge');
-//        $actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
+        //$actions[self::REMOVE_ACKNOWLEDGE] = _('Remove acknowledgement');
         $actions[self::DOWNTIME] = _('Set downtime');
-//        $actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
+        //$actions[self::REMOVE_DOWNTIME] = _('Remove downtime');
         $actions[self::ENABLE_CHECK] = _('Enable check');
         $actions[self::DISABLE_CHECK] = _('Disable check');
         return $actions;
@@ -172,4 +172,3 @@ class ServicedetailRepository extends ObjectdetailRepository
         return $arr;
     }
 }
-

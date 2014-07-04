@@ -66,7 +66,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
      *
      * @var string
      */
-    public static $hook = 'displayHostRtColumn'; 
+    public static $hook = 'displayHostRtColumn';
 
     /**
      *
@@ -218,10 +218,11 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
                     $myHostSet['name']
                 ).'&nbsp;&nbsp;'.$myHostSet['name'];
             }
-            $myHostSet['duration'] = Datetime::humanReadable($myHostSet['duration'],
-                                                             Datetime::PRECISION_FORMAT,
-                                                             2
-                                                             ); 
+            $myHostSet['duration'] = Datetime::humanReadable(
+                $myHostSet['duration'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
             
         }
         
@@ -253,7 +254,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
      *
      * @param int $status
      */
-    public static function getStatusBadge($status) 
+    public static function getStatusBadge($status)
     {
         switch ($status) {
             case 0:
@@ -275,6 +276,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
                 $status = "";
                 break;
         }
-        return "<span class='label $status pull-right overlay'>&nbsp;<!--<i class='fa fa-check-square-o'>--></i></span>";
+        return "<span class='label $status pull-right overlay'>&nbsp;"
+            . "<!--<i class='fa fa-check-square-o'>--></i></span>";
     }
 }

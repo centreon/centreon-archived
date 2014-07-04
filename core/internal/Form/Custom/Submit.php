@@ -35,6 +35,8 @@
 namespace Centreon\Internal\Form\Custom;
 
 /**
+ * Html Submit element
+ * 
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Core
@@ -42,6 +44,7 @@ namespace Centreon\Internal\Form\Custom;
 class Submit extends Customobject
 {
     /**
+     * Return the HTMLrepresentation of the submit field
      * 
      * @param array $element
      * @return array

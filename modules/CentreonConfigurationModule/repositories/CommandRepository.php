@@ -55,129 +55,29 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
     public static $objectName = 'Command';
     
     /**
-     *
-     * @var array Default column for datatable
+     * 
+     * @param int $id
+     * @return mixed
      */
-    public static $datatableColumn = array(
-        '<input id="allCommand" class="allCommand" type="checkbox">' => 'command_id',
-        'Name' => 'command_name',
-        'Command Line' => 'command_line',
-        'Type' => 'command_type',
-        'Host Use' => 'NULL AS host_use',
-        'Service Use' => 'NULL AS svc_use',
-    );
-    
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $researchIndex = array(
-        'command_id',
-        'command_name',
-        'command_line',
-        'command_type',
-        'none',
-        'none'
-    );
-    
-    public static $columnCast = array(
-        'command_type' => array(
-            'type' => 'select',
-            'parameters' => array(
-                '1' => 'Notifications',
-                '2' => 'Check',
-                '3' => 'Miscelleanous',
-                '4' => 'Discovery',
-            )
-        ),
-        'command_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::command_name::'
-            )
-        ),
-        'command_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/command/[i:id]',
-                'routeParams' => array(
-                    'id' => '::command_id::'
-                ),
-                'linkName' => '::command_name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_line',
-        array(
-            'select' => array(
-                'Check' => '2',
-                'Notifications' => '1',
-                'Miscelleanous' => '3',
-                'Discovery' => '4'
-                              )
-              ),
-        'none',
-        'none'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search',
-        'search',
-        array('select' => array(
-                                'Check' => '2',
-                                'Notifications' => '1',
-                                'Miscelleanous' => '3',
-                                'Discovery' => '4'
-                                )
-              ),
-        'none',
-        'none'
+    public static function getCommandName($id) 
+    {
+        $res = \CentreonConfiguration\Models\Command::get($id, "command_name");
         
-    );
+        if (is_array($res)) {
+            $returnedValue = $res['command_name'];
+        } else {
+            $returnedValue = -1;
+        }
+        
+        return $returnedValue;
+    }
 
     /**
      * 
-     * @param array $resultSet
+     * @param type $id
+     * @param type $object
+     * @return string
      */
-    public static function formatDatas(&$resultSet)
-    {
-        foreach ($resultSet as &$myCmdSet) {
-            $myCmdSet['host_use'] = static::getUseNumber($myCmdSet["command_id"], "host");
-            $myCmdSet['svc_use'] = static::getUseNumber($myCmdSet["command_id"], "service");
-        }
-    }
-    
-    public static function getCommandName($id) 
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-        
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        /* Get Command name */
-        $stmt = $dbconn->prepare("SELECT command_name FROM command WHERE command_id = '$id'");
-        $stmt->execute();
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (isset($row["command_name"])) {
-            return $row["command_name"];
-        } else {
-            return -1;
-        }
-    }
-
     public static function getUseNumber($id, $object) 
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -203,9 +103,13 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         return $result;
     }
 
-    /*
+    /**
      * Methode tests
-     * @return value
+     *
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
      */
     public function generateCheckCommand(& $filesList, $poller_id, $path, $filename) 
     {
@@ -274,6 +178,13 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         unset($content);
     }
 
+    /**
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     */
     public function generateMiscCommand(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();

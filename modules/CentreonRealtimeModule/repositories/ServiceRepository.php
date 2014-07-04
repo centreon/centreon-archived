@@ -35,10 +35,10 @@
 
 namespace CentreonRealtime\Repository;
 
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
-    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository,
-    \Centreon\Internal\Utils\Datetime,
-    \Centreon\Internal\Di;
+use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use \Centreon\Internal\Utils\Datetime;
+use \Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -204,7 +204,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 'Pending' => 4
             )
         ),
-        'text', 
+        'text',
         'text',
         'text',
         'text'
@@ -234,10 +234,10 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span>';
             $myServiceSet['duration'] = Datetime::humanReadable(
-                                                                $myServiceSet['duration'],
-                                                                Datetime::PRECISION_FORMAT,
-                                                                2
-                                                                ); 
+                $myServiceSet['duration'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
         }
     }
 
@@ -254,12 +254,14 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         $di = Di::getDefault();
         $dbconn = $di->get('db_storage');
         
-        $stmt = $dbconn->prepare('SELECT last_hard_state as state 
+        $stmt = $dbconn->prepare(
+            'SELECT last_hard_state as state 
             FROM services 
             WHERE service_id = ? 
             AND host_id = ? 
             AND enabled = 1 
-            LIMIT 1');
+            LIMIT 1'
+        );
         $stmt->execute(array($service_id, $host_id));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             return $row['state'];
@@ -273,7 +275,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      * @param int $status
      * @return string
      */
-    public static function getStatusBadge($status) 
+    public static function getStatusBadge($status)
     {
         switch ($status) {
             case 0:
@@ -297,6 +299,4 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
         }
         return "<span class='label $status pull-right overlay'>&nbsp;</span>";
     }
-
-     
 }

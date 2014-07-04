@@ -39,12 +39,46 @@ namespace CentreonAdministration\Controllers;
 
 class ExtensionsController extends \Centreon\Internal\Controller
 {
+    /**
+     *
+     * @var string
+     */
     public static $objectName = 'Module';
+    
+    /**
+     *
+     * @var string
+     */
     public static $objectDisplayName = 'Module';
+    
+    /**
+     *
+     * @var string
+     */
     public static $moduleName = 'Centreon';
+    
+    /**
+     *
+     * @var string
+     */
     protected $datatableObject = '\Centreon\Internal\Datatable\ModuleDatatable';
+    
+    /**
+     *
+     * @var string
+     */
     protected $objectClass = '\Centreon\Models\Module';
+    
+    /**
+     *
+     * @var \Centreon\Internal\Di
+     */
     protected $di;
+    
+    /**
+     *
+     * @var \Centreon\Internal\Template
+     */
     protected $tpl;
 
     /**

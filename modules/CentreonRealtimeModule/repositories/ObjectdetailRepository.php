@@ -35,8 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Di,
-    \Centreon\Internal\Exception;
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
 
 /**
  * Repository for host and object
@@ -72,7 +72,7 @@ class ObjectdetailRepository
     {
         $db = Di::getDefault()->get('db_storage');
         $stmt = $db->prepare($sql);
-        $stmt->execute(); 
+        $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             switch ($cmdId) {
                 case static::SCHEDULE_CHECK:
@@ -113,4 +113,3 @@ class ObjectdetailRepository
         }
     }
 }
-

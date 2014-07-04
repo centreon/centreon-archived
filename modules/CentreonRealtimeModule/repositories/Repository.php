@@ -147,7 +147,7 @@ abstract class Repository
                 $columns[$columnName]= true;
                 $headers[] = 'none';
             }
-        } 
+        }
 
         return array(
             'column' => $columns,
@@ -280,7 +280,7 @@ abstract class Repository
                 )
             )
         );
-        file_put_contents('/tmp/resultset', print_r($tmp,true));
+        
         return $tmp;
     }
     

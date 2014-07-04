@@ -17,7 +17,28 @@
 		  <help>IP address of the poller which must be relative to the local poller.</help>
 		</field>
 	  </block>
-	  <block name="Monitoring settings">
+        <block name="Additinonal information">
+            <field name="poller_type" label="Poller Type" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+              <attributes>
+                <choices>
+                  <Central>0</Central>
+                  <Poller>1</Poller>
+                  <LocalPoller>2</LocalPoller>
+                </choices>
+              </attributes>
+            </field>
+            <field name="ns_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+              <attributes>
+                <choices>
+                  <Enabled>1</Enabled>
+                  <Disabled>0</Disabled>
+                </choices>
+              </attributes>
+            </field>
+        </block>
+	</section>
+	<section name="Engine configuration">
+        <block name="Monitoring settings">
 		<field name="init_script" label="Engine init script" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 		  <help>Init script of the monitoring engine.</help>
 		</field>
@@ -28,7 +49,9 @@
 		  <help>Directory for the engine's connectors.</help>
 		</field>
 	  </block>
-	  <block name="Broker settings">
+	</section>
+	<section name="Broker configuration">
+        <block name="Broker settings">
 		<field name="centreonbroker_cfg_path" label="Broker configuration path" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 		  <help>Path for broker configuration files.</help>
 		</field>
@@ -36,20 +59,6 @@
 		  <help>Path for broker modules.</help>
 		</field>
 	  </block>
-	  <block name="Additinonal information">
-		<field name="ns_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
-		  <attributes>
-			<choices>
-			  <Enabled>1</Enabled>
-			  <Disabled>0</Disabled>
-			</choices>
-		  </attributes>
-		</field>
-	  </block>
-	</section>
-	<section name="Main configuration">
-	</section>
-	<section name="Broker configuration">
 	</section>
   </form>
   <wizard name="add_poller">
@@ -57,6 +66,15 @@
 	<step name="General">
 	  <field name="name" mandatory="1"></field>
 	  <field name="ns_ip_address" mandatory="1"></field>
+	  <field name="poller_type" mandatory="1"></field>
 	</step>
+    <step name="Engine">
+        <field name="init_script" mandatory="1"></field>
+        <field name="nagios_bin" mandatory="1"></field>
+    </step>
+    <step name="Broker">
+        <field name="centreonbroker_cfg_path" mandatory="1"></field>
+        <field name="centreonbroker_module_path" mandatory="1"></field>
+    </step>
   </wizard>
 </forms>

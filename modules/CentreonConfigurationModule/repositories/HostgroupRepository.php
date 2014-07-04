@@ -43,96 +43,13 @@ namespace CentreonConfiguration\Repository;
 class HostgroupRepository extends \CentreonConfiguration\Repository\Repository
 {
     /**
-     *
-     * @var string
+     * Generate Hostgroup configuration file for monitoring engine
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
      */
-    public static $tableName = 'hostgroup';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Hostgroup';
-    
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allHostgroup" class="allHostgroup" type="checkbox">' => 'hg_id',
-        'Name' => 'hg_name',
-        'Description' => 'hg_alias',
-        'Status' => 'hg_activate'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'hg_id',
-        'hg_name',
-        'hg_alias',
-        'hg_activate'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_description',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-    
-    public static $columnCast = array(
-        'hg_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
-            )
-        ),
-        'hg_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::hg_name::'
-            )
-        ),
-        'hg_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/hostgroup/[i:id]',
-                'routeParams' => array(
-                    'id' => '::hg_id::'
-                ),
-                'linkName' => '::hg_name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search_name',
-        'search_description',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-
     public static function generateHostgroup(& $filesList, $poller_id, $path, $filename) 
     {
         $di = \Centreon\Internal\Di::getDefault();
