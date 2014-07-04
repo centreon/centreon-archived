@@ -173,7 +173,7 @@
 	$rows = $pearDBO->numberRows();
 	
 	for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
-		$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."'");
+		$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."' ORDER BY metric_name");
 		$metric = "";
 		for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++){
 			if ($im) {
