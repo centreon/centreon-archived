@@ -62,12 +62,12 @@ class HostCategoryApi extends \Centreon\Internal\Controller
         $cmdList = \CentreonConfiguration\Models\Hostcategory::getList($params);
         
         $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $cmdList
-                                        )
-                                  );
+            array(
+                "api-version" => 1,
+                "status" => true,
+                "data" => $cmdList
+            )
+        );
     }
 
     /**
@@ -81,7 +81,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
 
-        /* 
+        /*
          * Get parameters
          */
         $param = $router->request()->paramsNamed();
@@ -148,5 +148,4 @@ class HostCategoryApi extends \Centreon\Internal\Controller
     {
         print "Not implemented yet";
     }
-
 }

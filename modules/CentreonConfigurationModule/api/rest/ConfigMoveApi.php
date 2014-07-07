@@ -48,7 +48,7 @@ class ConfigMoveApi extends \Centreon\Internal\Controller
      * @method GET
      * @route /api/configuration/[a:version]/movecfg/[i:id]
      */
-    public static function moveAction() 
+    public static function moveAction()
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
@@ -58,12 +58,11 @@ class ConfigMoveApi extends \Centreon\Internal\Controller
         $obj = new \CentreonConfiguration\Repository\ConfigMoveRepository($param["id"]);
 
         $router->response()->json(
-                                  array(
-                                        "api-version" => $param["version"],
-                                        "status" => true,
-                                        "data" => $obj->moveConfig($param["id"])
-                                        )
-                                  );
+            array(
+                "api-version" => $param["version"],
+                "status" => true,
+                "data" => $obj->moveConfig($param["id"])
+            )
+        );
     }
-    
 }

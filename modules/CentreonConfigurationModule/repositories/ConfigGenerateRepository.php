@@ -44,18 +44,44 @@ namespace  CentreonConfiguration\Repository;
 
 class ConfigGenerateRepository
 {
+    /**
+     *
+     * @var type
+     */
     private $objCache;
+    
+    /**
+     *
+     * @var type
+     */
     private $di;
+    
+    /**
+     *
+     * @var type
+     */
     private $stepStatus;
+    
+    /**
+     *
+     * @var type
+     */
     private $path;
+    
+    /**
+     *
+     * @var array
+     */
     private $filesDir;
 
 
-    /*
-     * Methode tests
-     * @return value
+    /**
+     * Method tests
+     * 
+     * @param int $poller_id
+     * @return type
      */
-    public function __construct($poller_id) 
+    public function __construct($poller_id)
     {
         $this->di = \Centreon\Internal\Di::getDefault();
         $this->stepStatus = array();
@@ -84,11 +110,26 @@ class ConfigGenerateRepository
 
         /* Generate config Object */
         HostgroupRepository::generateHostgroup($this->filesDir, $poller_id, $this->path, "objects/hostgroups.cfg");
-        ServicegroupRepository::generateServicegroup($this->filesDir, $poller_id, $this->path, "objects/servicegroups.cfg");
+        ServicegroupRepository::generateServicegroup(
+            $this->filesDir,
+            $poller_id,
+            $this->path,
+            "objects/servicegroups.cfg"
+        );
 
         /* Templates config files */
-        HosttemplateRepository::generateHostTemplates($this->filesDir, $poller_id, $this->path, "objects/hostTemplates.cfg");
-        ServicetemplateRepository::generateServiceTemplates($this->filesDir, $poller_id, $this->path, "objects/serviceTemplates.cfg");
+        HosttemplateRepository::generateHostTemplates(
+            $this->filesDir,
+            $poller_id,
+            $this->path,
+            "objects/hostTemplates.cfg"
+        );
+        ServicetemplateRepository::generateServiceTemplates(
+            $this->filesDir,
+            $poller_id,
+            $this->path,
+            "objects/serviceTemplates.cfg"
+        );
 
         /* Monitoring Resources files */
         HostRepository::generateHosts($this->filesDir, $poller_id, $this->path, "resources/");
@@ -96,7 +137,13 @@ class ConfigGenerateRepository
         /* Generate Main File */
         ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "centengine.cfg");
         /* Generate Debugging Main File */
-        ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "centengine-testing.cfg", 1);
+        ConfigGenerateMainRepository::generateMainFile(
+            $this->filesDir,
+            $poller_id,
+            $this->path,
+            "centengine-testing.cfg",
+            1
+        );
 
 
         ConfigCorrelationRepository::generateFile($poller_id);
@@ -126,7 +173,11 @@ class ConfigGenerateRepository
 
     }
 
-    public static function generateConfigurations($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function generateConfigurations($poller_id = null)
     {
         static::generateBrokerConfigurations($poller_id);
         static::generateMainFileConfigurations($poller_id);
@@ -134,44 +185,85 @@ class ConfigGenerateRepository
         static::generateObjectsFilesConfigurations($poller_id);
     }
 
-    public static function generateBrokerConfigurations($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function generateBrokerConfigurations($poller_id = null)
     {
 
     }
-    public static function generateMainFileConfigurations($poller_id = null) 
+    
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function generateMainFileConfigurations($poller_id = null)
     {
 
     }
-    public static function generateResourcesFileConfigurations($poller_id = null) 
+    
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function generateResourcesFileConfigurations($poller_id = null)
     {
 
     }
-    public static function generateObjectsFilesConfigurations($poller_id = null) 
+    
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function generateObjectsFilesConfigurations($poller_id = null)
     {
 
     }
 
-    public static function prepareBuffers($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return array
+     */
+    public static function prepareBuffers($poller_id = null)
     {
         return array(1);
     }
 
-    public static function checkChanges($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function checkChanges($poller_id = null)
     {
 
     }
 
-    public static function setStartTime($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function setStartTime($poller_id = null)
     {
 
     }
 
-    public static function setEndTime($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     */
+    public static function setEndTime($poller_id = null)
     {
 
     }
 
-    public static function checkPollerInformations($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return array
+     */
+    public static function checkPollerInformations($poller_id = null)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -183,7 +275,12 @@ class ConfigGenerateRepository
         }
     }
 
-    public static function isPollerEnabled($poller_id = null) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return int
+     */
+    public static function isPollerEnabled($poller_id = null)
     {
         if (!isset($poller_id)) {
             return 0;
@@ -201,11 +298,14 @@ class ConfigGenerateRepository
             return $row['ns_activate'];
             
         }
+    }
 
-    } 
-
-    public function getStepStatus() {
+    /**
+     * 
+     * @return type
+     */
+    public function getStepStatus()
+    {
         return $this->stepStatus;
     }
-    
 }

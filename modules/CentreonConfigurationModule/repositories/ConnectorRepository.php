@@ -55,89 +55,13 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
     public static $objectName = 'Connector';
     
     /**
-     *
-     * @var array Default column for datatable
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
      */
-    public static $datatableColumn = array(
-        '<input id="allConnector" class="allConnector" type="checkbox">' => 'id',
-        'Name' => 'name',
-        'Description' => 'description',
-        'Command Line' => 'command_line',
-        'Status' => 'enabled'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'id',
-        'name',
-        'description',
-        'command_line',
-        'enabled'
-    );
-    
-    public static $columnCast = array(
-        'enabled' => array(
-            'type' => 'select',
-            'parameters' => array(
-                '1' => '<span class="label label-success">Enabled</span>',
-                '0' => '<span class="label label-danger">Disabled</span>',
-            )
-        ),
-        'id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::name::'
-            )
-        ),
-        'name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/connector/[i:id]',
-                'routeParams' => array(
-                    'id' => '::id::'
-                ),
-                'linkName' => '::name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_description',
-        'search_line',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search_name',
-        'search_description',
-        'search_line',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-
-    public function generateConnectors(& $filesList, $poller_id, $path, $filename) 
+    public function generateConnectors(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -148,7 +72,9 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT name AS connector_name, command_line AS connector_line FROM connector WHERE enabled = 1 ORDER BY name";
+        $query = "SELECT name AS connector_name, command_line AS connector_line "
+            . "FROM connector WHERE enabled = 1 "
+            . "ORDER BY name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -161,7 +87,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
             $content[] = $tmp;
         }
 
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }

@@ -81,9 +81,12 @@ class Service extends CentreonRelationModel
             $rString .= static::$relationTable.".".$rparams;
         }
         $sql = "SELECT $fString $sString $rString
-            FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
-            WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey."
-            AND ".static::$relationTable.".".static::$secondKey ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey() . "
+            FROM ". $firstObj::getTableName().",".$secondObj::getTableName().","
+            . static::$relationTable."
+            WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()." = "
+            . static::$relationTable.".".static::$firstKey."
+            AND ".static::$relationTable.".".static::$secondKey ." = "
+            . $secondObj::getTableName().".".$secondObj::getPrimaryKey() . "
             AND host_register = '1'
             AND service_register = '1' ";
         $filterTab = array();
@@ -115,5 +118,4 @@ class Service extends CentreonRelationModel
         $result = static::getResult($sql, $filterTab);
         return $result;
     }
-
 }

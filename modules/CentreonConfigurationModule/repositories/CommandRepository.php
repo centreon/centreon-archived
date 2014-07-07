@@ -59,7 +59,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      * @param int $id
      * @return mixed
      */
-    public static function getCommandName($id) 
+    public static function getCommandName($id)
     {
         $res = \CentreonConfiguration\Models\Command::get($id, "command_name");
         
@@ -74,11 +74,11 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
 
     /**
      * 
-     * @param type $id
-     * @param type $object
+     * @param int $id
+     * @param string $object
      * @return string
      */
-    public static function getUseNumber($id, $object) 
+    public static function getUseNumber($id, $object)
     {
         $di = \Centreon\Internal\Di::getDefault();
         
@@ -89,7 +89,13 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
 
         /* Get Object Stats */
         for ($i = 1; $i != -1; $i--) {
-            $stmt = $dbconn->prepare("SELECT count(*) AS number FROM $object WHERE (command_command_id = '$id' OR command_command_id2 = '$id') AND ".$object."_register = '$i'");
+            $stmt = $dbconn->prepare(
+                "SELECT count(*) AS number "
+                . "FROM $object "
+                . "WHERE (command_command_id = '$id' "
+                . "OR command_command_id2 = '$id') "
+                . "AND ".$object."_register = '$i'"
+            );
             $stmt->execute();
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             if (isset($row["number"])) {
@@ -98,7 +104,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
                 } else {
                     $result .= " (".$row["number"].")";
                 }
-            } 
+            }
         }
         return $result;
     }
@@ -111,7 +117,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      * @param string $path
      * @param string $filename
      */
-    public function generateCheckCommand(& $filesList, $poller_id, $path, $filename) 
+    public function generateCheckCommand(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
         /* Get Database Connexion */
@@ -120,7 +126,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         /* Init Content Array */
         $content = array();
         
-        /* Filter column that we want to include into the files */ 
+        /* Filter column that we want to include into the files */
         $enableField = array("command_name" => 1, "command_line" => 1, "command_example" => 1);
         $commentField = array("command_example" => 1);
 
@@ -139,13 +145,13 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
                     if ($key == "command_line" && $row['enable_shell'] == 1) {
                         $value = "/bin/sh -c ".escapeshellarg($value);
                     }
-                    $tmpData[$key] = $value;                
+                    $tmpData[$key] = $value;
                 }
             }
             
-            /* 
+            /*
              * Manage connector
-             */ 
+             */
             if (isset($row["connector_id"])) {
                 $query = "SELECT `name` FROM `connector` WHERE `connector`.`id` = '".$row["connector_id"]."'";
                 $stmt2 = $dbconn->prepare($query);
@@ -158,7 +164,10 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
             /*
              * Display arguments used in the command line.
              */
-            $query = "SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = '".$row["command_id"]."' ORDER BY macro_name";
+            $query = "SELECT macro_name, macro_description "
+                . "FROM command_arg_description "
+                . "WHERE cmd_id = '".$row["command_id"]."' "
+                . "ORDER BY macro_name";
             $stmt2 = $dbconn->prepare($query);
             $stmt2->execute();
             while ($args = $stmt2->fetch(\PDO::FETCH_ASSOC)) {
@@ -173,7 +182,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
             unset($row);
         }
 
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }
@@ -185,7 +194,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      * @param string $path
      * @param string $filename
      */
-    public function generateMiscCommand(& $filesList, $poller_id, $path, $filename) 
+    public function generateMiscCommand(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
         /* Get Database Connexion */
@@ -194,7 +203,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         /* Init Content Array */
         $content = array();
         
-        /* Filter column that we want to include into the files */ 
+        /* Filter column that we want to include into the files */
         $enableField = array("command_name" => 1, "command_line" => 1, "command_example" => 1, );
         $commentField = array("command_example" => 1);
 
@@ -209,7 +218,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
                 if (isset($enableField[$key])) {
                     if (isset($commentField[$key])) {
                         $key = "#".$key;
-                    }                    
+                    }
                     if ($key == "command_line" && $row['enable_shell'] == 1) {
                         $value = "/bin/sh -c ".escapeshellarg($value);
                     }
@@ -217,7 +226,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
                         /* TODO : get the real mailer */
                         $value = str_replace("@MAILER@", "/bin/mail", $value);
                     }
-                    $tmpData[$key] = $value;                
+                    $tmpData[$key] = $value;
                 }
             }
             $tmp["content"] = $tmpData;
@@ -228,7 +237,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
             unset($row);
         }
         
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }

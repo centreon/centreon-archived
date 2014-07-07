@@ -93,12 +93,12 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         );
         $list = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
             array($hostId, $hostName),
-            array($serviceId, $serviceDescription), 
-            -1, 
-            0, 
-            null, 
-            "ASC", 
-            $filters, 
+            array($serviceId, $serviceDescription),
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
             "OR"
         );
         $finalList = array();
@@ -132,12 +132,12 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         );
         $list = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
             array($hostId, $hostName),
-            array($serviceId, $serviceDescription), 
-            -1, 
-            0, 
-            null, 
-            "ASC", 
-            $filters, 
+            array($serviceId, $serviceDescription),
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
             "OR"
         );
         $finalList = array();

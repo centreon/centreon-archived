@@ -36,9 +36,9 @@
 
 namespace CentreonRealtime\Internal;
 
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
-    \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository,
-    \Centreon\Internal\Utils\Datetime;
+use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use \Centreon\Internal\Utils\Datetime;
 
 /**
  * Description of ServiceDatatable
@@ -92,7 +92,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                     'displayName' => '::description::'
                 )
             ),
-            'className' => 'datatable-align-center', 
+            'className' => 'datatable-align-center',
             'width' => '15px',
             'className' => 'cell_center'
         ),
@@ -268,19 +268,18 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 '/tooltip"><span class="overlay">'.
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span></span>';
-            $myServiceSet['ico'] = "<i class='fa fa-bar-chart-o'></i>"; 
+            $myServiceSet['ico'] = "<i class='fa fa-bar-chart-o'></i>";
             $myServiceSet['duration'] = Datetime::humanReadable(
-                                                                $myServiceSet['duration'],
-                                                                Datetime::PRECISION_FORMAT,
-                                                                2
-                                                                );
+                $myServiceSet['duration'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
             $myServiceSet['last_check'] = Datetime::humanReadable(
-                                                                $myServiceSet['last_check'],
-                                                                Datetime::PRECISION_FORMAT,
-                                                                2
-                                                                );
+                $myServiceSet['last_check'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
             //$myServiceSet['last_check'] = date("d/m/Y - H:i:s", $myServiceSet['last_check']);
         }
     }
-
 }

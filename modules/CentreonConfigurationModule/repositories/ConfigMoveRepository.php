@@ -49,18 +49,24 @@ class ConfigMoveRepository
     private $status;
     private $warning;
     
-    /*
-     * Methode tests
-     * @return value
+    /**
+     * Constructor
+     * 
+     * @param int $poller_id
      */
-    public function __construct($poller_id) 
+    public function __construct($poller_id)
     {
         $this->di = \Centreon\Internal\Di::getDefault();
         $this->status = true;
         $this->warning = false;
     }
 
-    public function moveConfig($poller_id) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return array
+     */
+    public function moveConfig($poller_id)
     {
         /* Get Path */
         $config = $this->di->get('config');
@@ -71,7 +77,8 @@ class ConfigMoveRepository
         
         /* return status */
         return array(
-                     'status' => $this->status, 
-                     'stdout' => $this->stdout);
+            'status' => $this->status,
+            'stdout' => $this->stdout
+        );
     }
 }

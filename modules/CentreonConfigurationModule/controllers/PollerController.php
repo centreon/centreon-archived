@@ -45,7 +45,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $datatableObject = '\CentreonConfiguration\Internal\PollerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Poller';
 
-    public static $relationMap = array(); 
+    public static $relationMap = array();
 
     /**
      * List users

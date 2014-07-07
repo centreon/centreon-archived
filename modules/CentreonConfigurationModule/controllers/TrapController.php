@@ -45,7 +45,7 @@ class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public static $relationMap = array(
         'trap_services' => '\CentreonConfiguration\Models\Relation\Trap\Service',
         'trap_servicetemplates' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate',
-	'trap_manufacturer' => '\CentreonConfiguration\Models\Relation\Trap\Manufacturer'
+        'trap_manufacturer' => '\CentreonConfiguration\Models\Relation\Trap\Manufacturer'
     );
 
     /**

@@ -66,7 +66,8 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
         if (count($hostList) > 0) {
             $result = "id;name;alias;address;activate\n";
             foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];$host[host_alias];$host[host_address];$host[host_activate]\n";
+                $result .= "$host[host_id];$host[host_name];"
+                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
             }
         } else {
             $result = "No result found";
@@ -104,7 +105,8 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
         if (count($hostList) > 0) {
             $result = "id;name;alias;address;activate\n";
             foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];$host[host_alias];$host[host_address];$host[host_activate]\n";
+                $result .= "$host[host_id];$host[host_name];"
+                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
             }
         } else {
             $result = "No result found";
@@ -148,5 +150,4 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
     {
         echo "Not implemented yet";
     }
-
 }

@@ -35,17 +35,17 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Di,
-    \CentreonConfiguration\Models\Host,
-    \CentreonConfiguration\Models\Relation\Host\Contact,
-    \CentreonConfiguration\Models\Relation\Host\Contactgroup,
-    \CentreonConfiguration\Models\Relation\Host\Hostchild,
-    \CentreonConfiguration\Models\Relation\Host\Hostparent,
-    \CentreonConfiguration\Models\Relation\Host\Poller,
-    \CentreonConfiguration\Models\Timeperiod,
-    \CentreonConfiguration\Models\Command,
-    \CentreonConfiguration\Internal\HostDatatable,
-    \CentreonConfiguration\Repository\HostRepository;
+use \Centreon\Internal\Di;
+use \CentreonConfiguration\Models\Host;
+use \CentreonConfiguration\Models\Relation\Host\Contact;
+use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
+use \CentreonConfiguration\Models\Relation\Host\Hostchild;
+use \CentreonConfiguration\Models\Relation\Host\Hostparent;
+use \CentreonConfiguration\Models\Relation\Host\Poller;
+use \CentreonConfiguration\Models\Timeperiod;
+use \CentreonConfiguration\Models\Command;
+use \CentreonConfiguration\Internal\HostDatatable;
+use \CentreonConfiguration\Repository\HostRepository;
 
 class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -123,7 +123,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         $id = parent::createAction();
-        if (isset($givenParameters['host_create_services_from_template']) && 
+        if (isset($givenParameters['host_create_services_from_template']) &&
             $givenParameters['host_create_services_from_template']) {
             \CentreonConfiguration\Models\Host::deployServices($id);
         }

@@ -48,7 +48,7 @@ class ConfigGenerateResourcesRepository
      * @param  
      * @return value
      */
-    public function generateResources(& $filesList, $poller_id, $path, $filename) 
+    public function generateResources(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -71,7 +71,7 @@ class ConfigGenerateResourcesRepository
             $content[$row["resource_name"]] = $row["resource_line"];
         }
 
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }

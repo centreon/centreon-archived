@@ -99,7 +99,7 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     public function addAction()
     {
         $this->tpl->assign('validateUrl', '/configuration/usergroup/add');
-        parent::addAction();    
+        parent::addAction();
     }
     
     /**
@@ -111,7 +111,7 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function createAction()
     {
-        parent::createAction();    
+        parent::createAction();
     }
     
     /**
@@ -123,7 +123,7 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function editAction()
     {
-        parent::editAction(); 
+        parent::editAction();
     }
     
     /**

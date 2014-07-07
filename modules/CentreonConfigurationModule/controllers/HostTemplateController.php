@@ -35,9 +35,9 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact,
-    \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup,
-    \CentreonConfiguration\Repository\HostRepository;
+use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact;
+use \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
+use \CentreonConfiguration\Repository\HostRepository;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {

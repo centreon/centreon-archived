@@ -91,7 +91,7 @@ class ContacttemplateController extends \CentreonConfiguration\Controllers\Objec
      */
     public function updateAction()
     {
-        parent::updateAction();    
+        parent::updateAction();
     }
     
     /**

@@ -35,8 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Form\Generator,
-    \CentreonConfiguration\Repository\AuditlogRepository;
+use \Centreon\Internal\Form\Generator;
+use \CentreonConfiguration\Repository\AuditlogRepository;
 
 /**
  * Abstact class for configuration controller
@@ -715,15 +715,15 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             $router->response()->json(array('id' => null, 'text' => null));
             return;
         } elseif ($reverse === true) {
-           $finalList = array();
+            $finalList = array();
             foreach ($list as $obj) {
                 $finalList[] = array(
                     "id" => $obj[$targetObj::getPrimaryKey()],
                     "text" => $obj[$targetObj::getUniqueLabelField()]
                 );
             }
-           $router->response()->json($finalList);
-           return;
+            $router->response()->json($finalList);
+            return;
         }
         
         $filters = array($targetObj::getPrimaryKey() => $list[0][$fieldName]);
@@ -731,11 +731,11 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $targetName = $targetObj::getUniqueLabelField();
         $targetList = $targetObj::getList(
             $targetPrimaryKey.','.$targetName,
-            -1, 
-            0, 
-            null, 
-            "ASC", 
-            $filters, 
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
             "AND"
         );
         

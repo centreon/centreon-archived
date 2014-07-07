@@ -104,6 +104,7 @@ class ExternalcommandController extends \Centreon\Internal\Controller
                     $cmdId,
                     $params['ids']
                 );
+                break;
             case HostdetailRepository::DOWNTIME:
                 $this->displayDowntimeBox(
                     $cmdId,

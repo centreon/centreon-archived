@@ -90,7 +90,7 @@ class HostApi extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
         
-        /* 
+        /*
          * Get parameters
          */
         $requestParams = $this->getParams();
@@ -99,7 +99,7 @@ class HostApi extends \Centreon\Internal\Controller
          * Query parameter
          */
         $params = array(
-            "host_id" => $requestParams['id'], 
+            "host_id" => $requestParams['id'],
             "host_register" => '1'
         );
         
@@ -110,10 +110,10 @@ class HostApi extends \Centreon\Internal\Controller
 
         $router->response()->json(
             array(
-                    "api-version" => $requestParams['version'],
-                    "status" => true,
-                    "data" => $hostList
-                )
+                "api-version" => $requestParams['version'],
+                "status" => true,
+                "data" => $hostList
+            )
         );
     }
 
@@ -160,5 +160,4 @@ class HostApi extends \Centreon\Internal\Controller
     {
         print "Not implemented yet";
     }
-
 }

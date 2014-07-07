@@ -35,10 +35,10 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \CentreonConfiguration\Models\Host,
-    \CentreonConfiguration\Models\Command,
-    \CentreonConfiguration\Models\Timeperiod,
-    \Centreon\Internal\Utils\YesNoDefault;
+use \CentreonConfiguration\Models\Host;
+use \CentreonConfiguration\Models\Command;
+use \CentreonConfiguration\Models\Timeperiod;
+use \Centreon\Internal\Utils\YesNoDefault;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -131,7 +131,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
      * @param string $path
      * @param string $filename
      */
-    public static function generateHosts(& $filesList, $poller_id, $path, $filename) 
+    public static function generateHosts(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -172,7 +172,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                     /* Add host_id macro for broker - This is mandatory*/
                     $tmpData["_HOST_ID"] = $host_id;
                     $host_name = "";
-                } else if ((!isset($disableField[$key]) && $value != "")) {
+                } elseif ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
                     } else {
@@ -190,28 +190,28 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                         }
                         if ($key == 'check_period' || $key == 'notification_period') {
                             $value = TimeperiodRepository::getPeriodName($value);
-                        } 
+                        }
                         if ($key == "contact_additive_inheritance") {
                             $tmpContact = static::getContacts($host_id);
                             if ($tmpContact != "") {
                                 if ($value = 1) {
                                     $tmpData["contacts"] = "+";
                                 }
-                                $tmpData["contacts"] .= $tmpContact; 
+                                $tmpData["contacts"] .= $tmpContact;
                             }
-                        } else if ($key == "cg_additive_inheritance") {
+                        } elseif ($key == "cg_additive_inheritance") {
                             $tmpContact = static::getContactGroups($host_id);
                             if ($tmpContact != "") {
                                 if ($value = 1) {
                                     $tmpData["contact_groups"] = "+";
                                 }
-                                $tmpData["contact_groups"] .= $tmpContact; 
+                                $tmpData["contact_groups"] .= $tmpContact;
                             }
-                        } else if ($key == "name") {
+                        } elseif ($key == "name") {
                             $tmpData[$key] = $value;
                             $template = HosttemplateRepository::getTemplates($host_id);
                             if ($template != "") {
-                                $tmpData["use"] = $template; 
+                                $tmpData["use"] = $template;
                             }
                         } else {
                             $tmpData[$key] = $value;
@@ -235,7 +235,12 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             /* Write Check-Command configuration file */
             print "Write : " . $path . $poller_id . "/".$filename . $host_name . "-" . $host_id . ".cfg \n<br>";
 
-            WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg", $filesList, $user = "API");
+            WriteConfigFileRepository::writeObjectFile(
+                $content,
+                $path.$poller_id."/".$filename.$host_name."-".$host_id.".cfg",
+                $filesList,
+                "API"
+            );
            
         }
         
@@ -247,7 +252,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
      * @param int $host_id
      * @return type
      */
-    public static function getContacts($host_id) 
+    public static function getContacts($host_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -256,12 +261,16 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         
         $contactList = "";
 
-        $query = "SELECT contact_alias FROM contact c, contact_host_relation ch WHERE host_host_id = '$host_id' AND c.contact_id = ch.contact_id ORDER BY contact_alias";
+        $query = "SELECT contact_alias "
+            . "FROM contact c, contact_host_relation ch "
+            . "WHERE host_host_id = '$host_id' "
+            . "AND c.contact_id = ch.contact_id "
+            . "ORDER BY contact_alias";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($contactList != "") {
-                $contactList .= ","; 
+                $contactList .= ",";
             }
             $contactList .= $row["contact_alias"];
         }
@@ -273,7 +282,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
      * @param int $host_id
      * @return type
      */
-    public static function getContactGroups($host_id) 
+    public static function getContactGroups($host_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -282,12 +291,16 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         
         $contactgroupList = "";
 
-        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_host_relation cgh WHERE host_host_id = '$host_id' AND cg.cg_id = cgh.contactgroup_cg_id ORDER BY cg_name";
+        $query = "SELECT cg_name "
+            . "FROM contactgroup cg, contactgroup_host_relation cgh "
+            . "WHERE host_host_id = '$host_id' "
+            . "AND cg.cg_id = cgh.contactgroup_cg_id "
+            . "ORDER BY cg_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($contactgroupList != "") {
-                $contactgroupList .= ","; 
+                $contactgroupList .= ",";
             }
             $contactgroupList .= $row["cg_name"];
         }

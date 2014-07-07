@@ -56,7 +56,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param integer $interval
+     * @param int $interval
      * @return string
      */
     public static function formatNotificationOptions($interval)
@@ -79,7 +79,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param integer $service_id
+     * @param int $service_id
      * @param string $field
      * @return type
      */
@@ -117,7 +117,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
 
     /**
      * 
-     * @param integer $service_id
+     * @param int $service_id
      * @return type
      */
     public function getNotificicationsStatus($service_id)
@@ -148,11 +148,11 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param type $service_template_id
-     * @return type
+     * @param int $service_template_id
+     * @return array
      */
     public static function getMyServiceTemplateModels($service_template_id)
-    {        
+    {
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
@@ -185,7 +185,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param integer $service_id
+     * @param int $service_id
      * @return type
      */
     public static function getMyServiceAlias($service_id)
@@ -220,7 +220,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param integer $service_id
+     * @param int $service_id
      * @return string
      */
     public static function getIconImage($service_id)
@@ -264,7 +264,12 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         return $finalRoute;
     }
 
-    public static function getTripleChoice() {
+    /**
+     * 
+     * @return int
+     */
+    public static function getTripleChoice()
+    {
         $content = array();
         $content["service_active_checks_enabled"] = 1;
         $content["service_passive_checks_enabled"] = 1;
@@ -283,7 +288,12 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         return $content;
     }
 
-    public static function generateServices($host_id) 
+    /**
+     * 
+     * @param int $host_id
+     * @return int
+     */
+    public static function generateServices($host_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -292,14 +302,33 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
 
         /* Field to not display */
         $disableField = static::getTripleChoice();
-        $field = "host_id, h.host_name, service_id, service_description, service_alias, service_template_model_stm_id, command_command_id_arg, s.command_command_id AS check_command, s.timeperiod_tp_id AS check_period, s.command_command_id_arg2, s.command_command_id2 AS event_handler, s.timeperiod_tp_id2 AS notification_period, s.display_name, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, s.initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, service_notification_options, service_notifications_enabled, service_first_notification_delay, service_stalking_options ";
+        $field = "host_id, h.host_name, service_id, "
+            . "service_description, service_alias, service_template_model_stm_id, command_command_id_arg, "
+            . "s.command_command_id AS check_command, s.timeperiod_tp_id AS check_period, "
+            . "s.command_command_id_arg2, s.command_command_id2 AS event_handler, "
+            . "s.timeperiod_tp_id2 AS notification_period, s.display_name, "
+            . "service_is_volatile, service_max_check_attempts, service_normal_check_interval, "
+            . "service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, "
+            . "s.initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, "
+            . "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, "
+            . "service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, "
+            . "service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, "
+            . "service_notification_options, service_notifications_enabled, service_first_notification_delay, "
+            . "service_stalking_options ";
 
         
         /* Init Content Array */
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM host h, service s, host_service_relation r WHERE h.host_id = $host_id AND h.host_id = r.host_host_id AND s.service_id = r.service_service_id AND service_activate = '1' AND service_register = '1' ORDER BY host_name, service_description";
+        $query = "SELECT $field "
+            . "FROM host h, service s, host_service_relation r "
+            . "WHERE h.host_id = $host_id "
+            . "AND h.host_id = r.host_host_id "
+            . "AND s.service_id = r.service_service_id "
+            . "AND service_activate = '1' "
+            . "AND service_register = '1' "
+            . "ORDER BY host_name, service_description";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -313,7 +342,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
 
                     /* Add service_id macro for broker - This is mandatory*/
                     $tmpData["_SERVICE_ID"] = $service_id;
-                } else if ((!isset($disableField[$key]) && $value != "")) {
+                } elseif ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
                     } else {
@@ -333,21 +362,21 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                         if ($key == 'check_command' || $key == 'event_handler') {
                             $value = CommandRepository::getCommandName($value).html_entity_decode($args);
                             $args = "";
-                        } 
+                        }
                         if ($key == 'check_period' || $key == 'notification_period') {
                             $value = TimeperiodRepository::getPeriodName($value);
-                        } 
+                        }
                         if ($key == "template_model_stm_id") {
                             $key = "use";
                             $value = ServicetemplateRepository::getTemplateName($value);
-                        } 
+                        }
                         if ($key == "contact_additive_inheritance") {
                             $tmpContact = static::getContacts($service_id);
                             if ($tmpContact != "") {
                                 if ($value = 1) {
                                     $tmpData["contacts"] = "+";
                                 }
-                                $tmpData["contacts"] .= $tmpContact; 
+                                $tmpData["contacts"] .= $tmpContact;
                             }
                         }
                         if ($key == "cg_additive_inheritance") {
@@ -356,7 +385,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                                 if ($value = 1) {
                                     $tmpData["contactgroups"] = "+";
                                 }
-                                $tmpData["contactgroups"] .= $tmpContact; 
+                                $tmpData["contactgroups"] .= $tmpContact;
                             }
                         }
                         $tmpData[$key] = $value;
@@ -367,11 +396,14 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
             $content[] = $tmp;
         }
         return $content;
-
-        unset($content);
     }
     
-    public static function getContacts($service_id) 
+    /**
+     * 
+     * @param int $service_id
+     * @return array
+     */
+    public static function getContacts($service_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -380,19 +412,28 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         $contactList = "";
 
-        $query = "SELECT contact_name FROM contact c, contact_service_relation cs WHERE service_service_id = '$service_id' AND c.contact_id = cs.contact_id ORDER BY contact_alias";
+        $query = "SELECT contact_name "
+            . "FROM contact c, contact_service_relation cs "
+            . "WHERE service_service_id = '$service_id' "
+            . "AND c.contact_id = cs.contact_id "
+            . "ORDER BY contact_alias";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($contactList != "") {
-                $contactList .= ","; 
+                $contactList .= ",";
             }
             $contactList .= $row["contact_name"];
         }
         return $contactList;
     }
 
-    public static function getContactGroups($service_id) 
+    /**
+     * 
+     * @param int $service_id
+     * @return array
+     */
+    public static function getContactGroups($service_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -401,18 +442,19 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         $contactgroupList = "";
 
-        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgs WHERE service_service_id = '$service_id' AND cg.cg_id = cgs.contactgroup_cg_id ORDER BY cg_name";
+        $query = "SELECT cg_name "
+            . "FROM contactgroup cg, contactgroup_service_relation cgs "
+            . "WHERE service_service_id = '$service_id' "
+            . "AND cg.cg_id = cgs.contactgroup_cg_id "
+            . "ORDER BY cg_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($contactgroupList != "") {
-                $contactgroupList .= ","; 
+                $contactgroupList .= ",";
             }
             $contactgroupList .= $row["cg_name"];
         }
         return $contactgroupList;
     }
-
-
 }
-
