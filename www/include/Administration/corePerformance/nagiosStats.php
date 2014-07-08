@@ -57,7 +57,7 @@
 	 */
 	$pollerList = array();
 	$defaultPoller = null;
-	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `localhost` DESC");
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `localhost`,`name` DESC");
 	while ($data = $DBRESULT->fetchRow()) {
 		if ($data['localhost']) {
 		    $defaultPoller = $data['id'];
