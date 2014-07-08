@@ -193,4 +193,10 @@ $obj->createLegend();
  * Display Images Binary Data
  */
 $obj->displayImageFlow();
+
+
+/**
+ * Closing session
+ */
+CentreonSession::stop();
 ?>
