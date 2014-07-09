@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
     if (!isset($oreon)) {
@@ -185,10 +182,13 @@
             }
             $fileXml->endElement();
 
+            // Write Config Files
+            $oldumask = umask(0113);
             ob_start();
             $fileXml->output();
             file_put_contents($dir_conf . '/' . $filename, ob_get_contents());
             ob_end_clean();
+            umask($oldumask);
         }
     }
 ?>
