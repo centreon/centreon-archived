@@ -73,6 +73,14 @@
 			return true;
 	}
 
+    function shouldNotBeEqTo0($value) {
+        if ($value) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 	function enableHostCategoriesInDB ($hc_id = NULL, $hc_arr = array())	{
 		global $pearDB, $oreon;
 

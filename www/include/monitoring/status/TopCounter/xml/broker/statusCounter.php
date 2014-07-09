@@ -300,7 +300,7 @@
 	}
 
 	if ($activity != 0) {
-		$errorAct = _("Some database poller updates are not active; check your nagios platform");
+		$errorAct = _("Some database poller updates are not active; check your Monitoring platform");
 	} else {
 		$errorAct = _("OK: all database poller updates are active");
 	}

@@ -56,7 +56,7 @@
             return true;
         }
         
-	function testServiceCategorieExistence ($name = NULL)	{
+	function testServiceCategorieExistence($name = NULL) {
 		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
@@ -70,6 +70,14 @@
 		else
 			return true;
 	}
+
+    function shouldNotBeEqTo0($value) {
+        if ($value) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 	function multipleServiceCategorieInDB ($sc = array(), $nbrDup = array())	{
                 global $pearDB, $centreon;
