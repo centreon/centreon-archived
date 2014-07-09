@@ -247,6 +247,10 @@ $form->addRule('hc_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 $form->addRule('hc_severity_level', _("Must be a number"), 'numeric');
+
+$form->registerRule('shouldNotBeEqTo0', 'callback', 'shouldNotBeEqTo0');
+$form->addRule('hc_severity_level', _("Can't be equal to 0"), 'shouldNotBeEqTo0');
+
 $form->addFormRule('checkSeverity');
 
 /*
