@@ -149,6 +149,7 @@
 		$rows = $pearDBO->numberRows();
 		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 			$tab_comments_host[$i] = $data;
+            $tab_comments_host[$i]['comment_data'] = htmlentities($data['comment_data']);
 			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
 			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
 			$tab_comments_host[$i]["host_name_link"] = urlencode($tab_comments_host[$i]["host_name"]);
