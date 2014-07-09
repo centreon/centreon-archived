@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -167,7 +166,7 @@ $form = new HTML_QuickForm('form', 'post', "?p=" . $p);
  * Get Poller List
  */
 $pollerList = array();
-$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `localhost` DESC");
+$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `name`");
 while ($data = $DBRESULT->fetchRow()) {
     if ($data['localhost']) {
         $defaultPoller = $data['id'];

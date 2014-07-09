@@ -16,6 +16,13 @@ servicename=$(basename "$0")
 user=@CENTREON_USER@
 timeout=60
 start_timeout=5
+logfile=@CENTREON_LOG@/centstorage.log
+
+# Add optionnal option for centstorage daemon
+opt_daemon=""
+if [ -n "${logfile}" ]; then
+    opt_daemon=" --logfile=${logfile}"
+fi
 
 pidfile=@CENTREON_RUNDIR@/centreontrapd.pid
 
@@ -46,9 +53,9 @@ start() {
 	fi
 
 	if [ "$(id -u -n)" = "$user" ] ; then
-		startproc $binary
+		startproc $binary ${opt_daemon}
 	else
-		startproc -u $user $binary
+		startproc -u $user $binary ${opt_daemon}
 	fi
 	
 	i=0

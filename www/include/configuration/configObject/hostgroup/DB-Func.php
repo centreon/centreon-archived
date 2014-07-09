@@ -125,7 +125,7 @@
 	function multipleHostGroupInDB ($hostGroups = array(), $nbrDup = array())	{
 		global $pearDB, $oreon, $is_admin;
 
-                $hgAcl = array();
+        $hgAcl = array();
 		foreach($hostGroups as $key=>$value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
@@ -135,7 +135,7 @@
 				$rq = NULL;
 				foreach ($row as $key2 => $value2)	{
 					$key2 == "hg_name" ? ($hg_name = $value2 = $value2."_".$i) : null;
-					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					$val ? $val .= ($value2 != NULL ? (", '".$pearDB->escape($value2)."'") : ", NULL") : $val .= ($value2 != NULL ? ("'".$pearDB->escape($value2)."'") : "NULL");
 					if ($key2 != "hg_id")
 						$fields[$key2] = $value2;
 					if (isset($fields["hg_name"])) {
@@ -149,7 +149,7 @@
 					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(hg_id)"]))	{
 						$hgAcl[$maxId["MAX(hg_id)"]] = $key;
-                                                if (!$is_admin){
+                        if (!$is_admin) {
 							$resource_list = $oreon->user->access->getResourceGroups();
 							if (count($resource_list)){
 								foreach ($resource_list as $res_id => $res_name)	{
@@ -167,7 +167,7 @@
 						}
 						$fields["hg_hosts"] = trim($fields["hg_hosts"], ",");
 						$DBRESULT = $pearDB->query("SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr WHERE cghgr.hostgroup_hg_id = '".$key."'");
-						while($cg = $DBRESULT->fetchRow()){
+						while ($cg = $DBRESULT->fetchRow()){
 							$DBRESULT2 = $pearDB->query("INSERT INTO contactgroup_hostgroup_relation VALUES ('', '".$cg["contactgroup_cg_id"]."', '".$maxId["MAX(hg_id)"]."')");
 						}
 						$oreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
@@ -175,8 +175,8 @@
 				}
 			}
 		}
-                CentreonACL::duplicateHgAcl($hgAcl);
-                $oreon->user->access->updateACL();
+        CentreonACL::duplicateHgAcl($hgAcl);
+        $oreon->user->access->updateACL();
 	}
 
 	function insertHostGroupInDB ($ret = array())	{

@@ -93,6 +93,14 @@
 			return true;
 	}
 
+    function checkColorFormat($color) {
+        if ($color != "" && strncmp($color, '#', 1)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 	function deleteComponentTemplateInDB($compos = array())	{
 		global $pearDB;
 		foreach($compos as $key => $value){
