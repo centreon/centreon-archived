@@ -248,6 +248,13 @@
     $form->addRule(array('ds_color_line_mode', 'ds_color_line'), 
                    _("Required Field"), 'color_line_enabled');
 
+    $form->registerRule('checkColorFormat', 'callback', 'checkColorFormat');
+
+    $form->addRule('ds_color_line', _("Bad Format: start color by #"), 'checkColorFormat');
+    $form->addRule('ds_color_area', _("Bad Format: start color by #"), 'checkColorFormat');
+    $form->addRule('ds_color_area_warn', _("Bad Format: start color by #"), 'checkColorFormat');
+    $form->addRule('ds_color_area_crit', _("Bad Format: start color by #"), 'checkColorFormat');
+
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
