@@ -207,13 +207,12 @@
 	$form->addRule('sc_name', _("Compulsory Name"), 'required');
 	$form->addRule('sc_description', _("Compulsory Alias"), 'required');
 
-	$form->registerRule('existName', 'callback', 'testServiceCategorieExistence');
-	$form->addRule('sc_name', _("Name is already in use"), 'existName');
-        
-        $form->addRule('sc_severity_level', _("Must be a number"), 'numeric');
-        $form->addFormRule('checkSeverity');
-        
-	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->addRule('sc_severity_level', _("Must be a number"), 'numeric');
+
+$form->registerRule('shouldNotBeEqTo0', 'callback', 'shouldNotBeEqTo0');
+$form->addRule('sc_severity_level', _("Can't be equal to 0"), 'shouldNotBeEqTo0');
+
+$form->addFormRule('checkSeverity');
 
 	/*
 	 * Smarty template Init
@@ -231,28 +230,15 @@
 	}
 	$tpl->assign("helptext", $helptext);
 
-	if ($o == "w")	{
-		/*
-		 * Just watch a service_categories information
-		 */
-		if ($centreon->user->access->page($p) != 2)
-			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
-	    $form->setDefaults($sc);
-		$form->freeze();
-	} else if ($o == "c")	{
-		/*
-		 * Modify a service_categories information
-		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	    $form->setDefaults($sc);
-	} else if ($o == "a")	{
-		/*
-		 * Add a service_categories information
-		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	}
+# prepare help texts
+$helptext = "";
+
+include_once("help.php");
+
+foreach ($help as $key => $text) {
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+}
+$tpl->assign("helptext", $helptext);
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{

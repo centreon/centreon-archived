@@ -226,8 +226,12 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-    $init = $form->addElement('hidden', 'initialValues');
-    $init->setValue(serialize($initialValues));
+$form->addRule('hc_severity_level', _("Must be a number"), 'numeric');
+
+$form->registerRule('shouldNotBeEqTo0', 'callback', 'shouldNotBeEqTo0');
+$form->addRule('hc_severity_level', _("Can't be equal to 0"), 'shouldNotBeEqTo0');
+
+$form->addFormRule('checkSeverity');
 
 	/*
 	 * Form Rules
