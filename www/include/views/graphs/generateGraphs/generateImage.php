@@ -199,4 +199,7 @@ $obj->displayImageFlow();
  * Closing session
  */
 CentreonSession::stop();
+
+$pearDB->query("DELETE FROM session WHERE session_id = '".$mySessionId."'");
+
 ?>
