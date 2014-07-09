@@ -212,6 +212,10 @@ $form->registerRule('existName', 'callback', 'testServiceCategorieExistence');
 $form->addRule('sc_name', _("Name is already in use"), 'existName');
 
 $form->addRule('sc_severity_level', _("Must be a number"), 'numeric');
+
+$form->registerRule('shouldNotBeEqTo0', 'callback', 'shouldNotBeEqTo0');
+$form->addRule('sc_severity_level', _("Can't be equal to 0"), 'shouldNotBeEqTo0');
+
 $form->addFormRule('checkSeverity');
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
@@ -226,7 +230,9 @@ $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0,
 
 # prepare help texts
 $helptext = "";
+
 include_once("help.php");
+
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
