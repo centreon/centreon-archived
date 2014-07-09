@@ -324,4 +324,3 @@ if ($valid && $action["action"]["action"]) {
     $tpl->assign('topdoc', _("Documentation"));
     $tpl->display("formHostCategories.ihtml");
 }
-
