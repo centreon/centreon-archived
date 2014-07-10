@@ -168,12 +168,12 @@
 				"d.duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time AS scheduled_start_time, ".
 				"d.end_time as scheduled_end_time, h.name as host_name, d.started as was_started " . $extrafields .
 				"FROM downtimes d, hosts h " .
-				(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
+				(isset($hostgroup) && $hostgroup != 0 ? ", hosts_hostgroups hgm " : "") .
 				"WHERE d.type = 2 " .
 				(isset($view_all) && !$view_all ? "AND d.cancelled = 0 " : "") .
 				(isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND d.comment_data LIKE '%$search_output%'" : "") .
-				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
+				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = hgm.host_id AND hgm.hostgroup_id = $hostgroup " : "") .
 				"AND d.host_id = h.host_id " .
         		"AND h.enabled = 1 ";
         if (!$is_admin) {
