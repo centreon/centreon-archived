@@ -337,6 +337,11 @@ class CentreonExternalCommand {
 	public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null, $with_services = false)
 	{
 		global $centreon;
+        
+        if (is_null($centreon)) {
+            global $oreon;
+            $centreon = $oreon;
+        }
 
 		if (!isset($persistant)) {
 			$persistant = 0;
@@ -376,6 +381,12 @@ class CentreonExternalCommand {
 	public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant, $duration = null)
 	{
 		global $centreon;
+        
+        if (is_null($centreon)) {
+            global $oreon;
+            $centreon = $oreon;
+        }
+
 
 		if (!isset($persistant)) {
 			$persistant = 0;
