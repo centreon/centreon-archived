@@ -41,7 +41,7 @@ namespace CentreonConfiguration\Commands;
  * @package Centreon
  * @subpackage Controllers
  */
-class HostCommand extends \Centreon\Internal\Command\AbstractCommand
+class ServiceCommand extends \Centreon\Internal\Command\AbstractCommand
 {
     /**
      * Action for listing hosts
@@ -52,21 +52,36 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
         /*
          * Fields that we want to display
          */
-        $params = 'host_id,host_name,host_alias,host_address,host_activate';
-        
-        $hostList = \CentreonConfiguration\Models\Host::getList(
-            $params,
-            -1,
-            0,
-            null,
-            "ASC"
+        $hostParams = array(
+            'host_id', 'host_name'
+        );
+        $serviceParams = array(
+            'service_id',
+            'service_description',
+            'service_normal_check_interval',
+            'service_retry_check_interval',
+            'service_max_check_attempts',
+            'service_active_checks_enabled',
+            'service_passive_checks_enabled',
+            'service_activate'
         );
         
-        if (count($hostList) > 0) {
-            $result = "id;name;alias;address;activate\n";
-            foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];"
-                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
+        $serviceList = \CentreonConfiguration\Models\Relation\Service\Host::getMergedParameters(
+            $serviceParams,
+            $hostParams
+        );
+        
+        if (count($serviceList) > 0) {
+            $result = "host id;host name;id;description;command check;"
+                . "normal check interval;retry check interval;max check attempts;"
+                . "active checks enabled;passive checks enabled;activate\n";
+            foreach ($serviceList as $service) {
+                $command = \CentreonConfiguration\Models\Command::getParameters($service['command_command_id'], array('command_name'));
+                $result .= "$service[host_id];$service[host_name];"
+                    . "$service[service_description];$command[command_name];$service[service_normal_check_interval];"
+                    . "$service[service_retry_check_interval];$service[service_max_check_attempts];"
+                    . "$service[service_active_checks_enabled];$service[service_passive_checks_enabled];"
+                    . "$service[service_activate]\n";
             }
         } else {
             $result = "No result found";
@@ -82,23 +97,30 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function showAction($host)
     {
+        /*
+         * Query parameter
+         */
+        $params = array(
+            "service_register" => '1'
+        );
         
         if (is_numeric($host)) {
-            $params['host_id'] = $host;
+            $params['service_id'] = $host;
         } else {
-            $params['host_name'] = $host;
+            $params['service_name'] = $host;
         }
+        
         
         /*
          * Get host informations
          */
-        $hostList = \CentreonConfiguration\Models\Host::getList('*', -1, 0, null, "ASC", $params, "AND");
+        $hostList = \CentreonConfiguration\Models\Service::getList('*', -1, 0, null, "ASC", $params, "AND");
         
         if (count($hostList) > 0) {
             $result = "id;name;alias;address;activate\n";
             foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];"
-                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
+                $result .= "$host[service_id];$host[service_name];"
+                    . "$host[service_alias];$host[service_address];$host[service_activate]\n";
             }
         } else {
             $result = "No result found";

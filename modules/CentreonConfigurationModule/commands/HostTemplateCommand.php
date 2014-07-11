@@ -41,7 +41,7 @@ namespace CentreonConfiguration\Commands;
  * @package Centreon
  * @subpackage Controllers
  */
-class HostCommand extends \Centreon\Internal\Command\AbstractCommand
+class HostTemplateCommand extends \Centreon\Internal\Command\AbstractCommand
 {
     /**
      * Action for listing hosts
@@ -52,9 +52,9 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
         /*
          * Fields that we want to display
          */
-        $params = 'host_id,host_name,host_alias,host_address,host_activate';
+        $params = 'host_id,host_name,host_alias,host_activate';
         
-        $hostList = \CentreonConfiguration\Models\Host::getList(
+        $hostList = \CentreonConfiguration\Models\Hosttemplate::getList(
             $params,
             -1,
             0,
@@ -63,10 +63,10 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
         );
         
         if (count($hostList) > 0) {
-            $result = "id;name;alias;address;activate\n";
+            $result = "id;name;alias;activate\n";
             foreach ($hostList as $host) {
                 $result .= "$host[host_id];$host[host_name];"
-                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
+                    . "$host[host_alias];$host[host_activate]\n";
             }
         } else {
             $result = "No result found";
@@ -80,25 +80,24 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
      * @param    int   $id    ID of object
      * @param    mixed   $host    Name of object
      */
-    public function showAction($host)
+    public function showAction($hostTemplate)
     {
-        
-        if (is_numeric($host)) {
-            $params['host_id'] = $host;
+        if (is_numeric($hostTemplate)) {
+            $params['host_id'] = $hostTemplate;
         } else {
-            $params['host_name'] = $host;
+            $params['host_name'] = $hostTemplate;
         }
         
         /*
          * Get host informations
          */
-        $hostList = \CentreonConfiguration\Models\Host::getList('*', -1, 0, null, "ASC", $params, "AND");
+        $hostList = \CentreonConfiguration\Models\Hosttemplate::getList('*', -1, 0, null, "ASC", $params, "AND");
         
         if (count($hostList) > 0) {
-            $result = "id;name;alias;address;activate\n";
+            $result = "id;name;alias;activate\n";
             foreach ($hostList as $host) {
                 $result .= "$host[host_id];$host[host_name];"
-                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
+                    . "$host[host_alias];$host[host_activate]\n";
             }
         } else {
             $result = "No result found";
