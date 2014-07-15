@@ -148,7 +148,7 @@
             if (is_array($valueTab)) {
                 foreach($valueTab as $key => $value) {
                     $nbTmp = $key;
-                    $valueTab['ARG'.$nbTmp] = stripslashes($value);
+                    $valueTab['ARG'.$nbTmp] = $value;
                     unset($valueTab[$key]);
                 }
             } else {
