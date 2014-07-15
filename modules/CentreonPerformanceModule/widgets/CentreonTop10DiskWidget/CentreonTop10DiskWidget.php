@@ -48,7 +48,7 @@ $db = $this->getConfigurationDb();
 $data = array();
 
 /* Get Data */
-$query = "SELECT host_name, service_description, service_id, host_id, size.current_value AS size, used.current_value AS used, (size.current_value/used.current_value*100) AS percent FROM index_data, metrics used, metrics size WHERE service_description LIKE 'Disk%' AND used.index_id = id AND size.index_id = id AND size.metric_name = 'used' AND used.metric_name = 'size' ORDER BY percent DESC LIMIT 10";
+$query = "SELECT host_name, service_description, service_id, host_id, size.current_value AS size, used.current_value AS used, (used.current_value/size.current_value*100) AS percent FROM index_data, metrics used, metrics size WHERE service_description LIKE 'Disk%' AND used.index_id = id AND size.index_id = id AND size.metric_name = 'size' AND used.metric_name = 'used' ORDER BY percent DESC LIMIT 10";
 $stmt = $dbM->prepare($query);
 $stmt->execute();
 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

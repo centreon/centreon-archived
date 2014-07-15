@@ -7,3 +7,4 @@
 /var/tmp/filesGeneration/centreon-broker/
 /var/tmp/filesUpload/images/
 composer.lock
+config/centreon.ini
