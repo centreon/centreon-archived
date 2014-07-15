@@ -113,7 +113,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      *
      * @var string 
      */
-    public static $specificConditions = "h.host_id = services.host_id AND services.enabled = 1 ";
+    public static $specificConditions = "h.host_id = services.host_id AND services.enabled = 1 AND h.enabled = 1 ";
     
     /**
      *

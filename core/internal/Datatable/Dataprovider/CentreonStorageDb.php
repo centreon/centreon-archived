@@ -59,6 +59,10 @@ class CentreonStorageDb implements DataProviderInterface
         
         $specialFieldsKeys = array_keys($specialFields);
         foreach ($columns as $column) {
+            if (isset($column['dbName'])) {
+                $column['name'] = $column['dbName'];
+            }
+
             if (!in_array($column['name'], $specialFieldsKeys)) {
                 if (isset($column['source'])) {
                     if (is_array($column['source'])) {
@@ -86,13 +90,19 @@ class CentreonStorageDb implements DataProviderInterface
         foreach ($datatableClass::$columns as $column) {
             $fieldList[] = $column['name'];
         }
-        
+
         // Get the field label for the search
         foreach ($params as $key => $value) {
             if (substr($key, 0, 7) == 'sSearch') {
                 if (!empty($value)) {
-                    $b = explode('_', $key);
-                    $conditions[$fieldList[$b[1]]] = $value;
+                    if ($key === 'host_enabled') {
+                        $conditions['h.enabled'] = $value;
+                    } elseif ($key === 'service_enabled') {
+                        $conditions['s.enabled'] = $value;
+                    } else {
+                        $b = explode('_', $key);
+                        $conditions[$fieldList[$b[1]]] = $value;
+                    }
                 }
             }
         }

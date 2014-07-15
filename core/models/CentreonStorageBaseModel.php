@@ -79,6 +79,8 @@ abstract class CentreonStorageBaseModel
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
         $stmt = $db->prepare($sqlQuery);
+        //print $sqlQuery."\n";
+        //print_r($sqlParams);
         $stmt->execute($sqlParams);
         $result = $stmt->{$fetchMethod}(\PDO::FETCH_ASSOC);
         return $result;
@@ -330,7 +332,7 @@ abstract class CentreonStorageBaseModel
         if ($filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         }
-        
+
         if (is_array($parameterNames)) {
             $params = implode(",", $parameterNames);
         } else {
@@ -362,16 +364,26 @@ abstract class CentreonStorageBaseModel
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
-                if ($firstFilter) {
-                    $sql .= " WHERE $key LIKE ? ";
+                if (strstr($key, 'enabled')) {
+                    $COMP = '=';
                 } else {
-                    $sql .= " $filterType $key LIKE ? ";
+                    $COMP = 'LIKE';
+                }
+                if ($firstFilter) {
+                    $sql .= " WHERE $key $COMP ? ";
+                } else {
+                    $sql .= " $filterType $key $COMP ? ";
                 }
                 $value = trim($rawvalue);
                 $value = str_replace("\\", "\\\\", $value);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = '%'.$value.'%';
+                if (!strstr($key, 'enabled')) {
+                    $filterTab[] = '%'.$value.'%';
+                } else {
+                    $filterTab[] = $value;
+                }
+                
                 $firstFilter = false;
             }
         }
