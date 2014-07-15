@@ -216,13 +216,15 @@ class Template extends \Smarty
         $merge_tpl_vars = true,
         $no_output_filter = false
     ) {
-        if ($this->templateFile === "") {
-            $this->templateFile = $template;
+        if ($this->templateFile === "" && is_null($template)) {
+            throw \Exception("Template is not defined.");
+        } else if ($this->templateFile !== "" && is_null($template)) {
+            $template = $this->templateFile;
         }
         $this->loadResources();
         $this->assign('customJs', $this->customJs);
         return parent::fetch(
-            $this->templateFile,
+            $template,
             $cache_id,
             $compile_id,
             $parent,
