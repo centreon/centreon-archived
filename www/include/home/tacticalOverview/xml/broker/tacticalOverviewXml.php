@@ -692,6 +692,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
+	    $xml->writeElement('encodedhostname', urlencode($val), false);
         $xml->writeElement('hostcriticality', $tab_hostcriticality[$key]);
 	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
 	    $xml->writeElement('host_notes',$tab_hostnotes[$key]);
@@ -727,10 +728,12 @@
         $xml->startElement('unhandledServices');
         $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
 	    $xml->writeElement('servicename', $val, false);
+	    $xml->writeElement('encodedservicename', urlencode($val), false);
 	    $xml->writeElement('notes_url',$tab_notes_url[$key]);
 	    $xml->writeElement('notes',$tab_notes[$key]);
 	    $xml->writeElement('action_url',$tab_action_url[$key]);
 	    $xml->writeElement('hostname', $tab_hostname[$key], false);
+	    $xml->writeElement('encodedhostname', urlencode($tab_hostname[$key]), false);
 	    $xml->writeElement('ip', $tab_ip[$key]);
 	    $xml->writeElement('duration', $tab_duration[$key]);
 	    $xml->writeElement('last', $tab_last[$key]);
