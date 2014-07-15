@@ -39,7 +39,7 @@ namespace Centreon\Internal\Datatable\Dataprovider;
  *
  * @author lionel
  */
-interface iDataprovider
+interface DataProviderInterface
 {
     public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '');
 }

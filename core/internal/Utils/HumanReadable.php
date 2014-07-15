@@ -101,25 +101,31 @@ class HumanReadable
         if (false === in_array($unit, array_keys(self::$units)) && is_null($decimal)) {
             return $values;
         } elseif (false === in_array($unit, array_keys(self::$units))) {
-            return array_map(function($value) use ($decimal) {
-                if (is_null($value)) {
-                    return $value;
-                }
-                return sprintf("%.{$decimal}f", $value);
-            }, $values);
+            return array_map(
+                function ($value) use ($decimal) {
+                    if (is_null($value)) {
+                        return $value;
+                    }
+                    return sprintf("%.{$decimal}f", $value);
+                },
+                $values
+            );
         }
         if (isset(self::$units[$unit]['divider'])) {
             $divider = self::$units[$unit]['divider'];
-            return array_map(function($value) use ($factor, $decimal, $divider) {
-                if (is_null($value)) {
-                    return $value;
-                }
-                if (is_null($decimal)) {
-                    return $value / pow($divider, $factor);
-                } else {
-                    return sprintf("%.{$decimal}f", $value / pow($divider, $factor));
-                }
-            }, $values);
+            return array_map(
+                function ($value) use ($factor, $decimal, $divider) {
+                    if (is_null($value)) {
+                        return $value;
+                    }
+                    if (is_null($decimal)) {
+                        return $value / pow($divider, $factor);
+                    } else {
+                        return sprintf("%.{$decimal}f", $value / pow($divider, $factor));
+                    }
+                },
+                $values
+            );
         }
     }
 

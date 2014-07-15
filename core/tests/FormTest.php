@@ -1,11 +1,11 @@
 <?php
 namespace Test\Centreon;
 
-use Centreon\Internal\Config,
-    Centreon\Internal\Di,
-    Centreon\Internal\Template,
-    Centreon\Internal\Form,
-    Centreon\Internal\Router;
+use Centreon\Internal\Config;
+use Centreon\Internal\Di;
+use Centreon\Internal\Template;
+use Centreon\Internal\Form;
+use Centreon\Internal\Router;
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
@@ -80,10 +80,11 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $tpl->assign('form', $sm['testCheckbox']['html']);
         $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
-            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
-            '<label class="label-controller" for="testCheckbox">Simple checkbox</label>'.
-            '</div><div class="col-sm-9"><label class="label-controller" for="testCheckbox1">&nbsp;'.
-            '<input id="testCheckbox1" type="checkbox" name="testCheckbox" value=1  /> test</label>&nbsp;&nbsp;</div></div>',
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'
+            . '<label class="label-controller" for="testCheckbox">Simple checkbox</label>'
+            . '</div><div class="col-sm-9"><label class="label-controller" for="testCheckbox1">&nbsp;'
+            . '<input id="testCheckbox1" type="checkbox" name="testCheckbox" value=1  /> test</label>'
+            . '&nbsp;&nbsp;</div></div>',
             $printedResult
         );
     }
@@ -109,7 +110,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
             '<div class="col-sm-9"><label class="label-controller" for="testRadio1">&nbsp;'.
             '<input id="testRadio1" type="radio" name="testRadio" value=1  /> test</label>&nbsp;&nbsp;</div></div>',
             $printedResult
-        ); 
+        );
     }
     
     public function testAddText()
@@ -220,7 +221,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddIp()
     {
-/*        $tpl = Di::getDefault()->get('template');
+        /*$tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
         $arr = array(
             'type' => 'ipaddress',
@@ -294,12 +295,13 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $tpl->assign('form', $sm['testTextarea']['html']);
         $printedResult = $tpl->fetch($this->formTpl);
         $this->assertContains(
-            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
-            '<label class="label-controller" for="testTextarea">Test</label></div>'.
-            '<div class="col-sm-9">'.
-            '<textarea id="testTextarea" name="testTextarea" class="form-control " rows="3" placeholder="testTextarea" > </textarea></div></div>',
+            '<div class="form-group "><div class="col-sm-2" style="text-align:right">'
+            . '<label class="label-controller" for="testTextarea">Test</label></div>'
+            . '<div class="col-sm-9">'
+            . '<textarea id="testTextarea" '
+            . 'name="testTextarea" class="form-control " rows="3" placeholder="testTextarea" >'
+            . ' </textarea></div></div>',
             $printedResult
         );
     }
-
 }

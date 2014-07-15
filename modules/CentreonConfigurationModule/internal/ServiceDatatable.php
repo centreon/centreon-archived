@@ -36,11 +36,11 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb,
-    \CentreonConfiguration\Repository\ServiceRepository,
-    \CentreonConfiguration\Repository\HostRepository,
-    \CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository,
-    \Centreon\Internal\Di;
+use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use \CentreonConfiguration\Repository\ServiceRepository;
+use \CentreonConfiguration\Repository\HostRepository;
+use \CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
+use \Centreon\Internal\Di;
 
 /**
  * Description of ServiceDatatable
@@ -270,10 +270,12 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = '<span data-overlay-url="'.$router->getPathFor('/configuration/host/snapshot/').
-                    $myServiceSet['host_id'].
-                    '"><span class="overlay">'.
-                    HostRepository::getIconImage(
+                $myServiceSet['host_name'] = '<span data-overlay-url="'.$router->getPathFor(
+                    '/configuration/host/snapshot/'
+                ).
+                $myServiceSet['host_id'].
+                '"><span class="overlay">'.
+                HostRepository::getIconImage(
                     $myServiceSet['host_name']
                 ).'&nbsp;'.$myServiceSet['host_name'].
                 '</span></span>';
@@ -290,7 +292,9 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 $myServiceSet['service_id'],
                 'service_max_check_attempts'
             );
-            $myServiceSet['service_notifications'] = ServiceRepository::getNotificicationsStatus($myServiceSet['service_id']);
+            $myServiceSet['service_notifications'] = ServiceRepository::getNotificicationsStatus(
+                $myServiceSet['service_id']
+            );
             
             // Get Real Service Description
             if (!$myServiceSet["service_description"]) {
@@ -321,14 +325,18 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
             
-            $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor('/configuration/service/snapshot/').
-                $myServiceSet['service_id'].
-                '"><span class="overlay">'.
-                ServiceRepository::getIconImage($myServiceSet['service_id']).
-                '&nbsp;'.
-                $myServiceSet['service_description'].
-                '</span></span>';
-            $myServiceSet['service_description'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor('/realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip').'">';
+            $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
+                '/configuration/service/snapshot/'
+            ).
+            $myServiceSet['service_id'].
+            '"><span class="overlay">'.
+            ServiceRepository::getIconImage($myServiceSet['service_id']).
+            '&nbsp;'.
+            $myServiceSet['service_description'].
+            '</span></span>';
+            $myServiceSet['service_description'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor(
+                '/realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip'
+            ).'">';
             $myServiceSet['service_description'] .= ServiceRealTimeRepository::getStatusBadge(
                 ServiceRealTimeRepository::getStatus($myServiceSet["host_id"], $myServiceSet["service_id"])
             );

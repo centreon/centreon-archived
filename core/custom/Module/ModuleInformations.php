@@ -125,7 +125,7 @@ class ModuleInformations
         $moduleList = array();
         $rawModuleList = \Centreon\Models\Module::getList('name');
         
-        foreach($rawModuleList as $module) {
+        foreach ($rawModuleList as $module) {
             $moduleList[] = $module['name'];
         }
         

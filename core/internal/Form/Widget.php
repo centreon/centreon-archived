@@ -35,8 +35,8 @@
 
 namespace Centreon\Internal\Form;
 
-use \CentreonCustomview\Repository\WidgetRepository,
-    \CentreonCustomview\Repository\CustomviewRepository;
+use \CentreonCustomview\Repository\WidgetRepository;
+use \CentreonCustomview\Repository\CustomviewRepository;
 
 /**
  * Manage widget settings
@@ -66,9 +66,9 @@ class Widget extends Generator
     protected function convertType($data)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $attr = array(); 
+        $attr = array();
         switch ($data['type']) {
-            case 'list': 
+            case 'list':
                 $type = 'select';
                 $res = WidgetRepository::getParameterOptions($data['parameter_id']);
                 $options = array();
@@ -82,10 +82,12 @@ class Widget extends Generator
                     }
                     $i++;
                 }
-                $attr = json_encode(array(
-                    'selectData' => json_encode($options),
-                    'selectDefault' => json_encode($preferences)
-                ));
+                $attr = json_encode(
+                    array(
+                        'selectData' => json_encode($options),
+                        'selectDefault' => json_encode($preferences)
+                    )
+                );
                 break;
             case 'boolean':
                 $type = 'checkbox';
@@ -108,45 +110,57 @@ class Widget extends Generator
                 break;
             case 'host':
                 $type = 'select';
-                $attr = json_encode(array(
-                    'object_type' => 'object',
-                    'defaultValuesRoute' => '/configuration/host/formlist'
-                ));
+                $attr = json_encode(
+                    array(
+                        'object_type' => 'object',
+                        'defaultValuesRoute' => '/configuration/host/formlist'
+                    )
+                );
                 break;
             case 'hostTemplate':
                 $type = 'select';
-                $attr = json_encode(array(
-                    'object_type' => 'object',
-                    'defaultValuesRoute' => '/configuration/hosttemplate/formlist'
-                ));
+                $attr = json_encode(
+                    array(
+                        'object_type' => 'object',
+                        'defaultValuesRoute' => '/configuration/hosttemplate/formlist'
+                    )
+                );
                 break;
             case 'serviceTemplate':
                 $type = 'select';
-                $attr = json_encode(array(
-                    'object_type' => 'object',
-                    'defaultValuesRoute' => '/configuration/servicetemplate/formlist'
-                ));
+                $attr = json_encode(
+                    array(
+                        'object_type' => 'object',
+                        'defaultValuesRoute' => '/configuration/servicetemplate/formlist'
+                    )
+                );
                 break;
             case 'hostgroup':
                 $type = 'select';
-                $attr = json_encode(array(
-                    'object_type' => 'object',
-                    'defaultValuesRoute' => '/configuration/hostgroup/formlist'
-                ));
+                $attr = json_encode(
+                    array(
+                        'object_type' => 'object',
+                        'defaultValuesRoute' => '/configuration/hostgroup/formlist'
+                    )
+                );
                 break;
             case 'servicegroup':
                 $type = 'select';
-                $attr = json_encode(array(
-                    'object_type' => 'object',
-                    'defaultValuesRoute' => '/configuration/servicegroup/formlist'
-                ));
+                $attr = json_encode(
+                    array(
+                        'object_type' => 'object',
+                        'defaultValuesRoute' => '/configuration/servicegroup/formlist'
+                    )
+                );
                 break;
             case 'service':
                 $type = 'select';
-                $attr = json_encode(array(
-                    'object_type' => 'object',
-                    'defaultValuesRoute' => '/configuration/service/formlist'
-                ));
+                $attr = json_encode(
+                    array(
+                        'object_type' => 'object',
+                        'defaultValuesRoute' => '/configuration/service/formlist'
+                    )
+                );
                 break;
             default:
                 $type = 'text';

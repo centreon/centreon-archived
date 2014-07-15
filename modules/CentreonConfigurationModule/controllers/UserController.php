@@ -93,7 +93,7 @@ class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function updateAction()
     {
-        parent::updateAction();    
+        parent::updateAction();
     }
     
     /**

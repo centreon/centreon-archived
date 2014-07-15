@@ -55,7 +55,7 @@ class Datetime
      *                       The number of character if type is by characters
      * @return string
      */
-    public static function humanReadable($diff, $precisionType = 1, $precision=1)
+    public static function humanReadable($diff, $precisionType = 1, $precision = 1)
     {
         /* List of format in Date interval */
         $listFormat = array(
@@ -76,7 +76,9 @@ class Datetime
                 if (strlen($newFormatedStr) > 0) {
                     $newFormatedStr .= ' ';
                 }
-                $newFormatedStr .= $dateInterval->$format . ' ' . ngettext($words[0], $words[1], $dateInterval->$format);
+                $newFormatedStr .= $dateInterval->$format
+                    . ' '
+                    . ngettext($words[0], $words[1], $dateInterval->$format);
                 $count++;
             }
             /* Test for precision type format */

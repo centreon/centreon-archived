@@ -50,11 +50,11 @@ class ConfigTestRepository
     private $status;
     private $warning;
     
-    /*
-     * Methode tests
-     * @return value
+    /**
+     * Method tests
+     * @param int $poller_id
      */
-    public function __construct($poller_id) 
+    public function __construct($poller_id)
     {
         $this->di = \Centreon\Internal\Di::getDefault();
         $this->enginepath = '/usr/sbin/centengine';
@@ -62,7 +62,12 @@ class ConfigTestRepository
         $this->warning = false;
     }
 
-    public function checkConfig($poller_id) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return array
+     */
+    public function checkConfig($poller_id)
     {
         $this->di = \Centreon\Internal\Di::getDefault();
 
@@ -82,7 +87,7 @@ class ConfigTestRepository
                 if ($matches[2] != "0") {
                     if ($matches[1] == "Errors") {
                         $this->status = false;
-                    } elseif($matches[1] == "Warnings") {
+                    } elseif ($matches[1] == "Warnings") {
                         $this->warning = true;
                     }
                 }
@@ -90,13 +95,14 @@ class ConfigTestRepository
         } else {
             /* If the string is not found, the test is not ok */
             $this->status = false;
-        }   
+        }
         
         /* return status */
         return array(
-                     'status' => $this->status, 
-                     'warning' => $this->warning, 
-                     'command_line' => $command,
-                     'stdout' => $this->stdout);
+            'status' => $this->status,
+            'warning' => $this->warning,
+            'command_line' => $command,
+            'stdout' => $this->stdout
+        );
     }
 }

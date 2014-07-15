@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="service_image_relation" phpName="ServiceImageRelation" idMethod="native">
+        <column name="service_id" phpName="ServiceId" primaryKey="true" type="INTEGER" required="true"/>
+        <column name="binary_id" phpName="BinaryId" primaryKey="true" type="INTEGER" sqlType="int(10) unsigned" required="true"/>
+        <foreign-key foreignTable="service" name="service_image_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="service_id" foreign="service_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="binaries" name="service_image_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="binary_id" foreign="binary_id"/>
+        </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -35,9 +35,9 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact,
-    \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup,
-    \CentreonConfiguration\Repository\HostRepository;
+use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact;
+use \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
+use \CentreonConfiguration\Repository\HostRepository;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -87,7 +87,8 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate',
-        'hosttemplate_servicetemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate'
+        'hosttemplate_servicetemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate',
+        'host_icon' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Icon'
     );
     
     public static $isDisableable = true;
@@ -396,6 +397,44 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     public function eventHandlerForHostTemplateAction()
     {
         parent::getSimpleRelation('command_command_id2', '\CentreonConfiguration\Models\Command');
+    }
+    
+    /**
+     * Get list of hostcategories for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/hosttemplate/[i:id]/icon
+     */
+    public function iconForHostTemplaeAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $objCall = static::$relationMap['host_icon'];
+        $icon = $objCall::getIconForHost($requestParam['id']);
+        $finalIconList = array();
+        if (count($icon) > 0) {
+            $filenameExploded = explode('.', $icon['filename']);
+            $nbOfOccurence = count($filenameExploded);
+            $fileFormat = $filenameExploded[$nbOfOccurence-1];
+            $filenameLength = strlen($icon['filename']);
+            $routeAttr = array(
+                'image' => substr($icon['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                'format' => '.'.$fileFormat
+            );
+            $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+            $finalIconList = array(
+                "id" => $icon['binary_id'],
+                "text" => $icon['filename'],
+                "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$icon['filename']
+            );
+        }
+        
+        $router->response()->json($finalIconList);
+        
     }
 
     /**

@@ -34,10 +34,10 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\ServicedetailRepository,
-    \CentreonRealtime\Repository\HostdetailRepository,
-    \Centreon\Internal\Utils\Status,
-    \Centreon\Internal\Utils\Datetime;
+use \CentreonRealtime\Repository\ServicedetailRepository;
+use \CentreonRealtime\Repository\HostdetailRepository;
+use \Centreon\Internal\Utils\Status;
+use \Centreon\Internal\Utils\Datetime;
 
 /**
  * Display service monitoring states
@@ -108,7 +108,7 @@ class ServiceController extends \Centreon\Internal\Controller
             'group' => _('Hosts'),
             'actions' => HostdetailRepository::getMonitoringActions()
         );
-        $tpl->assign('actions', $actions); 
+        $tpl->assign('actions', $actions);
 
         $tpl->display('file:[CentreonRealtimeModule]console.tpl');
     }
@@ -174,7 +174,7 @@ class ServiceController extends \Centreon\Internal\Controller
         $tpl->assign('moduleName', 'CentreonRealtime');
         $tpl->assign('objectName', 'Service');
 
-        $tpl->display('file:[CentreonRealtimeModule]service_detail.tpl');        
+        $tpl->display('file:[CentreonRealtimeModule]service_detail.tpl');
     }
 
     /**
@@ -208,18 +208,18 @@ class ServiceController extends \Centreon\Internal\Controller
     {
         $data = array();
 
-       /* Instance */
+        /* Instance */
         $data[] = array(
             'label' => _('Poller'),
             'value' => $rawdata['instance_name']
-        ); 
+        );
 
         /* State */
         $data[] = array(
             'label' => _('State'),
             'value' => Status::numToString(
-                $rawdata['state'], 
-                Status::TYPE_SERVICE, 
+                $rawdata['state'],
+                Status::TYPE_SERVICE,
                 true
             ) . " (" . ($rawdata['state_type'] ? "HARD" : "SOFT") . ")"
         );

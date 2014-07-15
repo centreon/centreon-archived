@@ -62,12 +62,12 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
         $cmdList = \CentreonConfiguration\Models\Servicegroup::getList($params);
         
         $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $cmdList
-                                        )
-                                  );
+            array(
+                "api-version" => 1,
+                "status" => true,
+                "data" => $cmdList
+            )
+        );
     }
 
     /**
@@ -81,7 +81,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
 
-        /* 
+        /*
          * Get parameters
          */
         $param = $router->request()->paramsNamed();
@@ -97,12 +97,12 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
         $hostList = \CentreonConfiguration\Models\Servicegroup::getList('*', -1, 0, null, "ASC", $params);
 
         $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $hostList
-                                        )
-                                  );
+            array(
+                "api-version" => 1,
+                "status" => true,
+                "data" => $hostList
+            )
+        );
     }
 
     /**
@@ -148,5 +148,4 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
     {
         print "Not implemented yet";
     }
-
 }

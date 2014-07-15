@@ -34,10 +34,9 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\HostdetailRepository,
-    \Centreon\Internal\Utils\Status,
-    \Centreon\Internal\Utils\Datetime;
-
+use \CentreonRealtime\Repository\HostdetailRepository;
+use \Centreon\Internal\Utils\Status;
+use \Centreon\Internal\Utils\Datetime;
 
 /**
  * Display service monitoring states
@@ -173,20 +172,20 @@ class HostController extends \Centreon\Internal\Controller
         $data[] = array(
             'label' => _('Address'),
             'value' => $rawdata['host_address']
-        ); 
+        );
 
-       /* Instance */
+        /* Instance */
         $data[] = array(
             'label' => _('Poller'),
             'value' => $rawdata['instance_name']
-        ); 
+        );
 
         /* State */
         $data[] = array(
             'label' => _('State'),
             'value' => Status::numToString(
-                $rawdata['state'], 
-                Status::TYPE_HOST, 
+                $rawdata['state'],
+                Status::TYPE_HOST,
                 true
             ) . " (" . ($rawdata['state_type'] ? "HARD" : "SOFT") . ")"
         );

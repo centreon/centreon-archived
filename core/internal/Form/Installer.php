@@ -271,14 +271,17 @@ class Installer
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['block_name']));
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('DELETE FROM form_block_field_relation 
-                WHERE block_id = :block_id AND field_id = :field_id');
+            $stmt = $db->prepare(
+                'DELETE FROM form_block_field_relation WHERE block_id = :block_id AND field_id = :field_id'
+            );
             $stmt->bindParam(':block_id', self::$blocks[$key]);
             $stmt->bindParam(':field_id', self::$fields[$fname]);
             $stmt->execute();
 
-            $stmt = $db->prepare('REPLACE INTO form_block_field_relation (block_id, field_id, rank, mandatory) 
-                VALUES (:block_id, :field_id, :rank, :mandatory)');
+            $stmt = $db->prepare(
+                'REPLACE INTO form_block_field_relation (block_id, field_id, rank, mandatory) '
+                . 'VALUES (:block_id, :field_id, :rank, :mandatory)'
+            );
             $stmt->bindParam(':block_id', self::$blocks[$key]);
             $stmt->bindParam(':field_id', self::$fields[$fname]);
             $stmt->bindParam(':rank', $data['rank']);
@@ -301,14 +304,18 @@ class Installer
             foreach ($validators->validator as $validator) {
                 if (isset(self::$validators[(string)$validator])) {
                     $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-                    $stmt = $db->prepare('DELETE FROM form_field_validator_relation 
-                        WHERE validator_id = :validator_id AND field_id = :field_id');
+                    $stmt = $db->prepare(
+                        'DELETE FROM form_field_validator_relation '
+                        . 'WHERE validator_id = :validator_id AND field_id = :field_id'
+                    );
                     $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
                     $stmt->execute();
 
-                    $stmt = $db->prepare('REPLACE INTO form_field_validator_relation (validator_id, field_id, client_side_event) 
-                        VALUES (:validator_id, :field_id, :client_side_event)');
+                    $stmt = $db->prepare(
+                        'REPLACE INTO form_field_validator_relation (validator_id, field_id, client_side_event) '
+                        . 'VALUES (:validator_id, :field_id, :client_side_event)'
+                    );
                     $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
                     $stmt->bindParam(':client_side_event', $validator['events']);
@@ -382,7 +389,7 @@ class Installer
             $sql = 'UPDATE form_step SET rank = :rank,
                 wizard_id = :wizard_id
                 WHERE name = :name
-                AND step_id = :step_id'; 
+                AND step_id = :step_id';
         }
         $stmt = $db->prepare($sql);
         if (isset(self::$steps[$key])) {
@@ -393,7 +400,7 @@ class Installer
         $stmt->bindParam(':wizard_id', self::$wizards[$data['wizard_name']], \PDO::PARAM_INT);
         $stmt->execute();
         if (!isset(self::$steps[$key])) {
-            self::$steps[$key] = $db->lastInsertId('form_step', 'step_id'); 
+            self::$steps[$key] = $db->lastInsertId('form_step', 'step_id');
         }
     }
 
@@ -408,8 +415,10 @@ class Installer
         $key = implode(';', array($data['wizard_name'], $data['step_name']));
         if (isset(self::$steps[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare('REPLACE INTO form_step_field_relation (step_id, field_id, rank, mandatory) 
-                VALUES (:step_id, :field_id, :rank, :mandatory)');
+            $stmt = $db->prepare(
+                'REPLACE INTO form_step_field_relation (step_id, field_id, rank, mandatory) '
+                . 'VALUES (:step_id, :field_id, :rank, :mandatory)'
+            );
             $stmt->bindParam(':step_id', self::$steps[$key]);
             $stmt->bindParam(':field_id', self::$fields[$fname]);
             $stmt->bindParam(':rank', $data['rank']);
@@ -530,7 +539,7 @@ class Installer
                     $blockFieldData = array(
                         'form_name' => $form['name'],
                         'section_name' => $section['name'],
-                        'block_name' => $block['name'], 
+                        'block_name' => $block['name'],
                         'field_name' => $field['name'],
                         'mandatory' => $field['mandatory'],
                         'rank' => $fieldRank
@@ -543,7 +552,7 @@ class Installer
                     self::addValidatorsToField($fieldValidators);
                     $fieldRank++;
                     $insertedFields[] = implode(
-                        ';', 
+                        ';',
                         array($form['name'], $section['name'], $block['name'], $field['name'])
                     );
                 }
@@ -564,7 +573,7 @@ class Installer
     protected static function parseAttributes($attributes)
     {
         $finalAttributes = array();
-        foreach($attributes->children() as $attr) {
+        foreach ($attributes->children() as $attr) {
             
             $attrName = $attr->getName();
             if (isset($attr['name']) && $attr['name']) {
@@ -601,9 +610,11 @@ class Installer
             }
         }
         $db->commit();
-        $stmt = $db->prepare("DELETE FROM form_field 
-            WHERE NOT EXISTS
-            (SELECT field_id FROM form_block_field_relation r WHERE r.field_id = form_field.field_id)");
+        $stmt = $db->prepare(
+            "DELETE FROM form_field "
+            . "WHERE NOT EXISTS "
+            . "(SELECT field_id FROM form_block_field_relation r WHERE r.field_id = form_field.field_id)"
+        );
         $stmt->execute();
     }
 

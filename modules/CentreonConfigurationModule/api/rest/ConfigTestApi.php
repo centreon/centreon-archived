@@ -58,11 +58,11 @@ class ConfigTestApi extends \Centreon\Internal\Controller
         $obj = new \CentreonConfiguration\Repository\ConfigTestRepository($param["id"]);
 
         $router->response()->json(
-                                  array(
-                                        "api-version" => $param["version"],
-                                        "status" => true,
-                                        "data" => $obj->checkConfig($param["id"])
-                                        )
-                                  );
+            array(
+                "api-version" => $param["version"],
+                "status" => true,
+                "data" => $obj->checkConfig($param["id"])
+            )
+        );
     }
 }

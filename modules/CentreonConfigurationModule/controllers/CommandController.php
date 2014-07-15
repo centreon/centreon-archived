@@ -89,7 +89,7 @@ class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function updateAction()
     {
-        parent::updateAction();    
+        parent::updateAction();
     }
     
     /**

@@ -42,13 +42,18 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class ConfigGenerateMainRepository 
+class ConfigGenerateMainRepository
 {
     /**
-     * Methode for generating Main configuration file
-     * @return value
+     * Method for generating Main configuration file
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     * @param int $testing
      */
-    public static function generateMainFile(& $filesList, $poller_id, $path, $filename, $testing = 0) 
+    public static function generateMainFile(& $filesList, $poller_id, $path, $filename, $testing = 0)
     {
         /* Get Content */
         $content = static::getContent($poller_id, $filesList, $testing);
@@ -58,9 +63,12 @@ class ConfigGenerateMainRepository
         unset($content);
     }
 
-    /** 
+    /**
      * 
-     *
+     * @param array $filesList
+     * @param array $content
+     * @param int $testing
+     * @return array
      */
     private static function getFilesList(& $filesList, $content, $testing)
     {
@@ -76,15 +84,18 @@ class ConfigGenerateMainRepository
                     $content[$category][] = $path;
                 }
             }
-        } 
+        }
         return $content;
     }
 
-    /** 
+    /**
      * 
-     *
+     * @param int $poller_id
+     * @param array $filesList
+     * @param int $testing
+     * @return array
      */
-    private static function getContent($poller_id, & $filesList, $testing) 
+    private static function getContent($poller_id, & $filesList, $testing)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -107,13 +118,13 @@ class ConfigGenerateMainRepository
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            foreach ($row as $key => $value) {                
+            foreach ($row as $key => $value) {
                 if ($key != "cfg_dir") {
                     if (isset($disabledField[$key]) || (isset($defaultValue[$key]) && $value == 2)) {
                         ;
-                    } else if (isset($commandId[$key]) && isset($value)) {
+                    } elseif (isset($commandId[$key]) && isset($value)) {
                         $content[$key] = CommandRepository::getCommandName($value);
-                    } else if ($key == "event_broker_options") {
+                    } elseif ($key == "event_broker_options") {
                         /* Get Brokers List */
                         $content["broker_module"] = static::getBrokerConf($poller_id);
 
@@ -130,11 +141,12 @@ class ConfigGenerateMainRepository
         return $content;
     }
 
-    /** 
+    /**
      * 
-     *
+     * @param int $poller_id
+     * @return array
      */
-    private static function getConfigFiles($poller_id) 
+    private static function getConfigFiles($poller_id)
     {
         $pathList = array();
         $resList = array();
@@ -184,11 +196,12 @@ class ConfigGenerateMainRepository
         return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList);
     }
 
-    /** 
+    /**
      * 
-     *
+     * @param int $poller_id
+     * @return array
      */
-    private static function getBrokerConf($poller_id) 
+    private static function getBrokerConf($poller_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -199,7 +212,9 @@ class ConfigGenerateMainRepository
         $broker = array();
 
         /* Get broker in DB */
-        $stmt = $dbconn->prepare("SELECT broker_module FROM `cfg_nagios_broker_module` WHERE `cfg_nagios_id` = '".$poller_id."'");
+        $stmt = $dbconn->prepare(
+            "SELECT broker_module FROM `cfg_nagios_broker_module` WHERE `cfg_nagios_id` = '".$poller_id."'"
+        );
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $broker[] = $row["broker_module"];
@@ -207,11 +222,11 @@ class ConfigGenerateMainRepository
         return $broker;
     }
 
-    /** 
+    /**
      * 
-     *
+     * @return int
      */
-    private static function getDefaultValue() 
+    private static function getDefaultValue()
     {
         /* Field that we don't write if value = 2 */
         $defaultValue = array();
@@ -262,11 +277,11 @@ class ConfigGenerateMainRepository
         return $defaultValue;
     }
 
-    /** 
+    /**
      * 
-     *
+     * @return int
      */
-    private static function getCommandIdField() 
+    private static function getCommandIdField()
     {
         $commandId = array();
         $commandId["global_host_event_handler"] = 1;
@@ -280,11 +295,11 @@ class ConfigGenerateMainRepository
         return $commandId;
     }
 
-    /** 
+    /**
      * 
-     *
+     * @return int
      */
-    private static function getDisabledField() 
+    private static function getDisabledField()
     {
         /* Field that we don't want into the config file */
         $disabledField = array();
@@ -299,11 +314,11 @@ class ConfigGenerateMainRepository
         /* Todo : Remove */
         $disabledField["use_check_result_path"] = 1;
         $disabledField["temp_file"] = 1;
-        $disabledField["nagios_user"] = 1; 
-        $disabledField["nagios_group"] = 1; 
-        $disabledField["log_rotation_method"] = 1; 
-        $disabledField["log_archive_path"] = 1; 
-        $disabledField["lock_file"] = 1; 
+        $disabledField["nagios_user"] = 1;
+        $disabledField["nagios_group"] = 1;
+        $disabledField["log_rotation_method"] = 1;
+        $disabledField["log_archive_path"] = 1;
+        $disabledField["lock_file"] = 1;
         return $disabledField;
     }
 }

@@ -258,13 +258,18 @@ class PollerDatatable extends \Centreon\Internal\Datatable
         $dbconn = $di->get('db_centreon');
         $dbconnStorage = $di->get('db_storage');
         
-        $sqlBroker = "SELECT start_time AS program_start_time, running AS is_currently_running, instance_id, name AS instance_name , last_alive FROM instances";
+        $sqlBroker = "SELECT "
+            . "start_time AS program_start_time, running AS is_currently_running, "
+            . "instance_id, name AS instance_name , last_alive "
+            . "FROM instances";
         $stmtBroker = $dbconnStorage->query($sqlBroker);
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
         
         
         $pollerNumber = count($resultSet);
-        $sqlBroker2 = "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances LIMIT $pollerNumber";
+        $sqlBroker2 = "SELECT DISTINCT "
+            . "instance_id, version AS program_version, engine AS program_name, name AS instance_name "
+            . "FROM instances LIMIT $pollerNumber";
         $stmtBroker2 = $dbconnStorage->query($sqlBroker2);
         $resultBroker2 = $stmtBroker2->fetchAll(\PDO::FETCH_ASSOC);
         
@@ -283,7 +288,10 @@ class PollerDatatable extends \Centreon\Internal\Datatable
                     unset($resultBroker2[$key]);
                 }
             }
-            $nagiosServer['hasChanged'] = \CentreonConfiguration\Repository\PollerRepository::checkChangeState($nagiosServer['id'], $nagiosServer['last_restart']);
+            $nagiosServer['hasChanged'] = \CentreonConfiguration\Repository\PollerRepository::checkChangeState(
+                $nagiosServer['id'],
+                $nagiosServer['last_restart']
+            );
         }
     }
     

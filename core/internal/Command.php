@@ -91,13 +91,13 @@ class Command
             }
         }
         
-        if (!isset($this->commandList[$object])){
+        if (!isset($this->commandList[$object])) {
             throw new Exception("The object doesn't exist");
         }
         
         $aliveObject = new $this->commandList[$object]();
         
-        if (!method_exists($aliveObject, $action)){
+        if (!method_exists($aliveObject, $action)) {
             throw new Exception("The action '$action' doesn't exist");
         }
         
@@ -107,7 +107,7 @@ class Command
         }
         
         // Call the action
-        $aliveObject->__named($action, $actionArgs);
+        $aliveObject->named($action, $actionArgs);
         
         echo "\n";
     }
@@ -123,7 +123,7 @@ class Command
         
         $rawRistOfArgs = explode(':', $this->parametersLine);
         
-        foreach($rawRistOfArgs as $rawArgs) {
+        foreach ($rawRistOfArgs as $rawArgs) {
             $currentArgsValue = explode('=', $rawArgs);
             $argsList[$currentArgsValue[0]] = $currentArgsValue[1];
         }

@@ -129,5 +129,4 @@ class Bootstrap
     {
         $this->di->get('config')->loadFromDb();
     }
-
 }

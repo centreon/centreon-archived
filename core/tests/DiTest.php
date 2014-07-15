@@ -30,9 +30,12 @@ class DiTest extends \PHPUnit_Framework_TestCase
         $tmp = $di->get('testStdClass');
         $this->assertInstanceOf('\StdClass', $tmp);
         $this->assertSame($tmp, $di->get('testStdClass'));
-        $di->set('testClosure', function () {
-            return 'String';
-        });
+        $di->set(
+            'testClosure',
+            function () {
+                return 'String';
+            }
+        );
         $this->assertEquals('String', $di->get('testClosure'));
     }
 

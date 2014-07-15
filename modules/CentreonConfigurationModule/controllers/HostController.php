@@ -35,17 +35,17 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Di,
-    \CentreonConfiguration\Models\Host,
-    \CentreonConfiguration\Models\Relation\Host\Contact,
-    \CentreonConfiguration\Models\Relation\Host\Contactgroup,
-    \CentreonConfiguration\Models\Relation\Host\Hostchild,
-    \CentreonConfiguration\Models\Relation\Host\Hostparent,
-    \CentreonConfiguration\Models\Relation\Host\Poller,
-    \CentreonConfiguration\Models\Timeperiod,
-    \CentreonConfiguration\Models\Command,
-    \CentreonConfiguration\Internal\HostDatatable,
-    \CentreonConfiguration\Repository\HostRepository;
+use \Centreon\Internal\Di;
+use \CentreonConfiguration\Models\Host;
+use \CentreonConfiguration\Models\Relation\Host\Contact;
+use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
+use \CentreonConfiguration\Models\Relation\Host\Hostchild;
+use \CentreonConfiguration\Models\Relation\Host\Hostparent;
+use \CentreonConfiguration\Models\Relation\Host\Poller;
+use \CentreonConfiguration\Models\Timeperiod;
+use \CentreonConfiguration\Models\Command;
+use \CentreonConfiguration\Internal\HostDatatable;
+use \CentreonConfiguration\Repository\HostRepository;
 
 class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -62,7 +62,8 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchild',
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Host\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
-        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate'
+        'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
+        'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon'
     );
     
     public static $isDisableable = true;
@@ -122,7 +123,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         $id = parent::createAction();
-        if (isset($givenParameters['host_create_services_from_template']) && 
+        if (isset($givenParameters['host_create_services_from_template']) &&
             $givenParameters['host_create_services_from_template']) {
             \CentreonConfiguration\Models\Host::deployServices($id);
         }
@@ -213,6 +214,44 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function hostcategoryForHostAction()
     {
         parent::getRelations(static::$relationMap['host_hostcategories']);
+    }
+    
+    /**
+     * Get list of hostcategories for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/icon
+     */
+    public function iconForHostAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $objCall = static::$relationMap['host_icon'];
+        $icon = $objCall::getIconForHost($requestParam['id']);
+        $finalIconList = array();
+        if (count($icon) > 0) {
+            $filenameExploded = explode('.', $icon['filename']);
+            $nbOfOccurence = count($filenameExploded);
+            $fileFormat = $filenameExploded[$nbOfOccurence-1];
+            $filenameLength = strlen($icon['filename']);
+            $routeAttr = array(
+                'image' => substr($icon['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                'format' => '.'.$fileFormat
+            );
+            $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+            $finalIconList = array(
+                "id" => $icon['binary_id'],
+                "text" => $icon['filename'],
+                "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$icon['filename']
+            );
+        }
+        
+        $router->response()->json($finalIconList);
+        
     }
 
     /**

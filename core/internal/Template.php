@@ -336,7 +336,7 @@ class Template extends \Smarty
         $basePath = $centreonPath . '/www/static/' . $module . '/' . strtolower($type) . '/';
         if (!file_exists($basePath . $filename)) {
             if (strtolower($type) == 'css') {
-                $filename = $centreonPath . '/www/static/' . $module . '/less/' . 
+                $filename = $centreonPath . '/www/static/' . $module . '/less/' .
                     str_replace('.css', '.less', $filename);
                 if (file_exists($filename)) {
                     return true;

@@ -51,7 +51,8 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         'service_contacts' => '\CentreonConfiguration\Models\Relation\Service\Contact',
         'service_contactgroups' => '\CentreonConfiguration\Models\Relation\Service\Contactgroup',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
-        'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Service'
+        'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Service',
+        'service_icon' => '\CentreonConfiguration\Models\Relation\Service\Icon'
     );
     
     public static $isDisableable = true;
@@ -92,12 +93,12 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         );
         $list = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
             array($hostId, $hostName),
-            array($serviceId, $serviceDescription), 
-            -1, 
-            0, 
-            null, 
-            "ASC", 
-            $filters, 
+            array($serviceId, $serviceDescription),
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
             "OR"
         );
         $finalList = array();
@@ -131,12 +132,12 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         );
         $list = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
             array($hostId, $hostName),
-            array($serviceId, $serviceDescription), 
-            -1, 
-            0, 
-            null, 
-            "ASC", 
-            $filters, 
+            array($serviceId, $serviceDescription),
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
             "OR"
         );
         $finalList = array();
@@ -410,6 +411,43 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     public function trapForServiceAction()
     {
         parent::getRelations(static::$relationMap['service_traps']);
+    }
+    
+    /**
+     * Get list of icons for a specific service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]/icon
+     */
+    public function iconForServiceAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $objCall = static::$relationMap['service_icon'];
+        $icon = $objCall::getIconForService($requestParam['id']);
+        $finalIconList = array();
+        if (count($icon) > 0) {
+            $filenameExploded = explode('.', $icon['filename']);
+            $nbOfOccurence = count($filenameExploded);
+            $fileFormat = $filenameExploded[$nbOfOccurence-1];
+            $filenameLength = strlen($icon['filename']);
+            $routeAttr = array(
+                'image' => substr($icon['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                'format' => '.'.$fileFormat
+            );
+            $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+            $finalIconList = array(
+                "id" => $icon['binary_id'],
+                "text" => $icon['filename'],
+                "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$icon['filename']
+            );
+        }
+        
+        $router->response()->json($finalIconList);
     }
 
     /**

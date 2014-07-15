@@ -34,10 +34,10 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\ServicedetailRepository,
-    \CentreonRealtime\Repository\HostdetailRepository,
-    \Centreon\Internal\Di,
-    \Centreon\Internal\Exception;
+use \CentreonRealtime\Repository\ServicedetailRepository;
+use \CentreonRealtime\Repository\HostdetailRepository;
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
 
 /**
  * Handles external commands
@@ -69,8 +69,8 @@ class ExternalcommandController extends \Centreon\Internal\Controller
             case ServicedetailRepository::ENABLE_CHECK:
             case ServicedetailRepository::DISABLE_CHECK:
                 $this->displayConfirmationBox(
-                    "\CentreonRealtime\Repository\ServicedetailRepository", 
-                    $cmdId, 
+                    "\CentreonRealtime\Repository\ServicedetailRepository",
+                    $cmdId,
                     $params['ids']
                 );
                 break;
@@ -82,8 +82,8 @@ class ExternalcommandController extends \Centreon\Internal\Controller
             case HostdetailRepository::ENABLE_CHECK:
             case HostdetailRepository::DISABLE_CHECK:
                 $this->displayConfirmationBox(
-                    '\CentreonRealtime\Repository\HostdetailRepository', 
-                    $cmdId, 
+                    '\CentreonRealtime\Repository\HostdetailRepository',
+                    $cmdId,
                     $this->getHostIds($params['ids'], $params['source'])
                 );
                 break;
@@ -104,6 +104,7 @@ class ExternalcommandController extends \Centreon\Internal\Controller
                     $cmdId,
                     $params['ids']
                 );
+                break;
             case HostdetailRepository::DOWNTIME:
                 $this->displayDowntimeBox(
                     $cmdId,
@@ -130,7 +131,7 @@ class ExternalcommandController extends \Centreon\Internal\Controller
             if ($cmdId == ServicedetailRepository::DOWNTIME || $cmdId == HostdetailRepository::DOWNTIME) {
                 list($start, $end) = split(' - ', $params['period']);
                 $params['start_time'] = strtotime($start);
-                $params['end_time'] = strtotime($end);;
+                $params['end_time'] = strtotime($end);
             }
             switch ($cmdId) {
                 case ServicedetailRepository::DOWNTIME:

@@ -55,98 +55,11 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
     public static $objectName = 'Servicetemplate';
     
     /**
-     *
-     * @var array Default column for datatable
+     * 
+     * @param int $template_id
+     * @return string
      */
-    public static $datatableColumn = array(
-        '<input id="allServicetemplate" class="allServicetemplate" type="checkbox">' => 'service_id',
-        'Name' => 'service_description',
-        'Alias' => 'service_alias',
-        'Status' => 'service_activate'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'service_id',
-        'service_description',
-        'service_alias',
-        'service_activate'
-    );
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = "service_register = '0' ";
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_description',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array(
-        'service_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
-                '2' => 'Trash',
-        )
-        ),
-        'service_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::service_description::'
-            )
-        ),
-        'service_description' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/servicetemplate/[i:id]',
-                'routeParams' => array(
-                    'id' => '::service_id::'
-                ),
-                'linkName' => '::service_description::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search_name',
-        'search_description',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
-        )
-    );
-
-    public static function getTemplateName($template_id) 
+    public static function getTemplateName($template_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
         
@@ -168,7 +81,12 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         return -1;
     }
 
-    public static function getTripleChoice() {
+    /**
+     * 
+     * @return int
+     */
+    public static function getTripleChoice()
+    {
         $content = array();
         $content["service_active_checks_enabled"] = 1;
         $content["service_passive_checks_enabled"] = 1;
@@ -187,8 +105,14 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         return $content;
     }
 
-
-    public static function generateServiceTemplates(& $filesList, $poller_id, $path, $filename) 
+    /**
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     */
+    public static function generateServiceTemplates(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -197,13 +121,28 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
 
         /* Field to not display */
         $disableField = static::getTripleChoice();
-        $field = "service_id, service_description, service_alias, service_template_model_stm_id, command_command_id_arg, command_command_id AS check_command, timeperiod_tp_id AS check_period,  command_command_id_arg2, command_command_id2 AS event_handler, timeperiod_tp_id2 AS notification_period, display_name, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, service_notification_options, service_notifications_enabled, service_first_notification_delay, service_stalking_options ";
+        $field = "service_id, service_description, service_alias, service_template_model_stm_id, "
+            . "command_command_id_arg, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
+            . "command_command_id_arg2, command_command_id2 AS event_handler, "
+            . "timeperiod_tp_id2 AS notification_period, display_name, service_is_volatile, "
+            . "service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, "
+            . "service_active_checks_enabled, service_passive_checks_enabled, initial_state, "
+            . "service_parallelize_check, service_obsess_over_service, service_check_freshness, "
+            . "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, "
+            . "service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, "
+            . "service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, "
+            . "service_notification_options, service_notifications_enabled, service_first_notification_delay, "
+            . "service_stalking_options ";
         
         /* Init Content Array */
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM service WHERE service_activate = '1' AND service_register = '0' ORDER BY service_description";
+        $query = "SELECT $field "
+            . "FROM service "
+            . "WHERE service_activate = '1' "
+            . "AND service_register = '0' "
+            . "ORDER BY service_description";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -213,7 +152,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             foreach ($row as $key => $value) {
                 if ($key == "service_id") {
                     $service_id = $row["service_id"];
-                } else if ((!isset($disableField[$key]) && $value != "")) {
+                } elseif ((!isset($disableField[$key]) && $value != "")) {
                     $writeParam = 1;
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
@@ -238,21 +177,21 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                         if ($key == 'check_command' || $key == 'event_handler') {
                             $value = CommandRepository::getCommandName($value).html_entity_decode($args);
                             $args = "";
-                        } 
+                        }
                         if ($key == 'check_period' || $key == 'notification_period') {
                             $value = TimeperiodRepository::getPeriodName($value);
-                        } 
+                        }
                         if ($key == "template_model_stm_id") {
                             $key = "use";
                             $value = static::getTemplateName($value);
-                        } 
+                        }
                         if ($key == "contact_additive_inheritance") {
                             $tmpContact = static::getContacts($service_id);
                             if ($tmpContact != "") {
                                 if ($value = 1) {
                                     $tmpData["contacts"] = "+";
                                 }
-                                $tmpData["contacts"] .= $tmpContact; 
+                                $tmpData["contacts"] .= $tmpContact;
                             }
                         }
                         if ($key == "cg_additive_inheritance") {
@@ -261,7 +200,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                                 if ($value = 1) {
                                     $tmpData["contactgroups"] = "+";
                                 }
-                                $tmpData["contactgroups"] .= $tmpContact; 
+                                $tmpData["contactgroups"] .= $tmpContact;
                             }
                         }
                         if ($writeParam == 1) {
@@ -274,12 +213,17 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             $content[] = $tmp;
         }
         
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }
     
-    public static function getContacts($service_id) 
+    /**
+     * 
+     * @param int $service_id
+     * @return array
+     */
+    public static function getContacts($service_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -288,19 +232,28 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         
         $contactList = "";
 
-        $query = "SELECT contact_alias FROM contact c, contact_service_relation cs WHERE service_service_id = '$service_id' AND c.contact_id = ccontact_id ORDER BY contact_alias";
+        $query = "SELECT contact_alias "
+            . "FROM contact c, contact_service_relation cs "
+            . "WHERE service_service_id = '$service_id' "
+            . "AND c.contact_id = ccontact_id "
+            . "ORDER BY contact_alias";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($contactList != "") {
-                $contactList .= ","; 
+                $contactList .= ",";
             }
             $contactList .= $row["contact_alias"];
         }
         return $contactList;
     }
 
-    public static function getContactGroups($service_id) 
+    /**
+     * 
+     * @param int $service_id
+     * @return array
+     */
+    public static function getContactGroups($service_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -309,12 +262,16 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         
         $contactgroupList = "";
 
-        $query = "SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgs WHERE service_service_id = '$service_id' AND cg.cg_id = cgs.contactgroup_cg_id ORDER BY cg_name";
+        $query = "SELECT cg_name "
+            . "FROM contactgroup cg, contactgroup_service_relation cgs "
+            . "WHERE service_service_id = '$service_id' "
+            . "AND cg.cg_id = cgs.contactgroup_cg_id "
+            . "ORDER BY cg_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($contactgroupList != "") {
-                $contactgroupList .= ","; 
+                $contactgroupList .= ",";
             }
             $contactgroupList .= $row["cg_name"];
         }
@@ -323,24 +280,27 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
 
     /**
      * 
-     * @param type $service_template_id
-     * @return type
+     * @param int $service_template_id
+     * @return array
      */
     public static function getMyServiceTemplateModels($service_template_id)
-    {        
+    {
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $stmt = $dbconn->query("SELECT service_description FROM service WHERE service_id = '".$service_template_id."' LIMIT 1");
+        $stmt = $dbconn->query(
+            "SELECT service_description FROM service WHERE service_id = '".$service_template_id."' LIMIT 1"
+        );
+        
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (isset($row["service_description"])) {
             $tplArr = array(
-                            'id' => $service_template_id,
-                            'description' => \html_entity_decode($row["service_description"], ENT_QUOTES, "UTF-8")
-                            );
+                'id' => $service_template_id,
+                'description' => \html_entity_decode($row["service_description"], ENT_QUOTES, "UTF-8")
+            );
             return $tplArr;
-        } 
+        }
         return array('id' => $service_template_id);
     }
 }

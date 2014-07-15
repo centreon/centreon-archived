@@ -58,11 +58,11 @@ class ConfigGenerateApi extends \Centreon\Internal\Controller
         $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
 
         $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $obj->getStepStatus()
-                                        )
-                                  );
+            array(
+                "api-version" => 1,
+                "status" => true,
+                "data" => $obj->getStepStatus()
+            )
+        );
     }
 }

@@ -40,15 +40,21 @@ namespace Centreon\Internal\Datatable\Dataprovider;
  *
  * @author lionel
  */
-class CentreonDb implements iDataprovider
+class CentreonDb implements DataProviderInterface
 {
-    public static function loadDatas($params, array $columns, array $specialFields, $datatableClass, $modelClass = '', $additionnalClass = null)
-    {
+    public static function loadDatas(
+        $params,
+        array $columns,
+        array $specialFields,
+        $datatableClass,
+        $modelClass = '',
+        $additionnalClass = null
+    ) {
         // Get Fields to be request
         $fields = "";
         $otherFields = "";
         $specialFieldsKeys = array_keys($specialFields);
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             if (!in_array($column['name'], $specialFieldsKeys)) {
                 if (isset($column['source'])) {
                     $otherFields .= $column['name'] . ',';
@@ -66,14 +72,14 @@ class CentreonDb implements iDataprovider
         
         $a = array();
         
-        // Get 
+        // Get
         $fieldList = array();
         foreach ($datatableClass::$columns as $column) {
             $fieldList[] = $column['name'];
         }
         
         // Get the field label for the search
-        foreach($params as $key=>$value) {
+        foreach ($params as $key => $value) {
             $value = trim($value);
             if (substr($key, 0, 7) == 'sSearch') {
                 if (!empty($value) || is_numeric($value)) {
@@ -87,7 +93,7 @@ class CentreonDb implements iDataprovider
                 
             $result = $additionnalClass::getMergedParametersBySearch(
                 explode(',', $fields),
-                explode (',', $otherFields),
+                explode(',', $otherFields),
                 $params['iDisplayLength'],
                 $params['iDisplayStart'],
                 $columns[$params['iSortCol_0']]['name'],

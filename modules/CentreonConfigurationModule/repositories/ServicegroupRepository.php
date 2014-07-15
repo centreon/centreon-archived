@@ -138,7 +138,14 @@ class ServicegroupRepository extends \CentreonConfiguration\Repository\Repositor
         )
     );
 
-    public static function generateServicegroup(& $filesList, $poller_id, $path, $filename) 
+    /**
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     */
+    public static function generateServicegroup(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -166,7 +173,7 @@ class ServicegroupRepository extends \CentreonConfiguration\Repository\Repositor
             $content[] = $tmp;
         }
 
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }

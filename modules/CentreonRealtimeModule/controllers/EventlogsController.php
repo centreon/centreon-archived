@@ -162,25 +162,27 @@ class EventlogsController extends \Centreon\Internal\Controller
                 $log['host_logo'] = '';
             }
             if (false === is_null($log['service_id'])) {
-                $log['service_logo'] = \CentreonConfiguration\Repository\ServiceRepository::getIconImage($log['service']);
+                $log['service_logo'] = \CentreonConfiguration\Repository\ServiceRepository::getIconImage(
+                    $log['service']
+                );
             } else {
                 $log['service_logo'] = '';
             }
             /* Translate the status id */
             if (false === is_null($log['service_id']) && false === is_null($log['host_id'])) {
-		        $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
                     $log['status'],
                     \Centreon\Internal\Utils\Status::TYPE_HOST,
                     true
                 );
             } elseif (false === is_null($log['service_id'])) {
-		        $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
                     $log['status'],
                     \Centreon\Internal\Utils\Status::TYPE_SERVICE,
                     true
                 );
             } else {
-		        $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
                     $log['status'],
                     \Centreon\Internal\Utils\Status::TYPE_EVENT,
                     true

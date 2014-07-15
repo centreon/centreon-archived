@@ -51,7 +51,8 @@ class EnvironmentRepository
     public static function getHostgroupAlerts()
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
-        $stmt = $db->prepare("SELECT COUNT(service_id) as alerts, hg.hostgroup_id, hg.name
+        $stmt = $db->prepare(
+            "SELECT COUNT(service_id) as alerts, hg.hostgroup_id, hg.name
             FROM services s, hosts_hostgroups hhg, hostgroups hg
             WHERE s.host_id = hhg.host_id
             AND hhg.hostgroup_id = hg.hostgroup_id
@@ -60,7 +61,8 @@ class EnvironmentRepository
             AND s.acknowledged = 0
             AND s.scheduled_downtime_depth = 0
             AND s.enabled = 1
-            GROUP BY hg.name");
+            GROUP BY hg.name"
+        );
         $stmt->execute();
         $results = array();
         while ($row = $stmt->fetch()) {
@@ -77,7 +79,8 @@ class EnvironmentRepository
     public static function getServicegroupAlerts()
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
-        $stmt = $db->prepare("SELECT COUNT(s.service_id) as alerts, sg.servicegroup_id, sg.name
+        $stmt = $db->prepare(
+            "SELECT COUNT(s.service_id) as alerts, sg.servicegroup_id, sg.name
             FROM services s, services_servicegroups ssg, servicegroups sg
             WHERE s.service_id = ssg.service_id
             AND ssg.servicegroup_id = sg.servicegroup_id
@@ -86,7 +89,8 @@ class EnvironmentRepository
             AND s.acknowledged = 0
             AND s.scheduled_downtime_depth = 0
             AND s.enabled = 1
-            GROUP BY sg.name");
+            GROUP BY sg.name"
+        );
         $stmt->execute();
         $results = array();
         while ($row = $stmt->fetch()) {
@@ -95,4 +99,3 @@ class EnvironmentRepository
         return $results;
     }
 }
-

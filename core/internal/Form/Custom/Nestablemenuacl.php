@@ -34,9 +34,9 @@
  */
 namespace Centreon\Internal\Form\Custom;
 
-use \Centreon\Internal\Acl,
-    \Centreon\Internal\Di,
-    \CentreonAdministration\Repository\AclmenuRepository;
+use \Centreon\Internal\Acl;
+use \Centreon\Internal\Di;
+use \CentreonAdministration\Repository\AclmenuRepository;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>

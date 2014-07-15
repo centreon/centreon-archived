@@ -62,8 +62,9 @@ class Database
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
         
-        $query = "SELECT ctime, host_id, host_name, instance_name, output, service_description, service_id, status, msg_type
-            FROM logs";
+        $query = "SELECT ctime, host_id, host_name, instance_name, output, "
+            . "service_description, service_id, status, msg_type "
+            . "FROM logs";
         $wheres = array();
         if (false === is_null($fromTime)) {
             $clause = 'ctime';

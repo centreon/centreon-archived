@@ -228,7 +228,10 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
         //
         $finalList = array();
         foreach ($listOfServices as $obj) {
-            $serviceDescription = \CentreonConfiguration\Models\Service::getParameters($obj['service_id'], 'service_description');
+            $serviceDescription = \CentreonConfiguration\Models\Service::getParameters(
+                $obj['service_id'],
+                'service_description'
+            );
             $hostName = \CentreonConfiguration\Models\Host::getParameters($obj['host_id'], 'host_name');
             $finalList[] = array(
                 "id" => $obj['service_id'] . '_' . $obj['host_id'],

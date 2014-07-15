@@ -199,15 +199,21 @@ class HostTemplateDatatable extends \Centreon\Internal\Datatable
         $router = \Centreon\Internal\Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;'.$myHostSet['host_name'];
+            $myHostSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
+                $myHostSet['host_name']
+            )
+            . '&nbsp;'.$myHostSet['host_name'];
             
             /* Templates */
             $myHostSet['host_template']  = "";
             $templates = \CentreonConfiguration\Repository\HosttemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= "<span class='badge alert-success'><a href='".$router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id']))."'><i class='fa ".$template['ico']."'></i></a></span>";
-            } 
+                $myHostSet['host_template'] .= "<span class='badge alert-success'><a href='".$router->getPathFor(
+                    "/configuration/hosttemplate/[i:id]",
+                    array('id' => $template['id'])
+                )
+                . "'><i class='fa ".$template['ico']."'></i></a></span>";
+            }
 
         }
     }

@@ -53,19 +53,30 @@ class ConfigApplyRepository
      * Methode tests
      * @return value
      */
-    public function __construct($poller_id) 
+    public function __construct($poller_id)
     {
         $this->di = \Centreon\Internal\Di::getDefault();
         $this->status = true;
         $this->warning = false;
     }
 
-    public function action($poller_id, $method) 
+    /**
+     * 
+     * @param int $poller_id
+     * @param string $method
+     */
+    public function action($poller_id, $method)
     {
         $this->$method($poller_id);
     }
 
-    public function applyConfig($poller_id, $method) 
+    /**
+     * 
+     * @param int $poller_id
+     * @param string $method
+     * @return array
+     */
+    public function applyConfig($poller_id, $method)
     {
         $command = "sudo /etc/init.d/centengine $method";
 
@@ -75,22 +86,38 @@ class ConfigApplyRepository
 
         /* Return status */
         return array(
-                     'status' => $this->status, 
-                     'command_line' => $command,
-                     'stdout' => $this->stdout);
+            'status' => $this->status,
+            'command_line' => $command,
+            'stdout' => $this->stdout
+        );
     }
 
-    public function restart($poller_id) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return array
+     */
+    public function restart($poller_id)
     {
         return static::applyConfig($poller_id, "restart");
     }
 
-    public function reload($poller_id) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return array
+     */
+    public function reload($poller_id)
     {
         return static::applyConfig($poller_id, "reload");
     }
 
-    public function forcereload($poller_id) 
+    /**
+     * 
+     * @param int $poller_id
+     * @return array
+     */
+    public function forcereload($poller_id)
     {
         return static::applyConfig($poller_id, "force-reload");
     }

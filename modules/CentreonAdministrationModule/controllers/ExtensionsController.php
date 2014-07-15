@@ -39,12 +39,46 @@ namespace CentreonAdministration\Controllers;
 
 class ExtensionsController extends \Centreon\Internal\Controller
 {
+    /**
+     *
+     * @var string
+     */
     public static $objectName = 'Module';
+    
+    /**
+     *
+     * @var string
+     */
     public static $objectDisplayName = 'Module';
-    public static $moduleName = 'Centreon';    
+    
+    /**
+     *
+     * @var string
+     */
+    public static $moduleName = 'Centreon';
+    
+    /**
+     *
+     * @var string
+     */
     protected $datatableObject = '\Centreon\Internal\Datatable\ModuleDatatable';
+    
+    /**
+     *
+     * @var string
+     */
     protected $objectClass = '\Centreon\Models\Module';
+    
+    /**
+     *
+     * @var \Centreon\Internal\Di
+     */
     protected $di;
+    
+    /**
+     *
+     * @var \Centreon\Internal\Template
+     */
     protected $tpl;
 
     /**
@@ -72,7 +106,9 @@ class ExtensionsController extends \Centreon\Internal\Controller
     {
         $params = $this->getParams();
         $module = \Centreon\Models\Module::get($params['id']);
-        echo "<pre>"; var_dump($module); echo "<pre>";
+        echo "<pre>";
+            var_dump($module);
+        echo "<pre>";
     }
     
     /**

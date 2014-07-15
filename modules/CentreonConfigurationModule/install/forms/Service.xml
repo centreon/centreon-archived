@@ -18,11 +18,11 @@
 		  </attributes>
           <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
 		</field>
-		<field name="icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+		<field name="service_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/eventhandler</listValuesRoute>
+			<listValuesRoute>/configuration/service/[i:id]/icon</listValuesRoute>
 			<multiple>false</multiple>
 			<wizardRoute>/administration/media/image/add</wizardRoute>
 		  </attributes>

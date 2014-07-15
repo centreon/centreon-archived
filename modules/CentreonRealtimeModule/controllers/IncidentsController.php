@@ -34,8 +34,8 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \Centreon\Internal\Utils\Datetime,
-    \Centreon\Internal\Utils\Status;
+use \Centreon\Internal\Utils\Datetime;
+use \Centreon\Internal\Utils\Status;
 
 /**
  * Display the logs of nagios
@@ -126,12 +126,14 @@ class IncidentsController extends \Centreon\Internal\Controller
             $data[] = $incident;
         }
 
-        $router->response()->json(array(
-            'data' => $data,
-            'lastTimeEntry' => $lastDate,
-            'nbEntryForLastTime' => $lastDateCount,
-            'recentTime' => $firstDate
-        ));
+        $router->response()->json(
+            array(
+                'data' => $data,
+                'lastTimeEntry' => $lastDate,
+                'nbEntryForLastTime' => $lastDateCount,
+                'recentTime' => $firstDate
+            )
+        );
     }
 
     /**
@@ -172,9 +174,11 @@ class IncidentsController extends \Centreon\Internal\Controller
             "status" => 1
         );
 
-        $router->response()->json(array(
+        $router->response()->json(
+            array(
             "children" => $children
-        ));
+            )
+        );
     }
 
     /**
@@ -232,16 +236,19 @@ class IncidentsController extends \Centreon\Internal\Controller
                     'last_update' => Datetime::format($incident['last_state_change']),
                     'has_children' => $incident['nb_children'] > 0 ? true : false,
                     'has_parent' => $incident['nb_parents'] > 0 ? true : false,
-                    'parents' => array_map(function($values) {
-                        $parent = array();
-                        $parent['id'] = $values['issue_id'];
-                        $fullname = $values['name'];
-                        if (!is_null($values['description'])) {
-                            $fullname .= ' - ' . $values['description'];
-                        }
-                        $parent['name'] = $fullname;
-                        return $parent;
-                    }, $incident['parents'])
+                    'parents' => array_map(
+                        function ($values) {
+                            $parent = array();
+                            $parent['id'] = $values['issue_id'];
+                            $fullname = $values['name'];
+                            if (!is_null($values['description'])) {
+                                $fullname .= ' - ' . $values['description'];
+                            }
+                            $parent['name'] = $fullname;
+                            return $parent;
+                        },
+                        $incident['parents']
+                    )
                 );
                 break;
             case 'getChildren':

@@ -46,105 +46,16 @@ class UsergroupRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'contactgroup';
-    
-    /**
-     *
-     * @var string
-     */
     public static $objectName = 'Usergroup';
-    
-    /**
-     *
-     * @var array Main database field to get
-     */
-    public static $datatableColumn = array(
-        '<input id="allContact" class="allContact" type="checkbox">' => 'cg_id',
-        'Name' => 'cg_name',
-        'Description' => 'cg_alias',
-        'Status' => 'cg_activate'
-    );
-    
-    /**
-     *
-     * @var array Column name for the search index
-     */
-    public static $researchIndex = array(
-        'cg_id',
-        'cg_alias',
-        'cg_name',
-        'cg_activate'
-    );
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = "";
-    
-    /**
-     * @inherit doc
-     * @var array 
-     */
-    public static $columnCast = array(
-        'cg_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::cg_name::'
-            )
-        ),
-        'cg_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>'
-            )
-        ),
-        'cg_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/usergroup/[i:id]',
-                'routeParams' => array(
-                    'id' => '::cg_id::'
-                ),
-                'linkName' => '::cg_name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'text',
-        'text',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'text',
-        'text',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
 
-    public static function generateUserGroup(& $filesList, $poller_id, $path, $filename) 
+    /**
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     */
+    public static function generateUserGroup(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -172,7 +83,7 @@ class UsergroupRepository extends \CentreonConfiguration\Repository\Repository
             $content[] = $tmp;
         }
 
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }

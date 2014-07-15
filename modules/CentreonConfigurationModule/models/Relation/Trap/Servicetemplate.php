@@ -99,7 +99,7 @@ class Servicetemplate extends CentreonRelationModel
         		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
                     ." = ".static::$relationTable.".".static::$firstKey."
         		AND ".static::$relationTable.".".static::$secondKey
-                    ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey(). 
+                    ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey().
                 " AND " . $secondObj::getTableName() . ".service_register = '0'";
         $filterTab = array();
         if (count($filters)) {

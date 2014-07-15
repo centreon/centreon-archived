@@ -279,7 +279,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         return $name;
     }
 
-    public static function generateUser(& $filesList, $poller_id, $path, $filename) 
+    public static function generateUser(& $filesList, $poller_id, $path, $filename)
     {
         
         $di = \Centreon\Internal\Di::getDefault();
@@ -289,7 +289,12 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
 
         /* Field to not display */
         //$disableField = static::getTripleChoice();
-        $field = "contact_id, contact_name, contact_alias as alias, contact_email as email, contact_pager as pager, contact_host_notification_options as host_notification_options, contact_service_notification_options as service_notification_options, contact_enable_notifications as host_notifications_enabled, contact_enable_notifications as service_notifications_enabled, timeperiod_tp_id as host_notification_period, timeperiod_tp_id2 as service_notification_period ";
+        $field = "contact_id, contact_name, contact_alias as alias, contact_email as email, "
+            . "contact_pager as pager, contact_host_notification_options as host_notification_options, "
+            . "contact_service_notification_options as service_notification_options, "
+            . "contact_enable_notifications as host_notifications_enabled, "
+            . "contact_enable_notifications as service_notifications_enabled, "
+            . "timeperiod_tp_id as host_notification_period, timeperiod_tp_id2 as service_notification_period ";
         
         /* Init Content Array */
         $content = array();
@@ -320,18 +325,18 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
             
             /* Get commands */
             $tmpData["host_notification_commands"] = static::getNotificationCommand($contact_id, "host");
-            $tmpData["service_notification_commands"] = static::getNotificationCommand($contact_id, "service");;
+            $tmpData["service_notification_commands"] = static::getNotificationCommand($contact_id, "service");
 
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
         }
 
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
-    } 
+    }
 
-    public static function getNotificationCommand($contact_id, $type)  
+    public static function getNotificationCommand($contact_id, $type)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -343,7 +348,8 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         /* Launch Request */
-        $query = "SELECT command_name FROM contact_".$type."commands_relation, command WHERE contact_contact_id = $contact_id AND command_command_id = command_id";
+        $query = "SELECT command_name FROM contact_".$type."commands_relation, command "
+            . "WHERE contact_contact_id = $contact_id AND command_command_id = command_id";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         $cmd = "";
@@ -356,7 +362,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         return $cmd;
     }
     
-    public static function getContactContactGroup($contact_id) 
+    public static function getContactContactGroup($contact_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -364,7 +370,8 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         $dbconn = $di->get('db_centreon');
 
         /* Launch Request */
-        $query = "SELECT cg_name FROM contactgroup_contact_relation cgr, contactgroup cg WHERE contact_contact_id = ".$contact_id." AND cgr.contactgroup_cg_id = cg.cg_id";
+        $query = "SELECT cg_name FROM contactgroup_contact_relation cgr, contactgroup cg "
+            . "WHERE contact_contact_id = ".$contact_id." AND cgr.contactgroup_cg_id = cg.cg_id";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         $cg = "";
@@ -376,5 +383,4 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         }
         return $cg;
     }
-
 }

@@ -145,6 +145,11 @@ class TimeperiodRepository extends \CentreonConfiguration\Repository\Repository
         'none'
     );
 
+    /**
+     * 
+     * @param int $tp_id
+     * @return string
+     */
     public static function getPeriodName($tp_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -163,7 +168,14 @@ class TimeperiodRepository extends \CentreonConfiguration\Repository\Repository
         return "";
     }
 
-    public function generateTimeperiod(& $filesList, $poller_id, $path, $filename) 
+    /**
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     */
+    public function generateTimeperiod(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -195,7 +207,7 @@ class TimeperiodRepository extends \CentreonConfiguration\Repository\Repository
             $content[] = $tmp;
         }
 
-        /* Write Check-Command configuration file */    
+        /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }

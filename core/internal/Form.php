@@ -591,7 +591,8 @@ class Form
             default:
             case 'form':
                 $validatorsQuery = "SELECT
-                        fv.`name` as validator_name, `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                        fv.`name` as validator_name, `action` as `validator`,
+                        ff.`name` as `field_name`, ff.`label` as `field_label`
                     FROM
                         form_validator fv, form_field_validator_relation ffv, form_field ff
                     WHERE
@@ -618,7 +619,8 @@ class Form
                 break;
             case 'wizard':
                 $validatorsQuery = "SELECT
-                        fv.`name` as validator_name, `action` as `validator`, ff.`name` as `field_name`, ff.`label` as `field_label`
+                        fv.`name` as validator_name, `action` as `validator`, ff.`name` as `field_name`,
+                        ff.`label` as `field_label`
                     FROM
                         form_validator fv, form_field_validator_relation ffv, form_field ff
                     WHERE

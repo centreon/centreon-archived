@@ -232,7 +232,10 @@ class UserDatatable extends \Centreon\Internal\Datatable
                 )
             );
 
-            $myUserSet['contact_alias'] = \CentreonConfiguration\Repository\UserRepository::getUserIcon($myUserSet['contact_alias'], $myUserSet['contact_email']);
+            $myUserSet['contact_alias'] = \CentreonConfiguration\Repository\UserRepository::getUserIcon(
+                $myUserSet['contact_alias'],
+                $myUserSet['contact_email']
+            );
         }
     }
 }

@@ -35,6 +35,8 @@
 namespace Centreon\Internal\Form\Custom;
 
 /**
+ * Html Checkobox element
+ * 
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Core
@@ -42,6 +44,7 @@ namespace Centreon\Internal\Form\Custom;
 class Checkbox extends Customobject
 {
     /**
+     * Return the HTML representation of the checkbox field
      * 
      * @param array $element
      * @return array
@@ -63,7 +66,7 @@ class Checkbox extends Customobject
         $myJs = '';
         $i = 1;
         
-        foreach ($element['label_choices'] as $key=>$choice) {
+        foreach ($element['label_choices'] as $key => $choice) {
             $htmlSelected = '';
             if ($value == $choice) {
                 $htmlSelected = 'checked=checked';

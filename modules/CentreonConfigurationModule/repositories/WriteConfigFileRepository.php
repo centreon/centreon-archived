@@ -44,13 +44,20 @@ namespace  CentreonConfiguration\Repository;
 
 class WriteConfigFileRepository
 {
-    public static function initFile($filename) {
+    /**
+     * 
+     * @param string $filename
+     * @return mixed
+     * @throws RuntimeException
+     */
+    public static function initFile($filename)
+    {
         /* Remove configuration file if the file exists */
         if (file_exists($filename)) {
             if (!unlink($filename)) {
                 return array("status" => false, "message" => "Can't remove $filename.");
             }
-        } 
+        }
 
         /* Keep in memory the old umask */
         $oldumask = umask(0113);
@@ -66,15 +73,20 @@ class WriteConfigFileRepository
         return $handle;
     }
 
-    public static function getFileType($filename) 
+    /**
+     * 
+     * @param string $filename
+     * @return string
+     */
+    public static function getFileType($filename)
     {
         if ("resources.cfg" == substr($filename, -13)) {
             return "resource_file";
-        } else if ("command.cfg" == substr($filename, -11)
+        } elseif ("command.cfg" == substr($filename, -11)
                    || "periods.cfg" == substr($filename, -11)
                    || "connectors.cfg" == substr($filename, -14)) {
             return "cfg_file";
-        } else if ("centengine.cfg" == substr($filename, -14)) {
+        } elseif ("centengine.cfg" == substr($filename, -14)) {
             return "main_file";
         } else {
             return "cfg_dir";
@@ -83,12 +95,15 @@ class WriteConfigFileRepository
 
     /**
      * 
-     * 
+     * @param array $content
+     * @param string $filename
+     * @param array $filesList
+     * @param string $user
      */
-    public static function writeObjectFile($content, $filename, & $filesList, $user = "Anonymous") 
+    public static function writeObjectFile($content, $filename, & $filesList, $user = "Anonymous")
     {
         /* Check that the content is not empty */
-        if (count($content)) {            
+        if (count($content)) {
             /* Init File */
             $handle = static::initFile($filename);
             
@@ -110,12 +125,15 @@ class WriteConfigFileRepository
 
     /**
      * 
-     * 
+     * @param array $content
+     * @param string $filename
+     * @param array $filesList
+     * @param string $user
      */
-    public static function writeParamsFile($content, $filename, & $filesList, $user = "Anonymous") 
+    public static function writeParamsFile($content, $filename, & $filesList, $user = "Anonymous")
     {
         /* Check that the content is not empty */
-        if ($content != "") {            
+        if ($content != "") {
             /* Init File */
             $handle = static::initFile($filename);
             
@@ -135,10 +153,12 @@ class WriteConfigFileRepository
         }
     }
 
-    /** 
+    /**
      * Add new generated file into the file list used in centengine.cfg
-     * @param 
-     *
+     * 
+     * @param array $filesList
+     * @param type $newFile
+     * @param string $type
      */
     private static function addFile(& $filesList, $newFile, $type = "empty")
     {
@@ -147,7 +167,7 @@ class WriteConfigFileRepository
         }
         if ($type == "cfg_dir") {
             preg_match('/\/([a-zA-Z0-9\_\-\.]*\.cfg)/', $newFile, $matches);
-            $newFile = str_replace($matches[1], "", $newFile); 
+            $newFile = str_replace($matches[1], "", $newFile);
         }
 
         if ($type == "cfg_dir") {
@@ -156,11 +176,11 @@ class WriteConfigFileRepository
                 if ($value == $newFile) {
                     $flag = 1;
                 }
-            } 
+            }
             if (!$flag) {
                 $filesList[$type][] = $newFile;
             }
-        } else if ($type != "cfg_dir") {
+        } elseif ($type != "cfg_dir") {
             $filesList[$type][] = $newFile;
         }
         
@@ -168,11 +188,12 @@ class WriteConfigFileRepository
     
     /**
      * Add content to the file after the header
-     * @param
-     * @param 
-     * @return void
+     * 
+     * @param type $handle
+     * @param array $content
+     * @return array
      */
-    private static function addObjectsContent($handle, $content = null) 
+    private static function addObjectsContent($handle, $content = null)
     {
         if (!isset($content)) {
             /* Array is empty */
@@ -188,7 +209,7 @@ class WriteConfigFileRepository
                     foreach ($object["content"] as $field => $value) {
                         static::addParameters($handle, $field, $value);
                     }
-                    static::closeObject($handle);                
+                    static::closeObject($handle);
                 } else {
                     /* Array is not well formated */
                     return array("status" => false, "message" => "Content array is not well formated");
@@ -202,10 +223,12 @@ class WriteConfigFileRepository
 
     /**
      * Add content to the file after the header
-     *
-     * @return void
+     * 
+     * @param type $handle
+     * @param array $content
+     * @return array
      */
-    private static function addParamsContent($handle, $content = null) 
+    private static function addParamsContent($handle, $content = null)
     {
         if (!isset($content)) {
             /* Array is empty */
@@ -229,6 +252,13 @@ class WriteConfigFileRepository
 
     }
 
+    /**
+     * 
+     * @param type $handle
+     * @param string $field
+     * @param string $value
+     * @throws RuntimeException
+     */
     private static function addParameters($handle, $field, $value = "")
     {
         if (strcmp($field, "")) {
@@ -243,6 +273,13 @@ class WriteConfigFileRepository
         }
     }
 
+    /**
+     * 
+     * @param type $handle
+     * @param string $field
+     * @param string $value
+     * @throws RuntimeException
+     */
     private static function addGlobalParameters($handle, $field, $value = "")
     {
         if (strcmp($field, "")) {
@@ -257,7 +294,13 @@ class WriteConfigFileRepository
         }
     }
     
-    private static function startObject($handle, $objectType) 
+    /**
+     * 
+     * @param type $handle
+     * @param string $objectType
+     * @throws RuntimeException
+     */
+    private static function startObject($handle, $objectType)
     {
         /* Check if object typoe is empty */
         if ($objectType != "") {
@@ -271,29 +314,33 @@ class WriteConfigFileRepository
         }
     }
 
-    private static function closeObject($handle) 
+    /**
+     * 
+     * @param type $handle
+     * @throws RuntimeException
+     */
+    private static function closeObject($handle)
     {
         /* Write end object into the file */
         if (!fwrite($handle, "}\n\n")) {
             throw new RuntimeException('Cannot write end object.');
         }
     }
-    
 
     /**
      * Add a header on the top of the configuration file
-     * @param $handle 
-     * @var $name
-     * @return value
+     * 
+     * @param type $handle
+     * @param string $name
      */
-    private static function addHeader($handle, $name) 
+    private static function addHeader($handle, $name)
     {
         $time = date("F j, Y, g:i a");
 
         $by = $name;
         $str  = "###################################################################\n";
         /* Get line lenght */
-        $len = strlen($str); 
+        $len = strlen($str);
 
         $str .= "#                                                                 #\n";
         $str .= "#                     Generated by Centreon 3                     #\n";
@@ -322,19 +369,16 @@ class WriteConfigFileRepository
         $str .= "#\n";
         $str .= "#                                                                 #\n";
         $str .= "###################################################################\n\n";
-        fwrite($handle, $str);    
+        fwrite($handle, $str);
     }
 
-    /*
+    /**
      * Close the file descriptor
-     * @var handler
-     * @return void
+     * 
+     * @param type $handle
      */
     private static function closeFile($handle)
     {
         fclose($handle);
     }
 }
-
-
-

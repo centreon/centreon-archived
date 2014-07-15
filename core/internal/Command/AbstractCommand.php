@@ -71,15 +71,15 @@ abstract class AbstractCommand
      * @param array $args
      * @return mixed
      */
-    public function __named($method, array $args)
+    public function named($method, array $args)
     {
         $classReflection = new \ReflectionClass($this);
         $methodReflection = $classReflection->getMethod($method);
 
-        $pass = array(); 
-        foreach($methodReflection->getParameters() as $param) {
-            if(isset($args[$param->getName()])) {
-                $pass[] = $args[$param->getName()]; 
+        $pass = array();
+        foreach ($methodReflection->getParameters() as $param) {
+            if (isset($args[$param->getName()])) {
+                $pass[] = $args[$param->getName()];
             } elseif ($param->isOptional()) {
                 $pass[] = $param->getDefaultValue();
             } else {
@@ -89,5 +89,4 @@ abstract class AbstractCommand
         
         $methodReflection->invokeArgs($this, $pass);
     }
-    
 }

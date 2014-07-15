@@ -187,7 +187,7 @@ class Generator
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;
                     if ((strstr($field['type'], 'select') === false ||
-                        strstr($field['type'], 'deprecated') === false) && 
+                        strstr($field['type'], 'deprecated') === false) &&
                         !isset($this->formDefaults[$field['name']])) {
                         $this->formDefaults[$field['name']] = $field['default_value'];
                     }
@@ -260,7 +260,9 @@ class Generator
         
         $formRendering = '';
 
-        $tabRendering = '<div class="form-tabs-header"><div class="inline-block"><ul class="nav nav-tabs" id="formHeader">';
+        $tabRendering = '<div class="form-tabs-header">'
+            . '<div class="inline-block">'
+            . '<ul class="nav nav-tabs" id="formHeader">';
         
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
             $tabRendering .= '<li>'

@@ -59,14 +59,14 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
             -1,
             0,
             null,
-            "ASC",
-            array("host_register" => '1')
+            "ASC"
         );
         
         if (count($hostList) > 0) {
             $result = "id;name;alias;address;activate\n";
             foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];$host[host_alias];$host[host_address];$host[host_activate]\n";
+                $result .= "$host[host_id];$host[host_name];"
+                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
             }
         } else {
             $result = "No result found";
@@ -82,19 +82,12 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function showAction($host)
     {
-        /*
-         * Query parameter
-         */
-        $params = array(
-            "host_register" => '1'
-        );
         
         if (is_numeric($host)) {
             $params['host_id'] = $host;
         } else {
             $params['host_name'] = $host;
         }
-        
         
         /*
          * Get host informations
@@ -104,7 +97,8 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
         if (count($hostList) > 0) {
             $result = "id;name;alias;address;activate\n";
             foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];$host[host_alias];$host[host_address];$host[host_activate]\n";
+                $result .= "$host[host_id];$host[host_name];"
+                    . "$host[host_alias];$host[host_address];$host[host_activate]\n";
             }
         } else {
             $result = "No result found";
@@ -148,5 +142,4 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
     {
         echo "Not implemented yet";
     }
-
 }

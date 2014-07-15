@@ -81,7 +81,7 @@ class CommandApi extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
 
-        /* 
+        /*
          * Get parameters
          */
         $param = $router->request()->paramsNamed();
@@ -97,12 +97,12 @@ class CommandApi extends \Centreon\Internal\Controller
         $hostList = \CentreonConfiguration\Models\Command::getList('*', -1, 0, null, "ASC", $params);
 
         $router->response()->json(
-                                  array(
-                                        "api-version" => 1,
-                                        "status" => true,
-                                        "data" => $hostList
-                                        )
-                                  );
+            array(
+                "api-version" => 1,
+                "status" => true,
+                "data" => $hostList
+            )
+        );
     }
 
     /**
@@ -149,5 +149,4 @@ class CommandApi extends \Centreon\Internal\Controller
     {
         print "Not implemented yet";
     }
-
 }

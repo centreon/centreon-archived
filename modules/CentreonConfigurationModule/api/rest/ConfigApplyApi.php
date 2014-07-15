@@ -56,11 +56,12 @@ class ConfigApplyApi extends \Centreon\Internal\Controller
 
         $obj = new \CentreonConfiguration\Repository\ConfigApplyRepository($param["id"]);
         
-        $router->response()->json(array(
-                                                   "api-version" => $param["version"],
-                                                   "data" => $obj->$action($param["id"])
-                                                   )
-                                             );
+        $router->response()->json(
+            array(
+                "api-version" => $param["version"],
+                "data" => $obj->$action($param["id"])
+            )
+        );
     }
 
     /**

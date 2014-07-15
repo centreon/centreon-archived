@@ -131,8 +131,13 @@ class Installer
         // Module
         if ($operationType == 'update') {
             $registeredModules = \Centreon\Models\Module::getList('name');
-            $registeredModules(array_merge($registeredModules, \Centreon\Custom\Module\ModuleInformations::getCoreModuleList()));
-            foreach($registeredModules as $module) {
+            $registeredModules(
+                array_merge(
+                    $registeredModules,
+                    \Centreon\Custom\Module\ModuleInformations::getCoreModuleList()
+                )
+            );
+            foreach ($registeredModules as $module) {
                 $module['name'] = str_replace(' ', '', ucwords(str_replace('-', ' ', $module['name']))) . 'Module';
                 $xmlDbFiles = array_merge(
                     $xmlDbFiles,
@@ -148,7 +153,9 @@ class Installer
         } else {
             $xmlDbFiles = array_merge(
                 $xmlDbFiles,
-                glob(realpath(rtrim($centreonPath, '/') . '/modules') . '/*Module/install/db/' . $targetDbName . '/*.xml')
+                glob(
+                    realpath(rtrim($centreonPath, '/') . '/modules') . '/*Module/install/db/' . $targetDbName . '/*.xml'
+                )
             );
         }
         

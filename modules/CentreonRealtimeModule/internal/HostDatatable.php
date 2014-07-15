@@ -36,8 +36,8 @@
 
 namespace CentreonRealtime\Internal;
 
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository,
-    \Centreon\Internal\Utils\Datetime;
+use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use \Centreon\Internal\Utils\Datetime;
 
 /**
  * Description of HostDatatable
@@ -233,14 +233,16 @@ class HostDatatable extends \Centreon\Internal\Datatable
                     $myHostSet['name']
                 ).'&nbsp;&nbsp;'.$myHostSet['name'];
             }
-            $myHostSet['duration'] = Datetime::humanReadable($myHostSet['duration'],
-                                                             Datetime::PRECISION_FORMAT,
-                                                             2
-                                                             );
-            $myHostSet['last_check'] = Datetime::humanReadable($myHostSet['last_check'],
-                                                             Datetime::PRECISION_FORMAT,
-                                                             2
-                                                             );
+            $myHostSet['duration'] = Datetime::humanReadable(
+                $myHostSet['duration'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
+            $myHostSet['last_check'] = Datetime::humanReadable(
+                $myHostSet['last_check'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
         }
     }
 }

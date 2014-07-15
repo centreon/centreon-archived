@@ -183,7 +183,10 @@ class AbstractInstaller implements iModuleInstaller
             $isactivated = 2;
         }
         
-        \Centreon\Models\Module::update($this->moduleId, array('isactivated' => $isactivated,'isinstalled' => $isinstalled));
+        \Centreon\Models\Module::update(
+            $this->moduleId,
+            array('isactivated' => $isactivated,'isinstalled' => $isinstalled)
+        );
     }
     
     /**

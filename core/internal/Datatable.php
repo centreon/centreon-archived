@@ -217,21 +217,21 @@ class Datatable
             foreach ($hookData as $data) {
                 $columnName = $data['columnName'];
                 static::$columns[] = array(
-                    'name' => $columnName, 
-                    'title' => $columnName, 
-                    'data' => $columnName, 
+                    'name' => $columnName,
+                    'title' => $columnName,
+                    'data' => $columnName,
                     'orderable' => false,
                     'searchable' => false
                 );
             }
-        } 
+        }
 
         foreach (static::$columns as $column) {
             static::$fieldList[] = $column['name'];
             $columnHeader .= '{';
             $searchable = false;
             
-            foreach ($column as $key=>$value) {
+            foreach ($column as $key => $value) {
                 
                 if (in_array($key, self::$nonDatatableParams)) {
                     continue;
@@ -354,16 +354,16 @@ class Datatable
     {
         try {
             $columnsToCast = array();
-            foreach(static::$columns as $column) {
+            foreach (static::$columns as $column) {
                 if (isset($column['cast'])) {
                     $columnsToCast[$column['name']] = $column['cast'];
                     $columnsToCast[$column['name']]['caster'] = 'add'.ucwords($column['cast']['type']);
                 }
             }
 
-            foreach($datas as &$singleData) {
+            foreach ($datas as &$singleData) {
                 $originalData = $singleData;
-                foreach($columnsToCast as $colName=>$colCast) {
+                foreach ($columnsToCast as $colName => $colCast) {
                     if (preg_match('/[A-z]\./', $colName)) {
                         $a = explode('.', $colName);
                         array_shift($a);
