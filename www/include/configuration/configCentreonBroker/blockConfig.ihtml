@@ -17,9 +17,9 @@
   	<img class="helpTooltip" name="{$element.name}" />
   	<label for="{$element.name}">
         {if $element.label|is_array}
-        {$element.label[0]}
+        {t}{$element.label[0]}{/t}
         {else}
-        {$element.label}
+        {t}{$element.label}{/t}
         {/if}
         </label>
   </td>
@@ -32,5 +32,5 @@
 {/foreach}
 {$formBlock.hidden}
 {foreach from=$helps item=help}
-<span style="display: none;" id="help:{$help.name}">{$help.desc}</span>
+<span style="display: none;" id="help:{$help.name}">{t}{$help.desc}{/t}</span>
 {/foreach}
