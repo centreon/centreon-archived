@@ -57,17 +57,17 @@ sub log_and_exit($$) {
 sub new {
     my $class = shift;
     my $self = $class->SUPER::new("logAnalyser",
-        centreon_db_conn => 1,
-        centstorage_db_conn => 1,
-        noroot => 1
-    );
+                                  centreon_db_conn => 1,
+                                  centstorage_db_conn => 1,
+                                  noroot => 1
+        );
 
     bless $self, $class;
     $self->add_options(
         "a" => \$self->{opt_a}, "archives" => \$self->{opt_a},
         "p=s" => \$self->{opt_p}, "poller" => \$self->{opt_p},
         "s=s" => \$self->{opt_s}, "startdate=s" => \$self->{opt_s}
-    );
+        );
     $self->{launch_time} = time();
     $self->{msg_type5_disabled} = 0;
     $self->{queries_per_transaction} = 500;
@@ -83,9 +83,9 @@ sub read_config {
         $self->log_and_exit("This script is only suitable for NDO");
     }
     ($status, $sth) = $self->{csdb}->query(<<"EOQ");
-SELECT archive_log, archive_retention FROM config
-EOQ
-    goto error if $status == -1;
+    SELECT archive_log, archive_retention FROM config
+        EOQ
+        goto error if $status == -1;
     $self->{config} = $sth->fetchrow_hashref();
     $self->log_and_exit("No configuration found in database") if !defined $self->{config}->{archive_log};
     return;
@@ -121,9 +121,9 @@ sub time_to_date($$) {
 sub reset_position_flag {
     my ($self, $instance) = @_;
     my $status = $self->{csdb}->do(<<"EOQ");
-UPDATE instance SET log_flag = '0' WHERE instance_id = '$instance'
-EOQ
-    $self->log_and_exit("Failed to reset the position flag into database") if $status == -1;
+    UPDATE instance SET log_flag = '0' WHERE instance_id = '$instance'
+        EOQ
+        $self->log_and_exit("Failed to reset the position flag into database") if $status == -1;
 }
 
 sub commit_to_log {
@@ -132,9 +132,9 @@ sub commit_to_log {
 
     $sth->execute_for_fetch(sub { shift @$log_table_rows }, \@tuple_status);
     $self->{csdb}->do(<<"EOQ");
-UPDATE instance SET log_flag='$counter', last_ctime='$ctime' WHERE instance_id = '$instance'
-EOQ
-    $self->{csdb}->commit;
+    UPDATE instance SET log_flag='$counter', last_ctime='$ctime' WHERE instance_id = '$instance'
+        EOQ
+        $self->{csdb}->commit;
     $self->{csdb}->transaction_mode(1);
 }
 
@@ -155,9 +155,9 @@ sub parse_file($$$) {
         mkpath($logdir);
     }
     my ($status, $sth) = $self->{csdb}->query(<<"EOQ");
-SELECT `log_flag`,`last_ctime` FROM `instance` WHERE `instance_id`='$instance'
-EOQ
-    $self->log_and_exit("Cannot read previous run information from database") if $status == -1;
+    SELECT `log_flag`,`last_ctime` FROM `instance` WHERE `instance_id`='$instance'
+        EOQ
+        $self->log_and_exit("Cannot read previous run information from database") if $status == -1;
     my $prev_run_info = $sth->fetchrow_hashref();
 
     # Get History Flag
@@ -180,7 +180,7 @@ EOQ
     }
     $self->{logger}->writeLogInfo("$nb_lines_nagios lignes dans le fichier $logfile. Database last position flag: $prev_run_info->{log_flag}");
 
-    if ( $prev_run_info->{log_flag} gt $nb_lines_nagios ) {
+    if ( $prev_run_info->{log_flag} > $nb_lines_nagios ) {
         $self->{logger}->writeLogInfo("Detecting logfile rotation, starting parsing from beginning");
     } else {
         $last_position = $prev_run_info->{log_flag};
@@ -203,72 +203,72 @@ EOQ
     $self->{csdb}->transaction_mode(1);
     eval {
         my $sth = $self->{csdb}->{instance}->prepare(<<"EOQ");
-INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-EOQ
-        my $cur_ctime = undef;
+        INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            EOQ
+            my $cur_ctime = undef;
 
         while (<FILE>) {
             if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], $tab[1], $tab[2], $tab[5], '', '', $tab[3], $tab[4], '0', $instance)];
+                [($cur_ctime, $tab[0], $tab[1], $tab[2], $tab[5], '', '', $tab[3], $tab[4], '0', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', $tab[1], $tab[4], '', '', $tab[2], $tab[3], '1', $instance)];
+                [($cur_ctime, $tab[0], '', $tab[1], $tab[4], '', '', $tab[2], $tab[3], '1', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[1], $tab[2], $tab[3], $tab[5], $tab[4], $tab[0], '', 0, '2', $instance)];
+                [($cur_ctime, $tab[1], $tab[2], $tab[3], $tab[5], $tab[4], $tab[0], '', 0, '2', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[1], '', $tab[2], $tab[4], $tab[3], $tab[0], '', 0, '3', $instance)];
+                [($cur_ctime, $tab[1], '', $tab[2], $tab[4], $tab[3], $tab[0], '', 0, '3', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], 0, '7', $instance)];
+                [($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], 0, '7', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows,
-                  [($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], 0, '6', $instance)];
+                [($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], 0, '6', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], 0, '9', $instance)];
+                [($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], 0, '9', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], 0, '8', $instance)];
+                [($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], 0, '8', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', 0, '10', $instance)];
+                [($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', 0, '10', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', 0, '11', $instance)];
+                [($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', 0, '11', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/) {
                 my $tab = $2;
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, '', '', '', $tab, '', '', '', 0, '4', $instance)];
+                [($cur_ctime, '', '', '', $tab, '', '', '', 0, '4', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/ && (!$self->{msg_type5_disabled})) {
                 $cur_ctime = $1;
                 my $tab = $2;
                 push @log_table_rows, 
-                  [($cur_ctime, '', '', '', $tab, '', '', '', 0, '5', $instance)];
+                [($cur_ctime, '', '', '', $tab, '', '', '', 0, '5', $instance)];
             }
             $counter++;
             $nbqueries++;
@@ -289,7 +289,7 @@ EOQ
         $self->log_and_exit("Database error: $@");
     }
     $self->{csdb}->transaction_mode(0);
-}
+               }
 
 =head2 parse_archives($instance, $localhost, $startdate)
 
@@ -303,13 +303,13 @@ sub parse_archives {
 
     if ($localhost) {
         my ($status, $sth) = $self->{cdb}->query(<<"EOQ");
-SELECT `log_archive_path` FROM `cfg_nagios`, `nagios_server` 
-WHERE `nagios_server_id` = '$instance' 
-AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` 
-AND `nagios_server`.`ns_activate` = '1' 
-AND `cfg_nagios`.`nagios_activate` = '1'
-EOQ
-        $self->log_and_exit("Failed to read instance configuration") if $status == -1;
+        SELECT `log_archive_path` FROM `cfg_nagios`, `nagios_server` 
+            WHERE `nagios_server_id` = '$instance' 
+            AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` 
+            AND `nagios_server`.`ns_activate` = '1' 
+            AND `cfg_nagios`.`nagios_activate` = '1'
+            EOQ
+            $self->log_and_exit("Failed to read instance configuration") if $status == -1;
         $archives = $sth->fetchrow_hashref()->{log_archive_path};
     } else {
         $archives = "$self->{centreon_config}->{VarLib}/log/$instance/archives/";
@@ -359,14 +359,14 @@ sub parse_logfile($$$) {
 
     if ($localhost) {
         my ($status, $sth) = $self->{cdb}->query(<<"EOQ");
-SELECT `log_file`, `log_archive_path` 
-FROM `cfg_nagios`, `nagios_server` 
-WHERE `nagios_server_id` = '$instance' 
-AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` 
-AND `nagios_server`.`ns_activate` = '1' 
-AND `cfg_nagios`.`nagios_activate` = '1'
-EOQ
-        $self->log_and_exit("Cannot read logfile from database") if $status == -1;
+        SELECT `log_file`, `log_archive_path` 
+            FROM `cfg_nagios`, `nagios_server` 
+            WHERE `nagios_server_id` = '$instance' 
+            AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` 
+            AND `nagios_server`.`ns_activate` = '1' 
+            AND `cfg_nagios`.`nagios_activate` = '1'
+            EOQ
+            $self->log_and_exit("Cannot read logfile from database") if $status == -1;
         my $data = $sth->fetchrow_hashref();
         $logfile = $data->{log_file};
         $archivepath = $data->{log_archive_path};
@@ -394,7 +394,7 @@ EOQ
     }
 
     $self->parse_file($logfile, $instance);
-}
+                  }
 
 =head2 run()
 
@@ -445,7 +445,7 @@ EOQ
             $status = $self->{csdb}->do(<<"EOQ");
 INSERT INTO `instance` 
 (`instance_id`, `instance_name`, `log_flag`)
-VALUES ('$ns_server->{id}', '$ns_server->{name}', '0')
+    VALUES ('$ns_server->{id}', '$ns_server->{name}', '0')
 EOQ
             $self->log_and_exit("Cannot save instance to database") if $status == -1;
         } else {
