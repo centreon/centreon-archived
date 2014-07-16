@@ -809,7 +809,11 @@ class CentreonGraph {
                 if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
                     $arg .= "  ";
                 }
-                $arg .= "'";
+            	if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
+                	$arg .= "\"";
+                } else {
+                	$arg .= "'";
+                }
                 $this->addArgument($arg);
 
                 $vdefs = "";

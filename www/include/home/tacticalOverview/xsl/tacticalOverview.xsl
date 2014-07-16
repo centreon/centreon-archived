@@ -288,7 +288,7 @@
 								</xsl:element>
 							</xsl:if>
 							<xsl:element name='a'>
-								<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
+								<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='encodedhostname'/></xsl:attribute>
 								<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 								<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 								<xsl:value-of select='hostname'/>
@@ -737,7 +737,7 @@
 										<xsl:attribute name='href'>
 											<xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/>
 										</xsl:attribute>
-										<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
+										<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='encodedhostname'/></xsl:attribute>
 										<xsl:value-of select='hostname'/>
 									</xsl:element>
 								</td>					
@@ -750,7 +750,7 @@
 										<xsl:attribute name="id">service-<xsl:value-of select="sid"/></xsl:attribute>
 										<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 										<xsl:attribute name='href'>
-											<xsl:value-of select='//main/url_svcdetail'/><xsl:value-of select='hostname'/><xsl:value-of select='//main/url_svcdetail2'/><xsl:value-of select='servicename'/>
+											<xsl:value-of select='//main/url_svcdetail'/><xsl:value-of select='encodedhostname'/><xsl:value-of select='//main/url_svcdetail2'/><xsl:value-of select='encodedservicename'/>
 										</xsl:attribute>
 										<xsl:value-of select='servicename'/>
 									</xsl:element>
