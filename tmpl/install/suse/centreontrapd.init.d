@@ -19,9 +19,9 @@ servicename=$(basename "$0")
 user=@CENTREON_USER@
 timeout=60
 start_timeout=5
-logfile=@CENTREON_LOG@/centstorage.log
+logfile=@CENTREON_LOG@/centreontrapd.log
 
-# Add optionnal option for centstorage daemon
+# Add optionnal option for centreontrapd daemon
 opt_daemon=""
 if [ -n "${logfile}" ]; then
     opt_daemon=" --logfile=${logfile}"
