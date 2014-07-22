@@ -237,7 +237,10 @@
 		/*
 		 * Set Categories
 		 */
-		$DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
+		$DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."' AND NOT EXISTS(SELECT sc_id
+		                        FROM service_categories sc
+		                        WHERE sc.sc_id = service_categories_relation.sc_id
+		                        AND sc.level IS NOT NULL)");
 		for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++) {
             if (!isset($service_categories[$service_category['sc_id']])) {
                 $initialValues['service_categories'][] = $service_category['sc_id'];
