@@ -1,3 +1,11 @@
+## Centreon 2.5.2
+
+Bug fixes
+=========
+#5593: Fixes a bug where trap advanced matching rules were not working
+#5600: Fixes a bug where it was impossible to add or modify a poller
+#5664, 5439: Fixed slow request in forms
+
 ## Centreon 2.5.1
 
 Bug fixes
