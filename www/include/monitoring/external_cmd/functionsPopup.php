@@ -59,7 +59,7 @@
 
 		if ($actions == true || $is_admin) {
 			$host_poller = GetMyHostPoller($pearDB, $host_name);
-			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".trim(urldecode($_GET["comment"])), $host_poller);
 		    if ($force_check == 1) {
 			    write_command(" SCHEDULE_FORCED_HOST_CHECK;".$host_name.";".time(), $host_poller);
             }
@@ -73,7 +73,7 @@
 			$svc_tab = getMyHostServices($row['host_id']);
 			if (count($svc_tab)) {
 				foreach ($svc_tab as $key2 => $value) {
-					write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+					write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".trim(urldecode($_GET["comment"])), $host_poller);
 					if ($force_check == 1 && $oreon->user->access->checkAction("service_schedule_forced_check") == true) {
 				 		write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$value.";".time(), $host_poller);
 					}
@@ -128,7 +128,7 @@
 		if ($actions == true || $is_admin) {
 
 			$_GET["comment"] = $_GET["comment"];
-			$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
+			$_GET["comment"] = str_replace('\'', ' ', trim(urldecode($_GET["comment"])));
 
 			$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$svc_description.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
 
@@ -175,7 +175,7 @@
 
 			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
 			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
-			isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
+			isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', trim(urldecode($_GET["comment"]))) : $comment = "";
 			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
             isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
