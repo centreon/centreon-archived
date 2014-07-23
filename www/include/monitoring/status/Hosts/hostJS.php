@@ -282,7 +282,7 @@ function send_the_command() {
     {
     	xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
     }
-    var comment = document.getElementById('popupComment').value;
+    var comment = encodeURIComponent(document.getElementById('popupComment').value.trim());
     if (comment == "") {
 		alert(_popup_no_comment_msg);
 		return 0;
