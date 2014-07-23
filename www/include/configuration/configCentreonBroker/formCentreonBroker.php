@@ -145,12 +145,14 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
         /*
          * Get informations for modify
          */
+        textdomain("help");
         $nbTabs = count($tabs);
         for ($i = 0; $i < $nbTabs; $i++) {
             $tabs[$i]['forms'] = $cbObj->getForms($id, $tabs[$i]['id'], $p, $tpl);
             $tabs[$i]['helps'] = $cbObj->getHelps($id, $tabs[$i]['id']);
             $tabs[$i]['nb'] = count($tabs[$i]['forms']);
         }
+        textdomain("messages");
     }
 }
 $form->addElement('hidden', 'id');
