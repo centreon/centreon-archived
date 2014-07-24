@@ -198,8 +198,7 @@ $obj->displayImageFlow();
 /**
  * Closing session
  */
-CentreonSession::stop();
-
-$pearDB->query("DELETE FROM session WHERE session_id = '".$mySessionId."'");
-
+if (isset($_GET['akey'])) {
+    $pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($mySessionId)."'");
+}
 ?>
