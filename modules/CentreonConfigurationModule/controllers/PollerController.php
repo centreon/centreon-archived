@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
+use \Centreon\Internal\Di;
+
 use \CentreonConfiguration\Models\Poller;
 
 class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
@@ -55,6 +57,9 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function listAction()
     {
+        $tpl = Di::getDefault()->get('template');
+        $tpl->addJs('poller-generate.js', 'bottom', 'centreon-configuration');
+        $tpl->addJs('jquery.json2html.js');
         parent::listAction();
     }
     
@@ -75,7 +80,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function formListAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParams = $this->getParams('get');
@@ -114,7 +119,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl = Di::getDefault()->get('template');
         $tpl->assign('validateUrl', '/configuration/poller/add');
         parent::addAction();
     }
@@ -194,5 +199,18 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public function deleteAction()
     {
         parent::deleteAction();
+    }
+
+    /**
+     * Display wizard for applying configuration
+     *
+     * @method get
+     * @route /configuration/poller/applycfg
+     */
+    public function applyConfAction()
+    {
+        $tpl = Di::getDefault()->get('template');
+        $params = $this->getParams();
+        $tpl->display('file:[CentreonConfigurationModule]applycfg.tpl');
     }
 }
