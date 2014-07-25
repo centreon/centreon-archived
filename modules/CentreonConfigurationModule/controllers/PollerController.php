@@ -59,7 +59,6 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     {
         $tpl = Di::getDefault()->get('template');
         $tpl->addJs('poller-generate.js', 'bottom', 'centreon-configuration');
-        $tpl->addJs('jquery.json2html.js');
         parent::listAction();
     }
     
