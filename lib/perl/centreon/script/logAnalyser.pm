@@ -463,6 +463,7 @@ EOQ
                     $self->{logger}->writeLogError("Failed to truncate 'log' table") if $status == -1;
                 } else {
                     my $limit = $self->date_to_time($self->{opt_s});
+                    $self->log_and_exit("Invalid date format") if $limit == 0;
                     $status = $self->{csdb}->do("DELETE FROM `log` WHERE `ctime` >= $limit");
                     $self->{logger}->writeLogError("Failed to purge 'log' table") if $status == -1;
                 }
