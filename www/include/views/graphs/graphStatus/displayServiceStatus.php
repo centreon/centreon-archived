@@ -113,7 +113,8 @@
 		if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])){
 			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
 		} else {
-			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND `service_description` = '".$_GET["service_description"]."' LIMIT 1");
+			$pearDBO->query("SET NAMES 'utf8'");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".utf8_encode($_GET["host_name"])."' AND `service_description` = '".utf8_encode($_GET["service_description"])."' LIMIT 1");
 		}
 
 		$index_data_ODS = $DBRESULT->fetchRow();

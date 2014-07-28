@@ -86,7 +86,7 @@ $host_id = getMyHostID($host_name);
 
 if (!is_null($host_id)) {
     $can_display = 1;
-    $service_id = getMyServiceID($svc_description, $host_id);
+    $service_id = getMyServiceID(utf8_encode($svc_description), $host_id);
     if (!$is_admin) {
         $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO), $host_name);
         if (!isset($lcaHost["LcaHost"][$service_id])) {
@@ -458,7 +458,7 @@ if (!is_null($host_id)) {
             $status .= "&value[".$key."]=".$value;
         }
 
-        $optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$svc_description;
+        $optionsURL = "session_id=".session_id()."&host_name=".urlencode($host_name)."&service_description=".urlencode($svc_description);
 
 
         $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");
@@ -571,8 +571,8 @@ if (!is_null($host_id)) {
         $tpl->assign("service_id", $service_id);
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
-        $tpl->assign("host_name", $host_name);
-        $tpl->assign("svc_description", $svc_description);
+        $tpl->assign("host_name", utf8_encode($host_name));
+        $tpl->assign("svc_description", utf8_encode($svc_description));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 
