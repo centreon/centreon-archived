@@ -86,7 +86,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
     /*
      * Host Group List
      */
-    $host_id = getMyHostID($host_name);
+    $host_id = getMyHostID(utf8_encode($host_name));
     if (!is_null($host_id)) {
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
