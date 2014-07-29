@@ -71,6 +71,10 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
+    if (isset($_GET['cmd'])) {
+        $host_name = utf8_decode($host_name);
+        $svc_description = utf8_decode($svc_description);
+    }
 } else {
     foreach ($_GET["select"] as $key => $value) {
         $tab_data = preg_split("/\;/", $key);
@@ -86,7 +90,7 @@ $host_id = getMyHostID($host_name);
 
 if (!is_null($host_id)) {
     $can_display = 1;
-    $service_id = getMyServiceID(utf8_encode($svc_description), $host_id);
+    $service_id = getMyServiceID($svc_description, $host_id);
     if (!$is_admin) {
         $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO), $host_name);
         if (!isset($lcaHost["LcaHost"][$service_id])) {

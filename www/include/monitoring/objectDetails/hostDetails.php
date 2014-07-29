@@ -64,6 +64,9 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 
 if (isset($_GET["host_name"]) && $_GET["host_name"]) {
     $host_name = $_GET["host_name"];
+    if (isset($_GET['cmd'])) {
+        $host_name = utf8_decode($host_name);
+    }
 } else {
     foreach ($_GET["select"] as $key => $value) {
         $host_name = $key;
@@ -86,7 +89,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
     /*
      * Host Group List
      */
-    $host_id = getMyHostID(utf8_encode($host_name));
+    $host_id = getMyHostID($host_name);
     if (!is_null($host_id)) {
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
