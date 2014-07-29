@@ -307,6 +307,7 @@ if (!is_null($host_id)) {
             $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
                 $tabCommentServices[$i] = $data;
+                $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
             $DBRESULT->free();
@@ -577,6 +578,9 @@ if (!is_null($host_id)) {
         $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
         $tpl->assign("host_name", utf8_encode($host_name));
         $tpl->assign("svc_description", utf8_encode($svc_description));
+        if ($oreon->broker->getBroker() == "ndo") {
+            $tpl->assign("svc_description", $svc_description);
+        }
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 
