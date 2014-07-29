@@ -71,7 +71,7 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
-    if (isset($_GET['cmd'])) {
+    if (isset($_REQUEST['cmd'])) {
         $host_name = utf8_decode($host_name);
         $svc_description = utf8_decode($svc_description);
     }

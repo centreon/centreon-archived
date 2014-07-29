@@ -64,7 +64,7 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 
 if (isset($_GET["host_name"]) && $_GET["host_name"]) {
     $host_name = $_GET["host_name"];
-    if (isset($_GET['cmd'])) {
+    if (isset($_REQUEST['cmd'])) {
         $host_name = utf8_decode($host_name);
     }
 } else {
