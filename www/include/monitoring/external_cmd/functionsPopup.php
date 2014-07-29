@@ -28,7 +28,8 @@
 		$str = NULL;
 
 		$informations = preg_split("/\;/", $key);
-                $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . "@CENTREON_VARLIB@/centcore.cmd";
+		setlocale(LC_CTYPE, 'en_US.UTF-8');
+        $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . "@CENTREON_VARLIB@/centcore.cmd";
 		return passthru($str);
 	}
 
