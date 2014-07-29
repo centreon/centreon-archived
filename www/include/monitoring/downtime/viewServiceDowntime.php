@@ -169,7 +169,7 @@
 		$rows = $pearDBndo->numberRows();
 		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
 			$tab_downtime_svc[$i] = $data;
-			$tab_downtime_svc[$i] = htmlentities(trim($data['comment']));
+			$tab_downtime_svc[$i]["comment_data"] = htmlentities(trim($data['comment']));
 			$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
 			$tab_downtime_svc[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
 			$tab_downtime_svc[$i]["host_name_link"] = urlencode($tab_downtime_svc[$i]["host_name"]);
