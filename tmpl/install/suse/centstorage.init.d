@@ -20,11 +20,16 @@ user=@CENTREON_USER@
 timeout=60
 start_timeout=5
 logfile=@CENTREON_LOG@/centstorage.log
+config=@CENTREON_ETC@/conf.pm
 
 # Add optionnal option for centstorage daemon
 opt_daemon=""
 if [ -n "${logfile}" ]; then
     opt_daemon=" --logfile=${logfile}"
+fi
+
+if [ -n "${config}" ]; then
+    opt_daemon="${opt_daemon} --config=${config}"
 fi
 
 pidfile=@CENTREON_RUNDIR@/centstorage.pid
