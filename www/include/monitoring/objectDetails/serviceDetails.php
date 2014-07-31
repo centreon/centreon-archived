@@ -71,8 +71,8 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
-    if (isset($_GET['cmd'])) {
-        $host_name = utf8_encode($host_name);
+    if (isset($_REQUEST['cmd']) && $centreon->broker->getBroker() == 'broker') {
+        $host_name = utf8_decode($host_name);
         $svc_description = utf8_decode($svc_description);
     }
 } else {
@@ -123,7 +123,7 @@ if (!is_null($host_id)) {
         $query = "SELECT DISTINCT sg.sg_name
                 FROM servicegroup sg, servicegroup_relation sgr
                 WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
-            $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
+                $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
         $DBRESULT = $pearDB->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $serviceGroups[] = $row['sg_name'];
@@ -470,7 +470,7 @@ if (!is_null($host_id)) {
             $status .= "&value[".$key."]=".$value;
         }
 
-        $optionsURL = "session_id=".session_id()."&host_name=".($host_name)."&service_description=".($svc_description);
+        $optionsURL = "session_id=".session_id()."&host_name=".urlencode($host_name)."&service_description=".urlencode($svc_description);
 
 
         $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");
