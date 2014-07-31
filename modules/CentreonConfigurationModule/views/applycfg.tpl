@@ -71,19 +71,24 @@ $(function() {
 
         $.ajax({
           url: '/api/configuration/1/generatecfg/' + pollerId,
-          dataType: 'text'
+          dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
-          $csl.append(data);
-          $thisBtn.removeAttr('disabled');
-          /* File testing */
-          $.ajax({
-            url: '/api/configuration/1/testcfg/' + pollerId,
-            dataType: 'json'
-          }).success(function(data2, textStatus2, jqXHR2) {
-            $csl.append(data2);
-          }).error(function(jqXHR2, textStatus2, errorThrown2) {
-            $csl.append(errorThrown2);
-          });
+          $csl.append(data.output);
+          if (!data.status) {
+            $thisBtn.removeAttr('disabled');
+          } else {
+            /* File testing */
+            $.ajax({
+              url: '/api/configuration/1/testcfg/' + pollerId,
+              dataType: 'json'
+            }).success(function(data2, textStatus2, jqXHR2) {
+              $csl.append(data2);
+              $thisBtn.removeAttr('disabled');
+            }).error(function(jqXHR2, textStatus2, errorThrown2) {
+              $csl.append(errorThrown2);
+              $thisBtn.removeAttr('disabled');
+            });
+          }
         }).error(function(jqXHR, textStatus, errorThrown) {
           $csl.append(errorThrown);
           $thisBtn.removeAttr('disabled');

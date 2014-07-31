@@ -35,6 +35,8 @@
 
 namespace  CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Di;
+
 /**
  * Factory for ConfigGenerate Engine
  *
@@ -74,45 +76,85 @@ class ConfigGenerateRepository
      */
     private $filesDir;
 
+    /**
+     *
+     * @var int
+     */
+    private $pollerId;
 
     /**
      * Method tests
      * 
-     * @param int $poller_id
+     * @param int $pollerId
      * @return type
      */
-    public function __construct($poller_id)
+    public function __construct($pollerId)
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->di = Di::getDefault();
         $this->stepStatus = array();
         $this->path = "/var/lib/centreon/tmp/";
         $this->filesDir = array();
+        $this->pollerId = $pollerId;
+    }
 
-        /*
-         * Check Poller Status
-         */
-        $checkInfos = static::checkPollerInformations($poller_id);
-        if (!$checkInfos[0]) {
-            return $checkInfos;
-        } else {
-            $this->stepStatus[] = $checkInfos;
-        }
+    /**
+     * Generate all configuration files
+     *
+     */
+    public function generate()
+    {
+        $this->checkPollerInformations();
+        $this->generateObjectsFiles();
+        $this->generateMainFiles();
+    }
 
-        /* Generate Configuration files */
-        CommandRepository::generateCheckCommand($this->filesDir, $poller_id, $this->path, "check-command.cfg");
-        CommandRepository::generateMiscCommand($this->filesDir, $poller_id, $this->path, "misc-command.cfg");
-        ConfigGenerateResourcesRepository::generateResources($this->filesDir, $poller_id, $this->path, "resources.cfg");
-        TimeperiodRepository::generateTimeperiod($this->filesDir, $poller_id, $this->path, "timeperiods.cfg");
-        ConnectorRepository::generateConnectors($this->filesDir, $poller_id, $this->path, "connectors.cfg");
+    /**
+     * Generate main configuration file
+     */
+    public function generateMainFiles()
+    {
+        /* Generate Main File */
+        ConfigGenerateMainRepository::generateMainFile($this->filesDir, $this->pollerId, $this->path, "centengine.cfg");
+        /* Generate Debugging Main File */
+        ConfigGenerateMainRepository::generateMainFile(
+            $this->filesDir,
+            $this->pollerId,
+            $this->path,
+            "centengine-testing.cfg",
+            1
+        );
+        ConfigCorrelationRepository::generateFile($this->pollerId);
+    }
+    
+    /**
+     * 
+     */
+    public function generateResourcesFileConfigurations()
+    {
 
-        UserRepository::generateUser($this->filesDir, $poller_id, $this->path, "objects/contacts.cfg");
-        UsergroupRepository::generateUserGroup($this->filesDir, $poller_id, $this->path, "objects/contactgroups.cfg");
+    }
+    
+    /**
+     * Generate all object files (host, service, contacts etc...)
+     *
+     */
+    public function generateObjectsFiles()
+    {
+         /* Generate Configuration files */
+        CommandRepository::generateCheckCommand($this->filesDir, $this->pollerId, $this->path, "check-command.cfg");
+        CommandRepository::generateMiscCommand($this->filesDir, $this->pollerId, $this->path, "misc-command.cfg");
+        ConfigGenerateResourcesRepository::generateResources($this->filesDir, $this->pollerId, $this->path, "resources.cfg");
+        TimeperiodRepository::generateTimeperiod($this->filesDir, $this->pollerId, $this->path, "timeperiods.cfg");
+        ConnectorRepository::generateConnectors($this->filesDir, $this->pollerId, $this->path, "connectors.cfg");
+
+        UserRepository::generateUser($this->filesDir, $this->pollerId, $this->path, "objects/contacts.cfg");
+        UsergroupRepository::generateUserGroup($this->filesDir, $this->pollerId, $this->path, "objects/contactgroups.cfg");
 
         /* Generate config Object */
-        HostgroupRepository::generateHostgroup($this->filesDir, $poller_id, $this->path, "objects/hostgroups.cfg");
+        HostgroupRepository::generateHostgroup($this->filesDir, $this->pollerId, $this->path, "objects/hostgroups.cfg");
         ServicegroupRepository::generateServicegroup(
             $this->filesDir,
-            $poller_id,
+            $this->pollerId,
             $this->path,
             "objects/servicegroups.cfg"
         );
@@ -120,184 +162,51 @@ class ConfigGenerateRepository
         /* Templates config files */
         HosttemplateRepository::generateHostTemplates(
             $this->filesDir,
-            $poller_id,
+            $this->pollerId,
             $this->path,
             "objects/hostTemplates.cfg"
         );
         ServicetemplateRepository::generateServiceTemplates(
             $this->filesDir,
-            $poller_id,
+            $this->pollerId,
             $this->path,
             "objects/serviceTemplates.cfg"
         );
 
         /* Monitoring Resources files */
-        HostRepository::generateHosts($this->filesDir, $poller_id, $this->path, "resources/");
-
-        /* Generate Main File */
-        ConfigGenerateMainRepository::generateMainFile($this->filesDir, $poller_id, $this->path, "centengine.cfg");
-        /* Generate Debugging Main File */
-        ConfigGenerateMainRepository::generateMainFile(
-            $this->filesDir,
-            $poller_id,
-            $this->path,
-            "centengine-testing.cfg",
-            1
-        );
-
-
-        ConfigCorrelationRepository::generateFile($poller_id);
-        /*
-         * Create Buffers for objects
-         */
-        $bufferInfos = static::prepareBuffers($poller_id);
-        if (!$bufferInfos[0]) {
-            return $bufferInfos;
-        } else {
-            $this->stepStatus[] = $bufferInfos;
-        }
-
-        $changeInfos = static::checkChanges($poller_id);
-        if (!$changeInfos[0]) {
-            return $changeInfos;
-        } else {
-            $this->stepStatus[] = $changeInfos;
-        }
-
-        $generateInfos = static::generateConfigurations($poller_id);
-        if (!$generateInfos[0]) {
-            return $generateInfos;
-        } else {
-            $this->stepStatus[] = $generateInfos;
-        }
-
+        HostRepository::generateHosts($this->filesDir, $this->pollerId, $this->path, "resources/");
     }
 
     /**
      * 
-     * @param int $poller_id
-     */
-    public static function generateConfigurations($poller_id = null)
-    {
-        static::generateBrokerConfigurations($poller_id);
-        static::generateMainFileConfigurations($poller_id);
-        static::generateResourcesFileConfigurations($poller_id);
-        static::generateObjectsFilesConfigurations($poller_id);
-    }
-
-    /**
-     * 
-     * @param int $poller_id
-     */
-    public static function generateBrokerConfigurations($poller_id = null)
-    {
-
-    }
-    
-    /**
-     * 
-     * @param int $poller_id
-     */
-    public static function generateMainFileConfigurations($poller_id = null)
-    {
-
-    }
-    
-    /**
-     * 
-     * @param int $poller_id
-     */
-    public static function generateResourcesFileConfigurations($poller_id = null)
-    {
-
-    }
-    
-    /**
-     * 
-     * @param int $poller_id
-     */
-    public static function generateObjectsFilesConfigurations($poller_id = null)
-    {
-
-    }
-
-    /**
-     * 
-     * @param int $poller_id
      * @return array
      */
-    public static function prepareBuffers($poller_id = null)
+    public function checkPollerInformations()
     {
-        return array(1);
-    }
-
-    /**
-     * 
-     * @param int $poller_id
-     */
-    public static function checkChanges($poller_id = null)
-    {
-
-    }
-
-    /**
-     * 
-     * @param int $poller_id
-     */
-    public static function setStartTime($poller_id = null)
-    {
-
-    }
-
-    /**
-     * 
-     * @param int $poller_id
-     */
-    public static function setEndTime($poller_id = null)
-    {
-
-    }
-
-    /**
-     * 
-     * @param int $poller_id
-     * @return array
-     */
-    public static function checkPollerInformations($poller_id = null)
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        $val = static::isPollerEnabled($poller_id);
+        $val = $this->isPollerEnabled();
         if ($val) {
-            return array($val, "Poller $poller_id is enabled");
+            $this->stepStatus[] = "Poller {$this->pollerId} is enabled";
         } else {
-            return array($val, 'Poller $poller_id is not defined or not enabled');
+            $this->stepStatus[] = "Poller {$this->pollerId} is not defined or not enabled";
         }
     }
 
     /**
      * 
-     * @param int $poller_id
      * @return int
      */
-    public static function isPollerEnabled($poller_id = null)
+    public function isPollerEnabled()
     {
-        if (!isset($poller_id)) {
+        $dbconn = $this->di->get('db_centreon');
+           
+        $query = "SELECT * FROM nagios_server WHERE id = ?";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute(array($this->pollerId));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!isset($row)) {
             return 0;
-        } else {
-            $di = \Centreon\Internal\Di::getDefault();
-            $dbconn = $di->get('db_centreon');
-            
-            $query = "SELECT * FROM nagios_server WHERE id = '$poller_id'";
-            $stmt = $dbconn->prepare($query);
-            $stmt->execute();
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            if (!isset($row)) {
-                return 0;
-            }
-            return $row['ns_activate'];
-            
         }
+        return $row['ns_activate'];
     }
 
     /**

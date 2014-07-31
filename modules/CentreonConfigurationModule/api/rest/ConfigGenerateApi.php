@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
+use \CentreonConfiguration\Repository\ConfigGenerateRepository;
+
 /**
  * @authors Julien Mathis
  * @package Centreon
@@ -55,12 +57,13 @@ class ConfigGenerateApi extends \Centreon\Internal\Controller
 
         $param = $router->request()->paramsNamed();
 
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($param["id"]);
+        $obj = new ConfigGenerateRepository($param["id"]);
+        $obj->generate();
 
         $router->response()->json(
             array(
-                "api-version" => 1,
-                "status" => true,
+                "status" => 1,
+                "output" => "ok",
                 "data" => $obj->getStepStatus()
             )
         );
