@@ -44,6 +44,42 @@ class ModuleCommand extends \Centreon\Internal\Command\AbstractCommand
 {
     /**
      * 
+     * @param string $type
+     * @param string $status
+     */
+    public function listAction($type = 'all', $status = 'all')
+    {
+        switch ($type) {
+            default:
+            case 'all':
+                echo "Not implemented yet";
+                break;
+            case 'core':
+                echo "centreon-main\ncentreon-configuration";
+                break;
+            case 'engine':
+                echo "Not implemented yet";
+                break;
+            case 'broker':
+                echo "Not implemented yet";
+                break;
+            case 'other':
+                echo "Not implemented yet";
+                break;
+        }
+    }
+    
+    /**
+     * 
+     * @param string $moduleName
+     */
+    public function showAction($moduleName)
+    {
+        
+    }
+    
+    /**
+     * 
      * @param string $moduleName
      */
     public function installAction($moduleName)
@@ -91,7 +127,7 @@ class ModuleCommand extends \Centreon\Internal\Command\AbstractCommand
      * @return \Centreon\Commands\classCall
      * @throws \Exception
      */
-    public function getModuleInstaller($moduleName, $moduleId = null)
+    private function getModuleInstaller($moduleName, $moduleId = null)
     {
         $config = $this->di->get('config');
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');

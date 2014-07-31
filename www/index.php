@@ -33,25 +33,47 @@
  *
  *
  */
-
 require_once "../bootstrap.php";
 
-new \Centreon\Internal\Session();
-session_start();
+$requestUri = explode('/', filter_input(INPUT_SERVER, 'REQUEST_URI'));
 
-/* Dispatch route */
-$router = \Centreon\Internal\Di::getDefault()->get('router');
-try {
-    $router->dispatch();
-} catch (\Exception $e) {
-    $router->response()->code(500);
-    if ("dev" === \Centreon\Internal\Di::getDefault()->get('config')->get('global', 'env')) {
-        echo '<pre>';
-        echo $e->getMessage();
-        var_dump(debug_backtrace());
-        echo '</pre>';
-    } else {
-        $router->response()->body($tmpl->fetch('500.tpl'));
+if (file_exists("install.php") && (isset($requestUri[2]) && ($requestUri[2] != 'static'))) {
+    
+    $sectionToInit = array(
+        'configuration',
+        'template'
+    );
+    $bootstrap = new \Centreon\Internal\Bootstrap();
+    $bootstrap->init($sectionToInit);
+    $baseUrl = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'base_url'), '/');
+    header('Location: '.$baseUrl . '/install.php');
+    
+} else {
+    
+    try {
+        $bootstrap = new \Centreon\Internal\Bootstrap();
+        $bootstrap->init();
+    } catch (\Exception $e) {
+        echo $e;
     }
-    $router->response()->send();
+
+    new \Centreon\Internal\Session();
+    session_start();
+
+    /* Dispatch route */
+    $router = \Centreon\Internal\Di::getDefault()->get('router');
+    try {
+        $router->dispatch();
+    } catch (\Exception $e) {
+        $router->response()->code(500);
+        if ("dev" === \Centreon\Internal\Di::getDefault()->get('config')->get('global', 'env')) {
+            echo '<pre>';
+            echo $e->getMessage();
+            var_dump(debug_backtrace());
+            echo '</pre>';
+        } else {
+            $router->response()->body($tmpl->fetch('500.tpl'));
+        }
+        $router->response()->send();
+    }
 }

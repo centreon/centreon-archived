@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,32 +33,40 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Commands;
 
-namespace Centreon\Internal\Install;
-
-class Upgrade extends \Centreon\Internal\Install\AbstractInstall
+class InternalCommand extends \Centreon\Internal\Command\AbstractCommand
 {
-    public static function upgradeCentreon()
+    /**
+     * 
+     */
+    public function installAction()
     {
-        if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Migrate::migrateCentreon();
-        } else {
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
-
-            $modulesToUpgrade = self::getCoreModules();
-            
-            foreach($modulesToUpgrade as $module) {
-                $moduleInstaller = new $module['classCall']($module['directory'], $module['infos']);
-                $moduleInstaller->install();
-            }
-        }
+        \Centreon\Internal\Install\Install::installCentreon();
     }
     
     /**
      * 
      */
-    public static function checkForUpdate()
+    public function upgradeAction()
     {
-        
+        \Centreon\Internal\Install\Upgrade::updateCentreon();
+    }
+    
+    /**
+     * 
+     */
+    public function migrateAction()
+    {
+        \Centreon\Internal\Install\Migrate::migrateCentreon();
+    }
+    
+    /**
+     * 
+     * @param type $removeDb
+     */
+    public function uninstallAction($removeDb = false)
+    {
+        \Centreon\Internal\Install\Install::uninstallCentreon($removeDb);
     }
 }

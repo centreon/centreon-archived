@@ -43,7 +43,7 @@ namespace CentreonPerformance\Install;
  * @version 3.0.0
  * @package Centreon
  */
-class Installer extends \Centreon\Custom\Module\AbstractInstaller
+class Installer extends \Centreon\Internal\Module\Installer
 {
     /**
      * Constructor

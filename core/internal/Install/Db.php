@@ -34,25 +34,17 @@
  * 
  */
 
-namespace Centreon\Internal\Db;
+namespace Centreon\Internal\Install;
 
-class Installer
+class Db
 {
     /**
      * 
      * @param type $operation
      * @param type $targetDbName
      */
-    public static function updateDb($operation = 'upgrade', $targetDbName = 'centreon')
+    public static function update($targetDbName = 'centreon')
     {
-        
-        
-        
-        
-        
-        
-        
-        /*
         ini_set('memory_limit', '-1');
         $di = \Centreon\Internal\Di::getDefault();
         $config = $di->get('config');
@@ -84,7 +76,7 @@ class Installer
         
         // Retreive target DB State
         $updatedAppData = new \AppData($platform);
-        self::getDbFromXml($updatedAppData, $operation, $targetDbName);
+        self::getDbFromXml($updatedAppData, $targetDbName);
         
         // Get diff between current db state and target db state
         $diff = \PropelDatabaseComparator::computeDiff(
@@ -94,11 +86,19 @@ class Installer
         );
         $strDiff = $platform->getModifyDatabaseDDL($diff);
         //$sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
+        //print_r($sqlToBeExecuted);
+        
+        // Loading Modules Pre Update Operations
+        self::preUpdate();
         
         // to sent to verify
         //$tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
         
-        \PropelSQLParser::executeString($strDiff, $db);*/
+        // Perform Update
+        //\PropelSQLParser::executeString($strDiff, $db);
+        
+        // Loading Modules Post Update Operations
+        self::postUpdate();
     }
     
     /**
@@ -106,14 +106,15 @@ class Installer
      * @param \AppData $myAppData
      * @param string $targetDbName
      */
-    public static function getDbFromXml(& $myAppData, $operation, $targetDbName)
+    public static function getDbFromXml(& $myAppData, $targetDbName)
     {
         // Initialize configuration
         $di = \Centreon\Internal\Di::getDefault();
         $targetDb = 'db_' . $targetDbName;
         $db = $di->get($targetDb);
         
-        $xmlDbFiles = self::getAllXmlFiles($operation, $targetDbName);
+        
+        $xmlDbFiles = self::buildTargetDbSchema($targetDbName);
         
         // Initialize XmlToAppData object
         $appDataObject = new \XmlToAppData(new \Centreon\Custom\Propel\CentreonMysqlPlatform($db), null, 'utf-8');
@@ -126,55 +127,6 @@ class Installer
         }
         
         unset($appDataObject);
-    }
-    
-    /**
-     * 
-     * @param string $operationType
-     * @param string $targetDbName
-     * @return array
-     */
-    private static function getAllXmlFiles($operationType = 'update', $targetDbName = 'centreon')
-    {
-        // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
-        $config = $di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
-        
-        $xmlDbFiles = glob(realpath(rtrim($centreonPath, '/') . '/install/db/' . $targetDbName). '/*.xml');
-        
-        // Module
-        if ($operationType == 'update') {
-            $registeredModules = \Centreon\Models\Module::getList('name');
-            $registeredModules(
-                array_merge(
-                    $registeredModules,
-                    \Centreon\Custom\Module\ModuleInformations::getCoreModuleList()
-                )
-            );
-            foreach ($registeredModules as $module) {
-                $module['name'] = str_replace(' ', '', ucwords(str_replace('-', ' ', $module['name']))) . 'Module';
-                $xmlDbFiles = array_merge(
-                    $xmlDbFiles,
-                    glob(
-                        realpath(rtrim($centreonPath, '/') . '/modules') . '/'
-                        . $module['name']
-                        . '/install/db/'
-                        . $targetDbName
-                        . '/*.xml'
-                    )
-                );
-            }
-        } else {
-            $xmlDbFiles = array_merge(
-                $xmlDbFiles,
-                glob(
-                    realpath(rtrim($centreonPath, '/') . '/modules') . '/*Module/install/db/' . $targetDbName . '/*.xml'
-                )
-            );
-        }
-        
-        return $xmlDbFiles;
     }
     
     /**
@@ -199,7 +151,7 @@ class Installer
      * 
      * @param type $targetDbName
      */
-    public static function buildTargetDbSchema($targetDbName = 'centreon')
+    private static function buildTargetDbSchema($targetDbName = 'centreon')
     {
         // Initialize configuration
         $di = \Centreon\Internal\Di::getDefault();
@@ -229,6 +181,9 @@ class Installer
             $targetFile = $targetFolder . basename($fileList[$i]);
             copy($fileList[$i], $targetFile);
         }
+        
+        // send back the computed db
+        return glob($targetFolder . '/*.xml');
     }
     
     /**
@@ -255,5 +210,29 @@ class Installer
             }
         }
         return $finalXmlFileList;
+    }
+    
+    /**
+     * 
+     */
+    private static function loadDefaultDatas()
+    {
+        
+    }
+    
+    /**
+     * 
+     */
+    private static function preUpdate()
+    {
+        
+    }
+    
+    /**
+     * 
+     */
+    private static function postUpdate()
+    {
+        
     }
 }

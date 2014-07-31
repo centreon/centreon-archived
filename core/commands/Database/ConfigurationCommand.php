@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,31 +34,15 @@
  * 
  */
 
-namespace Centreon\Internal\Install;
+namespace Centreon\Commands\Database;
 
-class Upgrade extends \Centreon\Internal\Install\AbstractInstall
+class ConfigurationCommand extends \Centreon\Internal\Command\AbstractCommand
 {
-    public static function upgradeCentreon()
-    {
-        if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Migrate::migrateCentreon();
-        } else {
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
-
-            $modulesToUpgrade = self::getCoreModules();
-            
-            foreach($modulesToUpgrade as $module) {
-                $moduleInstaller = new $module['classCall']($module['directory'], $module['infos']);
-                $moduleInstaller->install();
-            }
-        }
-    }
-    
     /**
      * 
      */
-    public static function checkForUpdate()
+    public function generateAction($schema = 'centreon')
     {
-        
+        \Centreon\Internal\Install\Db::update($schema);
     }
 }

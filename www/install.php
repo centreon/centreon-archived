@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,31 +34,67 @@
  * 
  */
 
-namespace Centreon\Internal\Install;
+require_once '../bootstrap.php';
 
-class Upgrade extends \Centreon\Internal\Install\AbstractInstall
-{
-    public static function upgradeCentreon()
-    {
-        if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Migrate::migrateCentreon();
-        } else {
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
-
-            $modulesToUpgrade = self::getCoreModules();
-            
-            foreach($modulesToUpgrade as $module) {
-                $moduleInstaller = new $module['classCall']($module['directory'], $module['infos']);
-                $moduleInstaller->install();
-            }
-        }
-    }
-    
-    /**
-     * 
-     */
-    public static function checkForUpdate()
-    {
-        
-    }
+try {
+    $sectionToInit = array(
+        'configuration',
+        'template',
+        'routes'
+    );
+    $bootstrap = new \Centreon\Internal\Bootstrap();
+    $bootstrap->init($sectionToInit);
+} catch (\Exception $e) {
+    echo $e;
 }
+
+// Installation Steps
+$installSteps = array();
+
+
+// First Step
+$installSteps['Welcome'] = array(
+    'default' => 'Bienvenue & Release note'
+);
+
+// License Note
+$licenseStr = '<textarea class="form-control" rows="20" readonly>' .
+    htmlentities(file_get_contents("../install/steps/LICENSE.txt")) .
+    '</textarea>';
+$installSteps['License'] = array(
+    'default' => $licenseStr
+);
+
+// Database
+$installSteps['Database'] = array(
+    'default' => "Database"
+);
+
+// Admin
+$installSteps['Admin'] = array(
+    'default' => "Admin"
+);
+
+// Core Modules
+$installSteps['Core Modules'] = array(
+    'default' => "Core Modules"
+);
+
+// Additionnal Modules
+$installSteps['Additionnal Modules'] = array(
+    'default' => "Additionnal Modules"
+);
+
+// Congratulations
+$installSteps['Congratulations'] = array(
+    'default' => "Congratulations"
+);
+
+// Launching Display
+$tmpl = \Centreon\Internal\Di::getDefault()->get('template');
+$tmpl->addCss('centreon-wizard.css');
+$tmpl->addJs('centreon-wizard.js');
+$tmpl->assign('modalTitle', 'Install Centreon');
+$tmpl->assign('name', 'centreonInstall');
+$tmpl->assign('steps', $installSteps);
+$tmpl->display("[Core]install/wizardInstall.tpl");
