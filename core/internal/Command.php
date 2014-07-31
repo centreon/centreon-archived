@@ -208,7 +208,7 @@ class Command
             $moduleName = str_replace('Module', '', $module);
             preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
             $moduleShortName = strtolower(implode('-', $myMatches[0]));
-            if (\Centreon\Custom\Module\ModuleInformations::isModuleReachable($moduleShortName)) {
+            if (\Centreon\Internal\Module\Informations::isModuleReachable($moduleShortName)) {
                 $this->getCommandDirectoryContent(
                     realpath(__DIR__."/../../modules/$module/commands/"),
                     $moduleShortName,
