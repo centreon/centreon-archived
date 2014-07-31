@@ -118,9 +118,9 @@ class WriteConfigFileRepository
             
             /* Close file */
             static::closeFile($handle);
-        } else {
+        }/* else {
             print "Content is empty for file '$filename'. File will not be created.\n";
-        }
+        }*/
     }
 
     /**
@@ -148,9 +148,9 @@ class WriteConfigFileRepository
             
             /* Close file */
             static::closeFile($handle);
-        } else {
+        }/* else {
             print "Content is empty for file '$filename'. File will not be created.\n";
-        }
+        }*/
     }
 
     /**
@@ -167,7 +167,9 @@ class WriteConfigFileRepository
         }
         if ($type == "cfg_dir") {
             preg_match('/\/([a-zA-Z0-9\_\-\.]*\.cfg)/', $newFile, $matches);
-            $newFile = str_replace($matches[1], "", $newFile);
+            if (isset($matches[1])) {
+                $newFile = str_replace($matches[1], "", $newFile);
+            }
         }
 
         if ($type == "cfg_dir") {

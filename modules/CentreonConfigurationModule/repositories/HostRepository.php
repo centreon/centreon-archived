@@ -233,7 +233,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             }
             
             /* Write Check-Command configuration file */
-            print "Write : " . $path . $poller_id . "/".$filename . $host_name . "-" . $host_id . ".cfg \n<br>";
+            //print "Write : " . $path . $poller_id . "/".$filename . $host_name . "-" . $host_id . ".cfg \n<br>";
 
             WriteConfigFileRepository::writeObjectFile(
                 $content,
