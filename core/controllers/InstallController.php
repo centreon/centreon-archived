@@ -31,42 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonCustomview\Install;
+namespace Centreon\Controllers;
 
-/**
- * 
- */
-class Installer extends \Centreon\Internal\Module\Installer
+class InstallController extends \Centreon\Internal\Controller
 {
     /**
-     * 
-     * @param type $moduleInfo
+     * Action for home page
+     *
+     * @method GET
+     * @route /
      */
-    public function __construct($moduleDirectory, $moduleInfo)
-    {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
-        /*\Centreon\Internal\Hook::register(
-            $this->moduleId,
-            'displayLeftMenu',
-            'displayBookmarkedViews',
-            'Display bookmarked views in left menu'
-        ); */
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
+    public function installAction()
     {
         
     }

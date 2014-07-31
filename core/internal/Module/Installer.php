@@ -34,14 +34,14 @@
  *
  */
 
-namespace Centreon\Custom\Module;
+namespace Centreon\Internal\Module;
 
 /**
  * Description of AbstractInstaller
  *
  * @author lionel
  */
-class AbstractInstaller implements iModuleInstaller
+abstract class Installer
 {
     protected $moduleInfo;
     
@@ -64,6 +64,16 @@ class AbstractInstaller implements iModuleInstaller
     /**
      * 
      */
+    abstract public function customInstall();
+    
+    /**
+     * 
+     */
+    abstract public function customRemove();
+    
+    /**
+     * 
+     */
     public function install()
     {
         $this->preInstall();
@@ -77,20 +87,12 @@ class AbstractInstaller implements iModuleInstaller
     /**
      * 
      */
-    public function customInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
     public function installMenu()
     {
         $filejson = $this->moduleDirectory . 'install/menu.json';
         if (file_exists($filejson)) {
             $menus = json_decode(file_get_contents($filejson), true);
-            \Centreon\Internal\Module::parseMenuArray($this->moduleId, $menus);
+            self::parseMenuArray($this->moduleId, $menus);
         }
     }
 
@@ -123,13 +125,14 @@ class AbstractInstaller implements iModuleInstaller
     
     /**
      * 
+     * @return array
      */
     public function isDependenciesSatisfied()
     {
         $dependenciesSatisfied = true;
         $missingDependencies = array();
         foreach ($this->moduleInfo['dependencies'] as $module) {
-            if (!\Centreon\Custom\Module\ModuleInformations::checkDependency($module)) {
+            if (!\Centreon\Internal\Module\Informations::checkDependency($module)) {
                 $dependenciesSatisfied = false;
                 $missingDependencies[] = $module['name'];
             }
@@ -202,14 +205,6 @@ class AbstractInstaller implements iModuleInstaller
     /**
      * 
      */
-    public function customRemove()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
     public function preRemove()
     {
         if (is_null($this->moduleId)) {
@@ -223,5 +218,55 @@ class AbstractInstaller implements iModuleInstaller
     public function postRemove()
     {
         \Centreon\Models\Module::delete($this->moduleId);
+    }
+    
+    /**
+     * Register hook
+     *
+     * @param string $hookName
+     * @param string $blockName
+     * @param string $blockDescription
+     */
+    public static function registerHook($hookName, $blockName, $blockDescription)
+    {
+        \Centreon\Internal\Hook::register(
+            $this->moduleId,
+            $hookName,
+            $blockName,
+            $blockDescription
+        );
+    }
+
+    /**
+     * Unregister hook
+     *
+     * @param string $blockName
+     */
+    public static function unregisterHook($blockName)
+    {
+        \Centreon\Internal\Hook::unregister($this->moduleId, $blockName);
+    }
+    
+    /**
+     * 
+     * @param int $moduleId
+     * @param array $menus
+     * @param string $parent
+     */
+    public static function parseMenuArray($moduleId, $menus, $parent = null)
+    {
+        $i = 1;
+        foreach ($menus as $menu) {
+            $menu['order'] = $i;
+            if (!is_null($parent)) {
+                $menu['parent'] = $parent;
+            }
+            $menu['module'] = $moduleId;
+            \Centreon\Internal\Module\Informations::setMenu($menu);
+            if (isset($menu['menus']) && count($menu['menus'])) {
+                self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
+            }
+            $i++;
+        }
     }
 }

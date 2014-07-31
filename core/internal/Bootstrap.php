@@ -49,17 +49,56 @@ class Bootstrap
     {
         $this->di = new Di();
     }
+    
+    private function customInit(array $sections)
+    {
+        foreach($sections as $section) {
+            switch(strtolower($section)) {
+                case 'configuration':
+                    $this->initConfiguration();
+                    break;
+                case 'logger':
+                    $this->initLogger();
+                    break;
+                case 'database':
+                    $this->initDatabase();
+                    break;
+                case 'cache':
+                    $this->initCache();
+                    break;
+                case 'configfromdb':
+                    $this->initConfigFromDb();
+                    break;
+                case 'actionhooks':
+                    $this->initActionHooks();
+                    break;
+                case 'template':
+                    $this->initTemplate();
+                    break;
+                case 'menus':
+                    $this->initMenus();
+                    break;
+                case 'routes':
+                    $this->initRoutes();
+                    break;
+            }
+        }
+    }
 
     /**
      * Init method
      */
-    public function init()
+    public function init($sectionToInit = null)
     {
-        $class = new \ReflectionClass(__CLASS__);
-        $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
-        foreach ($methods as $method) {
-            if (preg_match('/^init/', $method->name)) {
-                $this->{$method->name}();
+        if (isset($sectionToInit)) {
+            $this->customInit($sectionToInit);
+        } else {
+            $class = new \ReflectionClass(__CLASS__);
+            $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
+            foreach ($methods as $method) {
+                if (preg_match('/^init/', $method->name)) {
+                    $this->{$method->name}();
+                }
             }
         }
     }
@@ -78,7 +117,7 @@ class Bootstrap
      */
     private function initLogger()
     {
-        Logger::load($this->config);
+        //Logger::load($this->config);
     }
 
     /**

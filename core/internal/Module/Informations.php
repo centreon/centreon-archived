@@ -31,86 +31,136 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
-namespace Centreon\Internal;
 
-class Module
+namespace Centreon\Internal\Module;
+
+/**
+ * Description of ModuleInformations
+ *
+ * @author lionel
+ */
+class Informations
 {
-    public $moduleId;
-
     /**
-     * Constructor
+     * 
+     * @param array $module
+     * @return boolean
      */
-    public function __construct()
+    public static function checkDependency($module)
     {
-
-    }
-
-    /**
-     * Install module
-     *
-     * @todo inserts module into database
-     */
-    public static function install()
-    {
-
-    }
-
-    /**
-     * Uninstall module
-     *
-     * @todo remove module from database
-     * @todo remove hooks from database
-     */
-    public static function uninstall()
-    {
-
-    }
-
-    /**
-     * Register hook
-     *
-     * @param string $hookName
-     * @param string $blockName
-     * @param string $blockDescription
-     */
-    public static function registerHook($hookName, $blockName, $blockDescription)
-    {
-        Hook::register(
-            $this->moduleId,
-            $hookName,
-            $blockName,
-            $blockDescription
-        );
-    }
-
-    /**
-     * Unregister hook
-     *
-     * @param string $blockName
-     */
-    public static function unregisterHook($blockName)
-    {
-        Hook::unregister($this->moduleId, $blockName);
+        $dependencySatisfied = false;
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $sql = "SELECT name, version FROM module WHERE name = '$module[name]'";
+        $res = $db->query($sql);
+        $dependency = $res->fetchAll(\PDO::FETCH_ASSOC);
+        
+        if (is_array($dependency) && count($dependency) > 0) {
+            if (version_compare($dependency[0]['version'], $module['version'], '>=')) {
+                $dependencySatisfied = true;
+            }
+        }
+        
+        return $dependencySatisfied;
     }
     
-    public static function parseMenuArray($moduleId, $menus, $parent = null)
+    /**
+     * 
+     * @param string $moduleName
+     * @return boolean
+     */
+    public static function isModuleActivated($moduleName)
     {
-        $i = 1;
-        foreach ($menus as $menu) {
-            $menu['order'] = $i;
-            if (!is_null($parent)) {
-                $menu['parent'] = $parent;
-            }
-            $menu['module'] = $moduleId;
-            \Centreon\Internal\Module::setMenu($menu);
-            if (isset($menu['menus']) && count($menu['menus'])) {
-                self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
-            }
-            $i++;
-        }
+        $moduleId = self::getModuleIdByName($moduleName);
+        $result = \Centreon\Models\Module::getParameters($moduleId, 'isactivated');
+        return (boolean)$result['isactivated'];
     }
-
+    
+    /**
+     * 
+     * @param string $moduleName
+     * @return boolean
+     */
+    public static function isModuleInstalled($moduleName)
+    {
+        $isinstalled = false;
+        $moduleId = self::getModuleIdByName($moduleName);
+        if ($moduleId != false) {
+            $result = \Centreon\Models\Module::getParameters($moduleId, 'isinstalled');
+            $isinstalled = (boolean)$result['isinstalled'];
+        }
+        return $isinstalled;
+    }
+    
+    /**
+     * Chzeck to see if the module routes can be reached
+     * @return boolean
+     */
+    public static function isModuleReachable($moduleName)
+    {
+        $isReachable = false;
+        if (self::isModuleInstalled($moduleName)) {
+            if (self::isModuleActivated($moduleName)) {
+                $isReachable = true;
+            }
+        }
+        
+        return $isReachable;
+    }
+    
+    /**
+     * 
+     * @param type $moduleName
+     * @return type
+     */
+    public static function getModuleIdByName($moduleName)
+    {
+        $returnValue = false;
+        $resultModule = \Centreon\Models\Module::getIdByParameter('name', $moduleName);
+        
+        if (count($resultModule) > 0) {
+            $returnValue = $resultModule[0];
+        }
+        
+        return $returnValue;
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public static function getModuleList()
+    {
+        $moduleList = array();
+        $rawModuleList = \Centreon\Models\Module::getList('name');
+        
+        foreach ($rawModuleList as $module) {
+            $moduleList[] = $module['name'];
+        }
+        
+        return $moduleList;
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public static function getCoreModuleList()
+    {
+        $coreModuleList = array(
+            'centreon-main',
+            'centreon-security',
+            'centreon-administration',
+            'centreon-configuration',
+            'centreon-realtime',
+            'centreon-customview',
+            'centreon-bam',
+        );
+        
+        return $coreModuleList;
+    }
+    
     /**
      * Set menu entry
      * Inserts into database if short_name does not exist, otherwise it just updates entry

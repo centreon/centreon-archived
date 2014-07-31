@@ -175,7 +175,7 @@ class User
     /**
      * Returns true if user is admin, false otherwise
      *
-     * @return bool
+     * @return boolean
      */
     public function isAdmin()
     {
@@ -188,6 +188,10 @@ class User
         return false;
     }
     
+    /**
+     * 
+     * @return string
+     */
     public function getHomePage()
     {
         $di = \Centreon\Internal\Di::getDefault();

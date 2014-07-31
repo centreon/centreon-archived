@@ -39,7 +39,7 @@ namespace CentreonRealtime\Install;
 /**
  * 
  */
-class Installer extends \Centreon\Custom\Module\AbstractInstaller
+class Installer extends \Centreon\Internal\Module\Installer
 {
     /**
      * 

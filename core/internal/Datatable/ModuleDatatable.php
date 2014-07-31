@@ -43,11 +43,15 @@ namespace Centreon\Internal\Datatable;
  */
 class ModuleDatatable extends \Centreon\Internal\Datatable
 {
+    /**
+     *
+     * @var string 
+     */
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected static $datasource = '\Centreon\Models\Module';
     
@@ -245,6 +249,10 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
         self::getFilesystemModule($resultSet);
     }
     
+    /**
+     * 
+     * @param type $resultSet
+     */
     private static function getFilesystemModule(& $resultSet)
     {
         // Get current moduleName

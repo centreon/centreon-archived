@@ -124,10 +124,3 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
 foreach (glob($centreon_path.'/core/custom/Centreon/*.php') as $filename) {
     require_once $filename;
 }
-
-try {
-    $bootstrap = new \Centreon\Internal\Bootstrap();
-    $bootstrap->init();
-} catch (\Exception $e) {
-    echo $e;
-}
