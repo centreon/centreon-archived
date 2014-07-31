@@ -300,8 +300,8 @@ if (!is_null($host_id)) {
         } else {
             $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
-                " WHERE h.name = '".$pearDBO->escape($host_name)."' 
-                                      AND s.description = '".$pearDBO->escape($svc_description)."' 
+                " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
+                                      AND s.service_id = ".$pearDBO->escape($service_id)." 
                                       AND h.host_id = cmt.host_id 
                                       AND s.service_id = cmt.service_id 
                                       AND cmt.expires = 0 
@@ -310,7 +310,9 @@ if (!is_null($host_id)) {
             $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
                 $tabCommentServices[$i] = $data;
+                $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
                 $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
+                $tabCommentServices[$i]['comment_data'] = utf8_encode($data['comment_data']);
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
             $DBRESULT->free();
