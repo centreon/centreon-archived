@@ -80,10 +80,10 @@ class Command
      */
     public function executeRequest()
     {
-        $requestLineExploded = explode(':', $this->requestLine);
-        $module = $requestLineExploded[0];
-        $object = ucfirst($requestLineExploded[1] . 'Command');
-        $action = $requestLineExploded[2] . 'Action';
+        $requestLineElements = $this->parseRequestLine();
+        $module = $requestLineElements['module'];
+        $object = $requestLineElements['object'];
+        $action = $requestLineElements['action'];
         
         if (strtolower($module) != 'core') {
             if (!\Centreon\Custom\Module\ModuleInformations::isModuleReachable($module)) {
@@ -91,11 +91,11 @@ class Command
             }
         }
         
-        if (!isset($this->commandList[$object])) {
-            throw new Exception("The object doesn't exist");
+        if (!isset($this->commandList[$module][$object])) {
+            throw new Exception("The object $object doesn't exist");
         }
         
-        $aliveObject = new $this->commandList[$object]();
+        $aliveObject = new $this->commandList[$module][$object]();
         
         if (!method_exists($aliveObject, $action)) {
             throw new Exception("The action '$action' doesn't exist");
@@ -110,6 +110,38 @@ class Command
         $aliveObject->named($action, $actionArgs);
         
         echo "\n";
+    }
+    
+    /**
+     * 
+     */
+    private function parseRequestLine()
+    {
+        $requestLineExploded = explode(':', $this->requestLine);
+        
+        $nbOfElements = count($requestLineExploded);
+        
+        $module = $requestLineExploded[0];
+        $object = ucfirst($requestLineExploded[($nbOfElements - 2)]) . 'Command';
+        $action = $requestLineExploded[($nbOfElements - 1)] . 'Action';
+        
+        if ($nbOfElements > 3) {
+            //
+            $objectRaw = "";
+            for ($i=1; $i<($nbOfElements - 2); $i++) {
+                $objectRaw .= ucfirst($requestLineExploded[$i]) . '\\';
+            }
+            $object = $objectRaw . $object;
+        
+        } elseif ($nbOfElements < 3) {
+            throw new Exception("The request is not valid");
+        }
+        
+        return array(
+            'module' => $module,
+            'object' => $object,
+            'action' => $action
+        );
     }
     
     /**
@@ -169,11 +201,7 @@ class Command
         $this->commandList = array();
         
         // First get the Core one
-        $coreCommandsFiles = glob(__DIR__."/../commands/*Command.php");
-        foreach ($coreCommandsFiles as $coreCommand) {
-            $objectName = basename($coreCommand, '.php');
-            $this->commandList[$objectName] = '\\Centreon\\Commands\\'.$objectName;
-        }
+        $this->getCommandDirectoryContent(realpath(__DIR__."/../commands/"));
         
         // Now lets see the modules
         foreach ($modules as $module) {
@@ -181,10 +209,42 @@ class Command
             preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
             $moduleShortName = strtolower(implode('-', $myMatches[0]));
             if (\Centreon\Custom\Module\ModuleInformations::isModuleReachable($moduleShortName)) {
-                $myModuleCommandsFiles = glob(__DIR__."/../../modules/$module/commands/*Command.php");
-                foreach ($myModuleCommandsFiles as $moduleCommand) {
-                    $objectName = basename($moduleCommand, '.php');
-                    $this->commandList[$objectName] = '\\'.$moduleName.'\\Commands\\'. $objectName;
+                $this->getCommandDirectoryContent(
+                    realpath(__DIR__."/../../modules/$module/commands/"),
+                    $moduleShortName,
+                    $moduleName
+                );
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param type $dirname
+     * @param type $namespace
+     */
+    private function getCommandDirectoryContent($dirname, $module = 'core', $namespace = 'Centreon')
+    {
+        $path = realpath($dirname);
+        
+        if (file_exists($path)) {
+            $listOfDirectories = glob($path . '/*');
+
+            while (count($listOfDirectories) > 0) {
+                $currentFolder = array_shift($listOfDirectories);
+                if (is_dir($currentFolder)) {
+                    $listOfDirectories = array_merge($listOfDirectories, glob($currentFolder . '/*'));
+                } elseif (pathinfo($currentFolder, PATHINFO_EXTENSION) == 'php') {
+                    $objectName = str_replace(
+                        '/',
+                        '\\',
+                        substr(
+                            $currentFolder,
+                            (strlen($path) + 1),
+                            (strlen($currentFolder) - strlen($path) - 5)
+                        )
+                    );
+                    $this->commandList[$module][$objectName] = '\\'.$namespace.'\\Commands\\'.str_replace('/', '\\', $objectName);
                 }
             }
         }
