@@ -1046,7 +1046,15 @@ class CentreonGraph {
         }
 
         if ($this->indexData["host_name"] != "_Module_Meta") {
-            $this->setRRDOption("title", $this->indexData["service_description"]." "._("graph on")." ".$this->indexData["host_name"].$metrictitle);
+            $sdesc = $this->indexData['service_description'];
+            $hname = $this->indexData['host_name'];
+            if (!mb_detect_encoding($sdesc, 'UTF-8', true)) {
+                $sdesc = utf8_encode($sdesc);
+            }
+            if (!mb_detect_encoding($hname, 'UTF-8', true)) {
+                $hname = utf8_encode($hname);
+            }
+            $this->setRRDOption("title", $sdesc." "._("graph on")." ".$hname.$metrictitle);
         } else {
             $this->setRRDOption("title", _("Graph")." ".$this->indexData["service_description"].$metrictitle);
         }
