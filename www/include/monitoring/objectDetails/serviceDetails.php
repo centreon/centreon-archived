@@ -264,7 +264,10 @@ if (!is_null($host_id)) {
         $ndo2 = $DBRESULT->fetchRow();
         $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 
-        $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_name = '".$pearDB->escape($host_name)."'");
+        $DBRESULT = $pearDB->query(
+            "SELECT * FROM host 
+            WHERE host_id = ".$pearDB->escape($host_id).""
+        );
         $host = $DBRESULT->fetchrow();
         $DBRESULT->free();
         $total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
@@ -434,7 +437,9 @@ if (!is_null($host_id)) {
                 $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$host_name.'_'.$svc_description]["action_url"]);
             }
         }
-        !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = CentreonDuration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = centreonDuration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
+        if (isset($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])])) {
+            !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = CentreonDuration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = centreonDuration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
+        }
         !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"]);
         $service_status[$host_name."_".$svc_description]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
         !$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"]);
