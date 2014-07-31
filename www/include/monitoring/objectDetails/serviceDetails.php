@@ -71,8 +71,8 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
-    if (isset($_REQUEST['cmd'])) {
-        $host_name = utf8_decode($host_name);
+    if (isset($_GET['cmd'])) {
+        $host_name = utf8_encode($host_name);
         $svc_description = utf8_decode($svc_description);
     }
 } else {
@@ -470,7 +470,7 @@ if (!is_null($host_id)) {
             $status .= "&value[".$key."]=".$value;
         }
 
-        $optionsURL = "session_id=".session_id()."&host_name=".urlencode($host_name)."&service_description=".urlencode($svc_description);
+        $optionsURL = "session_id=".session_id()."&host_name=".($host_name)."&service_description=".($svc_description);
 
 
         $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");

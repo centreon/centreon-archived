@@ -183,7 +183,17 @@
         }
 
 		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." ";
-		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
+
+		$sdesc = $index_data_ODS['service_description'];
+		$hname = $index_data_ODS['host_name'];
+		if (!mb_detect_encoding($sdesc, 'UTF-8', true)) {
+			$sdesc = utf8_encode($sdesc);
+		}
+		if (!mb_detect_encoding($hname, 'UTF-8', true)) {
+			$hname = utf8_encode($hname);
+		}
+
+		$command_line .= "--title='".$sdesc." graph on ".$hname."' --vertical-label='Status' ";
 
 		/*
 		 * Init Graph Template Value
