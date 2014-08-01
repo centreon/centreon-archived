@@ -112,10 +112,3 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
         require_once $filename;
     }
 });
-
-try {
-    $bootstrap = new \Centreon\Internal\Command\Bootstrap();
-    $bootstrap->init();
-} catch (\Exception $e) {
-    echo $e;
-}

@@ -49,13 +49,20 @@ class Command
      */
     public function __construct($requestLine, $parametersLine)
     {
-        $this->requestLine = $requestLine;
-        $this->parametersLine = $parametersLine;
-        $modulesToParse = array();
-        foreach (glob(__DIR__."/../../modules/*Module") as $moduleTemplateDir) {
-            $modulesToParse[] = basename($moduleTemplateDir);
+        try {
+            $bootstrap = new \Centreon\Internal\Bootstrap();
+            $sectionToInit = array('configuration', 'database', 'cache', 'actionhooks', 'logger');
+            $bootstrap->init($sectionToInit);
+            $this->requestLine = $requestLine;
+            $this->parametersLine = $parametersLine;
+            $modulesToParse = array();
+            foreach (glob(__DIR__."/../../modules/*Module") as $moduleTemplateDir) {
+                $modulesToParse[] = basename($moduleTemplateDir);
+            }
+            $this->parseCommand($modulesToParse);
+        } catch (\Exception $e) {
+            echo $e;
         }
-        $this->parseCommand($modulesToParse);
     }
     
     /**
