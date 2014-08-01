@@ -64,7 +64,7 @@ class ConfigGenerateApi extends \Centreon\Internal\Controller
             array(
                 "status" => 1,
                 "output" => "ok",
-                "data" => $obj->getStepStatus()
+                "data" => $obj->getOutput()
             )
         );
     }

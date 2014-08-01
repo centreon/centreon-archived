@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Exception;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -42,6 +44,9 @@ namespace CentreonConfiguration\Repository;
  */
 class CommandRepository extends \CentreonConfiguration\Repository\Repository
 {
+    const NOTIF_TYPE = 1;
+    const CHECK_TYPE = 2;
+
     /**
      *
      * @var string
@@ -70,6 +75,24 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         }
         
         return $returnedValue;
+    }
+
+    /**
+     *
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
+     */
+    public static function generate(& $filesList, $poller_id, $path, $filename, $cmdType)
+    {
+        if ($cmdType == self::CHECK_TYPE) {
+            self::generateCheckCommand($fileList, $poller_id, $path, $filename);
+        } elseif ($cmdType == self::NOTIF_TYPE) {
+            self::generateMiscCommand($fileList, $poller_id, $path, $filename);
+        } else {
+            throw new Exception(sprintf('Unknown command type %s', $cmdType));
+        }
     }
 
     /**
@@ -117,7 +140,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      * @param string $path
      * @param string $filename
      */
-    public function generateCheckCommand(& $filesList, $poller_id, $path, $filename)
+    private function generateCheckCommand(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
         /* Get Database Connexion */
@@ -194,7 +217,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      * @param string $path
      * @param string $filename
      */
-    public function generateMiscCommand(& $filesList, $poller_id, $path, $filename)
+    private function generateMiscCommand(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
         /* Get Database Connexion */

@@ -46,8 +46,9 @@ class ConfigCorrelationRepository
     /**
      * 
      * @param int $poller_id
+     * @return bool
      */
-    public function generateFile($poller_id)
+    public function generate($poller_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
@@ -89,5 +90,7 @@ class ConfigCorrelationRepository
         /* End conf Element */
         $xml->endElement();
         $xml->endDocument();
+
+        return true;
     }
 }

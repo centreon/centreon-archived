@@ -112,7 +112,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
      * @param string $path
      * @param string $filename
      */
-    public static function generateServiceTemplates(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 

@@ -48,7 +48,7 @@ class ConfigGenerateResourcesRepository
      * @param  
      * @return value
      */
-    public function generateResources(& $filesList, $poller_id, $path, $filename)
+    public function generate(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 

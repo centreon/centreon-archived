@@ -145,7 +145,7 @@ class ServicegroupRepository extends \CentreonConfiguration\Repository\Repositor
      * @param string $path
      * @param string $filename
      */
-    public static function generateServicegroup(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 

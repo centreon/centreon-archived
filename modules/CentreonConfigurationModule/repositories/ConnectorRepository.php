@@ -61,7 +61,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
      * @param string $path
      * @param string $filename
      */
-    public function generateConnectors(& $filesList, $poller_id, $path, $filename)
+    public function generate(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 

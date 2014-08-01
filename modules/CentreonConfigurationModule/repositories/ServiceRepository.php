@@ -293,7 +293,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
      * @param int $host_id
      * @return int
      */
-    public static function generateServices($host_id)
+    public static function generate($host_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
 

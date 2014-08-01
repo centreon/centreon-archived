@@ -279,7 +279,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         return $name;
     }
 
-    public static function generateUser(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename)
     {
         
         $di = \Centreon\Internal\Di::getDefault();

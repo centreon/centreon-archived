@@ -131,7 +131,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
      * @param string $path
      * @param string $filename
      */
-    public static function generateHosts(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -227,7 +227,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             $content[] = $tmp;
             
             /* Write Service Properties */
-            $services = ServiceRepository::generateServices($host_id);
+            $services = ServiceRepository::generate($host_id);
             foreach ($services as $contentService) {
                 $content[] = $contentService;
             }
