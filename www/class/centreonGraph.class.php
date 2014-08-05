@@ -762,7 +762,7 @@ class CentreonGraph {
             if ( isset($tm["need"]) && $tm["need"] == 1 )
                 continue;
             if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
-                $arg = "COMMENT:\"";
+                $arg = "COMMENT:'";
             } else {
                 if ((isset($tm["ds_filled"]) && $tm["ds_filled"]) || (isset($tm["ds_stack"]) && $tm["ds_stack"])) {
                     if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
