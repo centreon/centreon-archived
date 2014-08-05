@@ -63,6 +63,7 @@ $fields = $cbObj->getBlockInfos($typeId);
 $helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
 $helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
 $cbObj->nbSubGroup = 1;
+textdomain('help');
 foreach ($fields as $field) {
     $fieldname = '';
     if ($field['group'] !== '') {
@@ -71,6 +72,7 @@ foreach ($fields as $field) {
     $fieldname .= $field['fieldname'];
     $helps[] = array('name' => $tag . '[' . $pos . '][' . $fieldname . ']', 'desc' => _($field['description']));
 }
+textdomain('messages');
 
 /*
  * Smarty template Init

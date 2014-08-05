@@ -154,6 +154,8 @@
 		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 			$tab_comments_svc[$i] = $data;
             $tab_comments_svc[$i]['comment_data'] = htmlentities($data['comment_data']);
+            $tab_comments_svc[$i]['host_name'] = htmlentities($data['host_name']);
+            $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description']);
 			$tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
 			$tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
 			$tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);

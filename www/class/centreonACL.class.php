@@ -866,13 +866,14 @@ class CentreonACL
         $string = "";
         $i = 0;
         $groupIds = array_keys($this->accessGroups);
+        $item = array();
         if (count($groupIds)) {
             $query = "SELECT DISTINCT service_id, service_description
                 FROM centreon_acl
                 WHERE group_id IN (".implode(',', $groupIds).")";
             $DBRES = $pearDBndo->query($query);
             while ($row = $DBRES->fetchRow()) {
-                if ($i) {
+                if ($i && !isset($item[$row['service_description']])) {
                     $string .= ", ";
                 }
                 switch ($flag) {
@@ -880,6 +881,10 @@ class CentreonACL
                         $string .= "'".$row['service_id']."'";
                         break;
                     case "NAME" :
+                        if (isset($item[$row['service_description']])) {
+                            continue;
+                        }
+                        $item[$row['service_description']] = true;
                         if ($escape === true) {
                             $string .= "'".CentreonDB::escape($row['service_description'])."'";
                         } else {

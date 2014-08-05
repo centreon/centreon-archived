@@ -84,7 +84,7 @@ sub read_config {
     }
     ($status, $sth) = $self->{csdb}->query(<<"EOQ");
     SELECT archive_log, archive_retention FROM config
-        EOQ
+EOQ
         goto error if $status == -1;
     $self->{config} = $sth->fetchrow_hashref();
     $self->log_and_exit("No configuration found in database") if !defined $self->{config}->{archive_log};
@@ -122,7 +122,7 @@ sub reset_position_flag {
     my ($self, $instance) = @_;
     my $status = $self->{csdb}->do(<<"EOQ");
     UPDATE instance SET log_flag = '0' WHERE instance_id = '$instance'
-        EOQ
+EOQ
         $self->log_and_exit("Failed to reset the position flag into database") if $status == -1;
 }
 
@@ -133,7 +133,7 @@ sub commit_to_log {
     $sth->execute_for_fetch(sub { shift @$log_table_rows }, \@tuple_status);
     $self->{csdb}->do(<<"EOQ");
     UPDATE instance SET log_flag='$counter', last_ctime='$ctime' WHERE instance_id = '$instance'
-        EOQ
+EOQ
         $self->{csdb}->commit;
     $self->{csdb}->transaction_mode(1);
 }
@@ -156,7 +156,7 @@ sub parse_file($$$) {
     }
     my ($status, $sth) = $self->{csdb}->query(<<"EOQ");
     SELECT `log_flag`,`last_ctime` FROM `instance` WHERE `instance_id`='$instance'
-        EOQ
+EOQ
         $self->log_and_exit("Cannot read previous run information from database") if $status == -1;
     my $prev_run_info = $sth->fetchrow_hashref();
 
@@ -205,7 +205,7 @@ sub parse_file($$$) {
         my $sth = $self->{csdb}->{instance}->prepare(<<"EOQ");
         INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            EOQ
+EOQ
             my $cur_ctime = undef;
 
         while (<FILE>) {
@@ -308,7 +308,7 @@ sub parse_archives {
             AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` 
             AND `nagios_server`.`ns_activate` = '1' 
             AND `cfg_nagios`.`nagios_activate` = '1'
-            EOQ
+EOQ
             $self->log_and_exit("Failed to read instance configuration") if $status == -1;
         $archives = $sth->fetchrow_hashref()->{log_archive_path};
     } else {
@@ -365,7 +365,7 @@ sub parse_logfile($$$) {
             AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` 
             AND `nagios_server`.`ns_activate` = '1' 
             AND `cfg_nagios`.`nagios_activate` = '1'
-            EOQ
+EOQ
             $self->log_and_exit("Cannot read logfile from database") if $status == -1;
         my $data = $sth->fetchrow_hashref();
         $logfile = $data->{log_file};
@@ -463,6 +463,7 @@ EOQ
                     $self->{logger}->writeLogError("Failed to truncate 'log' table") if $status == -1;
                 } else {
                     my $limit = $self->date_to_time($self->{opt_s});
+                    $self->log_and_exit("Invalid date format") if $limit == 0;
                     $status = $self->{csdb}->do("DELETE FROM `log` WHERE `ctime` >= $limit");
                     $self->{logger}->writeLogError("Failed to purge 'log' table") if $status == -1;
                 }

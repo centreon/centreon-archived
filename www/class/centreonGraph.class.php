@@ -566,7 +566,7 @@ class CentreonGraph {
                         }
 
                         # Check regular
-                        if (is_null($ds_data_regular) && preg_match('/' . preg_quote($ds_val['ds_name'], '/') . '/', $metric["metric_name"])) {
+                        if (is_null($ds_data_regular) && preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/', $metric["metric_name"])) {
                                 $ds_data_regular = $ds_val;
                         }
                     }
@@ -762,7 +762,7 @@ class CentreonGraph {
             if ( isset($tm["need"]) && $tm["need"] == 1 )
                 continue;
             if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
-                $arg = "COMMENT:\"";
+                $arg = "COMMENT:'";
             } else {
                 if ((isset($tm["ds_filled"]) && $tm["ds_filled"]) || (isset($tm["ds_stack"]) && $tm["ds_stack"])) {
                     if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
@@ -809,11 +809,7 @@ class CentreonGraph {
                 if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
                     $arg .= "  ";
                 }
-            	if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
-                	$arg .= "\"";
-                } else {
-                	$arg .= "'";
-                }
+                $arg .= "'";
                 $this->addArgument($arg);
 
                 $vdefs = "";
@@ -1046,7 +1042,15 @@ class CentreonGraph {
         }
 
         if ($this->indexData["host_name"] != "_Module_Meta") {
-            $this->setRRDOption("title", $this->indexData["service_description"]." "._("graph on")." ".$this->indexData["host_name"].$metrictitle);
+            $sdesc = $this->indexData['service_description'];
+            $hname = $this->indexData['host_name'];
+            if (!mb_detect_encoding($sdesc, 'UTF-8', true)) {
+                $sdesc = utf8_encode($sdesc);
+            }
+            if (!mb_detect_encoding($hname, 'UTF-8', true)) {
+                $hname = utf8_encode($hname);
+            }
+            $this->setRRDOption("title", $sdesc." "._("graph on")." ".$hname.$metrictitle);
         } else {
             $this->setRRDOption("title", _("Graph")." ".$this->indexData["service_description"].$metrictitle);
         }

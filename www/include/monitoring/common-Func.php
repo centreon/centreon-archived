@@ -240,8 +240,12 @@
     function get_contactgroups_for_services($service_list, &$contactGroups) {
         global $pearDB;
         
-        if (!is_array($service_list))
+        if (!is_array($service_list)) {
+            if (!$service_list) {
+                return;
+            }
             $service_list = array($service_list);
+        }
         
         $DBRESULT = $pearDB->query("SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
             WHERE cgsr.contactgroup_cg_id = cg.cg_id AND cgsr.service_service_id IN (".implode(',', $service_list).")
@@ -256,8 +260,12 @@
     function get_contacts_for_services($service_list, &$contacts) {
         global $pearDB;
         
-        if (!is_array($service_list))
+        if (!is_array($service_list)) {
+            if (!$service_list) {
+                return;
+            }
             $service_list = array($service_list);
+        }
         
         $DBRESULT = $pearDB->query("SELECT contact_name FROM contact c, contact_service_relation csr
             WHERE csr.contact_id = c.contact_id AND csr.service_service_id IN (".implode(',', $service_list).")
