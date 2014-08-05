@@ -11,7 +11,10 @@
     "description" : "Centreon Performance Module",
     "core version" : "3.0.0",
     "dependencies" : [
-        
+        {
+            "name" : "centreon-realtime",
+            "version" : "3.0.0"
+        }
     ],
     "optionnal dependencies" : [
         

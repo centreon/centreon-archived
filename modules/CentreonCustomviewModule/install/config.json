@@ -11,7 +11,10 @@
     "description" : "Centreon Custom Views Module",
     "core version" : "3.0.0",
     "dependencies" : [
-        
+        {
+            "name" : "centreon-administration",
+            "version" : "3.0.0"
+        }
     ],
     "optionnal dependencies" : [
         
