@@ -117,7 +117,7 @@ class Bootstrap
      */
     private function initLogger()
     {
-        //Logger::load($this->config);
+        Logger::load($this->config);
     }
 
     /**

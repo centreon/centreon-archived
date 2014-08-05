@@ -101,7 +101,7 @@ class Logger
                 }
             }
         }
-        \Monolog\Registry::addLogger($logger);
+        \Monolog\Registry::addLogger($logger, $logger->getName(), true);
     }
 
     /**
