@@ -34,41 +34,71 @@
  * 
  */
 
-namespace Centreon\Internal\Install;
+namespace Centreon\Internal\Module;
 
-class Install extends \Centreon\Internal\Install\AbstractInstall
+class Dependency
 {
+    /**
+     *
+     * @var \Centreon\Internal\Utils\Dependency\Graph() 
+     */
+    private $dependencyGraph;
+    
+    /**
+     *
+     * @var array 
+     */
+    private $modules  = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    private $moduleNameList  = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    private $modulesOrderInstall = array();
+    
     /**
      * 
      */
-    public static function installCentreon()
+    public function __construct($modules)
     {
-        if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Migrate::migrateCentreon();
-        } else {
-            
-            $modulesToInstall = self::getCoreModules();
-            
-            $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
-            $installOrder = $dependencyResolver->resolve();
-            
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
-            self::setUpFormValidators();
-            
-            foreach($installOrder as $moduleName) {
-                $currentModule = $modulesToInstall[$moduleName];
-                $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
-                $moduleInstaller->install();
-            }
+        foreach($modules as $n => $module) {
+            $this->modules[$n] = $module['infos']['dependencies'];
         }
+        $this->moduleNameList = array_keys($this->modules);
+        $this->dependencyGraph = new \Centreon\Internal\Utils\Dependency\Graph();
+        $this->buildDependenciesGraph();
     }
     
     /**
      * 
-     * @param boolean $removeDb
+     * @param type $modules
      */
-    public static function uninstallCentreon($removeDb = false)
+    public function resolve()
     {
+        $seen = array();
+        $mList = $this->moduleNameList;
         
+        while (count(array_diff($this->moduleNameList, $this->modulesOrderInstall)) > 0) {
+            $currentModule = array_pop($mList);
+            $this->dependencyGraph->resolve($currentModule, $this->modulesOrderInstall, $seen);
+        }
+        
+        return $this->modulesOrderInstall;
+    }
+    
+    /**
+     * 
+     */
+    private function buildDependenciesGraph()
+    {
+        foreach ($this->modules as $mName => $mDep) {
+            $this->dependencyGraph->addNode($mName, $mDep);
+        }
     }
 }

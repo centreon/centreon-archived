@@ -34,41 +34,63 @@
  * 
  */
 
-namespace Centreon\Internal\Install;
+namespace Centreon\Internal\Utils\Dependency\Graph;
 
-class Install extends \Centreon\Internal\Install\AbstractInstall
+/**
+ * Description of Node
+ *
+ * @author lionel
+ */
+class Node
 {
     /**
-     * 
+     *
+     * @var string 
      */
-    public static function installCentreon()
+    private $name;
+    
+    /**
+     *
+     * @var array 
+     */
+    private $edges = array();
+    
+    /**
+     * 
+     * @param string $nodeName
+     */
+    public function __construct($nodeName)
     {
-        if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Migrate::migrateCentreon();
-        } else {
-            
-            $modulesToInstall = self::getCoreModules();
-            
-            $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
-            $installOrder = $dependencyResolver->resolve();
-            
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
-            self::setUpFormValidators();
-            
-            foreach($installOrder as $moduleName) {
-                $currentModule = $modulesToInstall[$moduleName];
-                $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
-                $moduleInstaller->install();
-            }
-        }
+        $this->name = $nodeName;
     }
     
     /**
      * 
-     * @param boolean $removeDb
+     * @return string
      */
-    public static function uninstallCentreon($removeDb = false)
+    public function getName()
     {
-        
+        return $this->name;
     }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getEdges()
+    {
+        return $this->edges;
+    }
+
+
+    /**
+     * 
+     * @param \Centreon\Internal\Utils\Dependency\Graph\Node $node
+     */
+    public function addEdge(Node $node)
+    {
+        $this->edges[] = $node;
+    }
+    
+    
 }
