@@ -345,9 +345,11 @@ sub flush_failed {
             my @tmp_ar = ();
             my $lerror = 0;            
             foreach (@{$self->{cache_services_failed}->{$id}}) {
-                if ($lerror == 0 && $self->update(1, @$_) != 0) {
-                    push @tmp_ar, \@$_;
-                    $lerror = 1;
+                if ($lerror == 0) {
+                    if ($self->update(1, @$_) != 0) {
+                        push @tmp_ar, \@$_;
+                        $lerror = 1;
+                    }
                 } else {
                     push @tmp_ar, \@$_;
                 }
@@ -1160,9 +1162,11 @@ sub rename_finish {
         my @tmp_ar = ();
         my $lerror = 0;  
         foreach (@{$self->{cache_services_rename}->{$host_name . ";" . $service_description}}) {
-            if ($lerror == 0 && $self->update(1, @$_) != 0) {
-                push @tmp_ar, \@$_;
-                $lerror = 1;
+            if ($lerror == 0) {
+                if ($self->update(1, @$_) != 0) {
+                    push @tmp_ar, \@$_;
+                    $lerror = 1;
+                }
             } else {
                 push @tmp_ar, \@$_;
             }
