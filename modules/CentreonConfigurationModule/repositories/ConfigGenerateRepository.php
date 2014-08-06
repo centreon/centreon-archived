@@ -35,7 +35,7 @@
 
 namespace  CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
 
 /**
  * Factory for ConfigGenerate Engine
@@ -44,31 +44,13 @@ use \Centreon\Internal\Di;
  * @version 3.0.0
  */
 
-class ConfigGenerateRepository
+class ConfigGenerateRepository extends ConfigRepositoryAbstract
 {
     /**
      *
      * @var type
      */
     private $objCache;
-    
-    /**
-     *
-     * @var type
-     */
-    private $di;
-
-    /**
-     *
-     * @var int
-     */
-    private $status;
-
-    /**
-     *
-     * @var array
-     */
-    private $output;
     
     /**
      *
@@ -83,12 +65,6 @@ class ConfigGenerateRepository
     private $filesDir;
 
     /**
-     *
-     * @var int
-     */
-    private $pollerId;
-
-    /**
      * Method tests
      * 
      * @param int $pollerId
@@ -96,11 +72,9 @@ class ConfigGenerateRepository
      */
     public function __construct($pollerId)
     {
-        $this->di = Di::getDefault();
-        $this->output = array();
-        $this->path = "/var/lib/centreon/tmp/";
+        parent::__construct($pollerId);
+        $this->path = $this->di->get('config')->get('global', 'centreon_generate_tmp_dir');
         $this->filesDir = array();
-        $this->pollerId = $pollerId;
     }
 
     /**
@@ -109,9 +83,13 @@ class ConfigGenerateRepository
      */
     public function generate()
     {
-        $this->checkPollerInformations();
-        $this->generateObjectsFiles();
-        $this->generateMainFiles();
+        try {
+            $this->checkPollerInformations();
+            $this->generateObjectsFiles();
+            $this->generateMainFiles();
+        } catch (Exception $e) {
+            $this->output[] = $e->getMessage();
+        }
     }
 
     /**
@@ -120,33 +98,27 @@ class ConfigGenerateRepository
     public function generateMainFiles()
     {
         /* Generate Main File */
-        $res = ConfigGenerateMainRepository::generate(
+        ConfigGenerateMainRepository::generate(
             $this->filesDir, 
             $this->pollerId, 
             $this->path, 
             "centengine.cfg"
         );
-        if ($res) {
-            $this->output[] = _("Generated centengine.cfg");
-        }
+        $this->output[] = _("Generated centengine.cfg");
 
         /* Generate Debugging Main File */
-        $res = ConfigGenerateMainRepository::generate(
+        ConfigGenerateMainRepository::generate(
             $this->filesDir,
             $this->pollerId,
             $this->path,
             "centengine-testing.cfg",
             1
         );
-        if ($res) {
-            $this->output[] = _("Generated centengine-testing.cfg");
-        }
+        $this->output[] = _("Generated centengine-testing.cfg");
 
         /* Correlation */
-        $res = ConfigCorrelationRepository::generate($this->pollerId);
-        if ($res) {
-            $this->output[] = _("Generated correlation files");
-        }
+        ConfigCorrelationRepository::generate($this->pollerId);
+        $this->output[] = _("Generated correlation files");
     }
     
     /**
@@ -165,105 +137,81 @@ class ConfigGenerateRepository
     public function generateObjectsFiles()
     {
          /* Generate Configuration files */
-        $res = CommandRepository::generate(
+        CommandRepository::generate(
             $this->filesDir, 
             $this->pollerId, 
             $this->path, 
             "check-command.cfg",
             CommandRepository::CHECK_TYPE
         );
-        if ($res) {
-            $this->output[] = _("Generated check-command.cfg");
-        }
+        $this->output[] = _("Generated check-command.cfg");
 
-        $res = CommandRepository::generate(
+        CommandRepository::generate(
             $this->filesDir, 
             $this->pollerId, 
             $this->path, 
             "misc-command.cfg",
             CommandRepository::NOTIF_TYPE
         );
-        if ($res) {
-            $this->output[] = _("Generated misc-command.cfg");
-        }
+        $this->output[] = _("Generated misc-command.cfg");
 
-        $res = ConfigGenerateResourcesRepository::generate(
+        ConfigGenerateResourcesRepository::generate(
             $this->filesDir, 
             $this->pollerId, 
             $this->path, 
             "resources.cfg"
         );
-        if ($res) {
-            $this->output[] = _("Generated resources.cfg");
-        }
+        $this->output[] = _("Generated resources.cfg");
 
-        $res = TimeperiodRepository::generate($this->filesDir, $this->pollerId, $this->path, "timeperiods.cfg");
-        if ($res) {
-            $this->output[] = _("Generated timeperiods.cfg");
-        }
+        TimeperiodRepository::generate($this->filesDir, $this->pollerId, $this->path, "timeperiods.cfg");
+        $this->output[] = _("Generated timeperiods.cfg");
 
-        $res = ConnectorRepository::generate($this->filesDir, $this->pollerId, $this->path, "connectors.cfg");
-        if ($res) {
-            $this->output[] = _("Generated connectors.cfg");
-        }
+        ConnectorRepository::generate($this->filesDir, $this->pollerId, $this->path, "connectors.cfg");
+        $this->output[] = _("Generated connectors.cfg");
 
-        $res = UserRepository::generate($this->filesDir, $this->pollerId, $this->path, "objects/contacts.cfg");
-        if ($res) {
-            $this->output[] = _("Generated contacts.cfg");
-        }
+        UserRepository::generate($this->filesDir, $this->pollerId, $this->path, "objects/contacts.cfg");
+        $this->output[] = _("Generated contacts.cfg");
 
-        $res = UsergroupRepository::generate(
+        UsergroupRepository::generate(
             $this->filesDir, 
             $this->pollerId, 
             $this->path, 
             "objects/contactgroups.cfg"
         );
-        if ($res) {
-            $this->output[] = _("Generated contactgroups.cfg");
-        }
+        $this->output[] = _("Generated contactgroups.cfg");
 
         /* Generate config Object */
-        $res = HostgroupRepository::generate($this->filesDir, $this->pollerId, $this->path, "objects/hostgroups.cfg");
-        if ($res) {
-            $this->output[] = _("Generated hostgroups.cfg");
-        }
+        HostgroupRepository::generate($this->filesDir, $this->pollerId, $this->path, "objects/hostgroups.cfg");
+        $this->output[] = _("Generated hostgroups.cfg");
 
-        $res = ServicegroupRepository::generate(
+        ServicegroupRepository::generate(
             $this->filesDir,
             $this->pollerId,
             $this->path,
             "objects/servicegroups.cfg"
         );
-        if ($res) {
-            $this->output[] = _("Generated servicegroups.cfg");
-        }
+        $this->output[] = _("Generated servicegroups.cfg");
 
         /* Templates config files */
-        $res = HosttemplateRepository::generate(
+        HosttemplateRepository::generate(
             $this->filesDir,
             $this->pollerId,
             $this->path,
             "objects/hostTemplates.cfg"
         );
-        if ($res) {
-            $this->output[] = _("Generated hostTemplates.cfg");
-        }
+        $this->output[] = _("Generated hostTemplates.cfg");
 
-        $res = ServicetemplateRepository::generate(
+        ServicetemplateRepository::generate(
             $this->filesDir,
             $this->pollerId,
             $this->path,
             "objects/serviceTemplates.cfg"
         );
-        if ($res) {
-            $this->output[] = _("Generated serviceTemplates.cfg");
-        }
+        $this->output[] = _("Generated serviceTemplates.cfg");
 
         /* Monitoring Resources files */
-        $res = HostRepository::generate($this->filesDir, $this->pollerId, $this->path, "resources/");
-        if ($res) {
-            $this->output[] = _("Generated host configuration files");
-        }
+        HostRepository::generate($this->filesDir, $this->pollerId, $this->path, "resources/");
+        $this->output[] = _("Generated host configuration files");
     }
 
     /**
@@ -273,7 +221,6 @@ class ConfigGenerateRepository
     public function checkPollerInformations()
     {
         $dbconn = $this->di->get('db_centreon');
-        
         $query = "SELECT * FROM nagios_server WHERE id = ?";
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array($this->pollerId));
@@ -281,16 +228,5 @@ class ConfigGenerateRepository
         if (!isset($row)) {
             $this->output[] = "Poller {$this->pollerId} is not defined or not enabled.";
         }
-    }
-
-    /**
-     * Get output
-     *
-     * @param string $glue
-     * @return string
-     */
-    public function getOutput($glue = "\n")
-    {
-        return implode($glue, $this->output);
     }
 }

@@ -46,7 +46,6 @@ class ConfigCorrelationRepository
     /**
      * 
      * @param int $poller_id
-     * @return bool
      */
     public function generate($poller_id)
     {
@@ -90,7 +89,5 @@ class ConfigCorrelationRepository
         /* End conf Element */
         $xml->endElement();
         $xml->endDocument();
-
-        return true;
     }
 }

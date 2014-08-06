@@ -63,8 +63,7 @@ class ConfigGenerateApi extends \Centreon\Internal\Controller
         $router->response()->json(
             array(
                 "status" => 1,
-                "output" => "ok",
-                "data" => $obj->getOutput()
+                "output" => $obj->getOutput()
             )
         );
     }

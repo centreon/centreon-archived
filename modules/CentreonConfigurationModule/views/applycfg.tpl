@@ -49,14 +49,6 @@
 </form>
 <script>
 $(function() {
-    $("input[type=checkbox][class=allBox]").each(function() {
-      console.log($(this).attr('id'));
-    });
-
-    /**
-     * @todo change jquery selector for something more accurate
-     */
-
     /* File generation */
     $("#btn-generate").click(function() {
       var $csl = $("#console-generate");
@@ -112,11 +104,7 @@ $(function() {
           url: '/api/configuration/1/movecfg/' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
-          if (data.data.status) {
-            $csl.append('Successfully copied files.');
-          } else {
-            $csl.append(data.data.stdout);
-          }
+          $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {
           $csl.append(errorThrown);
