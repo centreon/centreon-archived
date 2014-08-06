@@ -91,7 +91,7 @@ class Router extends \Klein\Klein
             $moduleName = str_replace('Module', '', $module);
             preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
             $moduleShortName = strtolower(implode('-', $myMatches[0]));
-            if (\Centreon\Custom\Module\ModuleInformations::isModuleReachable($moduleShortName)) {
+            if (\Centreon\Internal\Module\Informations::isModuleReachable($moduleShortName)) {
                 $myModuleControllersFiles = glob(__DIR__."/../../modules/$module/controllers/*Controller.php");
                 foreach ($myModuleControllersFiles as $moduleController) {
                     $controllersList[] = '\\'.$moduleName.'\\Controllers\\'.basename($moduleController, '.php');

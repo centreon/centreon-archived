@@ -34,41 +34,92 @@
  * 
  */
 
-namespace Centreon\Internal\Install;
+namespace Centreon\Internal\Utils\Dependency;
 
-class Install extends \Centreon\Internal\Install\AbstractInstall
+/**
+ * Description of Graph
+ *
+ * @author lionel
+ */
+class Graph
 {
+    /**
+     *
+     * @var array 
+     */
+    private $nodes = array();
+    
     /**
      * 
      */
-    public static function installCentreon()
+    public function __construct()
     {
-        if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Migrate::migrateCentreon();
-        } else {
-            
-            $modulesToInstall = self::getCoreModules();
-            
-            $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
-            $installOrder = $dependencyResolver->resolve();
-            
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
-            self::setUpFormValidators();
-            
-            foreach($installOrder as $moduleName) {
-                $currentModule = $modulesToInstall[$moduleName];
-                $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
-                $moduleInstaller->install();
-            }
-        }
+        ;
     }
     
     /**
      * 
-     * @param boolean $removeDb
+     * @param string $nodeName
+     * @param array $dependencies
      */
-    public static function uninstallCentreon($removeDb = false)
+    public function addNode($nodeName, $dependencies = array())
     {
+        $myNode = new Graph\Node($nodeName);
         
+        foreach($dependencies as $dependency) {
+            $depNode = new Graph\Node($dependency['name']);
+            $myNode->addEdge($depNode);
+        }
+        
+        $this->nodes[$nodeName] = $myNode;
+    }
+    
+    /**
+     * 
+     * @param string $nodeName
+     * @return \Centreon\Internal\Utils\Dependency\Graph\Node
+     */
+    public function getNode($nodeName)
+    {
+        return $this->nodes[$nodeName];
+    }
+
+
+    /**
+     * 
+     * @param string $nodeName
+     */
+    public function removeNode($nodeName)
+    {
+        unset($this->nodes[$nodeName]);
+    }
+    
+    /**
+     * 
+     * @param string $nodeName
+     * @param array $resolved
+     * @param array $seen
+     * @throws Exception
+     */
+    public function resolve($nodeName, array &$resolved, array &$seen)
+    {
+        $myNode = $this->getNode($nodeName);
+        $nodeEdges = $myNode->getEdges();
+        $seen[] = $nodeName;
+        
+        foreach ($nodeEdges as $nodeEdge) {
+            $edgeName = $nodeEdge->getName();
+            if (!in_array($edgeName, $resolved)) {
+                if (in_array($edgeName, $seen)) {
+                    throw new Exception(sprintf("Circular reference detected %s -> %s", $nodeName, $edgeName));
+                }
+                $this->resolve($edgeName, $resolved, $seen);
+            }
+        }
+        
+        if (!in_array($nodeName, $resolved)) {
+            $resolved[] = $nodeName;
+            unset($seen[$nodeName]);
+        }
     }
 }

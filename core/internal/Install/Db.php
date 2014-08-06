@@ -214,6 +214,32 @@ class Db
     
     /**
      * 
+     * @param string $dirname
+     * @return array
+     */
+    private static function getDdDatasFiles($dirname)
+    {
+        $finalXmlFileList = array();
+        $path = realpath($dirname);
+        
+        if (file_exists($path)) {
+        
+            $listOfFiles = glob($path . '/*');
+
+            while (count($listOfFiles) > 0) {
+                $currentFile = array_shift($listOfFiles);
+                if (is_dir($currentFile)) {
+                    $listOfFiles = array_merge($listOfFiles, glob($currentFile . '/*'));
+                } elseif (pathinfo($currentFile, PATHINFO_EXTENSION) == 'json') {
+                    $finalXmlFileList[] = $currentFile;
+                }
+            }
+        }
+        return $finalXmlFileList;
+    }
+    
+    /**
+     * 
      */
     private static function loadDefaultDatas()
     {

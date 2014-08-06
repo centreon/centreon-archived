@@ -120,7 +120,3 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
         require_once $filename;
     }
 });
-
-foreach (glob($centreon_path.'/core/custom/Centreon/*.php') as $filename) {
-    require_once $filename;
-}

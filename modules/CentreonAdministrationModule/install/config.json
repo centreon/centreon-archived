@@ -11,7 +11,10 @@
     "description" : "Centreon Administration Module",
     "core version" : "3.0.0",
     "dependencies" : [
-        
+        {
+            "name" : "centreon-main",
+            "version" : "3.0.0"
+        }
     ],
     "optionnal dependencies" : [
         
