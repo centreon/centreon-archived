@@ -10,6 +10,8 @@
             $("#datatable{$object}_length").append($(".configuration-actions"));
         });
 
+        var selectedCb = [];
+
         oTable = $('#datatable{$object}').dataTable({
             "bProcessing": true,
             "sAjaxSource": "{url_for url=$objectUrl}",
@@ -36,6 +38,11 @@
                     }
                 ]
             },
+            "fnDrawCallback": function() {
+                for (var ct = 0; ct < selectedCb.length; ct++) {
+                    $("input[type=checkbox][id=" + selectedCb[ct] + "]").attr('checked', 'checked');
+                }
+            }
         })
     
         $.extend($.fn.dataTableExt.oStdClasses, {
@@ -71,6 +78,11 @@
             } else {
                 $('#selected_option').hide();
             }
+
+            selectedCb = [];
+            $("input.allBox:checked").each(function() {
+                selectedCb.push($(this).attr('id'));
+            });
         }
         
         $('table[id^="datatable"] thead input[id^="all"]').on('click', function(e) {
