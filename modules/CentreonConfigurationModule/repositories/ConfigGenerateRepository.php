@@ -75,6 +75,7 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
         parent::__construct($pollerId);
         $this->path = $this->di->get('config')->get('global', 'centreon_generate_tmp_dir');
         $this->filesDir = array();
+        $this->output[] = sprintf(_("Generating temporary configuration files of poller %s"), $pollerId);
     }
 
     /**
@@ -89,6 +90,7 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
             $this->generateMainFiles();
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
+            $this->status = false;
         }
     }
 

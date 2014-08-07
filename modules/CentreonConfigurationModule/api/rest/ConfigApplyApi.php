@@ -35,6 +35,9 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
+use \Centreon\Internal\Di,
+    \CentreonConfiguration\Repository\ConfigApplyRepository;
+
 /**
  * @authors Julien Mathis
  * @package Centreon
@@ -48,18 +51,19 @@ class ConfigApplyApi extends \Centreon\Internal\Controller
      */
     public function genericAction($action)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         $router = $di->get('router');
 
         $param = $router->request()->paramsNamed();
 
-        $obj = new \CentreonConfiguration\Repository\ConfigApplyRepository($param["id"]);
-        
+        $obj = new ConfigApplyRepository($param["id"]);
+        $obj->$action();
+
         $router->response()->json(
             array(
-                "api-version" => $param["version"],
-                "data" => $obj->$action($param["id"])
+                "status" => $obj->getStatus(),
+                "output" => $obj->getOutput()
             )
         );
     }

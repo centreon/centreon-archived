@@ -42,83 +42,62 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class ConfigApplyRepository
+class ConfigApplyRepository extends ConfigRepositoryAbstract
 {
-    private $di;
-    private $stdout;
-    private $output;
-    private $status;
-    
-    /*
-     * Methode tests
-     * @return value
+    /**
+     * Used for reload/restart engine
+     *
+     * @param int $pollerId
      */
-    public function __construct($poller_id)
+    public function __construct($pollerId)
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
-        $this->status = true;
-        $this->warning = false;
+        parent::__construct($pollerId);
+        $this->output[] = sprintf(_('Processing poller %s'), $pollerId);
     }
 
     /**
      * 
-     * @param int $poller_id
      * @param string $method
      */
-    public function action($poller_id, $method)
+    public function action($method)
     {
-        $this->$method($poller_id);
+        $this->$method();
     }
 
     /**
      * 
-     * @param int $poller_id
      * @param string $method
      * @return array
      */
-    public function applyConfig($poller_id, $method)
+    public function applyConfig($method)
     {
-        $command = "sudo /etc/init.d/centengine $method";
+        try {
+            $command = "sudo /etc/init.d/centengine $method";
 
-        /* Launch Command */
-        $this->stdout = exec($command, $this->output, $this->status);
-        $this->stdout = htmlentities($this->stdout);
+            $this->output[] = sprintf(_("Executing command %s"), $command);
 
-        /* Return status */
-        return array(
-            'status' => $this->status,
-            'command_line' => $command,
-            'stdout' => $this->stdout
-        );
+            /* Launch Command */
+            exec($command, $this->output, $status);
+        } catch (Exception $e) {
+            $this->output[] = $e->getMessage();
+            $this->status = false;
+        }
     }
 
     /**
-     * 
-     * @param int $poller_id
-     * @return array
+     *
      */
-    public function restart($poller_id)
+    public function __call($method, $args)
     {
-        return static::applyConfig($poller_id, "restart");
-    }
-
-    /**
-     * 
-     * @param int $poller_id
-     * @return array
-     */
-    public function reload($poller_id)
-    {
-        return static::applyConfig($poller_id, "reload");
-    }
-
-    /**
-     * 
-     * @param int $poller_id
-     * @return array
-     */
-    public function forcereload($poller_id)
-    {
-        return static::applyConfig($poller_id, "force-reload");
+        $method = strtolower($method);
+        switch ($method) {
+            case "restart":
+            case "reload":
+                $this->applyConfig($method);
+                break;
+            case "forcereload":
+                $this->applyConfig('force-reload');
+                break;
+        }
     }
 }

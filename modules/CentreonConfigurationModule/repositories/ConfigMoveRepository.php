@@ -54,6 +54,7 @@ class ConfigMoveRepository extends ConfigRepositoryAbstract
     public function __construct($pollerId)
     {
         parent::__construct($pollerId);
+        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
     }
 
     /**
@@ -68,9 +69,10 @@ class ConfigMoveRepository extends ConfigRepositoryAbstract
             $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
             system("cp -Rf $tmpdir/{$this->pollerId}/* /etc/centreon-engine/");
-            $this->output[] = _('Successfully moved configuration files into working directory.');
+            $this->output[] = _('Successfully copied files.');
         } catch (Exception $e) {
-            $this->output[] = $e->getMessage();;
+            $this->output[] = $e->getMessage();
+            $this->status = false;
         }
     }
 }

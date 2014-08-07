@@ -37,8 +37,10 @@
         {t}The monitoring engine will be restarted.{/t} 
         {t}Changes made in the configuration files will be taken into account.{/t}
       </p>
-      <button id="btn-restart" class="btn btn-success btn-lg">{t}Restart{/t}</button>
-      <pre id="console-restart" class="hide margin-top-10">
+      <button data-action="reloadcfg" class="btn btn-applycfg btn-success btn-lg">{t}Reload{/t}</button>
+      <button data-action="forcereloadcfg" class="btn btn-applycfg btn-primary btn-lg">{t}Force Reload{/t}</button>
+      <button data-action="restartcfg" class="btn btn-applycfg btn-danger btn-lg">{t}Restart{/t}</button>
+      <pre id="console-applycfg" class="hide margin-top-10">
       </pre>
     </div>
   </div>
@@ -74,7 +76,7 @@ $(function() {
               url: '/api/configuration/1/testcfg/' + pollerId,
               dataType: 'json'
             }).success(function(data2, textStatus2, jqXHR2) {
-              $csl.append(data2);
+              $csl.append(data2.output);
               $thisBtn.removeAttr('disabled');
             }).error(function(jqXHR2, textStatus2, errorThrown2) {
               $csl.append(errorThrown2);
@@ -114,9 +116,10 @@ $(function() {
     });
 
     /* Restart engine */
-    $("#btn-restart").click(function() {
-      var $csl = $("#console-restart");
-      var $thisBtn = $(this);
+    $(".btn-applycfg").click(function() {
+      var $csl = $("#console-applycfg");
+      var $thisBtn = $(".btn-applycfg");
+      var action = $(this).data('action');
 
       $thisBtn.attr('disabled', 'disabled');
       $csl.removeClass('hide');
@@ -124,15 +127,15 @@ $(function() {
 
       $("input[type=checkbox][class=allBox]:checked").each(function() {
         var pollerId = $(this).val();
-
+        
         $.ajax({
-          url: '/api/configuration/1/restartcfg/1',
+          url: '/api/configuration/1/' + action + '/' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
-          $csl.html(data.data.command_line);
+          $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {
-          $csl.html(errorThrown);
+          $csl.append(errorThrown);
           $thisBtn.removeAttr('disabled');
         }); 
       });

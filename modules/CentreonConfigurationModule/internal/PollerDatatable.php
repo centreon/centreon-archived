@@ -302,22 +302,33 @@ class PollerDatatable extends \Centreon\Internal\Datatable
     protected function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myPollerSet) {
-            $myPollerSet['program_version'] = $myPollerSet['program_name'] . ' ' . $myPollerSet['program_version'];
-            $myPollerSet['last_restart'] = Datetime::humanReadable(
-                $myPollerSet['last_restart'],
-                Datetime::PRECISION_FORMAT,
-                2
-            );
-            $myPollerSet['last_alive'] = Datetime::humanReadable(
-                $myPollerSet['last_alive'],
-                Datetime::PRECISION_FORMAT,
-                2
-            );
-            $myPollerSet['program_start_time'] = Datetime::humanReadable(
-                $myPollerSet['program_start_time'],
-                Datetime::PRECISION_FORMAT,
-                2
-            );
+            if (isset($myPollerSet['program_version'])) {
+                $myPollerSet['program_version'] = $myPollerSet['program_name'] . ' ' . $myPollerSet['program_version'];
+            }
+
+            if (isset($myPollerSet['last_restart'])) {
+                $myPollerSet['last_restart'] = Datetime::humanReadable(
+                    $myPollerSet['last_restart'],
+                    Datetime::PRECISION_FORMAT,
+                    2
+                );
+            }
+
+            if (isset($myPollerSet['last_alive'])) {
+                $myPollerSet['last_alive'] = Datetime::humanReadable(
+                    $myPollerSet['last_alive'],
+                    Datetime::PRECISION_FORMAT,
+                    2
+                );
+            }
+
+            if (isset($myPollerSet['program_start_time'])) {
+                $myPollerSet['program_start_time'] = Datetime::humanReadable(
+                    $myPollerSet['program_start_time'],
+                    Datetime::PRECISION_FORMAT,
+                    2
+                );
+            }
         }
     }
 }
