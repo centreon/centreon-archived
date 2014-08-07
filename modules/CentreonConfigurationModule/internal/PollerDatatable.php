@@ -36,7 +36,9 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Utils\Datetime;
+use \Centreon\Internal\Utils\Datetime,
+    \Centreon\Internal\Di,
+    \CentreonConfiguration\Repository\PollerRepository;
 
 /**
  * Description of PollerDatatable
@@ -254,41 +256,30 @@ class PollerDatatable extends \Centreon\Internal\Datatable
     public static function addAdditionnalDatas(&$resultSet)
     {
         // Get datatabases connections
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $dbconnStorage = $di->get('db_storage');
         
-        $sqlBroker = "SELECT "
-            . "start_time AS program_start_time, running AS is_currently_running, "
-            . "instance_id, name AS instance_name , last_alive "
-            . "FROM instances";
+        $sqlBroker = "SELECT start_time AS program_start_time, running AS is_currently_running, 
+            instance_id, name AS instance_name , last_alive, version AS program_version,  
+            engine AS program_name
+            FROM instances";
         $stmtBroker = $dbconnStorage->query($sqlBroker);
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
         
-        
-        $pollerNumber = count($resultSet);
-        $sqlBroker2 = "SELECT DISTINCT "
-            . "instance_id, version AS program_version, engine AS program_name, name AS instance_name "
-            . "FROM instances LIMIT $pollerNumber";
-        $stmtBroker2 = $dbconnStorage->query($sqlBroker2);
-        $resultBroker2 = $stmtBroker2->fetchAll(\PDO::FETCH_ASSOC);
-        
-        
         // Build Up the line
         foreach ($resultSet as &$nagiosServer) {
-            foreach ($resultBroker as $key => $broker) {
+            $nagiosServer['program_start_time'] = '';
+            $nagiosServer['is_currently_running'] = 0;
+            $nagiosServer['last_alive'] = '';
+            $nagiosServer['program_version'] = '';
+            $nagiosServer['program_name'] = '';
+            foreach ($resultBroker as $broker) {
                 if ($broker['instance_name'] == $nagiosServer['name']) {
                     $nagiosServer = array_merge($nagiosServer, $broker);
-                    unset($resultBroker[$key]);
                 }
             }
-            foreach ($resultBroker2 as $key => $broker2) {
-                if ($broker2['instance_name'] == $nagiosServer['name']) {
-                    $nagiosServer = array_merge($nagiosServer, $broker2);
-                    unset($resultBroker2[$key]);
-                }
-            }
-            $nagiosServer['hasChanged'] = \CentreonConfiguration\Repository\PollerRepository::checkChangeState(
+            $nagiosServer['hasChanged'] = PollerRepository::checkChangeState(
                 $nagiosServer['id'],
                 $nagiosServer['last_restart']
             );
