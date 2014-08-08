@@ -340,7 +340,14 @@
 								 AND esgr.servicegroup_sg_id = sgr.servicegroup_sg_id
 								 AND sgr.host_host_id = nhr.host_host_id
 								 AND nhr.nagios_server_id = ".$tab['id']."
-								 ORDER BY esc.esc_name");
+				     UNION SELECT DISTINCT esc.*
+                                                                 FROM escalation_servicegroup_relation esgr, escalation esc, servicegroup_relation sgr, ns_host_relation nhr, hostgroup_relation hgr
+                                                                 WHERE esgr.escalation_esc_id = esc.esc_id
+                                                                 AND esgr.servicegroup_sg_id = sgr.servicegroup_sg_id
+                                                                 AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id
+                                                                 AND hgr.host_host_id = nhr.host_host_id
+                                                                 AND nhr.nagios_server_id = ".$tab['id']."
+								 ");
 	$escalation = array();
 	$strTemp = NULL;
 	if ($oreon->CentreonGMT->used() == 1) {
@@ -354,7 +361,14 @@
 										  WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."'
 										  AND sg.sg_id = esgr.servicegroup_sg_id
 										  AND sgr.host_host_id = nhr.host_host_id
-										  AND nhr.nagios_server_id = ".$tab['id']);
+										  AND nhr.nagios_server_id = ".$tab['id']."
+						UNION SELECT DISTINCT sg.sg_id
+                                                                                  FROM escalation_servicegroup_relation esgr, servicegroup sg, servicegroup_relation sgr, ns_host_relation nhr, hostgroup_relation hgr
+                                                                                  WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."'
+                                                                                  AND sg.sg_id = esgr.servicegroup_sg_id
+                                                                                  AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id
+										  AND hgr.host_host_id = nhr.host_host_id
+                                                                                  AND nhr.nagios_server_id = ".$tab['id']);
 			while ($sg = $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]])) {
 					$services = getMyServiceGroupActivateServices($sg["sg_id"]);
@@ -449,7 +463,15 @@
 										  WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."'
 										  AND sg.sg_id = esgr.servicegroup_sg_id
 										  AND sgr.host_host_id = nhr.host_host_id
-										  AND nhr.nagios_server_id = ".$tab['id']);
+										  AND nhr.nagios_server_id = ".$tab['id'] . "
+						      UNION SELECT DISTINCT sg.sg_id, sg.sg_name
+                                                                                  FROM escalation_servicegroup_relation esgr, servicegroup sg, servicegroup_relation sgr, ns_host_relation nhr, hostgroup_relation hgr
+                                                                                  WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."'
+                                                                                  AND sg.sg_id = esgr.servicegroup_sg_id
+                                                                                  AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id
+										  AND hgr.host_host_id = nhr.host_host_id
+                                                                                  AND nhr.nagios_server_id = ".$tab['id']							
+			);
 			while ($sg = $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]]))
 					$strTemp != NULL ? $strTemp .= ", ".$sg["sg_name"] : $strTemp = $sg["sg_name"];
