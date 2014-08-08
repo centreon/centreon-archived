@@ -62,18 +62,18 @@ class WriteConfigFileRepository
         }
 
         /* Keep in memory the old umask */
-        $oldumask = umask(0113);
+        //$oldumask = umask(0113);
         
         /* Open File */
         if (!is_dir(dirname($filename))) {
-            mkdir(dirname($filename), 0664, true);
+            mkdir(dirname($filename), 0775, true);
         }
         if (!$handle = fopen($filename, 'w')) {
             throw new Exception('Cannot open file "' . $filename . '"');
         }
         
         /* Set the umask to the previous mod */
-        umask($oldumask);
+        //umask($oldumask);
         
         return $handle;
     }
