@@ -2,6 +2,10 @@
 
 namespace Test\Centreon;
 
+use \Centreon\Internal\Db,
+    \Centreon\Internal\Di,
+    \Centreon\Custom\Propel\CentreonMysqlPlatform;
+
 /**
  *
  * @todo use mysql
@@ -23,10 +27,14 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
     public function getConnection()
     {
         if (is_null($this->conn)) {
-            $this->db = new \Centreon\Internal\Db('sqlite::memory:');
-            $di = new \Centreon\Internal\Di();
-            \Centreon\Internal\Di::getDefault()->setShared('db_centreon', $this->db);
-            $this->conn = $this->createDefaultDBConnection($this->db, ':memory:');
+            $this->db = new Db(
+                'mysql:host=localhost;dbname=centreon',
+                'centreon',
+                ''
+            );
+            $di = new Di();
+            Di::getDefault()->setShared('db_centreon', $this->db);
+            $this->conn = $this->createDefaultDBConnection($this->db, 'centreon');
         }
         return $this->conn;
     }
@@ -57,21 +65,26 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
     {
         $configParams = array(
             'propel.project' => 'centreon',
-            'propel.database' => 'sqlite',
-            'propel.database.url' => 'sqlite::memory:'
+            'propel.database' => 'mysql',
+            'propel.database.driver' => 'mysql',
+            'propel.database.createUrl' => 'mysql://root@localhost/',
+            'propel.database.url' => 'mysql:dbname=centreon;host=localhost',
+            'propel.database.user' => 'root',
+            'propel.database.password' => '',
+            'propel.database.encoding' => 'utf-8'
         );
     
         // Initilize Schema Parser
-        $propelDb = new \SqliteSchemaParser($this->db);
+        $propelDb = new \MysqlSchemaParser($this->db);
         $propelDb->setGeneratorConfig(new \GeneratorConfig($configParams));
-
-        $platform = new \SqlitePlatform($this->db); 
+        $platform = new CentreonMysqlPlatform($this->db); 
+        $propelDb->setPlatform($platform);
 
 
         // get Current Db State
         $currentDbAppData = new \AppData($platform);
         $currentDbAppData->setGeneratorConfig(new \GeneratorConfig($configParams));
-        $currentDb = $currentDbAppData->addDatabase(array('name' => ':memory:'));
+        $currentDb = $currentDbAppData->addDatabase(array('name' => 'centreon'));
         $propelDb->parse($currentDb);
         
         // Retreive target DB State
@@ -86,13 +99,13 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
         );
 
          // Initialize XmlToAppData object
-        $appDataObject = new \XmlToAppData(new \SqlitePlatform($this->db), null, 'utf-8');
+        $appDataObject = new \XmlToAppData(new CentreonMysqlPlatform($this->db), null, 'utf-8');
         
         // Get DB File
         foreach ($xmlDbFiles as $dbFile) {
             $updatedAppData->joinAppDatas(array($appDataObject->parseFile($dbFile)));
             unset($appDataObject);
-            $appDataObject = new \XmlToAppData(new \SqlitePlatform($this->db), null, 'utf-8');
+            $appDataObject = new \XmlToAppData(new CentreonMysqlPlatform($this->db), null, 'utf-8');
         }
         unset($appDataObject);
 
