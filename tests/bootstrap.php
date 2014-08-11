@@ -36,14 +36,14 @@
 $centreon_path = dirname(__DIR__);
 
 /* Define the path to configuration files */
-define('CENTREON_ETC', $centreon_path . '/config/');
+define('CENTREON_ETC', $centreon_path . '/tests/config/');
 
 ini_set('display_errors', 'On');
 
 /* Add classpath to include path */
 set_include_path($centreon_path . PATH_SEPARATOR . get_include_path());
 
-DEFINE('CENTREON_PATH', $centreon_path);
+define('CENTREON_PATH', $centreon_path);
 
 require_once 'vendor/autoload.php';
 
@@ -125,11 +125,4 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
 
 foreach (glob($centreon_path.'/core/custom/Centreon/*.php') as $filename) {
     require_once $filename;
-}
-
-try {
-    $bootstrap = new \Centreon\Internal\Bootstrap();
-    $bootstrap->init();
-} catch (\Exception $e) {
-    echo $e;
 }
