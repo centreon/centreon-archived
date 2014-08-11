@@ -39,6 +39,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     
     public function tearDown()
     {
+        Di::reset();
     }
     
     public function testAddButton()
