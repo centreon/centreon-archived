@@ -35,59 +35,77 @@
 
 namespace  CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Di,
+    \Centreon\Internal\Exception;
+
 /**
- * Factory for ConfigTest Engine
+ * Factory for ConfigGenerate Engine
  *
  * @author Julien Mathis <jmathis@merethis.com>
  * @version 3.0.0
  */
-class ConfigCorrelationRepository
+
+abstract class ConfigRepositoryAbstract
 {
     /**
-     * 
-     * @param int $poller_id
+     *
+     * @var type
      */
-    public function generate($poller_id)
+    protected $di;
+
+    /**
+     *
+     * @var array
+     */
+    protected $output;
+    
+    /**
+     *
+     * @var int
+     */
+    protected $pollerId;
+
+    /**
+     *
+     * @var bool
+     */
+    protected $status;
+
+    /**
+     * Method tests
+     * 
+     * @param int $pollerId
+     * @return type
+     */
+    public function __construct($pollerId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
+        $this->di = Di::getDefault();
+        $this->output = array();
+        $this->pollerId = $pollerId;
+        $this->status = true;
+    }
 
-        $xml = new \XMLWriter();
-        $xml->openURI('/etc/centreon-broker/correlation_1.xml');
+    /**
+     * Get output
+     *
+     * @param string $glue
+     * @return string
+     */
+    public function getOutput($glue = "\n")
+    {
+        return $glue . implode($glue, $this->output) . $glue;
+    }
 
-        $xml->startDocument('1.0', 'UTF-8');
-        
-        /* Start Element conf */
-        $xml->startElement('conf');
-
-        /* Declare Host */
-        $query = "SELECT host_id, nagios_server_id "
-            . "FROM host, ns_host_relation "
-            . "WHERE host_host_id = host_id ORDER BY host_id";
-        $stmt = $dbconn->query($query);
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $xml->startElement('host');
-            $xml->writeAttribute('id', $row["host_id"]);
-            $xml->writeAttribute('instance_id', $row["nagios_server_id"]);
-            $xml->endElement();
+    /**
+     * Get status
+     *
+     * @return int 1 = successful, 0 = error occured
+     */
+    public function getStatus()
+    {
+        if ($this->status) {
+            return 1;
         }
-        
-        /* Declare Service */
-        $query = "SELECT service_id, host_id, nagios_server_id "
-            . "FROM host, service, host_service_relation ns, ns_host_relation hp "
-            . "WHERE host_id = ns.host_host_id "
-            . "AND service_id = ns.service_service_id AND hp.host_host_id = host_id";
-        $stmt = $dbconn->query($query);
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $xml->startElement('service');
-            $xml->writeAttribute('id', $row["service_id"]);
-            $xml->writeAttribute('host', $row["host_id"]);
-            $xml->writeAttribute('instance_id', $row["nagios_server_id"]);
-            $xml->endElement();
-        }
-        
-        /* End conf Element */
-        $xml->endElement();
-        $xml->endDocument();
+        return 0;
     }
 }

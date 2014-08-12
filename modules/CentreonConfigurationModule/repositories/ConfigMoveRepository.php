@@ -35,6 +35,8 @@
 
 namespace  CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Exception;
+
 /**
  * Factory for ConfigTest Engine
  *
@@ -42,43 +44,35 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class ConfigMoveRepository
+class ConfigMoveRepository extends ConfigRepositoryAbstract
 {
-    private $di;
-    private $stdout;
-    private $status;
-    private $warning;
-    
     /**
      * Constructor
      * 
-     * @param int $poller_id
+     * @param int $pollerId
      */
-    public function __construct($poller_id)
+    public function __construct($pollerId)
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
-        $this->status = true;
-        $this->warning = false;
+        parent::__construct($pollerId);
+        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
     }
 
     /**
+     * Move configuration files 
      * 
-     * @param int $poller_id
-     * @return array
      */
-    public function moveConfig($poller_id)
+    public function moveConfig()
     {
-        /* Get Path */
-        $config = $this->di->get('config');
-        $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
+        try {
+            /* Get Path */
+            $config = $this->di->get('config');
+            $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        system("rm -rf /etc/centreon-engine/");
-        system("cp -Rf $tmpdir/$poller_id/* /etc/centreon-engine/");
-        
-        /* return status */
-        return array(
-            'status' => $this->status,
-            'stdout' => $this->stdout
-        );
+            system("cp -Rf $tmpdir/{$this->pollerId}/* /etc/centreon-engine/");
+            $this->output[] = _('Successfully copied files.');
+        } catch (Exception $e) {
+            $this->output[] = $e->getMessage();
+            $this->status = false;
+        }
     }
 }

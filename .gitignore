@@ -8,3 +8,4 @@
 /var/tmp/filesUpload/images/
 composer.lock
 config/centreon.ini
+tests/config/centreon.ini

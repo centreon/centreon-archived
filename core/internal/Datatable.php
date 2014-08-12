@@ -458,10 +458,11 @@ class Datatable
      */
     public static function addSelect($field, $values, $cast)
     {
+        $myElement = "";
         if (isset($cast['selecttype']) && ($cast['selecttype'] != 'none')) {
             $subCaster = 'add'.ucwords($cast['selecttype']);
             $myElement = static::$subCaster($field, $values, $cast['parameters'][$values[$field]]['parameters']);
-        } else {
+        } elseif (isset($values[$field])) {
             $myElement = $cast[$values[$field]];
         }
         

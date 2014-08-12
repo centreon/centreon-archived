@@ -49,38 +49,18 @@ class Bootstrap
     {
         $this->di = new Di();
     }
-    
+
+    /**
+     * Init a selection of methods
+     *
+     * @param array $sections
+     */    
     private function customInit(array $sections)
     {
         foreach($sections as $section) {
-            switch(strtolower($section)) {
-                case 'configuration':
-                    $this->initConfiguration();
-                    break;
-                case 'logger':
-                    $this->initLogger();
-                    break;
-                case 'database':
-                    $this->initDatabase();
-                    break;
-                case 'cache':
-                    $this->initCache();
-                    break;
-                case 'configfromdb':
-                    $this->initConfigFromDb();
-                    break;
-                case 'actionhooks':
-                    $this->initActionHooks();
-                    break;
-                case 'template':
-                    $this->initTemplate();
-                    break;
-                case 'menus':
-                    $this->initMenus();
-                    break;
-                case 'routes':
-                    $this->initRoutes();
-                    break;
+            $method = "init" . ucfirst($section);
+            if (method_exists($this, $method)) {
+                $this->$method();
             }
         }
     }
@@ -157,8 +137,6 @@ class Bootstrap
     {
         $cache = Cache::load($this->config);
         $this->di->setShared('cache', $cache);
-        
-        //\Centreon\Internal\Repository\ServiceRepository::loadIconImage();
     }
 
     /**

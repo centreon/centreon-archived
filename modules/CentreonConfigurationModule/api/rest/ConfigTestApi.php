@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
+use \Centreon\Internal\Di;
+
 /**
  * @authors Julien Mathis
  * @package Centreon
@@ -50,18 +52,18 @@ class ConfigTestApi extends \Centreon\Internal\Controller
      */
     public function testAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
 
         $param = $router->request()->paramsNamed();
 
         $obj = new \CentreonConfiguration\Repository\ConfigTestRepository($param["id"]);
+        $obj->checkConfig();
 
         $router->response()->json(
             array(
-                "api-version" => $param["version"],
-                "status" => true,
-                "data" => $obj->checkConfig($param["id"])
+                "status" => $obj->getStatus(),
+                "output" => $obj->getOutput()
             )
         );
     }

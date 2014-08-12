@@ -49,7 +49,8 @@ class UsergroupRepository extends \CentreonConfiguration\Repository\Repository
     public static $objectName = 'Usergroup';
 
     /**
-     * 
+     * Generate contact group 
+     *
      * @param array $filesList
      * @param int $poller_id
      * @param string $path

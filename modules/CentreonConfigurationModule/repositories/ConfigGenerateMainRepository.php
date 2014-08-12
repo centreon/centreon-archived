@@ -52,7 +52,6 @@ class ConfigGenerateMainRepository
      * @param string $path
      * @param string $filename
      * @param int $testing
-     * @return bool
      */
     public static function generate(& $filesList, $poller_id, $path, $filename, $testing = 0)
     {
@@ -62,8 +61,6 @@ class ConfigGenerateMainRepository
         /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
-
-        return true;
     }
 
     /**

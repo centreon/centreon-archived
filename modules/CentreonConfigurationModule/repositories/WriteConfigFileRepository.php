@@ -35,6 +35,8 @@
 
 namespace  CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Exception;
+
 /**
  * Factory for 
  *
@@ -48,7 +50,7 @@ class WriteConfigFileRepository
      * 
      * @param string $filename
      * @return mixed
-     * @throws RuntimeException
+     * @throws Exception
      */
     public static function initFile($filename)
     {
@@ -60,15 +62,18 @@ class WriteConfigFileRepository
         }
 
         /* Keep in memory the old umask */
-        $oldumask = umask(0113);
+        //$oldumask = umask(0113);
         
         /* Open File */
+        if (!is_dir(dirname($filename))) {
+            mkdir(dirname($filename), 0775, true);
+        }
         if (!$handle = fopen($filename, 'w')) {
-            throw new RuntimeException('Cannot open file "' . $filename . '"');
+            throw new Exception('Cannot open file "' . $filename . '"');
         }
         
         /* Set the umask to the previous mod */
-        umask($oldumask);
+        //umask($oldumask);
         
         return $handle;
     }
@@ -259,7 +264,7 @@ class WriteConfigFileRepository
      * @param type $handle
      * @param string $field
      * @param string $value
-     * @throws RuntimeException
+     * @throws Exception
      */
     private static function addParameters($handle, $field, $value = "")
     {
@@ -268,10 +273,10 @@ class WriteConfigFileRepository
             $content = "\t".$field."\t".$value."\n";
             /* Write data into the file */
             if (!fwrite($handle, $content)) {
-                throw new RuntimeException('Cannot write to file content ($content)');
+                throw new Exception('Cannot write to file content ($content)');
             }
         } else {
-            throw new RuntimeException('Cannot write parameter with empty field');
+            throw new Exception('Cannot write parameter with empty field');
         }
     }
 
@@ -280,7 +285,7 @@ class WriteConfigFileRepository
      * @param type $handle
      * @param string $field
      * @param string $value
-     * @throws RuntimeException
+     * @throws Exception
      */
     private static function addGlobalParameters($handle, $field, $value = "")
     {
@@ -289,10 +294,10 @@ class WriteConfigFileRepository
             $content = $field."=".$value."\n";
             /* Write data into the file */
             if (!fwrite($handle, $content)) {
-                throw new RuntimeException('Cannot write to file content ($content)');
+                throw new Exception('Cannot write to file content ($content)');
             }
         } else {
-            throw new RuntimeException('Cannot write parameter with empty field');
+            throw new Exception('Cannot write parameter with empty field');
         }
     }
     
@@ -300,7 +305,7 @@ class WriteConfigFileRepository
      * 
      * @param type $handle
      * @param string $objectType
-     * @throws RuntimeException
+     * @throws Exception
      */
     private static function startObject($handle, $objectType)
     {
@@ -309,23 +314,23 @@ class WriteConfigFileRepository
             $content = "define ".$objectType."{\n";
             /* Write start object into the file */
             if (!fwrite($handle, $content)) {
-                throw new RuntimeException('Cannot write start object.');
+                throw new Exception('Cannot write start object.');
             }
         } else {
-            throw new RuntimeException('Object type is empty');
+            throw new Exception('Object type is empty');
         }
     }
 
     /**
      * 
      * @param type $handle
-     * @throws RuntimeException
+     * @throws Exception
      */
     private static function closeObject($handle)
     {
         /* Write end object into the file */
         if (!fwrite($handle, "}\n\n")) {
-            throw new RuntimeException('Cannot write end object.');
+            throw new Exception('Cannot write end object.');
         }
     }
 

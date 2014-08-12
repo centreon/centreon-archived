@@ -35,6 +35,9 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
+use \Centreon\Internal\Di,
+    \CentreonConfiguration\Repository\ConfigMoveRepository;
+
 /**
  * @authors Julien Mathis
  * @package Centreon
@@ -50,18 +53,18 @@ class ConfigMoveApi extends \Centreon\Internal\Controller
      */
     public static function moveAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
 
         $param = $router->request()->paramsNamed();
 
-        $obj = new \CentreonConfiguration\Repository\ConfigMoveRepository($param["id"]);
+        $obj = new ConfigMoveRepository($param["id"]);
+        $obj->moveConfig();
 
         $router->response()->json(
             array(
-                "api-version" => $param["version"],
-                "status" => true,
-                "data" => $obj->moveConfig($param["id"])
+                "status" => $obj->getStatus(),
+                "output" => $obj->getOutput()
             )
         );
     }

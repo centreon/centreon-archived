@@ -35,6 +35,8 @@
 
 namespace  CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Exception;
+
 /**
  * Factory for ConfigTest Engine
  *
@@ -42,67 +44,42 @@ namespace  CentreonConfiguration\Repository;
  * @version 3.0.0
  */
 
-class ConfigTestRepository
+class ConfigTestRepository extends ConfigRepositoryAbstract
 {
-    private $di;
     private $enginepath;
-    private $stdout;
-    private $status;
-    private $warning;
     
     /**
      * Method tests
-     * @param int $poller_id
+     * @param int $pollerId
      */
-    public function __construct($poller_id)
+    public function __construct($pollerId)
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
+        parent::__construct($pollerId);
         $this->enginepath = '/usr/sbin/centengine';
-        $this->status = true;
-        $this->warning = false;
+        $this->output[] = sprintf(_("Testing configuration files of poller %s"), $pollerId);
     }
 
     /**
-     * 
+     * Check configuration 
+     *
      * @param int $poller_id
      * @return array
      */
-    public function checkConfig($poller_id)
+    public function checkConfig()
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
+        try {
+            /* Get Database Connexion */
+            $dbconn = $this->di->get('db_centreon');
+            $tmpdir = $this->di->get('config')->get('global', 'centreon_generate_tmp_dir');
 
-        /* Get Database Connexion */
-        $dbconn = $this->di->get('db_centreon');
-
-        $path = "/var/lib/centreon/tmp/$poller_id/centengine-testing.cfg";
-        $command = "sudo ".$this->enginepath." -v $path 2>&1";
+            $path = "{$tmpdir}/{$this->pollerId}/centengine-testing.cfg";
+            $command = "sudo ".$this->enginepath." -v $path 2>&1";
         
-        /* Check */
-        $this->stdout = shell_exec($command);
-        $this->stdout = htmlentities($this->stdout);
-
-        /* Catch Errors */
-        if (preg_match_all("/Total (Errors|Warnings)\:[ ]+([0-9]+)/", $this->stdout, $globalMatches, PREG_SET_ORDER)) {
-            foreach ($globalMatches as $matches) {
-                if ($matches[2] != "0") {
-                    if ($matches[1] == "Errors") {
-                        $this->status = false;
-                    } elseif ($matches[1] == "Warnings") {
-                        $this->warning = true;
-                    }
-                }
-            }
-        } else {
-            /* If the string is not found, the test is not ok */
+            /* Check */
+            $this->output[] = shell_exec($command);
+        } catch (Exception $e) {
+            $this->output[] = $e->getMessage();
             $this->status = false;
         }
-        
-        /* return status */
-        return array(
-            'status' => $this->status,
-            'warning' => $this->warning,
-            'command_line' => $command,
-            'stdout' => $this->stdout
-        );
     }
 }
