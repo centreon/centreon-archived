@@ -217,7 +217,7 @@ class UserDatatable extends \Centreon\Internal\Datatable
     public function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myUserSet) {
-            insertAfter(
+            \Centreon\Internal\Utils\CentreonArray::insertAfter(
                 $myUserSet,
                 'contact_email',
                 array(

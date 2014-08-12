@@ -46,17 +46,17 @@ class Install extends \Centreon\Internal\Install\AbstractInstall
         if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
             \Centreon\Internal\Install\Migrate::migrateCentreon();
         } else {
+            \Centreon\Internal\Install\Db::update('centreon');
             
             $modulesToInstall = self::getCoreModules();
             
             $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
             $installOrder = $dependencyResolver->resolve();
             
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
             self::setUpFormValidators();
             
             foreach($installOrder as $moduleName) {
-                $currentModule = $modulesToInstall[$moduleName];
+                $currentModule = $modulesToInstall['modules'][$moduleName];
                 $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
                 $moduleInstaller->install();
             }

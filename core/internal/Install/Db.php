@@ -86,7 +86,6 @@ class Db
         );
         $strDiff = $platform->getModifyDatabaseDDL($diff);
         //$sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
-        //print_r($sqlToBeExecuted);
         
         // Loading Modules Pre Update Operations
         self::preUpdate();
@@ -95,7 +94,7 @@ class Db
         //$tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
         
         // Perform Update
-        //\PropelSQLParser::executeString($strDiff, $db);
+        \PropelSQLParser::executeString($strDiff, $db);
         
         // Loading Modules Post Update Operations
         self::postUpdate();
@@ -162,14 +161,38 @@ class Db
         
         // All Core Tables First
         $fileList = array();
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/install/db/' . $targetDbName));
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/modules/CentreonAdministrationModule/install/db/' . $targetDbName));
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/modules/CentreonBamModule/install/db/' . $targetDbName));
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/modules/CentreonConfigurationModule/install/db/' . $targetDbName));
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/modules/CentreonCustomviewModule/install/db/' . $targetDbName));
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/modules/CentreonMainModule/install/db/' . $targetDbName));
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/modules/CentreonRealtimeModule/install/db/' . $targetDbName));
-        $fileList = array_merge($fileList, self::getDbFiles($centreonPath . '/modules/CentreonSecurityModule/install/db/' . $targetDbName));
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/install/db/' . $targetDbName, 'xml')
+        );
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/modules/CentreonAdministrationModule/install/db/' . $targetDbName, 'xml')
+        );
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/modules/CentreonBamModule/install/db/' . $targetDbName, 'xml')
+        );
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/modules/CentreonConfigurationModule/install/db/' . $targetDbName, 'xml')
+        );
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/modules/CentreonCustomviewModule/install/db/' . $targetDbName, 'xml')
+        );
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/modules/CentreonMainModule/install/db/' . $targetDbName, 'xml')
+        );
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/modules/CentreonRealtimeModule/install/db/' . $targetDbName, 'xml')
+        );
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/modules/CentreonSecurityModule/install/db/' . $targetDbName, 'xml')
+        );
         
         // Copy to destination
         if (!file_exists($targetFolder)) {
@@ -189,11 +212,12 @@ class Db
     /**
      * 
      * @param string $dirname
+     * @param string $extension
      * @return array
      */
-    private static function getDbFiles($dirname)
+    private static function getFiles($dirname, $extension)
     {
-        $finalXmlFileList = array();
+        $finalFileList = array();
         $path = realpath($dirname);
         
         if (file_exists($path)) {
@@ -204,46 +228,75 @@ class Db
                 $currentFile = array_shift($listOfFiles);
                 if (is_dir($currentFile)) {
                     $listOfFiles = array_merge($listOfFiles, glob($currentFile . '/*'));
-                } elseif (pathinfo($currentFile, PATHINFO_EXTENSION) == 'xml') {
-                    $finalXmlFileList[] = $currentFile;
+                } elseif (pathinfo($currentFile, PATHINFO_EXTENSION) == $extension) {
+                    $finalFileList[] = $currentFile;
                 }
             }
         }
-        return $finalXmlFileList;
+        return $finalFileList;
     }
     
     /**
      * 
      * @param string $dirname
-     * @return array
+     * @param string $targetDbName
      */
-    private static function getDdDatasFiles($dirname)
+    public static function loadDefaultDatas($dirname, $targetDbName = 'centreon')
     {
-        $finalXmlFileList = array();
-        $path = realpath($dirname);
+        $dirname = rtrim($dirname, '/');
         
-        if (file_exists($path)) {
+        $orderFile = $dirname . '/' . $targetDbName . '.json';
         
-            $listOfFiles = glob($path . '/*');
-
-            while (count($listOfFiles) > 0) {
-                $currentFile = array_shift($listOfFiles);
-                if (is_dir($currentFile)) {
-                    $listOfFiles = array_merge($listOfFiles, glob($currentFile . '/*'));
-                } elseif (pathinfo($currentFile, PATHINFO_EXTENSION) == 'json') {
-                    $finalXmlFileList[] = $currentFile;
-                }
+        if (file_exists($orderFile)) {
+            $insertionOrder = json_decode(file_get_contents($orderFile), true);
+            foreach ($insertionOrder as $fileBaseName) {
+                $datasFile = $dirname . '/' . $targetDbName . '/'. $fileBaseName . '.json';
+                self::insertDatas($datasFile, $targetDbName);
+            }
+        } else {
+            $datasFiles = self::getFiles($dirname, 'json');
+            foreach ($datasFiles as $datasFile) {
+                self::insertDatas($datasFile, $targetDbName);
             }
         }
-        return $finalXmlFileList;
     }
     
     /**
      * 
+     * @param string $datasFile
+     * @param string $targetDbName
      */
-    private static function loadDefaultDatas()
+    private static function insertDatas($datasFile, $targetDbName)
     {
+        ini_set('memory_limit', '-1');
+        $di = \Centreon\Internal\Di::getDefault();
+        $targetDb = 'db_' . $targetDbName;
+        $db = $di->get($targetDb);
         
+        if (file_exists($datasFile)) {
+            $tableName = basename($datasFile, '.json');
+            $datas = json_decode(file_get_contents($datasFile), true);
+            
+            foreach ($datas as $data) {
+                $fields = "";
+                $values = "";
+                foreach ($data as $key=>$value) {
+                    $fields .= "$key,";
+                    
+                    if (is_array($value)) {
+                        if ($value['domain'] == 'php') {
+                            $values .= "'" . $value['function']() ."',";
+                        } else {
+                            $values .= "$value[function](),";
+                        }
+                    } else {
+                        $values .= "'$value',";
+                    }
+                }
+                $insertQuery = "INSERT INTO $tableName (". rtrim($fields, ',') .") VALUES (" . rtrim($values, ',') . ") ";
+                $db->query($insertQuery);
+            }
+        }
     }
     
     /**

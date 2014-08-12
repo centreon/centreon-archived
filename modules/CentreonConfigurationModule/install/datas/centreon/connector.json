@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "Perl Connector",
+        "description": "",
+        "command_line": "$USER3$/centreon_connector_perl",
+        "enabled": 1,
+        "created": {
+            "domain": "php",
+            "function": "time"
+        },
+        "modified": {
+            "domain": "php",
+            "function": "time"
+        }
+    },
+    {
+        "id": 2,
+        "name": "SSH Connector",
+        "description": "",
+        "command_line": "$USER3$/centreon_connector_ssh",
+        "enabled": 1,
+        "created": {
+            "domain": "php",
+            "function": "time"
+        },
+        "modified": {
+            "domain": "php",
+            "function": "time"
+        }
+    }
+]

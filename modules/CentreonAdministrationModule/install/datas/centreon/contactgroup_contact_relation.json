@@ -1,0 +1,14 @@
+[
+    {
+        "contact_contact_id": 2,
+        "contactgroup_cg_id": 1
+    },
+    {
+        "contact_contact_id": 1,
+        "contactgroup_cg_id": 2
+    },
+    {
+        "contact_contact_id": 3,
+        "contactgroup_cg_id": 1
+    }
+]

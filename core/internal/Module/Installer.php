@@ -101,7 +101,8 @@ abstract class Installer
      */
     public function installDb()
     {
-        \Centreon\Internal\Db\Installer::updateDb();
+        \Centreon\Internal\Install\Db::update('centreon');
+        \Centreon\Internal\Install\Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
     }
     
     /**
