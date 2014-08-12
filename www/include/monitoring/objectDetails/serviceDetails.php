@@ -230,6 +230,9 @@ if (!is_null($host_id)) {
 
         $tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
         while ($ndo = $DBRESULT->fetchRow()) {
+            if (isset($ndo['performance_data'])) {
+                $ndo['performance_data'] = utf8_encode($ndo['performance_data']);
+            }
             if ($ndo["service_description"] == $svc_description) {
                 $service_status[$host_name."_".$svc_description] = $ndo;
             }
