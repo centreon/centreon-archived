@@ -54,7 +54,7 @@ class ToolsCommand extends AbstractCommand
         $stmt = $db->prepare($sql);
         $stmt->execute();
         $tab = array();
-        while ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $tab[] = $row;
         }
         echo json_encode($tab);
