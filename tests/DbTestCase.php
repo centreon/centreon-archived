@@ -20,7 +20,7 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 
     public static function setUpBeforeClass()
     {
-        $bootstrapSteps = array('configuration', 'database');
+        $bootstrapSteps = array('configuration', 'database', 'cache', 'routes');
         $bootstrap = new Bootstrap();
         $bootstrap->init($bootstrapSteps);
         self::installTables();
