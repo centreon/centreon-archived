@@ -47,6 +47,7 @@ class Install extends \Centreon\Internal\Install\AbstractInstall
             \Centreon\Internal\Install\Migrate::migrateCentreon();
         } else {
             \Centreon\Internal\Install\Db::update('centreon');
+            \Centreon\Internal\Install\Db::update('centreon_storage');
             
             $modulesToInstall = self::getCoreModules();
             

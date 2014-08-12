@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon_storage" defaultIdMethod="native">
+    <table name="data_bin" phpName="DataBin" idMethod="native">
+        <column name="id_metric" phpName="IdMetric" type="INTEGER" required="false"/>
+        <column name="ctime" phpName="Ctime" type="INTEGER" required="false"/>
+        <column name="value" phpName="Value" type="FLOAT" required="false"/>
+        <column name="status" phpName="Status" type="CHAR" sqlType="enum('0','1','2','3','4')" required="false"/>
+        <index name="index_metric">
+            <index-column name="id_metric"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>
