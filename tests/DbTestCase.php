@@ -16,6 +16,7 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
     protected static $config = null;
     protected static $tables = array();
     protected $conn = null;
+    protected $dataPath = null;
 
     public static function setUpBeforeClass()
     {
@@ -178,10 +179,11 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 
     protected function loadDatas()
     {
-        $db = Di::getDefault()->get('db_centreon');
         /* Load from file */
-        $sql = file_get_contents(__DIR__ . "/data/sql/load.sql");
-        \PropelSQLParser::executeString($sql, $db);
+        Db::loadDefaultDatas(__DIR__ . '/data/json/');
+        if (false === is_null($this->dataPath)) {
+            Db::loadDefaultDatas($this->dataPath);
+        }
     }
 
     protected function truncateDatas()
