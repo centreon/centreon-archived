@@ -51,7 +51,7 @@ class Command
     {
         try {
             $bootstrap = new \Centreon\Internal\Bootstrap();
-            $sectionToInit = array('configuration', 'database', 'cache', 'actionhooks', 'logger');
+            $sectionToInit = array('configuration', 'database', 'cache', 'logger');
             $bootstrap->init($sectionToInit);
             $this->requestLine = $requestLine;
             $this->parametersLine = $parametersLine;
