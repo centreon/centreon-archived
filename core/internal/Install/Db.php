@@ -246,10 +246,11 @@ class Db
         $dirname = rtrim($dirname, '/');
         
         $orderFile = $dirname . '/' . $targetDbName . '.json';
+        
         if (file_exists($orderFile)) {
             $insertionOrder = json_decode(file_get_contents($orderFile), true);
             foreach ($insertionOrder as $fileBaseName) {
-                $datasFile = $dirname . '/' . $targetDbName . '/'. $fileBaseName . 'json';
+                $datasFile = $dirname . '/' . $targetDbName . '/'. $fileBaseName . '.json';
                 self::insertDatas($datasFile, $targetDbName);
             }
         } else {
