@@ -2,7 +2,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Db,
+use \Centreon\Internal\Install\Db,
     \Centreon\Internal\Di,
     \Centreon\Internal\Bootstrap,
     \Centreon\Custom\Propel\CentreonMysqlPlatform;
@@ -182,7 +182,7 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
         /* Load from file */
         Db::loadDefaultDatas(__DIR__ . '/data/json/');
         if (false === is_null($this->dataPath)) {
-            Db::loadDefaultDatas($this->dataPath);
+            Db::loadDefaultDatas(CENTREON_PATH . $this->dataPath);
         }
     }
 

@@ -35,8 +35,6 @@
 
 namespace Test\CentreonConfiguration;
 
-require_once './tests/DbTestCase.php';
-
 use \Test\Centreon\DbTestCase;
 
 class ConnectorTest extends DbTestCase
