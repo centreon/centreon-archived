@@ -123,6 +123,15 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
     }
 });
 
+spl_autoload_register(function ($classname) use ($centreon_path) {
+    $filename = $centreon_path . '/tests/';
+    if (preg_match("/Test\\\Centreon\\\(.+)/", $classname, $matches)) {
+        if (file_exists($filename.$matches[1].'.php')) {
+            require_once $filename.$matches[1].'.php';
+        }
+    }
+});
+
 foreach (glob($centreon_path.'/core/custom/Centreon/*.php') as $filename) {
     require_once $filename;
 }
