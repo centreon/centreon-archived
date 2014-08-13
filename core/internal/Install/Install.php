@@ -48,10 +48,10 @@ class Install extends \Centreon\Internal\Install\AbstractInstall
         } else {
             echo "Creating" . \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('centreon', 'blue', 'black', true) . "database... ";
             \Centreon\Internal\Install\Db::update('centreon');
-            echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('Done', 'green', 'black', true) . ".\n";
+            echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             echo "Creating" . \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('centreon_storage', 'blue', 'black', true) . "database... ";
             \Centreon\Internal\Install\Db::update('centreon_storage');
-            echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('Done', 'green', 'black', true) . ".\n";
+            echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             
             $modulesToInstall = self::getCoreModules();
             
@@ -65,7 +65,7 @@ class Install extends \Centreon\Internal\Install\AbstractInstall
                 $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
                 echo "Installing". \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText($moduleName, 'purple', 'black', true) . "module... ";
                 $moduleInstaller->install();
-                echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('Done', 'green', 'black', true) . ".\n";
+                echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             }
         }
     }
