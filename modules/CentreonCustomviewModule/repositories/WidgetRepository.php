@@ -591,7 +591,7 @@ class WidgetRepository
         $isactivated = 1;
         $isinstalled = 1;
         
-        $module = \Centreon\Custom\Module\ModuleInformations::getModuleIdByName($moduleName);
+        $module = \Centreon\Internal\Module\Informations::getModuleIdByName($moduleName);
         
         $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, version,
             author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled, module_id)

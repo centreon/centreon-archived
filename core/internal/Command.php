@@ -97,7 +97,7 @@ class Command
         $action = $requestLineElements['action'];
         
         if (strtolower($module) != 'core') {
-            if (!\Centreon\Custom\Module\ModuleInformations::isModuleReachable($module)) {
+            if (!\Centreon\Internal\Module\Informations::isModuleReachable($module)) {
                 throw new Exception("The module doesn't exist");
             }
         }
