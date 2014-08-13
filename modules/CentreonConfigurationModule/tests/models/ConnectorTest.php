@@ -73,4 +73,219 @@ class ConnectorTest extends DbTestCase
         );
         Connector::insert($newConnector);
     }
+
+    public function testDelete()
+    {
+        Connector::delete(2);
+        /* Assert for test delete in DB */
+        $dataset = $this->createFlatXmlDataSet(
+            dirname(__DIR__) . '/data/connector.delete.xml'
+        )->getTable('connector');
+        $tableResult = $this->getConnection()->createQueryTable(
+            'connector',
+            'SELECT * FROM connector'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+
+        /* Test exception object doesn't exists */
+        Connector::delete(42);
+        $tableResult = $this->getConnection()->createQueryTable(
+            'connector',
+            'SELECT * FROM connector'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+    }
+
+    public function testUpdate()
+    {
+        $newInformation = array(
+            'description' => 'Connector for SSH',
+            'enabled' => 0
+        );
+        Connector::update(2, $newInformation);
+        /* Assert for test update in DB */
+        $dataset = $this->createFlatXmlDataSet(
+            dirname(__DIR__) . '/data/connector.update.xml'
+        )->getTable('connector');
+        $tableResult = $this->getConnection()->createQueryTable(
+            'connector',
+            'SELECT * FROM connector'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+
+        $newInformation = array(
+            'name' => 'Perl'
+        );
+        Connector::update(42, $newInformation);
+        $tableResult = $this->getConnection()->createQueryTable(
+            'connector',
+            'SELECT * FROM connector'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+
+        /* Test exception unique */
+        $newInformation = array(
+            'name' => 'Perl'
+        );
+        $this->setExpectedException(
+            'PDOException',
+            '',
+            23000
+        );
+        Connector::update(2, $newInformation);
+    }
+
+    public function testDuplicate()
+    {
+        Connector::duplicate(1);
+        /* Assert for test duplicate 1 in DB */
+        $dataset = $this->createFlatXmlDataSet(
+            dirname(__DIR__) . '/data/connector.duplicate-1.xml'
+        )->getTable('connector');
+        $tableResult = $this->getConnection()->createQueryTable(
+            'connector',
+            'SELECT * FROM connector'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+
+        Connector::duplicate(2, 2);
+        /* Assert for test duplicate 2 in DB */
+        $dataset = $this->createFlatXmlDataSet(
+            dirname(__DIR__) . '/data/connector.duplicate-2.xml'
+        )->getTable('connector');
+        $tableResult = $this->getConnection()->createQueryTable(
+            'connector',
+            'SELECT * FROM connector'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            "The object doesn't exists in database.",
+            0
+        );
+        Connector::duplicate(42);
+    }
+
+    public function testGetParameters()
+    {
+        $testInformation = array(
+            'id' => 1,
+            'name' => 'Perl',
+            'description' => 'Connector for embeded perl',
+            'command_line' => '$CONNECTORS$/perl',
+            'enabled' => 1,
+            'created' => 1407836372,
+            'modified' => 1407836372
+        );
+        $connector = Connector::getParameters(1, '*');
+
+        $this->assertEquals($connector, $testInformation);
+
+        $connector = Connector::getParameters(2, 'name');
+        $this->assertEquals($connector, array('name' => 'SSH'));
+
+        $connector = Connector::getParameters(2, array('name', 'enabled'));
+        $this->assertEquals($connector, array('name' => 'SSH', 'enabled' => 1));
+
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            "The object doesn't exists in database.",
+            0
+        );
+        $connector = Connector::getParameters(3, '*');
+    }
+
+    public function testGetParametersBadColumns()
+    {
+        $this->setExpectedException(
+            'PDOException',
+            '',
+            '42S22'
+        );
+        Connector::getParameters(1, 'test_error');
+
+        Connector::getParameters(1, array('name', 'test_error'));
+    }
+
+    public function testgetList()
+    {
+        $testResult = array(
+            array(
+                'id' => 1,
+                'name' => 'Perl',
+                'description' => 'Connector for embeded perl',
+                'command_line' => '$CONNECTORS$/perl',
+                'enabled' => 1,
+                'created' => 1407836372,
+                'modified' => 1407836372
+            ),
+            array(
+                'id' => 2,
+                'name' => 'SSH',
+                'description' => 'Connector for SSH connections',
+                'command_line' => '$CONNECTORS$/ssh',
+                'enabled' => 1,
+                'created' => 1407836372,
+                'modified' => 1407836372
+            )
+        );
+        $result = Connector::getList();
+        $this->assertEquals($testResult, $result);   
+
+        $testResult = array(
+            array(
+                'id' => 1,
+                'name' => 'Perl',
+                'description' => 'Connector for embeded perl',
+                'command_line' => '$CONNECTORS$/perl',
+                'enabled' => 1,
+                'created' => 1407836372,
+                'modified' => 1407836372
+            )
+        );
+        $result = Connector::getList('*', 1);
+        $this->assertEquals($testResult, $result);   
+
+        $testResult = array(
+            array(
+                'id' => 2,
+                'name' => 'SSH',
+                'description' => 'Connector for SSH connections',
+                'command_line' => '$CONNECTORS$/ssh',
+                'enabled' => 1,
+                'created' => 1407836372,
+                'modified' => 1407836372
+            )
+        );
+        $result = Connector::getList('*', 1, 1);
+        $this->assertEquals($testResult, $result);   
+
+        $testResult = array(
+            array('name' => 'Perl'),
+            array('name' => 'SSH')
+        );
+        $result = Connector::getList('name');
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array('name' => 'SSH'),
+            array('name' => 'Perl')
+        );
+        $result = Connector::getList('name', -1, 0, 'name', 'DESC');
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array('name' => 'SSH')
+        );
+        $result = Connector::getList('name', -1, 0, null, 'ASC', array('name' => 'SSH'));
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array('name' => 'Perl'),
+            array('name' => 'SSH')
+        );
+        $result = Connector::getList('name', -1, 0, null, 'ASC', array('name' => array('SSH', 'Perl')));
+        $this->assertEquals($testResult, $result);
+    }
 }
