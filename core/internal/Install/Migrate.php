@@ -38,11 +38,18 @@ namespace Centreon\Internal\Install;
 
 class Migrate extends \Centreon\Internal\Install\AbstractInstall
 {
+    /**
+     * 
+     * @return boolean
+     */
     public static function checkForMigration()
     {
-        
+        return false;
     }
     
+    /**
+     * 
+     */
     public static function migrateCentreon()
     {
         \Centreon\Internal\Db\Installer::updateDb('migrate');

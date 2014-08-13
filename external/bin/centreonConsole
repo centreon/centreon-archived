@@ -4,12 +4,14 @@
     require_once "../../core/commandLine/bootstrap.php";
 
     // Init Var
+    $requestLine = "";
     $parametersLine = null;
     $helpMode = false;
+    $listMode = false;
     $requireAuthentication = false;
 
     // Get Options
-    $shortOpts = "hu::p::";
+    $shortOpts = "hlu::p::";
     $options = getopt($shortOpts);
 
     // Remove options from the list of arguments
@@ -28,7 +30,9 @@
     $argv = array_merge( $argv );
 
     // Get Arguments
-    $requestLine = $argv[1];
+    if (isset($argv[1])) {
+        $requestLine = $argv[1];
+    }
     if (isset($argv[2])) {
         $parametersLine = $argv[2];
     }
@@ -36,6 +40,9 @@
     // Check Options
     if (isset($options['h'])) {
         $helpMode = true;
+    }
+    if (isset($options['l'])) {
+        $listMode = true;
     }
     if (isset($options['u'])) {
         $requireAuthentication = true;
@@ -45,6 +52,8 @@
         $commandeLineManager = new \Centreon\Internal\Command($requestLine, $parametersLine);
         if ($helpMode) {
             $commandeLineManager->getHelp();
+        } elseif ($listMode) {
+            $commandeLineManager->getCommandList();
         } else {
             if ($requireAuthentication) {
                 $password = '';

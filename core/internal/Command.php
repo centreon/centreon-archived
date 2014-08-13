@@ -87,6 +87,70 @@ class Command
     
     /**
      * 
+     */
+    public function getCommandList()
+    {
+        $requestLineExploded = explode(':', $this->requestLine);
+        
+        $nbOfElements = count($requestLineExploded);
+        
+        if (($nbOfElements == 1) && ($requestLineExploded[0] == "")) {
+            $this->displayCommandList($this->commandList);
+        } else {
+            $module = $requestLineExploded[0];
+            $this->displayCommandList($this->commandList[$module], $module);
+        }
+    }
+    
+    /**
+     * 
+     * @param array $ListOfCommands
+     */
+    private function displayCommandList($ListOfCommands, $module = null)
+    {
+        if (!is_null($module)) {
+            $ListOfCommands = array($module => $ListOfCommands);
+        }
+        
+        foreach ($ListOfCommands as $module => $section) {
+            if ($module == 'core') {
+                $moduleColorized = \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText($module, "blue", "black", true);
+            } else {
+                $moduleColorized = \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText($module, "purple", "black", true);
+            }
+            echo "[" . $moduleColorized . "]\n";
+            foreach ($section as $sectionName => $call) {
+                
+                $explodedSectionName = explode('\\', $sectionName);
+                $nbOfChunk = count($explodedSectionName);
+                
+                $commandName = "";
+                for ($i=0 ;$i<($nbOfChunk-1); $i++) {
+                    $commandName .= strtolower($explodedSectionName[$i]) . ':';
+                }
+                
+                $commandName .= strtolower(str_replace("Command", "", $explodedSectionName[$nbOfChunk - 1]));
+                
+                // Get Action List
+                $classReflection = new \ReflectionClass($call);
+                $actionList = $classReflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                
+                foreach ($actionList as $action) {
+                    if (strpos($action->getName(), "Action")) {
+                        $actionName = str_replace("Action", "", $action->getName());
+                        $colorizedAction = \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText($actionName, "yellow", "black", true);
+                        echo "    $moduleColorized:$commandName:$colorizedAction\n";
+                    }
+                }
+                
+                echo "\n";
+            }
+            echo "\n\n";
+        }
+    }
+    
+    /**
+     * 
      * @throws Exception
      */
     public function executeRequest()
@@ -205,7 +269,7 @@ class Command
     
     /**
      * 
-     * @param type $modules
+     * @param array $modules
      */
     private function parseCommand($modules)
     {
@@ -231,8 +295,9 @@ class Command
     
     /**
      * 
-     * @param type $dirname
-     * @param type $namespace
+     * @param string $dirname
+     * @param string $module
+     * @param string $namespace
      */
     private function getCommandDirectoryContent($dirname, $module = 'core', $namespace = 'Centreon')
     {

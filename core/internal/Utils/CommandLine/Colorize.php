@@ -71,7 +71,7 @@ class Colorize
                 $colorizedMessage .= self::getColor("bred");
                 break;
         }
-        $colorizedMessage .=  self::getBackground($background) . $text . ' ' . self::resetColor();
+        $colorizedMessage .=  self::getBackground($background) . $text . self::resetColor();
         return $colorizedMessage;
     }
     
@@ -88,7 +88,7 @@ class Colorize
         if ($bold) {
             $color = 'b' . $color;
         }
-        $colorizedText = chr(27) . self::getColor($color) . self::getBackground($background) . $text . ' ' . self::resetColor();
+        $colorizedText = chr(27) . self::getColor($color) . self::getBackground($background) . $text . self::resetColor();
         return $colorizedText;
     }
     
@@ -98,7 +98,7 @@ class Colorize
      */
     private static function resetColor()
     {
-        return chr(27) . "[0m ";
+        return chr(27) . "[0m";
     }
     
     /**
@@ -112,52 +112,52 @@ class Colorize
         switch (strtolower($color)) {
             default:
             case "white":
-                $finalColor .= "[0;37m ";
+                $finalColor .= "[0;37m";
                 break;
             case "bwhite":
-                $finalColor .= "[1;37m ";
+                $finalColor .= "[1;37m";
                 break;
             case "cyan":
-                $finalColor .= "[0;36m ";
+                $finalColor .= "[0;36m";
                 break;
             case "bcyan":
-                $finalColor .= "[1;36m ";
+                $finalColor .= "[1;36m";
                 break;
             case "purple":
-                $finalColor .= "[0;35m ";
+                $finalColor .= "[0;35m";
                 break;
             case "bpurple":
-                $finalColor .= "[1;35m ";
+                $finalColor .= "[1;35m";
                 break;
             case "blue":
-                $finalColor .= "[0;34m ";
+                $finalColor .= "[0;34m";
                 break;
             case "bblue":
-                $finalColor .= "[1;34m ";
+                $finalColor .= "[1;34m";
                 break;
             case "yellow":
-                $finalColor .= "[0;33m ";
+                $finalColor .= "[0;33m";
                 break;
             case "byellow":
-                $finalColor .= "[1;33m ";
+                $finalColor .= "[1;33m";
                 break;
             case "green":
-                $finalColor .= "[0;32m ";
+                $finalColor .= "[0;32m";
                 break;
             case "bgreen":
-                $finalColor .= "[1;32m ";
+                $finalColor .= "[1;32m";
                 break;
             case "red":
-                $finalColor .= "[0;31m ";
+                $finalColor .= "[0;31m";
                 break;
             case "bred":
-                $finalColor .= "[1;31m ";
+                $finalColor .= "[1;31m";
                 break;
             case "black":
-                $finalColor .= "[0;30m ";
+                $finalColor .= "[0;30m";
                 break;
             case "bblack":
-                $finalColor .= "[1;30m ";
+                $finalColor .= "[1;30m";
                 break;
         }
         return $finalColor;
@@ -174,7 +174,7 @@ class Colorize
         switch ($background) {
             default:
             case "black":
-                $finalBackground . "[40m ";
+                $finalBackground . "[40m";
                 break;
         }
         return $finalBackground;
