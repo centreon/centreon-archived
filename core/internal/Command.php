@@ -56,8 +56,12 @@ class Command
             $this->requestLine = $requestLine;
             $this->parametersLine = $parametersLine;
             $modulesToParse = array();
-            foreach (glob(__DIR__."/../../modules/*Module") as $moduleTemplateDir) {
-                $modulesToParse[] = basename($moduleTemplateDir);
+            
+            $coreCheck = preg_match("/^core:/", $requestLine);
+            if (($coreCheck === 0) || ($coreCheck === false)){
+                foreach (glob(__DIR__."/../../modules/*Module") as $moduleTemplateDir) {
+                    $modulesToParse[] = basename($moduleTemplateDir);
+                }
             }
             $this->parseCommand($modulesToParse);
         } catch (\Exception $e) {
