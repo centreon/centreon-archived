@@ -9,17 +9,14 @@ use \Centreon\Internal\Menu,
 
 class MenuTest extends DbTestCase
 {
-    private $menu;
-
     public function setUp()
     {
         parent::setUp();
-        $this->menu = new Menu();
     }
 
     public function testGetMenu()
     {
-        $menus = $this->menu->getMenu();
-        $this->assertGreaterThan(0, count($menus));
+        $menu = new Menu();
+        $this->assertGreaterThan(0, count($menu->getMenus()));
     }
 }
