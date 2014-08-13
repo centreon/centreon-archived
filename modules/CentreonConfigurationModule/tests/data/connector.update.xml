@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<dataset>
+  <connector
+    id="1"
+    name="Perl"
+    description="Connector for embeded perl"
+    command_line="$CONNECTORS$/perl"
+    enabled="1"
+    created="1407836372"
+    modified="1407836372"/>
+  <connector
+    id="2"
+    name="SSH"
+    description="Connector for SSH"
+    command_line="$CONNECTORS$/ssh"
+    enabled="0"
+    created="1407836372"
+    modified="1407836372"/>
+</dataset>
