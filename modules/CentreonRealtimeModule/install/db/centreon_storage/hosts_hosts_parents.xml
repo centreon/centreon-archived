@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon_storage" defaultIdMethod="native">
+    <table name="hosts_hosts_parents" phpName="HostsHostsParents" idMethod="native">
+        <column name="child_id" phpName="ChildId" type="INTEGER" required="true"/>
+        <column name="parent_id" phpName="ParentId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="hosts" name="hosts_hosts_parents_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="child_id" foreign="host_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="hosts" name="hosts_hosts_parents_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="parent_id" foreign="host_id"/>
+        </foreign-key>
+        <unique name="child_id">
+            <unique-column name="child_id"/>
+            <unique-column name="parent_id"/>
+        </unique>
+        <index name="parent_id">
+            <index-column name="parent_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon_storage" defaultIdMethod="native">
+    <table name="metrics" phpName="Metrics" idMethod="native">
+        <column name="metric_id" phpName="MetricId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="index_id" phpName="IndexId" type="INTEGER" required="false"/>
+        <column name="metric_name" phpName="MetricName" type="VARCHAR" size="255" required="false"/>
+        <column name="data_source_type" phpName="DataSourceType" type="CHAR" sqlType="enum('0','1','2','3')" required="false"/>
+        <column name="unit_name" phpName="UnitName" type="VARCHAR" size="32" required="false"/>
+        <column name="current_value" phpName="CurrentValue" type="FLOAT" required="false"/>
+        <column name="warn" phpName="Warn" type="FLOAT" required="false"/>
+        <column name="warn_low" phpName="WarnLow" type="FLOAT" required="false"/>
+        <column name="warn_threshold_mode" phpName="WarnThresholdMode" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="crit" phpName="Crit" type="FLOAT" required="false"/>
+        <column name="crit_low" phpName="CritLow" type="FLOAT" required="false"/>
+        <column name="crit_threshold_mode" phpName="CritThresholdMode" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="hidden" phpName="Hidden" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="min" phpName="Min" type="FLOAT" required="false"/>
+        <column name="max" phpName="Max" type="FLOAT" required="false"/>
+        <column name="locked" phpName="Locked" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="to_delete" phpName="ToDelete" type="INTEGER" size="1" required="false" defaultValue="0"/>
+        <unique name="index_id">
+            <unique-column name="index_id"/>
+            <unique-column name="metric_name"/>
+        </unique>
+        <index name="index">
+            <index-column name="index_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>

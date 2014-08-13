@@ -149,7 +149,7 @@ class Installer
             $registeredModules(
                 array_merge(
                     $registeredModules,
-                    \Centreon\Custom\Module\ModuleInformations::getCoreModuleList()
+                    \Centreon\Internal\Module\Informations::getCoreModuleList()
                 )
             );
             foreach ($registeredModules as $module) {

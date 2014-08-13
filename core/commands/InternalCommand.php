@@ -42,7 +42,9 @@ class InternalCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function installAction()
     {
+        echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeMessage("Starting to install Centreon 3.0", "info") . "\n";
         \Centreon\Internal\Install\Install::installCentreon();
+        echo \Centreon\Internal\Utils\CommandLine\Colorize::colorizeMessage("Centreon 3.0 has been successfully installed", "success") . "\n";
     }
     
     /**

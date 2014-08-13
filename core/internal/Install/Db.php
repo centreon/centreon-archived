@@ -48,7 +48,12 @@ class Db
         ini_set('memory_limit', '-1');
         $di = \Centreon\Internal\Di::getDefault();
         $config = $di->get('config');
-        $targetDb = 'db_' . $targetDbName;
+        
+        if ($targetDbName == 'centreon_storage') {
+            $targetDb = 'db_storage';
+        } else {
+            $targetDb = 'db_' . $targetDbName;
+        }
         $db = $di->get($targetDb);
         
         // Configuration for Propel
@@ -107,11 +112,7 @@ class Db
      */
     public static function getDbFromXml(& $myAppData, $targetDbName)
     {
-        // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
-        $targetDb = 'db_' . $targetDbName;
-        $db = $di->get($targetDb);
-        
+        $db = self::getDbConnector($targetDbName);
         
         $xmlDbFiles = self::buildTargetDbSchema($targetDbName);
         
@@ -269,9 +270,7 @@ class Db
     private static function insertDatas($datasFile, $targetDbName)
     {
         ini_set('memory_limit', '-1');
-        $di = \Centreon\Internal\Di::getDefault();
-        $targetDb = 'db_' . $targetDbName;
-        $db = $di->get($targetDb);
+        $db = self::getDbConnector($targetDbName);
         
         if (file_exists($datasFile)) {
             $tableName = basename($datasFile, '.json');
@@ -281,7 +280,7 @@ class Db
                 $fields = "";
                 $values = "";
                 foreach ($data as $key=>$value) {
-                    $fields .= "$key,";
+                    $fields .= "`$key`,";
                     
                     if (is_array($value)) {
                         if ($value['domain'] == 'php') {
@@ -293,10 +292,23 @@ class Db
                         $values .= "'$value',";
                     }
                 }
-                $insertQuery = "INSERT INTO $tableName (". rtrim($fields, ',') .") VALUES (" . rtrim($values, ',') . ") ";
+                $insertQuery = "INSERT INTO `$tableName` (". rtrim($fields, ',') .") VALUES (" . rtrim($values, ',') . ") ";
                 $db->query($insertQuery);
             }
         }
+    }
+    
+    private static function getDbConnector($dbName)
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        if ($dbName == 'centreon_storage') {
+            $targetDb = 'db_storage';
+        } else {
+            $targetDb = 'db_' . $dbName;
+        }
+        $db = $di->get($targetDb);
+        
+        return $db;
     }
     
     /**

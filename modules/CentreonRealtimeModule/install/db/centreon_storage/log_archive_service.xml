@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon_storage" defaultIdMethod="native">
+    <table name="log_archive_service" phpName="LogArchiveService" idMethod="native">
+        <column name="log_id" phpName="LogId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="OKTimeScheduled" phpName="Oktimescheduled" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="OKnbEvent" phpName="Oknbevent" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="OKTimeAverageAck" phpName="Oktimeaverageack" type="INTEGER" required="true"/>
+        <column name="OKTimeAverageRecovery" phpName="Oktimeaveragerecovery" type="INTEGER" required="true"/>
+        <column name="WARNINGTimeScheduled" phpName="Warningtimescheduled" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="WARNINGnbEvent" phpName="Warningnbevent" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="WARNINGTimeAverageAck" phpName="Warningtimeaverageack" type="INTEGER" required="true"/>
+        <column name="WARNINGTimeAverageRecovery" phpName="Warningtimeaveragerecovery" type="INTEGER" required="true"/>
+        <column name="UNKNOWNTimeScheduled" phpName="Unknowntimescheduled" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="UNKNOWNnbEvent" phpName="Unknownnbevent" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="UNKNOWNTimeAverageAck" phpName="Unknowntimeaverageack" type="INTEGER" required="true"/>
+        <column name="UNKNOWNTimeAverageRecovery" phpName="Unknowntimeaveragerecovery" type="INTEGER" required="true"/>
+        <column name="CRITICALTimeScheduled" phpName="Criticaltimescheduled" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="CRITICALnbEvent" phpName="Criticalnbevent" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="CRITICALTimeAverageAck" phpName="Criticaltimeaverageack" type="INTEGER" required="true"/>
+        <column name="CRITICALTimeAverageRecovery" phpName="Criticaltimeaveragerecovery" type="INTEGER" required="true"/>
+        <column name="UNDETERMINEDTimeScheduled" phpName="Undeterminedtimescheduled" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="MaintenanceTime" phpName="Maintenancetime" type="INTEGER" required="false" defaultValue="0"/>
+        <column name="date_start" phpName="DateStart" type="INTEGER" required="false"/>
+        <column name="date_end" phpName="DateEnd" type="INTEGER" required="false"/>
+        <index name="host_index">
+            <index-column name="host_id"/>
+        </index>
+        <index name="service_index">
+            <index-column name="service_id"/>
+        </index>
+        <index name="date_end_index">
+            <index-column name="date_end"/>
+        </index>
+        <index name="date_start_index">
+            <index-column name="date_start"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>

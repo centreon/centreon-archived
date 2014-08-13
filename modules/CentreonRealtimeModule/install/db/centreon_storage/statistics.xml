@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon_storage" defaultIdMethod="native">
+    <table name="statistics" phpName="Statistics" idMethod="native">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="ctime" phpName="Ctime" type="INTEGER" required="false"/>
+        <column name="lineRead" phpName="Lineread" type="INTEGER" required="false"/>
+        <column name="valueReccorded" phpName="Valuereccorded" type="INTEGER" required="false"/>
+        <column name="last_insert_duration" phpName="LastInsertDuration" type="INTEGER" required="false"/>
+        <column name="average_duration" phpName="AverageDuration" type="INTEGER" required="false"/>
+        <column name="last_nb_line" phpName="LastNbLine" type="INTEGER" required="false"/>
+        <column name="cpt" phpName="Cpt" type="INTEGER" required="false"/>
+        <column name="last_restart" phpName="LastRestart" type="INTEGER" required="false"/>
+        <column name="average" phpName="Average" type="INTEGER" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>
