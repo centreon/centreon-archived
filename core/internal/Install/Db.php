@@ -280,7 +280,7 @@ class Db
                 $fields = "";
                 $values = "";
                 foreach ($data as $key=>$value) {
-                    $fields .= "$key,";
+                    $fields .= "`$key`,";
                     
                     if (is_array($value)) {
                         if ($value['domain'] == 'php') {
@@ -292,7 +292,7 @@ class Db
                         $values .= "'$value',";
                     }
                 }
-                $insertQuery = "INSERT INTO $tableName (". rtrim($fields, ',') .") VALUES (" . rtrim($values, ',') . ") ";
+                $insertQuery = "INSERT INTO `$tableName` (". rtrim($fields, ',') .") VALUES (" . rtrim($values, ',') . ") ";
                 $db->query($insertQuery);
             }
         }

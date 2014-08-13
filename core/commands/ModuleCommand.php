@@ -94,7 +94,7 @@ class ModuleCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function reinstallAction($moduleName)
     {
-        $moduleId = \Centreon\Custom\Module\ModuleInformations::getModuleIdByName($moduleName);
+        $moduleId = \Centreon\Internal\Module\Informations::getModuleIdByName($moduleName);
         $moduleInstaller = $this->getModuleInstaller($moduleName, $moduleId);
         $moduleInstaller->remove();
         unset($moduleInstaller);

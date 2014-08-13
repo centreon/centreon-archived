@@ -256,7 +256,7 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
     private static function getFilesystemModule(& $resultSet)
     {
         // Get current moduleName
-        $moduleNameList = \Centreon\Custom\Module\ModuleInformations::getModuleList();
+        $moduleNameList = \Centreon\Internal\Module\Informations::getModuleList();
         $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         $rawModuleList = glob($path."/modules/*Module/");
         foreach ($rawModuleList as $module) {

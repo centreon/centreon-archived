@@ -1,0 +1,425 @@
+[
+    {
+        "bgcolor": "lightgreen",
+        "icon_class": "fa fa-dashboard",
+        "menu_id": "1",
+        "menu_order": "1",
+        "module_id": "1",
+        "name": "Dashboard",
+        "short_name": "dashboard"
+    },
+    {
+        "bgcolor": "lightseagreen ",
+        "icon_class": "fa fa-bar-chart-o",
+        "menu_id": "2",
+        "menu_order": "2",
+        "module_id": "1",
+        "name": "Performance",
+        "short_name": "performance"
+    },
+    {
+        "bgcolor": "#FA5858",
+        "icon_class": "fa fa-folder-open",
+        "menu_id": "3",
+        "menu_order": "1",
+        "module_id": "2",
+        "name": "Administration",
+        "short_name": "administration"
+    },
+    {
+        "bgcolor": "#CCC",
+        "icon_class": "fa fa-gears",
+        "menu_id": "15",
+        "menu_order": "2",
+        "module_id": "3",
+        "name": "Configuration",
+        "short_name": "configuration"
+    },
+    {
+        "bgcolor": "lightblue",
+        "icon_class": "fa fa-clock-o",
+        "menu_id": "37",
+        "menu_order": "1",
+        "module_id": "4",
+        "name": "Realtime",
+        "short_name": "realtime"
+    },
+    {
+        "bgcolor": "#CCC",
+        "icon_class": "fa fa-home",
+        "menu_id": "46",
+        "menu_order": "1",
+        "module_id": "6",
+        "name": "Home",
+        "short_name": "home"
+    },
+    {
+        "menu_id": "4",
+        "menu_order": "1",
+        "module_id": "2",
+        "name": "ACL",
+        "parent_id": "3",
+        "short_name": "acl"
+    },
+    {
+        "menu_id": "9",
+        "menu_order": "2",
+        "module_id": "2",
+        "name": "Extensions",
+        "parent_id": "3",
+        "short_name": "extensions"
+    },
+    {
+        "menu_id": "11",
+        "menu_order": "3",
+        "module_id": "2",
+        "name": "Options",
+        "parent_id": "3",
+        "short_name": "options"
+    },
+    {
+        "menu_id": "5",
+        "menu_order": "1",
+        "module_id": "2",
+        "name": "ACL action",
+        "parent_id": "4",
+        "short_name": "acl_action",
+        "url": "/administration/aclaction"
+    },
+    {
+        "menu_id": "6",
+        "menu_order": "2",
+        "module_id": "2",
+        "name": "ACL group",
+        "parent_id": "4",
+        "short_name": "acl_group",
+        "url": "/administration/aclgroup"
+    },
+    {
+        "menu_id": "7",
+        "menu_order": "3",
+        "module_id": "2",
+        "name": "ACL menu",
+        "parent_id": "4",
+        "short_name": "acl_menu",
+        "url": "/administration/aclmenu"
+    },
+    {
+        "menu_id": "8",
+        "menu_order": "4",
+        "module_id": "2",
+        "name": "ACL resource",
+        "parent_id": "4",
+        "short_name": "acl_resource",
+        "url": "/administration/aclresource"
+    },
+    {
+        "menu_id": "10",
+        "menu_order": "1",
+        "module_id": "2",
+        "name": "Modules",
+        "parent_id": "9",
+        "short_name": "modules",
+        "url": "/administration/extensions/module"
+    },
+    {
+        "menu_id": "48",
+        "menu_order": "1",
+        "module_id": "6",
+        "name": "Widgets",
+        "parent_id": "9",
+        "short_name": "adminwidgets",
+        "url": "/administration/extensions/widgets"
+    },
+    {
+        "menu_id": "12",
+        "menu_order": "1",
+        "module_id": "2",
+        "name": "Centreon",
+        "parent_id": "11",
+        "short_name": "centreon-options",
+        "url": "/administration/options/centreon"
+    },
+    {
+        "menu_id": "13",
+        "menu_order": "2",
+        "module_id": "2",
+        "name": "Monitoring",
+        "parent_id": "11",
+        "short_name": "monitoring-options",
+        "url": "/administration/options/monitoring"
+    },
+    {
+        "menu_id": "14",
+        "menu_order": "4",
+        "module_id": "2",
+        "name": "RRDTool",
+        "parent_id": "11",
+        "short_name": "rrdtool-options",
+        "url": "/administration/options/rrdtool"
+    },
+    {
+        "menu_id": "16",
+        "menu_order": "1",
+        "module_id": "3",
+        "name": "Hosts",
+        "parent_id": "15",
+        "short_name": "conf_hosts"
+    },
+    {
+        "menu_id": "21",
+        "menu_order": "2",
+        "module_id": "3",
+        "name": "Services",
+        "parent_id": "15",
+        "short_name": "conf_services"
+    },
+    {
+        "menu_id": "26",
+        "menu_order": "3",
+        "module_id": "3",
+        "name": "Commands",
+        "parent_id": "15",
+        "short_name": "conf_commands"
+    },
+    {
+        "menu_id": "29",
+        "menu_order": "4",
+        "module_id": "3",
+        "name": "Users",
+        "parent_id": "15",
+        "short_name": "conf_users"
+    },
+    {
+        "menu_id": "32",
+        "menu_order": "5",
+        "module_id": "3",
+        "name": "Traps",
+        "parent_id": "15",
+        "short_name": "conf_traps"
+    },
+    {
+        "menu_id": "35",
+        "menu_order": "7",
+        "module_id": "3",
+        "name": "Timeperiods",
+        "parent_id": "15",
+        "short_name": "conf_timeperiod",
+        "url": "/configuration/timeperiod"
+    },
+    {
+        "menu_id": "36",
+        "menu_order": "8",
+        "module_id": "3",
+        "name": "Pollers",
+        "parent_id": "15",
+        "short_name": "conf_poller",
+        "url": "/configuration/poller"
+    },
+    {
+        "menu_id": "42",
+        "menu_order": "1",
+        "module_id": "5",
+        "name": "BAM",
+        "parent_id": "15",
+        "short_name": "conf_business_activity"
+    },
+    {
+        "menu_id": "17",
+        "menu_order": "1",
+        "module_id": "3",
+        "name": "Hosts",
+        "parent_id": "16",
+        "short_name": "conf_hosts_list",
+        "url": "/configuration/host"
+    },
+    {
+        "menu_id": "18",
+        "menu_order": "2",
+        "module_id": "3",
+        "name": "Host templates",
+        "parent_id": "16",
+        "short_name": "conf_hosttemplate_list",
+        "url": "/configuration/hosttemplate"
+    },
+    {
+        "menu_id": "19",
+        "menu_order": "3",
+        "module_id": "3",
+        "name": "Host groups",
+        "parent_id": "16",
+        "short_name": "conf_hostgroup_list",
+        "url": "/configuration/hostgroup"
+    },
+    {
+        "menu_id": "20",
+        "menu_order": "4",
+        "module_id": "3",
+        "name": "Host categories",
+        "parent_id": "16",
+        "short_name": "conf_category_list",
+        "url": "/configuration/hostcategory"
+    },
+    {
+        "menu_id": "22",
+        "menu_order": "1",
+        "module_id": "3",
+        "name": "Services",
+        "parent_id": "21",
+        "short_name": "conf_services_list",
+        "url": "/configuration/service"
+    },
+    {
+        "menu_id": "23",
+        "menu_order": "2",
+        "module_id": "3",
+        "name": "Service templates",
+        "parent_id": "21",
+        "short_name": "conf_servicetemplate_list",
+        "url": "/configuration/servicetemplate"
+    },
+    {
+        "menu_id": "24",
+        "menu_order": "3",
+        "module_id": "3",
+        "name": "Servicegroups",
+        "parent_id": "21",
+        "short_name": "conf_servicegroup_list",
+        "url": "/configuration/servicegroup"
+    },
+    {
+        "menu_id": "25",
+        "menu_order": "4",
+        "module_id": "3",
+        "name": "Service categories",
+        "parent_id": "21",
+        "short_name": "conf_servicecategory_list",
+        "url": "/configuration/servicecategory"
+    },
+    {
+        "menu_id": "27",
+        "menu_order": "1",
+        "module_id": "3",
+        "name": "Commands",
+        "parent_id": "26",
+        "short_name": "conf_commands_list",
+        "url": "/configuration/command"
+    },
+    {
+        "menu_id": "28",
+        "menu_order": "2",
+        "module_id": "3",
+        "name": "Connectors",
+        "parent_id": "26",
+        "short_name": "conf_connectors_list",
+        "url": "/configuration/connector"
+    },
+    {
+        "menu_id": "30",
+        "menu_order": "1",
+        "module_id": "3",
+        "name": "Users",
+        "parent_id": "29",
+        "short_name": "conf_users_list",
+        "url": "/configuration/user"
+    },
+    {
+        "menu_id": "31",
+        "menu_order": "2",
+        "module_id": "3",
+        "name": "User groups",
+        "parent_id": "29",
+        "short_name": "conf_usergroups_list",
+        "url": "/configuration/usergroup"
+    },
+    {
+        "menu_id": "33",
+        "menu_order": "1",
+        "module_id": "3",
+        "name": "Traps",
+        "parent_id": "32",
+        "short_name": "conf_traps_list",
+        "url": "/configuration/trap"
+    },
+    {
+        "menu_id": "34",
+        "menu_order": "2",
+        "module_id": "3",
+        "name": "Manufacturers",
+        "parent_id": "32",
+        "short_name": "conf_manufacturers_list",
+        "url": "/configuration/manufacturer"
+    },
+    {
+        "menu_id": "38",
+        "menu_order": "1",
+        "module_id": "4",
+        "name": "Incidents",
+        "parent_id": "37",
+        "short_name": "incidents",
+        "url": "/realtime/incident"
+    },
+    {
+        "menu_id": "39",
+        "menu_order": "2",
+        "module_id": "4",
+        "name": "Services",
+        "parent_id": "37",
+        "short_name": "monitoring-services",
+        "url": "/realtime/service"
+    },
+    {
+        "menu_id": "40",
+        "menu_order": "3",
+        "module_id": "4",
+        "name": "Hosts",
+        "parent_id": "37",
+        "short_name": "monitoring-hosts",
+        "url": "/realtime/host"
+    },
+    {
+        "menu_id": "41",
+        "menu_order": "4",
+        "module_id": "4",
+        "name": "EventLogs",
+        "parent_id": "37",
+        "short_name": "eventlogs",
+        "url": "/realtime/eventlogs"
+    },
+    {
+        "menu_id": "43",
+        "menu_order": "1",
+        "module_id": "5",
+        "name": "Business Activity",
+        "parent_id": "42",
+        "short_name": "conf_ba_list",
+        "url": "/bam/business-activity"
+    },
+    {
+        "menu_id": "44",
+        "menu_order": "2",
+        "module_id": "5",
+        "name": "Business views",
+        "parent_id": "42",
+        "short_name": "conf_bv_lists",
+        "url": "/bam/business-view"
+    },
+    {
+        "menu_id": "45",
+        "menu_order": "3",
+        "module_id": "5",
+        "name": "Indicators",
+        "parent_id": "42",
+        "short_name": "conf_indicators_lists",
+        "url": "/bam/indicator"
+    },
+    {
+        "menu_id": "47",
+        "menu_order": "1",
+        "module_id": "6",
+        "name": "Home page",
+        "parent_id": "46",
+        "short_name": "customviews",
+        "url": "/customview"
+    }
+]
