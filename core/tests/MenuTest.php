@@ -14,9 +14,14 @@ class MenuTest extends DbTestCase
         parent::setUp();
     }
 
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
+
     public function testGetMenu()
     {
         $menu = new Menu();
-        $this->assertGreaterThan(0, count($menu->getMenus()));
+        $this->assertGreaterThan(0, count($menu->getMenu()));
     }
 }
