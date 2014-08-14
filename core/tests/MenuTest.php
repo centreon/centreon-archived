@@ -9,16 +9,6 @@ use \Centreon\Internal\Menu,
 
 class MenuTest extends DbTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
-
     public function testGetMenu()
     {
         $menu = new Menu();
