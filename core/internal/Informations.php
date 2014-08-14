@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,32 +33,34 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal;
 
-namespace Centreon\Internal\Install;
-
-class Upgrade extends \Centreon\Internal\Install\AbstractInstall
+/**
+ * Description of Informations
+ *
+ * @author lionel
+ */
+class Informations
 {
-    public static function upgradeCentreon()
-    {
-        if (\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Migrate::migrateCentreon();
-        } else {
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
-
-            $modulesToUpgrade = self::getCoreModules();
-            
-            foreach($modulesToUpgrade as $module) {
-                $moduleInstaller = new $module['classCall']($module['directory'], $module['infos']);
-                $moduleInstaller->install();
-            }
-        }
-    }
-    
     /**
      * 
+     * @return type
+     * @throws Exception
      */
-    public static function checkForUpdate()
+    public static function getCentreonVersion()
     {
-        return false;
+        $di = \Centreon\Internal\Di::getDefault();
+        $db = $di->get('db_centreon');
+        
+        try {
+            $stmt = $db->query("SELECT `value` FROM informations WHERE `key` = 'version'");
+            $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            if ($e->getCode() == "42S02") {
+                throw new \Exception("Table not exist");
+            }
+        }
+        
+        return $res[0]['value'];
     }
 }

@@ -36,6 +36,8 @@
 
 namespace Centreon\Internal;
 
+use \Centreon\Internal\Utils\CommandLine\Colorize;
+
 class Command
 {
     private $requestLine;
@@ -114,9 +116,9 @@ class Command
         
         foreach ($ListOfCommands as $module => $section) {
             if ($module == 'core') {
-                $moduleColorized = \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText($module, "blue", "black", true);
+                $moduleColorized = Colorize::colorizeText($module, "blue", "black", true);
             } else {
-                $moduleColorized = \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText($module, "purple", "black", true);
+                $moduleColorized = Colorize::colorizeText($module, "purple", "black", true);
             }
             echo "[" . $moduleColorized . "]\n";
             foreach ($section as $sectionName => $call) {
@@ -138,7 +140,7 @@ class Command
                 foreach ($actionList as $action) {
                     if (strpos($action->getName(), "Action")) {
                         $actionName = str_replace("Action", "", $action->getName());
-                        $colorizedAction = \Centreon\Internal\Utils\CommandLine\Colorize::colorizeText($actionName, "yellow", "black", true);
+                        $colorizedAction = Colorize::colorizeText($actionName, "yellow", "black", true);
                         echo "    $moduleColorized:$commandName:$colorizedAction\n";
                     }
                 }
