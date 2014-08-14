@@ -352,7 +352,7 @@ abstract class CentreonBaseModel
                 if (is_array($rawvalue)) {
                     $filterStr = "(";
                     $filterStr .= join(" OR ",
-                        array_pad(array(), count($rawvalue), $key . " = ?")
+                        array_pad(array(), count($rawvalue), $key . " LIKE ?")
                     );
                     $filterStr .= ")";
                     $filterTab = array_merge(
@@ -363,7 +363,7 @@ abstract class CentreonBaseModel
                         )
                     );
                 } else {
-                    $filterStr = $key . " = ?";
+                    $filterStr = $key . " LIKE ?";
                     $filterTab[] = CentreonBaseModel::parseValueForSearch($rawvalue);
                 }
                 if ($first) {
@@ -408,38 +408,24 @@ abstract class CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
-        if ($filterType != "OR" && $filterType != "AND") {
-            throw new Exception('Unknown filter type');
-        }
-        if (is_array($parameterNames)) {
-            $params = implode(",", $parameterNames);
-        } else {
-            $params = $parameterNames;
-        }
-        $sql = "SELECT $params FROM " . static::$table;
-        $filterTab = array();
-        if (count($filters)) {
-            foreach ($filters as $key => $rawvalue) {
-                if (!count($filterTab)) {
-                    $sql .= " WHERE $key LIKE ? ";
-                } else {
-                    $sql .= " $filterType $key LIKE ? ";
-                }
-                $value = trim($rawvalue);
-                $value = str_replace("\\", "\\\\", $value);
-                $value = str_replace("_", "\_", $value);
-                $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = '%'.$value.'%';
+        $searchFilters = array();
+        foreach ($filters as $name => $values) {
+            if (is_array($values)) {
+                $searchFilters[$name] = array_map($values, function($value) {
+                    return '%' . $value . '%';
+                });
+            } else {
+                $searchFilters[$name] = '%' . $values . '%';
             }
         }
-        if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
-            $sql .= " ORDER BY $order $sort ";
-        }
-        if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $sql = $db->limit($sql, $count, $offset);
-        }
-        return static::getResult($sql, $filterTab, "fetchAll");
+        return static::getList(
+            $parameterNames,
+            $count,
+            $offset,
+            $order,
+            $sort,
+            $searchFilters,
+            $filterType);
     }
     
     /**
@@ -458,6 +444,9 @@ abstract class CentreonBaseModel
         $sql = "SELECT $params FROM " . static::$table;
         $sql .= " WHERE " . static::$primaryKey . " LIKE ? ";
         $result = static::getResult($sql, array($id), "fetchAll");
+        if (1 !== count($result)) {
+            throw new Exception("The object doesn't exists in database.");
+        }
         return $result[0];
     }
 
@@ -548,7 +537,7 @@ abstract class CentreonBaseModel
      * @param integer $id
      * @return boolean
      */
-    public static function isUnique($uniqueFieldvalue, $id)
+    public static function isUnique($uniqueFieldvalue, $id = 0)
     {
         $isUnique = true;
         $dbconn = \Centreon\Internal\Di::getDefault()->get('db_centreon');
