@@ -208,7 +208,7 @@ class ConnectorTest extends DbTestCase
         Connector::getParameters(1, array('name', 'test_error'));
     }
 
-    public function testgetList()
+    public function testGetList()
     {
         $testResult = array(
             array(
@@ -286,6 +286,30 @@ class ConnectorTest extends DbTestCase
             array('name' => 'SSH')
         );
         $result = Connector::getList('name', -1, 0, null, 'ASC', array('name' => array('SSH', 'Perl')));
+        $this->assertEquals($testResult, $result);
+
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            "Unknown filter type",
+            0
+        );
+        Connector::getList('name', -1, 0, null, 'ASC', array('name' => array('SSH', 'Perl')), 'ERR');
+    }
+
+    public function testGetListBySearch()
+    {
+        $testResult = array(
+            array('name' => 'Perl'),
+            array('name' => 'SSH')
+        );
+        $result = Connector::getListBySearch('name');
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array('name' => 'Perl'),
+            array('name' => 'SSH')
+        );
+        $result = Connector::getListBySearch('name', -1, 0, null, 'ASC', array('description' => 'Connector'));
         $this->assertEquals($testResult, $result);
     }
 }
