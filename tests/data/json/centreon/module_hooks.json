@@ -1,0 +1,8 @@
+[
+    {
+        "hook_id": "1",
+        "module_hook_description": "Displays bookmarked views",
+        "module_hook_name": "displayBookmarkedViews",
+        "module_id": "6"
+    }
+]

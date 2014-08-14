@@ -42,56 +42,14 @@ class Hook
     private static $hookCache;
     private static $moduleHookCache;
 
-    /**
-     * Get hook cache
-     *
-     * @return array
-     */
-    private static function getHookCache()
-    {
-        $db = Di::getDefault()->get('db_centreon');
-        if (!isset(self::$hookCache)) {
-            self::$hookCache = array('id' => array(), 'name' => array());
-            $sql = "SELECT hook_id, hook_name, hook_description FROM hooks";
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                self::$hookCache['id'][$row['hook_id']] = $row;
-                self::$hookCache['name'][$row['hook_name']] = $row;
-            }
-        }
-        return self::$hookCache;
-    }
 
     /**
-     * Get module hook cache
-     *
-     * @return array
+     * Reset static properties
      */
-    private static function getModuleHookCache()
+    public static function reset()
     {
-        $db = Di::getDefault()->get('db_centreon');
-        if (!isset(self::$moduleHookCache)) {
-            self::$moduleHookCache = array();
-            $sql = "SELECT module_id, hook_id, module_hook_name, module_hook_description
-                FROM module_hooks";
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-            $rows = $stmt->fetchAll();
-            foreach ($rows as $row) {
-                $unique = implode(
-                    "_",
-                    array(
-                        $row['module_id'],
-                        $row['hook_id'],
-                        $row['module_hook_name']
-                    )
-                );
-                self::$moduleHookCache[$unique] = $row;
-            }
-        }
-        return self::$moduleHookCache;
+        static::$hookCache = null;
+        static::$moduleHookCache = null;
     }
 
     /**
@@ -99,7 +57,7 @@ class Hook
      * 
      * @param string $hookName
      * @return int 
-     * @throws \Centreon\Exception
+     * @throws \Centreon\Internal\Exception
      */
     public static function getHookId($hookName)
     {
@@ -116,6 +74,7 @@ class Hook
      *
      * @param string $hookId
      * @return string
+     * @throws \Centreon\Internal\Exception
      */
     public static function getHookName($hookId)
     {
@@ -134,7 +93,7 @@ class Hook
      * @param string $hookName
      * @param string $moduleHookName
      * @param string $moduleHookDescription
-     * @throws \Centreon\Exception
+     * @throws \Centreon\Internal\Exception
      */
     public static function register($moduleId, $hookName, $moduleHookName, $moduleHookDescription)
     {
@@ -168,7 +127,7 @@ class Hook
      * @param int $moduleId
      * @param string $hookName
      * @param string $moduleHookName
-     * @throws \Centreon\Exception
+     * @throws \Centreon\Internal\Exception
      */
     public static function unregister($moduleId, $hookName, $moduleHookName)
     {
@@ -179,13 +138,13 @@ class Hook
             throw new Exception(sprintf(_('Could not find module hook named %s'), $moduleHookName));
         }
         $db = Di::getDefault()->get('db_centreon');
-        $db->prepare(
+        $stmt = $db->prepare(
             "DELETE FROM module_hooks 
             WHERE module_id = ? 
             AND hook_id = ? 
             AND module_hook_name = ?"
         );
-        $db->execute(array($moduleId, $hookId, $moduleHookName));
+        $stmt->execute(array($moduleId, $hookId, $moduleHookName));
         unset(self::$moduleHookCache[$unique]);
     }
 
@@ -287,5 +246,57 @@ class Hook
                 );
             }
         }
+    }
+
+    /**
+     * Get hook cache
+     *
+     * @return array
+     */
+    private static function getHookCache()
+    {
+        $db = Di::getDefault()->get('db_centreon');
+        if (!isset(self::$hookCache)) {
+            self::$hookCache = array('id' => array(), 'name' => array());
+            $sql = "SELECT hook_id, hook_name, hook_description FROM hooks";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
+            foreach ($rows as $row) {
+                self::$hookCache['id'][$row['hook_id']] = $row;
+                self::$hookCache['name'][$row['hook_name']] = $row;
+            }
+        }
+        return self::$hookCache;
+    }
+
+    /**
+     * Get module hook cache
+     *
+     * @return array
+     */
+    private static function getModuleHookCache()
+    {
+        $db = Di::getDefault()->get('db_centreon');
+        if (!isset(self::$moduleHookCache)) {
+            self::$moduleHookCache = array();
+            $sql = "SELECT module_id, hook_id, module_hook_name, module_hook_description
+                FROM module_hooks";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
+            foreach ($rows as $row) {
+                $unique = implode(
+                    "_",
+                    array(
+                        $row['module_id'],
+                        $row['hook_id'],
+                        $row['module_hook_name']
+                    )
+                );
+                self::$moduleHookCache[$unique] = $row;
+            }
+        }
+        return self::$moduleHookCache;
     }
 }

@@ -200,5 +200,17 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
         $strTruncate .= "SET foreign_key_checks = 1;\n";
         \PropelSQLParser::executeString($strTruncate, $db);
     }
+
+    protected function tableEqualsXml($table, $xmlFile)
+    {
+        $dataset = $this->createFlatXmlDataSet(
+            $xmlFile
+        )->getTable($table);
+        $tableResult = $this->getConnection()->createQueryTable(
+            $table,
+            "SELECT * FROM $table"
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+    }
 }
 

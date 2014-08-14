@@ -1,0 +1,8 @@
+[
+    {
+        "hook_description": "Displays contents in left menu",
+        "hook_id": "1",
+        "hook_name": "displayLeftMenu",
+        "hook_type": "0"
+    }
+]

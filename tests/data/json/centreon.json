@@ -1,4 +1,6 @@
 [
     "module",
-    "menus"
+    "menus",
+    "hooks",
+    "module_hooks"
 ]
