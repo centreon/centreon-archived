@@ -17,6 +17,7 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
     protected static $tables = array();
     protected $conn = null;
     protected $dataPath = null;
+    protected static $bootstrapExtraSteps = array();
 
     public static function setUpBeforeClass()
     {
@@ -24,6 +25,7 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
         $bootstrap = new Bootstrap();
         $bootstrap->init($bootstrapSteps);
         self::installTables();
+        $bootstrap->init(static::$bootstrapExtraSteps);
     }
 
     public static function tearDownAfterClass()
