@@ -312,4 +312,100 @@ class ConnectorTest extends DbTestCase
         $result = Connector::getListBySearch('name', -1, 0, null, 'ASC', array('description' => 'Connector'));
         $this->assertEquals($testResult, $result);
     }
+
+    public function testGet()
+    {
+        $testResult = array(
+            'id' => 1,
+            'name' => 'Perl',
+            'description' => 'Connector for embeded perl',
+            'command_line' => '$CONNECTORS$/perl',
+            'enabled' => 1,
+            'created' => 1407836372,
+            'modified' => 1407836372
+        );
+        $result = Connector::get(1);
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            'name' => 'Perl',
+        );
+        $result = Connector::get(1, 'name');
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            'name' => 'Perl',
+            'description' => 'Connector for embeded perl',
+        );
+        $result = Connector::get(1, array('name', 'description'));
+        $this->assertEquals($testResult, $result);
+
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            "The object doesn't exists in database.",
+            0
+        );
+        Connector::get(42);
+    }
+
+    public function testGetIdByParameter()
+    {
+        $testResult = array(1);
+        $result = Connector::getIdByParameter('name', 'Perl');
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(1, 2);
+        $result = Connector::getIdByParameter('name', array('Perl', 'SSH'));
+        $this->assertEquals($testResult, $result);
+
+        $this->setExpectedException(
+            'PDOException',
+            '',
+            '42S22'
+        );
+        Connector::getIdByParameter('errColumn', 'Perl');
+    }
+
+    public function testGetPrimaryKey()
+    {
+        $this->assertEquals('id', Connector::getPrimaryKey());
+    }
+
+    public function testGetUniqueLabelField()
+    {
+        $this->assertEquals('name', Connector::getUniqueLabelField());
+    }
+
+    public function getRelations()
+    {
+        $this->assertEquals(array(), Connector::getRelations());
+    }
+
+    public function testIsUnique()
+    {
+        $this->assertTrue(Connector::isUnique('Perl', 1));
+        $this->assertFalse(Connector::isUnique('Perl', 2));
+        $this->assertFalse(Connector::isUnique('Perl'));
+    }
+
+    public function testGetTableName()
+    {
+        $this->assertEquals('connector', Connector::getTableName());
+    }
+
+    public function testGetColumns()
+    {
+        $this->assertEquals(
+            array(
+                'id',
+                'name',
+                'description',
+                'command_line',
+                'enabled',
+                'created',
+                'modified'
+            ),
+            Connector::getColumns()
+        );
+    }
 }
