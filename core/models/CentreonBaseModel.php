@@ -444,6 +444,9 @@ abstract class CentreonBaseModel
         $sql = "SELECT $params FROM " . static::$table;
         $sql .= " WHERE " . static::$primaryKey . " LIKE ? ";
         $result = static::getResult($sql, array($id), "fetchAll");
+        if (1 !== count($result)) {
+            throw new Exception("The object doesn't exists in database.");
+        }
         return $result[0];
     }
 
@@ -534,7 +537,7 @@ abstract class CentreonBaseModel
      * @param integer $id
      * @return boolean
      */
-    public static function isUnique($uniqueFieldvalue, $id)
+    public static function isUnique($uniqueFieldvalue, $id = 0)
     {
         $isUnique = true;
         $dbconn = \Centreon\Internal\Di::getDefault()->get('db_centreon');
