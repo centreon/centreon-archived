@@ -242,7 +242,7 @@ abstract class CentreonBaseModel
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $sourceParams = static::getParameters($sourceObjectId, "*");
         if (false === $sourceParams) {
-            throw new Exception("The object doesn't exists in database.");
+            throw new Exception("The object doesn't exist in database.");
         }
         if (isset($sourceParams[static::$primaryKey])) {
             unset($sourceParams[static::$primaryKey]);
@@ -313,7 +313,7 @@ abstract class CentreonBaseModel
 
         /* Raise exception if object doesn't exists */
         if (false === $result) {
-            throw new Exception("The object doesn't exists in database.");
+            throw new Exception("The object doesn't exist in database.");
         }
         return $result;
     }
@@ -451,7 +451,7 @@ abstract class CentreonBaseModel
         $sql .= " WHERE " . static::$primaryKey . " LIKE ? ";
         $result = static::getResult($sql, array($id), "fetchAll");
         if (1 !== count($result)) {
-            throw new Exception("The object doesn't exists in database.");
+            throw new Exception("The object doesn't exist in database.");
         }
         return $result[0];
     }

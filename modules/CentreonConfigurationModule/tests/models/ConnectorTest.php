@@ -87,7 +87,7 @@ class ConnectorTest extends DbTestCase
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
-        /* Test exception object doesn't exists */
+        /* Test exception object doesn't exist */
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             "Object not in database.",
@@ -172,7 +172,7 @@ class ConnectorTest extends DbTestCase
 
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exists in database.",
+            "The object doesn't exist in database.",
             0
         );
         Connector::duplicate(42);
@@ -204,7 +204,7 @@ class ConnectorTest extends DbTestCase
     {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exists in database.",
+            "The object doesn't exist in database.",
             0
         );
         $connector = Connector::getParameters(3, '*');
@@ -356,7 +356,7 @@ class ConnectorTest extends DbTestCase
 
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exists in database.",
+            "The object doesn't exist in database.",
             0
         );
         Connector::get(42);
