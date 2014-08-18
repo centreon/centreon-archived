@@ -35,7 +35,7 @@
  */
 
 
-namespace CentreonConfiguration\Models\Relation\Service;
+namespace CentreonConfiguration\Models\Relation\Servicetemplate;
 
 use \Centreon\Models\CentreonRelationModel;
 
