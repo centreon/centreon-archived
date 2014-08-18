@@ -1,0 +1,21 @@
+[
+    {
+        "contact_id": "1",
+        "contact_name": "John Doe",
+        "contact_alias": "jdoe",
+        "contact_passwd": "2995cb0650c5f107230ed569a8c4d6e5",
+        "contact_lang": "en_US",
+        "contact_host_notification_options": "n",
+        "contact_service_notification_options": "n",
+        "contact_email": "jdoe@localhost",
+        "contact_js_effects": "0",
+        "contact_location": "0",
+        "contact_oreon": "1",
+        "contact_enable_notifications": "2",
+        "contact_admin": "0",
+        "contact_type_msg": "txt",
+        "contact_activate": "0",
+        "contact_auth_type": "local",
+        "contact_register": "1"
+    }
+]

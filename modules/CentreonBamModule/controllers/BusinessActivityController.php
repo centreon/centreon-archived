@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -42,8 +41,8 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     protected $objectName = 'businessactivity';
     protected $objectBaseUrl = '/bam/business-activity';
     protected $objectClass = '\CentreonBam\Models\Businessactivity';
+    protected $datatableObject = '\CentreonBam\Internal\BusinessactivityDatatable';
     
-    public static $moduleName = 'CentreonBam';
     public static $relationMap = array();
     
     /**
@@ -59,16 +58,6 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     /**
      * 
      * @method get
-     * @route /bam/business-activity/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * 
-     * @method get
      * @route /bam/business-activity/formlist
      */
     public function formListAction()
@@ -77,14 +66,13 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     }
     
     /**
-     * Create a new business activity
-     *
-     * @method post
-     * @route /bam/business-activity/add
+     * 
+     * @method get
+     * @route /bam/business-activity/list
      */
-    public function createAction()
+    public function datatableAction()
     {
-        parent::createAction();
+        parent::datatableAction();
     }
     
     /**
@@ -100,6 +88,17 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     }
     
     /**
+     * Create a new business activity
+     *
+     * @method post
+     * @route /bam/business-activity/add
+     */
+    public function createAction()
+    {
+        parent::createAction();
+    }
+    
+    /**
      * Add a business activity
      *
      * @method get
@@ -107,8 +106,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/bam/business-activity/add');
+        $this->tpl->assign('validateUrl', '/bam/business-activity/add');
         parent::addAction();
     }
     
