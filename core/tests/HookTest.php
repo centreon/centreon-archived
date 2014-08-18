@@ -2,11 +2,12 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Hook;
+use \Centreon\Internal\Hook,
+    \Centreon\Internal\Di;
 
 class HookTest extends DbTestCase
 {
-    protected static $bootstrapExtraSteps = array('actionHooks');
+    protected static $bootstrapExtraSteps = array('actionHooks', 'template');
 
     public function tearDown()
     {
@@ -88,31 +89,107 @@ class HookTest extends DbTestCase
 
     public function testUnregisterException()
     {
-
+        $this->setExpectedException(
+            "\Centreon\Internal\Exception",
+            "Could not find module hook named idontexist"
+        );
+        Hook::unregister(
+            6,
+            'displayLeftMenu',
+            'idontexist'
+        );
+        $this->setExpectedException(
+            "\Centreon\Internal\Exception",
+            "Could not find module hook named idontexist"
+        );
+        Hook::unregister(
+            9999,
+            'displayLeftMenu',
+            'displayBookmarkedViews'
+        );
+        $this->setExpectedException(
+            "\Centreon\Internal\Exception",
+            "Could not find module hook named idontexist"
+        );
+        Hook::unregister(
+            6,
+            'idontexist',
+            'displayBookmarkedViews'
+        ); 
     }
 
     public function testGetModulesFromHook()
     {
-
+        $arr = Hook::getModulesFromHook();
+        $this->assertEquals(1, count($arr));
     }
 
-    public function testGetModulesFromHookWithHookType()
+    public function testGetModulesFromHookWithHookTypeDisplay()
     {
+        $arr = Hook::getModulesFromHook(Hook::TYPE_DISPLAY);
+        $this->assertEquals(1, count($arr));
+    }
 
+    public function testGetModulesFromHookWithHookTypeAction()
+    {
+        $arr = Hook::getModulesFromHook(Hook::TYPE_ACTION);
+        $this->assertEquals(0, count($arr));
+    }
+
+    public function testGetModulesFromHookWithUnknownHookType()
+    {
+        $this->setExpectedException(
+            "\Centreon\Internal\Exception",
+            "Unknown hook type 9999"
+        );
+        $arr = Hook::getModulesFromHook(9999);
     }
 
     public function testGetModulesFromHookWithHookName()
     {
+        $arr = Hook::getModulesFromHook(null, 'displayLeftMenu');
+        $this->assertEquals(1, count($arr));
+    }
 
+    public function testGetModulesFromHookWithUnknownHookName()
+    {
+        $arr = Hook::getModulesFromHook(null, 'idontexist');
+        $this->assertEquals(0, count($arr));
     }
 
     public function testGetModulesFromWithHookTypeAndHookName()
     {
-
+        $arr = Hook::getModulesFromHook(Hook::TYPE_DISPLAY, 'displayLeftMenu');
+        $this->assertEquals(1, count($arr));
     }
 
-    public function testExecute()
+    public function testExecuteDisplayHook()
     {
+        ob_start();
+        Di::getDefault()->get('router')->dispatch();
+        ob_end_clean();
+        $result = Hook::execute('displayLeftMenu', array('test_key' => 'test_value'));
+        $this->assertEquals(1, count($result));
+    }
 
+    public function testExecuteInvalidDisplayHook()
+    {
+        ob_start();
+        Di::getDefault()->get('router')->dispatch();
+        ob_end_clean();
+        $this->setExpectedException(
+            "\Centreon\Internal\Exception",
+            "Invalid hook name idontexist"
+        );
+        $result = Hook::execute('idontexist', array('test_key' => 'test_value'));
+    }
+
+    public function testExecuteEmptyDisplayHook()
+    {
+        ob_start();
+        Di::getDefault()->get('router')->dispatch();
+        ob_end_clean();
+        $result = Hook::execute('displayIdontexist', array('test_key' => 'test_value'));
+        $this->assertEquals(0, count($result));
     }
 }

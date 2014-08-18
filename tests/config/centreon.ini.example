@@ -1,3 +1,6 @@
+[global]
+centreon_path=/srv/centreon
+
 [db_centreon]
 dsn="mysql:host=localhost;dbname=centreon"
 username=centreon

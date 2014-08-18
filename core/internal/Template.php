@@ -254,7 +254,7 @@ class Template extends \Smarty
     public function addCss($fileName, $module = 'centreon')
     {
         if ($this->isStaticFileExist('css', $fileName, $module) === false) {
-            throw new Exception(_('The given file does not exist'));
+            throw new Exception('The given file does not exist');
         }
 
         $config = Di::getDefault()->get('config');
@@ -279,7 +279,7 @@ class Template extends \Smarty
     public function addJs($fileName, $loadingLocation = 'bottom', $module = 'centreon')
     {
         if ($this->isStaticFileExist('js', $fileName, $module) === false) {
-            throw new Exception(_('The given file does not exist'));
+            throw new Exception('The given file does not exist');
         }
         
         switch(strtolower($loadingLocation)) {
