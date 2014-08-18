@@ -97,7 +97,7 @@ class User
         );
         $params = $contactObj->getParameters($userId, $paramArr);
         if (!is_array($params) || !count($params)) {
-            throw new Exception(_('Unknown user id'));
+            throw new Exception('Unknown user id');
         }
         $this->id = $params['contact_id'];
         $this->name = $params['contact_name'];

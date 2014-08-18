@@ -100,7 +100,7 @@ class Hook
         $unique = implode("_", array($moduleId, self::getHookId($hookName), $moduleHookName));
         $moduleHookCache = self::getModuleHookCache();
         if (isset($moduleHookCache[$unique])) {
-            throw new Exception(_('Hook already registered'));
+            throw new Exception('Hook already registered');
         }
         $db = Di::getDefault()->get('db_centreon');
         $sql = "INSERT INTO module_hooks 
