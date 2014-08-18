@@ -65,7 +65,7 @@ class Hook
         if (isset($hooks['name'][$hookName]) && isset($hooks['name'][$hookName]['hook_id'])) {
             return $hooks['name'][$hookName]['hook_id'];
         } else {
-            throw new Exception(sprintf(_('Could not find hook named %s'), $hookName));
+            throw new Exception(sprintf('Could not find hook named %s', $hookName));
         }
     }
 
@@ -82,7 +82,7 @@ class Hook
         if (isset($hooks['id'][$hookId]) && isset($hooks['id'][$hookId]['hook_name'])) {
             return $hooks['id'][$hookId]['hook_name'];
         } else {
-            throw new Exception(sprintf(_('Could not find hook id %s'), $hookId));
+            throw new Exception(sprintf('Could not find hook id %s', $hookId));
         }
     }
 
@@ -135,7 +135,7 @@ class Hook
         $unique = implode("_", array($moduleId, $hookId, $moduleHookName));
         $moduleHookCache = self::getModuleHookCache();
         if (!isset($moduleHookCache[$unique])) {
-            throw new Exception(sprintf(_('Could not find module hook named %s'), $moduleHookName));
+            throw new Exception(sprintf('Could not find module hook named %s', $moduleHookName));
         }
         $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare(
@@ -166,6 +166,9 @@ class Hook
             $filters[] = $hookName;
         }
         if (!is_null($hookType)) {
+            if (!in_array($hookType, array(static::TYPE_DISPLAY, static::TYPE_ACTION))) {
+                throw new Exception(sprintf('Unknown hook type %s', $hookType));
+            }
             $sql .= " AND h.hook_type = ? ";
             $filters[] = $hookType;
         }
@@ -202,10 +205,6 @@ class Hook
                     array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"),
                     $params
                 );
-                /* has no template */
-                $hookData[$i] = $data;
-                $i++;
-                continue;
                 /* has template */
                 $templateFile = "$path/modules/{$commonName}Module/views/{$data[0]}";
                 if (is_array($data) && count($data) && is_file($templateFile)) {
@@ -214,8 +213,10 @@ class Hook
                     if (isset($data[1]) && is_array($data[1])) {
                         $hookData[$i]['variables'] = $data[1];
                     }
-                    $i++;
+                } else { /* has no template */
+                    $hookData[$i] = $data;
                 }
+                $i++;
             }
         }
         return $hookData;
