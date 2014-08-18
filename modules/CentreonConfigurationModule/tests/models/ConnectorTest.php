@@ -88,12 +88,12 @@ class ConnectorTest extends DbTestCase
         $this->assertTablesEqual($dataset, $tableResult);
 
         /* Test exception object doesn't exists */
-        Connector::delete(42);
-        $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            "Object not in database.",
+            0
         );
-        $this->assertTablesEqual($dataset, $tableResult);
+        Connector::delete(42);
     }
 
     public function testUpdate()
@@ -113,16 +113,15 @@ class ConnectorTest extends DbTestCase
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
-        $newInformation = array(
-            'name' => 'Perl'
-        );
-        Connector::update(42, $newInformation);
         $tableResult = $this->getConnection()->createQueryTable(
             'connector',
             'SELECT * FROM connector'
         );
         $this->assertTablesEqual($dataset, $tableResult);
+    }
 
+    public function testUpdateNotUnique()
+    {
         /* Test exception unique */
         $newInformation = array(
             'name' => 'Perl'
@@ -133,6 +132,18 @@ class ConnectorTest extends DbTestCase
             23000
         );
         Connector::update(2, $newInformation);
+    }
+
+    public function testUpdateNotFound() {
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            "Object not in database.",
+            0
+        );
+        $newInformation = array(
+            'name' => 'Perl'
+        );
+        Connector::update(42, $newInformation);
     }
 
     public function testDuplicate()
@@ -187,7 +198,10 @@ class ConnectorTest extends DbTestCase
 
         $connector = Connector::getParameters(2, array('name', 'enabled'));
         $this->assertEquals($connector, array('name' => 'SSH', 'enabled' => 1));
+    }
 
+    public function testGetParametersNotFound()
+    {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             "The object doesn't exists in database.",
