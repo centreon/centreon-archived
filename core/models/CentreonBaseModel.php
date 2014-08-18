@@ -207,9 +207,12 @@ abstract class CentreonBaseModel
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
             }
-            $type = \PDO::PARAM_STR;
             if (is_null($value)) {
                 $type = \PDO::PARAM_NULL;
+            } else if (isset($is_int_attribute[$key])) {
+                $type = \PDO::PARAM_INT;
+            } else {
+                $type = \PDO::PARAM_STR;
             }
             $sqlParams[] = array('value' => $value, 'type' => $type);
         }

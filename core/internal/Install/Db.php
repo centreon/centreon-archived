@@ -284,12 +284,12 @@ class Db
                     
                     if (is_array($value)) {
                         if ($value['domain'] == 'php') {
-                            $values .= "'" . $value['function']() ."',";
+                            $values .= $db->quote($value['function']()) . ",";
                         } else {
                             $values .= "$value[function](),";
                         }
                     } else {
-                        $values .= "'$value',";
+                        $values .= $db->quote($value) . ",";
                     }
                 }
                 $insertQuery = "INSERT INTO `$tableName` (". rtrim($fields, ',') .") VALUES (" . rtrim($values, ',') . ") ";

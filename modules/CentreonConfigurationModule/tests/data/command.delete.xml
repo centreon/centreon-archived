@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="command">
+    <column>command_id</column>
+    <column>connector_id</column>
+    <column>command_name</column>
+    <column>command_line</column>
+    <column>command_example</column>
+    <column>command_type</column>
+    <column>enable_shell</column>
+    <column>command_comment</column>
+    <column>graph_id</column>
+    <column>cmd_cat_id</column>
+    <row>
+      <value>1</value>
+      <null/>
+      <value>Test notif</value>
+      <value>/usr/bin/mail -s $ARG1$</value>
+      <value>/usr/bin/mail -s 'Subject'</value>
+      <value>1</value>
+      <value>1</value>
+      <value>Notification : send a mail</value>
+      <null/>
+      <null/>
+    </row>
+    <row>
+      <value>3</value>
+      <value>1</value>
+      <value>Test connector</value>
+      <value>$USER1$/check_connector.pl -w $ARG1$ -c $ARG2$</value>
+      <value>$USER1$/check_connector.pl -w 80 -c 90</value>
+      <value>2</value>
+      <value>0</value>
+      <value>Check : check connector</value>
+      <null/>
+      <null/>
+    </row>
+  </table>
+</dataset>
