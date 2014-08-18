@@ -35,6 +35,9 @@
 
 namespace Centreon\Internal;
 
+use \CentreonConfiguration\Models\Contact,
+    \Centreon\Internal\Exception;
+
 /**
  * Object that represents the logged in user
  */
@@ -73,20 +76,12 @@ class User
 
     /**
      * Constructor
-     */
-    public function __construct()
-    {
-
-    }
-
-    /**
-     * Init user information
      *
      * @param int $userId
      */
-    public function init($userId)
+    public function __construct($userId)
     {
-        $contactObj = new \CentreonConfiguration\Models\Contact();
+        $contactObj = new Contact();
         $paramArr = array(
             'contact_id',
             'contact_name',

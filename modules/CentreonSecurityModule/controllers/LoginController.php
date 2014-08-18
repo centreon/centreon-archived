@@ -34,6 +34,13 @@
  */
 namespace CentreonSecurity\Controllers;
 
+use \Centreon\Internal\User,
+    \Centreon\Internal\Form,
+    \Centreon\Internal\Di,
+    \Centreon\Internal\Auth\Sso,
+    \Centreon\Internal\Session,
+    \Centreon\Internal\Acl;
+
 /**
  * Login controller
  * @authors Maximilien Bersoult
@@ -50,7 +57,7 @@ class LoginController extends \Centreon\Internal\Controller
      */
     public function loginAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $redirectUrl = $router->request()->param(
             'redirect',
@@ -58,7 +65,7 @@ class LoginController extends \Centreon\Internal\Controller
         );
         $tmpl = $di->get('template');
         
-        $tmpl->assign('csrf', \Centreon\Internal\Form::getSecurityToken());
+        $tmpl->assign('csrf', Form::getSecurityToken());
         $tmpl->assign('redirect', $redirectUrl);
         $tmpl->assign('base_url', $di->get('config')->get('global', 'base_url'));
         $tmpl->display('file:[CentreonSecurityModule]login.tpl');
@@ -72,14 +79,14 @@ class LoginController extends \Centreon\Internal\Controller
      */
     public function loginPostAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $username = $router->request()->param('login');
         $password = $router->request()->param('passwd');
         $csrf = $router->request()->param('csrf');
         /* Validate CSRF */
         try {
-            \Centreon\Internal\Form::validateSecurity($csrf);
+            Form::validateSecurity($csrf);
         } catch (\Exception $e) {
             $router->response()->json(
                 array(
@@ -88,13 +95,12 @@ class LoginController extends \Centreon\Internal\Controller
                 )
             );
         }
-        $auth = new \Centreon\Internal\Auth\Sso($username, $password, 0);
+        $auth = new Sso($username, $password, 0);
         if (1 === $auth->passwdOk) {
-            $user = new \Centreon\Internal\User();
-            $user->init($auth->userInfos['contact_id']);
+            $user = new User($auth->userInfos['contact_id']);
             $_SESSION['user'] = $user;
-            \Centreon\Internal\Session::init($user->getId());
-            $_SESSION['acl'] = new \Centreon\Internal\Acl($user);
+            Session::init($user->getId());
+            $_SESSION['acl'] = new Acl($user);
             $backUrl = $user->getHomePage();
             $router->response()->json(
                 array(
@@ -121,7 +127,7 @@ class LoginController extends \Centreon\Internal\Controller
     {
         // session_regenerate_id(true);
         session_destroy();
-        \Centreon\Internal\Di::getDefault()
+        Di::getDefault()
             ->get('router')
             ->response()->json(
                 array(

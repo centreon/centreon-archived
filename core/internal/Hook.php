@@ -206,8 +206,9 @@ class Hook
                     $params
                 );
                 /* has template */
-                $templateFile = "$path/modules/{$commonName}Module/views/{$data[0]}";
-                if (is_array($data) && count($data) && is_file($templateFile)) {
+
+                if (is_array($data) && count($data) && isset($data[0]) && 
+                    is_file("$path/modules/{$commonName}Module/views/{$data[0]}")) {
                     $hookData[$i]['template'] = $data[0];
                     $hookData[$i]['variables'] = array();
                     if (isset($data[1]) && is_array($data[1])) {
