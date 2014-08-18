@@ -173,6 +173,9 @@ abstract class CentreonBaseModel
         $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
+        if (1 !== $stmt->rowCount()) {
+            throw new Exception('Object not in database.');
+        }
     }
 
     /**
@@ -222,6 +225,9 @@ abstract class CentreonBaseModel
                 $i++;
             }
             $stmt->execute();
+            if (1 !== $stmt->rowCount()) {
+                throw new Exception('Object not in database.');
+            }
         }
     }
 
