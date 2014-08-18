@@ -216,7 +216,7 @@ class CommandTest extends DbTestCase
     public function testDuplicateNotFound() {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exists in database.",
+            "The object doesn't exist in database.",
             0
         );
         Command::duplicate(42);
@@ -251,7 +251,7 @@ class CommandTest extends DbTestCase
     {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exists in database.",
+            "The object doesn't exist in database.",
             0
         );
         $connector = Command::getParameters(42, '*');
@@ -448,7 +448,7 @@ class CommandTest extends DbTestCase
     {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exists in database.",
+            "The object doesn't exist in database.",
             0
         );
         Command::get(42);
