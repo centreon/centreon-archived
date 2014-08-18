@@ -42,8 +42,8 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $objectName = 'businessview';
     protected $objectBaseUrl = '/bam/business-view';
     protected $objectClass = '\CentreonBam\Models\Businessview';
+    protected $datatableObject = '\CentreonBam\Internal\BusinessviewDatatable';
     
-    public static $moduleName = 'CentreonBam';
     public static $relationMap = array();
     
     /**
@@ -59,6 +59,16 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     /**
      * 
      * @method get
+     * @route /bam/business-view/formlist
+     */
+    public function formListAction()
+    {
+        parent::formListAction();
+    }
+    
+    /**
+     * 
+     * @method get
      * @route /bam/business-view/list
      */
     public function datatableAction()
@@ -67,13 +77,14 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     }
     
     /**
-     * 
-     * @method get
-     * @route /bam/business-view/formlist
+     * Create a new business view
+     *
+     * @method post
+     * @route /bam/business-view/add
      */
-    public function formListAction()
+    public function createAction()
     {
-        parent::formListAction();
+        parent::createAction();
     }
     
     /**
@@ -96,20 +107,8 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/bam/business-view/add');
+        $this->tpl->assign('validateUrl', '/bam/business-view/add');
         parent::addAction();
-    }
-    
-    /**
-     * Create a new business view
-     *
-     * @method post
-     * @route /bam/business-view/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
     }
     
     /**

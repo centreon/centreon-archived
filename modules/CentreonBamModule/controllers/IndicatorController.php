@@ -42,8 +42,9 @@ class IndicatorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectName = 'indicator';
     protected $objectBaseUrl = '/bam/indicator';
     protected $objectClass = '\CentreonBam\Models\Indicator';
+    protected $datatableObject = '\CentreonBam\Internal\IndicatorDatatable';
     
-    public static $moduleName = 'CentreonBam';
+    public static $relationMap = array();
     
     /**
      * 
