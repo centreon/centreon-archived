@@ -98,7 +98,7 @@ abstract class CentreonBaseModel
             $sql_attr = "SHOW FIELDS FROM " . static::$table;
             $res = static::getResult($sql_attr, array(), "fetchAll");
             foreach ($res as $tab) {
-                if ($tab['Null'] == 'No') {
+                if (strtoupper($tab['Null']) == 'NO') {
                     $not_null_attributes[$tab['Field']] = true;
                 }
                 if (strstr($tab['Type'], 'int')) {
@@ -142,9 +142,12 @@ abstract class CentreonBaseModel
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
                 $value = null;
             }
-            $type = \PDO::PARAM_STR;
             if (is_null($value)) {
                 $type = \PDO::PARAM_NULL;
+            } else if (isset($is_int_attribute[$key])) {
+                $type = \PDO::PARAM_INT;
+            } else {
+                $type = \PDO::PARAM_STR;
             }
             $sqlParams[] = array('value' => trim($value), 'type' => $type);
         }
@@ -420,9 +423,9 @@ abstract class CentreonBaseModel
         $searchFilters = array();
         foreach ($filters as $name => $values) {
             if (is_array($values)) {
-                $searchFilters[$name] = array_map($values, function($value) {
+                $searchFilters[$name] = array_map(function($value) {
                     return '%' . $value . '%';
-                });
+                }, $values);
             } else {
                 $searchFilters[$name] = '%' . $values . '%';
             }
