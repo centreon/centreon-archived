@@ -355,9 +355,9 @@ class CommandTest extends DbTestCase
         $this->assertEquals($testResult, $result);   
 
         $testResult = array(
-            array('command_name' => 'Test notif'),
             array('command_name' => 'Test check'),
-            array('command_name' => 'Test connector')
+            array('command_name' => 'Test connector'),
+            array('command_name' => 'Test notif')
         );
         $result = Command::getList('command_name');
         $this->assertEquals($testResult, $result);
@@ -398,9 +398,9 @@ class CommandTest extends DbTestCase
     public function testGetListBySearch()
     {
         $testResult = array(
-            array('command_name' => 'Test notif'),
             array('command_name' => 'Test check'),
-            array('command_name' => 'Test connector')
+            array('command_name' => 'Test connector'),
+            array('command_name' => 'Test notif')
         );
         $result = Command::getListBySearch('command_name');
         $this->assertEquals($testResult, $result);
