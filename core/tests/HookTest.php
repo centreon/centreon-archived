@@ -53,7 +53,8 @@ class HookTest extends DbTestCase
         );
         $this->tableEqualsXml(
             'module_hooks',
-            dirname(__DIR__) . '/tests/data/hook.register.xml'
+            dirname(__DIR__) . '/tests/data/hook.register.xml',
+            true
         );
     }
 
