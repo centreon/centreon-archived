@@ -40,6 +40,7 @@ use \CentreonConfiguration\Models\Timeperiod;
 
 class TimeperiodTest extends DbTestCase
 {
+    protected $errMsg = 'Object not in database.';
     protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
 
     public function testInsert()
@@ -93,7 +94,7 @@ class TimeperiodTest extends DbTestCase
     {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            'Object not in database.'
+            $this->errMsg
         );
         Timeperiod::delete(9999);
     }
@@ -130,28 +131,148 @@ class TimeperiodTest extends DbTestCase
         );
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            'Object not in database.'
+            $this->errMsg
         );
         Timeperiod::update(9999, $newInfo);
     }
-/*
+
     public function testDuplicateItemOnce()
     {
         Timeperiod::duplicate(1);
         $this->tableEqualsXml(
             'timeperiod',
-            ''
+            dirname(__DIR__) . '/data/timeperiod.duplicate-1.xml'
         );
     }
 
     public function testDuplicateItemMultipleTimes()
     {
         Timeperiod::duplicate(1, 2);
+        $this->tableEqualsXml(
+            'timeperiod',
+            dirname(__DIR__) . '/data/timeperiod.duplicate-2.xml'
+        );
     }
 
     public function testDuplicateUnknownId()
     {
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            $this->errMsg
+        );
+        Timeperiod::duplicate(9999);
 
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            $this->errMsg
+        );
+        Timeperiod::duplicate(9999, 2);
     }
- */
+
+    public function testGetAllParameters()
+    {
+        $testInformation = array(
+            'tp_id' => 2,
+            'tp_name' => 'workhours',
+            'tp_alias' => 'workhours',
+            'tp_sunday' => null,
+            'tp_monday' => '00:00-24:00',
+            'tp_tuesday' => '00:00-24:00',
+            'tp_wednesday' => '00:00-24:00',
+            'tp_thursday' => '00:00-24:00',
+            'tp_friday' => '00:00-24:00',
+            'tp_saturday' => null
+        );
+        $arr = Timeperiod::getParameters(2, '*');
+        $this->assertEquals($arr, $testInformation);
+    }
+
+    public function testGetSpecificParameter()
+    {
+        $testInformation = array(
+            'tp_name' => 'workhours',
+        );
+        $arr = Timeperiod::getParameters(2, 'tp_name');
+        $this->assertEquals($arr, $testInformation);
+    }
+
+    public function testGetSpecificParameters()
+    {
+        $testInformation = array(
+            'tp_name' => 'workhours',
+            'tp_alias' => 'workhours',
+            'tp_monday' => '00:00-24:00'
+        );
+        $arr = Timeperiod::getParameters(2, array('tp_name', 'tp_alias', 'tp_monday'));
+        $this->assertEquals($arr, $testInformation);
+    }
+
+    public function testGetParametersFromUnknownId()
+    {
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            $this->errMsg
+        );
+        Timeperiod::getParameters(9999, '*');
+        
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            $this->errMsg
+        );
+        Timeperiod::getParameters(9999, 'tp_name');
+        
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            $this->errMsg
+        );
+        Timeperiod::getParameters(9999, array('tp_name', 'tp_alias'));
+    }
+
+    public function testGetUnknownParameters()
+    {
+       $this->setExpectedException(
+           'PDOException',
+           '',
+           '42S22'
+       );
+       Timeperiod::getParameters(2, 'idontexist');
+
+       $this->setExpectedException(
+           'PDOException',
+           '',
+           '42S22'
+       );
+       Timeperiod::getParameters(2, array('tp_name', 'idontexist'));
+    }
+
+    public function testGetList()
+    {
+        $testResult = array(
+            array(
+            'tp_id' => 1,
+            'tp_name' => '24x7',
+            'tp_alias' => '24_Hours_A_Day,_7_Days_A_Week',
+            'tp_sunday' => '00:00-24:00',
+            'tp_monday' => '00:00-24:00',
+            'tp_tuesday' => '00:00-24:00',
+            'tp_wednesday' => '00:00-24:00',
+            'tp_thursday' => '00:00-24:00',
+            'tp_friday' => '00:00-24:00',
+            'tp_saturday' => '00:00-24:00'
+            ),
+            array(
+            'tp_id' => 2,
+            'tp_name' => 'workhours',
+            'tp_alias' => 'workhours',
+            'tp_sunday' => null,
+            'tp_monday' => '00:00-24:00',
+            'tp_tuesday' => '00:00-24:00',
+            'tp_wednesday' => '00:00-24:00',
+            'tp_thursday' => '00:00-24:00',
+            'tp_friday' => '00:00-24:00',
+            'tp_saturday' => null
+            )
+        );
+        $this->assertEquals($testResult, Timeperiod::getList());
+    }
 }
