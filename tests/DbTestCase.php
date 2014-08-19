@@ -24,13 +24,13 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
         $bootstrapSteps = array('configuration', 'database', 'cache', 'routes');
         $bootstrap = new Bootstrap();
         $bootstrap->init($bootstrapSteps);
+        self::dropTables();
         self::installTables();
         $bootstrap->init(static::$bootstrapExtraSteps);
     }
 
     public static function tearDownAfterClass()
     {
-        self::dropTables();
         self::$tables = array();
         Di::reset();
     }
@@ -173,10 +173,11 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
             $updatedAppData->getDatabase('centreon'),
             false
         );
-        $strDiff = $platform->getModifyDatabaseDDL($diff);
-        $sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
-
-        \PropelSQLParser::executeString($strDiff, $db);
+        if (false !== $diff) {
+            $strDiff = $platform->getModifyDatabaseDDL($diff);
+            $sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
+            \PropelSQLParser::executeString($strDiff, $db);
+        }
     }
 
     protected function loadDatas()
@@ -201,9 +202,10 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
         \PropelSQLParser::executeString($strTruncate, $db);
     }
 
-    protected function tableEqualsXml($table, $xmlFile)
+    protected function tableEqualsXml($table, $xmlFile, $flatXml = false)
     {
-        $dataset = $this->createFlatXmlDataSet(
+        $method = $flatXml ? 'createFlatXmlDataSet' : 'createXmlDataSet';
+        $dataset = $this->$method(
             $xmlFile
         )->getTable($table);
         $tableResult = $this->getConnection()->createQueryTable(
