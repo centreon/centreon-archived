@@ -283,6 +283,13 @@ class ConnectorTest extends DbTestCase
         $this->assertEquals($testResult, $result);
 
         $testResult = array(
+            array('name' => 'Perl', 'id' => 1),
+            array('name' => 'SSH', 'id' => 2)
+        );
+        $result = Connector::getList(array('name', 'id'));
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
             array('name' => 'SSH'),
             array('name' => 'Perl')
         );
@@ -324,6 +331,13 @@ class ConnectorTest extends DbTestCase
             array('name' => 'SSH')
         );
         $result = Connector::getListBySearch('name', -1, 0, null, 'ASC', array('description' => 'Connector'));
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array('name' => 'Perl'),
+            array('name' => 'SSH')
+        );
+        $result = Connector::getListBySearch('name', -1, 0, 'name', 'ASC', array('description' => array('SSH', 'Perl')));
         $this->assertEquals($testResult, $result);
     }
 

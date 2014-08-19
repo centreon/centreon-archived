@@ -363,6 +363,14 @@ class CommandTest extends DbTestCase
         $this->assertEquals($testResult, $result);
 
         $testResult = array(
+            array('command_name' => 'Test check', 'command_id' => 2),
+            array('command_name' => 'Test connector', 'command_id' => 3),
+            array('command_name' => 'Test notif', 'command_id' => 1)
+        );
+        $result = Command::getList(array('command_name', 'command_id'));
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
             array('command_name' => 'Test notif'),
             array('command_name' => 'Test connector'),
             array('command_name' => 'Test check')
@@ -460,7 +468,7 @@ class CommandTest extends DbTestCase
         $result = Command::getIdByParameter('command_name', 'Test notif');
         $this->assertEquals($testResult, $result);
 
-        $testResult = array(1, 2);
+        $testResult = array(2, 1);
         $result = Command::getIdByParameter('command_name', array('Test notif', 'Test check'));
         $this->assertEquals($testResult, $result);
     }
