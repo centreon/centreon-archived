@@ -2,8 +2,8 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\User,
-    \Centreon\Internal\Di;
+use \CentreonAdministration\Internal\User;
+use \Centreon\Internal\Di;
 
 class UserTest extends DbTestCase
 {

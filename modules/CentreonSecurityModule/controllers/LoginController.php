@@ -34,7 +34,7 @@
  */
 namespace CentreonSecurity\Controllers;
 
-use \Centreon\Internal\User,
+use \CentreonAdministration\Internal\User,
     \Centreon\Internal\Form,
     \Centreon\Internal\Di,
     \Centreon\Internal\Auth\Sso,

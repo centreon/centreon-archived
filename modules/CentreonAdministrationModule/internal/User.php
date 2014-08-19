@@ -33,7 +33,7 @@
  *
  */
 
-namespace Centreon\Internal;
+namespace CentreonAdministration\Internal;
 
 use \CentreonConfiguration\Models\Contact,
     \Centreon\Internal\Exception;
