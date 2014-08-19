@@ -42,6 +42,7 @@ use \Test\Centreon\DbTestCase,
 
 class ConnectorTest extends DbTestCase
 {
+    protected $errMsg = 'Object not in database.';
     protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
 
     public function testInsert()
@@ -90,7 +91,7 @@ class ConnectorTest extends DbTestCase
         /* Test exception object doesn't exist */
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "Object not in database.",
+            $this->errMsg,
             0
         );
         Connector::delete(42);
@@ -107,12 +108,6 @@ class ConnectorTest extends DbTestCase
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/connector.update.xml'
         )->getTable('connector');
-        $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
-        );
-        $this->assertTablesEqual($dataset, $tableResult);
-
         $tableResult = $this->getConnection()->createQueryTable(
             'connector',
             'SELECT * FROM connector'
@@ -137,7 +132,7 @@ class ConnectorTest extends DbTestCase
     public function testUpdateNotFound() {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "Object not in database.",
+            $this->errMsg,
             0
         );
         $newInformation = array(
@@ -172,7 +167,7 @@ class ConnectorTest extends DbTestCase
 
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exist in database.",
+            $this->errMsg,
             0
         );
         Connector::duplicate(42);
@@ -204,7 +199,7 @@ class ConnectorTest extends DbTestCase
     {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exist in database.",
+            $this->errMsg,
             0
         );
         $connector = Connector::getParameters(3, '*');
@@ -283,6 +278,13 @@ class ConnectorTest extends DbTestCase
         $this->assertEquals($testResult, $result);
 
         $testResult = array(
+            array('name' => 'Perl', 'id' => 1),
+            array('name' => 'SSH', 'id' => 2)
+        );
+        $result = Connector::getList(array('name', 'id'));
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
             array('name' => 'SSH'),
             array('name' => 'Perl')
         );
@@ -325,6 +327,13 @@ class ConnectorTest extends DbTestCase
         );
         $result = Connector::getListBySearch('name', -1, 0, null, 'ASC', array('description' => 'Connector'));
         $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array('name' => 'Perl'),
+            array('name' => 'SSH')
+        );
+        $result = Connector::getListBySearch('name', -1, 0, 'name', 'ASC', array('description' => array('SSH', 'Perl')));
+        $this->assertEquals($testResult, $result);
     }
 
     public function testGet()
@@ -356,7 +365,7 @@ class ConnectorTest extends DbTestCase
 
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exist in database.",
+            $this->errMsg,
             0
         );
         Connector::get(42);

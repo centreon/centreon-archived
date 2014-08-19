@@ -42,6 +42,7 @@ use \Test\Centreon\DbTestCase,
 
 class CommandTest extends DbTestCase
 {
+    protected $errMsg = 'Object not in database.';
     protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
 
     public function testInsert()
@@ -124,7 +125,7 @@ class CommandTest extends DbTestCase
         /* Test exception object doesn't exists */
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "Object not in database.",
+            $this->errMsg,
             0
         );
         Command::delete(42);
@@ -165,7 +166,7 @@ class CommandTest extends DbTestCase
     public function testUpdateNotFound() {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "Object not in database.",
+            $this->errMsg,
             0
         );
         $newInformation = array(
@@ -216,7 +217,7 @@ class CommandTest extends DbTestCase
     public function testDuplicateNotFound() {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exist in database.",
+            $this->errMsg,
             0
         );
         Command::duplicate(42);
@@ -251,7 +252,7 @@ class CommandTest extends DbTestCase
     {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exist in database.",
+            $this->errMsg,
             0
         );
         $connector = Command::getParameters(42, '*');
@@ -355,11 +356,19 @@ class CommandTest extends DbTestCase
         $this->assertEquals($testResult, $result);   
 
         $testResult = array(
-            array('command_name' => 'Test notif'),
             array('command_name' => 'Test check'),
-            array('command_name' => 'Test connector')
+            array('command_name' => 'Test connector'),
+            array('command_name' => 'Test notif')
         );
         $result = Command::getList('command_name');
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array('command_name' => 'Test check', 'command_id' => 2),
+            array('command_name' => 'Test connector', 'command_id' => 3),
+            array('command_name' => 'Test notif', 'command_id' => 1)
+        );
+        $result = Command::getList(array('command_name', 'command_id'));
         $this->assertEquals($testResult, $result);
 
         $testResult = array(
@@ -398,9 +407,9 @@ class CommandTest extends DbTestCase
     public function testGetListBySearch()
     {
         $testResult = array(
-            array('command_name' => 'Test notif'),
             array('command_name' => 'Test check'),
-            array('command_name' => 'Test connector')
+            array('command_name' => 'Test connector'),
+            array('command_name' => 'Test notif')
         );
         $result = Command::getListBySearch('command_name');
         $this->assertEquals($testResult, $result);
@@ -448,7 +457,7 @@ class CommandTest extends DbTestCase
     {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "The object doesn't exist in database.",
+            $this->errMsg,
             0
         );
         Command::get(42);
@@ -460,7 +469,7 @@ class CommandTest extends DbTestCase
         $result = Command::getIdByParameter('command_name', 'Test notif');
         $this->assertEquals($testResult, $result);
 
-        $testResult = array(1, 2);
+        $testResult = array(2, 1);
         $result = Command::getIdByParameter('command_name', array('Test notif', 'Test check'));
         $this->assertEquals($testResult, $result);
     }

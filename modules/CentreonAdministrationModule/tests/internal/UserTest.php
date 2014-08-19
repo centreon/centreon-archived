@@ -34,21 +34,49 @@
  *
  */
 
-namespace Test\Centreon\Utils;
 
-use \Centreon\Internal\Utils\DateInterval;
+namespace Test\Centreon;
 
-class DateIntervalTest extends \PHPUnit_Framework_TestCase
+use \CentreonAdministration\Internal\User;
+use \Centreon\Internal\Di;
+
+class UserTest extends DbTestCase
 {
-    public function testConstruct()
+    protected $user;
+
+    public function setUp()
     {
-        $diff = 47492387;
-        $date = new DateInterval($diff);
-        $this->assertEquals(1, $date->y);
-        $this->assertEquals(6, $date->m);
-        $this->assertEquals(4, $date->d);
-        $this->assertEquals(16, $date->h);
-        $this->assertEquals(19, $date->i);
-        $this->assertEquals(47, $date->s);
+        parent::setUp();
+        $this->user = new User(1);
+    }
+
+    public function testGetId()
+    {
+        $this->assertEquals(1, $this->user->getId());
+    }
+
+    public function testGetName()
+    {
+        $this->assertEquals('John Doe', $this->user->getName());
+    }
+
+    public function testGetLogin()
+    {
+        $this->assertEquals('jdoe', $this->user->getLogin());
+    }
+
+    public function testGetEmail()
+    {
+        $this->assertEquals('jdoe@localhost', $this->user->getEmail());
+    }
+
+    public function testIsAdmin()
+    {
+        $this->assertEquals(0, $this->user->isAdmin());
+    }
+
+    public function testGetHomePage()
+    {
+        $this->assertEquals('/customview', $this->user->getHomePage());
     }
 }
