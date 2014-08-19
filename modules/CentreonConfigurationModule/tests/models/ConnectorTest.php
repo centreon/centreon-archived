@@ -112,12 +112,6 @@ class ConnectorTest extends DbTestCase
             'SELECT * FROM connector'
         );
         $this->assertTablesEqual($dataset, $tableResult);
-
-        $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
-        );
-        $this->assertTablesEqual($dataset, $tableResult);
     }
 
     public function testUpdateNotUnique()
