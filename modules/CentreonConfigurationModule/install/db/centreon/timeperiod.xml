@@ -14,5 +14,8 @@
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
+        <unique name="tp_unique_01">
+            <unique-column name="tp_name"/>
+        </unique>
     </table>
 </database>
