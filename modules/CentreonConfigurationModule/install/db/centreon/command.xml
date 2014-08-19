@@ -11,6 +11,9 @@
         <column name="command_comment" phpName="CommandComment" type="LONGVARCHAR" required="false"/>
         <column name="graph_id" phpName="GraphId" type="INTEGER" required="false"/>
         <column name="cmd_cat_id" phpName="CmdCatId" type="INTEGER" required="false"/>
+        <unique name="command_name">
+            <unique-column name="command_name"/>
+        </unique>
         <foreign-key foreignTable="connector" name="command_ibfk_1" onDelete="SET NULL" onUpdate="CASCADE">
             <reference local="connector_id" foreign="id"/>
         </foreign-key>
