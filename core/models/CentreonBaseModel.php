@@ -69,6 +69,9 @@ abstract class CentreonBaseModel
      */
     protected static $relations = array();
 
+
+    const OBJ_NOT_EXIST = 'Object not in database.';
+
     /**
      * Get result from sql query
      *
@@ -177,7 +180,7 @@ abstract class CentreonBaseModel
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
         if (1 !== $stmt->rowCount()) {
-            throw new Exception('Object not in database.');
+            throw new Exception(static::OBJ_NOT_EXIST);
         }
     }
 
@@ -232,7 +235,7 @@ abstract class CentreonBaseModel
             }
             $stmt->execute();
             if (1 !== $stmt->rowCount()) {
-                throw new Exception('Object not in database.');
+                throw new Exception(static::OBJ_NOT_EXIST);
             }
         }
     }
@@ -248,7 +251,7 @@ abstract class CentreonBaseModel
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $sourceParams = static::getParameters($sourceObjectId, "*");
         if (false === $sourceParams) {
-            throw new Exception("The object doesn't exist in database.");
+            throw new Exception(static::OBJ_NOT_EXIST);
         }
         if (isset($sourceParams[static::$primaryKey])) {
             unset($sourceParams[static::$primaryKey]);
@@ -317,9 +320,9 @@ abstract class CentreonBaseModel
         $sql = "SELECT $params FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $result = static::getResult($sql, array($objectId), "fetch");
 
-        /* Raise exception if object doesn't exists */
+        /* Raise exception if object doesn't exist */
         if (false === $result) {
-            throw new Exception("The object doesn't exist in database.");
+            throw new Exception(static::OBJ_NOT_EXIST);
         }
         return $result;
     }
@@ -457,7 +460,7 @@ abstract class CentreonBaseModel
         $sql .= " WHERE " . static::$primaryKey . " LIKE ? ";
         $result = static::getResult($sql, array($id), "fetchAll");
         if (1 !== count($result)) {
-            throw new Exception("The object doesn't exist in database.");
+            throw new Exception(static::OBJ_NOT_EXIST);
         }
         return $result[0];
     }
