@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name" : "Generic",
+        "alias": "Generic",
+        "description" : "References Generic Traps"
+    },
+    {
+        "id": 2,
+        "name" : "Cisco",
+        "alias": "Cisco Networks",
+        "description" : ""
+    },
+    {
+        "id": 3,
+        "name" : "HP",
+        "alias": "HP Networks",
+        "description" : ""
+    },
+    {
+        "id": 4,
+        "name" : "3com",
+        "alias": "3com",
+        "description" : ""
+    },
+    {
+        "id": 5,
+        "name" : "Linksys",
+        "alias": "Linksys",
+        "description" : ""
+    }
+]

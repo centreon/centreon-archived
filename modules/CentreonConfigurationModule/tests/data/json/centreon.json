@@ -1,4 +1,5 @@
 [
   "connector",
-  "command"
+  "command",
+  "traps_vendor"
 ]
