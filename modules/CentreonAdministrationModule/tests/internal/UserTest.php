@@ -43,6 +43,7 @@ use \Centreon\Internal\Di;
 class UserTest extends DbTestCase
 {
     protected $user;
+    protected $dataPath = '/modules/CentreonAdministrationModule/tests/data/json/';
 
     public function setUp()
     {
