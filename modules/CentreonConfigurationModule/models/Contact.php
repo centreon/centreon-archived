@@ -46,5 +46,5 @@ class Contact extends \Centreon\Models\CentreonBaseModel
 {
     protected static $table = "contact";
     protected static $primaryKey = "contact_id";
-    protected static $uniqueLabelField = "contact_name";
+    protected static $uniqueLabelField = "contact_alias";
 }

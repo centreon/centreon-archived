@@ -34,6 +34,9 @@
         <column name="contact_autologin_key" phpName="ContactAutologinKey" type="VARCHAR" size="255" required="false"/>
         <column name="contact_charset" phpName="ContactCharset" type="VARCHAR" size="255" required="false"/>
         <column name="contact_register" phpName="ContactRegister" type="TINYINT" size="6" required="true" defaultValue="1"/>
+        <unique name="contact_alias">
+            <unique-column name="contact_alias"/>
+        </unique>
         <foreign-key foreignTable="timeperiod" name="contact_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="timeperiod_tp_id" foreign="tp_id"/>
         </foreign-key>
@@ -48,9 +51,6 @@
         </foreign-key>
         <index name="name_index">
             <index-column name="contact_name"/>
-        </index>
-        <index name="alias_index">
-            <index-column name="contact_alias"/>
         </index>
         <index name="tp1_index">
             <index-column name="timeperiod_tp_id"/>
