@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="service_categories">
+    <column>sc_id</column>
+    <column>sc_name</column>
+    <column>sc_description</column>
+    <column>level</column>
+    <column>icon_id</column>
+    <column>sc_comment</column>
+    <column>sc_activate</column>
+    <row>
+      <value>1</value>
+      <value>ping</value>
+      <value>ping</value>
+      <null/>
+      <null/>
+      <value>Ping services</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>storage</value>
+      <value>storage</value>
+      <null/>
+      <null/>
+      <value>Storage services</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>ping_1</value>
+      <value>ping</value>
+      <null/>
+      <null/>
+      <value>Ping services</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>ping_2</value>
+      <value>ping</value>
+      <null/>
+      <null/>
+      <value>Ping services</value>
+      <value>1</value>
+    </row>
+  </table>
+</dataset>

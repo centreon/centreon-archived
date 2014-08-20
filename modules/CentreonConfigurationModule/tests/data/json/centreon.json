@@ -2,5 +2,6 @@
   "timeperiod",
   "connector",
   "command",
-  "hostcategories"
+  "hostcategories",
+  "service_categories"
 ]
