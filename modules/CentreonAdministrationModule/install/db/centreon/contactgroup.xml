@@ -9,9 +9,9 @@
         <column name="cg_type" phpName="CgType" type="VARCHAR" size="10" required="false" defaultValue="local"/>
         <column name="cg_ldap_dn" phpName="CgLdapDn" type="VARCHAR" size="255" required="false"/>
         <column name="ar_id" phpName="ArId" type="INTEGER" required="false"/>
-        <index name="name_index">
-            <index-column name="cg_name"/>
-        </index>
+        <unique name="name_index">
+            <unique-column name="cg_name"/>
+        </unique>
         <index name="alias_index">
             <index-column name="cg_alias"/>
         </index>

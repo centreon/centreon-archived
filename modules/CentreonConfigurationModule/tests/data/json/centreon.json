@@ -3,6 +3,7 @@
   "connector",
   "command",
   "contact",
+  "contactgroup",
   "hostcategories",
   "service_categories",
   "hostgroup",

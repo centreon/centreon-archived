@@ -1,0 +1,16 @@
+[
+    {
+        "cg_id": 1,
+        "cg_name": "Contactgroup 1",
+        "cg_alias": "Contactgroup 1",
+        "cg_comment": "First contactgroup",
+        "cg_activate": "1"
+    },
+    {
+        "cg_id": 2,
+        "cg_name": "Contactgroup 2",
+        "cg_alias": "Contactgroup 2",
+        "cg_comment": "Second contactgroup",
+        "cg_activate": "0"
+    }
+]
