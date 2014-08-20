@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="hostcategories">
+    <column>hc_id</column>
+    <column>hc_name</column>
+    <column>hc_alias</column>
+    <column>level</column>
+    <column>icon_id</column>
+    <column>hc_comment</column>
+    <column>hc_activate</column>
+    <row>
+      <value>1</value>
+      <value>network</value>
+      <value>network devices</value>
+      <null/>
+      <null/>
+      <value>Network devices</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>web</value>
+      <value>web servers</value>
+      <null/>
+      <null/>
+      <value>Web servers</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>network_1</value>
+      <value>network devices</value>
+      <null/>
+      <null/>
+      <value>Network devices</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>network_2</value>
+      <value>network devices</value>
+      <null/>
+      <null/>
+      <value>Network devices</value>
+      <value>1</value>
+    </row>
+  </table>
+</dataset>
