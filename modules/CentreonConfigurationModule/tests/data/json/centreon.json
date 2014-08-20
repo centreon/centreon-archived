@@ -4,5 +4,6 @@
   "command",
   "hostcategories",
   "service_categories",
-  "hostgroup"
+  "hostgroup",
+  "servicegroup"
 ]
