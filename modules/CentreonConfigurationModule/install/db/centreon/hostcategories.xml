@@ -20,5 +20,8 @@
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
+        <unique name="hc_unique_01">
+            <unique-column name="hc_name"/>
+        </unique>
     </table>
 </database>

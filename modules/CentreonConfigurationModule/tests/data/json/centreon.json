@@ -2,5 +2,9 @@
   "timeperiod",
   "connector",
   "command",
-  "contact"
+  "contact",
+  "hostcategories",
+  "service_categories",
+  "hostgroup",
+  "servicegroup"
 ]

@@ -1,0 +1,16 @@
+[
+  {
+    "hg_id": "1",
+    "hg_name": "france",
+    "hg_alias": "france",
+    "hg_comment": "French servers",
+    "hg_activate": "1"
+  },
+  {
+    "hg_id": "2",
+    "hg_name": "england",
+    "hg_alias": "england",
+    "hg_comment": "English servers",
+    "hg_activate": "1"
+  }
+]

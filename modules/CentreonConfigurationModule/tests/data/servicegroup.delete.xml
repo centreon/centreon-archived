@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="servicegroup">
+    <column>sg_id</column>
+    <column>sg_name</column>
+    <column>sg_alias</column>
+    <column>sg_comment</column>
+    <column>sg_activate</column>
+    <row>
+      <value>1</value>
+      <value>france</value>
+      <value>france</value>
+      <value>French services</value>
+      <value>1</value>
+    </row>
+  </table>
+</dataset>
