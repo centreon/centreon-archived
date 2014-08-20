@@ -3,5 +3,6 @@
   "connector",
   "command",
   "hostcategories",
-  "service_categories"
+  "service_categories",
+  "hostgroup"
 ]

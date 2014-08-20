@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="hostgroup">
+    <column>hg_id</column>
+    <column>hg_name</column>
+    <column>hg_alias</column>
+    <column>hg_notes</column>
+    <column>hg_notes_url</column>
+    <column>hg_action_url</column>
+    <column>hg_icon_image</column>
+    <column>hg_map_icon_image</column>
+    <column>hg_rrd_retention</column>
+    <column>hg_comment</column>
+    <column>hg_activate</column>
+    <row>
+      <value>1</value>
+      <value>france</value>
+      <value>france</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>French servers</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>england</value>
+      <value>new_alias</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>English servers</value>
+      <value>1</value>
+    </row>
+  </table>
+</dataset>
