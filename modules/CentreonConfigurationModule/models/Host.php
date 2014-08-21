@@ -184,6 +184,14 @@ class Host extends \Centreon\Models\CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['host_register'] = '1';
+        if (is_array($filterType)) {
+            $filterType['host_register'] = 'AND';
+        } else {
+            $filterType = array(
+                '*' => $filterType,
+                'host_register' => 'AND'
+            );
+        }
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
     
@@ -208,6 +216,14 @@ class Host extends \Centreon\Models\CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['host_register'] = '1';
+        if (is_array($filterType)) {
+            $filterType['host_register'] = 'AND';
+        } else {
+            $filterType = array(
+                '*' => $filterType,
+                'host_register' => 'AND'
+            );
+        }
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 }

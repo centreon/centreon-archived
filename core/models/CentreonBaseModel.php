@@ -351,8 +351,18 @@ abstract class CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
-        if ($filterType != "OR" && $filterType != "AND") {
+        if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
+        } elseif (is_array($filterType)) {
+            foreach ($filterType as $key => $type) {
+                if ($type != "OR" && $type != "AND") {
+                    throw new Exception('Unknown filter type');
+                }
+            }
+            /* Add default if not set */
+            if (!isset($filterType['*'])) {
+                $filterType['*'] = 'OR';
+            }
         }
         if (is_array($parameterNames)) {
             $params = implode(",", $parameterNames);
@@ -385,7 +395,15 @@ abstract class CentreonBaseModel
                     $sql .= " WHERE " . $filterStr;
                     $first = false;
                 } else {
-                    $sql .= " $filterType " . $filterStr;
+                    if (is_string($filterType)) {
+                        $sql .= " $filterType " . $filterStr;
+                    } elseif (is_array($filterType)) {
+                        if (isset($filterType[$key])) {
+                            $sql .= $filterType[$key] . " " . $filterStr;
+                        } else {
+                            $sql .= $filterType['*'] . " " . $filterStr;
+                        }
+                    }
                 }
             }
         }
