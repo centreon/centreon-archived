@@ -167,6 +167,12 @@ class Servicetemplate extends \Centreon\Models\CentreonBaseModel
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 
+    /**
+     * @param string $paramName
+     * @param array $paramValues
+     * @param array $extraConditions
+     * @return array
+     */
     public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
     {
         $extraConditions['service_register'] = '0';
