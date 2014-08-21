@@ -41,6 +41,7 @@ use \CentreonConfiguration\Models\Manufacturer;
 
 class ManufacturerTest extends DbTestCase
 {
+    protected $errMsg = 'Object not in database.';
     protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
 
     public function testInsert()
@@ -106,7 +107,7 @@ class ManufacturerTest extends DbTestCase
         /* Test exception object doesn't exist */
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "Object not in database.",
+            $this->errMsg,
             0
         );
         Manufacturer::delete(8);
@@ -134,7 +135,7 @@ class ManufacturerTest extends DbTestCase
         /* Test exception object doesn't exist */
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "Object not in database.",
+            $this->errMsg,
             0
         );
         Manufacturer::update(8, $updatedManufacturer);
@@ -155,7 +156,7 @@ class ManufacturerTest extends DbTestCase
         Manufacturer::update(1, $updatedManufacturer);
     }
     
-    public function testUpdateNotExist()
+    public function testUpdateNotFound()
     {
         $updatedManufacturer = array(
             "name" => "Cisco"
@@ -164,12 +165,88 @@ class ManufacturerTest extends DbTestCase
         /* Test exception object doesn't exist */
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
-            "Object not in database.",
+            $this->errMsg,
             0
         );
         Manufacturer::update(8, $updatedManufacturer);
     }
     
+    public function testDuplicate()
+    {
+        Manufacturer::duplicate(1);
+        /* Assert for test update in DB */
+        $dataset = $this->createFlatXmlDataSet(
+            dirname(__DIR__) . '/data/traps_vendor.duplicate-1.xml'
+        )->getTable('traps_vendor');
+        $tableResult = $this->getConnection()->createQueryTable(
+            'traps_vendor',
+            'SELECT * FROM traps_vendor'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+        
+        Manufacturer::duplicate(2, 2);
+        /* Assert for test update in DB */
+        $dataset = $this->createFlatXmlDataSet(
+            dirname(__DIR__) . '/data/traps_vendor.duplicate-2.xml'
+        )->getTable('traps_vendor');
+        $tableResult = $this->getConnection()->createQueryTable(
+            'traps_vendor',
+            'SELECT * FROM traps_vendor'
+        );
+        $this->assertTablesEqual($dataset, $tableResult);
+        
+    }
+    
+    public function testDuplicateNotFound()
+    {
+         /* Test exception object doesn't exist */
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            $this->errMsg,
+            0
+        );
+        Manufacturer::duplicate(8);
+    }
+    
+    public function testGetParameters()
+    {
+        $testInformation = array(
+            'id' => 1,
+            'name' => 'Generic',
+            'alias' => 'Generic',
+            'description' => 'References Generic Traps'
+        );
+        $manufacturer = Manufacturer::getParameters(1, '*');
+        $this->assertEquals($manufacturer, $testInformation);
+        
+        $manufacturer = Manufacturer::getParameters(5, 'name');
+        $this->assertEquals($manufacturer, array('name' => 'Linksys'));
+        
+        $manufacturer = Manufacturer::getParameters(3, array('name', 'alias'));
+        $this->assertEquals($manufacturer, array('name' => 'HP', 'alias' => 'HP Networks'));
+    }
+    
+    public function testGetParametersNotFound()
+    {
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            $this->errMsg,
+            0
+        );
+        $manufacturer = Manufacturer::getParameters(21, '*');
+    }
+    
+    public function testGetParametersBadColumns()
+    {
+        $this->setExpectedException(
+            'PDOException',
+            '',
+            '42S22'
+        );
+        Manufacturer::getParameters(1, 'test_error');
+    }
+
+
     public function testGetPrimaryKey()
     {
         $this->assertEquals('id', Manufacturer::getPrimaryKey());
