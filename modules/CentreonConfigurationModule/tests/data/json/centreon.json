@@ -8,5 +8,6 @@
   "hostcategories",
   "service_categories",
   "hostgroup",
-  "servicegroup"
+  "servicegroup",
+  "host"
 ]
