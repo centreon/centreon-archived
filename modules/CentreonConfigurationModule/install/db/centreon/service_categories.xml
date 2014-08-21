@@ -6,9 +6,13 @@
         <column name="sc_description" phpName="ScDescription" type="VARCHAR" size="255" required="false"/>
         <column name="level" phpName="Level" type="TINYINT" size="5" required="false"/>
         <column name="icon_id" phpName="IconId" type="INTEGER" required="false"/>
+        <column name="sc_comment" phpName="ScComment" type="LONGVARCHAR" required="false"/>
         <column name="sc_activate" phpName="ScActivate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
+        <unique name="sc_unique_01">
+            <unique-column name="sc_name"/>
+        </unique> 
     </table>
 </database>

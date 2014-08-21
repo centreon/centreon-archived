@@ -324,7 +324,9 @@ class Db
         $dirname = rtrim($dirname, '/');
         
         $orderFile = $dirname . '/' . $targetDbName . '.json';
-        
+
+        $db = self::getDbConnector($targetDbName);
+        $db->beginTransaction();
         if (file_exists($orderFile)) {
             $insertionOrder = json_decode(file_get_contents($orderFile), true);
             foreach ($insertionOrder as $fileBaseName) {
@@ -337,6 +339,7 @@ class Db
                 self::insertDatas($datasFile, $targetDbName);
             }
         }
+        $db->commit();
     }
     
     /**

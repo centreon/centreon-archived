@@ -3,4 +3,10 @@
   "connector",
   "command",
   "traps_vendor"
+  "contact",
+  "contactgroup",
+  "hostcategories",
+  "service_categories",
+  "hostgroup",
+  "servicegroup"
 ]

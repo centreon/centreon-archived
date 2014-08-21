@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="contactgroup">
+    <column>cg_id</column>
+    <column>cg_name</column>
+    <column>cg_alias</column>
+    <column>cg_comment</column>
+    <column>cg_activate</column>
+    <column>cg_type</column>
+    <column>cg_ldap_dn</column>
+    <column>ar_id</column>
+    <row>
+      <value>1</value>
+      <value>Contactgroup 1</value>
+      <value>Contactgroup 1</value>
+      <value>First contactgroup</value>
+      <value>1</value>
+      <value>local</value>
+      <null/>
+      <null/>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Contactgroup 2</value>
+      <value>Contactgroup 2</value>
+      <value>Second contactgroup</value>
+      <value>0</value>
+      <value>local</value>
+      <null/>
+      <null/>
+    </row>
+    <row>
+      <value>3</value>
+      <value>Contactgroup 1_1</value>
+      <value>Contactgroup 1</value>
+      <value>First contactgroup</value>
+      <value>1</value>
+      <value>local</value>
+      <null/>
+      <null/>
+    </row>
+  </table>
+</dataset>

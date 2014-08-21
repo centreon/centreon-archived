@@ -21,5 +21,8 @@
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
+        <unique name="hg_unique_01">
+            <unique-column name="hg_name"/>
+        </unique> 
     </table>
 </database>

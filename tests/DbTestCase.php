@@ -224,17 +224,19 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
         }
     }
 
+    /**
+     * @todo truncate other db
+     */
     protected function truncateDatas()
     {
         $db = Di::getDefault()->get('db_centreon');
-        /* Set foreign keys no check */
-        /* @todo work with other database engine */
-        $strTruncate = "SET foreign_key_checks = 0;\n";
+        $db->query("SET foreign_key_checks = 0");
+        $db->beginTransaction();
         foreach (DbTestCase::$tables as $table) {
-            $strTruncate .= "TRUNCATE TABLE " . $table->getName() . ";\n";
+            $db->exec("TRUNCATE TABLE " . $table->getName());
         }
-        $strTruncate .= "SET foreign_key_checks = 1;\n";
-        \PropelSQLParser::executeString($strTruncate, $db);
+        $db->commit();
+        $db->query("SET foreign_key_checks = 1");
     }
 
     protected function tableEqualsXml($table, $xmlFile, $flatXml = false)

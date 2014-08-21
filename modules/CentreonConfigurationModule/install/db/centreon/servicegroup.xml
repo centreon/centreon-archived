@@ -12,6 +12,9 @@
         <index name="alias_index">
             <index-column name="sg_alias"/>
         </index>
+        <unique name="sg_unique_01">
+            <unique-column name="sg_name"/>
+        </unique>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
