@@ -2,6 +2,7 @@
   "timeperiod",
   "connector",
   "command",
+  "traps_vendor",
   "contact",
   "contactgroup",
   "hostcategories",

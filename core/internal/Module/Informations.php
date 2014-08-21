@@ -133,10 +133,22 @@ class Informations
     public static function getModuleList()
     {
         $moduleList = array();
-        $rawModuleList = \Centreon\Models\Module::getList('name');
         
-        foreach ($rawModuleList as $module) {
-            $moduleList[] = $module['name'];
+        try {
+            $rawModuleList = \Centreon\Models\Module::getList(
+                'name',
+                -1,
+                0,
+                null,
+                "ASC",
+                array('isactivated' => array('0', '1', '2'))
+                );
+
+            foreach ($rawModuleList as $module) {
+                $moduleList[] = $module['name'];
+            }
+        } catch (\PDOException $e) {
+            
         }
         
         return $moduleList;

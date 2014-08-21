@@ -84,8 +84,6 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
             $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
             $installOrder = $dependencyResolver->resolve();
 
-            self::setUpFormValidators();
-
             foreach($installOrder as $moduleName) {
                 $currentModule = $modulesToInstall['modules'][$moduleName];
                 $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
