@@ -52,23 +52,18 @@ class Install extends \Centreon\Internal\Install\AbstractInstall
             echo "Creating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
             \Centreon\Internal\Install\Db::update('centreon');
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
-            echo "Creating " . Colorize::colorizeText('centreon_storage', 'blue', 'black', true) . " database... ";
-            \Centreon\Internal\Install\Db::update('centreon_storage');
-            echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             
             $modulesToInstall = self::getCoreModules();
             
             $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
             $installOrder = $dependencyResolver->resolve();
             
-            self::setUpFormValidators();
-            
             foreach($installOrder as $moduleName) {
                 $currentModule = $modulesToInstall['modules'][$moduleName];
                 $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
-                echo "Installing ". Colorize::colorizeText($moduleName, 'purple', 'black', true) . " module... ";
+                echo "Installing ". Colorize::colorizeText($moduleName, 'purple', 'black', true) . " module\n";
                 $moduleInstaller->install();
-                echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
+                echo Colorize::colorizeText('Installation of module ' .$moduleName . ' done', 'green', 'black', true) . "\n";
             }
             echo Colorize::colorizeMessage("Centreon 3.0 has been successfully installed", "success") . "\n";
         }

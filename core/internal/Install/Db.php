@@ -103,6 +103,9 @@ class Db
         
         // Loading Modules Post Update Operations
         self::postUpdate();
+        
+        // Empty Target DB
+        //self::deleteTargetDbSchema($targetDbName);
     }
     
     /**
@@ -147,9 +150,36 @@ class Db
         return $tablesToBeRemoved;
     }
     
+    private static function deleteTargetDbSchema($targetDbName = 'centreon')
+    {
+        // Initialize configuration
+        $di = \Centreon\Internal\Di::getDefault();
+        $config = $di->get('config');
+        $centreonPath = $config->get('global', 'centreon_path');
+        
+        $targetFolder = $centreonPath . '/tmp/db/target/' . $targetDbName . '/';
+        $currentFolder = $centreonPath . '/tmp/db/current/' . $targetDbName . '/';
+        
+        // Copy to destination
+        if (!file_exists($currentFolder)) {
+            mkdir($currentFolder, 0700, true);
+        }
+        
+        $fileList = glob($targetFolder . '/*.xml');
+        $nbOfFiles = count($fileList);
+        for ($i=0; $i<$nbOfFiles; $i++) {
+            $targetFile = $currentFolder . basename($fileList[$i]);
+            copy($fileList[$i], $targetFile);
+            unlink($fileList[$i]);
+        }
+        
+        rmdir($targetFolder);
+    }
+    
     /**
      * 
      * @param type $targetDbName
+     * @todo Need to remove it when user/contact seperation will be decide
      */
     private static function buildTargetDbSchema($targetDbName = 'centreon')
     {
@@ -194,6 +224,53 @@ class Db
             $fileList,
             self::getFiles($centreonPath . '/modules/CentreonSecurityModule/install/db/' . $targetDbName, 'xml')
         );
+        
+        // Copy to destination
+        if (!file_exists($targetFolder)) {
+            mkdir($targetFolder, 0700, true);
+        }
+        
+        $nbOfFiles = count($fileList);
+        for ($i=0; $i<$nbOfFiles; $i++) {
+            $targetFile = $targetFolder . basename($fileList[$i]);
+            copy($fileList[$i], $targetFile);
+        }
+        
+        // send back the computed db
+        return glob($targetFolder . '/*.xml');
+    }
+    
+    /**
+     * 
+     * @param type $targetDbName
+     */
+    private static function rightBuildTargetDbSchema($targetDbName = 'centreon')
+    {
+        // Initialize configuration
+        $di = \Centreon\Internal\Di::getDefault();
+        $config = $di->get('config');
+        $centreonPath = $config->get('global', 'centreon_path');
+        
+        $targetFolder = $centreonPath . '/tmp/db/target/' . $targetDbName . '/';
+        $fileList = array();
+        
+        // Mandatory tables
+        $fileList = array_merge(
+            $fileList,
+            self::getFiles($centreonPath . '/install/db/' . $targetDbName, 'xml')
+        );
+        
+        $moduleList = \Centreon\Internal\Module\Informations::getModuleList();
+        foreach ($moduleList as $module) {
+            $expModuleName = array_map(function ($n) { return ucfirst($n); }, explode('-', $module));
+            $moduleFileSystemName = implode("", $expModuleName) . 'Module';
+            $fileList = array_merge(
+                $fileList,
+                self::getFiles(
+                    $centreonPath . '/modules/' . $moduleFileSystemName . '/install/db/' . $targetDbName, 'xml'
+                )
+            );
+        }
         
         // Copy to destination
         if (!file_exists($targetFolder)) {

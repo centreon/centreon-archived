@@ -51,6 +51,11 @@ class Installer extends \Centreon\Internal\Module\Installer
         parent::__construct($moduleDirectory, $moduleInfo);
     }
     
+    public function customPreInstall()
+    {
+        
+    }
+    
     /**
      * @todo to change if with user defined password when we know if we'll seperate user from contact
      */

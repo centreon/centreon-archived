@@ -58,27 +58,6 @@ class AbstractInstall
     
     /**
      * 
-     */
-    protected static function setUpFormValidators()
-    {
-        $validators = array(
-            "INSERT INTO form_validator(name, action) VALUES ('email', '/validator/email')",
-            "INSERT INTO form_validator(name, action) VALUES ('resolveDns', '/validator/resolvedns')",
-            "INSERT INTO form_validator(name, action) VALUES ('ipAddress', '/validator/ipaddress')",
-            "INSERT INTO form_validator(name, action) VALUES ('unique', '/validator/unique')",
-            "INSERT INTO form_validator(name, action) VALUES ('forbiddenChar', '/validator/forbiddenchar')",
-            "INSERT INTO form_validator(name, action) VALUES ('circularDependency', '/validator/circular')"
-        );
-        
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        
-        foreach ($validators as $validator) {
-            $db->exec($validator);
-        }
-    }
-    
-    /**
-     * 
      * @return array
      * @throws \Exception
      */

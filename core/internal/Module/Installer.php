@@ -36,6 +36,8 @@
 
 namespace Centreon\Internal\Module;
 
+use \Centreon\Internal\Utils\CommandLine\Colorize;
+
 /**
  * Description of AbstractInstaller
  *
@@ -61,6 +63,8 @@ abstract class Installer
         $this->moduleDirectory = $moduleDirectory;
     }
     
+    abstract public function customPreInstall();
+    
     /**
      * 
      */
@@ -78,6 +82,7 @@ abstract class Installer
     {
         $this->preInstall();
         $this->installDb();
+        $this->customPreInstall();
         $this->installForms();
         $this->installMenu();
         $this->customInstall();
@@ -101,7 +106,12 @@ abstract class Installer
      */
     public function installDb()
     {
+        echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
         \Centreon\Internal\Install\Db::update('centreon');
+        echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
+        /*echo "Updating " . Colorize::colorizeText('centreon_storage', 'blue', 'black', true) . " database... ";
+        \Centreon\Internal\Install\Db::update('centreon_storage');
+        echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";*/
         \Centreon\Internal\Install\Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
     }
     
