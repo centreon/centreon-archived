@@ -489,9 +489,10 @@ abstract class CentreonBaseModel
      *
      * @param string $paramName
      * @param array $paramValues
+     * @param array $extraConditions used for precising query with AND clauses
      * @return array
      */
-    public static function getIdByParameter($paramName, $paramValues = array())
+    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
     {
         $sql = "SELECT " . static::$primaryKey . " FROM " . static::$table . " WHERE ";
         $condition = "";
@@ -501,11 +502,20 @@ abstract class CentreonBaseModel
         foreach ($paramValues as $val) {
             if ($condition != "") {
                 $condition .= " OR ";
+            } else {
+                $condition .= "(";
             }
             $condition .= $paramName . " = ? ";
         }
         if ($condition) {
+            $condition .= ")";
             $sql .= $condition;
+            if (is_array($extraConditions)) {
+                foreach ($extraConditions as $k => $v) {
+                    $sql .= " AND $k = ? ";
+                    $paramValues[] = $v;
+                }
+            }
             $rows = static::getResult($sql, $paramValues, "fetchAll");
             $tab = array();
             foreach ($rows as $val) {
