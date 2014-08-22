@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<dataset>
+    <table name="traps">
+        <column>traps_id</column>
+        <column>traps_name</column>
+        <column>traps_oid</column>
+        <column>traps_args</column>
+        <column>traps_status</column>
+        <column>severity_id</column>
+        <column>manufacturer_id</column>
+        <column>traps_reschedule_svc_enable</column>
+        <column>traps_execution_command</column>
+        <column>traps_execution_command_enable</column>
+        <column>traps_submit_result_enable</column>
+        <column>traps_advanced_treatment</column>
+        <column>traps_advanced_treatment_default</column>
+        <column>traps_timeout</column>
+        <column>traps_exec_interval</column>
+        <column>traps_exec_interval_type</column>
+        <column>traps_log</column>
+        <column>traps_routing_mode</column>
+        <column>traps_routing_value</column>
+        <column>traps_exec_method</column>
+        <column>traps_comments</column>
+        <row>
+            <value>1</value>
+            <value>linkDown</value>
+            <value>.1.3.6.1.6.3.1.1.5.3</value>
+            <value>Link down on interface $2. State: $4.</value>
+            <value>2</value>
+            <null />
+            <value>1</value>
+            <value>0</value>
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <value>0</value>
+            <value>A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agents configuration.</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>linkUp</value>
+            <value>.1.3.6.1.6.3.1.1.5.4</value>
+            <value>Link up on interface $2. State: $4.</value>
+            <value>0</value>
+            <null />
+            <value>1</value>
+            <value>0</value>
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <value>0</value>
+            <value>A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agents configuration has come up.</value>
+        </row>
+        <row>
+            <value>4</value>
+            <value>coldStart</value>
+            <value>.1.3.6.1.6.3.1.1.5.1</value>
+            <value>SNMP is restarting</value>
+            <value>1</value>
+            <null />
+            <value>1</value>
+            <value>0</value>
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <value>0</value>
+            <value>A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agents configuration or the protocol entity implementation may be altered.</value>
+        </row>
+    </table>
+</dataset>

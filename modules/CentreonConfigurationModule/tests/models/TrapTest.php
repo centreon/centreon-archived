@@ -37,29 +37,32 @@ namespace Test\CentreonConfiguration\Models;
 require_once CENTREON_PATH . "/tests/DbTestCase.php";
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Models\Manufacturer;
+use \CentreonConfiguration\Models\Trap;
 
-class ManufacturerTest extends DbTestCase
+class TrapTest extends DbTestCase
 {
     protected $errMsg = 'Object not in database.';
     protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
 
     public function testInsert()
     {
-        $newManufacturer = array(
-            "name"  => "Test Manufacturer",
-            "alias" => "Test Manufacturer",
-            "description" => "Test for traps manufacturer"
+        $newTrap = array(
+            "traps_name" => "test",
+            "traps_oid" => ".0.0.0.0.0.0.0.0.0.1",
+            "traps_args" => "test $1",
+            "traps_status" => "1",
+            "manufacturer_id" => "1",
+            "traps_comments" => "Test for traps"
         );
         
-        Manufacturer::insert($newManufacturer);
+        Trap::insert($newTrap);
         /* Assert for test insert in DB */
-        $dataset = $this->createFlatXmlDataSet(
-            dirname(__DIR__) . '/data/traps_vendor.insert.xml'
-        )->getTable('traps_vendor');
+        $dataset = $this->createXmlDataSet(
+            dirname(__DIR__) . '/data/traps.insert.xml'
+        )->getTable('traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'traps',
+            'SELECT * FROM traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -69,38 +72,39 @@ class ManufacturerTest extends DbTestCase
             '',
             23000
         );
-        Manufacturer::insert($newManufacturer);
+        Trap::insert($newTrap);
     }
     
-    /*public function testInsertWithoutMandatoryField()
+    public function testInsertManufacturerNotExist()
     {
-        $newManufacturer = array(
-            "alias" => "Test Manufacturer",
-            "description" => "Test for traps manufacturer"
+        $newTrap = array(
+            "traps_name" => "test",
+            "traps_oid" => ".0.0.0.0.0.0.0.0.0.1",
+            "traps_args" => "test $1",
+            "traps_status" => "1",
+            "manufacturer_id" => "24",
+            "traps_comments" => "Test for traps"
         );
         
-        Manufacturer::insert($newManufacturer);
-        /* Assert for test insert in DB 
-        $dataset = $this->createFlatXmlDataSet(
-            dirname(__DIR__) . '/data/traps_vendor.insert.xml'
-        )->getTable('traps_vendor');
-        $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+        /* Test exception unique */
+        $this->setExpectedException(
+            'PDOException',
+            '',
+            23000
         );
-        $this->assertTablesEqual($dataset, $tableResult);
-    }*/
+        Trap::insert($newTrap);
+    }
     
     public function testDelete()
     {
-        Manufacturer::delete(4);
+        Trap::delete(3);
         /* Assert for test delete in DB */
-        $dataset = $this->createFlatXmlDataSet(
-            dirname(__DIR__) . '/data/traps_vendor.delete.xml'
-        )->getTable('traps_vendor');
+        $dataset = $this->createXmlDataSet(
+            dirname(__DIR__) . '/data/traps.delete.xml'
+        )->getTable('traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'traps',
+            'SELECT * FROM traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -110,41 +114,51 @@ class ManufacturerTest extends DbTestCase
             $this->errMsg,
             0
         );
-        Manufacturer::delete(8);
+        Trap::delete(5);
     }
     
     public function testUpdate()
     {
-        $updatedManufacturer = array(
-            "name" => "Centreon Generic Traps",
-            "alias" => "Centreon Generic Traps",
-            "description" => "References Generic Traps for Centreon"
+        $updatedTrap = array(
+            "traps_name" => "test update",
+            "traps_oid" => ".1.0.0.0.0.0.0.0.0.1",
+            "traps_args" => "test $3",
+            "traps_status" => "0",
+            "manufacturer_id" => "1",
+            "traps_comments" => "Test for traps"
         );
         
-        Manufacturer::update(1, $updatedManufacturer);
+        Trap::update(1, $updatedTrap);
         /* Assert for test update in DB */
-        $dataset = $this->createFlatXmlDataSet(
-            dirname(__DIR__) . '/data/traps_vendor.update.xml'
-        )->getTable('traps_vendor');
+        $dataset = $this->createXmlDataSet(
+            dirname(__DIR__) . '/data/traps.update.xml'
+        )->getTable('traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'traps',
+            'SELECT * FROM traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
-        
-        /* Test exception object doesn't exist */
-        $this->setExpectedException(
-            '\Centreon\Internal\Exception',
-            $this->errMsg,
-            0
+    }
+    
+    public function testUpdateManufaturerNotExist()
+    {
+        $updatedTrap = array(
+            "manufacturer_id" => "25"
         );
-        Manufacturer::update(8, $updatedManufacturer);
+        
+        /* Test exception unique */
+        $this->setExpectedException(
+            'PDOException',
+            '',
+            23000
+        );
+        Trap::update(2, $updatedTrap);
     }
     
     public function testUpdateNotUnique()
     {
-        $updatedManufacturer = array(
-            "name" => "Cisco"
+        $updatedTrap = array(
+            "traps_name" => "warmStart"
         );
         
         /* Test exception object doesn't exist */
@@ -153,13 +167,13 @@ class ManufacturerTest extends DbTestCase
             "",
             23000
         );
-        Manufacturer::update(1, $updatedManufacturer);
+        Trap::update(1, $updatedTrap);
     }
     
     public function testUpdateNotFound()
     {
-        $updatedManufacturer = array(
-            "name" => "Cisco"
+        $updatedTrap = array(
+            "traps_name" => "test_error"
         );
         
         /* Test exception object doesn't exist */
@@ -168,30 +182,30 @@ class ManufacturerTest extends DbTestCase
             $this->errMsg,
             0
         );
-        Manufacturer::update(8, $updatedManufacturer);
+        Trap::update(8, $updatedTrap);
     }
     
     public function testDuplicate()
     {
-        Manufacturer::duplicate(1);
+        Trap::duplicate(1);
         /* Assert for test update in DB */
-        $dataset = $this->createFlatXmlDataSet(
-            dirname(__DIR__) . '/data/traps_vendor.duplicate-1.xml'
-        )->getTable('traps_vendor');
+        $dataset = $this->createXmlDataSet(
+            dirname(__DIR__) . '/data/traps.duplicate-1.xml'
+        )->getTable('traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'traps',
+            'SELECT * FROM traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
-        Manufacturer::duplicate(2, 2);
+        Trap::duplicate(2, 2);
         /* Assert for test update in DB */
-        $dataset = $this->createFlatXmlDataSet(
-            dirname(__DIR__) . '/data/traps_vendor.duplicate-2.xml'
-        )->getTable('traps_vendor');
+        $dataset = $this->createXmlDataSet(
+            dirname(__DIR__) . '/data/traps.duplicate-2.xml'
+        )->getTable('traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'traps',
+            'SELECT * FROM traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -205,25 +219,7 @@ class ManufacturerTest extends DbTestCase
             $this->errMsg,
             0
         );
-        Manufacturer::duplicate(8);
-    }
-    
-    public function testGetParameters()
-    {
-        $testInformation = array(
-            'id' => 1,
-            'name' => 'Generic',
-            'alias' => 'Generic',
-            'description' => 'References Generic Traps'
-        );
-        $manufacturer = Manufacturer::getParameters(1, '*');
-        $this->assertEquals($manufacturer, $testInformation);
-        
-        $manufacturer = Manufacturer::getParameters(5, 'name');
-        $this->assertEquals($manufacturer, array('name' => 'Linksys'));
-        
-        $manufacturer = Manufacturer::getParameters(3, array('name', 'alias'));
-        $this->assertEquals($manufacturer, array('name' => 'HP', 'alias' => 'HP Networks'));
+        Trap::duplicate(8);
     }
     
     public function testGetParametersNotFound()
@@ -233,7 +229,7 @@ class ManufacturerTest extends DbTestCase
             $this->errMsg,
             0
         );
-        $manufacturer = Manufacturer::getParameters(21, '*');
+        $trap = Trap::getParameters(21, '*');
     }
     
     public function testGetParametersBadColumns()
@@ -243,41 +239,58 @@ class ManufacturerTest extends DbTestCase
             '',
             '42S22'
         );
-        Manufacturer::getParameters(1, 'test_error');
+        Trap::getParameters(1, 'test_error');
     }
 
     public function testGetPrimaryKey()
     {
-        $this->assertEquals('id', Manufacturer::getPrimaryKey());
+        $this->assertEquals('traps_id', Trap::getPrimaryKey());
     }
 
     public function testGetUniqueLabelField()
     {
-        $this->assertEquals('name', Manufacturer::getUniqueLabelField());
+        $this->assertEquals('traps_name', Trap::getUniqueLabelField());
     }
     
     public function testIsUnique()
     {
-        $this->assertTrue(Manufacturer::isUnique('Cisco', 2));
-        $this->assertFalse(Manufacturer::isUnique('Cisco', 1));
-        $this->assertFalse(Manufacturer::isUnique('Cisco'));
+        $this->assertTrue(Trap::isUnique('linkUp', 2));
+        $this->assertFalse(Trap::isUnique('linkUp', 1));
+        $this->assertFalse(Trap::isUnique('linkUp'));
     }
     
     public function testGetTableName()
     {
-        $this->assertEquals('traps_vendor', Manufacturer::getTableName());
+        $this->assertEquals('traps', Trap::getTableName());
     }
 
     public function testGetColumns()
     {
         $this->assertEquals(
             array(
-                'id',
-                'name',
-                'alias',
-                'description'
+                "traps_id",
+                "traps_name",
+                "traps_oid",
+                "traps_args",
+                "traps_status",
+                "severity_id",
+                "manufacturer_id",
+                "traps_reschedule_svc_enable",
+                "traps_execution_command",
+                "traps_execution_command_enable",
+                "traps_submit_result_enable",
+                "traps_advanced_treatment",
+                "traps_advanced_treatment_default",
+                "traps_timeout",
+                "traps_exec_interval",
+                "traps_exec_interval_type",
+                "traps_log",
+                "traps_routing_mode",
+                "traps_routing_value",
+                "traps_exec_method",
+                "traps_comments"
             ),
-            Manufacturer::getColumns()
+            Trap::getColumns()
         );
     }
 }

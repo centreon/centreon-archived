@@ -30,7 +30,6 @@
         </foreign-key>
         <unique name="traps_name">
             <unique-column name="traps_name"/>
-            <unique-column name="traps_oid"/>
         </unique>
         <index name="traps_id">
             <index-column name="traps_id"/>

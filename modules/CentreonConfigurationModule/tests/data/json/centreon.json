@@ -3,6 +3,7 @@
   "connector",
   "command",
   "traps_vendor",
+  "traps",
   "contact",
   "contactgroup",
   "hostcategories",
