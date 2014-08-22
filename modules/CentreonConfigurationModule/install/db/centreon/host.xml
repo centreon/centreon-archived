@@ -71,9 +71,9 @@
         <index name="tp2_index">
             <index-column name="timeperiod_tp_id2"/>
         </index>
-        <index name="name_index">
-            <index-column name="host_name"/>
-        </index>
+        <unique name="name_index">
+            <unique-column name="host_name"/>
+        </unique>
         <index name="host_id_register">
             <index-column name="host_id"/>
             <index-column name="host_register"/>

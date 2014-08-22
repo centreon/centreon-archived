@@ -124,6 +124,14 @@ class Servicetemplate extends \Centreon\Models\CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['service_register'] = '0';
+        if (is_array($filterType)) {
+            $filterType['service_register'] = 'AND';
+        } else {
+            $filterType = array(
+                '*' => $filterType,
+                'service_register' => 'AND'
+            );
+        }
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
     
@@ -148,6 +156,26 @@ class Servicetemplate extends \Centreon\Models\CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['service_register'] = '0';
+        if (is_array($filterType)) {
+            $filterType['service_register'] = 'AND';
+        } else {
+            $filterType = array(
+                '*' => $filterType,
+                'service_register' => 'AND'
+            );
+        }
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+    }
+
+    /**
+     * @param string $paramName
+     * @param array $paramValues
+     * @param array $extraConditions
+     * @return array
+     */
+    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
+    {
+        $extraConditions['service_register'] = '0';
+        return parent::getIdByParameter($paramName, $paramValues, $extraConditions);
     }
 }
