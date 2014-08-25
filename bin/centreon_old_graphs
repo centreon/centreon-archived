@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+
+use warnings;
+use strict;
+
+centreon::script::centreon_old_graphs->new()->run();
+
+package centreon::script::centreon_old_graphs;
+
+use strict;
+use warnings;
+use centreon::script;
+use RRDs;
+
+use base qw(centreon::script);
+
+sub new {
+    my $class = shift;
+    my $self = $class->SUPER::new("centreon_trap_send",
+        centreon_db_conn => 0,
+        centstorage_db_conn => 0,
+        noconfig => 0
+    );
+
+    bless $self, $class;
+    $self->{rrdpath} = undef;
+    $self->{delta_time} = 120 * 86400;
+    return $self;
+}
+
+sub check_rrds {
+    my $self = shift;
+
+    my $total_deleted = 0;
+    opendir(my $dh, $self->{rrdpath}) || die "can't opendir " . $self->{rrdpath} . ": $!";;
+    while (my $file = readdir($dh)) {
+        next if ($file =~ /^(\.|tmp)/);
+	next if ($file !~ /^([0-9]+)\.rrd$/);
+
+	my $metric_id = $1;
+
+        my $last_time = RRDs::last($self->{rrdpath} . '/' . $metric_id . '.rrd');
+        my $ERR = RRDs::error;
+        if ($ERR) {
+            $self->{logger}->writeLogError("ERROR while checking last time '" . $self->{rrdpath} . "/" . $metric_id . ".rrd' $ERR");
+            next;
+        }
+
+        if ((time() - $self->{delta_time}) > $last_time) {
+	    $total_deleted++;
+    	    $self->{centreon_db_centstorage}->query("UPDATE metrics SET to_delete = '1' WHERE metric_id = '" . $metric_id . "'");
+        }
+    }
+    closedir $dh;
+    $self->{logger}->writeLogError("$total_deleted rrd will be deleted.");
+}
+
+sub run {
+    my $self = shift;
+
+    $self->SUPER::run();
+    $self->{centreon_db_centstorage} = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
+                                                        host => $self->{centreon_config}->{db_host},
+                                                        port => $self->{centreon_config}->{db_port},
+                                                        user => $self->{centreon_config}->{db_user},
+                                                        password => $self->{centreon_config}->{db_passwd},
+                                                        force => 0,
+                                                        logger => $self->{logger});
+    $self->{centreon_db_centstorage}->connect();
+
+    my ($status, $sth) = $self->{centreon_db_centstorage}->query("select RRDdatabase_path from config");
+    if ($status == -1) {
+        $self->{logger}->writeLogError("Cannot get rrd directory");
+        exit 1;
+    }
+    if (my $data = $sth->fetchrow_hashref()) {
+        $self->{rrdpath} = $data->{RRDdatabase_path};
+    }
+    if (!defined($self->{rrdpath})) {
+        $self->{logger}->writeLogError("Cannot get rrd directory");
+        exit 1;
+    }
+
+    $self->check_rrds();
+}
+
+__END__
+
