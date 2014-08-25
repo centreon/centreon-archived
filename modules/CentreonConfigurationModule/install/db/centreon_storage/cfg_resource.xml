@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_resource" phpName="CfgResource" idMethod="native">
+        <column name="resource_id" phpName="ResourceId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="resource_name" phpName="ResourceName" type="VARCHAR" size="255" required="false"/>
+        <column name="resource_line" phpName="ResourceLine" type="VARCHAR" size="255" required="false"/>
+        <column name="resource_comment" phpName="ResourceComment" type="VARCHAR" size="255" required="false"/>
+        <column name="resource_activate" phpName="ResourceActivate" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

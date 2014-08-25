@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon_storage" defaultIdMethod="native">
     <table name="options" phpName="Options" idMethod="native">
         <column name="group" phpName="Group" type="VARCHAR" size="255" required="true" defaultValue="default"/>
         <column name="key" phpName="Key" type="VARCHAR" size="255" required="false"/>

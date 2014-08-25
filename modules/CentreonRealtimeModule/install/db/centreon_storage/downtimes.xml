@@ -20,7 +20,7 @@
         <column name="started" phpName="Started" type="BOOLEAN" size="1" required="false"/>
         <column name="triggered_by" phpName="TriggeredBy" type="INTEGER" required="false"/>
         <column name="type" phpName="Type" type="SMALLINT" required="false"/>
-        <foreign-key foreignTable="hosts" name="downtimes_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hosts" name="downtimes_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>
         <foreign-key foreignTable="instances" name="downtimes_ibfk_2" onDelete="SET NULL" onUpdate="RESTRICT">

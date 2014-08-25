@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon_storage" defaultIdMethod="native">
     <table name="form_massive_change_field_relation" phpName="FormMassiveChangeFieldRelation" idMethod="native">
         <column name="massive_change_id" phpName="MassiveChangeId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>

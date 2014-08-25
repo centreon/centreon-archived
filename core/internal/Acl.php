@@ -86,7 +86,7 @@ class Acl
             $db = Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
                 "SELECT DISTINCT acl_level, url 
-                FROM acl_menu_menu_relations ammr, acl_group_menu_relations agmr, menus m
+                FROM cfg_acl_menu_menu_relations ammr, cfg_acl_group_menu_relations agmr, menus m
                 WHERE ammr.acl_menu_id = agmr.acl_menu_id
                 AND ammr.menu_id = m.menu_id
                 AND agmr.acl_group_id IN (
@@ -95,7 +95,7 @@ class Acl
                     WHERE agcr.contact_contact_id = :contactid
                     UNION
                     SELECT acl_group_id
-                    FROM acl_group_contactgroups_relations agcgr, contactgroup_contact_relation ccr
+                    FROM cfg_acl_group_contactgroups_relations agcgr, contactgroup_contact_relation ccr
                     WHERE agcgr.cg_cg_id = ccr.contactgroup_cg_id
                     AND ccr.contact_contact_id = :contactid
                 ) "

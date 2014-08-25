@@ -45,7 +45,7 @@ use \Centreon\Models\CentreonBaseModel;
  */
 class Aclgroup extends CentreonBaseModel
 {
-    protected static $table = "acl_groups";
+    protected static $table = "cfg_acl_groups";
     protected static $primaryKey = "acl_group_id";
     protected static $uniqueLabelField = "acl_group_name";
 }

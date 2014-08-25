@@ -35,7 +35,7 @@
 namespace CentreonRealtime\Controllers;
 
 /**
- * Display the logs of nagios
+ * Display the logs of engine
  *
  * @authors Maximilien Bersoult
  * @package CentreonRealtime

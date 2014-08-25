@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="giv_graphs_template" phpName="GivGraphsTemplate" idMethod="native">
+        <column name="graph_id" phpName="GraphId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="200" required="false"/>
+        <column name="vertical_label" phpName="VerticalLabel" type="VARCHAR" size="200" required="false"/>
+        <column name="width" phpName="Width" type="INTEGER" required="false"/>
+        <column name="height" phpName="Height" type="INTEGER" required="false"/>
+        <column name="base" phpName="Base" type="INTEGER" required="false" defaultValue="1000"/>
+        <column name="lower_limit" phpName="LowerLimit" type="FLOAT" required="false"/>
+        <column name="upper_limit" phpName="UpperLimit" type="FLOAT" required="false"/>
+        <column name="size_to_max" phpName="SizeToMax" type="TINYINT" size="6" required="true"/>
+        <column name="bg_grid_color" phpName="BgGridColor" type="VARCHAR" size="200" required="false"/>
+        <column name="bg_color" phpName="BgColor" type="VARCHAR" size="200" required="false"/>
+        <column name="police_color" phpName="PoliceColor" type="VARCHAR" size="200" required="false"/>
+        <column name="grid_main_color" phpName="GridMainColor" type="VARCHAR" size="200" required="false"/>
+        <column name="grid_sec_color" phpName="GridSecColor" type="VARCHAR" size="200" required="false"/>
+        <column name="contour_cub_color" phpName="ContourCubColor" type="VARCHAR" size="200" required="false"/>
+        <column name="col_arrow" phpName="ColArrow" type="VARCHAR" size="200" required="false"/>
+        <column name="col_top" phpName="ColTop" type="VARCHAR" size="200" required="false"/>
+        <column name="col_bot" phpName="ColBot" type="VARCHAR" size="200" required="false"/>
+        <column name="default_tpl1" phpName="DefaultTpl1" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="stacked" phpName="Stacked" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="split_component" phpName="SplitComponent" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="scaled" phpName="Scaled" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
+        <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+  </table>
+</database>

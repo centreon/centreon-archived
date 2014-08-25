@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_realtime" defaultIdMethod="native">
+    <table name="cfg_acl_group_actions_relations" phpName="AclGroupActionsRelations" idMethod="native">
+        <column name="agar_id" phpName="AgarId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="acl_action_id" phpName="AclActionId" type="INTEGER" required="false"/>
+        <column name="acl_group_id" phpName="AclGroupId" type="INTEGER" required="false"/>
+        <index name="acl_action_id">
+            <index-column name="acl_action_id"/>
+        </index>
+        <index name="acl_group_id">
+            <index-column name="acl_group_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

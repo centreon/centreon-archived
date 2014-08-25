@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="ods_view_details" phpName="OdsViewDetails" idMethod="native">
+        <column name="dv_id" phpName="DvId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="index_id" phpName="IndexId" type="INTEGER" required="false"/>
+        <column name="metric_id" phpName="MetricId" type="VARCHAR" size="12" required="false"/>
+        <column name="rnd_color" phpName="RndColor" type="VARCHAR" size="7" required="false"/>
+        <column name="contact_id" phpName="ContactId" type="INTEGER" required="false"/>
+        <column name="all_user" phpName="AllUser" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -7,10 +7,10 @@
         <column name="execution_failure_options" phpName="ExecutionFailureOptions" type="VARCHAR" size="15" required="false"/>
         <column name="inherits_parent" phpName="InheritsParent" type="BOOLEAN" size="1" required="false"/>
         <column name="notification_failure_options" phpName="NotificationFailureOptions" type="VARCHAR" size="15" required="false"/>
-        <foreign-key foreignTable="hosts" name="hosts_hosts_dependencies_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hosts" name="hosts_hosts_dependencies_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="dependent_host_id" foreign="host_id"/>
         </foreign-key>
-        <foreign-key foreignTable="hosts" name="hosts_hosts_dependencies_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hosts" name="hosts_hosts_dependencies_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>
         <unique name="dependent_host_id">

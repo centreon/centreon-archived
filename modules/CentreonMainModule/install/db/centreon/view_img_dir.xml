@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon_storage" defaultIdMethod="native">
     <table name="view_img_dir" phpName="ViewImgDir" idMethod="native">
         <column name="dir_id" phpName="DirId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="dir_name" phpName="DirName" type="VARCHAR" size="255" required="false"/>

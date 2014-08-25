@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_acl_resources_meta_relations" phpName="AclResourcesMetaRelations" idMethod="native">
+        <column name="armse_id" phpName="ArmseId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="meta_id" phpName="MetaId" type="INTEGER" required="false"/>
+        <column name="acl_res_id" phpName="AclResId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_meta_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="acl_res_id" foreign="acl_res_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_meta_services" name="acl_resources_meta_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="meta_id" foreign="meta_id"/>
+        </foreign-key>
+        <index name="meta_id">
+            <index-column name="meta_id"/>
+        </index>
+        <index name="acl_res_id">
+            <index-column name="acl_res_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

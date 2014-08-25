@@ -45,7 +45,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     public static $relationMap = array(
         'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
         'service_hosts' => '\CentreonConfiguration\Models\Relation\Service\Host',
-        'service_categories' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
+        'servicecategories' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
         'service_parents' => '\CentreonConfiguration\Models\Relation\Service\Serviceparent',
         'service_childs' => '\CentreonConfiguration\Models\Relation\Service\Servicechild',
         'service_contacts' => '\CentreonConfiguration\Models\Relation\Service\Contact',
@@ -387,7 +387,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function serviceCategoryForServiceAction()
     {
-        parent::getRelations(static::$relationMap['service_categories']);
+        parent::getRelations(static::$relationMap['servicecategories']);
     }
     
     /**

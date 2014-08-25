@@ -4,7 +4,7 @@
         <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="RRDdatabase_path" phpName="RrddatabasePath" type="VARCHAR" size="255" required="false"/>
         <column name="RRDdatabase_status_path" phpName="RrddatabaseStatusPath" type="VARCHAR" size="255" required="false"/>
-        <column name="RRDdatabase_nagios_stats_path" phpName="RrddatabaseNagiosStatsPath" type="VARCHAR" size="255" required="false"/>
+        <column name="RRDdatabase_engine_stats_path" phpName="RrddatabaseengineStatsPath" type="VARCHAR" size="255" required="false"/>
         <column name="len_storage_rrd" phpName="LenStorageRrd" type="INTEGER" required="false"/>
         <column name="len_storage_mysql" phpName="LenStorageMysql" type="INTEGER" required="false"/>
         <column name="autodelete_rrd_db" phpName="AutodeleteRrdDb" type="CHAR" sqlType="enum('0','1')" required="false"/>
@@ -15,7 +15,7 @@
         <column name="archive_log" phpName="ArchiveLog" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="0"/>
         <column name="archive_retention" phpName="ArchiveRetention" type="INTEGER" required="false" defaultValue="31"/>
         <column name="reporting_retention" phpName="ReportingRetention" type="INTEGER" required="false" defaultValue="365"/>
-        <column name="nagios_log_file" phpName="NagiosLogFile" type="VARCHAR" size="255" required="false"/>
+        <column name="engine_log_file" phpName="engineLogFile" type="VARCHAR" size="255" required="false"/>
         <column name="last_line_read" phpName="LastLineRead" type="INTEGER" required="false" defaultValue="31"/>
         <column name="audit_log_option" phpName="AuditLogOption" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="1"/>
         <vendor type="mysql">

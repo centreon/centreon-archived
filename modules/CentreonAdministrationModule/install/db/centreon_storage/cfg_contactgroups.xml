@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_contactgroups" phpName="Contactgroup" idMethod="native">
+        <column name="cg_id" phpName="CgId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="cg_name" phpName="CgName" type="VARCHAR" size="200" required="false"/>
+        <column name="cg_alias" phpName="CgAlias" type="VARCHAR" size="200" required="false"/>
+        <column name="cg_comment" phpName="CgComment" type="LONGVARCHAR" required="false"/>
+        <column name="cg_activate" phpName="CgActivate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
+        <column name="cg_type" phpName="CgType" type="VARCHAR" size="10" required="false" defaultValue="local"/>
+        <column name="cg_ldap_dn" phpName="CgLdapDn" type="VARCHAR" size="255" required="false"/>
+        <column name="ar_id" phpName="ArId" type="INTEGER" required="false"/>
+        <unique name="name_index">
+            <unique-column name="cg_name"/>
+        </unique>
+        <index name="alias_index">
+            <index-column name="cg_alias"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

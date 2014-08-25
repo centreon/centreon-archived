@@ -7,7 +7,7 @@
         <column name="start_time" phpName="StartTime" type="INTEGER" required="true"/>
         <column name="ack_time" phpName="AckTime" type="INTEGER" required="false"/>
         <column name="end_time" phpName="EndTime" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="hosts" name="issues_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hosts" name="issues_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>
         <unique name="host_id">

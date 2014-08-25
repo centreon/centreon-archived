@@ -268,20 +268,20 @@ class PollerDatatable extends \Centreon\Internal\Datatable
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
         
         // Build Up the line
-        foreach ($resultSet as &$nagiosServer) {
-            $nagiosServer['program_start_time'] = '';
-            $nagiosServer['is_currently_running'] = 0;
-            $nagiosServer['last_alive'] = '';
-            $nagiosServer['program_version'] = '';
-            $nagiosServer['program_name'] = '';
+        foreach ($resultSet as &$engineServer) {
+            $engineServer['program_start_time'] = '';
+            $engineServer['is_currently_running'] = 0;
+            $engineServer['last_alive'] = '';
+            $engineServer['program_version'] = '';
+            $engineServer['program_name'] = '';
             foreach ($resultBroker as $broker) {
-                if ($broker['instance_name'] == $nagiosServer['name']) {
-                    $nagiosServer = array_merge($nagiosServer, $broker);
+                if ($broker['instance_name'] == $engineServer['name']) {
+                    $engineServer = array_merge($engineServer, $broker);
                 }
             }
-            $nagiosServer['hasChanged'] = PollerRepository::checkChangeState(
-                $nagiosServer['id'],
-                $nagiosServer['last_restart']
+            $engineServer['hasChanged'] = PollerRepository::checkChangeState(
+                $engineServer['id'],
+                $engineServer['last_restart']
             );
         }
     }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="escalation_hostgroup_relation" phpName="EscalationHostgroupRelation" idMethod="native">
+        <column name="ehgr_id" phpName="EhgrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="escalation_esc_id" phpName="EscalationEscId" type="INTEGER" required="false"/>
+        <column name="hostgroup_hg_id" phpName="HostgroupHgId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_escalations" name="escalation_hostgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="escalation_esc_id" foreign="esc_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_hostsgroup" name="escalation_hostgroup_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="hostgroup_hg_id" foreign="hg_id"/>
+        </foreign-key>
+        <index name="escalation_index">
+            <index-column name="escalation_esc_id"/>
+        </index>
+        <index name="hg_index">
+            <index-column name="hostgroup_hg_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon_storage" defaultIdMethod="native">
     <table name="binary_type_binaries_relation" phpName="BinaryTypeBinariesRelation" idMethod="native">
         <column name="binary_type_id" phpName="BinaryTypeId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="binary_id" phpName="BinaryId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>

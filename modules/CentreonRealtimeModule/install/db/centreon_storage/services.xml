@@ -88,7 +88,7 @@
         <column name="state" phpName="State" type="SMALLINT" required="false"/>
         <column name="state_type" phpName="StateType" type="SMALLINT" required="false"/>
         <column name="volatile" phpName="Volatile" type="BOOLEAN" size="1" required="false"/>
-        <foreign-key foreignTable="hosts" name="services_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hosts" name="services_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>
         <unique name="host_id">

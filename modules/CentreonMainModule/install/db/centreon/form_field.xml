@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon_storage" defaultIdMethod="native">
     <table name="form_field" phpName="FormField" idMethod="native">
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="45" required="true"/>

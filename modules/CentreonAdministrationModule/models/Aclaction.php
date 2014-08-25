@@ -46,7 +46,7 @@ use \Centreon\Models\CentreonBaseModel;
  */
 class Aclaction extends CentreonBaseModel
 {
-    protected static $table = "acl_actions";
+    protected static $table = "cfg_acl_actions";
     protected static $primaryKey = "acl_action_id";
     protected static $uniqueLabelField = "acl_action_name";
 }

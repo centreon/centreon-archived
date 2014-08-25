@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="servicecategories" phpName="ServiceCategories" idMethod="native">
+        <column name="sc_id" phpName="ScId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="sc_name" phpName="ScName" type="VARCHAR" size="255" required="false"/>
+        <column name="sc_description" phpName="ScDescription" type="VARCHAR" size="255" required="false"/>
+        <column name="level" phpName="Level" type="TINYINT" size="5" required="false"/>
+        <column name="icon_id" phpName="IconId" type="INTEGER" required="false"/>
+        <column name="sc_comment" phpName="ScComment" type="LONGVARCHAR" required="false"/>
+        <column name="sc_activate" phpName="ScActivate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+        <unique name="sc_unique_01">
+            <unique-column name="sc_name"/>
+        </unique> 
+    </table>
+</database>

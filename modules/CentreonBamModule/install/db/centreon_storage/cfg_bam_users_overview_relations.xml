@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_bam" defaultIdMethod="native">
+    <table name="cfg_bam_users_overview_relations" phpName="BamUsersOverviewRelation" idMethod="native">
+        <column name="user_id" phpName="UserId" type="INTEGER" required="false"/>
+        <column name="ba_id" phpName="BaId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_contacts" name="bam_user_overview_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="user_id" foreign="contact_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_bam" name="bam_user_overview_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="ba_id" foreign="ba_id"/>
+        </foreign-key>
+        <index name="bam_user_overview_relation_ibfk_1">
+            <index-column name="user_id"/>
+        </index>
+        <index name="bam_user_overview_relation_ibfk_2">
+            <index-column name="ba_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

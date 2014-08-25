@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models\Acl;
  */
 class Action extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "acl_actions";
+    protected static $table = "cfg_acl_actions";
     protected static $primaryKey = "acl_action_id";
     protected static $uniqueLabelField = "acl_action_name";
 }

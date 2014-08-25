@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="giv_components_template" phpName="GivComponentsTemplate" idMethod="native">
+        <column name="compo_id" phpName="CompoId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="false"/>
+        <column name="ds_order" phpName="DsOrder" type="INTEGER" required="false"/>
+        <column name="ds_hidecurve" phpName="DsHidecurve" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ds_name" phpName="DsName" type="VARCHAR" size="200" required="false"/>
+        <column name="ds_color_line" phpName="DsColorLine" type="VARCHAR" size="255" required="false"/>
+        <column name="ds_color_line_mode" phpName="DsColorLineMode" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="ds_color_area" phpName="DsColorArea" type="VARCHAR" size="255" required="false"/>
+        <column name="ds_color_area_warn" phpName="DsColorAreaWarn" type="VARCHAR" size="14" required="false"/>
+        <column name="ds_color_area_crit" phpName="DsColorAreaCrit" type="VARCHAR" size="14" required="false"/>
+        <column name="ds_filled" phpName="DsFilled" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ds_max" phpName="DsMax" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ds_min" phpName="DsMin" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ds_minmax_int" phpName="DsMinmaxInt" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="ds_average" phpName="DsAverage" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ds_last" phpName="DsLast" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ds_total" phpName="DsTotal" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="ds_tickness" phpName="DsTickness" type="INTEGER" required="false"/>
+        <column name="ds_transparency" phpName="DsTransparency" type="VARCHAR" size="254" required="false"/>
+        <column name="ds_invert" phpName="DsInvert" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ds_legend" phpName="DsLegend" type="VARCHAR" size="200" required="false"/>
+        <column name="ds_jumpline" phpName="DsJumpline" type="CHAR" sqlType="enum('0','1','2','3')" required="false"/>
+        <column name="ds_stack" phpName="DsStack" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="default_tpl1" phpName="DefaultTpl1" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

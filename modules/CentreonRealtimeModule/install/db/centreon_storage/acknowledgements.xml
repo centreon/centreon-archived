@@ -14,7 +14,7 @@
         <column name="state" phpName="State" type="SMALLINT" required="false"/>
         <column name="sticky" phpName="Sticky" type="BOOLEAN" size="1" required="false"/>
         <column name="type" phpName="Type" type="SMALLINT" required="false"/>
-        <foreign-key foreignTable="hosts" name="acknowledgements_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hosts" name="acknowledgements_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>
         <foreign-key foreignTable="instances" name="acknowledgements_ibfk_2" onDelete="SET NULL" onUpdate="RESTRICT">

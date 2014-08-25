@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="extended_service_information" phpName="ExtendedServiceInformation" idMethod="native">
+        <column name="esi_id" phpName="EsiId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="service_service_id" phpName="ServiceServiceId" type="INTEGER" required="false"/>
+        <column name="esi_notes" phpName="EsiNotes" type="VARCHAR" size="200" required="false"/>
+        <column name="esi_notes_url" phpName="EsiNotesUrl" type="VARCHAR" size="200" required="false"/>
+        <column name="esi_action_url" phpName="EsiActionUrl" type="VARCHAR" size="200" required="false"/>
+        <column name="esi_icon_image" phpName="EsiIconImage" type="INTEGER" required="false"/>
+        <column name="esi_icon_image_alt" phpName="EsiIconImageAlt" type="VARCHAR" size="200" required="false"/>
+        <column name="graph_id" phpName="GraphId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_giv_graphs_template" name="extended_service_information_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="graph_id" foreign="graph_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_services" name="extended_service_information_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="service_service_id" foreign="service_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_view_img" name="extended_service_information_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="esi_icon_image" foreign="img_id"/>
+        </foreign-key>
+        <index name="service_index">
+            <index-column name="service_service_id"/>
+        </index>
+        <index name="graph_index">
+            <index-column name="graph_id"/>
+        </index>
+        <index name="extended_service_information_ibfk_3">
+            <index-column name="esi_icon_image"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

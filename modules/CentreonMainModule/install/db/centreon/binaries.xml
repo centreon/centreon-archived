@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon_storage" defaultIdMethod="native">
     <table name="binaries" phpName="Binaries" idMethod="native">
         <column name="binary_id" phpName="BinaryId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="filename" phpName="Filename" type="VARCHAR" size="255" required="true"/>

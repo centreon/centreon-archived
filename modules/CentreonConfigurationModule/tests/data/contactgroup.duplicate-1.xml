@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="contactgroup">
+  <table name="cfg_contactgroups">
     <column>cg_id</column>
     <column>cg_name</column>
     <column>cg_alias</column>

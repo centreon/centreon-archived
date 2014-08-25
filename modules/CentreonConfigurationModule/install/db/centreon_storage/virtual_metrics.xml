@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="virtual_metrics" phpName="VirtualMetrics" idMethod="native">
+        <column name="vmetric_id" phpName="VmetricId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="index_id" phpName="IndexId" type="INTEGER" required="false"/>
+        <column name="vmetric_name" phpName="VmetricName" type="VARCHAR" size="255" required="false"/>
+        <column name="def_type" phpName="DefType" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="rpn_function" phpName="RpnFunction" type="VARCHAR" size="255" required="false"/>
+        <column name="warn" phpName="Warn" type="INTEGER" required="false"/>
+        <column name="crit" phpName="Crit" type="INTEGER" required="false"/>
+        <column name="unit_name" phpName="UnitName" type="VARCHAR" size="32" required="false"/>
+        <column name="hidden" phpName="Hidden" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
+        <column name="vmetric_activate" phpName="VmetricActivate" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="ck_state" phpName="CkState" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

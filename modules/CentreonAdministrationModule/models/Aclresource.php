@@ -45,7 +45,7 @@ use \Centreon\Models\CentreonBaseModel;
  */
 class Aclresource extends CentreonBaseModel
 {
-    protected static $table = "acl_resources";
+    protected static $table = "cfg_acl_resources";
     protected static $primaryKey = "acl_res_id";
     protected static $uniqueLabelField = "acl_res_name";
 }

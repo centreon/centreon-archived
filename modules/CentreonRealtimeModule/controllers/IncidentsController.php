@@ -38,7 +38,7 @@ use \Centreon\Internal\Utils\Datetime;
 use \Centreon\Internal\Utils\Status;
 
 /**
- * Display the logs of nagios
+ * Display the logs of engine
  *
  * @authors Maximilien Bersoult
  * @package CentreonRealtime

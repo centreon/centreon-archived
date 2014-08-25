@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_configuration" defaultIdMethod="native">
+    <table name="traps_vendor" phpName="TrapsVendor" idMethod="native">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="254" required="true"/>
+        <column name="alias" phpName="Alias" type="VARCHAR" size="254" required="false"/>
+        <column name="description" phpName="Description" type="LONGVARCHAR" required="false"/>
+        <unique name="unique-name">
+            <unique-column name="name" />
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

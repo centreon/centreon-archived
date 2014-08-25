@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon_storage" package="centreon_bam" defaultIdMethod="native">
+    <table name="cfg_bam_kpi" phpName="BamKpi" idMethod="native">
+        <column name="kpi_id" phpName="KpiId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="state_type" phpName="StateType" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="1"/>
+        <column name="kpi_type" phpName="KpiType" type="CHAR" sqlType="enum('0','1','2')" required="true" defaultValue="0"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="id_indicator_ba" phpName="IdIndicatorBa" type="INTEGER" required="false"/>
+        <column name="id_ba" phpName="IdBa" type="INTEGER" required="false"/>
+        <column name="meta_id" phpName="MetaId" type="INTEGER" required="false"/>
+        <column name="current_status" phpName="CurrentStatus" type="SMALLINT" required="false"/>
+        <column name="last_level" phpName="LastLevel" type="FLOAT" required="false"/>
+        <column name="downtime" phpName="Downtime" type="FLOAT" required="false"/>
+        <column name="acknowledged" phpName="Acknowledged" type="FLOAT" required="false"/>
+        <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
+        <column name="config_type" phpName="ConfigType" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="drop_warning" phpName="DropWarning" type="FLOAT" required="false"/>
+        <column name="drop_warning_impact_id" phpName="DropWarningImpactId" type="INTEGER" required="false"/>
+        <column name="drop_critical" phpName="DropCritical" type="FLOAT" required="false"/>
+        <column name="drop_critical_impact_id" phpName="DropCriticalImpactId" type="INTEGER" required="false"/>
+        <column name="drop_unknown" phpName="DropUnknown" type="FLOAT" required="false"/>
+        <column name="drop_unknown_impact_id" phpName="DropUnknownImpactId" type="INTEGER" required="false"/>
+        <column name="activate" phpName="Activate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
+        <column name="ignore_downtime" phpName="IgnoreDowntime" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <column name="ignore_acknowledged" phpName="IgnoreAcknowledged" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
+        <foreign-key foreignTable="cfg_hosts" name="bam_kpi_ibfk_3" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="host_id" foreign="host_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_services" name="bam_kpi_ibfk_4" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="service_id" foreign="service_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_bam" name="bam_kpi_ibfk_5" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="id_indicator_ba" foreign="ba_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_bam" name="bam_kpi_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="id_ba" foreign="ba_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_meta_services" name="bam_kpi_ibfk_7" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="meta_id" foreign="meta_id"/>
+        </foreign-key>
+        <index name="ba_index">
+            <index-column name="id_ba"/>
+        </index>
+        <index name="ba_indicator_index">
+            <index-column name="id_indicator_ba"/>
+        </index>
+        <index name="host_id">
+            <index-column name="host_id"/>
+        </index>
+        <index name="svc_id">
+            <index-column name="service_id"/>
+        </index>
+        <index name="ms_index">
+            <index-column name="meta_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

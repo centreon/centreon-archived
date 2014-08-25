@@ -16,7 +16,7 @@
         <column name="reason_type" phpName="ReasonType" type="INTEGER" required="false"/>
         <column name="state" phpName="State" type="INTEGER" required="false"/>
         <column name="type" phpName="Type" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="hosts" name="notifications_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hosts" name="notifications_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>
         <unique name="host_id">

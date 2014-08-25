@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon_storage" defaultIdMethod="native">
     <table name="widget_parameters_range" phpName="WidgetParametersRange" idMethod="native">
         <column name="parameter_id" phpName="ParameterId" type="INTEGER" required="true"/>
         <column name="min_range" phpName="MinRange" type="INTEGER" required="true"/>
