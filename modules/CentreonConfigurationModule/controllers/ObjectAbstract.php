@@ -35,7 +35,11 @@
 
 namespace CentreonConfiguration\Controllers;
 
+use \Centreon\Internal\Form;
+use \Centreon\Internal\Form\Wizard;
 use \Centreon\Internal\Form\Generator;
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
 use \CentreonConfiguration\Repository\AuditlogRepository;
 
 /**
@@ -63,7 +67,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     public function listAction()
     {
         /* Init template */
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tpl = $di->get('template');
         
         // Load CssFile
@@ -106,7 +110,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             ->addJs('centreon-wizard.js');
 
         /* Set Cookie */
-        $token = \Centreon\Internal\Form::getSecurityToken();
+        $token = Form::getSecurityToken();
         setcookie("ajaxToken", $token, time()+15, '/');
         
         /* Display variable */
@@ -134,7 +138,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function formListAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         if (!empty($this->secondaryObjectClass)) {
@@ -166,9 +170,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function addAction()
     {
-        $form = new \Centreon\Internal\Form\Wizard($this->objectBaseUrl . '/add', array('id' => 0));
+        $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
         $form->addHiddenComponent('object', $this->objectName);
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl = Di::getDefault()->get('template');
         $tpl->assign('formName', $form->getName());
         $formGen = str_replace(
             array('alertMessage', 'alertClose'),
@@ -190,11 +194,11 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $createSuccessful = true;
         $createErrorMessage = '';
         
-        $validationResult = \Centreon\Internal\Form::validate("wizard", $this->getUri(), $givenParameters);
+        $validationResult = Form::validate("wizard", $this->getUri(), $givenParameters);
         if ($validationResult['success']) {
             $class = $this->objectClass;
             $pk = $class::getPrimaryKey();
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             try {
                 $columns = $class::getColumns();
                 $insertParams = array();
@@ -244,7 +248,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
                         echo $e->getMessage();
                     }
                 }
-                \Centreon\Internal\Di::getDefault()
+                Di::getDefault()
                     ->get('router')
                     ->response()
                     ->json(array('success' => true));
@@ -256,7 +260,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             $createErrorMessage = $validationResult['error'];
         }
         
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         if ($createSuccessful) {
             $router->response()->json(array('success' => true));
             $this->postSave($id, 'update');
@@ -271,7 +275,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     public function editAction()
     {
         // Init template
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tpl = $di->get('template');
         
         $requestParam = $this->getParams('named');
@@ -284,7 +288,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         // get object Current Values
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
         
-        $formModeUrl = \Centreon\Internal\Di::getDefault()
+        $formModeUrl = Di::getDefault()
                         ->get('router')
                         ->getPathFor(
                             $this->objectBaseUrl.'/[i:id]',
@@ -313,12 +317,12 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = \Centreon\Internal\Form::validate("form", $this->getUri(), $givenParameters);
+        $validationResult = Form::validate("form", $this->getUri(), $givenParameters);
         if ($validationResult['success']) {
             $class = $this->objectClass;
             $pk = $class::getPrimaryKey();
             $givenParameters[$pk] = $givenParameters['object_id'];
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             if (isset($givenParameters[$pk])) {
                 $id = $givenParameters[$pk];
                 unset($givenParameters[$pk]);
@@ -373,7 +377,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             $updateErrorMessage = $validationResult['error'];
         }
         
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         if ($updateSuccessful) {
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
@@ -391,13 +395,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function deleteAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $deleteSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
             
             $objClass = $this->objectClass;
@@ -408,9 +412,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             }
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $deleteSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -428,7 +432,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
@@ -444,7 +448,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function getMassiveChangeFieldsAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $dbconn = $di->get('db_centreon');
 
@@ -475,7 +479,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function getMcFieldAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $dbconn = $di->get('db_centreon');
         $tpl = $di->get('template');
@@ -490,7 +494,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
-        $form = new \Centreon\Internal\Form('default');
+        $form = new Form('default');
         $form->add($row, array('id' => 0));
         $formElements = $form->toSmarty();
         $tpl->assign('field', $formElements[$row['name']]['html']);
@@ -504,13 +508,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function duplicateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $duplicateSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
 
             $objClass = $this->objectClass;
@@ -519,9 +523,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             }
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $duplicateSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -539,13 +543,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function enableAction($field)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $enableSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
 
             $objClass = $this->objectClass;
@@ -554,9 +558,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             }
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $enableSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -574,13 +578,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function disableAction($field)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $enableSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
 
             $objClass = $this->objectClass;
@@ -589,9 +593,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             }
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $enableSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -611,13 +615,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function massiveChangeAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $massiveChangeSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
 
             $objClass = $this->objectClass;
@@ -626,9 +630,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             }
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $massiveChangeSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -648,7 +652,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     protected function getRelations($relClass)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -692,7 +696,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function getSimpleRelation($fieldName, $targetObj, $reverse = false)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -790,7 +794,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             'add' => 'a',
             'update' => 'c'
         );
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $params = $di->get('router')->request()->params();
         $event = $di->get('action_hooks');
         $eventParams = array(
