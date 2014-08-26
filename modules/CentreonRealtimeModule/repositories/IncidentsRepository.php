@@ -55,7 +55,7 @@ class IncidentsRepository
     public static function getIncidents($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         $globalWheres = array();
         if (false === is_null($fromTime)) {
@@ -79,7 +79,7 @@ class IncidentsRepository
         $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, 
             NULL as description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
             he.state as state, h.instance_id, h.output
-            FROM issues i, hosts h, hoststateevents he";
+            FROM rt_issues i, rt_hosts h, rt_hoststateevents he";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "i.host_id = he.host_id";
@@ -96,7 +96,7 @@ class IncidentsRepository
         $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, 
             s.description, FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
             se.state as state, h.instance_id, s.output
-            FROM issues i, hosts h, services s, servicestateevents se";
+            FROM rt_issues i, rt_hosts h, rt_services s, rt_servicestateevents se";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "s.host_id = i.host_id";
@@ -156,15 +156,15 @@ class IncidentsRepository
     public static function getIncident($incidentId)
     {
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
 
         /* Query for host */
         $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, 
             h.instance_id, h.output, h.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
-            FROM issues i, hosts h, hoststateevents he";
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM rt_issues i, rt_hosts h, rt_hoststateevents he";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "i.host_id = he.host_id";
@@ -180,9 +180,9 @@ class IncidentsRepository
         $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
             se.state as state, h.instance_id, s.output, s.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
-            FROM issues i, hosts h, services s, servicestateevents se";
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM rt_issues i, rt_hosts h, rt_services s, rt_servicestateevents se";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "s.host_id = i.host_id";
@@ -207,7 +207,7 @@ class IncidentsRepository
 
         /* Get Parents */
         $query = "SELECT i.issue_id, h.name, NULL as description
-            FROM issues i, issues_issues_parents iip, hosts h
+            FROM rt_issues i, rt_issues_issues_parents iip, rt_hosts h
             WHERE i.issue_id = iip.parent_id
                 AND i.service_id IS NULL
                 AND i.host_id = h.host_id
@@ -215,7 +215,7 @@ class IncidentsRepository
                 AND iip.child_id = :issue_id
             UNION
             SELECT i.issue_id, h.name, s.description
-            FROM issues i, issues_issues_parents iip, hosts h, services s
+            FROM rt_issues i, rt_issues_issues_parents iip, rt_hosts h, rt_services s
             WHERE i.issue_id = iip.parent_id
                 AND i.service_id IS NOT NULL
                 AND i.host_id = h.host_id
@@ -244,15 +244,15 @@ class IncidentsRepository
     public static function getChildren($incidentId)
     {
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
 
         /* Query for host */
         $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, 
             he.state, h.output, h.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
-            FROM issues_issues_parents iip, issues i, hosts h, hoststateevents he";
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM rt_issues_issues_parents iip, rt_issues i, rt_hosts h, rt_hoststateevents he";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "i.service_id IS NULL";
@@ -268,9 +268,9 @@ class IncidentsRepository
         $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
             h.instance_id, se.state, s.output, s.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
-            FROM issues_issues_parents iip, issues i, hosts h, services s, servicestateevents se";
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM rt_issues_issues_parents iip, rt_issues i, rt_hosts h, rt_services s, rt_servicestateevents se";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "s.host_id = i.host_id";
@@ -306,17 +306,17 @@ class IncidentsRepository
     public static function getListStatus($incidentId)
     {
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
 
         /* Get list of status for incident id */
         $queryHost = "SELECT hs.state, hs.start_time, NULL as service_id
-            FROM hoststateevents hs, issues i
+            FROM rt_hoststateevents hs, rt_issues i
             WHERE i.issue_id = :issue_id
                 AND hs.start_time >= i.start_time
                 AND hs.host_id = i.host_id
                 AND hs.end_time IS NOT NULL";
         $queryService = "SELECT ss.state, ss.start_time, i.service_id
-            FROM servicestateevents ss, issues i
+            FROM rt_servicestateevents ss, rt_issues i
             WHERE i.issue_id = :issue_id
                 AND ss.service_id = i.service_id
                 AND ss.host_id = i.host_id

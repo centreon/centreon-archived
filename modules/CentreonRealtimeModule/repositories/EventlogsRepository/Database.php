@@ -60,11 +60,11 @@ class Database
         $timeField = array('period');
 
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
         
         $query = "SELECT ctime, host_id, host_name, instance_name, output, "
             . "service_description, service_id, status, msg_type "
-            . "FROM logs";
+            . "FROM log_logs";
         $wheres = array();
         if (false === is_null($fromTime)) {
             $clause = 'ctime';

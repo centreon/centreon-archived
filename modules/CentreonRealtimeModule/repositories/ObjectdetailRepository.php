@@ -70,7 +70,7 @@ class ObjectdetailRepository
      */
     public static function doCommand($cmdId, $sql, $additionalParams)
     {
-        $db = Di::getDefault()->get('db_storage');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
