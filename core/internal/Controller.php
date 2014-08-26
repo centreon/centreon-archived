@@ -36,6 +36,8 @@
 
 namespace Centreon\Internal;
 
+use \Centreon\Internal\Di;
+
 abstract class Controller
 {
     /**
@@ -73,9 +75,9 @@ abstract class Controller
      */
     public function __construct($request)
     {
-        $this->db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $this->tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $this->router = \Centreon\Internal\Di::getDefault()->get('router');
+        $this->db = Di::getDefault()->get('db_centreon');
+        $this->tpl = Di::getDefault()->get('template');
+        $this->router = Di::getDefault()->get('router');
         $this->request = $request;
         $this->init();
     }

@@ -46,7 +46,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $objectBaseUrl = '/configuration/poller';
     protected $datatableObject = '\CentreonConfiguration\Internal\PollerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Poller';
-
+    protected $repository = '\CentreonConfiguration\Repository\PollerRepository';
     public static $relationMap = array();
 
     /**

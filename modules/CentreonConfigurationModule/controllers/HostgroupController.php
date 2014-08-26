@@ -41,7 +41,8 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectName = 'hostgroup';
     protected $objectBaseUrl = '/configuration/hostgroup';
     protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
-    
+    protected $repository = '\CentreonConfiguration\Repository\HostgroupRepository';
+
     /**
      *
      * @var type 

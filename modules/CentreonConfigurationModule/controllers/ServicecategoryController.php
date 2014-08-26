@@ -44,6 +44,7 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     protected $objectBaseUrl = '/configuration/servicecategory';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceCategoryDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicecategory';
+    protected $repository = '\CentreonConfiguration\Repository\ServicecategoryRepository';
     public static $relationMap = array(
         'sc_services' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
         'sc_servicetemplates' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicecategory'

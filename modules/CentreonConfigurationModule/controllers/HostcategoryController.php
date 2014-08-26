@@ -41,6 +41,8 @@ class HostcategoryController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $objectName = 'hostcategory';
     protected $objectBaseUrl = '/configuration/hostcategory';
     protected $objectClass = '\CentreonConfiguration\Models\Hostcategory';
+    protected $repository = '\CentreonConfiguration\Repository\HostcategoryRepository';
+
     public static $relationMap = array(
         'hc_hosts' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
         'hc_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory'

@@ -42,6 +42,7 @@ class UsergroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectBaseUrl = '/configuration/usergroup';
     protected $objectClass = '\CentreonConfiguration\Models\Contactgroup';
     protected $datatableObject = '\CentreonConfiguration\Internal\UserGroupDatatable';
+    protected $repository = '\CentreonConfiguration\Repository\UsergroupRepository';
     public static $relationMap = array(
         'cg_contacts' => '\CentreonConfiguration\Models\Relation\Contact\Contactgroup'
     );

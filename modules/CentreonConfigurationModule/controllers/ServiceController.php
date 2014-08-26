@@ -42,6 +42,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     protected $objectBaseUrl = '/configuration/service';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Service';
+    protected $repository = '\CentreonConfiguration\Repository\ServiceRepository';
     public static $relationMap = array(
         'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
         'service_hosts' => '\CentreonConfiguration\Models\Relation\Service\Host',

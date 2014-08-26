@@ -45,6 +45,7 @@ class ServicetemplateController extends \CentreonConfiguration\Controllers\Objec
     protected $objectBaseUrl = '/configuration/servicetemplate';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceTemplateDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
+    protected $repository = '\CentreonConfiguration\Repository\ServicetemplateRepository';
     public static $relationMap = array(
         'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup',
         'service_template_hosts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Hosttemplate',

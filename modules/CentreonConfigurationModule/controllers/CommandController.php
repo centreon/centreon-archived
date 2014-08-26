@@ -44,7 +44,7 @@ class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     protected $objectBaseUrl = '/configuration/command';
     protected $objectClass = '\CentreonConfiguration\Models\Command';
     protected $datatableObject = '\CentreonConfiguration\Internal\CommandDatatable';
-    
+    protected $repository = '\CentreonConfiguration\Repository\CommandRepository';   
     public static $relationMap = array();
 
     /**

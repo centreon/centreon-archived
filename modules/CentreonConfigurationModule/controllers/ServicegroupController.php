@@ -44,6 +44,7 @@ class ServicegroupController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $objectBaseUrl = '/configuration/servicegroup';
     protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceGroupDatatable';
+    protected $repository = '\CentreonConfiguration\Repository\ServicegroupRepository';
     public static $relationMap = array(
         'sg_services' => '\CentreonConfiguration\Models\Relation\Servicegroup\Service'
     );
