@@ -114,7 +114,7 @@ class ConfigGenerateMainRepository
         $content = static::getFilesList($filesList, $content, $testing);
 
         /* Get information into the database. */
-        $query = "SELECT * FROM cfg_nagios WHERE nagios_server_id = '$poller_id'";
+        $query = "SELECT * FROM cfg_engine WHERE engine_server_id = '$poller_id'";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -213,7 +213,7 @@ class ConfigGenerateMainRepository
 
         /* Get broker in DB */
         $stmt = $dbconn->prepare(
-            "SELECT broker_module FROM `cfg_nagios_broker_module` WHERE `cfg_nagios_id` = '".$poller_id."'"
+            "SELECT broker_module FROM `cfg_engine_broker_module` WHERE `cfg_engine_id` = '".$poller_id."'"
         );
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -303,19 +303,19 @@ class ConfigGenerateMainRepository
     {
         /* Field that we don't want into the config file */
         $disabledField = array();
-        $disabledField["nagios_id"] = 1;
-        $disabledField["nagios_name"] = 1;
-        $disabledField["nagios_server_id"] = 1;
-        $disabledField["nagios_comment"] = 1;
-        $disabledField["nagios_activate"] = 1;
+        $disabledField["engine_id"] = 1;
+        $disabledField["engine_name"] = 1;
+        $disabledField["engine_server_id"] = 1;
+        $disabledField["engine_comment"] = 1;
+        $disabledField["engine_activate"] = 1;
         $disabledField["debug_level_opt"] = 1;
         $disabledField["cfg_file"] = 1;
         
         /* Todo : Remove */
         $disabledField["use_check_result_path"] = 1;
         $disabledField["temp_file"] = 1;
-        $disabledField["nagios_user"] = 1;
-        $disabledField["nagios_group"] = 1;
+        $disabledField["engine_user"] = 1;
+        $disabledField["engine_group"] = 1;
         $disabledField["log_rotation_method"] = 1;
         $disabledField["log_archive_path"] = 1;
         $disabledField["lock_file"] = 1;

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_security" defaultIdMethod="native">
+    <table name="cfg_auth_resources_info" phpName="AuthresourcesInfo" idMethod="native">
+        <column name="ar_id" phpName="ArId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="ari_name" phpName="AriName" type="VARCHAR" size="100" primaryKey="true" required="true"/>
+        <column name="ari_value" phpName="AriValue" type="VARCHAR" size="255" required="true"/>
+        <foreign-key foreignTable="cfg_auth_resources" name="auth_resource_info_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="ar_id" foreign="ar_id"/>
+        </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

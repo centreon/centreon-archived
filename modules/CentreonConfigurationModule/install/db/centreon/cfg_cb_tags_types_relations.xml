@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_cb_tags_types_relations" phpName="CbTagTypeRelation" idMethod="native">
+        <column name="cb_tag_id" phpName="CbTagId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="cb_type_id" phpName="CbTypeId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="cb_type_uniq" phpName="CbTypeUniq" type="INTEGER" size="1" required="true" defaultValue="0"/>
+        <foreign-key foreignTable="cfg_cb_tags" name="fk_cb_tag_type_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="cb_tag_id" foreign="cb_tag_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_cb_types" name="fk_cb_tag_type_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="cb_type_id" foreign="cb_type_id"/>
+        </foreign-key>
+        <index name="fk_cb_tag_type_relation_1">
+            <index-column name="cb_tag_id"/>
+        </index>
+        <index name="fk_cb_tag_type_relation_2">
+            <index-column name="cb_type_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

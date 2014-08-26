@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_acl_menus" phpName="AclMenus" idMethod="native">
+        <column name="acl_menu_id" phpName="AclMenuId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="description" phpName="Description" type="VARCHAR" size="255" required="true"/>
+        <column name="enabled" phpName="Enabled" type="BOOLEAN" size="1" required="false" defaultValue="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

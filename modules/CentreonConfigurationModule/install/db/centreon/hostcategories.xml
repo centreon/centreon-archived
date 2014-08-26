@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="hostcategories" phpName="Hostcategories" idMethod="native">
         <column name="hc_id" phpName="HcId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="hc_name" phpName="HcName" type="VARCHAR" size="200" required="false"/>

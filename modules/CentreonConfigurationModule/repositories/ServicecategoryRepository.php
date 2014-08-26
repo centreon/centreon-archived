@@ -46,7 +46,7 @@ class ServicecategoryRepository extends \CentreonConfiguration\Repository\Reposi
      *
      * @var string
      */
-    public static $tableName = 'service_categories';
+    public static $tableName = 'servicecategories';
     
     /**
      *
@@ -233,7 +233,7 @@ class ServicecategoryRepository extends \CentreonConfiguration\Repository\Reposi
         
         foreach ($resultSet as &$mySC) {
             $stmt = $dbconn->query(
-                "SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$mySC['sc_id']."'"
+                "SELECT COUNT(*) FROM `servicecategories_relation` WHERE `sc_id` = '".$mySC['sc_id']."'"
             );
             $nb_svc = $stmt->fetch();
             $save = array_pop($mySC);

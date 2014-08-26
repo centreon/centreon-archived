@@ -5,7 +5,7 @@
         <column name="name" type="VARCHAR" size="255" required="true" />
         <column name="privacy" type="INTEGER" size="1" required="true" defaultValue="0" />
         <column name="owner_id" type="INTEGER" required="true" />
-        <foreign-key foreignTable="contact" name="graph_views_fk_1" onDelete="CASCADE">
+        <foreign-key foreignTable="cfg_contacts" name="graph_views_fk_1" onDelete="CASCADE">
             <reference local="owner_id" foreign="contact_id" />
         </foreign-key>
         <vendor type="mysql">
@@ -19,7 +19,7 @@
         <foreign-key foreignTable="graph_views" name="graph_views_service_fk_1" onDelete="CASCADE">
             <reference local="graph_view_id" foreign="graph_view_id" />
         </foreign-key>
-        <foreign-key foreignTable="service" name="graph_views_service_fk_2" onDelete="CASCADE">
+        <foreign-key foreignTable="cfg_services" name="graph_views_service_fk_2" onDelete="CASCADE">
             <reference local="service_id" foreign="service_id" />
         </foreign-key>
         <vendor type="mysql">

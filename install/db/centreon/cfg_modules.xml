@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="cfg_modules" phpName="Module" idMethod="native">
+        <column name="id" phpName="Id" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="45" required="true"/>
+        <column name="alias" phpName="Alias" type="VARCHAR" size="45" required="false"/>
+        <column name="description" phpName="Description" type="VARCHAR" size="45" required="false"/>
+        <column name="version" phpName="Version" type="VARCHAR" size="45" required="true"/>
+        <column name="author" phpName="Author" type="VARCHAR" size="255" required="true"/>
+        <column name="isactivated" phpName="Isactivated" type="CHAR" required="true" defaultValue="0"/>
+        <column name="isinstalled" phpName="Isinstalled" type="CHAR" required="false" defaultValue="0"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

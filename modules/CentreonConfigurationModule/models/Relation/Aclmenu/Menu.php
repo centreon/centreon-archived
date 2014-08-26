@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Menu extends CentreonRelationModel
 {
-    protected static $relationTable = "acl_menu_menu_relations";
+    protected static $relationTable = "cfg_acl_menu_menu_relations";
     protected static $firstKey = "acl_menu_id";
     protected static $secondKey = "menu_id";
     public static $firstObject = "\CentreonConfiguration\Models\Acl\Menu";

@@ -42,7 +42,7 @@ namespace CentreonBam\Models;
  */
 class Businessview extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "bam_ba_groups";
+    protected static $table = "bam_bagroups";
     protected static $primaryKey = "id_ba_group";
     protected static $uniqueLabelField = "ba_group_name";
 }

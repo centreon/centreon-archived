@@ -42,7 +42,7 @@
 		<field name="init_script" label="Engine init script" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 		  <help>Init script of the monitoring engine.</help>
 		</field>
-		<field name="nagios_bin" label="Engine binary" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+		<field name="engine_bin" label="Engine binary" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 		  <help>Engine binary path.</help>
 		</field>
 		<field name="centreonconnector_path" label="Connector path" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
@@ -70,7 +70,7 @@
 	</step>
     <step name="Engine">
         <field name="init_script" mandatory="1"></field>
-        <field name="nagios_bin" mandatory="1"></field>
+        <field name="engine_bin" mandatory="1"></field>
     </step>
     <step name="Broker">
         <field name="centreonbroker_cfg_path" mandatory="1"></field>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_instances" phpName="Instances" idMethod="native">
+        <column name="instance_id" phpName="InstanceId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="true" defaultValue="localhost"/>
+        <column name="active_host_checks" phpName="ActiveHostChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="active_service_checks" phpName="ActiveServiceChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="address" phpName="Address" type="VARCHAR" size="128" required="false"/>
+        <column name="check_hosts_freshness" phpName="CheckHostsFreshness" type="BOOLEAN" size="1" required="false"/>
+        <column name="check_services_freshness" phpName="CheckServicesFreshness" type="BOOLEAN" size="1" required="false"/>
+        <column name="daemon_mode" phpName="DaemonMode" type="BOOLEAN" size="1" required="false"/>
+        <column name="description" phpName="Description" type="VARCHAR" size="128" required="false"/>
+        <column name="end_time" phpName="EndTime" type="INTEGER" required="false"/>
+        <column name="engine" phpName="Engine" type="VARCHAR" size="64" required="false"/>
+        <column name="event_handlers" phpName="EventHandlers" type="BOOLEAN" size="1" required="false"/>
+        <column name="failure_prediction" phpName="FailurePrediction" type="BOOLEAN" size="1" required="false"/>
+        <column name="flap_detection" phpName="FlapDetection" type="BOOLEAN" size="1" required="false"/>
+        <column name="global_host_event_handler" phpName="GlobalHostEventHandler" type="LONGVARCHAR" required="false"/>
+        <column name="global_service_event_handler" phpName="GlobalServiceEventHandler" type="LONGVARCHAR" required="false"/>
+        <column name="last_alive" phpName="LastAlive" type="INTEGER" required="false"/>
+        <column name="last_command_check" phpName="LastCommandCheck" type="INTEGER" required="false"/>
+        <column name="last_log_rotation" phpName="LastLogRotation" type="INTEGER" required="false"/>
+        <column name="modified_host_attributes" phpName="ModifiedHostAttributes" type="INTEGER" required="false"/>
+        <column name="modified_service_attributes" phpName="ModifiedServiceAttributes" type="INTEGER" required="false"/>
+        <column name="notifications" phpName="Notifications" type="BOOLEAN" size="1" required="false"/>
+        <column name="obsess_over_hosts" phpName="ObsessOverHosts" type="BOOLEAN" size="1" required="false"/>
+        <column name="obsess_over_services" phpName="ObsessOverServices" type="BOOLEAN" size="1" required="false"/>
+        <column name="passive_host_checks" phpName="PassiveHostChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="passive_service_checks" phpName="PassiveServiceChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="pid" phpName="Pid" type="INTEGER" required="false"/>
+        <column name="process_perfdata" phpName="ProcessPerfdata" type="BOOLEAN" size="1" required="false"/>
+        <column name="running" phpName="Running" type="BOOLEAN" size="1" required="false"/>
+        <column name="start_time" phpName="StartTime" type="INTEGER" required="false"/>
+        <column name="version" phpName="Version" type="VARCHAR" size="16" required="false"/>
+        <column name="deleted" phpName="Deleted" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

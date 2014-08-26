@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="command_arg_description" phpName="CommandArgDescription" idMethod="native">
         <column name="cmd_id" phpName="CmdId" type="INTEGER" required="true"/>
         <column name="macro_name" phpName="MacroName" type="VARCHAR" size="255" required="true"/>

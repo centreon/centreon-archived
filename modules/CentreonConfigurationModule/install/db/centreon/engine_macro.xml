@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="engine_macro" phpName="engineMacro" idMethod="native">
+        <column name="macro_id" phpName="MacroId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="macro_name" phpName="MacroName" type="VARCHAR" size="255" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

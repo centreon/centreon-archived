@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="log_snmptt" phpName="LogSnmptt" idMethod="native">
+        <column name="trap_id" phpName="TrapId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="trap_oid" phpName="TrapOid" type="LONGVARCHAR" required="false"/>
+        <column name="trap_ip" phpName="TrapIp" type="VARCHAR" size="50" required="false"/>
+        <column name="trap_community" phpName="TrapCommunity" type="VARCHAR" size="50" required="false"/>
+        <column name="trap_infos" phpName="TrapInfos" type="LONGVARCHAR" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>

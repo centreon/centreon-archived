@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_notifications" phpName="Notifications" idMethod="native">
+        <column name="notification_id" phpName="NotificationId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="start_time" phpName="StartTime" type="INTEGER" required="false"/>
+        <column name="ack_author" phpName="AckAuthor" type="VARCHAR" size="255" required="false"/>
+        <column name="ack_data" phpName="AckData" type="LONGVARCHAR" required="false"/>
+        <column name="command_name" phpName="CommandName" type="VARCHAR" size="255" required="false"/>
+        <column name="contact_name" phpName="ContactName" type="VARCHAR" size="255" required="false"/>
+        <column name="contacts_notified" phpName="ContactsNotified" type="BOOLEAN" size="1" required="false"/>
+        <column name="end_time" phpName="EndTime" type="INTEGER" required="false"/>
+        <column name="escalated" phpName="Escalated" type="BOOLEAN" size="1" required="false"/>
+        <column name="output" phpName="Output" type="LONGVARCHAR" required="false"/>
+        <column name="reason_type" phpName="ReasonType" type="INTEGER" required="false"/>
+        <column name="state" phpName="State" type="INTEGER" required="false"/>
+        <column name="type" phpName="Type" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="rt_hosts" name="notifications_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="host_id" foreign="host_id"/>
+        </foreign-key>
+        <unique name="host_id">
+            <unique-column name="host_id"/>
+            <unique-column name="service_id"/>
+            <unique-column name="start_time"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="traps_preexec" phpName="TrapsPreexec" idMethod="native">
         <column name="trap_id" phpName="TrapId" type="INTEGER" required="false"/>
         <column name="tpe_order" phpName="TpeOrder" type="INTEGER" required="false"/>

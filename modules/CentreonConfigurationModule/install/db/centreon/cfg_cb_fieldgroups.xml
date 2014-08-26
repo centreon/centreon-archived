@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_cb_fieldgroups" phpName="CbFieldgroup" idMethod="native">
+        <column name="cb_fieldgroup_id" phpName="CbFieldgroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="groupname" phpName="Groupname" type="VARCHAR" size="100" required="true"/>
+        <column name="group_parent_id" phpName="GroupParentId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_cb_fieldgroups" name="cb_fieldgroup_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="group_parent_id" foreign="cb_fieldgroup_id"/>
+        </foreign-key>
+        <index name="group_parent_id">
+            <index-column name="group_parent_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

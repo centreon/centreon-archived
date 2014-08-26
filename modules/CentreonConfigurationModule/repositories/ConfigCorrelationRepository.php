@@ -61,19 +61,19 @@ class ConfigCorrelationRepository
         $xml->startElement('conf');
 
         /* Declare Host */
-        $query = "SELECT host_id, nagios_server_id "
+        $query = "SELECT host_id, engine_server_id "
             . "FROM host, ns_host_relation "
             . "WHERE host_host_id = host_id ORDER BY host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('host');
             $xml->writeAttribute('id', $row["host_id"]);
-            $xml->writeAttribute('instance_id', $row["nagios_server_id"]);
+            $xml->writeAttribute('instance_id', $row["engine_server_id"]);
             $xml->endElement();
         }
         
         /* Declare Service */
-        $query = "SELECT service_id, host_id, nagios_server_id "
+        $query = "SELECT service_id, host_id, engine_server_id "
             . "FROM host, service, host_service_relation ns, ns_host_relation hp "
             . "WHERE host_id = ns.host_host_id "
             . "AND service_id = ns.service_service_id AND hp.host_host_id = host_id";
@@ -82,7 +82,7 @@ class ConfigCorrelationRepository
             $xml->startElement('service');
             $xml->writeAttribute('id', $row["service_id"]);
             $xml->writeAttribute('host', $row["host_id"]);
-            $xml->writeAttribute('instance_id', $row["nagios_server_id"]);
+            $xml->writeAttribute('instance_id', $row["engine_server_id"]);
             $xml->endElement();
         }
         

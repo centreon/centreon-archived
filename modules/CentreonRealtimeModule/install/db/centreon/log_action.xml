@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="log_action" phpName="LogAction" idMethod="native">
+        <column name="action_log_id" phpName="ActionLogId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="action_log_date" phpName="ActionLogDate" type="INTEGER" required="true"/>
+        <column name="object_type" phpName="ObjectType" type="VARCHAR" size="255" required="true"/>
+        <column name="object_id" phpName="ObjectId" type="INTEGER" required="true"/>
+        <column name="object_name" phpName="ObjectName" type="VARCHAR" size="255" required="true"/>
+        <column name="action_type" phpName="ActionType" type="VARCHAR" size="255" required="true"/>
+        <column name="log_contact_id" phpName="LogContactId" type="INTEGER" required="true"/>
+        <index name="log_contact_id">
+            <index-column name="log_contact_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>

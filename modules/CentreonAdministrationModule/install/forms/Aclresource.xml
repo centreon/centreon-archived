@@ -67,7 +67,7 @@
 				<field name="acl_resource_host_categories" label="Host categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostcategory/formlist","listValuesRoute":"/administration/aclresource/[i:id]/hostcategory","multiple":true,"ordered":false}</attributes>
 				</field>
-				<field name="acl_resource_service_categories" label="Service categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+				<field name="acl_resource_servicecategories" label="Service categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/servicecategory/formlist","listValuesRoute":"/administration/aclresource/[i:id]/servicecategory","multiple":true,"ordered":false}</attributes>
 				</field>
 			</block>

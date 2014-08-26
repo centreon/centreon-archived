@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
-    <table name="contact_servicecommands_relation" phpName="ContactServicecommandsRelation" idMethod="native">
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_contact_servicecommands_relation" phpName="ContactServicecommandsRelation" idMethod="native">
         <column name="csc_id" phpName="CscId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="contact_contact_id" phpName="ContactContactId" type="INTEGER" required="false"/>
         <column name="command_command_id" phpName="CommandCommandId" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="contact" name="contact_servicecommands_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_contacts" name="contact_servicecommands_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="contact_contact_id" foreign="contact_id"/>
         </foreign-key>
         <foreign-key foreignTable="command" name="contact_servicecommands_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">

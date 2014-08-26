@@ -39,7 +39,7 @@ namespace Centreon\Models\Relation\Aclgroup;
 
 class Contact extends \Centreon\Models\CentreonRelationModel
 {
-    protected static $relationTable = "acl_group_contacts_relations";
+    protected static $relationTable = "cfg_acl_group_contacts_relations";
     protected static $firstKey = "acl_group_id";
     protected static $secondKey = "contact_contact_id";
     public static $firstObject =  "\Centreon\Models\Acl\Group";

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="downtime_servicegroup_relation" phpName="DowntimeServicegroupRelation" idMethod="native">
         <column name="dt_id" phpName="DtId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="sg_sg_id" phpName="SgSgId" type="INTEGER" primaryKey="true" required="true"/>
-        <foreign-key foreignTable="servicegroup" name="downtime_servicegroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_servicegroups" name="downtime_servicegroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="sg_sg_id" foreign="sg_id"/>
         </foreign-key>
         <foreign-key foreignTable="downtime" name="downtime_servicegroup_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">

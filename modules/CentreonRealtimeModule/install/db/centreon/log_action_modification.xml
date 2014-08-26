@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="log_action_modification" phpName="LogActionModification" idMethod="native">
+        <column name="modification_id" phpName="ModificationId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="field_name" phpName="FieldName" type="VARCHAR" size="255" required="true"/>
+        <column name="field_value" phpName="FieldValue" type="VARCHAR" size="255" required="true"/>
+        <column name="action_log_id" phpName="ActionLogId" type="INTEGER" required="true"/>
+        <index name="action_log_id">
+            <index-column name="action_log_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>

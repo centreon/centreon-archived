@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_customvariables" phpName="Customvariables" idMethod="native">
+        <column name="customvariable_id" phpName="CustomvariableId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="false"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="default_value" phpName="DefaultValue" type="VARCHAR" size="255" required="false"/>
+        <column name="modified" phpName="Modified" type="BOOLEAN" size="1" required="false"/>
+        <column name="type" phpName="Type" type="SMALLINT" required="false"/>
+        <column name="update_time" phpName="UpdateTime" type="INTEGER" required="false"/>
+        <column name="value" phpName="Value" type="VARCHAR" size="255" required="false"/>
+        <unique name="host_id">
+            <unique-column name="host_id"/>
+            <unique-column name="name"/>
+            <unique-column name="service_id"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

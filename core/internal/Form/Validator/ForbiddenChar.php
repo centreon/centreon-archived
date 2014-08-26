@@ -50,7 +50,7 @@ class ForbiddenChar implements Ivalidator
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $stmt = $dbconn->query('SELECT illegal_object_name_chars FROM cfg_nagios');
+        $stmt = $dbconn->query('SELECT illegal_object_name_chars FROM cfg_engine');
         $charsFromDb = $stmt->fetch();
         $illegalChars = str_split(html_entity_decode($charsFromDb['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
         

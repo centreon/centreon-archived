@@ -74,13 +74,13 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
                 object_id IN (
                     SELECT host_host_id
                         FROM centreon.ns_host_relation
-                        WHERE nagios_server_id = '$poller_id'
+                        WHERE engine_server_id = '$poller_id'
                 )) OR
                     (object_type = 'service') AND
                         object_id IN (
                     SELECT service_service_id
                     FROM centreon.ns_host_relation nhr, centreon.host_service_relation hsr
-                    WHERE nagios_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id
+                    WHERE engine_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id
         ))";
         $DBRESULT = $dbconnStorage->query($request);
         if ($DBRESULT->rowCount()) {
@@ -101,10 +101,10 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         $dbconn = $di->get('db_centreon');
         
         //
-        $sqlCalNagiosServer = "SELECT COUNT(`id`) as nb_poller FROM `nagios_server`";
-        $stmtCalNagiosServer = $dbconn->query($sqlCalNagiosServer);
-        $resultCalNagiosServer = $stmtCalNagiosServer->fetchAll(\PDO::FETCH_ASSOC);
+        $sqlCalengineServer = "SELECT COUNT(`id`) as nb_poller FROM `engine_server`";
+        $stmtCalengineServer = $dbconn->query($sqlCalengineServer);
+        $resultCalengineServer = $stmtCalengineServer->fetchAll(\PDO::FETCH_ASSOC);
         
-        return $resultCalNagiosServer[0]['nb_poller'];
+        return $resultCalengineServer[0]['nb_poller'];
     }
 }

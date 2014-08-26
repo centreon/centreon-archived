@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_customview" defaultIdMethod="native">
+    <table name="cfg_widgets" phpName="Widgets" idMethod="native">
+        <column name="widget_id" phpName="WidgetId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="widget_model_id" phpName="WidgetModelId" type="INTEGER" required="true"/>
+        <column name="title" phpName="Title" type="VARCHAR" size="255" required="true"/>
+        <column name="custom_view_id" phpName="CustomViewId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="cfg_custom_views" name="fk_widget_custom_view_id" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="custom_view_id" foreign="custom_view_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_widgets_models" name="fk_wdg_model_id" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="widget_model_id" foreign="widget_model_id"/>
+        </foreign-key>
+        <index name="fk_wdg_model_id">
+            <index-column name="widget_model_id"/>
+        </index>
+        <index name="fk_widget_custom_view_id">
+            <index-column name="custom_view_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

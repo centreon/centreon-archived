@@ -53,7 +53,7 @@ class ServiceCategoryTest extends DbTestCase
         );
         Servicecategory::insert($insert);
         $this->tableEqualsXml(
-            'service_categories',
+            'servicecategories',
             dirname(__DIR__) . '/data/servicecategory.insert.xml'
         );
     }
@@ -77,7 +77,7 @@ class ServiceCategoryTest extends DbTestCase
     {
         Servicecategory::delete(2);
         $this->tableEqualsXml(
-            'service_categories',
+            'servicecategories',
             dirname(__DIR__) . '/data/servicecategory.delete.xml'
         );
     }
@@ -98,7 +98,7 @@ class ServiceCategoryTest extends DbTestCase
         );
         Servicecategory::update(1, $newInfo);
         $this->tableEqualsXml(
-            'service_categories',
+            'servicecategories',
             dirname(__DIR__) . '/data/servicecategory.update.xml'
         );
     }
@@ -130,7 +130,7 @@ class ServiceCategoryTest extends DbTestCase
     {
         Servicecategory::duplicate(1);
         $this->tableEqualsXml(
-            'service_categories',
+            'servicecategories',
             dirname(__DIR__) . '/data/servicecategory.duplicate-1.xml'
         );
     }
@@ -139,7 +139,7 @@ class ServiceCategoryTest extends DbTestCase
     {
         Servicecategory::duplicate(1, 2);
         $this->tableEqualsXml(
-            'service_categories',
+            'servicecategories',
             dirname(__DIR__) . '/data/servicecategory.duplicate-2.xml'
         );
     }
@@ -463,7 +463,7 @@ class ServiceCategoryTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('service_categories', Servicecategory::getTableName());
+        $this->assertEquals('servicecategories', Servicecategory::getTableName());
     }
 
     public function testGetColumns()

@@ -45,7 +45,7 @@ use \Centreon\Models\CentreonBaseModel;
  */
 class Aclmenu extends CentreonBaseModel
 {
-    protected static $table = "acl_menus";
+    protected static $table = "cfg_acl_menus";
     protected static $primaryKey = "acl_menu_id";
     protected static $uniqueLabelField = "name";
 }

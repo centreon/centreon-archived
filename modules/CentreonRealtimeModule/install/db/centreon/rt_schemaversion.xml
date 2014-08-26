@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_schemaversion" phpName="Schemaversion" idMethod="native">
+        <column name="software" phpName="Software" type="VARCHAR" size="128" required="true"/>
+        <column name="version" phpName="Version" type="INTEGER" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
