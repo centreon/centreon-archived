@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_servicestateevents" phpName="Servicestateevents" idMethod="native">
+        <column name="servicestateevent_id" phpName="ServicestateeventId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="end_time" phpName="EndTime" type="INTEGER" required="false"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="true"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="start_time" phpName="StartTime" type="INTEGER" required="true"/>
+        <column name="state" phpName="State" type="TINYINT" size="11" required="true"/>
+        <column name="last_update" phpName="LastUpdate" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="in_downtime" phpName="InDowntime" type="TINYINT" required="true"/>
+        <column name="ack_time" phpName="AckTime" type="INTEGER" required="false"/>
+        <unique name="host_id">
+            <unique-column name="host_id"/>
+            <unique-column name="service_id"/>
+            <unique-column name="start_time"/>
+        </unique>
+        <index name="start_time">
+            <index-column name="start_time"/>
+        </index>
+        <index name="end_time">
+            <index-column name="end_time"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

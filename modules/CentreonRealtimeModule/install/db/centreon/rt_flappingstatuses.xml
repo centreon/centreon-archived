@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_flappingstatuses" phpName="Flappingstatuses" idMethod="native">
+        <column name="flappingstatus_id" phpName="FlappingstatusId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="event_time" phpName="EventTime" type="INTEGER" required="false"/>
+        <column name="comment_time" phpName="CommentTime" type="INTEGER" required="false"/>
+        <column name="event_type" phpName="EventType" type="SMALLINT" required="false"/>
+        <column name="high_threshold" phpName="HighThreshold" type="DOUBLE" required="false"/>
+        <column name="internal_comment_id" phpName="InternalCommentId" type="INTEGER" required="false"/>
+        <column name="low_threshold" phpName="LowThreshold" type="DOUBLE" required="false"/>
+        <column name="percent_state_change" phpName="PercentStateChange" type="DOUBLE" required="false"/>
+        <column name="reason_type" phpName="ReasonType" type="SMALLINT" required="false"/>
+        <column name="type" phpName="Type" type="SMALLINT" required="false"/>
+        <foreign-key foreignTable="rt_hosts" name="flappingstatuses_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="host_id" foreign="host_id"/>
+        </foreign-key>
+        <unique name="host_id">
+            <unique-column name="host_id"/>
+            <unique-column name="service_id"/>
+            <unique-column name="event_time"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

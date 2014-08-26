@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="log_logs" phpName="Logs" idMethod="native">
+        <column name="log_id" phpName="LogId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="ctime" phpName="Ctime" type="INTEGER" required="false"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
+        <column name="host_name" phpName="HostName" type="VARCHAR" size="255" required="false"/>
+        <column name="instance_name" phpName="InstanceName" type="VARCHAR" size="255" required="true"/>
+        <column name="issue_id" phpName="IssueId" type="INTEGER" required="false"/>
+        <column name="msg_type" phpName="MsgType" type="TINYINT" required="false"/>
+        <column name="notification_cmd" phpName="NotificationCmd" type="VARCHAR" size="255" required="false"/>
+        <column name="notification_contact" phpName="NotificationContact" type="VARCHAR" size="255" required="false"/>
+        <column name="output" phpName="Output" type="LONGVARCHAR" required="false"/>
+        <column name="retry" phpName="Retry" type="INTEGER" required="false"/>
+        <column name="service_description" phpName="ServiceDescription" type="VARCHAR" size="255" required="false"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="status" phpName="Status" type="TINYINT" required="false"/>
+        <column name="type" phpName="Type" type="SMALLINT" required="false"/>
+        <index name="host_name">
+            <index-column name="host_name"/>
+        </index>
+        <index name="service_description">
+            <index-column name="service_description"/>
+        </index>
+        <index name="status">
+            <index-column name="status"/>
+        </index>
+        <index name="instance_name">
+            <index-column name="instance_name"/>
+        </index>
+        <index name="ctime">
+            <index-column name="ctime"/>
+        </index>
+        <index name="rq1">
+            <index-column name="host_id"/>
+            <index-column name="service_id"/>
+            <index-column name="msg_type"/>
+            <index-column name="status"/>
+            <index-column name="ctime"/>
+        </index>
+        <index name="rq2">
+            <index-column name="host_id"/>
+            <index-column name="msg_type"/>
+            <index-column name="status"/>
+            <index-column name="ctime"/>
+        </index>
+        <index name="host_id">
+            <index-column name="host_id"/>
+            <index-column name="service_id"/>
+            <index-column name="msg_type"/>
+            <index-column name="ctime"/>
+            <index-column name="status"/>
+        </index>
+        <index name="host_id_2">
+            <index-column name="host_id"/>
+            <index-column name="msg_type"/>
+            <index-column name="ctime"/>
+            <index-column name="status"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
+    </table>
+</database>

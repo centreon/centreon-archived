@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_hostgroups" phpName="Hostgroups" idMethod="native">
+        <column name="hostgroup_id" phpName="HostgroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="instance_id" phpName="InstanceId" type="INTEGER" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="action_url" phpName="ActionUrl" type="VARCHAR" size="160" required="false"/>
+        <column name="alias" phpName="Alias" type="VARCHAR" size="255" required="false"/>
+        <column name="notes" phpName="Notes" type="VARCHAR" size="160" required="false"/>
+        <column name="notes_url" phpName="NotesUrl" type="VARCHAR" size="160" required="false"/>
+        <column name="enabled" phpName="Enabled" type="BOOLEAN" size="1" required="true" defaultValue="true"/>
+        <foreign-key foreignTable="rt_instances" name="hostgroups_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="instance_id" foreign="instance_id"/>
+        </foreign-key>
+        <unique name="name">
+            <unique-column name="name"/>
+            <unique-column name="instance_id"/>
+        </unique>
+        <index name="instance_id">
+            <index-column name="instance_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

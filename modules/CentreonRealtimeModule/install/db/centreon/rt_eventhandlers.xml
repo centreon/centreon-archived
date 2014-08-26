@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_eventhandlers" phpName="Eventhandlers" idMethod="native">
+        <column name="eventhandler_id" phpName="EventhandlerId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
+        <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>
+        <column name="start_time" phpName="StartTime" type="INTEGER" required="false"/>
+        <column name="command_args" phpName="CommandArgs" type="VARCHAR" size="255" required="false"/>
+        <column name="command_line" phpName="CommandLine" type="VARCHAR" size="255" required="false"/>
+        <column name="early_timeout" phpName="EarlyTimeout" type="SMALLINT" required="false"/>
+        <column name="end_time" phpName="EndTime" type="INTEGER" required="false"/>
+        <column name="execution_time" phpName="ExecutionTime" type="DOUBLE" required="false"/>
+        <column name="output" phpName="Output" type="VARCHAR" size="255" required="false"/>
+        <column name="return_code" phpName="ReturnCode" type="SMALLINT" required="false"/>
+        <column name="state" phpName="State" type="SMALLINT" required="false"/>
+        <column name="state_type" phpName="StateType" type="SMALLINT" required="false"/>
+        <column name="timeout" phpName="Timeout" type="SMALLINT" required="false"/>
+        <column name="type" phpName="Type" type="SMALLINT" required="false"/>
+        <foreign-key foreignTable="rt_hosts" name="eventhandlers_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="host_id" foreign="host_id"/>
+        </foreign-key>
+        <unique name="host_id">
+            <unique-column name="host_id"/>
+            <unique-column name="service_id"/>
+            <unique-column name="start_time"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

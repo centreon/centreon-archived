@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon_storage" defaultIdMethod="native">
+    <table name="rt_hosts" phpName="Hosts" idMethod="native">
+        <column name="host_id" phpName="HostId" type="INTEGER" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="instance_id" phpName="InstanceId" type="INTEGER" required="true"/>
+        <column name="acknowledged" phpName="Acknowledged" type="BOOLEAN" size="1" required="false"/>
+        <column name="acknowledgement_type" phpName="AcknowledgementType" type="SMALLINT" required="false"/>
+        <column name="action_url" phpName="ActionUrl" type="VARCHAR" size="255" required="false"/>
+        <column name="active_checks" phpName="ActiveChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="address" phpName="Address" type="VARCHAR" size="75" required="false"/>
+        <column name="alias" phpName="Alias" type="VARCHAR" size="100" required="false"/>
+        <column name="check_attempt" phpName="CheckAttempt" type="SMALLINT" required="false"/>
+        <column name="check_command" phpName="CheckCommand" type="LONGVARCHAR" required="false"/>
+        <column name="check_freshness" phpName="CheckFreshness" type="BOOLEAN" size="1" required="false"/>
+        <column name="check_interval" phpName="CheckInterval" type="DOUBLE" required="false"/>
+        <column name="check_period" phpName="CheckPeriod" type="VARCHAR" size="75" required="false"/>
+        <column name="check_type" phpName="CheckType" type="SMALLINT" required="false"/>
+        <column name="checked" phpName="Checked" type="BOOLEAN" size="1" required="false"/>
+        <column name="command_line" phpName="CommandLine" type="LONGVARCHAR" required="false"/>
+        <column name="default_active_checks" phpName="DefaultActiveChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="default_event_handler_enabled" phpName="DefaultEventHandlerEnabled" type="BOOLEAN" size="1" required="false"/>
+        <column name="default_failure_prediction" phpName="DefaultFailurePrediction" type="BOOLEAN" size="1" required="false"/>
+        <column name="default_flap_detection" phpName="DefaultFlapDetection" type="BOOLEAN" size="1" required="false"/>
+        <column name="default_notify" phpName="DefaultNotify" type="BOOLEAN" size="1" required="false"/>
+        <column name="default_passive_checks" phpName="DefaultPassiveChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="default_process_perfdata" phpName="DefaultProcessPerfdata" type="BOOLEAN" size="1" required="false"/>
+        <column name="display_name" phpName="DisplayName" type="VARCHAR" size="100" required="false"/>
+        <column name="enabled" phpName="Enabled" type="BOOLEAN" size="1" required="true" defaultValue="true"/>
+        <column name="event_handler" phpName="EventHandler" type="VARCHAR" size="255" required="false"/>
+        <column name="event_handler_enabled" phpName="EventHandlerEnabled" type="BOOLEAN" size="1" required="false"/>
+        <column name="execution_time" phpName="ExecutionTime" type="DOUBLE" required="false"/>
+        <column name="failure_prediction" phpName="FailurePrediction" type="BOOLEAN" size="1" required="false"/>
+        <column name="first_notification_delay" phpName="FirstNotificationDelay" type="DOUBLE" required="false"/>
+        <column name="flap_detection" phpName="FlapDetection" type="BOOLEAN" size="1" required="false"/>
+        <column name="flap_detection_on_down" phpName="FlapDetectionOnDown" type="BOOLEAN" size="1" required="false"/>
+        <column name="flap_detection_on_unreachable" phpName="FlapDetectionOnUnreachable" type="BOOLEAN" size="1" required="false"/>
+        <column name="flap_detection_on_up" phpName="FlapDetectionOnUp" type="BOOLEAN" size="1" required="false"/>
+        <column name="flapping" phpName="Flapping" type="BOOLEAN" size="1" required="false"/>
+        <column name="freshness_threshold" phpName="FreshnessThreshold" type="DOUBLE" required="false"/>
+        <column name="high_flap_threshold" phpName="HighFlapThreshold" type="DOUBLE" required="false"/>
+        <column name="icon_image" phpName="IconImage" type="VARCHAR" size="255" required="false"/>
+        <column name="icon_image_alt" phpName="IconImageAlt" type="VARCHAR" size="255" required="false"/>
+        <column name="last_check" phpName="LastCheck" type="INTEGER" required="false"/>
+        <column name="last_hard_state" phpName="LastHardState" type="SMALLINT" required="false"/>
+        <column name="last_hard_state_change" phpName="LastHardStateChange" type="INTEGER" required="false"/>
+        <column name="last_notification" phpName="LastNotification" type="INTEGER" required="false"/>
+        <column name="last_state_change" phpName="LastStateChange" type="INTEGER" required="false"/>
+        <column name="last_time_down" phpName="LastTimeDown" type="INTEGER" required="false"/>
+        <column name="last_time_unreachable" phpName="LastTimeUnreachable" type="INTEGER" required="false"/>
+        <column name="last_time_up" phpName="LastTimeUp" type="INTEGER" required="false"/>
+        <column name="last_update" phpName="LastUpdate" type="INTEGER" required="false"/>
+        <column name="latency" phpName="Latency" type="DOUBLE" required="false"/>
+        <column name="low_flap_threshold" phpName="LowFlapThreshold" type="DOUBLE" required="false"/>
+        <column name="max_check_attempts" phpName="MaxCheckAttempts" type="SMALLINT" required="false"/>
+        <column name="modified_attributes" phpName="ModifiedAttributes" type="INTEGER" required="false"/>
+        <column name="next_check" phpName="NextCheck" type="INTEGER" required="false"/>
+        <column name="next_host_notification" phpName="NextHostNotification" type="INTEGER" required="false"/>
+        <column name="no_more_notifications" phpName="NoMoreNotifications" type="BOOLEAN" size="1" required="false"/>
+        <column name="notes" phpName="Notes" type="VARCHAR" size="255" required="false"/>
+        <column name="notes_url" phpName="NotesUrl" type="VARCHAR" size="255" required="false"/>
+        <column name="notification_interval" phpName="NotificationInterval" type="DOUBLE" required="false"/>
+        <column name="notification_number" phpName="NotificationNumber" type="SMALLINT" required="false"/>
+        <column name="notification_period" phpName="NotificationPeriod" type="VARCHAR" size="75" required="false"/>
+        <column name="notify" phpName="Notify" type="BOOLEAN" size="1" required="false"/>
+        <column name="notify_on_down" phpName="NotifyOnDown" type="BOOLEAN" size="1" required="false"/>
+        <column name="notify_on_downtime" phpName="NotifyOnDowntime" type="BOOLEAN" size="1" required="false"/>
+        <column name="notify_on_flapping" phpName="NotifyOnFlapping" type="BOOLEAN" size="1" required="false"/>
+        <column name="notify_on_recovery" phpName="NotifyOnRecovery" type="BOOLEAN" size="1" required="false"/>
+        <column name="notify_on_unreachable" phpName="NotifyOnUnreachable" type="BOOLEAN" size="1" required="false"/>
+        <column name="obsess_over_host" phpName="ObsessOverHost" type="BOOLEAN" size="1" required="false"/>
+        <column name="output" phpName="Output" type="LONGVARCHAR" required="false"/>
+        <column name="passive_checks" phpName="PassiveChecks" type="BOOLEAN" size="1" required="false"/>
+        <column name="percent_state_change" phpName="PercentStateChange" type="DOUBLE" required="false"/>
+        <column name="perfdata" phpName="Perfdata" type="LONGVARCHAR" required="false"/>
+        <column name="process_perfdata" phpName="ProcessPerfdata" type="BOOLEAN" size="1" required="false"/>
+        <column name="retain_nonstatus_information" phpName="RetainNonstatusInformation" type="BOOLEAN" size="1" required="false"/>
+        <column name="retain_status_information" phpName="RetainStatusInformation" type="BOOLEAN" size="1" required="false"/>
+        <column name="retry_interval" phpName="RetryInterval" type="DOUBLE" required="false"/>
+        <column name="scheduled_downtime_depth" phpName="ScheduledDowntimeDepth" type="SMALLINT" required="false"/>
+        <column name="should_be_scheduled" phpName="ShouldBeScheduled" type="BOOLEAN" size="1" required="false"/>
+        <column name="stalk_on_down" phpName="StalkOnDown" type="BOOLEAN" size="1" required="false"/>
+        <column name="stalk_on_unreachable" phpName="StalkOnUnreachable" type="BOOLEAN" size="1" required="false"/>
+        <column name="stalk_on_up" phpName="StalkOnUp" type="BOOLEAN" size="1" required="false"/>
+        <column name="state" phpName="State" type="SMALLINT" required="false"/>
+        <column name="state_type" phpName="StateType" type="SMALLINT" required="false"/>
+        <column name="statusmap_image" phpName="StatusmapImage" type="VARCHAR" size="255" required="false"/>
+        <foreign-key foreignTable="rt_instances" name="hosts_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="instance_id" foreign="instance_id"/>
+        </foreign-key>
+        <unique name="host_id">
+            <unique-column name="host_id"/>
+        </unique>
+        <index name="instance_id">
+            <index-column name="instance_id"/>
+        </index>
+        <index name="host_name">
+            <index-column name="name"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

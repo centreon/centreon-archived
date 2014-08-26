@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" defaultIdMethod="native">
+    <table name="rt_modules" phpName="Modules" idMethod="native">
+        <column name="module_id" phpName="ModuleId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="instance_id" phpName="InstanceId" type="INTEGER" required="true"/>
+        <column name="args" phpName="Args" type="VARCHAR" size="255" required="false"/>
+        <column name="filename" phpName="Filename" type="VARCHAR" size="255" required="false"/>
+        <column name="loaded" phpName="Loaded" type="BOOLEAN" size="1" required="false"/>
+        <column name="should_be_loaded" phpName="ShouldBeLoaded" type="BOOLEAN" size="1" required="false"/>
+        <foreign-key foreignTable="rt_instances" name="modules_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="instance_id" foreign="instance_id"/>
+        </foreign-key>
+        <index name="instance_id">
+            <index-column name="instance_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
