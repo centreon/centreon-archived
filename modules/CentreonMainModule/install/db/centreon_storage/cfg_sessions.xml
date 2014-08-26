@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
-    <table name="session" phpName="Session" idMethod="native">
+<database name="centreon_storage" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_sessions" phpName="Session" idMethod="native">
         <column name="session_id" phpName="SessionId" type="VARCHAR" size="255" primaryKey="true" required="true"/>
         <column name="user_id" phpName="UserId" type="INTEGER" required="true"/>
         <column name="session_start_time" phpName="SessionStartTime" type="INTEGER" required="true"/>

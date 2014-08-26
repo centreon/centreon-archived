@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
-    <table name="form_block_field_relation" phpName="FormBlockFieldRelation" idMethod="native">
+<database name="centreon_storage" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_forms_blocks_fields_relations" phpName="FormBlockFieldRelation" idMethod="native">
         <column name="block_id" phpName="BlockId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="rank" phpName="Rank" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
         <column name="mandatory" phpName="Mandatory" type="CHAR" required="true" defaultValue="0"/>
-        <foreign-key foreignTable="form_block" name="fk_form_block_field_relation_1" onDelete="CASCADE" onUpdate="CASCADE">
+        <foreign-key foreignTable="cfg_forms_blocks" name="fk_form_block_field_relation_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="block_id" foreign="block_id"/>
         </foreign-key>
-        <foreign-key foreignTable="form_field" name="fk_form_block_field_relation_2" onDelete="CASCADE" onUpdate="CASCADE">
+        <foreign-key foreignTable="cfg_forms_fields" name="fk_form_block_field_relation_2" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="field_id" foreign="field_id"/>
         </foreign-key>
         <index name="fk_form_block_field_relation_1_idx">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
-    <table name="view_img_dir_relation" phpName="ViewImgDirRelation" idMethod="native">
+<database name="centreon_storage" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_view_images_dir_relations" phpName="ViewImgDirRelation" idMethod="native">
         <column name="vidr_id" phpName="VidrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="dir_dir_parent_id" phpName="DirDirParentId" type="INTEGER" required="false"/>
         <column name="img_img_id" phpName="ImgImgId" type="INTEGER" required="false"/>

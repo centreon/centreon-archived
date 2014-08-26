@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
-    <table name="form_field" phpName="FormField" idMethod="native">
+<database name="centreon_storage" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_forms_fields" phpName="FormField" idMethod="native">
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="45" required="true"/>
         <column name="label" phpName="Label" type="VARCHAR" size="45" required="true"/>
@@ -13,7 +13,7 @@
         <column name="module_id" phpName="ModuleId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
         <column name="parent_field" phpName="ParentField" type="VARCHAR" size="45" required="false"/>
         <column name="child_actions" phpName="ChildActions" type="VARCHAR" size="45" required="false"/>
-        <foreign-key foreignTable="module" name="fk_form_field_1" onDelete="CASCADE" onUpdate="CASCADE">
+        <foreign-key foreignTable="cfg_modules" name="fk_form_field_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="module_id" foreign="id"/>
         </foreign-key>
         <index name="fk_field_module1_idx">

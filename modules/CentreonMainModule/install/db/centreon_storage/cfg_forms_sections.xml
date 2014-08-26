@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
-    <table name="form_section" phpName="FormSection" idMethod="native">
+<database name="centreon_storage" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_forms_sections" phpName="FormSection" idMethod="native">
         <column name="section_id" phpName="SectionId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="45" required="true"/>
         <column name="rank" phpName="Rank" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
         <column name="form_id" phpName="FormId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
-        <foreign-key foreignTable="form" name="fk_form_section_1" onDelete="CASCADE" onUpdate="CASCADE">
+        <foreign-key foreignTable="cfg_forms" name="fk_form_section_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="form_id" foreign="form_id"/>
         </foreign-key>
         <index name="fk_section_form1_idx">
