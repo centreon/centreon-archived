@@ -37,26 +37,25 @@ namespace CentreonConfiguration\Controllers;
 
 use \Centreon\Form;
 
-class ServicecategoryController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class ServiceGroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'Servicecategory';
-    protected $objectName = 'servicecategory';
-    protected $objectBaseUrl = '/configuration/servicecategory';
-    protected $datatableObject = '\CentreonConfiguration\Internal\ServiceCategoryDatatable';
-    protected $objectClass = '\CentreonConfiguration\Models\Servicecategory';
-    protected $repository = '\CentreonConfiguration\Repository\ServicecategoryRepository';
+    protected $objectDisplayName = 'Servicegroup';
+    protected $objectName = 'servicegroup';
+    protected $objectBaseUrl = '/configuration/servicegroup';
+    protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ServiceGroupDatatable';
+    protected $repository = '\CentreonConfiguration\Repository\ServicegroupRepository';
     public static $relationMap = array(
-        'sc_services' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
-        'sc_servicetemplates' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicecategory'
+        'sg_services' => '\CentreonConfiguration\Models\Relation\Servicegroup\Service'
     );
     
     public static $isDisableable = true;
 
     /**
-     * List servicecategories
+     * List servicegroups
      *
      * @method get
-     * @route /configuration/servicecategory
+     * @route /configuration/servicegroup
      */
     public function listAction()
     {
@@ -64,10 +63,10 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     }
 
     /**
-     * List servicecategories
-     * 
+     * List service groups 
+     *
      * @method get
-     * @route /configuration/servicecategory/formlist
+     * @route /configuration/servicegroup/formlist
      */
     public function formListAction()
     {
@@ -77,49 +76,44 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     /**
      * 
      * @method get
-     * @route /configuration/servicecategory/list
+     * @route /configuration/servicegroup/list
      */
     public function datatableAction()
     {
         parent::datatableAction();
     }
-    
+
     /**
-     * Update a servicecategory
+     * Update a servicegroup
      *
      *
      * @method post
-     * @route /configuration/servicecategory/update
+     * @route /configuration/servicegroup/update
      */
     public function updateAction()
     {
-        $givenParameters = $this->getParams('post');
-        
-        if (Form::validateSecurity($givenParameters['token'])) {
-            $servicecategory = array(
-                'sc_name' => $givenParameters['sc_name'],
-                'sc_description' => $givenParameters['sc_description'],
-                'sc_activate' => $givenParameters['sc_activate'],
-            );
-            
-            $connObj = new \CentreonConfiguration\Models\Servicecategory();
-            try {
-                $connObj->update($givenParameters['sc_id'], $servicecategory);
-            } catch (Exception $e) {
-                echo "fail";
-            }
-            echo 'success';
-        } else {
-            echo "fail";
-        }
+        parent::updateAction();
     }
     
     /**
-     * Add a servicecategory
+     * Add a servicegroup
+     *
+     *
+     * @method get
+     * @route /configuration/servicegroup/add
+     */
+    public function addAction()
+    {
+        $this->tpl->assign('validateUrl', '/configuration/servicegroup/add');
+        parent::addAction();
+    }
+    
+    /**
+     * Add a servicegroup
      *
      *
      * @method post
-     * @route /configuration/servicecategory/add
+     * @route /configuration/servicegroup/add
      */
     public function createAction()
     {
@@ -127,34 +121,23 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     }
     
     /**
-     * Add a servicecategory
-     *
-     * @method get
-     * @route /configuration/servicecategory/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/configuration/servicecategory/add');
-        parent::addAction();
-    }
-    
-    /**
-     * Update a servicecategory
+     * Update a servicegroup
      *
      *
      * @method get
-     * @route /configuration/servicecategory/[i:id]
+     * @route /configuration/servicegroup/[i:id]
      */
     public function editAction()
     {
         parent::editAction();
     }
 
+
     /**
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/servicecategory/mc_fields
+     * @route /configuration/servicegroup/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -165,7 +148,7 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/servicecategory/mc_fields/[i:id]
+     * @route /configuration/servicegroup/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -176,7 +159,7 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/servicecategory/duplicate
+     * @route /configuration/servicegroup/duplicate
      */
     public function duplicateAction()
     {
@@ -187,7 +170,7 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/servicecategory/massive_change
+     * @route /configuration/servicegroup/massive_change
      */
     public function massiveChangeAction()
     {
@@ -195,10 +178,10 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     }
 
     /**
-     * Delete action for servicecategory
+     * Delete action for servicegroup
      *
      * @method post
-     * @route /configuration/servicecategory/delete
+     * @route /configuration/servicegroup/delete
      */
     public function deleteAction()
     {
@@ -206,46 +189,56 @@ class ServicecategoryController extends \CentreonConfiguration\Controllers\Objec
     }
     
     /**
-     * Enable action for service category
+     * Enable action for service group
      * 
      * @method post
-     * @route /configuration/servicecategory/enable
+     * @route /configuration/servicegroup/enable
      */
     public function enableAction()
     {
-        parent::enableAction('sc_activate');
+        parent::enableAction('sg_activate');
     }
     
     /**
-     * Disable action for service category
+     * Disable action for service group
      * 
      * @method post
-     * @route /configuration/servicecategory/disable
+     * @route /configuration/servicegroup/disable
      */
     public function disableAction()
     {
-        parent::disableAction('sc_activate');
+        parent::disableAction('sg_activate');
     }
 
     /**
-     * Services for a specific category
+     * Get services for a specific service group
      *
      * @method get
-     * @route /configuration/servicecategory/[i:id]/service
+     * @route /configuration/servicegroup/[i:id]/service
      */
-    public function serviceForServicecategoryAction()
+    public function servicesForServicegroupAction()
     {
-        parent::getRelations(static::$relationMap['sc_services']);
-    }
-
-    /**
-     * Service templates for a specific category
-     *
-     * @method get
-     * @route /configuration/servicecategory/[i:id]/servicetemplate
-     */
-    public function servicetemplateForServicecategoryAction()
-    {
-        parent::getRelations(static::$relationMap['sc_servicetemplates']);
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $relObj = static::$relationMap['sg_services'];
+        $listOfServices = $relObj::getHostIdServiceIdFromServicegroupId($requestParam['id']);
+        
+        //
+        $finalList = array();
+        foreach ($listOfServices as $obj) {
+            $serviceDescription = \CentreonConfiguration\Models\Service::getParameters(
+                $obj['service_id'],
+                'service_description'
+            );
+            $hostName = \CentreonConfiguration\Models\Host::getParameters($obj['host_id'], 'host_name');
+            $finalList[] = array(
+                "id" => $obj['service_id'] . '_' . $obj['host_id'],
+                "text" => $hostName['host_name'] . ' ' . $serviceDescription['service_description']
+            );
+        }
+        $router->response()->json($finalList);
     }
 }
