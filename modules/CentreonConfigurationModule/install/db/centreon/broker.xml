@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
-    <table name="cb_field" phpName="CbField" idMethod="native">
+    <table name="cfg_cb_fields" phpName="CbField" idMethod="native">
     <column name="cb_field_id" phpName="CbFieldId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="fieldname" phpName="Fieldname" type="VARCHAR" size="100" required="true"/>
     <column name="displayname" phpName="Displayname" type="VARCHAR" size="100" required="true"/>
@@ -12,11 +12,11 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_fieldgroup" phpName="CbFieldgroup" idMethod="native">
+    <table name="cfg_cb_fieldgroups" phpName="CbFieldgroup" idMethod="native">
     <column name="cb_fieldgroup_id" phpName="CbFieldgroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="groupname" phpName="Groupname" type="VARCHAR" size="100" required="true"/>
     <column name="group_parent_id" phpName="GroupParentId" type="INTEGER" required="false"/>
-    <foreign-key foreignTable="cb_fieldgroup" name="cb_fieldgroup_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_fieldgroups" name="cb_fieldgroup_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="group_parent_id" foreign="cb_fieldgroup_id"/>
     </foreign-key>
     <index name="group_parent_id">
@@ -26,18 +26,18 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_fieldset" phpName="CbFieldset" idMethod="native">
-    <column name="cb_fieldset_id" phpName="CbFieldsetId" type="INTEGER" primaryKey="true" required="true"/>
-    <column name="fieldset_name" phpName="FieldsetName" type="VARCHAR" size="255" required="true"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="InnoDB"/>
-    </vendor>
+    <table name="cfg_cb_fieldsets" phpName="CbFieldset" idMethod="native">
+        <column name="cb_fieldset_id" phpName="CbFieldsetId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="fieldset_name" phpName="FieldsetName" type="VARCHAR" size="255" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
     </table>
-    <table name="cb_list" phpName="CbList" idMethod="native">
+    <table name="cfg_cb_list" phpName="CbList" idMethod="native">
     <column name="cb_list_id" phpName="CbListId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="cb_field_id" phpName="CbFieldId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="default_value" phpName="DefaultValue" type="VARCHAR" size="255" required="false"/>
-    <foreign-key foreignTable="cb_field" name="fk_cb_list_1" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_fields" name="fk_cb_list_1" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_field_id" foreign="cb_field_id"/>
     </foreign-key>
     <unique name="cb_field_idx_01">
@@ -50,11 +50,11 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_list_values" phpName="CbListValues" idMethod="native">
+    <table name="cfg_cb_list_values" phpName="CbListValues" idMethod="native">
     <column name="cb_list_id" phpName="CbListId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="value_name" phpName="ValueName" type="VARCHAR" size="255" primaryKey="true" required="true"/>
     <column name="value_value" phpName="ValueValue" type="VARCHAR" size="255" required="true"/>
-    <foreign-key foreignTable="cb_list" name="fk_cb_list_values_1" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_list" name="fk_cb_list_values_1" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_list_id" foreign="cb_list_id"/>
     </foreign-key>
     <index name="fk_cb_list_values_1">
@@ -64,7 +64,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_module" phpName="CbModule" idMethod="native">
+    <table name="cfg_cb_modules" phpName="CbModule" idMethod="native">
     <column name="cb_module_id" phpName="CbModuleId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="50" required="true"/>
     <column name="libname" phpName="Libname" type="VARCHAR" size="50" required="false"/>
@@ -81,14 +81,14 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_module_relation" phpName="CbModuleRelation" idMethod="native">
+    <table name="cfg_cb_modules_relations" phpName="CbModuleRelation" idMethod="native">
     <column name="cb_module_id" phpName="CbModuleId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="module_depend_id" phpName="ModuleDependId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="inherit_config" phpName="InheritConfig" type="INTEGER" required="true" defaultValue="0"/>
-    <foreign-key foreignTable="cb_module" name="fk_cb_module_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_modules" name="fk_cb_module_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_module_id" foreign="cb_module_id"/>
     </foreign-key>
-    <foreign-key foreignTable="cb_module" name="fk_cb_module_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_modules" name="fk_cb_module_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="module_depend_id" foreign="cb_module_id"/>
     </foreign-key>
     <index name="fk_cb_module_relation_1">
@@ -101,7 +101,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_tag" phpName="CbTag" idMethod="native">
+    <table name="cfg_cb_tags" phpName="CbTag" idMethod="native">
     <column name="cb_tag_id" phpName="CbTagId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="tagname" phpName="Tagname" type="VARCHAR" size="50" required="true"/>
     <unique name="cb_tag_ix01">
@@ -111,14 +111,14 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_tag_type_relation" phpName="CbTagTypeRelation" idMethod="native">
+    <table name="cfg_cb_tags_types_relations" phpName="CbTagTypeRelation" idMethod="native">
     <column name="cb_tag_id" phpName="CbTagId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="cb_type_id" phpName="CbTypeId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="cb_type_uniq" phpName="CbTypeUniq" type="INTEGER" size="1" required="true" defaultValue="0"/>
-    <foreign-key foreignTable="cb_tag" name="fk_cb_tag_type_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_tags" name="fk_cb_tag_type_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_tag_id" foreign="cb_tag_id"/>
     </foreign-key>
-    <foreign-key foreignTable="cb_type" name="fk_cb_tag_type_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_types" name="fk_cb_tag_type_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_type_id" foreign="cb_type_id"/>
     </foreign-key>
     <index name="fk_cb_tag_type_relation_1">
@@ -131,12 +131,12 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_type" phpName="CbType" idMethod="native">
+    <table name="cfg_cb_types" phpName="CbType" idMethod="native">
     <column name="cb_type_id" phpName="CbTypeId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="type_name" phpName="TypeName" type="VARCHAR" size="50" required="true"/>
     <column name="type_shortname" phpName="TypeShortname" type="VARCHAR" size="50" required="true"/>
     <column name="cb_module_id" phpName="CbModuleId" type="INTEGER" required="true"/>
-    <foreign-key foreignTable="cb_module" name="fk_cb_type_1" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_modules" name="fk_cb_type_1" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_module_id" foreign="cb_module_id"/>
     </foreign-key>
     <index name="fk_cb_type_1">
@@ -146,16 +146,16 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
     </table>
-    <table name="cb_type_field_relation" phpName="CbTypeFieldRelation" idMethod="native">
+    <table name="cfg_cb_types_fields_relations" phpName="CbTypeFieldRelation" idMethod="native">
     <column name="cb_type_id" phpName="CbTypeId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="cb_field_id" phpName="CbFieldId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="cb_fieldset_id" phpName="CbFieldsetId" type="INTEGER" required="false"/>
     <column name="is_required" phpName="IsRequired" type="INTEGER" required="true" defaultValue="0"/>
     <column name="order_display" phpName="OrderDisplay" type="INTEGER" required="true" defaultValue="0"/>
-    <foreign-key foreignTable="cb_type" name="fk_cb_type_field_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_types" name="fk_cb_type_field_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_type_id" foreign="cb_type_id"/>
     </foreign-key>
-    <foreign-key foreignTable="cb_field" name="fk_cb_type_field_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
+    <foreign-key foreignTable="cfg_cb_fields" name="fk_cb_type_field_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="cb_field_id" foreign="cb_field_id"/>
     </foreign-key>
     <index name="fk_cb_type_field_relation_1">
