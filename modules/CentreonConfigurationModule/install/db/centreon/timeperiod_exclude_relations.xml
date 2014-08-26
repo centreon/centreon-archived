@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="timeperiod_exclude_relations" phpName="TimeperiodExcludeRelations" idMethod="native">
+        <column name="exclude_id" phpName="ExcludeId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" required="true"/>
+        <column name="timeperiod_exclude_id" phpName="TimeperiodExcludeId" type="INTEGER" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

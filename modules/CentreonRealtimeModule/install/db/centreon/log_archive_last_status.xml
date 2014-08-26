@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
+<database name="centreon" defaultIdMethod="native">
     <table name="log_archive_last_status" phpName="LogArchiveLastStatus" idMethod="native">
         <column name="host_id" phpName="HostId" type="INTEGER" required="false"/>
         <column name="service_id" phpName="ServiceId" type="INTEGER" required="false"/>

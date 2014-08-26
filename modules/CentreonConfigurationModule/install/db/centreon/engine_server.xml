@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="engine_server" phpName="engineServer" idMethod="native">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="40" required="false"/>
+        <column name="localhost" phpName="Localhost" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="is_default" phpName="IsDefault" type="INTEGER" required="false" defaultValue="0"/>
+        <column name="last_restart" phpName="LastRestart" type="INTEGER" required="false"/>
+        <column name="ns_ip_address" phpName="NsIpAddress" type="VARCHAR" size="255" required="false"/>
+        <column name="ns_activate" phpName="NsActivate" type="CHAR" sqlType="enum('1','0')" required="false" defaultValue="1"/>
+        <column name="ns_status" phpName="NsStatus" type="CHAR" sqlType="enum('0','1','2','3','4')" required="false" defaultValue="0"/>
+        <column name="init_script" phpName="InitScript" type="VARCHAR" size="255" required="false"/>
+        <column name="monitoring_engine" phpName="MonitoringEngine" type="VARCHAR" size="20" required="false"/>
+        <column name="engine_bin" phpName="engineBin" type="VARCHAR" size="255" required="false"/>
+        <column name="enginetats_bin" phpName="enginetatsBin" type="VARCHAR" size="255" required="false"/>
+        <column name="engine_perfdata" phpName="enginePerfdata" type="VARCHAR" size="255" required="false"/>
+        <column name="centreonbroker_cfg_path" phpName="CentreonbrokerCfgPath" type="VARCHAR" size="255" required="false"/>
+        <column name="centreonbroker_module_path" phpName="CentreonbrokerModulePath" type="VARCHAR" size="255" required="false"/>
+        <column name="centreonconnector_path" phpName="CentreonconnectorPath" type="VARCHAR" size="255" required="false"/>
+        <column name="ssh_port" phpName="SshPort" type="INTEGER" required="false"/>
+        <column name="ssh_private_key" phpName="SshPrivateKey" type="VARCHAR" size="255" required="false"/>
+        <column name="init_script_snmptt" phpName="InitScriptSnmptt" type="VARCHAR" size="255" required="false"/>
+        <column name="snmp_trapd_path_conf" phpName="SnmpTrapdPathConf" type="VARCHAR" size="255" required="false"/>
+        <column name="engine_name" phpName="EngineName" type="VARCHAR" size="255" required="false"/>
+        <column name="engine_version" phpName="EngineVersion" type="VARCHAR" size="255" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

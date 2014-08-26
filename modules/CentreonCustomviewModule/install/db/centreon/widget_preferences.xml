@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
+<database name="centreon" defaultIdMethod="native">
     <table name="widget_preferences" phpName="WidgetPreferences" idMethod="native">
         <column name="widget_id" phpName="WidgetId" type="INTEGER" required="false"/>
         <column name="parameter_id" phpName="ParameterId" type="INTEGER" required="true"/>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="escalation" phpName="Escalation" idMethod="native">
+        <column name="esc_id" phpName="EscId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="esc_name" phpName="EscName" type="VARCHAR" size="255" required="false"/>
+        <column name="esc_alias" phpName="EscAlias" type="VARCHAR" size="255" required="false"/>
+        <column name="first_notification" phpName="FirstNotification" type="INTEGER" required="false"/>
+        <column name="last_notification" phpName="LastNotification" type="INTEGER" required="false"/>
+        <column name="notification_interval" phpName="NotificationInterval" type="INTEGER" required="false"/>
+        <column name="escalation_period" phpName="EscalationPeriod" type="INTEGER" required="false"/>
+        <column name="escalation_options1" phpName="EscalationOptions1" type="VARCHAR" size="255" required="false"/>
+        <column name="escalation_options2" phpName="EscalationOptions2" type="VARCHAR" size="255" required="false"/>
+        <column name="esc_comment" phpName="EscComment" type="LONGVARCHAR" required="false"/>
+        <foreign-key foreignTable="cfg_timeperiod" name="escalation_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference local="escalation_period" foreign="tp_id"/>
+        </foreign-key>
+        <index name="period_index">
+            <index-column name="escalation_period"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

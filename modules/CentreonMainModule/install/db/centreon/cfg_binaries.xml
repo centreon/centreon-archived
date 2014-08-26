@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_binaries" phpName="Binaries" idMethod="native">
+        <column name="binary_id" phpName="BinaryId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="filename" phpName="Filename" type="VARCHAR" size="255" required="true"/>
+        <column name="checksum" phpName="Checksum" type="VARCHAR" size="255" required="true"/>
+        <column name="mimetype" phpName="Mimetype" type="VARCHAR" size="255" required="true"/>
+        <column name="filetype" phpName="Filetype" type="BOOLEAN" size="1" required="true" defaultValue="true"/>
+        <column name="binary_content" phpName="BinaryContent" type="BLOB" required="true"/>
+        <unique name="binaries_idx01">
+            <unique-column name="checksum"/>
+            <unique-column name="mimetype"/>
+        </unique>
+        <unique name="binaries_idx02">
+            <unique-column name="filename"/>
+            <unique-column name="filetype"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

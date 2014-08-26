@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="ns_host_relation" phpName="NsHostRelation" idMethod="native">
+        <column name="engine_server_id" phpName="engineServerId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+        <column name="host_host_id" phpName="HostHostId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+        <foreign-key foreignTable="engine_server" name="ns_host_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="engine_server_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_hosts" name="ns_host_relation_ibfk_3" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="host_host_id" foreign="host_id"/>
+        </foreign-key>
+        <index name="host_host_id">
+            <index-column name="host_host_id"/>
+        </index>
+        <index name="engine_server_id">
+            <index-column name="engine_server_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

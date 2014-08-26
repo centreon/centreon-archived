@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database name="centreon_storage" defaultIdMethod="native">
+<database name="centreon" defaultIdMethod="native">
     <table name="log_traps" phpName="LogTraps" idMethod="native">
         <column name="trap_id" phpName="TrapId" type="INTEGER" autoIncrement="true" required="true"/>
         <column name="trap_time" phpName="TrapTime" type="INTEGER" required="false"/>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_security" defaultIdMethod="native">
+    <table name="cfg_auth_resources_servers" phpName="AuthresourceServer" idMethod="native">
+        <column name="ldap_server_id" phpName="LdapHostId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="auth_resource_id" phpName="AuthresourceId" type="INTEGER" required="true"/>
+        <column name="server_address" phpName="HostAddress" type="VARCHAR" size="255" required="true"/>
+        <column name="server_port" phpName="HostPort" type="INTEGER" required="true"/>
+        <column name="use_ssl" phpName="UseSsl" type="TINYINT" required="false" defaultValue="0"/>
+        <column name="use_tls" phpName="UseTls" type="TINYINT" required="false" defaultValue="0"/>
+        <column name="server_order" phpName="HostOrder" type="TINYINT" required="true" defaultValue="1"/>
+        <foreign-key foreignTable="cfg_auth_resources" name="fk_auth_resource_id" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="auth_resource_id" foreign="ar_id"/>
+        </foreign-key>
+        <index name="fk_auth_resource_id">
+            <index-column name="auth_resource_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

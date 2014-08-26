@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="hostgroup" phpName="Hostgroup" idMethod="native">
+        <column name="hg_id" phpName="HgId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="hg_name" phpName="HgName" type="VARCHAR" size="200" required="false"/>
+        <column name="hg_alias" phpName="HgAlias" type="VARCHAR" size="200" required="false"/>
+        <column name="hg_notes" phpName="HgNotes" type="VARCHAR" size="255" required="false"/>
+        <column name="hg_notes_url" phpName="HgNotesUrl" type="VARCHAR" size="255" required="false"/>
+        <column name="hg_action_url" phpName="HgActionUrl" type="VARCHAR" size="255" required="false"/>
+        <column name="hg_icon_image" phpName="HgIconImage" type="INTEGER" required="false"/>
+        <column name="hg_map_icon_image" phpName="HgMapIconImage" type="INTEGER" required="false"/>
+        <column name="hg_rrd_retention" phpName="HgRrdRetention" type="INTEGER" required="false"/>
+        <column name="hg_comment" phpName="HgComment" type="LONGVARCHAR" required="false"/>
+        <column name="hg_activate" phpName="HgActivate" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="1"/>
+        <index name="name_index">
+            <index-column name="hg_name"/>
+        </index>
+        <index name="alias_index">
+            <index-column name="hg_alias"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+        <unique name="hg_unique_01">
+            <unique-column name="hg_name"/>
+        </unique> 
+    </table>
+</database>
