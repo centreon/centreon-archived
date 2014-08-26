@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_cb_modules" phpName="CbModule" idMethod="native">
+        <column name="cb_module_id" phpName="CbModuleId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="50" required="true"/>
+        <column name="libname" phpName="Libname" type="VARCHAR" size="50" required="false"/>
+        <column name="loading_pos" phpName="LoadingPos" type="INTEGER" required="false"/>
+        <column name="is_bundle" phpName="IsBundle" type="INTEGER" size="1" required="true" defaultValue="0"/>
+        <column name="is_activated" phpName="IsActivated" type="INTEGER" size="1" required="true" defaultValue="0"/>
+        <unique name="cb_module_idx01">
+            <unique-column name="name"/>
+        </unique>
+        <unique name="cb_module_idx02">
+            <unique-column name="libname"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

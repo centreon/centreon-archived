@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
-    <table name="custom_view_default" phpName="CustomViewDefault" idMethod="native">
+<database name="centreon" package="centreon_customview" defaultIdMethod="native">
+    <table name="cfg_custom_views_default" phpName="CustomViewDefault" idMethod="native">
         <column name="user_id" phpName="UserId" type="INTEGER" required="true"/>
         <column name="custom_view_id" phpName="CustomViewId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_contacts" name="fk_custom_view_default_user_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="user_id" foreign="contact_id"/>
         </foreign-key>
-        <foreign-key foreignTable="custom_views" name="fk_custom_view_default_cv_id" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_custom_views" name="fk_custom_view_default_cv_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="custom_view_id" foreign="custom_view_id"/>
         </foreign-key>
         <index name="fk_custom_view_default_user_id">

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_cb_fields" phpName="CbField" idMethod="native">
+        <column name="cb_field_id" phpName="CbFieldId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="fieldname" phpName="Fieldname" type="VARCHAR" size="100" required="true"/>
+        <column name="displayname" phpName="Displayname" type="VARCHAR" size="100" required="true"/>
+        <column name="description" phpName="Description" type="VARCHAR" size="255" required="false"/>
+        <column name="fieldtype" phpName="Fieldtype" type="VARCHAR" size="255" required="true" defaultValue="text"/>
+        <column name="external" phpName="External" type="VARCHAR" size="255" required="false"/>
+        <column name="cb_fieldgroup_id" phpName="CbFieldgroupId" type="INTEGER" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

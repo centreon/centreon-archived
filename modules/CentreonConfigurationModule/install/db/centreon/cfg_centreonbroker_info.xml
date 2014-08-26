@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_centreonbroker_info" phpName="CfgCentreonbrokerInfo" idMethod="native">
+        <column name="config_id" phpName="ConfigId" type="INTEGER" required="true"/>
+        <column name="config_key" phpName="ConfigKey" type="VARCHAR" size="50" required="true"/>
+        <column name="config_value" phpName="ConfigValue" type="VARCHAR" size="255" required="true"/>
+        <column name="config_group" phpName="ConfigGroup" type="VARCHAR" size="50" required="true"/>
+        <column name="config_group_id" phpName="ConfigGroupId" type="INTEGER" required="false"/>
+        <column name="grp_level" phpName="GrpLevel" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="subgrp_id" phpName="SubgrpId" type="INTEGER" required="false"/>
+        <column name="parent_grp_id" phpName="ParentGrpId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_centreonbroker" name="cfg_centreonbroker_info_ibfk_01" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="config_id" foreign="config_id"/>
+        </foreign-key>
+        <index name="cfg_centreonbroker_info_idx01">
+            <index-column name="config_id"/>
+        </index>
+        <index name="cfg_centreonbroker_info_idx02">
+            <index-column name="config_id"/>
+            <index-column name="config_group"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

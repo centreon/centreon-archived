@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_cb_types_fields_relations" phpName="CbTypeFieldRelation" idMethod="native">
+        <column name="cb_type_id" phpName="CbTypeId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="cb_field_id" phpName="CbFieldId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="cb_fieldset_id" phpName="CbFieldsetId" type="INTEGER" required="false"/>
+        <column name="is_required" phpName="IsRequired" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="order_display" phpName="OrderDisplay" type="INTEGER" required="true" defaultValue="0"/>
+        <foreign-key foreignTable="cfg_cb_types" name="fk_cb_type_field_relation_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="cb_type_id" foreign="cb_type_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_cb_fields" name="fk_cb_type_field_relation_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="cb_field_id" foreign="cb_field_id"/>
+        </foreign-key>
+        <index name="fk_cb_type_field_relation_1">
+            <index-column name="cb_type_id"/>
+        </index>
+        <index name="fk_cb_type_field_relation_2">
+            <index-column name="cb_field_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

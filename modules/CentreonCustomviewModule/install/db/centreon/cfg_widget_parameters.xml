@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
-    <table name="widget_parameters" phpName="WidgetParameters" idMethod="native">
+<database name="centreon" package="centreon_customview" defaultIdMethod="native">
+    <table name="cfg_widgets_parameters" phpName="WidgetParameters" idMethod="native">
         <column name="parameter_id" phpName="ParameterId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="parameter_name" phpName="ParameterName" type="VARCHAR" size="255" required="true"/>
         <column name="parameter_code_name" phpName="ParameterCodeName" type="VARCHAR" size="255" required="true"/>
@@ -11,10 +11,10 @@
         <column name="widget_model_id" phpName="WidgetModelId" type="INTEGER" required="true"/>
         <column name="field_type_id" phpName="FieldTypeId" type="INTEGER" required="true"/>
         <column name="is_filter" phpName="IsFilter" type="BOOLEAN" required="true" defaultValue="0"/>
-        <foreign-key foreignTable="widget_models" name="fk_widget_param_widget_id" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_widgets_models" name="fk_widget_param_widget_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="widget_model_id" foreign="widget_model_id"/>
         </foreign-key>
-        <foreign-key foreignTable="widget_parameters_field_type" name="fk_widget_field_type_id" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_widgets_parameters_fields_types" name="fk_widget_field_type_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="field_type_id" foreign="field_type_id"/>
         </foreign-key>
         <index name="fk_widget_param_widget_id">

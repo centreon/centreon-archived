@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
-    <table name="custom_views" phpName="CustomViews" idMethod="native">
+<database name="centreon" package="centreon_customview" defaultIdMethod="native">
+    <table name="cfg_custom_views" phpName="CustomViews" idMethod="native">
         <column name="custom_view_id" phpName="CustomViewId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
         <column name="mode" phpName="Mode" type="TINYINT" size="2" required="false" defaultValue="0"/>

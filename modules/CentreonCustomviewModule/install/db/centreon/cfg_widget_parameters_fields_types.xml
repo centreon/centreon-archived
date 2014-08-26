@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
-    <table name="widget_parameters_field_type" phpName="WidgetParametersFieldType" idMethod="native">
+<database name="centreon" package="centreon_customview" defaultIdMethod="native">
+    <table name="cfg_widgets_parameters_fields_types" phpName="WidgetParametersFieldType" idMethod="native">
         <column name="field_type_id" phpName="FieldTypeId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="ft_typename" phpName="FtTypename" type="VARCHAR" size="50" required="true"/>
         <column name="is_connector" phpName="IsConnector" type="TINYINT" size="6" required="true" defaultValue="0"/>

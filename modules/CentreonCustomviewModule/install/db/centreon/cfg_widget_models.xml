@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" defaultIdMethod="native">
-    <table name="widget_models" phpName="WidgetModels" idMethod="native">
+<database name="centreon" package="centreon_customview" defaultIdMethod="native">
+    <table name="cfg_widgets_models" phpName="WidgetModels" idMethod="native">
         <column name="widget_model_id" phpName="WidgetModelId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
         <column name="shortname" phpName="Shortname" type="VARCHAR" size="255" required="true"/>
@@ -16,7 +16,7 @@
         <column defaultValue="0" name="isactivated" phpName="Isactivated" type="BOOLEAN" required="false"/>
         <column defaultValue="0" name="isinstalled" phpName="Isinstalled" type="BOOLEAN" required="false"/>
         <column name="module_id" phpName="ModuleId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
-        <foreign-key foreignTable="module" name="fk_widget_module_1" onDelete="CASCADE" onUpdate="CASCADE">
+        <foreign-key foreignTable="cfg_module" name="fk_widget_module_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="module_id" foreign="id"/>
         </foreign-key>
         <vendor type="mysql">

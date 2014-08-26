@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_cb_tags" phpName="CbTag" idMethod="native">
+        <column name="cb_tag_id" phpName="CbTagId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="tagname" phpName="Tagname" type="VARCHAR" size="50" required="true"/>
+        <unique name="cb_tag_ix01">
+            <unique-column name="tagname"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
