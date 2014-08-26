@@ -118,16 +118,6 @@ class Bootstrap
                 );
             }
         );
-        $this->di->set(
-            'db_storage',
-            function () use ($config) {
-                return new \Centreon\Internal\Db(
-                    $config->get('db_storage', 'dsn'),
-                    $config->get('db_storage', 'username'),
-                    $config->get('db_storage', 'password')
-                );
-            }
-        );
     }
 
     /**
