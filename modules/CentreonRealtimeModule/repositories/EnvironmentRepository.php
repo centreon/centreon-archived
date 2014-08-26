@@ -50,10 +50,10 @@ class EnvironmentRepository
      */
     public static function getHostgroupAlerts()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare(
             "SELECT COUNT(service_id) as alerts, hg.hostgroup_id, hg.name
-            FROM services s, hosts_hostgroups hhg, hostgroups hg
+            FROM rt_services s, rt_hosts_hostgroups hhg, rt_hostgroups hg
             WHERE s.host_id = hhg.host_id
             AND hhg.hostgroup_id = hg.hostgroup_id
             AND s.state != 0
@@ -78,10 +78,10 @@ class EnvironmentRepository
      */
     public static function getServicegroupAlerts()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_storage');
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare(
             "SELECT COUNT(s.service_id) as alerts, sg.servicegroup_id, sg.name
-            FROM services s, services_servicegroups ssg, servicegroups sg
+            FROM rt_services s, rt_services_servicegroups ssg, rt_servicegroups sg
             WHERE s.service_id = ssg.service_id
             AND ssg.servicegroup_id = sg.servicegroup_id
             AND s.state != 0

@@ -51,7 +51,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'services';
+    public static $tableName = 'rt_services';
     
     /**
      *
@@ -252,11 +252,11 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
     {
         // Initializing connection
         $di = Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
         
         $stmt = $dbconn->prepare(
             'SELECT last_hard_state as state 
-            FROM services 
+            FROM rt_services 
             WHERE service_id = ? 
             AND host_id = ? 
             AND enabled = 1 

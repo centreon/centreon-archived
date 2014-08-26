@@ -173,7 +173,7 @@ abstract class Repository
         
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
         
         // Getting selected field(s)
         $field_list = '';
@@ -338,7 +338,7 @@ abstract class Repository
     {
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $dbconn = $di->get('db_centreon');
         
         $conditions = '';
         $additionalTables = '';
