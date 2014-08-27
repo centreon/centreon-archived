@@ -33,9 +33,11 @@
  *
  */
 
-namespace Test\CentreonConfiguration\Repositories;
+namespace Test\CentreonConfiguration\Repository;
 
-use \CentreonConfiguration\Repository\RepositoryTestCase;
+require_once 'modules/CentreonConfigurationModule/tests/repositories/RepositoryTestCase.php';
+
+use \Test\CentreonConfiguration\Repository\RepositoryTestCase;
 use \CentreonConfiguration\Repository\TimePeriodRepository;
 
 class TimePeriodRepositoryTest extends RepositoryTestCase
