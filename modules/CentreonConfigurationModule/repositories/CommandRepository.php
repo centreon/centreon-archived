@@ -51,7 +51,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'command';
+    public static $tableName = 'cfg_commands';
     
     /**
      *
@@ -154,7 +154,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         $commentField = array("command_example" => 1);
 
         /* Get information into the database. */
-        $query = "SELECT * FROM command WHERE command_type = 2 ORDER BY command_name";
+        $query = "SELECT * FROM cfg_commands WHERE command_type = 2 ORDER BY command_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -176,7 +176,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
              * Manage connector
              */
             if (isset($row["connector_id"])) {
-                $query = "SELECT `name` FROM `connector` WHERE `connector`.`id` = '".$row["connector_id"]."'";
+                $query = "SELECT `name` FROM `cfg_connectors` WHERE `connector`.`id` = '".$row["connector_id"]."'";
                 $stmt2 = $dbconn->prepare($query);
                 $stmt2->execute();
                 while ($connector = $stmt2->fetch(\PDO::FETCH_ASSOC)) {
@@ -188,7 +188,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
              * Display arguments used in the command line.
              */
             $query = "SELECT macro_name, macro_description "
-                . "FROM command_arg_description "
+                . "FROM cfg_commands_args_description "
                 . "WHERE cmd_id = '".$row["command_id"]."' "
                 . "ORDER BY macro_name";
             $stmt2 = $dbconn->prepare($query);
@@ -231,7 +231,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         $commentField = array("command_example" => 1);
 
         /* Get information into the database. */
-        $query = "SELECT * FROM command WHERE command_type = 1 ORDER BY command_name";
+        $query = "SELECT * FROM cfg_commands WHERE command_type = 1 ORDER BY command_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

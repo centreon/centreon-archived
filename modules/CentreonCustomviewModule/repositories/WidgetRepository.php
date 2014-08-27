@@ -318,27 +318,6 @@ class WidgetRepository
     }
 
     /**
-     * Update View Widget Relations
-     *
-     * @param int $viewId
-     * @param array $widgetList
-     */
-    public static function udpateViewWidgetRelations($viewId, $widgetList)
-    {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $query = "DELETE FROM widget_views WHERE custom_view_id = :view_id";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':view_id', $viewId);
-        $stmt->execute();
-        $db->beginTransaction();
-        foreach ($widgetList as $widgetId) {
-            $stmt = $db->prepare("INSERT INTO widget_views (custom_view_id, widget_id) VALUES (?, ?)");
-            $stmt->execute(array($viewId, $widgetId));
-        }
-        $db->commit();
-    }
-
-    /**
      * Get Params From Widget Id
      *
      * @param int $widgetId
@@ -352,7 +331,7 @@ class WidgetRepository
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $params = array();
             $query = "SELECT ft.is_connector, ft.ft_typename, p.parameter_id, p.parameter_name, p.default_value, p.header_title, p.require_permission
-            		  FROM cfg_widgets_parameters_field_type ft, cfg_widgets_parameters p, widgets w
+            		  FROM cfg_widgets_parameters_fields_types ft, cfg_widgets_parameters p, cfg_widgets w
             		  WHERE ft.field_type_id = p.field_type_id
             		  AND p.widget_model_id = w.widget_model_id
             		  AND w.widget_id = ?
@@ -386,7 +365,7 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $query = "SELECT user_id
-            FROM widgets w, custom_view_user_relation cvur, custom_views c
+            FROM cfg_widgets w, cfg_custom_views_users_relations cvur, cfg_custom_views c
             WHERE cvur.custom_view_id = w.custom_view_id
             AND w.custom_view_id = c.custom_view_id
             AND w.widget_id = ? 
@@ -397,14 +376,14 @@ class WidgetRepository
         if (!$stmt->rowCount()) {
             throw new Exception('User is not allowed to update widget preferences');
         }
-        $stmt = $db->prepare("DELETE FROM widget_preferences WHERE widget_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_widgets_preferences WHERE widget_id = ?");
         $stmt->execute(array($params['widget_id']));
 
         $widgetData = self::getWidgetData($params['widget_id']);
         $db->beginTransaction();
         foreach ($params as $key => $val) {
             $stmt = $db->prepare("
-                INSERT INTO widget_preferences (widget_id, parameter_id, preference_value, comparator)
+                INSERT INTO cfg_widgets_preferences (widget_id, parameter_id, preference_value, comparator)
                 VALUES (?, ?, ?, ?)");
             $cmpKey = 'cmp-'.$key;
             $cmpVal = 0;
@@ -435,13 +414,13 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT widget_id 
-            FROM widgets w, custom_views c 
+            FROM cfg_widgets w, cfg_custom_views c 
             WHERE c.custom_view_id = w.custom_view_id
             AND w.widget_id = ?
             AND (c.owner_id = ? OR c.locked = 0)");
         $stmt->execute(array($params['widget_id'], $userId));
         if ($stmt->rowCount()) {
-            $stmt = $db->prepare("DELETE FROM widgets WHERE widget_id = ?");
+            $stmt = $db->prepare("DELETE FROM cfg_widgets WHERE widget_id = ?");
             $stmt->execute(array($params['widget_id']));
         } else {
             throw new Exception('You are not allowed to remove this widget');
@@ -468,7 +447,7 @@ class WidgetRepository
     protected static function getLastInsertedWidgetId($title)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT MAX(widget_id) as lastId FROM widgets WHERE title = ?");
+        $stmt = $db->prepare("SELECT MAX(widget_id) as lastId FROM cfg_widgets WHERE title = ?");
         $stmt->execute(array($title));
         $row = $stmt->fetch();
         return $row['lastId'];
@@ -516,7 +495,7 @@ class WidgetRepository
         if (is_null($types)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $types = array();
-            $stmt = $db->prepare("SELECT ft_typename, field_type_id FROM  cfg_widgets_parameters_field_type");
+            $stmt = $db->prepare("SELECT ft_typename, field_type_id FROM  cfg_widgets_parameters_fields_types");
             $stmt->execute();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $types[$row['ft_typename']] = $row['field_type_id'];
@@ -575,7 +554,7 @@ class WidgetRepository
     public static function insertWidgetWizard($formName, $widgetModelId, $moduleId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("INSERT INTO form_wizard (name, route, module_id) VALUES (?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO cfg_forms_wizards (name, route, module_id) VALUES (?, ?, ?)");
         $stmt->execute(array($formName, "/customview/widgetsettings/$widgetModelId", $moduleId));
     }
 
@@ -798,7 +777,7 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT default_value, parameter_code_name
-            FROM cfg_widgets_parameters param, widgets w
+            FROM cfg_widgets_parameters param, cfg_widgets w
         	WHERE w.widget_model_id = param.widget_model_id
             AND w.widget_id = ?");
         $stmt->execute(array($widgetId));
@@ -808,7 +787,7 @@ class WidgetRepository
         }
 
         $stmt = $db->prepare("SELECT pref.preference_value, param.parameter_code_name, pref.comparator
-            FROM widget_preferences pref, cfg_widgets_parameters param
+            FROM cfg_widgets_preferences pref, cfg_widgets_parameters param
            	WHERE param.parameter_id = pref.parameter_id
            	AND pref.widget_id = ?");
         $stmt->execute(array($widgetId));
@@ -852,7 +831,7 @@ class WidgetRepository
         if (!isset($widgetId)) {
             throw new Exception('Missing widget id');
         }
-        $stmt = $db->prepare("UPDATE widgets
+        $stmt = $db->prepare("UPDATE cfg_widgets
             SET title = ?
             WHERE widget_id = ?");
         $stmt->execute(array($params['newName'], $widgetId));

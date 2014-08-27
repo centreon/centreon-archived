@@ -76,7 +76,7 @@ class ImageController extends \Centreon\Internal\Controller
 
         // Get User Images
         $dbconn = $di->get('db_centreon');
-        $query = 'SELECT binary_id, filename FROM binaries';
+        $query = 'SELECT binary_id, filename FROM cfg_binaries';
         $stmt = $dbconn->query($query);
         $userImageExist = true;
         while ($row = $stmt->fetch()) {

@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Hosttemplate extends CentreonRelationModel
 {
-    protected static $relationTable = "host_template_relation";
+    protected static $relationTable = "cfg_hosts_templates_relations";
     protected static $firstKey = "host_host_id";
     protected static $secondKey = "host_tpl_id";
     public static $firstObject = "\CentreonConfiguration\Models\Host";
@@ -146,7 +146,7 @@ class Hosttemplate extends CentreonRelationModel
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
-                $key = str_replace('host.', 'h.', $key);
+                $key = str_replace('cfg_hosts.', 'h.', $key);
                 $sql .= " $filterType $key LIKE ? ";
                 $value = trim($rawvalue);
                 $value = str_replace("_", "\_", $value);

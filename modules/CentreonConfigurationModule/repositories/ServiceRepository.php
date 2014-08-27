@@ -322,7 +322,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         /* Get information into the database. */
         $query = "SELECT $field "
-            . "FROM host h, service s, host_service_relation r "
+            . "FROM host h, service s, cfg_hosts_services_relations r "
             . "WHERE h.host_id = $host_id "
             . "AND h.host_id = r.host_host_id "
             . "AND s.service_id = r.service_service_id "

@@ -83,7 +83,7 @@ class Icon extends CentreonRelationModel
      */
     public static function getIconForService($hostId, $limit = 1)
     {
-        $sql = "SELECT b.binary_id, b.filename FROM binaries b, service_image_relation hir "
+        $sql = "SELECT b.binary_id, b.filename FROM cfg_binaries b, service_image_relation hir "
             . "WHERE hir.service_id = ? "
             . "AND filetype = 1 "
             . "AND hir.binary_id = b.binary_id "

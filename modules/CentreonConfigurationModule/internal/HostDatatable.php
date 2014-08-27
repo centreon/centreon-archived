@@ -38,7 +38,7 @@ namespace CentreonConfiguration\Internal;
 use \Centreon\Internal\Datatable\Datasource\CentreonDb,
     \CentreonRealtime\Repository\HostRepository as RealTimeHostRepository,
     \CentreonConfiguration\Repository\HostRepository,
-    \CentreonConfiguration\Repository\HosttemplateRepository;
+    \CentreonConfiguration\Repository\HostTemplateRepository;
 
 /**
  * Description of HostDatatable
@@ -237,7 +237,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
 
             /* Templates */
             $myHostSet['host_template']  = "";
-            $templates = HosttemplateRepository::getTemplateList($myHostSet['host_id']);
+            $templates = HostTemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
                 $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/configuration/hosttemplate/viewconf/').
                     $template['id'].'"><a class="overlay" href="'.

@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Poller extends CentreonRelationModel
 {
-    protected static $relationTable = "ns_host_relation";
+    protected static $relationTable = "cfg_engine_hosts_relations";
     protected static $firstKey = "engine_server_id";
     protected static $secondKey = "host_host_id";
     public static $firstObject = "\CentreonConfiguration\Models\Poller";

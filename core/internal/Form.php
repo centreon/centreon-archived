@@ -594,7 +594,7 @@ class Form
                         fv.`name` as validator_name, `action` as `validator`,
                         ff.`name` as `field_name`, ff.`label` as `field_label`
                     FROM
-                        form_validator fv, form_field_validator_relation ffv, form_field ff
+                        cfg_forms_validators fv, cfg_forms_fields_validators_relations ffv, cfg_forms_fields ff
                     WHERE
                         ffv.validator_id = fv.validator_id
                     AND
@@ -604,7 +604,7 @@ class Form
                             SELECT
                                 fi.field_id
                             FROM
-                                form_field fi, form_block fb, form_block_field_relation fbf, form_section fs, form f
+                                cfg_forms_fields fi, cfg_forms_blocks fb, cfg_forms_blocks_fields_relations fbf, cfg_forms_sections fs, cfg_forms f
                             WHERE
                                 fi.field_id = fbf.field_id
                             AND
@@ -622,7 +622,7 @@ class Form
                         fv.`name` as validator_name, `action` as `validator`, ff.`name` as `field_name`,
                         ff.`label` as `field_label`
                     FROM
-                        form_validator fv, form_field_validator_relation ffv, form_field ff
+                        cfg_forms_validators fv, cfg_forms_fields_validators_relations ffv, cfg_forms_fields ff
                     WHERE
                         ffv.validator_id = fv.validator_id
                     AND
@@ -632,7 +632,7 @@ class Form
                             SELECT
                                 fi.field_id
                             FROM
-                                form_field fi, form_step fs, form_step_field_relation fsf, form_wizard fw
+                                cfg_forms_fields fi, cfg_forms_steps fs, cfg_forms_steps_fields_relations fsf, cfg_forms_wizards fw
                             WHERE
                                 fi.field_id = fsf.field_id
                             AND

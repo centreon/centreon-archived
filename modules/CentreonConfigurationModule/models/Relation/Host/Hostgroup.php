@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Hostgroup extends CentreonRelationModel
 {
-    protected static $relationTable = "hostgroup_relation";
+    protected static $relationTable = "cfg_hostgroups_relations";
     protected static $firstKey = "hostgroup_hg_id";
     protected static $secondKey = "host_host_id";
     public static $firstObject = "\CentreonConfiguration\Models\Hostgroup";

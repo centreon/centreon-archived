@@ -55,7 +55,7 @@ class Icon extends CentreonRelationModel
     public static function insert($fkey, $skey = null)
     {
         if (isset($skey) && is_numeric($skey)) {
-            $sql = 'INSERT INTO host_image_relation(host_id, binary_id) VALUES(?, ?)';
+            $sql = 'INSERT INTO cfg_hosts_images_relations(host_id, binary_id) VALUES(?, ?)';
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare($sql);
             $stmt->execute(array($fkey, $skey));
@@ -69,7 +69,7 @@ class Icon extends CentreonRelationModel
      */
     public static function delete($fkey, $skey = null)
     {
-        $sql = 'DELETE FROM host_image_relation WHERE host_id = ?';
+        $sql = 'DELETE FROM cfg_hosts_images_relations WHERE host_id = ?';
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey));
@@ -83,7 +83,7 @@ class Icon extends CentreonRelationModel
      */
     public static function getIconForHost($hostId, $limit = 1)
     {
-        $sql = "SELECT b.binary_id, b.filename FROM binaries b, host_image_relation hir "
+        $sql = "SELECT b.binary_id, b.filename FROM cfg_binaries b, cfg_hosts_images_relations hir "
             . "WHERE hir.host_id = ? "
             . "AND filetype = 1 "
             . "AND hir.binary_id = b.binary_id "

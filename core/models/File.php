@@ -54,7 +54,7 @@ class File
         $dbconn = $di->get('db_centreon');
         
         // Insert the file in DB
-         $query = 'INSERT INTO `binaries` (`filename`, `checksum`, `mimetype`, `filetype`, `binary_content`)
+         $query = 'INSERT INTO `cfg_binaries` (`filename`, `checksum`, `mimetype`, `filetype`, `binary_content`)
                     VALUES (:filename, :checksum, :mimetype, :filetype, :binary_content)';
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':filename', $file['filename'], \PDO::PARAM_STR);
@@ -72,7 +72,7 @@ class File
      */
     public static function getFilename($fileId)
     {
-        $sql = "SELECT binary_id, filename FROM binaries WHERE binary_id  = ?";
+        $sql = "SELECT binary_id, filename FROM cfg_binaries WHERE binary_id  = ?";
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fileId));
@@ -101,7 +101,7 @@ class File
         
         // Get the id of the brand new file that has been insert in the DB
         $queryRetrieveBinaryId = "SELECT $fields "
-            . "FROM binary_type "
+            . "FROM cfg_binary_type "
             . "WHERE `type_name` = :typename "
             . "AND `module_id` = :moduleid";
         $stmt = $dbconn->prepare($queryRetrieveBinaryId);
@@ -130,7 +130,7 @@ class File
         
         // Get the id of the brand new file that has been insert in the DB
         $queryRetrieveBinaryId = "SELECT `binary_type_id` "
-            . "FROM binary_type "
+            . "FROM cfg_binary_type "
             . "WHERE `type_name` = :typename "
             . "AND `module_id` = :moduleid";
         $stmt = $dbconn->prepare($queryRetrieveBinaryId);

@@ -206,7 +206,7 @@ class HostTemplateDatatable extends \Centreon\Internal\Datatable
             
             /* Templates */
             $myHostSet['host_template']  = "";
-            $templates = \CentreonConfiguration\Repository\HosttemplateRepository::getTemplateList($myHostSet['host_id']);
+            $templates = \CentreonConfiguration\Repository\HostTemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
                 $myHostSet['host_template'] .= "<span class='badge alert-success'><a href='".$router->getPathFor(
                     "/configuration/hosttemplate/[i:id]",

@@ -64,7 +64,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         while (1) {
             $stmt = $dbconn->query(
                 "SELECT b.filename, h.host_id "
-                . "FROM host h, host_image_relation hir, binaries b "
+                . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
                 . "WHERE h.host_name = '$host_name' "
                 . "AND h.host_id = hir.host_id "
                 . "AND hir.binary_id = b.binary_id"
@@ -73,7 +73,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             
             $stmtTpl = $dbconn->query(
                 "SELECT host_tpl_id, host_name "
-                . "FROM host, host_template_relation "
+                . "FROM cfg_hosts, cfg_hosts_templates_relations "
                 . "WHERE host_host_id = '$ehiResult[host_id]' "
                 . "AND host_id = host_host_id "
                 . "LIMIT 1"
@@ -155,7 +155,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM host WHERE host_activate = '1' AND host_register = '1' ORDER BY host_name";
+        $query = "SELECT $field FROM cfg_hosts WHERE host_activate = '1' AND host_register = '1' ORDER BY host_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -209,7 +209,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                             }
                         } elseif ($key == "name") {
                             $tmpData[$key] = $value;
-                            $template = HosttemplateRepository::getTemplates($host_id);
+                            $template = HostTemplateRepository::getTemplates($host_id);
                             if ($template != "") {
                                 $tmpData["use"] = $template;
                             }
@@ -262,7 +262,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         $contactList = "";
 
         $query = "SELECT contact_alias "
-            . "FROM contact c, contact_host_relation ch "
+            . "FROM cfg_contacts c, cfg_contacst_hosts_relations ch "
             . "WHERE host_host_id = '$host_id' "
             . "AND c.contact_id = ch.contact_id "
             . "ORDER BY contact_alias";
@@ -292,7 +292,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         $contactgroupList = "";
 
         $query = "SELECT cg_name "
-            . "FROM contactgroup cg, contactgroup_host_relation cgh "
+            . "FROM cfg_contactgroups cg, cfg_contactgroups_hosts_relations cgh "
             . "WHERE host_host_id = '$host_id' "
             . "AND cg.cg_id = cgh.contactgroup_cg_id "
             . "ORDER BY cg_name";
