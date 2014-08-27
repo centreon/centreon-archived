@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="timeperiod">
+  <table name="cfg_timeperiods">
     <column>tp_id</column>
     <column>tp_name</column>
     <column>tp_alias</column>

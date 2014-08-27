@@ -159,7 +159,7 @@ class Command
     {
         $requestLineElements = $this->parseRequestLine();
         $module = $requestLineElements['module'];
-        $object = $requestLineElements['object'];
+        $object = ltrim($requestLineElements['object'], '\\');
         $action = $requestLineElements['action'];
         
         if (strtolower($module) != 'core') {

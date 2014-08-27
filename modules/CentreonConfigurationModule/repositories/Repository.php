@@ -202,7 +202,7 @@ abstract class Repository
             $db->commit();
             unset($givenParameters[$k]);
         }
-        static::postSave($id, 'add');
+        static::postSave($id, 'add', $givenParameters);
     }
 
     /**
@@ -262,8 +262,8 @@ abstract class Repository
                 unset($givenParameters[$key]);
             }
         }
-        $class::update($id, $givenParameters->all());
-        static::postSave($id, 'update');
+        $class::update($id, $givenParameters);
+        static::postSave($id, 'update', $givenParameters);
     }
 
     /**
@@ -273,6 +273,7 @@ abstract class Repository
      */
     public static function delete($ids)
     {
+        $objClass = static::$objectClass;
         foreach ($ids as $id) {
             static::preSave($id, 'delete');
             $objClass::delete($id);
@@ -287,6 +288,7 @@ abstract class Repository
      */
     public static function duplicate($listDuplicate)
     {
+        $objClass = static::$objectClass;
         foreach ($listDuplicate as $id => $nb) {
             $objClass::duplicate($id, $nb);
         }
@@ -410,13 +412,15 @@ abstract class Repository
         $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
         $name = $name[$objClass::getUniqueLabelField()];
         /* Add change log */
-        AuditlogRepository::addLog(
-            $actionList[$action],
-            static::$objectName,
-            $id,
-            $name,
-            array()
-        );
+        if (isset($_SESSION['user'])) {
+            AuditlogRepository::addLog(
+                $actionList[$action],
+                static::$objectName,
+                $id,
+                $name,
+                array()
+            );
+        }
     }
 
     /**
@@ -426,15 +430,15 @@ abstract class Repository
      *
      * @param $id int The object id
      * @param $action string The action (add, update, delete)
+     * @param array $params
      */
-    protected static function postSave($id, $action = 'add')
+    protected static function postSave($id, $action = 'add', $params = array())
     {
         $actionList = array(
             'add' => 'a',
             'update' => 'c'
         );
         $di = Di::getDefault();
-        $params = $di->get('router')->request()->params();
         $event = $di->get('action_hooks');
         $eventParams = array(
             'id' => $id,
@@ -448,12 +452,14 @@ abstract class Repository
         $objClass = static::$objectClass;
         $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
         $name = $name[$objClass::getUniqueLabelField()];
-        AuditlogRepository::addLog(
-            $actionList[$action],
-            static::$objectName,
-            $id,
-            $name,
-            $params
-        );
+        if (isset($_SESSION['user'])) {
+            AuditlogRepository::addLog(
+                $actionList[$action],
+                static::$objectName,
+                $id,
+                $name,
+                $params
+            );
+        }
     }
 }

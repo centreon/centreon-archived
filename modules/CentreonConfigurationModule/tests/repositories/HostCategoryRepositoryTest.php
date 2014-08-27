@@ -38,18 +38,18 @@ namespace Test\CentreonConfiguration\Repository;
 require_once 'modules/CentreonConfigurationModule/tests/repositories/RepositoryTestCase.php';
 
 use \Test\CentreonConfiguration\Repository\RepositoryTestCase;
-use \CentreonConfiguration\Repository\TimePeriodRepository;
+use \CentreonConfiguration\Repository\HostCategoryRepository;
 
-class TimePeriodRepositoryTest extends RepositoryTestCase
+class HostCategoryRepositoryTest extends RepositoryTestCase
 {
     protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
-    protected $objectName = 'timeperiod';
-    protected $objectClass = '\CentreonConfiguration\Models\Timeperiod';
+    protected $objectName = 'hostcategory';
+    protected $objectClass = '\CentreonConfiguration\Models\Hostcategory';
     protected $relationMap = array(
-        'tp_include' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded',
-        'tp_exclude' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded'
+        'hc_hosts' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
+        'hc_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory'
     ); 
-    protected $repository = '\CentreonConfiguration\Repository\TimePeriodRepository';
+    protected $repository = '\CentreonConfiguration\Repository\HostcategoryRepository';
 
     public function setUp()
     {
@@ -60,8 +60,8 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 1, 'text' => '24x7'),
-            array('id' => 2, 'text' => 'workhours')
+            array('id' => 1, 'text' => 'network'),
+            array('id' => 2, 'text' => 'web')
         );
         $this->assertEquals($expectedResult, $rep::getFormList(''));
     }
@@ -70,9 +70,9 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 2, 'text' => 'workhours')
+            array('id' => 2, 'text' => 'web')
         );
-        $this->assertEquals($expectedResult, $rep::getFormList('work'));
+        $this->assertEquals($expectedResult, $rep::getFormList('server'));
     }
 
     public function testGetFormListWithSearchStringWithNoResult()
@@ -88,18 +88,15 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
         $expectedResult = array();
         $rep::create(
             array(
-                'tp_name' => 'test_name',
-                'tp_alias' => 'test_alias',
-                'tp_monday' => '09:00-18:00',
-                'tp_tuesday' => '09:00-18:00',
-                'tp_wednesday' => '09:00-18:00',
-                'tp_thursday' => '09:00-18:00',
-                'tp_friday' => '09:00-17:00'
+                'hc_name' => 'test',
+                'hc_alias' => 'test alias',
+                'hc_comment' => 'test comment',
+                'hc_activate' => '1'
             )
         );
         $this->tableEqualsXml(
-            'cfg_timeperiods',
-            dirname(__DIR__) . '/data/timeperiod.insert.xml'
+            'hostcategories',
+            dirname(__DIR__) . '/data/hostcategory.insert.xml'
         );
     }
 
@@ -107,23 +104,23 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $newData = array(
-            'object_id' => 1,
-            'tp_alias' => 'new_alias'
+            'hc_id' => 1,
+            'hc_alias' => 'new alias'
         );
         $rep::update($newData);
         $this->tableEqualsXml(
-            'cfg_timeperiods',
-            dirname(__DIR__) . '/data/timeperiod.update.xml'
+            'hostcategories',
+            dirname(__DIR__) . '/data/hostcategory.update.xml'
         );
     }
 
     public function testDelete()
     {
         $rep = $this->repository;
-        $rep::delete(array(1));
+        $rep::delete(array(2));
         $this->tableEqualsXml(
-            'cfg_timeperiods',
-            dirname(__DIR__) . '/data/timeperiod.delete.xml'
+            'hostcategories',
+            dirname(__DIR__) . '/data/hostcategory.delete.xml'
         );
     }
 
@@ -134,8 +131,8 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
             array(1 => 2)
         );
         $this->tableEqualsXml(
-            'cfg_timeperiods',
-            dirname(__DIR__) . '/data/timeperiod.duplicate-2.xml'
+            'hostcategories',
+            dirname(__DIR__) . '/data/hostcategory.duplicate-2.xml'
         );
     }
 
@@ -145,24 +142,7 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
         $expectedResult = array();
         $this->assertEquals(
             $expectedResult,
-            $rep::getRelations('\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded', 1)
-        );
-    }
-
-    public function testGetSimpleRelation()
-    {
-        $rep = $this->repository;
-        $expectedResult = array(
-            array('id' => 1, 'text' => 'Template host')
-        );
-        $this->assertEquals(
-            $expectedResult,
-            $rep::getSimpleRelation(
-                'host_id',
-                '\CentreonConfiguration\Models\Hosttemplate',
-                1,
-                true
-            )
+            $rep::getRelations($this->relationMap['hc_hosts'], 1)
         );
     }
 }

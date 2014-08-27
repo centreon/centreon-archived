@@ -25,7 +25,7 @@
         <foreign-key foreignTable="cfg_traps_vendors" name="traps_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="manufacturer_id" foreign="id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_servicescategories" name="traps_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_servicecategories" name="traps_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="severity_id" foreign="sc_id"/>
         </foreign-key>
         <unique name="traps_name">

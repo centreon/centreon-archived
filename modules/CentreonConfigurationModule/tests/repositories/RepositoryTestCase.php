@@ -37,13 +37,14 @@ namespace Test\CentreonConfiguration\Repository;
 
 use \Test\Centreon\DbTestCase;
 
-abstract RepositoryTestCase extends DbTestCase
+class RepositoryTestCase extends DbTestCase
 {
     protected $dataPath;
     protected $objectName;
     protected $objectClass;
     protected $relationMap = array();
     protected $repository; 
+    protected static $bootstrapExtraSteps = array('actionHooks');
 
     public function setUp()
     {
