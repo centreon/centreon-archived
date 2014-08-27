@@ -38,18 +38,14 @@ namespace Test\CentreonConfiguration\Repository;
 require_once 'modules/CentreonConfigurationModule/tests/repositories/RepositoryTestCase.php';
 
 use \Test\CentreonConfiguration\Repository\RepositoryTestCase;
-use \CentreonConfiguration\Repository\TimePeriodRepository;
+use \CentreonConfiguration\Repository\CommandRepository;
 
-class TimePeriodRepositoryTest extends RepositoryTestCase
+class CommandRepositoryTest extends RepositoryTestCase
 {
     protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
-    protected $objectName = 'timeperiod';
-    protected $objectClass = '\CentreonConfiguration\Models\Timeperiod';
-    protected $relationMap = array(
-        'tp_include' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded',
-        'tp_exclude' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded'
-    ); 
-    protected $repository = '\CentreonConfiguration\Repository\TimePeriodRepository';
+    protected $objectName = 'command';
+    protected $objectClass = '\CentreonConfiguration\Models\Command';
+    protected $repository = '\CentreonConfiguration\Repository\CommandRepository';
 
     public function setUp()
     {
@@ -60,8 +56,9 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 1, 'text' => '24x7'),
-            array('id' => 2, 'text' => 'workhours')
+            array('id' => 1, 'text' => 'Test notif'),
+            array('id' => 2, 'text' => 'Test check'),
+            array('id' => 3, 'text' => 'Test connector')
         );
         $this->assertEquals($expectedResult, $rep::getFormList(''));
     }
@@ -70,9 +67,9 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 2, 'text' => 'workhours')
+            array('id' => 3, 'text' => 'Test connector')
         );
-        $this->assertEquals($expectedResult, $rep::getFormList('work'));
+        $this->assertEquals($expectedResult, $rep::getFormList('connector'));
     }
 
     public function testGetFormListWithSearchStringWithNoResult()
@@ -88,18 +85,17 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
         $expectedResult = array();
         $rep::create(
             array(
-                'tp_name' => 'test_name',
-                'tp_alias' => 'test_alias',
-                'tp_monday' => '09:00-18:00',
-                'tp_tuesday' => '09:00-18:00',
-                'tp_wednesday' => '09:00-18:00',
-                'tp_thursday' => '09:00-18:00',
-                'tp_friday' => '09:00-17:00'
+                'command_name' => "My check",
+                'command_line' => '$USER1$/bin/my_check -w $ARGV1$',
+                'command_example' => '$USER1$/bin/my_check -w 90',
+                'command_type' => 2,
+                'enable_shell' => 0,
+                'command_comment' => "My check command"
             )
         );
         $this->tableEqualsXml(
-            'timeperiod',
-            dirname(__DIR__) . '/data/timeperiod.insert.xml'
+            'command',
+            dirname(__DIR__) . '/data/command.insert.xml'
         );
     }
 
@@ -107,23 +103,24 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $newData = array(
-            'tp_id' => 1,
-            'tp_alias' => 'new_alias'
+            'command_id' => 2,
+            'command_comment' => 'Check ping',
+            'enable_shell' => 1 
         );
         $rep::update($newData);
         $this->tableEqualsXml(
-            'timeperiod',
-            dirname(__DIR__) . '/data/timeperiod.update.xml'
+            'command',
+            dirname(__DIR__) . '/data/command.update.xml'
         );
     }
 
     public function testDelete()
     {
         $rep = $this->repository;
-        $rep::delete(array(1));
+        $rep::delete(array(2));
         $this->tableEqualsXml(
-            'timeperiod',
-            dirname(__DIR__) . '/data/timeperiod.delete.xml'
+            'command',
+            dirname(__DIR__) . '/data/command.delete.xml'
         );
     }
 
@@ -131,21 +128,11 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $rep::duplicate(
-            array(1 => 2)
+            array(2 => 2)
         );
         $this->tableEqualsXml(
-            'timeperiod',
-            dirname(__DIR__) . '/data/timeperiod.duplicate-2.xml'
-        );
-    }
-
-    public function testGetRelations()
-    {
-        $rep = $this->repository;
-        $expectedResult = array();
-        $this->assertEquals(
-            $expectedResult,
-            $rep::getRelations('\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded', 1)
+            'command',
+            dirname(__DIR__) . '/data/command.duplicate-2.xml'
         );
     }
 
@@ -160,7 +147,7 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
             $rep::getSimplRelation(
                 'host_id',
                 '\CentreonConfiguration\Models\Hosttemplate',
-                1,
+                2,
                 true
             )
         );
