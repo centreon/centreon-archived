@@ -78,6 +78,8 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $datatableObject = '\CentreonConfiguration\Internal\HostTemplateDatatable';
 
 
+    protected $repository = '\CentreonConfiguration\Repository\HostTemplateRepository';
+
     /**
      *
      * @var array 

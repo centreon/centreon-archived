@@ -38,13 +38,14 @@ namespace CentreonConfiguration\Controllers;
 /**
  * 
  */
-class ServicetemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class ServiceTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'ServiceTemplate';
     protected $objectName = 'servicetemplate';
     protected $objectBaseUrl = '/configuration/servicetemplate';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceTemplateDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
+    protected $repository = '\CentreonConfiguration\Repository\ServicetemplateRepository';
     public static $relationMap = array(
         'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup',
         'service_template_hosts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Hosttemplate',

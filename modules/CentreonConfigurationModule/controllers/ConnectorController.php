@@ -42,7 +42,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstr
     protected $objectBaseUrl = '/configuration/connector';
     protected $datatableObject = '\CentreonConfiguration\Internal\ConnectorDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Connector';
-    
+    protected $repository = '\CentreonConfiguration\Repository\ConnectorRepository';    
     public static $isDisableable = true;
     
     public static $relationMap = array(

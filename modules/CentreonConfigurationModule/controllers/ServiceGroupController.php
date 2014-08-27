@@ -35,40 +35,38 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
+use \Centreon\Form;
+
+class ServiceGroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'Hostgroup';
-    protected $objectName = 'hostgroup';
-    protected $objectBaseUrl = '/configuration/hostgroup';
-    protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
-    
-    /**
-     *
-     * @var type 
-     */
-    protected $datatableObject = '\CentreonConfiguration\Internal\HostGroupDatatable';
-    
+    protected $objectDisplayName = 'Servicegroup';
+    protected $objectName = 'servicegroup';
+    protected $objectBaseUrl = '/configuration/servicegroup';
+    protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ServiceGroupDatatable';
+    protected $repository = '\CentreonConfiguration\Repository\ServicegroupRepository';
     public static $relationMap = array(
-        'hg_hosts' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
+        'sg_services' => '\CentreonConfiguration\Models\Relation\Servicegroup\Service'
     );
     
     public static $isDisableable = true;
 
     /**
-     * List hostgroups
+     * List servicegroups
      *
      * @method get
-     * @route /configuration/hostgroup
+     * @route /configuration/servicegroup
      */
     public function listAction()
     {
         parent::listAction();
     }
-    
+
     /**
-     * 
+     * List service groups 
+     *
      * @method get
-     * @route /configuration/hostgroup/formlist
+     * @route /configuration/servicegroup/formlist
      */
     public function formListAction()
     {
@@ -78,19 +76,19 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     /**
      * 
      * @method get
-     * @route /configuration/hostgroup/list
+     * @route /configuration/servicegroup/list
      */
     public function datatableAction()
     {
         parent::datatableAction();
     }
-    
+
     /**
-     * Update a hostgroup
+     * Update a servicegroup
      *
      *
      * @method post
-     * @route /configuration/hostgroup/update
+     * @route /configuration/servicegroup/update
      */
     public function updateAction()
     {
@@ -98,23 +96,24 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
     
     /**
-     * Add a hostgroup
+     * Add a servicegroup
+     *
      *
      * @method get
-     * @route /configuration/hostgroup/add
+     * @route /configuration/servicegroup/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/hostgroup/add');
+        $this->tpl->assign('validateUrl', '/configuration/servicegroup/add');
         parent::addAction();
     }
     
     /**
-     * Add a hostgroup
+     * Add a servicegroup
      *
      *
      * @method post
-     * @route /configuration/hostgroup/add
+     * @route /configuration/servicegroup/add
      */
     public function createAction()
     {
@@ -122,22 +121,23 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
     
     /**
-     * Update a hostgroup
+     * Update a servicegroup
      *
      *
      * @method get
-     * @route /configuration/hostgroup/[i:id]
+     * @route /configuration/servicegroup/[i:id]
      */
     public function editAction()
     {
         parent::editAction();
     }
 
+
     /**
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/hostgroup/mc_fields
+     * @route /configuration/servicegroup/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -148,7 +148,7 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/hostgroup/mc_fields/[i:id]
+     * @route /configuration/servicegroup/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -156,10 +156,10 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
 
     /**
-     * Duplicate a hostgroup
+     * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/hostgroup/duplicate
+     * @route /configuration/servicegroup/duplicate
      */
     public function duplicateAction()
     {
@@ -170,7 +170,7 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/hostgroup/massive_change
+     * @route /configuration/servicegroup/massive_change
      */
     public function massiveChangeAction()
     {
@@ -178,10 +178,10 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
 
     /**
-     * Delete action for hostgroup
+     * Delete action for servicegroup
      *
      * @method post
-     * @route /configuration/hostgroup/delete
+     * @route /configuration/servicegroup/delete
      */
     public function deleteAction()
     {
@@ -189,36 +189,56 @@ class HostgroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     }
     
     /**
-     * Enable action for hostcategory
+     * Enable action for service group
      * 
      * @method post
-     * @route /configuration/hostgroup/enable
+     * @route /configuration/servicegroup/enable
      */
     public function enableAction()
     {
-        parent::enableAction('hg_activate');
+        parent::enableAction('sg_activate');
     }
     
     /**
-     * Disable action for hostgroup
+     * Disable action for service group
      * 
      * @method post
-     * @route /configuration/hostgroup/disable
+     * @route /configuration/servicegroup/disable
      */
     public function disableAction()
     {
-        parent::disableAction('hg_activate');
+        parent::disableAction('sg_activate');
     }
-    
+
     /**
-     * Get list of hostgroups for a specific host
-     *
+     * Get services for a specific service group
      *
      * @method get
-     * @route /configuration/hostgroup/[i:id]/host
+     * @route /configuration/servicegroup/[i:id]/service
      */
-    public function hostForHostGroupAction()
+    public function servicesForServicegroupAction()
     {
-        parent::getRelations(static::$relationMap['hg_hosts']);
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $relObj = static::$relationMap['sg_services'];
+        $listOfServices = $relObj::getHostIdServiceIdFromServicegroupId($requestParam['id']);
+        
+        //
+        $finalList = array();
+        foreach ($listOfServices as $obj) {
+            $serviceDescription = \CentreonConfiguration\Models\Service::getParameters(
+                $obj['service_id'],
+                'service_description'
+            );
+            $hostName = \CentreonConfiguration\Models\Host::getParameters($obj['host_id'], 'host_name');
+            $finalList[] = array(
+                "id" => $obj['service_id'] . '_' . $obj['host_id'],
+                "text" => $hostName['host_name'] . ' ' . $serviceDescription['service_description']
+            );
+        }
+        $router->response()->json($finalList);
     }
 }

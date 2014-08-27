@@ -35,338 +35,425 @@
 
 namespace CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
+use \CentreonConfiguration\Repository\AuditlogRepository;
+
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
- * @package Centreon
- * @subpackage Repository
+ * Abstact class for configuration repository
+ *
+ * @version 3.0.0
+ * @author Sylvestre Ho <sho@merethis.com>
  */
 abstract class Repository
 {
     /**
-     *
-     * @var string
+     * @var array
      */
-    public static $tableName = '';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = '';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $moduleName = 'CentreonConfiguration';
-    
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array();
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $additionalColumn = array();
-    
-    /**
-     *
-     * @var array This array should math the additional column variable
-     */
-    public static $researchIndex = array();
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = '';
-    
-    /**
-     *
-     * @var string Acl string
-     */
-    public static $aclConditions = '';
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $linkedTables = '';
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array();
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array();
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array();
+    protected static $relationMap;
 
     /**
-     * @var bool If this object has category
+     * @var string
      */
-    public static $hasCategory = false;
+    protected static $objectClass;
 
     /**
-     * @var string The name of group, if the object does not have group it's a empty string
+     * @var string
      */
-    public static $groupname = '';
-    
+    protected static $secondaryObjectClass;
+
     /**
-     * 
-     * @return array
+     * @var string
      */
-    public static function getParametersForDatatable()
+    protected static $objectName;
+
+
+    /**
+     * Reset all static properties
+     */ 
+    public static function reset()
     {
-        return array(
-            'column' => static::$datatableColumn,
-            'header' => static::$datatableHeader,
-            'footer' => static::$datatableFooter,
-            'hasCategory' => static::$hasCategory,
-            'groupname' => _(static::$groupname)
-        );
+        static::$relationMap = null;
+        static::$objectClass = null;
+        static::$secondaryObjectClass = null;
+        static::$objectName = null;
     }
-    
+
     /**
-     * 
-     * @param array $params
+     * Set relation map property
+     *
+     * @param array $relationMap
+     */
+    public static function setRelationMap($relationMap)
+    {
+        static::$relationMap = $relationMap;
+    }
+
+    /**
+     * Set object name property
+     *
+     * @param string $objectName
+     */
+    public static function setObjectName($objectName)
+    {
+        static::$objectName = $objectName;
+    }
+
+    /**
+     * Set object class property
+     *
+     * @param string $objectClass
+     */ 
+    public static function setObjectClass($objectClass)
+    {
+        static::$objectClass = $objectClass;
+    }
+
+    /**
+     * Set secondary object class property
+     *
+     * @param string $secondaryObjectClass
+     */
+    public static function setSecondaryObjectClass($secondaryObjectClass)
+    {
+        static::$secondaryObjectClass = $secondaryObjectClass;
+    }
+
+    /**
+     * Get list of objects
+     *
+     * @param string $searchStr
      * @return array
      */
-    public static function getDatasForDatatable($params)
+    public static function getFormList($searchStr = "")
     {
-        // Init vars
-        $additionalTables = '';
-        $conditions = '';
-        $limitations = '';
-        $sort = '';
-        
-        // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        // Getting selected field(s)
-        $field_list = '';
-        foreach (static::$datatableColumn as $field) {
-            if (!is_array($field) && (substr($field, 0, 11) !== '[SPECFIELD]')) {
-                $field_list .= $field.',';
-            }
+        if (!empty(static::$secondaryObjectClass)) {
+            $class = static::$secondaryObjectClass;
+        } else {
+            $class = static::$objectClass;
         }
-        
-        foreach (static::$additionalColumn as $field) {
-            $field_list .= $field.',';
-        }
-        
-        $field_list = trim($field_list, ',');
-
-        
-        // Getting table column
-        $c = array_values(static::$researchIndex);
-        
-        if (!empty(static::$specificConditions)) {
-            $conditions = "WHERE ".static::$specificConditions;
-        }
-        
-        if (!empty(static::$aclConditions)) {
-            if (empty($conditions)) {
-                $conditions = "WHERE ".static::$aclConditions;
-            } else {
-                $conditions = "AND ".static::$aclConditions;
-            }
-        }
-        
-        if (!empty(static::$linkedTables)) {
-            $additionalTables = ', '.static::$linkedTables;
-        }
-        
-        // Conditions (Recherche)
-        foreach ($params as $paramName => $paramValue) {
-            if (strpos($paramName, 'sSearch_') !== false) {
-                if (!empty($paramValue) || $paramValue === "0") {
-                    $colNumber = substr($paramName, strlen('sSearch_'));
-                    if (substr($c[$colNumber], 0, 11) !== '[SPECFIELD]') {
-                        $searchString = $c[$colNumber]." like '%".$paramValue."%' ";
-                    } else {
-                        $customSearchString = substr($c[$colNumber], 11);
-                        $searchString = str_replace('::search_value::', '%'.$paramValue.'%', $customSearchString);
-                    }
-                    
-                    if (empty($conditions)) {
-                        $conditions = "WHERE ".$searchString;
-                    } else {
-                        $conditions .= "AND ".$searchString;
-                    }
-                }
-            }
-        }
-        
-        // Sort
-        if ((substr($sort, 0, 11) !== '[SPECFIELD]')) {
-            $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
-        }
-        
-        // Processing the limit
-        if ($params['iDisplayLength'] > 0) {
-            $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
-        }
-        
-        // Building the final request
-        $finalRequest = "SELECT "
-            . "SQL_CALC_FOUND_ROWS $field_list "
-            . "FROM ".static::$tableName."$additionalTables $conditions "
-            . "$sort $limitations";
-        
-        $stmt = $dbconn->query($finalRequest);
-        
-        // Returning the result
-        $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $countTab = count($resultSet);
-        $objectTab = array();
-        for ($i=0; $i<$countTab; $i++) {
-            $objectTab[] = array(
-                static::$objectName,
-                static::$moduleName
+        $idField = $class::getPrimaryKey();
+        $uniqueField = $class::getUniqueLabelField();
+        $filters = array(
+            $uniqueField => '%'.$searchStr.'%'
+        );
+        $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$idField],
+                "text" => $obj[$uniqueField]
             );
         }
-        
-        static::formatDatas($resultSet);
-        
-        return self::arrayValuesRecursive(
-            \array_values(
-                \Centreon\Internal\Datatable::removeUnwantedFields(
-                    static::$moduleName,
-                    static::$objectName,
-                    \array_map(
-                        "\\Centreon\\Internal\\Datatable::castResult",
-                        $resultSet,
-                        $objectTab
-                    )
-                )
-            )
-        );
+        return $finalList;
     }
-    
+
     /**
-     * Format datas before return to the calling script/function/object
-     * @param array $resultSet
+     * Generic create action
+     *
+     * @param array $givenParameters
+     * @return int id of created object
      */
-    public static function formatDatas(&$resultSet)
+    public static function create($givenParameters)
     {
-        
-    }
-    
-    /**
-     * 
-     * @param array $params
-     * @return array
-     */
-    public static function getCustomDatas($params)
-    {
-        
-    }
-    
-    /**
-     * 
-     * @param array $params
-     * @return integer
-     */
-    public static function getTotalRecordsForDatatable($params)
-    {
-        // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        $conditions = '';
-        $additionalTables = '';
-        
-        // Getting table column
-        $c = array_values(static::$researchIndex);
-        
-        if (!empty(static::$specificConditions)) {
-            $conditions = "WHERE ".static::$specificConditions;
-        }
-        
-        if (!empty(static::$aclConditions)) {
-            if (empty($conditions)) {
-                $conditions = "WHERE ".static::$aclConditions;
-            } else {
-                $conditions = "AND ".static::$aclConditions;
-            }
-        }
-        
-        if (!empty(static::$linkedTables)) {
-            $additionalTables = ', '.static::$linkedTables;
-        }
-        
-        // Conditions (Recherche)
-        foreach ($params as $paramName => $paramValue) {
-            if (strpos($paramName, 'sSearch_') !== false) {
-                if (!empty($paramValue) || $paramValue === "0") {
-                    $colNumber = substr($paramName, strlen('sSearch_'));
-                    
-                    if (substr($c[$colNumber], 0, 11) === '[SPECFIELD]') {
-                        $research = str_replace('::search_value::', '%'.$paramValue.'%', substr($c[$colNumber], 11));
-                    } else {
-                        $research = $c[$colNumber]." like '%".$paramValue."%' ";
-                    }
-                    
-                    if (empty($conditions)) {
-                        $conditions = "WHERE ".$research;
-                    } else {
-                        $conditions .= "AND ".$research;
-                    }
+        $class = static::$objectClass;
+        $pk = $class::getPrimaryKey();
+        $db = Di::getDefault()->get('db_centreon');
+        $columns = $class::getColumns();
+        $insertParams = array();
+        foreach ($givenParameters as $key => $value) {
+            if (in_array($key, $columns)) {
+                if (!is_array($value) && !empty($value)) {
+                    $insertParams[$key] = trim($value);
                 }
             }
         }
-        
-        // Building the final request
-        $request = "SELECT COUNT('id') as nb".ucwords(static::$tableName).
-            " FROM ".static::$tableName."$additionalTables $conditions";
-        
-        // Executing the request
-        $stmt = $dbconn->query($request);
-        
-        // Getting the result
-        $result = $stmt->fetchAll();
-        
-        // Returing the result
-        return $result[0]['nb'.ucwords(static::$tableName)];
+        $id = $class::insert($insertParams);
+        if (is_null($id)) {
+            throw new Exception('Could not create object');
+        }
+        foreach (static::$relationMap as $k => $rel) {
+            if (!isset($givenParameters[$k])) {
+                continue;
+            }
+            if ($rel::$firstObject == static::$objectClass) {
+                $rel::delete($id);
+            } else {
+                $rel::delete(null, $id);
+            }
+            $arr = explode(',', ltrim($givenParameters[$k], ','));
+            $db->beginTransaction();
+
+            foreach ($arr as $relId) {
+                $relId = trim($relId);
+                if (is_numeric($relId)) {
+                    if ($rel::$firstObject == static::$objectClass) {
+                        $rel::insert($id, $relId);
+                    } else {
+                        $rel::insert($relId, $id);
+                    }
+                } elseif (!empty($relId)) {
+                    $complexeRelId = explode('_', $relId);
+                    if ($rel::$firstObject == static::$objectClass) {
+                        $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
+                    }
+                }
+            }
+            $db->commit();
+            unset($givenParameters[$k]);
+        }
+        static::postSave($id, 'add');
     }
-    
+
     /**
-     * 
-     * @param type $array
-     * @return type
+     * Generic update function
+     *
+     * @param array $givenParameters
+     * @throws \Centreon\Internal\Exception
      */
-    public static function arrayValuesRecursive($array)
+    public static function update($givenParameters)
     {
-        $array = array_values($array);
-        for ($i = 0, $n = count($array); $i < $n; $i++) {
-            $element = $array[$i];
-            if (is_array($element)) {
-                $array[$i] = self::arrayValuesRecursive($element);
+        $class = static::$objectClass;
+        $pk = $class::getPrimaryKey();
+        $givenParameters[$pk] = $givenParameters['object_id'];
+        if (!isset($givenParameters[$pk])) {
+            throw Exception('Primary key of object is not defined');
+        }
+        $db = Di::getDefault()->get('db_centreon');
+        $id = $givenParameters[$pk];
+        unset($givenParameters[$pk]);
+        foreach (static::$relationMap as $k => $rel) {
+            try {
+                if (!isset($givenParameters[$k])) {
+                    continue;
+                }
+                if ($rel::$firstObject == static::$objectClass) {
+                    $rel::delete($id);
+                } else {
+                    $rel::delete(null, $id);
+                }
+                $arr = explode(',', ltrim($givenParameters[$k], ','));
+                $db->beginTransaction();
+
+                foreach ($arr as $relId) {
+                    $relId = trim($relId);
+                    if (is_numeric($relId)) {
+                        if ($rel::$firstObject == static::$objectClass) {
+                            $rel::insert($id, $relId);
+                        } else {
+                            $rel::insert($relId, $id);
+                        }
+                    } elseif (!empty($relId)) {
+                        $complexeRelId = explode('_', $relId);
+                        if ($rel::$firstObject == static::$objectClass) {
+                            $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
+                        }
+                    }
+                }
+                $db->commit();
+                unset($givenParameters[$k]);
+            } catch (Exception $e) {
+                $updateErrorMessage = $e->getMessage();
             }
         }
-        return $array;
+        $columns = $class::getColumns();
+        foreach ($givenParameters as $key => $value) {
+            if (!in_array($key, $columns)) {
+                unset($givenParameters[$key]);
+            }
+        }
+        $class::update($id, $givenParameters->all());
+        static::postSave($id, 'update');
     }
-    
+
     /**
-     * 
-     * @param array $params
+     * Delete a object
+     *
+     * @param array $ids | array of ids to delete
      */
-    public static function getTotalRecords($params)
+    public static function delete($ids)
     {
-        
+        foreach ($ids as $id) {
+            static::preSave($id, 'delete');
+            $objClass::delete($id);
+            static::postSave($id, 'delete');
+        }
+    }
+
+    /**
+     * Duplicate a object
+     *
+     * @param array $listDuplicate
+     */
+    public static function duplicate($listDuplicate)
+    {
+        foreach ($listDuplicate as $id => $nb) {
+            $objClass::duplicate($id, $nb);
+        }
+    }
+
+    /**
+     * Get relations 
+     *
+     * @param string $relClass
+     * @param int $id
+     * @return array 
+     */
+    public static function getRelations($relClass, $id)
+    {
+        $curObj = static::$objectClass;
+        if ($relClass::$firstObject == $curObj) {
+            $tmp = $relClass::$secondObject;
+            $fArr = array();
+            $sArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
+        } else {
+            $tmp = $relClass::$firstObject;
+            $fArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
+            $sArr = array();
+        }
+        $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
+        $list = $relClass::getMergedParameters(
+            $fArr,
+            $sArr,
+            -1,
+            0,
+            null,
+            "ASC",
+            array($cmp => $id),
+            "AND"
+        );
+        $finalList = array();
+        foreach ($list as $obj) {
+            $finalList[] = array(
+                "id" => $obj[$tmp::getPrimaryKey()],
+                "text" => $obj[$tmp::getUniqueLabelField()]
+            );
+        }
+        return $finalList;
+    }
+
+    /**
+     * Get simple relation (1-N)
+     *
+     * @param string $fieldName
+     * @param string $targetObj
+     * @param int $id
+     * @param bool $reverse
+     */
+    public static function getSimpleRelation($fieldName, $targetObj, $id, $reverse = false)
+    {
+        if ($reverse === false) {
+            $obj = static::$objectClass;
+            $pk = $obj::getPrimaryKey();
+            $fields = $fieldName;
+        } else {
+            $obj = $targetObj;
+            $pk = $fieldName;
+            $fields = $targetObj::getPrimaryKey().','.$targetObj::getUniqueLabelField();
+        }
+        $filters = array(
+            $obj::getTableName().'.'.$pk => $id
+        );
+        $list = $obj::getList($fields, -1, 0, null, "ASC", $filters, "AND");
+
+        if (count($list) == 0) {
+            return array('id' => null, 'text' => null);
+        } elseif ($reverse === true) {
+            $finalList = array();
+            foreach ($list as $obj) {
+                $finalList[] = array(
+                    "id" => $obj[$targetObj::getPrimaryKey()],
+                    "text" => $obj[$targetObj::getUniqueLabelField()]
+                );
+            }
+            return $finalList;
+        }
+
+        $filters = array($targetObj::getPrimaryKey() => $list[0][$fieldName]);
+        $targetPrimaryKey = $targetObj::getPrimaryKey();
+        $targetName = $targetObj::getUniqueLabelField();
+        $targetList = $targetObj::getList(
+            $targetPrimaryKey.','.$targetName,
+            -1,
+            0,
+            null,
+            "ASC",
+            $filters,
+            "AND"
+        );
+
+        $finalList = array();
+        if (count($targetList) > 0) {
+            $finalList["id"] = $targetList[0][$targetPrimaryKey];
+            $finalList["text"] = $targetList[0][$targetName];
+        }
+        return $finalList;
+    }
+
+    /**
+     * Action before save
+     *
+     * * Emit event objectName.action
+     *
+     * @param $id int The object id
+     * @param $action string The action (add, update, delete)
+     */
+    protected static function preSave($id, $action = 'add')
+    {
+        $actionList = array(
+            'delete' => 'd'
+        );
+        if (false === in_array($action, array_keys($actionList))) {
+            return;
+        }
+        $objClass = static::$objectClass;
+        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
+        $name = $name[$objClass::getUniqueLabelField()];
+        /* Add change log */
+        AuditlogRepository::addLog(
+            $actionList[$action],
+            static::$objectName,
+            $id,
+            $name,
+            array()
+        );
+    }
+
+    /**
+     * Action after save
+     *
+     * * Emit event objectName.action
+     *
+     * @param $id int The object id
+     * @param $action string The action (add, update, delete)
+     */
+    protected static function postSave($id, $action = 'add')
+    {
+        $actionList = array(
+            'add' => 'a',
+            'update' => 'c'
+        );
+        $di = Di::getDefault();
+        $params = $di->get('router')->request()->params();
+        $event = $di->get('action_hooks');
+        $eventParams = array(
+            'id' => $id,
+            'params' => $params
+        );
+        $event->emit(static::$objectName . '.' . $action, $eventParams);
+        /* Add change log */
+        if (false === in_array($action, array_keys($actionList))) {
+            return;
+        }
+        $objClass = static::$objectClass;
+        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
+        $name = $name[$objClass::getUniqueLabelField()];
+        AuditlogRepository::addLog(
+            $actionList[$action],
+            static::$objectName,
+            $id,
+            $name,
+            $params
+        );
     }
 }

@@ -35,8 +35,11 @@
 
 namespace CentreonConfiguration\Controllers;
 
+use \Centreon\Internal\Form;
+use \Centreon\Internal\Form\Wizard;
 use \Centreon\Internal\Form\Generator;
-use \CentreonConfiguration\Repository\AuditlogRepository;
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
 
 /**
  * Abstact class for configuration controller
@@ -46,16 +49,26 @@ use \CentreonConfiguration\Repository\AuditlogRepository;
  */
 abstract class ObjectAbstract extends \Centreon\Internal\Controller
 {
-    /**
-     * Array of field names => relation class names
-     *
-     * @var array
-     */
-    public static $relationMap;
-    
     public static $moduleName = 'CentreonConfiguration';
     
     public static $isDisableable = false;
+
+    protected $repository = null;
+
+    public function __construct($request)
+    {
+        parent::__construct($request);
+        if (is_null($this->repository)) {
+            throw new Exception('Repository unspecified');
+        }
+        $repository = $this->repository;
+        $repository::setRelationMap(static::$relationMap);
+        $repository::setObjectName($this->objectName);
+        $repository::setObjectClass($this->objectClass);
+        if (!empty($this->secondaryObjectClass)) {
+            $repository::setSecondaryObjectClass($this->secondaryObjectClass);
+        }
+    }
 
     /**
      * List view for object
@@ -63,7 +76,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     public function listAction()
     {
         /* Init template */
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tpl = $di->get('template');
         
         // Load CssFile
@@ -106,7 +119,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             ->addJs('centreon-wizard.js');
 
         /* Set Cookie */
-        $token = \Centreon\Internal\Form::getSecurityToken();
+        $token = Form::getSecurityToken();
         setcookie("ajaxToken", $token, time()+15, '/');
         
         /* Display variable */
@@ -134,29 +147,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function formListAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
-        if (!empty($this->secondaryObjectClass)) {
-            $class = $this->secondaryObjectClass;
-        } else {
-            $class = $this->objectClass;
-        }
         $requestParams = $this->getParams('get');
-        $idField = $class::getPrimaryKey();
-        $uniqueField = $class::getUniqueLabelField();
-        $filters = array(
-            $uniqueField => '%'.$requestParams['q'].'%'
-        );
-        $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");
-        $finalList = array();
-        foreach ($list as $obj) {
-            $finalList[] = array(
-                "id" => $obj[$idField],
-                "text" => $obj[$uniqueField]
-            );
-        }
-        $router->response()->json($finalList);
+        $repository = $this->repository;
+        $list = $repository::getFormList($requestParams['q']);
+        $router->response()->json($list);
     }
     
     /**
@@ -166,9 +163,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function addAction()
     {
-        $form = new \Centreon\Internal\Form\Wizard($this->objectBaseUrl . '/add', array('id' => 0));
+        $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
         $form->addHiddenComponent('object', $this->objectName);
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl = Di::getDefault()->get('template');
         $tpl->assign('formName', $form->getName());
         $formGen = str_replace(
             array('alertMessage', 'alertClose'),
@@ -182,7 +179,6 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      * Generic create action
      *
      * @todo handle token
-     * @return int id of created object
      */
     public function createAction()
     {
@@ -190,78 +186,26 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $createSuccessful = true;
         $createErrorMessage = '';
         
-        $validationResult = \Centreon\Internal\Form::validate("wizard", $this->getUri(), $givenParameters);
+        $validationResult = Form::validate("wizard", $this->getUri(), $givenParameters);
         if ($validationResult['success']) {
-            $class = $this->objectClass;
-            $pk = $class::getPrimaryKey();
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $requestParams = $this->getParams('get');
+            $repository = $this->repository;
             try {
-                $columns = $class::getColumns();
-                $insertParams = array();
-                foreach ($givenParameters as $key => $value) {
-                    if (in_array($key, $columns)) {
-                        if (!is_array($value) && !empty($value)) {
-                            $insertParams[$key] = trim($value);
-                        }
-                    }
-                }
-                $id = $class::insert($insertParams);
+                $repository::create($givenParameters);
             } catch (Exception $e) {
-                echo $e->getMessage();
-            }
-            if (isset($id)) {
-                foreach (static::$relationMap as $k => $rel) {
-                    try {
-                        if (!isset($givenParameters[$k])) {
-                            continue;
-                        }
-                        if ($rel::$firstObject == $this->objectClass) {
-                            $rel::delete($id);
-                        } else {
-                            $rel::delete(null, $id);
-                        }
-                        $arr = explode(',', ltrim($givenParameters[$k], ','));
-                        $db->beginTransaction();
-                        
-                        foreach ($arr as $relId) {
-                            $relId = trim($relId);
-                            if (is_numeric($relId)) {
-                                if ($rel::$firstObject == $this->objectClass) {
-                                    $rel::insert($id, $relId);
-                                } else {
-                                    $rel::insert($relId, $id);
-                                }
-                            } elseif (!empty($relId)) {
-                                $complexeRelId = explode('_', $relId);
-                                if ($rel::$firstObject == $this->objectClass) {
-                                    $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
-                                }
-                            }
-                        }
-                        $db->commit();
-                        unset($givenParameters[$k]);
-                    } catch (Exception $e) {
-                        echo $e->getMessage();
-                    }
-                }
-                \Centreon\Internal\Di::getDefault()
-                    ->get('router')
-                    ->response()
-                    ->json(array('success' => true));
-                $this->postSave($id, 'add');
-                return $id;
+                $createSuccessful = false;
+                $createErrorMessage = $e->getMessage();
             }
         } else {
             $createSuccessful = false;
             $createErrorMessage = $validationResult['error'];
         }
         
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         if ($createSuccessful) {
             $router->response()->json(array('success' => true));
-            $this->postSave($id, 'update');
         } else {
-            $router->response()->json(array('success' => false,'error' => $createErrorMessage));
+            $router->response()->json(array('success' => false, 'error' => $createErrorMessage));
         }
     }
     
@@ -271,7 +215,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     public function editAction()
     {
         // Init template
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tpl = $di->get('template');
         
         $requestParam = $this->getParams('named');
@@ -284,7 +228,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         // get object Current Values
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
         
-        $formModeUrl = \Centreon\Internal\Di::getDefault()
+        $formModeUrl = Di::getDefault()
                         ->get('router')
                         ->getPathFor(
                             $this->objectBaseUrl.'/[i:id]',
@@ -313,72 +257,25 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = \Centreon\Internal\Form::validate("form", $this->getUri(), $givenParameters);
+        $validationResult = Form::validate("form", $this->getUri(), $givenParameters);
         if ($validationResult['success']) {
-            $class = $this->objectClass;
-            $pk = $class::getPrimaryKey();
-            $givenParameters[$pk] = $givenParameters['object_id'];
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            if (isset($givenParameters[$pk])) {
-                $id = $givenParameters[$pk];
-                unset($givenParameters[$pk]);
-                foreach (static::$relationMap as $k => $rel) {
-                    try {
-                        if (!isset($givenParameters[$k])) {
-                            continue;
-                        }
-                        if ($rel::$firstObject == $this->objectClass) {
-                            $rel::delete($id);
-                        } else {
-                            $rel::delete(null, $id);
-                        }
-                        $arr = explode(',', ltrim($givenParameters[$k], ','));
-                        $db->beginTransaction();
-                        
-                        foreach ($arr as $relId) {
-                            $relId = trim($relId);
-                            if (is_numeric($relId)) {
-                                if ($rel::$firstObject == $this->objectClass) {
-                                    $rel::insert($id, $relId);
-                                } else {
-                                    $rel::insert($relId, $id);
-                                }
-                            } elseif (!empty($relId)) {
-                                $complexeRelId = explode('_', $relId);
-                                if ($rel::$firstObject == $this->objectClass) {
-                                    $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
-                                }
-                            }
-                        }
-                        $db->commit();
-                        unset($givenParameters[$k]);
-                    } catch (Exception $e) {
-                        $updateErrorMessage = $e->getMessage();
-                    }
-                }
-                try {
-                    $columns = $class::getColumns();
-                    foreach ($givenParameters as $key => $value) {
-                        if (!in_array($key, $columns)) {
-                            unset($givenParameters[$key]);
-                        }
-                    }
-                    $class::update($id, $givenParameters->all());
-                } catch (Exception $e) {
-                    $updateErrorMessage = $e->getMessage();
-                }
+            $repository = $this->repository;
+            try {
+                $repository::update($givenParameters);
+            } catch (Exception $e) {
+                $updateSuccessful = false;
+                $updateErrorMessage = $e->getMessage();
             }
         } else {
             $updateSuccessful = false;
             $updateErrorMessage = $validationResult['error'];
         }
         
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         if ($updateSuccessful) {
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
             $router->response()->json(array('success' => true));
-            $this->postSave($id, 'update');
         } else {
             $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
@@ -391,26 +288,21 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function deleteAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $deleteSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
-            
-            $objClass = $this->objectClass;
-            foreach ($params['ids'] as $id) {
-                $this->preSave($id, 'delete');
-                $objClass::delete($id);
-                $this->postSave($id, 'delete');
-            }
+            $repository = $this->repository;
+            $repository::delete($params['ids']);
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $deleteSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -428,7 +320,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
@@ -444,7 +336,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function getMassiveChangeFieldsAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $dbconn = $di->get('db_centreon');
 
@@ -475,7 +367,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function getMcFieldAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $dbconn = $di->get('db_centreon');
         $tpl = $di->get('template');
@@ -490,7 +382,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
-        $form = new \Centreon\Internal\Form('default');
+        $form = new Form('default');
         $form->add($row, array('id' => 0));
         $formElements = $form->toSmarty();
         $tpl->assign('field', $formElements[$row['name']]['html']);
@@ -504,24 +396,23 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function duplicateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $duplicateSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
 
             $objClass = $this->objectClass;
-            foreach ($listDuplicate as $id => $nb) {
-                $objClass::duplicate($id, $nb);
-            }
+            $repository = $this->repository;
+            $repository::duplicate($listDuplicate);
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $duplicateSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -535,28 +426,30 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     }
     
     /**
-     * 
+     * Enable object
+     *
+     * @param string $field
      */
     public function enableAction($field)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $enableSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
 
-            $objClass = $this->objectClass;
+            $repository = $this->repository;
             foreach ($params['ids'] as $id) {
-                $objClass::update($id, array($field => '1'));
+                $repository::update($id, array($field => '1'));
             }
-            
+
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $enableSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -570,28 +463,30 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
     }
     
     /**
-     * 
+     * Disable object
+     *
+     * @param string $field
      */
     public function disableAction($field)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $enableSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
 
-            $objClass = $this->objectClass;
+            $repository = $this->repository;
             foreach ($params['ids'] as $id) {
-                $objClass::update($id, array($field => '0'));
+                $repository::update($id, array($field => '0'));
             }
-            
+
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $enableSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -611,13 +506,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function massiveChangeAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $massiveChangeSuccess = true;
         $errorMessage = '';
         
         try {
-            \Centreon\Internal\Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $router->request()->paramsPost();
 
             $objClass = $this->objectClass;
@@ -626,9 +521,9 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             }
             
             /* Set Cookie */
-            $token = \Centreon\Internal\Form::getSecurityToken();
+            $token = Form::getSecurityToken();
             setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $massiveChangeSuccess = false;
             $errorMessage = $e->getMessage();
         }
@@ -648,39 +543,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     protected function getRelations($relClass)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
-        $curObj = $this->objectClass;
-        if ($relClass::$firstObject == $curObj) {
-            $tmp = $relClass::$secondObject;
-            $fArr = array();
-            $sArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
-        } else {
-            $tmp = $relClass::$firstObject;
-            $fArr = array($tmp::getPrimaryKey(), $tmp::getUniqueLabelField());
-            $sArr = array();
-        }
-        $cmp = $curObj::getTableName() . '.' . $curObj::getPrimaryKey();
-        $list = $relClass::getMergedParameters(
-            $fArr,
-            $sArr,
-            -1,
-            0,
-            null,
-            "ASC",
-            array($cmp => $requestParam['id']),
-            "AND"
-        );
-        $finalList = array();
-        foreach ($list as $obj) {
-            $finalList[] = array(
-                "id" => $obj[$tmp::getPrimaryKey()],
-                "text" => $obj[$tmp::getUniqueLabelField()]
-            );
-        }
-        $router->response()->json($finalList);
+        $repository = $this->repository;
+        $list = $repository::getRelations($relClass, $requestParam['id']);
+        $router->response()->json($list);
     }
 
     /**
@@ -692,125 +561,12 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
      */
     public function getSimpleRelation($fieldName, $targetObj, $reverse = false)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
-
-        if ($reverse === false) {
-            $obj = $this->objectClass;
-            $id = $obj::getPrimaryKey();
-            $fields = $fieldName;
-        } else {
-            $obj = $targetObj;
-            $id = $fieldName;
-            $fields = $targetObj::getPrimaryKey().','.$targetObj::getUniqueLabelField();
-        }
-        $filters = array(
-            $obj::getTableName().'.'.$id => $requestParam['id']
-        );
-        $list = $obj::getList($fields, -1, 0, null, "ASC", $filters, "AND");
-        
-        if (count($list) == 0) {
-            $router->response()->json(array('id' => null, 'text' => null));
-            return;
-        } elseif ($reverse === true) {
-            $finalList = array();
-            foreach ($list as $obj) {
-                $finalList[] = array(
-                    "id" => $obj[$targetObj::getPrimaryKey()],
-                    "text" => $obj[$targetObj::getUniqueLabelField()]
-                );
-            }
-            $router->response()->json($finalList);
-            return;
-        }
-        
-        $filters = array($targetObj::getPrimaryKey() => $list[0][$fieldName]);
-        $targetPrimaryKey = $targetObj::getPrimaryKey();
-        $targetName = $targetObj::getUniqueLabelField();
-        $targetList = $targetObj::getList(
-            $targetPrimaryKey.','.$targetName,
-            -1,
-            0,
-            null,
-            "ASC",
-            $filters,
-            "AND"
-        );
-        
-        $finalList = array();
-        if (count($targetList) > 0) {
-            $finalList["id"] = $targetList[0][$targetPrimaryKey];
-            $finalList["text"] = $targetList[0][$targetName];
-        }
-        $router->response()->json($finalList);
-    }
-
-    /**
-     * Action before save
-     *
-     * * Emit event objectName.action
-     *
-     * @param $id int The object id
-     * @param $action string The action (add, update, delete)
-     */
-    protected function preSave($id, $action = 'add')
-    {
-        $actionList = array(
-            'delete' => 'd'
-        );
-        if (false === in_array($action, array_keys($actionList))) {
-            return;
-        }
-        $objClass = $this->objectClass;
-        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
-        $name = $name[$objClass::getUniqueLabelField()];
-        /* Add change log */
-        AuditlogRepository::addLog(
-            $actionList[$action],
-            $this->objectName,
-            $id,
-            $name,
-            array()
-        );
-    }
-
-    /**
-     * Action after save
-     *
-     * * Emit event objectName.action
-     *
-     * @param $id int The object id
-     * @param $action string The action (add, update, delete)
-     */
-    protected function postSave($id, $action = 'add')
-    {
-        $actionList = array(
-            'add' => 'a',
-            'update' => 'c'
-        );
-        $di = \Centreon\Internal\Di::getDefault();
-        $params = $di->get('router')->request()->params();
-        $event = $di->get('action_hooks');
-        $eventParams = array(
-            'id' => $id,
-            'params' => $params
-        );
-        $event->emit($this->objectName . '.' . $action, $eventParams);
-        /* Add change log */
-        if (false === in_array($action, array_keys($actionList))) {
-            return;
-        }
-        $objClass = $this->objectClass;
-        $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
-        $name = $name[$objClass::getUniqueLabelField()];
-        AuditlogRepository::addLog(
-            $actionList[$action],
-            $this->objectName,
-            $id,
-            $name,
-            $params
-        );
+        $repository = $this->repository;
+        $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParams['id']);
+        $router->response()->json($list);
     }
 }

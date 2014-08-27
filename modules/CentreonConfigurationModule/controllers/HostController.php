@@ -54,6 +54,7 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     protected $datatableObject = '\CentreonConfiguration\Internal\HostDatatable';
     protected $objectBaseUrl = '/configuration/host';
     protected $objectClass = '\CentreonConfiguration\Models\Host';
+    protected $repository = '\CentreonConfiguration\Repository\HostRepository';
     
     public static $relationMap = array(
         'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',

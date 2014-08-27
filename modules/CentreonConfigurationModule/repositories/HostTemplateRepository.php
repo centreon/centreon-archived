@@ -153,7 +153,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
                             }
                         } elseif ($key == "name") {
                             $tmpData[$key] = $value;
-                            $template = HosttemplateRepository::getTemplates($host_id);
+                            $template = HostTemplateRepository::getTemplates($host_id);
                             if ($template != "") {
                                 $tmpData["use"] = $template;
                             }
