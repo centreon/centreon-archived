@@ -1,6 +1,6 @@
 [
-    "module",
-    "menus",
-    "hooks",
-    "module_hooks"
+    "cfg_modules",
+    "cfg_menus",
+    "cfg_hooks",
+    "cfg_modules_hooks"
 ]

@@ -1,15 +1,15 @@
 [
-  "timeperiod",
-  "connector",
-  "command",
-  "traps_vendor",
-  "traps",
-  "contact",
-  "contactgroup",
-  "hostcategories",
-  "servicecategories",
-  "hostgroup",
-  "servicegroup",
-  "host",
-  "service"
+  "cfg_timeperiods",
+  "cfg_connectors",
+  "cfg_commands",
+  "cfg_traps_vendors",
+  "cfg_traps",
+  "cfg_contacts",
+  "cfg_contactgroups",
+  "cfg_hostcategories",
+  "cfg_servicecategories",
+  "cfg_hostgroups",
+  "cfg_servicegroups",
+  "cfg_hosts",
+  "cfg_services"
 ]

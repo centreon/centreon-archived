@@ -37,7 +37,7 @@ namespace Test\CentreonConfiguration\Repository;
 
 use \Test\Centreon\DbTestCase;
 
-abstract RepositoryTestCase extends DbTestCase
+class RepositoryTestCase extends DbTestCase
 {
     protected $dataPath;
     protected $objectName;
