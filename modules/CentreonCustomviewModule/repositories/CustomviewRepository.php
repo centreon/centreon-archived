@@ -69,7 +69,7 @@ class CustomviewRepository
     protected static function getLastViewId()
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT MAX(custom_view_id) as last_id FROM custom_views");
+        $stmt = $db->prepare("SELECT MAX(custom_view_id) as last_id FROM cfg_custom_views");
         $stmt->execute();
         if ($stmt->rowCount()) {
             $row = $stmt->fetch();
@@ -88,7 +88,7 @@ class CustomviewRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $sql = "SELECT DISTINCT parameter_name, parameter_code_name
-            FROM widget_parameters wp, widgets w
+            FROM cfg_widgets_parameters wp, cfg_widgets w
             WHERE wp.widget_model_id = w.widget_model_id
             AND w.custom_view_id = ?
             AND wp.is_filter = 1";
@@ -149,10 +149,10 @@ class CustomviewRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         self::bookmark($viewId, $userId);
-        $stmt = $db->prepare("UPDATE custom_view_user_relation SET is_default = 0 
+        $stmt = $db->prepare("UPDATE cfg_custom_views_users_relations SET is_default = 0 
             WHERE user_id = ?");
         $stmt->execute(array($userId));
-        $stmt = $db->prepare("UPDATE custom_view_user_relation SET is_default = 1 
+        $stmt = $db->prepare("UPDATE cfg_custom_views_users_relations SET is_default = 1 
             WHERE custom_view_id = ?
             AND user_id = ?");
         $stmt->execute(array($viewId, $userId));
@@ -170,7 +170,7 @@ class CustomviewRepository
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
 
         self::unbookmark($viewId, $userId);
-        $stmt = $db->prepare("INSERT INTO custom_view_user_relation (custom_view_id, user_id) VALUES (?, ?)");
+        $stmt = $db->prepare("INSERT INTO cfg_custom_views_users_relations (custom_view_id, user_id) VALUES (?, ?)");
         $stmt->execute(array($viewId, $userId));
     }
 
@@ -183,7 +183,7 @@ class CustomviewRepository
     public static function unbookmark($viewId, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM custom_view_user_relation WHERE custom_view_id = ? AND user_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_custom_views_users_relations WHERE custom_view_id = ? AND user_id = ?");
         $stmt->execute(array($viewId, $userId));
     }
 
@@ -200,7 +200,7 @@ class CustomviewRepository
         if (!isset($defaultView[$userId])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare("SELECT custom_view_id 
-                FROM custom_view_user_relation 
+                FROM cfg_custom_views_users_relations 
                 WHERE user_id = ? 
                 AND is_default = 1");
             $stmt->execute(array($userId));
@@ -261,7 +261,7 @@ class CustomviewRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT name, mode, locked, owner_id, position
-            FROM custom_views
+            FROM cfg_custom_views
             WHERE custom_view_id = ?");
         $stmt->execute(array($viewId));
         if ($stmt->rowCount()) {
@@ -283,7 +283,7 @@ class CustomviewRepository
         if (is_null($customViews)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare("SELECT cv.custom_view_id, name, owner_id, locked, user_id, position
-                FROM custom_views cv, custom_view_user_relation cvur
+                FROM cfg_custom_views cv, cfg_custom_views_users_relations cvur
             	WHERE cv.custom_view_id = cvur.custom_view_id
                 AND cvur.user_id = ?
                 ORDER BY user_id, name");
@@ -314,11 +314,11 @@ class CustomviewRepository
     public static function insert($params, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("INSERT INTO custom_views (name, mode, locked, owner_id) VALUES (?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO cfg_custom_views (name, mode, locked, owner_id) VALUES (?, ?, ?, ?)");
         $stmt->execute(array($params['name'], $params['locked'], $params['mode'], $userId));
         $lastId = self::getLastViewId();
 
-        $stmt = $db->prepare("INSERT INTO custom_view_user_relation (custom_view_id, user_id) VALUES (?, ?)");
+        $stmt = $db->prepare("INSERT INTO cfg_custom_views_users_relations (custom_view_id, user_id) VALUES (?, ?)");
         $stmt->execute(array($lastId, $userId));
         return $lastId;
     }
@@ -333,9 +333,9 @@ class CustomviewRepository
     public static function delete($viewId, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM custom_view_user_relation WHERE custom_view_id = ? AND user_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_custom_views_users_relations WHERE custom_view_id = ? AND user_id = ?");
         $stmt->execute(array($viewId, $userId));
-        $stmt = $db->prepare("DELETE FROM custom_views WHERE custom_view_id = ? AND owner_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_custom_views WHERE custom_view_id = ? AND owner_id = ?");
         $stmt->execute(array($viewId, $userId));
     }
 
@@ -349,7 +349,7 @@ class CustomviewRepository
     public static function update($params, $userId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("UPDATE custom_views 
+        $stmt = $db->prepare("UPDATE cfg_custom_views 
             SET name = :name, mode = :mode, locked = :locked 
             WHERE custom_view_id = :view_id AND owner_id = :user_id");
         $stmt->bindParam(':name', $params['name']);
@@ -370,7 +370,7 @@ class CustomviewRepository
     public static function updatePosition($viewId, $position)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("UPDATE custom_views SET position = ? WHERE custom_view_id = ?");
+        $stmt = $db->prepare("UPDATE cfg_custom_views SET position = ? WHERE custom_view_id = ?");
         $stmt->execute(array($position, $viewId));
     }
 
@@ -383,7 +383,7 @@ class CustomviewRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT custom_view_id, name, mode, locked, owner_id, position 
-            FROM custom_views 
+            FROM cfg_custom_views 
             WHERE mode = 1
             ORDER BY name");
         $stmt->execute();

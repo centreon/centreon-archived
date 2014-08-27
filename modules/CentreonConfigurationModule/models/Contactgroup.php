@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Contactgroup extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "contactgroup";
+    protected static $table = "cfg_contactgroups";
     protected static $primaryKey = "cg_id";
     protected static $uniqueLabelField = "cg_name";
 }

@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Command extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "command";
+    protected static $table = "cfg_commands";
     protected static $primaryKey = "command_id";
     protected static $uniqueLabelField = "command_name";
 }

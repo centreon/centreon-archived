@@ -37,17 +37,8 @@
         <unique name="contact_alias">
             <unique-column name="contact_alias"/>
         </unique>
-        <foreign-key foreignTable="cfg_timeperiod" name="contact_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="timeperiod_tp_id" foreign="tp_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_timeperiod" name="contact_ibfk_2" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="timeperiod_tp_id2" foreign="tp_id"/>
-        </foreign-key>
         <foreign-key foreignTable="cfg_contacts" name="contact_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="contact_template_id" foreign="contact_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_auth_ressource" name="fk_ar_id" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="ar_id" foreign="ar_id"/>
         </foreign-key>
         <index name="name_index">
             <index-column name="contact_name"/>

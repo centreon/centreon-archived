@@ -44,7 +44,7 @@ namespace Centreon\Models;
  */
 class Module extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "module";
+    protected static $table = "cfg_modules";
     protected static $primaryKey = "id";
     protected static $uniqueLabelField = "name";
 }

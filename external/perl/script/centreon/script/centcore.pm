@@ -215,7 +215,7 @@ sub getNagiosConfigurationField($$){
 sub getLocalServerID(){
     my $self = shift;
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY activate DESC LIMIT 1");
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
         return undef;
@@ -227,7 +227,7 @@ sub getLocalServerID(){
 sub getServerConfig($){
     my $self = shift;
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `nagios_server` WHERE `id` = '" . $_[0] . "' AND `ns_activate` = '1' LIMIT 1");
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `nagios_server` WHERE `id` = '" . $_[0] . "' AND `activate` = '1' LIMIT 1");
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
         return undef;
@@ -272,7 +272,7 @@ sub sendExternalCommand($$) {
     my $command_file = $self->getNagiosConfigurationField($id, "command_file");
 
     # check if ip address is defined
-    if (defined($server_info->{'ns_ip_address'})) {
+    if (defined($server_info->{'ip_address'})) {
         $cmd =~ s/\\/\\\\/g;
         if ($server_info->{'localhost'} == 1) {
             my $result = waitPipe($command_file);
@@ -292,8 +292,8 @@ sub sendExternalCommand($$) {
             }
         } else {
             $cmd =~ s/\'/\'\\\'\'/g;
-            $self->{logger}->writeLogInfo("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
-            $cmd2 = "$self->{ssh} -q ". $server_info->{'ns_ip_address'} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
+            $self->{logger}->writeLogInfo("External command : ".$server_info->{'ip_address'}." ($id) : \"".$cmd."\"");
+            $cmd2 = "$self->{ssh} -q ". $server_info->{'ip_address'} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2,
                                                                   logger => $self->{logger},
                                                                   timeout => $self->{cmd_timeout}
@@ -347,7 +347,7 @@ sub sendConfigFile($){
     }
 
     my $origin = $self->{centreonDir} . "/filesGeneration/nagiosCFG/".$id."/*";
-    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+    my $dest = $server_info->{'ip_address'}.":$cfg_dir";
 
     # Send data with SCP
     $self->{logger}->writeLogInfo("Start: Send config files on poller $id");
@@ -377,7 +377,7 @@ sub sendConfigFile($){
             if ($server_info->{'localhost'} == 0) {
                 $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
                 $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.xml";
-                $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+                $dest = $server_info->{'ip_address'}.":$cfg_dir";
                 $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                       logger => $self->{logger},
@@ -420,9 +420,9 @@ sub initEngine($$){
         return ;
     }
 
-    if (defined($conf->{'ns_ip_address'}) && $conf->{'ns_ip_address'}) {
+    if (defined($conf->{'ip_address'}) && $conf->{'ip_address'}) {
         # Launch command
-        $cmd = "$self->{ssh} -p $port ". $conf->{'ns_ip_address'} ." $self->{sudo} ".$conf->{'init_script'}." ".$options;
+        $cmd = "$self->{ssh} -p $port ". $conf->{'ip_address'} ." $self->{sudo} ".$conf->{'init_script'}." ".$options;
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
                                                               timeout => 120
@@ -432,7 +432,7 @@ sub initEngine($$){
     }
 
     # Logs Actions
-    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)");
+    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ip_address'}." ($id)");
     my $line;
     if (defined($stdout)) {
         foreach $line (split(/\n/, $stdout)){
@@ -455,7 +455,7 @@ sub syncTraps($) {
         my $port = checkSSHPort($ns_server->{'ssh_port'});
 
         if ($id != 0 && $ns_server->{'localhost'} == 0) {
-            $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/ 2>&1";
+            $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ip_address'}:/etc/snmp/centreon_traps/ 2>&1";
             $self->{logger}->writeLogDebug($cmd);
             
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
@@ -468,7 +468,7 @@ sub syncTraps($) {
         }
     } else {
         # synchronize Archives for all pollers
-        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id`, `snmp_trapd_path_conf` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id`, `snmp_trapd_path_conf` FROM `nagios_server` WHERE `activate` = '1' AND `localhost` = '0'");
         return if ($status == -1);
         while (my $server = $sth->fetchrow_hashref()) {
             # Get configuration
@@ -476,7 +476,7 @@ sub syncTraps($) {
             my $port = checkSSHPort($ns_server->{'ssh_port'});
 
             if ($id == 0) {
-                $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ns_ip_address'}:$ns_server->{'snmp_trapd_path_conf'} 2>&1";
+                $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ip_address'}:$ns_server->{'snmp_trapd_path_conf'} 2>&1";
                 $self->{logger}->writeLogDebug($cmd);
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                       logger => $self->{logger},
@@ -518,7 +518,7 @@ sub syncArchives($) {
         }
         my $data = $sth->fetchrow_hashref();
         # Archive Sync
-        $cmd = "$self->{rsyncWT} --port=$port -c ". $ns_server->{'ns_ip_address'}. ":".$data->{'log_archive_path'}."/*.log $self->{centreon_config}->{VarLib}/log/".$ns_server->{'id'}."/archives/ 2>> /dev/null";
+        $cmd = "$self->{rsyncWT} --port=$port -c ". $ns_server->{'ip_address'}. ":".$data->{'log_archive_path'}."/*.log $self->{centreon_config}->{VarLib}/log/".$ns_server->{'id'}."/archives/ 2>> /dev/null";
         $self->{logger}->writeLogDebug($cmd);
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
@@ -526,7 +526,7 @@ sub syncArchives($) {
             );
     } else {
         # synchronize Archives for all pollers
-        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `activate` = '1' AND `localhost` = '0'");
         if ($status == -1) {
             return ;
         }
@@ -549,7 +549,7 @@ sub getInfos($) {
     my $ns_server = $self->getServerConfig($id);
     my $port = checkSSHPort($ns_server->{'ssh_port'});
 
-    if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}) {
+    if (defined($ns_server->{'ip_address'}) && $ns_server->{'ip_address'}) {
         # Launch command
         if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
             $cmd = "$self->{sudo} ".$ns_server->{'nagios_bin'};
@@ -559,7 +559,7 @@ sub getInfos($) {
                                                               timeout => 60
                                                               );
         } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{'ns_ip_address'} ." ".$ns_server->{'nagios_bin'};
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{'ip_address'} ." ".$ns_server->{'nagios_bin'};
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
@@ -610,7 +610,7 @@ sub reloadCentreonTrapd($) {
     my $ns_server = $self->getServerConfig($id);
     my $port = checkSSHPort($ns_server->{'ssh_port'});
 
-    if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}
+    if (defined($ns_server->{'ip_address'}) && $ns_server->{'ip_address'}
         && defined($ns_server->{'init_script_centreontrapd'}) && $ns_server->{'init_script_centreontrapd'} ne "") {
         # Launch command
         if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
@@ -621,14 +621,14 @@ sub reloadCentreonTrapd($) {
                                                                   timeout => 120
                                                                   );
         } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{'ns_ip_address'} ." $self->{sudo} ".$ns_server->{'init_script_centreontrapd'}." reload";
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{'ip_address'} ." $self->{sudo} ".$ns_server->{'init_script_centreontrapd'}." reload";
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
                                                                   timeout => 60
                                                                   );
         }
-        $self->{logger}->writeLogInfo("Reload CentreonTrapd on poller $id ($ns_server->{'ns_ip_address'})");
+        $self->{logger}->writeLogInfo("Reload CentreonTrapd on poller $id ($ns_server->{'ip_address'})");
     } else {
         $self->{logger}->writeLogError("Cannot reload CentreonTrapd for poller $id");
     }

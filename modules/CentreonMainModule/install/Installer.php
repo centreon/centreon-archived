@@ -58,12 +58,12 @@ class Installer extends \Centreon\Internal\Module\Installer
     protected static function setUpFormValidators()
     {
         $validators = array(
-            "INSERT INTO form_validator(name, action) VALUES ('email', '/validator/email')",
-            "INSERT INTO form_validator(name, action) VALUES ('resolveDns', '/validator/resolvedns')",
-            "INSERT INTO form_validator(name, action) VALUES ('ipAddress', '/validator/ipaddress')",
-            "INSERT INTO form_validator(name, action) VALUES ('unique', '/validator/unique')",
-            "INSERT INTO form_validator(name, action) VALUES ('forbiddenChar', '/validator/forbiddenchar')",
-            "INSERT INTO form_validator(name, action) VALUES ('circularDependency', '/validator/circular')"
+            "INSERT INTO cfg_forms_validators(name, action) VALUES ('email', '/validator/email')",
+            "INSERT INTO cfg_forms_validators(name, action) VALUES ('resolveDns', '/validator/resolvedns')",
+            "INSERT INTO cfg_forms_validators(name, action) VALUES ('ipAddress', '/validator/ipaddress')",
+            "INSERT INTO cfg_forms_validators(name, action) VALUES ('unique', '/validator/unique')",
+            "INSERT INTO cfg_forms_validators(name, action) VALUES ('forbiddenChar', '/validator/forbiddenchar')",
+            "INSERT INTO cfg_forms_validators(name, action) VALUES ('circularDependency', '/validator/circular')"
         );
         
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');

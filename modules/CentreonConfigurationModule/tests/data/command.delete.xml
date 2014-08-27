@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="command">
+  <table name="cfg_commands">
     <column>command_id</column>
     <column>connector_id</column>
     <column>command_name</column>

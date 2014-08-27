@@ -44,7 +44,7 @@ namespace CentreonCustomview\Models;
  */
 class WidgetModel extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "widget_models";
+    protected static $table = "cfg_widgets_models";
     protected static $primaryKey = "widget_model_id";
     protected static $uniqueLabelField = "name";
 }

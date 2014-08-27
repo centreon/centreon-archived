@@ -102,8 +102,6 @@ RENAME TABLE extended_service_information TO cfg_extended_services_information;
 -- RENAME TABLE form_step_field_relation TO cfg_forms_steps_fields_relations;
 -- RENAME TABLE form_validator TO cfg_forms_validators;
 -- RENAME TABLE form_wizard TO cfg_forms_wizards;
-RENAME TABLE giv_components_template TO cfg_giv_components_templates;
-RENAME TABLE giv_graphs_template TO cfg_giv_graphs_templates;
 -- RENAME TABLE hooks TO cfg_hooks;
 RENAME TABLE host TO cfg_hosts;
 -- RENAME TABLE host_checkcmd_args_relations TO cfg_hosts_checkcmd_args_relations;

@@ -95,7 +95,7 @@ class Auth
         $this->ldap_store_password = array();
 
         $query = "SELECT ar.ar_id, ari.ari_value, ari.ari_name
-                  FROM auth_ressource_info ari, auth_ressource ar
+                  FROM cfg_auth_resources_info ari, cfg_auth_resources ar
                   WHERE ari_name IN ('ldap_auto_import', 'ldap_store_password')
                   AND ari.ar_id = ar.ar_id
                   AND ar.ar_enable = '1'";
@@ -128,7 +128,7 @@ class Auth
         $dbconn = Di::getDefault()->get('db_centreon');
 
         if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
-            $query = "SELECT ar_id FROM auth_ressource WHERE ar_enable = '1'";
+            $query = "SELECT ar_id FROM cfg_auth_resources WHERE ar_enable = '1'";
             $res = $dbconn->query($query);
             $authResources = array();
             while ($row = $res->fetch()) {
@@ -155,7 +155,7 @@ class Auth
                         $this->passwdOk = 1;
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                             $dbconn->query(
-                                "UPDATE `contact`
+                                "UPDATE `cfg_contacts`
                                     SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
                                     WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
                             );
@@ -165,13 +165,13 @@ class Auth
                     if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                         if (!isset($this->userInfos["contact_passwd"])) {
                             $dbconn->query(
-                                "UPDATE `contact`
+                                "UPDATE `cfg_contacts`
                                     SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
                                     WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
                             );
                         } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
                             $dbconn->query(
-                                "UPDATE `contact`
+                                "UPDATE `cfg_contacts`
                                     SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
                                     WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
                             );
@@ -231,7 +231,7 @@ class Auth
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
             $res = $dbconn->query(
                 "SELECT *
-                    FROM `contact`
+                    FROM `cfg_contacts`
                     WHERE `contact_alias` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
                         AND `contact_activate` = '1'
                         AND `contact_register` = '1'"
@@ -239,7 +239,7 @@ class Auth
         } else {
             $res = $dbconn->query(
                 "SELECT *
-                    FROM `contact`
+                    FROM `cfg_contacts`
                     WHERE MD5(contact_alias) = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
                         AND `contact_activate` = '1'
                         AND `contact_register` = '1'"
@@ -286,7 +286,7 @@ class Auth
              * Reset userInfos with imported informations
              */
             $res = $dbconn->query(
-                "SELECT * FROM `contact`
+                "SELECT * FROM `cfg_contacts`
                 WHERE `contact_alias` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
                 AND `contact_activate` = '1'
                 AND `contact_register` = '1'"

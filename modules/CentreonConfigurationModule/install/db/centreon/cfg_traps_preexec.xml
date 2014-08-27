@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_traps_preexec" phpName="TrapsPreexec" idMethod="native">
+        <column name="trap_id" phpName="TrapId" type="INTEGER" required="false"/>
+        <column name="tpe_order" phpName="TpeOrder" type="INTEGER" required="false"/>
+        <column name="tpe_string" phpName="TpeString" type="VARCHAR" size="512" required="false"/>
+        <foreign-key foreignTable="cfg_traps" name="traps_preexec_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="trap_id" foreign="traps_id"/>
+        </foreign-key>
+        <index name="trap_id">
+            <index-column name="trap_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

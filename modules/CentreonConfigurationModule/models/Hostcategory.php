@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Hostcategory extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "hostcategories";
+    protected static $table = "cfg_hostcategories";
     protected static $primaryKey = "hc_id";
     protected static $uniqueLabelField = "hc_name";
 }

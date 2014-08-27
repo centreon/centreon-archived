@@ -1,6 +1,5 @@
 [
-    "contact",
-    "contact_param",
-    "contactgroup",
-    "contactgroup_contact_relation"
+    "cfg_contacts",
+    "cfg_contactgroups",
+    "cfg_contactgroups_contacts_relations"
 ]

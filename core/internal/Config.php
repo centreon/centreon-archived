@@ -104,7 +104,7 @@ class Config
         $dbconn = $di->get('db_centreon');
         $stmt = $dbconn->query(
             "SELECT `group`, `key`, `value`
-                FROM `options`
+                FROM `cfg_options`
                 ORDER BY `group`, `key`"
         );
         while ($row = $stmt->fetch()) {
@@ -171,7 +171,7 @@ class Config
         /* Save information in database */
         $dbconn = $di->get('db_centreon');
         $stmt = $dbconn->prepare(
-            "UPDATE `options`
+            "UPDATE `cfg_options`
                 SET `value` = :value
                 WHERE `group` = :group
                     AND `key` = :key"

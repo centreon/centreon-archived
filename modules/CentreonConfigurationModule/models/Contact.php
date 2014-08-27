@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Contact extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "contact";
+    protected static $table = "cfg_contacts";
     protected static $primaryKey = "contact_id";
     protected static $uniqueLabelField = "contact_alias";
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_main" defaultIdMethod="native">
-    <table name="cfg_forms_field_validators_relations" phpName="FormFieldValidatorRelation" idMethod="native">
+    <table name="cfg_forms_fields_validators_relations" phpName="FormFieldValidatorRelation" idMethod="native">
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="validator_id" phpName="ValidatorId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="client_side_event" phpName="ClientSideEvent" type="VARCHAR" size="45" required="false"/>

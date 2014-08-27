@@ -13,7 +13,7 @@
 			</validators>
           <help>Name which will be used for identifying the poller.</help>
 		</field>
-		<field name="ns_ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
+		<field name="ip_address" label="IP address" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
 		  <help>IP address of the poller which must be relative to the local poller.</help>
 		</field>
 	  </block>
@@ -27,7 +27,7 @@
                 </choices>
               </attributes>
             </field>
-            <field name="ns_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
+            <field name="activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="0">
               <attributes>
                 <choices>
                   <Enabled>1</Enabled>
@@ -65,7 +65,7 @@
 	<route>/configuration/poller/add</route>
 	<step name="General">
 	  <field name="name" mandatory="1"></field>
-	  <field name="ns_ip_address" mandatory="1"></field>
+	  <field name="ip_address" mandatory="1"></field>
 	  <field name="poller_type" mandatory="1"></field>
 	</step>
     <step name="Engine">

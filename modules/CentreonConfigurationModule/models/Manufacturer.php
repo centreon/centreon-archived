@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Manufacturer extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "traps_vendor";
+    protected static $table = "cfg_traps_vendors";
     protected static $primaryKey = "id";
     protected static $uniqueLabelField = "name";
 }

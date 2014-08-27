@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_contactgroups_contacts_relations" phpName="ContactgroupContactRelation" idMethod="native">
+        <column name="cgr_id" phpName="CgrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="contact_contact_id" phpName="ContactContactId" type="INTEGER" required="false"/>
+        <column name="contactgroup_cg_id" phpName="ContactgroupCgId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_contacts" name="contactgroup_contact_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="contact_contact_id" foreign="contact_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_contactgroups" name="contactgroup_contact_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="contactgroup_cg_id" foreign="cg_id"/>
+        </foreign-key>
+        <index name="contact_index">
+            <index-column name="contact_contact_id"/>
+        </index>
+        <index name="contactgroup_index">
+            <index-column name="contactgroup_cg_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -61,7 +61,7 @@ class Installer
             s.section_id, s.name as section_name, 
             b.block_id, b.name as block_name,
             d.field_id, d.name as field_name
-            FROM form f, form_section s, form_block b, form_field d, form_block_field_relation r
+            FROM cfg_forms f, cfg_forms_sections s, cfg_forms_blocks b, cfg_forms_fields d, cfg_forms_blocks_fields_relations r
             WHERE f.form_id = s.form_id
             AND s.section_id = b.section_id
             AND b.block_id = r.block_id
@@ -104,7 +104,7 @@ class Installer
     {
         self::$validators = array();
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->query("SELECT validator_id, name FROM form_validator");
+        $stmt = $db->query("SELECT validator_id, name FROM cfg_forms_validators");
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($rows as $row) {
             self::$validators[$row['name']] = $row['validator_id'];
@@ -121,7 +121,7 @@ class Installer
         $sql = "SELECT w.wizard_id, w.name as wizard_name, 
             s.step_id, s.name as step_name,
             d.field_id, d.name as field_name
-            FROM form_wizard w, form_step s, form_step_field_relation r, form_field d
+            FROM cfg_forms_wizards w, cfg_forms_steps s, cfg_forms_steps_fields_relations r, cfg_forms_fields d
             WHERE w.wizard_id = s.wizard_id
             AND s.step_id = r.step_id
             AND r.field_id = d.field_id
@@ -161,10 +161,10 @@ class Installer
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$forms[$key])) {
-            $sql = 'INSERT INTO form (name, route, redirect, redirect_route, module_id) 
+            $sql = 'INSERT INTO cfg_forms (name, route, redirect, redirect_route, module_id) 
               VALUES (:name, :route, :redirect, :redirect_route, :module)';
         } else {
-            $sql = 'UPDATE form SET route = :route,
+            $sql = 'UPDATE cfg_forms SET route = :route,
                 redirect = :redirect,
                 redirect_route = :redirect_route
                 WHERE name = :name
@@ -178,7 +178,7 @@ class Installer
         $stmt->bindParam(':module', $moduleId);
         $stmt->execute();
         if (!isset(self::$forms[$key])) {
-            self::$forms[$key] = $db->lastInsertId('form', 'form_id');
+            self::$forms[$key] = $db->lastInsertId('cfg_forms', 'form_id');
         }
     }
 
@@ -192,10 +192,10 @@ class Installer
         $key = $data['form_name'] . ';' . $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$sections[$key])) {
-            $sql = 'INSERT INTO form_section (name, rank, form_id) 
+            $sql = 'INSERT INTO cfg_forms_sections (name, rank, form_id) 
                 VALUES (:name, :rank, :form_id)';
         } else {
-            $sql = 'UPDATE form_section SET rank = :rank,
+            $sql = 'UPDATE cfg_forms_sections SET rank = :rank,
                 form_id = :form_id
                 WHERE name = :name
                 AND section_id = :section_id';
@@ -209,7 +209,7 @@ class Installer
         $stmt->bindParam(':form_id', self::$forms[$data['form_name']], \PDO::PARAM_INT);
         $stmt->execute();
         if (!isset(self::$sections[$key])) {
-            self::$sections[$key] = $db->lastInsertId('form_section', 'section_id');
+            self::$sections[$key] = $db->lastInsertId('cfg_forms_sections', 'section_id');
         }
     }
 
@@ -224,10 +224,10 @@ class Installer
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['name']));
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$blocks[$key])) {
-            $sql = 'INSERT INTO form_block (name, rank, section_id) 
+            $sql = 'INSERT INTO cfg_forms_blocks (name, rank, section_id) 
                 VALUES (:name, :rank, :section_id)';
         } else {
-            $sql = 'UPDATE form_block SET rank = :rank,
+            $sql = 'UPDATE cfg_forms_blocks SET rank = :rank,
                 section_id = :section_id
                 WHERE name = :name
                 AND block_id = :block_id';
@@ -241,7 +241,7 @@ class Installer
         $stmt->bindParam(':section_id', self::$sections[$sectionKey], \PDO::PARAM_INT);
         $stmt->execute();
         if (!isset(self::$blocks[$key])) {
-            self::$blocks[$key] = $db->lastInsertId('form_block', 'block_id');
+            self::$blocks[$key] = $db->lastInsertId('cfg_forms_blocks', 'block_id');
         }
     }
 
@@ -255,13 +255,13 @@ class Installer
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$fields[$key])) {
-            $sql = 'INSERT INTO form_field 
+            $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
                 help, module_id, parent_field, child_actions) VALUES 
                 (:name, :label, :default_value, :attributes, :advanced, 
                 :type, :help, :module_id, :parent_field, :child_actions)';
         } else {
-            $sql = 'UPDATE form_field SET label = :label,
+            $sql = 'UPDATE cfg_forms_fields SET label = :label,
                 default_value = :default_value,
                 attributes = :attributes,
                 advanced = :advanced,
@@ -289,7 +289,7 @@ class Installer
         $stmt->bindParam(':child_actions', $data['child_actions']);
         $stmt->execute();
         if (!isset(self::$fields[$key])) {
-            self::$fields[$key] = $db->lastInsertId('form_field', 'field_id');
+            self::$fields[$key] = $db->lastInsertId('cfg_forms_fields', 'field_id');
         }
         
         
@@ -307,14 +307,14 @@ class Installer
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
-                'DELETE FROM form_block_field_relation WHERE block_id = :block_id AND field_id = :field_id'
+                'DELETE FROM cfg_forms_blocks_fields_relations WHERE block_id = :block_id AND field_id = :field_id'
             );
             $stmt->bindParam(':block_id', self::$blocks[$key]);
             $stmt->bindParam(':field_id', self::$fields[$fname]);
             $stmt->execute();
 
             $stmt = $db->prepare(
-                'REPLACE INTO form_block_field_relation (block_id, field_id, rank, mandatory) '
+                'REPLACE INTO cfg_forms_blocks_fields_relations (block_id, field_id, rank, mandatory) '
                 . 'VALUES (:block_id, :field_id, :rank, :mandatory)'
             );
             $stmt->bindParam(':block_id', self::$blocks[$key]);
@@ -340,7 +340,7 @@ class Installer
                 if (isset(self::$validators[(string)$validator])) {
                     $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
                     $stmt = $db->prepare(
-                        'DELETE FROM form_field_validator_relation '
+                        'DELETE FROM cfg_forms_fields_validators_relations '
                         . 'WHERE validator_id = :validator_id AND field_id = :field_id'
                     );
                     $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
@@ -348,7 +348,7 @@ class Installer
                     $stmt->execute();
 
                     $stmt = $db->prepare(
-                        'REPLACE INTO form_field_validator_relation (validator_id, field_id, client_side_event) '
+                        'REPLACE INTO cfg_forms_fields_validators_relations (validator_id, field_id, client_side_event) '
                         . 'VALUES (:validator_id, :field_id, :client_side_event)'
                     );
                     $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
@@ -387,10 +387,10 @@ class Installer
         $key = $data['name'];
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$wizards[$key])) {
-            $sql = 'INSERT INTO form_wizard (name, route, module_id) 
+            $sql = 'INSERT INTO cfg_forms_wizards (name, route, module_id) 
               VALUES (:name, :route, :module)';
         } else {
-            $sql = 'UPDATE form_wizard SET route = :route
+            $sql = 'UPDATE cfg_forms_wizards SET route = :route
                 WHERE name = :name 
                 AND wizard_id = :wizard_id
                 AND module_id = :module';
@@ -404,7 +404,7 @@ class Installer
         $stmt->bindParam(':module', $moduleId);
         $stmt->execute();
         if (!isset(self::$wizards[$key])) {
-            self::$wizards[$key] = $db->lastInsertId('form_wizard', 'wizard_id');
+            self::$wizards[$key] = $db->lastInsertId('cfg_forms_wizards', 'wizard_id');
         }
     }
 
@@ -418,10 +418,10 @@ class Installer
         $key = implode(';', array($data['wizard_name'], $data['name']));
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (!isset(self::$steps[$key])) {
-            $sql = 'INSERT INTO form_step (name, rank, wizard_id) 
+            $sql = 'INSERT INTO cfg_forms_steps (name, rank, wizard_id) 
                 VALUES (:name, :rank, :wizard_id)';
         } else {
-            $sql = 'UPDATE form_step SET rank = :rank,
+            $sql = 'UPDATE cfg_forms_steps SET rank = :rank,
                 wizard_id = :wizard_id
                 WHERE name = :name
                 AND step_id = :step_id';
@@ -435,7 +435,7 @@ class Installer
         $stmt->bindParam(':wizard_id', self::$wizards[$data['wizard_name']], \PDO::PARAM_INT);
         $stmt->execute();
         if (!isset(self::$steps[$key])) {
-            self::$steps[$key] = $db->lastInsertId('form_step', 'step_id');
+            self::$steps[$key] = $db->lastInsertId('cfg_forms_steps', 'step_id');
         }
     }
 
@@ -451,7 +451,7 @@ class Installer
         if (isset(self::$steps[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
-                'REPLACE INTO form_step_field_relation (step_id, field_id, rank, mandatory) '
+                'REPLACE INTO cfg_forms_steps_fields_relations (step_id, field_id, rank, mandatory) '
                 . 'VALUES (:step_id, :field_id, :rank, :mandatory)'
             );
             $stmt->bindParam(':step_id', self::$steps[$key]);
@@ -638,7 +638,7 @@ class Installer
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
-        $stmt = $db->prepare("DELETE FROM form_block_field_relation WHERE CONCAT_WS(';', block_id, field_id) = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_forms_blocks_fields_relations WHERE CONCAT_WS(';', block_id, field_id) = ?");
         foreach (self::$blockFields as $key => $value) {
             if (!in_array($key, $insertedFields)) {
                 $stmt->execute(array($value));
@@ -646,9 +646,9 @@ class Installer
         }
         $db->commit();
         $stmt = $db->prepare(
-            "DELETE FROM form_field "
+            "DELETE FROM cfg_forms_fields "
             . "WHERE NOT EXISTS "
-            . "(SELECT field_id FROM form_block_field_relation r WHERE r.field_id = form_field.field_id)"
+            . "(SELECT field_id FROM cfg_forms_blocks_fields_relations r WHERE r.field_id = cfg_forms_fields.field_id)"
         );
         $stmt->execute();
     }
@@ -662,7 +662,7 @@ class Installer
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
-        $stmt = $db->prepare("DELETE FROM form_block WHERE block_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_forms_blocks WHERE block_id = ?");
         foreach (self::$blocks as $key => $value) {
             if (!in_array($key, $insertedBlocks)) {
                 $stmt->execute(array($value));
@@ -680,7 +680,7 @@ class Installer
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
-        $stmt = $db->prepare("DELETE FROM form_section WHERE section_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_forms_sections WHERE section_id = ?");
         foreach (self::$sections as $key => $value) {
             if (!in_array($key, $insertedSections)) {
                 $stmt->execute(array($value));
@@ -698,7 +698,7 @@ class Installer
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
-        $stmt = $db->prepare("DELETE FROM form_step WHERE step_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_forms_steps WHERE step_id = ?");
         foreach (self::$steps as $key => $value) {
             if (!in_array($key, $insertedSteps)) {
                 $stmt->execute(array($value));
@@ -716,7 +716,7 @@ class Installer
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $db->beginTransaction();
-        $stmt = $db->prepare("DELETE FROM form_step_field_relation WHERE CONCAT_WS(';', step_id, field_id) = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_forms_steps_fields_relations WHERE CONCAT_WS(';', step_id, field_id) = ?");
         foreach (self::$stepFields as $key => $value) {
             if (!in_array($key, $insertedFields)) {
                 $stmt->execute(array($value));

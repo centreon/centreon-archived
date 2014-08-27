@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Hostgroup extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "hostgroup";
+    protected static $table = "cfg_hostgroups";
     protected static $primaryKey = "hg_id";
     protected static $uniqueLabelField = "hg_name";
 }

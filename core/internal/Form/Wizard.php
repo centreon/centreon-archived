@@ -68,7 +68,7 @@ class Wizard extends Generator
         $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, 
             s.rank as step_rank, sf.mandatory as mandatory,
             sf.rank as field_pos, f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
-            FROM form_wizard w, form_step s, form_step_field_relation sf, form_field f
+            FROM cfg_forms_wizards w, cfg_forms_steps s, cfg_forms_steps_fields_relations sf, cfg_forms_fields f
             WHERE w.route = :route
                 AND w.wizard_id = s.wizard_id
                 AND s.step_id = sf.step_id
@@ -80,7 +80,7 @@ class Wizard extends Generator
         while ($row = $stmt->fetch()) {
             // Get validators
             $validatorQuery = "SELECT v.action as validator_action, vr.client_side_event as events "
-                        . "FROM form_validator v, form_field_validator_relation vr "
+                        . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $row[field_id] "
                         . "AND vr.validator_id = v.validator_id";
             $validatorStmt = $dbconn->query($validatorQuery);

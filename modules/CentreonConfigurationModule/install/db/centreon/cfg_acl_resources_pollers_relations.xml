@@ -4,7 +4,7 @@
         <column name="arpr_id" phpName="ArprId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="poller_id" phpName="PollerId" type="INTEGER" required="false"/>
         <column name="acl_res_id" phpName="AclResId" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="cfg_engine_server" name="acl_resources_poller_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_engine_servers" name="acl_resources_poller_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="poller_id" foreign="id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_poller_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
