@@ -144,7 +144,7 @@ class CommandRepositoryTest extends RepositoryTestCase
         );
         $this->assertEquals(
             $expectedResult,
-            $rep::getSimplRelation(
+            $rep::getSimpleRelation(
                 'host_id',
                 '\CentreonConfiguration\Models\Hosttemplate',
                 2,

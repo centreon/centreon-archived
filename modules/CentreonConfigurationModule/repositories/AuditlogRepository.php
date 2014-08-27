@@ -34,6 +34,8 @@
 
 namespace CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Di;
+
 /**
  * Handles audit logs
  *
@@ -52,8 +54,8 @@ class AuditlogRepository
      */
     public static function addLog($actionType, $objType, $objId, $objName, $objValues)
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_storage');
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
         $query = 'INSERT INTO log_action
             (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
             VALUES (:date, :obj_type, :obj_id, :obj_name, :action_type, :contact_id)';
@@ -76,7 +78,7 @@ class AuditlogRepository
         $stmt->execute();
         $row = $stmt->fetch();
         if (false === $row) {
-            throw new \Exception("Error when insert log action");
+            throw new \Exception("Error while inserting action log");
         }
         $actionId = $row['action_log_id'];
 

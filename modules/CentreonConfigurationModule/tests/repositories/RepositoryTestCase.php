@@ -44,6 +44,7 @@ class RepositoryTestCase extends DbTestCase
     protected $objectClass;
     protected $relationMap = array();
     protected $repository; 
+    protected static $bootstrapExtraSteps = array('actionHooks');
 
     public function setUp()
     {

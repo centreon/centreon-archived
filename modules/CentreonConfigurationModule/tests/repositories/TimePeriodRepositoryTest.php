@@ -98,7 +98,7 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
             )
         );
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.insert.xml'
         );
     }
@@ -107,12 +107,12 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $newData = array(
-            'tp_id' => 1,
+            'object_id' => 1,
             'tp_alias' => 'new_alias'
         );
         $rep::update($newData);
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.update.xml'
         );
     }
@@ -122,7 +122,7 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
         $rep = $this->repository;
         $rep::delete(array(1));
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.delete.xml'
         );
     }
@@ -134,7 +134,7 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
             array(1 => 2)
         );
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.duplicate-2.xml'
         );
     }
@@ -153,11 +153,11 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 1, 'text' => 'Template Host')
+            array('id' => 1, 'text' => 'Template host')
         );
         $this->assertEquals(
             $expectedResult,
-            $rep::getSimplRelation(
+            $rep::getSimpleRelation(
                 'host_id',
                 '\CentreonConfiguration\Models\Hosttemplate',
                 1,

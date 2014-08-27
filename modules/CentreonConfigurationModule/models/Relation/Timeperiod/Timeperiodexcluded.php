@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Timeperiodexcluded extends CentreonRelationModel
 {
-    protected static $relationTable = "timeperiod_exclude_relations";
+    protected static $relationTable = "cfg_timeperiods_exclude_relations";
     protected static $firstKey = "timeperiod_id";
     protected static $secondKey = "timeperiod_exclude_id";
     public static $firstObject = "\CentreonConfiguration\Models\Timeperiod";
@@ -87,7 +87,7 @@ class Timeperiodexcluded extends CentreonRelationModel
         }
         
         $sql = "SELECT ".$fString.$sString."
-        		FROM timeperiod, ".static::$relationTable."
+        		FROM cfg_timeperiods, ".static::$relationTable."
         		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
                 ." = ".static::$relationTable.".".static::$firstKey;
         $filterTab = array();
