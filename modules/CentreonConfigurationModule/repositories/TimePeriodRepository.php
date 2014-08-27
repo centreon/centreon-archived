@@ -40,7 +40,7 @@ namespace CentreonConfiguration\Repository;
  * @package Centreon
  * @subpackage Repository
  */
-class TimeperiodRepository extends \CentreonConfiguration\Repository\Repository
+class TimePeriodRepository extends \CentreonConfiguration\Repository\Repository
 {
     /**
      *

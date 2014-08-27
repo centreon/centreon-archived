@@ -69,6 +69,17 @@ abstract class Repository
 
 
     /**
+     * Reset all static properties
+     */ 
+    public static function reset()
+    {
+        static::$relationMap = null;
+        static::$objectClass = null;
+        static::$secondaryObjectClass = null;
+        static::$objectName = null;
+    }
+
+    /**
      * Set relation map property
      *
      * @param array $relationMap
@@ -114,7 +125,7 @@ abstract class Repository
      * @param string $searchStr
      * @return array
      */
-    public static function getFormList($searchStr)
+    public static function getFormList($searchStr = "")
     {
         if (!empty(static::$secondaryObjectClass)) {
             $class = static::$secondaryObjectClass;

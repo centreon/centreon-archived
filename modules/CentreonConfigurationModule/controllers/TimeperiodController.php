@@ -46,7 +46,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbst
     protected $objectBaseUrl = '/configuration/timeperiod';
     protected $datatableObject = '\CentreonConfiguration\Internal\TimeperiodDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Timeperiod';
-    protected $repository = '\CentreonConfiguration\Repository\TimeperiodRepository';    
+    protected $repository = '\CentreonConfiguration\Repository\TimePeriodRepository';    
     public static $relationMap = array(
         'tp_include' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded',
         'tp_exclude' => '\CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded'
