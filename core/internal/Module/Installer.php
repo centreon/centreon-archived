@@ -109,9 +109,6 @@ abstract class Installer
         echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
         \Centreon\Internal\Install\Db::update('centreon');
         echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
-        /*echo "Updating " . Colorize::colorizeText('centreon_storage', 'blue', 'black', true) . " database... ";
-        \Centreon\Internal\Install\Db::update('centreon_storage');
-        echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";*/
         \Centreon\Internal\Install\Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
     }
     

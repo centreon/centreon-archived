@@ -194,7 +194,7 @@ sub getNagiosConfigurationField($$){
 sub getServerConfig($){
     my $self = shift;
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `nagios_server` WHERE `id` = '" . $_[0] . "' AND `ns_activate` = '1' LIMIT 1");
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `nagios_server` WHERE `id` = '" . $_[0] . "' AND `activate` = '1' LIMIT 1");
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
         return undef;
@@ -224,7 +224,7 @@ sub sendExternalCommand($$) {
     my $command_file = $self->getNagiosConfigurationField($id, "command_file");
 
     # check if ip address is defined
-    if (defined($server_info->{'ns_ip_address'})) {
+    if (defined($server_info->{'ip_address'})) {
         $cmd =~ s/\\/\\\\/g;
         if ($server_info->{'localhost'} == 1) {
             my $result = waitPipe($command_file);
@@ -244,8 +244,8 @@ sub sendExternalCommand($$) {
             }
         } else {
             $cmd =~ s/\'/\'\\\'\'/g;
-            $self->{logger}->writeLogInfo("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
-            $cmd2 = "$self->{ssh} -q ". $server_info->{'ns_ip_address'} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
+            $self->{logger}->writeLogInfo("External command : ".$server_info->{'ip_address'}." ($id) : \"".$cmd."\"");
+            $cmd2 = "$self->{ssh} -q ". $server_info->{'ip_address'} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2,
                                                                   logger => $self->{logger},
                                                                   timeout => $self->{cmd_timeout}

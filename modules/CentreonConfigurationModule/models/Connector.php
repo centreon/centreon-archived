@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Connector extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "connector";
+    protected static $table = "cfg_connectors";
     protected static $primaryKey = "id";
     protected static $uniqueLabelField = "name";
 }

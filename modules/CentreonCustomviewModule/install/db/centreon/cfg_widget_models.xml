@@ -16,7 +16,7 @@
         <column defaultValue="0" name="isactivated" phpName="Isactivated" type="BOOLEAN" required="false"/>
         <column defaultValue="0" name="isinstalled" phpName="Isinstalled" type="BOOLEAN" required="false"/>
         <column name="module_id" phpName="ModuleId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
-        <foreign-key foreignTable="cfg_module" name="fk_widget_module_1" onDelete="CASCADE" onUpdate="CASCADE">
+        <foreign-key foreignTable="cfg_modules" name="fk_widget_module_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="module_id" foreign="id"/>
         </foreign-key>
         <vendor type="mysql">

@@ -4,7 +4,7 @@
         <column name="arscr_id" phpName="ArscrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="sc_id" phpName="ScId" type="INTEGER" required="false"/>
         <column name="acl_res_id" phpName="AclResId" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="cfg_servicecategories" name="acl_resources_sc_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_servicescategories" name="acl_resources_sc_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="sc_id" foreign="sc_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_sc_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">

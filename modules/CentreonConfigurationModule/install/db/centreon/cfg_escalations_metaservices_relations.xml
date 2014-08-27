@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_escalations_metaservices_relations" phpName="EscalationMetaServiceRelation" idMethod="native">
+        <column name="emsr_id" phpName="EmsrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="escalation_esc_id" phpName="EscalationEscId" type="INTEGER" required="false"/>
+        <column name="meta_service_meta_id" phpName="MetaServiceMetaId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_escalations" name="escalation_meta_service_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="escalation_esc_id" foreign="esc_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_metaservices" name="escalation_meta_service_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="meta_service_meta_id" foreign="meta_id"/>
+        </foreign-key>
+        <index name="escalation_index">
+            <index-column name="escalation_esc_id"/>
+        </index>
+        <index name="meta_service_index">
+            <index-column name="meta_service_meta_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

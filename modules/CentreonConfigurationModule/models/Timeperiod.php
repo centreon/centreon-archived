@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Timeperiod extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "timeperiod";
+    protected static $table = "cfg_timeperiods";
     protected static $primaryKey = "tp_id";
     protected static $uniqueLabelField = "tp_name";
 }

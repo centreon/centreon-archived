@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Poller extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "engine_server";
+    protected static $table = "cfg_engine_servers";
     protected static $primaryKey = "id";
     protected static $uniqueLabelField = "name";
 }

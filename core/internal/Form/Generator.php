@@ -121,7 +121,7 @@ class Generator
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $queryForm = "SELECT form_id, name, redirect, redirect_route FROM form WHERE route = '$this->formRoute'";
+        $queryForm = "SELECT form_id, name, redirect, redirect_route FROM cfg_forms WHERE route = '$this->formRoute'";
         $stmtForm = $dbconn->query($queryForm);
         $formInfo = $stmtForm->fetchAll();
 
@@ -137,7 +137,7 @@ class Generator
         $this->formHandler = new \Centreon\Internal\Form($this->formName);
         
         $sectionQuery = 'SELECT section_id, name '
-            . 'FROM form_section '
+            . 'FROM cfg_forms_sections '
             . 'WHERE form_id='.$formId.' '
             . 'ORDER BY rank ASC';
         
@@ -153,7 +153,7 @@ class Generator
             }
             
             $blockQuery = 'SELECT block_id, name '
-            . 'FROM form_block '
+            . 'FROM cg_forms_blocks '
             . 'WHERE section_id='.$section['section_id'].' '
             . 'ORDER BY rank ASC';
             
@@ -166,7 +166,7 @@ class Generator
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
                     . 'f.type, f.help, f.help_url, f.advanced, mandatory, parent_field, child_actions '
-                    . 'FROM form_field f, form_block_field_relation bfr '
+                    . 'FROM cfg_forms_fields f, cg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
                     . 'ORDER BY rank ASC';
@@ -178,7 +178,7 @@ class Generator
                 foreach ($fieldList as $field) {
                     
                     $validatorQuery = "SELECT v.action as validator_action, vr.client_side_event as events "
-                        . "FROM form_validator v, form_field_validator_relation vr "
+                        . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $field[field_id] "
                         . "AND vr.validator_id = v.validator_id";
                     $validatorStmt = $dbconn->query($validatorQuery);

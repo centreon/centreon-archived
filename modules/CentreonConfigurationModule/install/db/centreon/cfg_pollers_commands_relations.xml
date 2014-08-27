@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_pollers_commands_relations" phpName="PollerCommandRelations" idMethod="native">
+        <column name="poller_id" phpName="PollerId" type="INTEGER" required="true"/>
+        <column name="command_id" phpName="CommandId" type="INTEGER" required="true"/>
+        <column name="command_order" phpName="CommandOrder" type="TINYINT" size="3" required="false"/>
+        <foreign-key foreignTable="cfg_engine_servers" name="poller_command_relations_fk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="poller_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_commands" name="poller_command_relations_fk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="command_id" foreign="command_id"/>
+        </foreign-key>
+        <index name="poller_id">
+            <index-column name="poller_id"/>
+        </index>
+        <index name="command_id">
+            <index-column name="command_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -62,7 +62,7 @@ class WidgetRepository
         if (!isset($tab)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $query = "SELECT parameter_code_name
-            		  FROM widget_parameters
+            		  FROM cfg_widgets_parameters
             		  WHERE widget_model_id = :model_id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':model_id', $widgetModelId);
@@ -85,7 +85,7 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare('SELECT option_name, option_value 
-            FROM widget_parameters_multiple_options
+            FROM cfg_widgets_parameters_multiple_options
             WHERE parameter_id = ?');
         $stmt->execute(array($parameterId));
         $result = array();
@@ -111,7 +111,7 @@ class WidgetRepository
             $stmt = $db->prepare("SELECT w.title, w.widget_model_id, widget_id, name, shortname, description,
                 version, author, email, website, keywords, screenshot, thumbnail
                 isactivated, isinstalled
-                FROM widgets w, widget_models m
+                FROM cfg_widgets w, cfg_widgets_models m
                 WHERE w.widget_model_id = m.widget_model_id");
             $stmt->execute();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -137,7 +137,7 @@ class WidgetRepository
         if (!isset($tab[$widgetModelId])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $query = "SELECT parameter_id, parameter_code_name
-            		  FROM widget_parameters
+            		  FROM cfg_widgets_parameters
             		  WHERE widget_model_id = :model_id";
             $tab[$widgetModelId] = array();
             $stmt = $db->prepare($query);
@@ -169,7 +169,7 @@ class WidgetRepository
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $query = "SELECT description, directory, name, widget_model_id, version, 
                 author, email, website, keywords, screenshot, thumbnail
-                FROM widget_models
+                FROM cfg_widgets_models
                 ORDER BY name";
             $stmt = $db->prepare($query);
             $stmt->execute();
@@ -213,7 +213,7 @@ class WidgetRepository
             throw new Exception('No custom view or no widget selected');
         }
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $query = "INSERT INTO widgets (title, widget_model_id, custom_view_id)
+        $query = "INSERT INTO cfg_widgets (title, widget_model_id, custom_view_id)
             VALUES (:title, :model_id, :custom_view_id)";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':title', $params['title']);
@@ -252,7 +252,7 @@ class WidgetRepository
      */
     public static function getUrl($widgetId)
     {
-        $query = "SELECT url FROM widget_models wm, widgets w
+        $query = "SELECT url FROM cfg_widgets_models wm, cfg_widgets w
         		  WHERE wm.widget_model_id = w.widget_model_id
         		  AND w.widget_id = :widget_id";
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
@@ -281,7 +281,7 @@ class WidgetRepository
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $widgets[$viewId] = array();
             $query = "SELECT w.widget_id, w.title
-                FROM widgets w, widget_models wm
+                FROM cfg_widgets w, cfg_widgets_models wm
             	WHERE w.custom_view_id = :view_id
             	AND w.widget_model_id = wm.widget_model_id
                 ORDER BY w.widget_id";
@@ -306,7 +306,7 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $query = "SELECT widget_model_id, title
-            FROM widget_models
+            FROM cfg_widgets_models
         	ORDER BY title";
         $stmt = $db->prepare($query);
         $stmt->execute();
@@ -352,7 +352,7 @@ class WidgetRepository
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $params = array();
             $query = "SELECT ft.is_connector, ft.ft_typename, p.parameter_id, p.parameter_name, p.default_value, p.header_title, p.require_permission
-            		  FROM widget_parameters_field_type ft, widget_parameters p, widgets w
+            		  FROM cfg_widgets_parameters_field_type ft, cfg_widgets_parameters p, widgets w
             		  WHERE ft.field_type_id = p.field_type_id
             		  AND p.widget_model_id = w.widget_model_id
             		  AND w.widget_id = ?
@@ -483,7 +483,7 @@ class WidgetRepository
     protected static function getLastInsertedWidgetModelId($name)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT MAX(widget_model_id) as lastId FROM widget_models WHERE name = ?");
+        $stmt = $db->prepare("SELECT MAX(widget_model_id) as lastId FROM cfg_widgets_models WHERE name = ?");
         $stmt->execute(array($name));
         $row = $stmt->fetch();
         return $row['lastId'];
@@ -498,7 +498,7 @@ class WidgetRepository
     protected static function getLastInsertedParameterId($label)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT MAX(parameter_id) as lastId FROM widget_parameters WHERE parameter_name = ?");
+        $stmt = $db->prepare("SELECT MAX(parameter_id) as lastId FROM cfg_widgets_parameters WHERE parameter_name = ?");
         $stmt->execute(array($label));
         $row = $stmt->fetch();
         return $row['lastId'];
@@ -516,7 +516,7 @@ class WidgetRepository
         if (is_null($types)) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $types = array();
-            $stmt = $db->prepare("SELECT ft_typename, field_type_id FROM  widget_parameters_field_type");
+            $stmt = $db->prepare("SELECT ft_typename, field_type_id FROM  cfg_widgets_parameters_field_type");
             $stmt->execute();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $types[$row['ft_typename']] = $row['field_type_id'];
@@ -551,7 +551,7 @@ class WidgetRepository
                 if (!isset($attr['header'])) {
                     $attr['header'] = null;
                 }
-                $stmt = $db->prepare("INSERT INTO widget_parameters
+                $stmt = $db->prepare("INSERT INTO cfg_widgets_parameters
                     (widget_model_id, field_type_id, parameter_name, parameter_code_name, default_value, parameter_order, require_permission, header_title)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute(array(
@@ -593,7 +593,7 @@ class WidgetRepository
         
         $module = \Centreon\Internal\Module\Informations::getModuleIdByName($moduleName);
         
-        $stmt = $db->prepare("INSERT INTO widget_models (name, shortname, description, version,
+        $stmt = $db->prepare("INSERT INTO cfg_widgets_models (name, shortname, description, version,
             author, email, website, keywords, screenshot, thumbnail, isactivated, isinstalled, module_id)
         	VALUES (:name, :shortname, :description, :version, 
             :author, :email, :website, :keywords, :screenshot, :thumbnail,
@@ -632,13 +632,13 @@ class WidgetRepository
             if (isset($attr['options'])) {
                 $db->beginTransaction();
                 foreach ($attr['options'] as $opt) {
-                    $stmt = $db->prepare("INSERT INTO widget_parameters_multiple_options (parameter_id, option_name, option_value) VALUES (?, ?, ?)");
+                    $stmt = $db->prepare("INSERT INTO cfg_widgets_parameters_multiple_options (parameter_id, option_name, option_value) VALUES (?, ?, ?)");
                     $stmt->execute(array($paramId, $opt['label'], $opt['value']));
                 }
                 $db->commit();
             }
         } elseif ($attr['type'] == "range") {
-            $stmt = $db->prepare("INSERT INTO widget_parameters_range (parameter_id, min_range, max_range, step)
+            $stmt = $db->prepare("INSERT INTO cfg_widgets_parameters_range (parameter_id, min_range, max_range, step)
                 VALUES (?, ?, ?, ?)");
             $stmt->execute(array($paramId, $attr['min'], $attr['max'], $attr['step']));
         }
@@ -678,7 +678,7 @@ class WidgetRepository
                         } else {
                             $attr['isFilter'] = (int)$attr['isFilter'];
                         }
-                        $stmt = $db->prepare("INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, 
+                        $stmt = $db->prepare("INSERT INTO cfg_widgets_parameters (widget_model_id, field_type_id, parameter_name, 
                             parameter_code_name, default_value, parameter_order, require_permission, header_title, is_filter) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
                         $stmt->execute(array(
@@ -687,7 +687,7 @@ class WidgetRepository
                             $attr['isFilter']
                         ));
                     } else {
-                        $query = "UPDATE widget_parameters SET 
+                        $query = "UPDATE cfg_widgets_parameters SET 
                             field_type_id = :type,
                             parameter_name = :parameter_name,
                             default_value = :default,
@@ -722,7 +722,7 @@ class WidgetRepository
                     }
                     $parameterId = self::getParameterIdByName($widgetModelId, $attr['name']);
                     $currentParameterTab[$attr['name']] = 1;
-                    $stmt = $db->prepare("DELETE FROM widget_parameters_multiple_options WHERE parameter_id = ?");
+                    $stmt = $db->prepare("DELETE FROM cfg_widgets_parameters_multiple_options WHERE parameter_id = ?");
                     $stmt->execute(array($parameterId));
                     self::insertParameterOptions($parameterId, $attr);
                     $order++;
@@ -730,7 +730,7 @@ class WidgetRepository
             }
         }
         $db->beginTransaction();
-        $stmt = $db->prepare("DELETE FROM widget_parameters WHERE parameter_code_name = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_widgets_parameters WHERE parameter_code_name = ?");
         foreach ($existingParams as $codeName) {
             if (!isset($currentParameterTab[$codeName])) {
                 $stmt->execute(array($codeName));
@@ -749,7 +749,7 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $config = self::readConfigFile($widgetPath."/".$directory."/configs.xml");
-        $query = "UPDATE widget_models SET
+        $query = "UPDATE cfg_widgets_models SET
             title = :title
             description = :description
         	version = :version
@@ -784,7 +784,7 @@ class WidgetRepository
     public static function uninstall($widgetModelId)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM widget_models WHERE widget_model_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_widgets_models WHERE widget_model_id = ?");
         $stmt->execute(array($widgetModelId));
     }
 
@@ -798,7 +798,7 @@ class WidgetRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT default_value, parameter_code_name
-            FROM widget_parameters param, widgets w
+            FROM cfg_widgets_parameters param, widgets w
         	WHERE w.widget_model_id = param.widget_model_id
             AND w.widget_id = ?");
         $stmt->execute(array($widgetId));
@@ -808,7 +808,7 @@ class WidgetRepository
         }
 
         $stmt = $db->prepare("SELECT pref.preference_value, param.parameter_code_name, pref.comparator
-            FROM widget_preferences pref, widget_parameters param
+            FROM widget_preferences pref, cfg_widgets_parameters param
            	WHERE param.parameter_id = pref.parameter_id
            	AND pref.widget_id = ?");
         $stmt->execute(array($widgetId));

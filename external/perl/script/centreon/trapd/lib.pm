@@ -190,12 +190,12 @@ sub get_hosts {
     
     # Get server_id
     foreach (keys %$ref_result) {
-        ($dstatus, $sth) = $args{cdb}->query("SELECT ns_host_relation.nagios_server_id, nagios_server.ns_ip_address FROM ns_host_relation, nagios_server WHERE 
+        ($dstatus, $sth) = $args{cdb}->query("SELECT ns_host_relation.nagios_server_id, nagios_server.ip_address FROM ns_host_relation, nagios_server WHERE 
                                             ns_host_relation.host_host_id = " . $ref_result->{$_}->{host_id} . " AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
         return -1 if ($dstatus == -1);
         my $data = $sth->fetchrow_hashref();
         $ref_result->{$_}->{nagios_server_id} = $data->{nagios_server_id};
-        $ref_result->{$_}->{ns_ip_address} = $data->{ns_ip_address};
+        $ref_result->{$_}->{ip_address} = $data->{ip_address};
     }
     
     return (0, $ref_result);
@@ -277,7 +277,7 @@ sub get_macros_host {
             set_macro(\%macros, '$_HOSTSNMPVERSION$', $value->{host_snmp_version});
         }
     
-        ($dstatus, $sth) = $cdb->query("SELECT host_macro_name, host_macro_value FROM on_demand_macro_host WHERE host_host_id = " . $lhost_id);
+        ($dstatus, $sth) = $cdb->query("SELECT host_macro_name, host_macro_value FROM cfg_customvariables_hosts WHERE host_host_id = " . $lhost_id);
         return -1 if ($dstatus == -1);
         while ($value = $sth->fetchrow_hashref()) {
             set_macro(\%macros, $value->{host_macro_name}, $value->{host_macro_value});

@@ -110,8 +110,8 @@ class PollerDatatable extends \Centreon\Internal\Datatable
         ),
         array (
             'title' => 'IP Address',
-            'name' => 'ns_ip_address',
-            'data' => 'ns_ip_address',
+            'name' => 'ip_address',
+            'data' => 'ip_address',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -224,8 +224,8 @@ class PollerDatatable extends \Centreon\Internal\Datatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'ns_activate',
-            'data' => 'ns_activate',
+            'name' => 'activate',
+            'data' => 'activate',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',

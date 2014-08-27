@@ -93,8 +93,8 @@ class Menu
         $this->tree = array();
         $stmt = $db->prepare(
             "SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order
-            FROM menus
-            WHERE module_id IN (SELECT id FROM module WHERE isactivated = '1' OR isactivated = '2')
+            FROM cfg_menus
+            WHERE module_id IN (SELECT id FROM cfg_modules WHERE isactivated = '1' OR isactivated = '2')
             ORDER BY menu_order ASC, module_id ASC"
         );
         $stmt->execute();

@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Servicecategory extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "servicecategories";
+    protected static $table = "cfg_servicescategories";
     protected static $primaryKey = "sc_id";
     protected static $uniqueLabelField = "sc_name";
 }

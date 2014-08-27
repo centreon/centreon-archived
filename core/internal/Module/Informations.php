@@ -52,7 +52,7 @@ class Informations
     {
         $dependencySatisfied = false;
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $sql = "SELECT name, version FROM module WHERE name = '$module[name]'";
+        $sql = "SELECT name, version FROM cfg_modules WHERE name = '$module[name]'";
         $res = $db->query($sql);
         $dependency = $res->fetchAll(\PDO::FETCH_ASSOC);
         
@@ -185,7 +185,7 @@ class Informations
 
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         if (is_null($menus)) {
-            $sql = "SELECT menu_id, short_name FROM menus";
+            $sql = "SELECT menu_id, short_name FROM cfg_menus";
             $stmt = $db->prepare($sql);
             $stmt->execute();
             $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -205,7 +205,7 @@ class Informations
         }
         
         if (!isset($menus[$data['short_name']])) {
-            $sql = "INSERT INTO menus 
+            $sql = "INSERT INTO cfg_menus 
                 (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, module_id) VALUES
                 (:name, :short_name, :parent, :route, :icon_class, :icon, :bgcolor, :order, :module)";
         }
@@ -228,15 +228,15 @@ class Informations
         $stmt->bindParam(':module', $module);
         $stmt->execute();
         if (!isset($menus[$data['short_name']])) {
-            $menus[$data['short_name']] = $db->lastInsertId('menus', 'menu_id');
+            $menus[$data['short_name']] = $db->lastInsertId('cfg_menus', 'menu_id');
             if (!isset($data['order']) && isset($data['parent'])) {
                 $stmt = $db->prepare(
-                    "SELECT (MAX(menu_order) + 1) as max_order FROM menus WHERE parent_id = :parent_id"
+                    "SELECT (MAX(menu_order) + 1) as max_order FROM cfg_menus WHERE parent_id = :parent_id"
                 );
                 $stmt->bindParam(':parent_id', $menus[$data['parent']]);
                 $stmt->execute();
                 $row = $stmt->fetch();
-                $stmt = $db->prepare("UPDATE menus SET menu_order = :menu_order WHERE menu_id = :menu_id");
+                $stmt = $db->prepare("UPDATE cfg_menus SET menu_order = :menu_order WHERE menu_id = :menu_id");
                 $stmt->bindParam(':menu_order', $row['max_order']);
                 $stmt->bindParam(':menu_id', $menus[$data['short_name']]);
                 $stmt->execute();

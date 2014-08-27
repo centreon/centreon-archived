@@ -33,7 +33,7 @@ try {
     $db_centreon->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Get pollers
-    $stmt = $db_centreon->prepare("SELECT ns_ip_address, id
+    $stmt = $db_centreon->prepare("SELECT ip_address, id
         FROM nagios_server
         WHERE id = :server_id");
     $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
@@ -79,7 +79,7 @@ try {
     $result_host_templates_relation = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // get host macros
-    $stmt = $db_centreon->prepare("SELECT host_host_id, host_macro_name, host_macro_value FROM on_demand_macro_host");
+    $stmt = $db_centreon->prepare("SELECT host_host_id, host_macro_name, host_macro_value FROM cfg_customvariables_hosts");
     $stmt->execute();
     $result_host_macros = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
@@ -164,7 +164,7 @@ try {
     $dbh_sqlite->exec("
             CREATE TABLE IF NOT EXISTS `nagios_server` (
                 `id` int(11) UNIQUE NOT NULL,
-                `ns_ip_address` varchar(200) DEFAULT NULL
+                `ip_address` varchar(200) DEFAULT NULL
             );
             
             CREATE TABLE IF NOT EXISTS `cfg_nagios` (
@@ -214,13 +214,13 @@ try {
             
             CREATE INDEX IF NOT EXISTS idx_htr_host_host_id ON host_template_relation (host_host_id);
             
-            CREATE TABLE IF NOT EXISTS `on_demand_macro_host` (
+            CREATE TABLE IF NOT EXISTS `cfg_customvariables_hosts` (
                 `host_macro_name` varchar(255) NOT NULL,
                 `host_macro_value` varchar(255) NOT NULL,
                 `host_host_id` int(11) DEFAULT NULL
                 );
               
-            CREATE INDEX IF NOT EXISTS idx_odmh_host_host_id ON on_demand_macro_host (host_host_id);
+            CREATE INDEX IF NOT EXISTS idx_odmh_host_host_id ON cfg_customvariables_hosts (host_host_id);
             
             CREATE TABLE IF NOT EXISTS `host_service_relation` (
                 `service_service_id` int(11) DEFAULT NULL,
@@ -302,11 +302,11 @@ try {
             $dbh_sqlite->beginTransaction();
 
             // Poller
-            $stmt = $dbh_sqlite->prepare("INSERT INTO nagios_server (`id`, ns_ip_address) VALUES (
-                    :id, :ns_ip_address)");
+            $stmt = $dbh_sqlite->prepare("INSERT INTO nagios_server (`id`, ip_address) VALUES (
+                    :id, :ip_address)");
             foreach ($result_pollers as $value) {
                 $stmt->bindParam(':id', $value['id'], PDO::PARAM_INT);
-                $stmt->bindParam(':ns_ip_address', $value['ns_ip_address'], PDO::PARAM_STR);
+                $stmt->bindParam(':ip_address', $value['ip_address'], PDO::PARAM_STR);
                 $stmt->execute();	
             }
             
@@ -358,7 +358,7 @@ try {
             }
             
             // Insert Host macro
-            $stmt = $dbh_sqlite->prepare("INSERT INTO on_demand_macro_host (host_macro_name, host_macro_value, host_host_id) VALUES (
+            $stmt = $dbh_sqlite->prepare("INSERT INTO cfg_customvariables_hosts (host_macro_name, host_macro_value, host_host_id) VALUES (
                     :host_macro_name, :host_macro_value, :host_host_id)");
             foreach ($result_host_macros as $value) {
                 $stmt->bindParam(':host_macro_name', $value['host_macro_name'], PDO::PARAM_STR);

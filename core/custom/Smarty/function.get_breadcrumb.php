@@ -53,7 +53,7 @@ function smarty_function_get_breadcrumb($params, $template)
     $breadcrumb = array();
     $db = $di->get('db_centreon');
     /* Get in database */
-    $queryFindRoute = "SELECT name, parent_id FROM menus WHERE url = :url";
+    $queryFindRoute = "SELECT name, parent_id FROM cfg_menus WHERE url = :url";
     $parentId = null;
     $stmt = $db->prepare($queryFindRoute);
     $stmt->bindParam(':url', $route, \PDO::PARAM_STR);
@@ -82,7 +82,7 @@ function smarty_function_get_breadcrumb($params, $template)
             'url' => null
         );
     }
-    $queryGetParent = "SELECT name, parent_id, url FROM menus WHERE menu_id = :menu_id";
+    $queryGetParent = "SELECT name, parent_id, url FROM cfg_menus WHERE menu_id = :menu_id";
     while (false === is_null($parentId)) {
         $stmt = $db->prepare($queryGetParent);
         $stmt->bindParam(':menu_id', $parentId, \PDO::PARAM_INT);

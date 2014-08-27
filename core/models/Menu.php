@@ -44,7 +44,7 @@ namespace Centreon\Models;
  */
 class Menu extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "menus";
+    protected static $table = "cfg_menus";
     protected static $primaryKey = "menu_id";
     protected static $uniqueLabelField = "url";
 }

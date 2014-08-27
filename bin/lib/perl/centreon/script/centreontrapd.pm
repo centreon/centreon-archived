@@ -432,7 +432,7 @@ sub set_current_values {
     $self->{current_trap_name} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_name};
     $self->{current_vendor_name} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{name};
     $self->{current_server_id} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{nagios_server_id};
-    $self->{current_server_ip_address} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{ns_ip_address};
+    $self->{current_server_ip_address} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{ip_address};
     $self->{current_hostname} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{host_name};
     $self->{current_service_desc} = $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{service_description};
 }

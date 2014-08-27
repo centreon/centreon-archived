@@ -53,8 +53,13 @@ class Informations
         $db = $di->get('db_centreon');
         
         try {
-            $stmt = $db->query("SELECT `value` FROM informations WHERE `key` = 'version'");
+            $stmt = $db->query("SELECT `value` FROM cfg_informations WHERE `key` = 'version'");
             $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            if (count($res) == 0) {
+                throw new \Exception("No values");
+            }
+            
         } catch (\PDOException $e) {
             if ($e->getCode() == "42S02") {
                 throw new \Exception("Table not exist");

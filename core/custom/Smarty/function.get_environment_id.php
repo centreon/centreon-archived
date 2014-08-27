@@ -56,8 +56,8 @@ function smarty_function_get_environment_id($params, $template)
     /* Get environment */
     $stmt = $db->prepare("SELECT m1.parent_id as envid, m1.menu_id as subid, 
             m1.url as lvl1_url, m2.url as lvl2_url, m2.menu_id as childid
-        FROM menus m1 LEFT JOIN menus m2 ON m1.menu_id = m2.parent_id
-        WHERE m1.parent_id IN (SELECT menu_id FROM menus WHERE parent_id IS NULL) 
+        FROM cfg_menus m1 LEFT JOIN cfg_menus m2 ON m1.menu_id = m2.parent_id
+        WHERE m1.parent_id IN (SELECT menu_id FROM cfg_menus WHERE parent_id IS NULL) 
         ORDER BY LENGTH(m2.url) DESC, LENGTH(m1.url) DESC");
     $stmt->execute();
     $len = 0;
