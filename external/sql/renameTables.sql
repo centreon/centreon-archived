@@ -125,7 +125,7 @@ RENAME TABLE meta_service_relation TO cfg_metaservices_relations;
 -- RENAME TABLE module_hooks TO cfg_modules_hooks;
 RENAME TABLE nagios_macro TO cfg_engine_macros;
 RENAME TABLE nagios_server TO cfg_engine_servers;
-RENAME TABLE ns_host_relation TO cfg_ns_hosts_relations;
+RENAME TABLE ns_host_relation TO cfg_engine_hosts_relations;
 RENAME TABLE ods_view_details TO cfg_ods_view_details;
 RENAME TABLE on_demand_macro_host TO cfg_customvariables_hosts;
 RENAME TABLE on_demand_macro_service TO cfg_customvariables_services;
