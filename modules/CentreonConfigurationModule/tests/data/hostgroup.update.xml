@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="hostgroup">
+  <table name="cfg_hostgroups">
     <column>hg_id</column>
     <column>hg_name</column>
     <column>hg_alias</column>

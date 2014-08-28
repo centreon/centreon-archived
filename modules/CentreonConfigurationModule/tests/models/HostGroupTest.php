@@ -53,7 +53,7 @@ class HostGroupTest extends DbTestCase
         );
         Hostgroup::insert($insert);
         $this->tableEqualsXml(
-            'hostgroup',
+            'cfg_hostgroups',
             dirname(__DIR__) . '/data/hostgroup.insert.xml'
         );
     }
@@ -77,7 +77,7 @@ class HostGroupTest extends DbTestCase
     {
         Hostgroup::delete(2);
         $this->tableEqualsXml(
-            'hostgroup',
+            'cfg_hostgroups',
             dirname(__DIR__) . '/data/hostgroup.delete.xml'
         );
     }
@@ -98,7 +98,7 @@ class HostGroupTest extends DbTestCase
         );
         Hostgroup::update(2, $newInfo);
         $this->tableEqualsXml(
-            'hostgroup',
+            'cfg_hostgroups',
             dirname(__DIR__) . '/data/hostgroup.update.xml'
         );
     }
@@ -130,7 +130,7 @@ class HostGroupTest extends DbTestCase
     {
         Hostgroup::duplicate(1);
         $this->tableEqualsXml(
-            'hostgroup',
+            'cfg_hostgroups',
             dirname(__DIR__) . '/data/hostgroup.duplicate-1.xml'
         );
     }
@@ -139,7 +139,7 @@ class HostGroupTest extends DbTestCase
     {
         Hostgroup::duplicate(1, 2);
         $this->tableEqualsXml(
-            'hostgroup',
+            'cfg_hostgroups',
             dirname(__DIR__) . '/data/hostgroup.duplicate-2.xml'
         );
     }
@@ -487,7 +487,7 @@ class HostGroupTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('hostgroup', Hostgroup::getTableName());
+        $this->assertEquals('cfg_hostgroups', Hostgroup::getTableName());
     }
 
     public function testGetColumns()
