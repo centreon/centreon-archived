@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_mainmodule" defaultIdMethod="native">
+    <table name="cfg_organizations_modules" phpName="OrganizationsModules" idMethod="native">
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="module_id" phpName="ModuleId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="is_activated" phpName="IsActivated" type="TINYINT" default="0" required="true"/>
+    </table>
+</database>

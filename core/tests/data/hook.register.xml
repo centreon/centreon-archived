@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <dataset>
-  <module_hooks
+  <cfg_modules_hooks
     module_id="1"
     hook_id="1"
     module_hook_name="displayTest"
     module_hook_description="a description"/>
-  <module_hooks
+  <cfg_modules_hooks
     module_id="6"
     hook_id="1"
     module_hook_name="displayBookmarkedViews"

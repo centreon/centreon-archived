@@ -53,7 +53,7 @@ class HostCategoryTest extends DbTestCase
         );
         Hostcategory::insert($insert);
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.insert.xml'
         );
     }
@@ -77,7 +77,7 @@ class HostCategoryTest extends DbTestCase
     {
         Hostcategory::delete(2);
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.delete.xml'
         );
     }
@@ -98,7 +98,7 @@ class HostCategoryTest extends DbTestCase
         );
         Hostcategory::update(1, $newInfo);
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.update.xml'
         );
     }
@@ -130,7 +130,7 @@ class HostCategoryTest extends DbTestCase
     {
         Hostcategory::duplicate(1);
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.duplicate-1.xml'
         );
     }
@@ -139,7 +139,7 @@ class HostCategoryTest extends DbTestCase
     {
         Hostcategory::duplicate(1, 2);
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.duplicate-2.xml'
         );
     }
@@ -463,7 +463,7 @@ class HostCategoryTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('hostcategories', Hostcategory::getTableName());
+        $this->assertEquals('cfg_hostcategories', Hostcategory::getTableName());
     }
 
     public function testGetColumns()

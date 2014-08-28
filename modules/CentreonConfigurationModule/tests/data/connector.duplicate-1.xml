@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <connector
+  <cfg_connectors
     id="1"
     name="Perl"
     description="Connector for embeded perl"
@@ -8,7 +8,7 @@
     enabled="1"
     created="1407836372"
     modified="1407836372"/>
-  <connector
+  <cfg_connectors
     id="2"
     name="SSH"
     description="Connector for SSH connections"
@@ -16,7 +16,7 @@
     enabled="1"
     created="1407836372"
     modified="1407836372"/>
-  <connector
+  <cfg_connectors
     id="3"
     name="Perl_1"
     description="Connector for embeded perl"

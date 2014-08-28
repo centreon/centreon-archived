@@ -59,10 +59,10 @@ class ConnectorTest extends DbTestCase
         /* Assert for test insert in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/connector.insert.xml'
-        )->getTable('connector');
+        )->getTable('cfg_connectors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
+            'cfg_connectors',
+            'SELECT * FROM cfg_connectors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -81,10 +81,10 @@ class ConnectorTest extends DbTestCase
         /* Assert for test delete in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/connector.delete.xml'
-        )->getTable('connector');
+        )->getTable('cfg_connectors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
+            'cfg_connectors',
+            'SELECT * FROM cfg_connectors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -107,10 +107,10 @@ class ConnectorTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/connector.update.xml'
-        )->getTable('connector');
+        )->getTable('cfg_connectors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
+            'cfg_connectors',
+            'SELECT * FROM cfg_connectors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -147,10 +147,10 @@ class ConnectorTest extends DbTestCase
         /* Assert for test duplicate 1 in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/connector.duplicate-1.xml'
-        )->getTable('connector');
+        )->getTable('cfg_connectors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
+            'cfg_connectors',
+            'SELECT * FROM cfg_connectors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -158,10 +158,10 @@ class ConnectorTest extends DbTestCase
         /* Assert for test duplicate 2 in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/connector.duplicate-2.xml'
-        )->getTable('connector');
+        )->getTable('cfg_connectors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'connector',
-            'SELECT * FROM connector'
+            'cfg_connectors',
+            'SELECT * FROM cfg_connectors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -413,7 +413,7 @@ class ConnectorTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('connector', Connector::getTableName());
+        $this->assertEquals('cfg_connectors', Connector::getTableName());
     }
 
     public function testGetColumns()

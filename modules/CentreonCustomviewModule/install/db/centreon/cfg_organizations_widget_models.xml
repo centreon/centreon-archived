@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_customviews" defaultIdMethod="native">
+    <table name="cfg_organizations_widget_models" phpName="OrganizationsWidgetModels" idMethod="native">
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="widget_model_id" phpName="WidgetModelId" type="INTEGER" primaryKey="true" required="true"/>
+    </table>
+</database>

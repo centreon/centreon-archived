@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Icon extends CentreonRelationModel
 {
-    protected static $relationTable = "service_template_relation";
+    protected static $relationTable = "cfg_services_templates_relation";
     protected static $firstKey = "service_id";
     protected static $secondKey = "service_tpl_id";
     public static $firstObject = "\CentreonConfiguration\Models\Service";

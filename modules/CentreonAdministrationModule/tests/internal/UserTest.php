@@ -35,8 +35,9 @@
  */
 
 
-namespace Test\Centreon;
+namespace Test\CentreonAdministration;
 
+use \Test\Centreon\DbTestCase;
 use \CentreonAdministration\Internal\User;
 use \Centreon\Internal\Di;
 

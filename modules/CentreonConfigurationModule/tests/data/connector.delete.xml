@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <connector
+  <cfg_connectors
     id="1"
     name="Perl"
     description="Connector for embeded perl"
