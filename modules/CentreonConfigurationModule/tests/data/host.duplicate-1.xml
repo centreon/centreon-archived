@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="host">
+  <table name="cfg_hosts">
     <column>host_id</column>
     <column>host_template_model_htm_id</column>
     <column>command_command_id</column>
