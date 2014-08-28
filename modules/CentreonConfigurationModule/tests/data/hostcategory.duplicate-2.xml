@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="hostcategories">
+  <table name="cfg_hostcategories">
     <column>hc_id</column>
     <column>hc_name</column>
     <column>hc_alias</column>

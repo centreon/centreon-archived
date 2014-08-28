@@ -72,7 +72,7 @@ class HostCategoryRepositoryTest extends RepositoryTestCase
         $expectedResult = array(
             array('id' => 2, 'text' => 'web')
         );
-        $this->assertEquals($expectedResult, $rep::getFormList('server'));
+        $this->assertEquals($expectedResult, $rep::getFormList('we'));
     }
 
     public function testGetFormListWithSearchStringWithNoResult()
@@ -95,7 +95,7 @@ class HostCategoryRepositoryTest extends RepositoryTestCase
             )
         );
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.insert.xml'
         );
     }
@@ -104,12 +104,12 @@ class HostCategoryRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $newData = array(
-            'hc_id' => 1,
+            'object_id' => 1,
             'hc_alias' => 'new alias'
         );
         $rep::update($newData);
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.update.xml'
         );
     }
@@ -119,7 +119,7 @@ class HostCategoryRepositoryTest extends RepositoryTestCase
         $rep = $this->repository;
         $rep::delete(array(2));
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.delete.xml'
         );
     }
@@ -131,7 +131,7 @@ class HostCategoryRepositoryTest extends RepositoryTestCase
             array(1 => 2)
         );
         $this->tableEqualsXml(
-            'hostcategories',
+            'cfg_hostcategories',
             dirname(__DIR__) . '/data/hostcategory.duplicate-2.xml'
         );
     }
