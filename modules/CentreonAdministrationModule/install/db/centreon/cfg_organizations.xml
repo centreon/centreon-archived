@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package"centreon_administration" defaultIdMethod="native">
+    <table name="cfg_organizations" phpName="Organizations" idMethod="native">
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="shortname" phpName="Shortname" type="VARCHAR" size="100" required="true"/>
+        <column name="active" phpName="Active" type="TINYINT" default="1"/>
+        <unique name="cfg_organizations_idx01">
+            <unique-column name="name"/>
+        </unique>
+        <unique name="cfg_organizations_idx02">
+            <unique-column name="shortname"/>
+        </unique>
+    </table>
+</database>
