@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="service">
+  <table name="cfg_services">
     <column>service_id</column>
     <column>service_template_model_stm_id</column>
     <column>command_command_id</column>

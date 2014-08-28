@@ -53,7 +53,7 @@ class ServiceTemplateTest extends DbTestCase
         );
         Servicetemplate::insert($insert);
         $this->tableEqualsXml(
-            'service',
+            'cfg_services',
             dirname(__DIR__) . '/data/servicetemplate.insert.xml'
         );
     }
@@ -62,7 +62,7 @@ class ServiceTemplateTest extends DbTestCase
     {
         Servicetemplate::delete(2);
         $this->tableEqualsXml(
-            'service',
+            'cfg_services',
             dirname(__DIR__) . '/data/servicetemplate.delete.xml'
         );
     }
@@ -83,7 +83,7 @@ class ServiceTemplateTest extends DbTestCase
         );
         Servicetemplate::update(1, $newInfo);
         $this->tableEqualsXml(
-            'service',
+            'cfg_services',
             dirname(__DIR__) . '/data/servicetemplate.update.xml'
         );
     }
@@ -104,7 +104,7 @@ class ServiceTemplateTest extends DbTestCase
     {
         Servicetemplate::duplicate(1);
         $this->tableEqualsXml(
-            'service',
+            'cfg_services',
             dirname(__DIR__) . '/data/servicetemplate.duplicate-1.xml'
         );
     }
@@ -113,7 +113,7 @@ class ServiceTemplateTest extends DbTestCase
     {
         Servicetemplate::duplicate(1, 2);
         $this->tableEqualsXml(
-            'service',
+            'cfg_services',
             dirname(__DIR__) . '/data/servicetemplate.duplicate-2.xml'
         );
     }
@@ -650,7 +650,7 @@ class ServiceTemplateTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('service', Servicetemplate::getTableName());
+        $this->assertEquals('cfg_services', Servicetemplate::getTableName());
     }
 
     public function testGetColumns()
