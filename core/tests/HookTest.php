@@ -87,7 +87,7 @@ class HookTest extends DbTestCase
             'a description'    // moduleHookDescription
         );
         $this->tableEqualsXml(
-            'module_hooks',
+            'cfg_modules_hooks',
             dirname(__DIR__) . '/tests/data/hook.register.xml',
             true
         );
@@ -120,7 +120,7 @@ class HookTest extends DbTestCase
             'displayLeftMenu',
             'displayBookmarkedViews'
         );
-        $this->assertEquals(0, $this->getConnection()->getRowCount('module_hooks'));
+        $this->assertEquals(0, $this->getConnection()->getRowCount('cfg_modules_hooks'));
     }
 
     public function testUnregisterException()
