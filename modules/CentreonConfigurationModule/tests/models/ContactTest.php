@@ -65,10 +65,10 @@ class ContactTest extends DbTestCase
         /* Assert for test insert in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/contact.insert.xml'
-        )->getTable('contact');
+        )->getTable('cfg_contacts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'contact',
-            'SELECT * FROM contact'
+            'cfg_contacts',
+            'SELECT * FROM cfg_contacts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -132,10 +132,10 @@ class ContactTest extends DbTestCase
         /* Assert for test delete in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/contact.delete.xml'
-        )->getTable('contact');
+        )->getTable('cfg_contacts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'contact',
-            'SELECT * FROM contact'
+            'cfg_contacts',
+            'SELECT * FROM cfg_contacts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -161,10 +161,10 @@ class ContactTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/contact.update.xml'
-        )->getTable('contact');
+        )->getTable('cfg_contacts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'contact',
-            'SELECT * FROM contact'
+            'cfg_contacts',
+            'SELECT * FROM cfg_contacts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -201,10 +201,10 @@ class ContactTest extends DbTestCase
         /* Assert for test duplicate 1 in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/contact.duplicate-1.xml'
-        )->getTable('contact');
+        )->getTable('cfg_contacts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'contact',
-            'SELECT * FROM contact'
+            'cfg_contacts',
+            'SELECT * FROM cfg_contacts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -212,10 +212,10 @@ class ContactTest extends DbTestCase
         /* Assert for test duplicate 2 in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/contact.duplicate-2.xml'
-        )->getTable('contact');
+        )->getTable('cfg_contacts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'contact',
-            'SELECT * FROM contact'
+            'cfg_contacts',
+            'SELECT * FROM cfg_contacts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -666,7 +666,7 @@ class ContactTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('contact', Contact::getTableName());
+        $this->assertEquals('cfg_contacts', Contact::getTableName());
     }
 
     public function testGetColumns()

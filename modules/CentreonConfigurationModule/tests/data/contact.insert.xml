@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="contact">
+  <table name="cfg_contacts">
     <column>contact_id</column>
     <column>timeperiod_tp_id</column>
     <column>timeperiod_tp_id2</column>
