@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="servicecategories">
+  <table name="cfg_servicecategories">
     <column>sc_id</column>
     <column>sc_name</column>
     <column>sc_description</column>

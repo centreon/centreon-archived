@@ -95,7 +95,7 @@ class ServiceCategoryRepositoryTest extends RepositoryTestCase
             )
         );
         $this->tableEqualsXml(
-            'servicecategories',
+            'cfg_servicecategories',
             dirname(__DIR__) . '/data/servicecategory.insert.xml'
         );
     }
@@ -104,11 +104,12 @@ class ServiceCategoryRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $newData = array(
+            'object_id' => 1,
             'sc_description' => 'new description'
         );
         $rep::update($newData);
         $this->tableEqualsXml(
-            'servicecategories',
+            'cfg_servicecategories',
             dirname(__DIR__) . '/data/servicecategory.update.xml'
         );
     }
@@ -118,7 +119,7 @@ class ServiceCategoryRepositoryTest extends RepositoryTestCase
         $rep = $this->repository;
         $rep::delete(array(2));
         $this->tableEqualsXml(
-            'servicecategories',
+            'cfg_servicecategories',
             dirname(__DIR__) . '/data/servicecategory.delete.xml'
         );
     }
@@ -130,7 +131,7 @@ class ServiceCategoryRepositoryTest extends RepositoryTestCase
             array(1 => 2)
         );
         $this->tableEqualsXml(
-            'servicecategories',
+            'cfg_servicecategories',
             dirname(__DIR__) . '/data/servicecategory.duplicate-2.xml'
         );
     }
