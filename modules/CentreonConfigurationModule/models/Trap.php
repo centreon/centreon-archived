@@ -44,7 +44,7 @@ namespace CentreonConfiguration\Models;
  */
 class Trap extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "traps";
+    protected static $table = "cfg_traps";
     protected static $primaryKey = "traps_id";
     protected static $uniqueLabelField = "traps_name";
 }

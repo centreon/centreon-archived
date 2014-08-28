@@ -59,18 +59,17 @@ class TrapTest extends DbTestCase
         /* Assert for test insert in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/traps.insert.xml'
-        )->getTable('traps');
+        )->getTable('cfg_traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps',
-            'SELECT * FROM traps'
+            'cfg_traps',
+            'SELECT * FROM cfg_traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
         /* Test exception unique */
         $this->setExpectedException(
             'PDOException',
-            '',
-            23000
+            ''
         );
         Trap::insert($newTrap);
     }
@@ -89,8 +88,7 @@ class TrapTest extends DbTestCase
         /* Test exception unique */
         $this->setExpectedException(
             'PDOException',
-            '',
-            23000
+            ''
         );
         Trap::insert($newTrap);
     }
@@ -101,10 +99,10 @@ class TrapTest extends DbTestCase
         /* Assert for test delete in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/traps.delete.xml'
-        )->getTable('traps');
+        )->getTable('cfg_traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps',
-            'SELECT * FROM traps'
+            'cfg_traps',
+            'SELECT * FROM cfg_traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -132,10 +130,10 @@ class TrapTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/traps.update.xml'
-        )->getTable('traps');
+        )->getTable('cfg_traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps',
-            'SELECT * FROM traps'
+            'cfg_traps',
+            'SELECT * FROM cfg_traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -149,8 +147,7 @@ class TrapTest extends DbTestCase
         /* Test exception unique */
         $this->setExpectedException(
             'PDOException',
-            '',
-            23000
+            ''
         );
         Trap::update(2, $updatedTrap);
     }
@@ -164,8 +161,7 @@ class TrapTest extends DbTestCase
         /* Test exception object doesn't exist */
         $this->setExpectedException(
             'PDOException',
-            "",
-            23000
+            ""
         );
         Trap::update(1, $updatedTrap);
     }
@@ -191,10 +187,10 @@ class TrapTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/traps.duplicate-1.xml'
-        )->getTable('traps');
+        )->getTable('cfg_traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps',
-            'SELECT * FROM traps'
+            'cfg_traps',
+            'SELECT * FROM cfg_traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -202,10 +198,10 @@ class TrapTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/traps.duplicate-2.xml'
-        )->getTable('traps');
+        )->getTable('cfg_traps');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps',
-            'SELECT * FROM traps'
+            'cfg_traps',
+            'SELECT * FROM cfg_traps'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -236,8 +232,7 @@ class TrapTest extends DbTestCase
     {
         $this->setExpectedException(
             'PDOException',
-            '',
-            '42S22'
+            ''
         );
         Trap::getParameters(1, 'test_error');
     }
@@ -261,7 +256,7 @@ class TrapTest extends DbTestCase
     
     public function testGetTableName()
     {
-        $this->assertEquals('traps', Trap::getTableName());
+        $this->assertEquals('cfg_traps', Trap::getTableName());
     }
 
     public function testGetColumns()

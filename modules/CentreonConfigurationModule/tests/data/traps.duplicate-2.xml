@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-    <table name="traps">
+    <table name="cfg_traps">
         <column>traps_id</column>
         <column>traps_name</column>
         <column>traps_oid</column>
