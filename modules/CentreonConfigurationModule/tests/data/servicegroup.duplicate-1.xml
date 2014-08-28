@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="servicegroup">
+  <table name="cfg_servicegroups">
     <column>sg_id</column>
     <column>sg_name</column>
     <column>sg_alias</column>

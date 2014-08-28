@@ -53,7 +53,7 @@ class ServiceGroupTest extends DbTestCase
         );
         Servicegroup::insert($insert);
         $this->tableEqualsXml(
-            'servicegroup',
+            'cfg_servicegroups',
             dirname(__DIR__) . '/data/servicegroup.insert.xml'
         );
     }
@@ -77,7 +77,7 @@ class ServiceGroupTest extends DbTestCase
     {
         Servicegroup::delete(2);
         $this->tableEqualsXml(
-            'servicegroup',
+            'cfg_servicegroups',
             dirname(__DIR__) . '/data/servicegroup.delete.xml'
         );
     }
@@ -98,7 +98,7 @@ class ServiceGroupTest extends DbTestCase
         );
         Servicegroup::update(2, $newInfo);
         $this->tableEqualsXml(
-            'servicegroup',
+            'cfg_servicegroups',
             dirname(__DIR__) . '/data/servicegroup.update.xml'
         );
     }
@@ -130,7 +130,7 @@ class ServiceGroupTest extends DbTestCase
     {
         Servicegroup::duplicate(1);
         $this->tableEqualsXml(
-            'servicegroup',
+            'cfg_servicegroups',
             dirname(__DIR__) . '/data/servicegroup.duplicate-1.xml'
         );
     }
@@ -139,7 +139,7 @@ class ServiceGroupTest extends DbTestCase
     {
         Servicegroup::duplicate(1, 2);
         $this->tableEqualsXml(
-            'servicegroup',
+            'cfg_servicegroups',
             dirname(__DIR__) . '/data/servicegroup.duplicate-2.xml'
         );
     }
@@ -451,7 +451,7 @@ class ServiceGroupTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('servicegroup', Servicegroup::getTableName());
+        $this->assertEquals('cfg_servicegroups', Servicegroup::getTableName());
     }
 
     public function testGetColumns()
