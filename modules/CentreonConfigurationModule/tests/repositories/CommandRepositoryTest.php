@@ -56,9 +56,9 @@ class CommandRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 1, 'text' => 'Test notif'),
             array('id' => 2, 'text' => 'Test check'),
-            array('id' => 3, 'text' => 'Test connector')
+            array('id' => 3, 'text' => 'Test connector'),
+            array('id' => 1, 'text' => 'Test notif')
         );
         $this->assertEquals($expectedResult, $rep::getFormList(''));
     }
@@ -94,7 +94,7 @@ class CommandRepositoryTest extends RepositoryTestCase
             )
         );
         $this->tableEqualsXml(
-            'command',
+            'cfg_commands',
             dirname(__DIR__) . '/data/command.insert.xml'
         );
     }
@@ -103,13 +103,13 @@ class CommandRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $newData = array(
-            'command_id' => 2,
+            'object_id' => 2,
             'command_comment' => 'Check ping',
             'enable_shell' => 1 
         );
         $rep::update($newData);
         $this->tableEqualsXml(
-            'command',
+            'cfg_commands',
             dirname(__DIR__) . '/data/command.update.xml'
         );
     }
@@ -119,7 +119,7 @@ class CommandRepositoryTest extends RepositoryTestCase
         $rep = $this->repository;
         $rep::delete(array(2));
         $this->tableEqualsXml(
-            'command',
+            'cfg_commands',
             dirname(__DIR__) . '/data/command.delete.xml'
         );
     }
@@ -128,10 +128,10 @@ class CommandRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $rep::duplicate(
-            array(2 => 2)
+            array(1 => 1, 2 => 2)
         );
         $this->tableEqualsXml(
-            'command',
+            'cfg_commands',
             dirname(__DIR__) . '/data/command.duplicate-2.xml'
         );
     }
@@ -140,14 +140,14 @@ class CommandRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 1, 'text' => 'Template Host')
+            array('id' => 1, 'text' => 'Template host')
         );
         $this->assertEquals(
             $expectedResult,
             $rep::getSimpleRelation(
                 'host_id',
                 '\CentreonConfiguration\Models\Hosttemplate',
-                2,
+                1,
                 true
             )
         );
