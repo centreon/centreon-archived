@@ -197,4 +197,12 @@ class Bootstrap
             }
         );
     }
+
+    /**
+     * Init organization
+     */
+    private function initOrganization()
+    {
+        $this->di->set('organization', 1);
+    }
 }
