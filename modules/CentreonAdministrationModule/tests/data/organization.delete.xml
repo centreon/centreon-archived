@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_organizations">
+    <column>organization_id</column>
+    <column>name</column>
+    <column>shortname</column>
+    <column>active</column>
+    <row>
+      <value>1</value>
+      <value>Default organization</value>
+      <value>default_organization</value>
+      <value>1</value>
+    </row>
+  </table>
+</dataset>
