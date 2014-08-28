@@ -256,7 +256,16 @@ abstract class CentreonBaseModel
         if (isset($sourceParams[static::$primaryKey])) {
             unset($sourceParams[static::$primaryKey]);
         }
-        $originalName = $sourceParams[static::$uniqueLabelField];
+        /* If multiple unique field */
+        if (is_array(static::$uniqueLabelField)) {
+            $originalName = array();
+            foreach (static::$uniqueLabelField as $uniqueField) {
+                $originalName[$uniqueField] = $sourceParams[$uniqueField];
+            }
+        } else {
+            $originalName = $sourceParams[static::$uniqueLabelField];
+        }
+        /* Get relations */
         $firstKeyCopy = array();
         $secondKeyCopy = array();
         foreach (static::$relations as $relation) {
@@ -278,12 +287,25 @@ abstract class CentreonBaseModel
         }
         $i = 1;
         $j = 1;
+        /* Add the number for new entries */
         while ($i <= $duplicateEntries) {
-            if (isset($sourceParams[static::$uniqueLabelField]) && isset($originalName)) {
-                $sourceParams[static::$uniqueLabelField] = $originalName . "_" . $j;
+            /* Test if unique fields are unique */
+            if (is_array(static::$uniqueLabelField)) {
+                $unique = true;
+                foreach (static::$uniqueLabelField as $uniqueField) {
+                    $sourceParams[$uniqueField] = $originalName[$uniqueField] . '_' . $j;
+                    if (false === self::isUnique($originalName[$uniqueField] . '_' . $j, $sourceObjectId, $uniqueField)) {
+                        $unique = false;
+                    }
+                }
+            } else {
+                $unique = false;
+                $sourceParams[static::$uniqueLabelField] = $originalName . '_' . $j;
+                if (self::isUnique($originalName . '_' . $j, $sourceObjectId)) {
+                    $unique = true;
+                }
             }
-            $ids = static::getIdByParameter(static::$uniqueLabelField, array($sourceParams[static::$uniqueLabelField]));
-            if (!count($ids)) {
+            if ($unique) {
                 $lastId = static::insert($sourceParams);
                 $db->beginTransaction();
                 foreach ($firstKeyCopy as $relation => $idArray) {
@@ -580,25 +602,49 @@ abstract class CentreonBaseModel
      * @param integer $id
      * @return boolean
      */
-    public static function isUnique($uniqueFieldvalue, $id = 0)
+    public static function isUnique($uniqueFieldvalue, $id = 0, $fieldName=null)
     {
-        $isUnique = true;
         $dbconn = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $unicityRequest = "SELECT ".static::$uniqueLabelField.", ".static::$primaryKey
-            ." FROM ".static::$table
-            ." WHERE ".static::$uniqueLabelField."='$uniqueFieldvalue'";
-        $stmt = $dbconn->query($unicityRequest);
-        $resultUnique = $stmt->fetch(\PDO::FETCH_ASSOC);
-        
-        if (count($resultUnique) > 0) {
-            if ($resultUnique[static::$primaryKey] == $id) {
-                $isUnique = true;
-            } else {
-                $isUnique = false;
+        /* Test if the field name is in unique field */
+        if (false === is_null($fieldName)) {
+            if (is_array(static::$uniqueLabelField) && false === in_array($fieldName, static::$uniqueLabelField)) {
+                throw new Exception(); // @TODO Exception text
+            } elseif (is_string(static::$uniqueLabelField) && $fieldName != static::$uniqueLabelField) {
+                throw new Exception(); // @TODO Exception text
             }
         }
+        $columns = array();
+        $unicityRequest = 'SELECT count(' . static::$primaryKey . ') as nb
+            FROM ' . static::$table . '
+            WHERE ' . static::$primaryKey . ' != :id AND ';
+        if (false === is_null($fieldName)) {
+            $unicityRequest .= $fieldName . ' = :' . $fieldName;
+            $columns[] = $fieldName;
+        } elseif (is_array(static::$uniqueLabelField)) {
+            $unicityRequest .= "(" . join(
+                ' OR ',
+                array_map(
+                    function($value) { return $value . ' = :' . $value; }
+                    , static::$uniqueLabelField
+                )
+            ) . ")";
+            $columns = static::$uniqueLabelField;
+        } else {
+            $unicityRequest .= static::$uniqueLabelField . ' = :' . static::$uniqueLabelField;
+            $columns[] = static::$uniqueLabelField;
+        }
+        $stmt = $dbconn->prepare($unicityRequest);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        foreach ($columns as $column) {
+            $stmt->bindParam(':' . $column, $uniqueFieldvalue);
+        }
+        $stmt->execute();
+        $resultUnique = $stmt->fetch(\PDO::FETCH_ASSOC);
         
-        return $isUnique;
+        if ($resultUnique['nb'] > 0) {
+            return false;
+        }
+        return true;
     }
 
     /**
