@@ -57,10 +57,10 @@ class HosttemplateTest extends DbTestCase
         /* Assert for test insert in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/hosttemplate.insert.xml'
-        )->getTable('host');
+        )->getTable('cfg_hosts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'host',
-            'SELECT * FROM host'
+            'cfg_hosts',
+            'SELECT * FROM cfg_hosts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -115,10 +115,10 @@ class HosttemplateTest extends DbTestCase
         /* Assert for test delete in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/hosttemplate.delete.xml'
-        )->getTable('host');
+        )->getTable('cfg_hosts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'host',
-            'SELECT * FROM host'
+            'cfg_hosts',
+            'SELECT * FROM cfg_hosts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -141,10 +141,10 @@ class HosttemplateTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/hosttemplate.update.xml'
-        )->getTable('host');
+        )->getTable('cfg_hosts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'host',
-            'SELECT * FROM host'
+            'cfg_hosts',
+            'SELECT * FROM cfg_hosts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -181,10 +181,10 @@ class HosttemplateTest extends DbTestCase
         /* Assert for test duplicate 1 in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/hosttemplate.duplicate-1.xml'
-        )->getTable('host');
+        )->getTable('cfg_hosts');
         $tableResult = $this->getConnection()->createQueryTable(
-            'host',
-            'SELECT * FROM host'
+            'cfg_hosts',
+            'SELECT * FROM cfg_hosts'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -538,7 +538,7 @@ class HosttemplateTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('host', Hosttemplate::getTableName());
+        $this->assertEquals('cfg_hosts', Hosttemplate::getTableName());
     }
 
     public function testGetColumns()
