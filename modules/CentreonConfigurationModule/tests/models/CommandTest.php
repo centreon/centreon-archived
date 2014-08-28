@@ -59,10 +59,10 @@ class CommandTest extends DbTestCase
         /* Assert for test insert in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/command.insert.xml'
-        )->getTable('command');
+        )->getTable('cfg_commands');
         $tableResult = $this->getConnection()->createQueryTable(
-            'command',
-            'SELECT * FROM command'
+            'cfg_commands',
+            'SELECT * FROM cfg_commands'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -112,10 +112,10 @@ class CommandTest extends DbTestCase
         /* Assert for test delete in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/command.delete.xml'
-        )->getTable('command');
+        )->getTable('cfg_commands');
         $tableResult = $this->getConnection()->createQueryTable(
-            'command',
-            'SELECT * FROM command'
+            'cfg_commands',
+            'SELECT * FROM cfg_commands'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -141,10 +141,10 @@ class CommandTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/command.update.xml'
-        )->getTable('command');
+        )->getTable('cfg_commands');
         $tableResult = $this->getConnection()->createQueryTable(
-            'command',
-            'SELECT * FROM command'
+            'cfg_commands',
+            'SELECT * FROM cfg_commands'
         );
         $this->assertTablesEqual($dataset, $tableResult);
     }
@@ -194,10 +194,10 @@ class CommandTest extends DbTestCase
         /* Assert for test duplicate 1 in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/command.duplicate-1.xml'
-        )->getTable('command');
+        )->getTable('cfg_commands');
         $tableResult = $this->getConnection()->createQueryTable(
-            'command',
-            'SELECT * FROM command'
+            'cfg_commands',
+            'SELECT * FROM cfg_commands'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -205,10 +205,10 @@ class CommandTest extends DbTestCase
         /* Assert for test duplicate 2 in DB */
         $dataset = $this->createXmlDataSet(
             dirname(__DIR__) . '/data/command.duplicate-2.xml'
-        )->getTable('command');
+        )->getTable('cfg_commands');
         $tableResult = $this->getConnection()->createQueryTable(
-            'command',
-            'SELECT * FROM command'
+            'cfg_commands',
+            'SELECT * FROM cfg_commands'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -508,7 +508,7 @@ class CommandTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('command', Command::getTableName());
+        $this->assertEquals('cfg_commands', Command::getTableName());
     }
 
     public function testGetColumns()
