@@ -56,7 +56,7 @@ class TimeperiodTest extends DbTestCase
         );
         Timeperiod::insert($tpInsert);
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.insert.xml'
         );
     }
@@ -83,7 +83,7 @@ class TimeperiodTest extends DbTestCase
     {
         Timeperiod::delete(1);
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.delete.xml'
         );
     }
@@ -104,7 +104,7 @@ class TimeperiodTest extends DbTestCase
         );
         Timeperiod::update(1, $newInfo);
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.update.xml'
         );
     }
@@ -138,7 +138,7 @@ class TimeperiodTest extends DbTestCase
     {
         Timeperiod::duplicate(1);
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.duplicate-1.xml'
         );
     }
@@ -147,7 +147,7 @@ class TimeperiodTest extends DbTestCase
     {
         Timeperiod::duplicate(1, 2);
         $this->tableEqualsXml(
-            'timeperiod',
+            'cfg_timeperiods',
             dirname(__DIR__) . '/data/timeperiod.duplicate-2.xml'
         );
     }
@@ -489,7 +489,7 @@ class TimeperiodTest extends DbTestCase
 
     public function testGetTableName()
     {
-        $this->assertEquals('timeperiod', Timeperiod::getTableName());
+        $this->assertEquals('cfg_timeperiods', Timeperiod::getTableName());
     }
 
     public function testGetColumns()
