@@ -49,17 +49,20 @@ class ForbiddenChar implements Ivalidator
     {
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        
-        $stmt = $dbconn->query('SELECT illegal_object_name_chars FROM cfg_engine');
-        $charsFromDb = $stmt->fetch();
-        $illegalChars = str_split(html_entity_decode($charsFromDb['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
-        
         $forbiddenCharDetected = false;
-        $forbiddenCharsList = '';
-        foreach ($illegalChars as $char) {
-            if (strpos($value, $char) !== false) {
-                $forbiddenCharDetected = true;
-                $forbiddenCharsList .= $char.' ';
+        
+        $stmt = $dbconn->query("SELECT `value` FROM cfg_options where `key` = 'illegal_object_name_chars'");
+        $charsFromDb = $stmt->fetchAll();
+        
+        if (count($charsFromDb) > 0) {
+            $illegalChars = str_split(html_entity_decode($charsFromDb['value'], ENT_QUOTES, "UTF-8"));
+
+            $forbiddenCharsList = '';
+            foreach ($illegalChars as $char) {
+                if (strpos($value, $char) !== false) {
+                    $forbiddenCharDetected = true;
+                    $forbiddenCharsList .= $char.' ';
+                }
             }
         }
         

@@ -39,8 +39,8 @@ use \Centreon\Internal\Di;
 use \CentreonConfiguration\Models\Host;
 use \CentreonConfiguration\Models\Relation\Host\Contact;
 use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
-use \CentreonConfiguration\Models\Relation\Host\Hostchild;
-use \CentreonConfiguration\Models\Relation\Host\Hostparent;
+use \CentreonConfiguration\Models\Relation\Host\Hostchildren;
+use \CentreonConfiguration\Models\Relation\Host\Hostparents;
 use \CentreonConfiguration\Models\Relation\Host\Poller;
 use \CentreonConfiguration\Models\Timeperiod;
 use \CentreonConfiguration\Models\Command;
@@ -59,8 +59,8 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     public static $relationMap = array(
         'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
         'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
-        'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparent',
-        'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchild',
+        'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
+        'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_contacts' => '\CentreonConfiguration\Models\Relation\Host\Contact',
         'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
@@ -278,25 +278,25 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostparentList = Hostparent::getMergedParameters(
+        $HostparentsList = Hostparents::getMergedParameters(
             array('host_id', 'host_name'),
             array(),
             -1,
             0,
             null,
             "ASC",
-            array('host_hostparent_relation.host_host_id' => $requestParam['id']),
+            array('cfg_hosts_hostparents_relations.host_host_id' => $requestParam['id']),
             "AND"
         );
 
         $finalHostList = array();
-        foreach ($hostparentList as $hostparent) {
+        foreach ($HostparentsList as $Hostparents) {
             $finalHostList[] = array(
-                "id" => $hostparent['host_id'],
-                "text" => $hostparent['host_name'],
+                "id" => $Hostparents['host_id'],
+                "text" => $Hostparents['host_name'],
                 "theming" => HostRepository::getIconImage(
-                    $hostparent['host_name']
-                ).' '.$hostparent['host_name']
+                    $Hostparents['host_name']
+                ).' '.$Hostparents['host_name']
             );
         }
         
@@ -315,25 +315,25 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostchildList = Hostchild::getMergedParameters(
+        $HostchildrenList = Hostchildren::getMergedParameters(
             array('host_id', 'host_name'),
             array(),
             -1,
             0,
             null,
             "ASC",
-            array('host_hostparent_relation.host_parent_hp_id' => $requestParam['id']),
+            array('cfg_hosts_hostparents_relations.host_parent_hp_id' => $requestParam['id']),
             "AND"
         );
 
         $finalHostList = array();
-        foreach ($hostchildList as $hostchild) {
+        foreach ($HostchildrenList as $Hostchildren) {
             $finalHostList[] = array(
-                "id" => $hostchild['host_id'],
-                "text" => $hostchild['host_name'],
+                "id" => $Hostchildren['host_id'],
+                "text" => $Hostchildren['host_name'],
                 "theming" => HostRepository::getIconImage(
-                    $hostchild['host_name']
-                ).' '.$hostchild['host_name']
+                    $Hostchildren['host_name']
+                ).' '.$Hostchildren['host_name']
             );
         }
         

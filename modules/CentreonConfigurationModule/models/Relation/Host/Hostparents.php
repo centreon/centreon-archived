@@ -39,11 +39,11 @@ namespace CentreonConfiguration\Models\Relation\Host;
 
 use \Centreon\Models\CentreonRelationModel;
 
-class Hostchild extends CentreonRelationModel
+class Hostparents extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_hosts_hostparents_relations";
-    protected static $firstKey = "cfg_hosts_hosts_id";
-    protected static $secondKey = "cfg_hosts_parent_hp_id";
+    protected static $firstKey = "host_parent_hp_id";
+    protected static $secondKey = "host_host_id";
     public static $firstObject = "\CentreonConfiguration\Models\Host";
     public static $secondObject = "\CentreonConfiguration\Models\Host";
     
@@ -63,32 +63,6 @@ class Hostchild extends CentreonRelationModel
         $stmt->execute(array($skey, $fkey));
     }
     
-    /**
-     * Used for deleting relation from database
-     *
-     * @param int $fkey
-     * @param int $skey
-     * @return void
-     */
-    public static function delete($skey, $fkey = null)
-    {
-        if (isset($fkey) && isset($skey)) {
-            $sql = "DELETE FROM " . static::$relationTable .
-                "WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
-            $args = array($fkey, $skey);
-        } elseif (isset($skey)) {
-            $sql = "DELETE FROM " . static::$relationTable . " WHERE ". static::$secondKey . " = ?";
-            $args = array($skey);
-        } else {
-            $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
-            $args = array($fkey);
-        }
-        
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare($sql);
-        $stmt->execute($args);
-    }
-
     /**
      * Get Merged Parameters from seperate tables
      *

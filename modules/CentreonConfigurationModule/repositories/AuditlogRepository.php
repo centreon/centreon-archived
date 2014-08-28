@@ -89,17 +89,19 @@ class AuditlogRepository
         $dbconn->beginTransaction();
         $stmt = $dbconn->prepare($query);
         foreach ($objValues as $name => $value) {
-            try {
-                $stmt->bindParam(':field_name', $name, \PDO::PARAM_STR);
-                if (is_array($value)) {
-                    $value = implode(',', $value);
+            if (!is_null($value)) {
+                try {
+                    $stmt->bindParam(':field_name', $name, \PDO::PARAM_STR);
+                    if (is_array($value)) {
+                        $value = implode(',', $value);
+                    }
+                    $stmt->bindParam(':field_value', $value, \PDO::PARAM_STR);
+                    $stmt->bindParam(':action_id', $actionId, \PDO::PARAM_INT);
+                    $stmt->execute();
+                } catch (\Exception $e) {
+                    $dbconn->rollback();
+                    throw $e;
                 }
-                $stmt->bindParam(':field_value', $value, \PDO::PARAM_STR);
-                $stmt->bindParam(':action_id', $actionId, \PDO::PARAM_INT);
-                $stmt->execute();
-            } catch (\Exception $e) {
-                $dbconn->rollback();
-                throw $e;
             }
         }
         $dbconn->commit();

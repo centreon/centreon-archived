@@ -54,8 +54,8 @@ class Hosttemplate extends \Centreon\Models\CentreonBaseModel
         "\CentreonConfiguration\Models\Relation\Host\Poller",
         "\CentreonConfiguration\Models\Relation\Host\Hostcategory",
         "\CentreonConfiguration\Models\Relation\Host\Service",
-        "\CentreonConfiguration\Models\Relation\Host\Hostparent",
-        "\CentreonConfiguration\Models\Relation\Host\Hostchild"
+        "\CentreonConfiguration\Models\Relation\Host\Hostparents",
+        "\CentreonConfiguration\Models\Relation\Host\Hostchildren"
     );
     
     /**
