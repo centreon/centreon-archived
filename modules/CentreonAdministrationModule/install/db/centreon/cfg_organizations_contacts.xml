@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="centreon" package"centreon_administration" defaultIdMethod="native">
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
     <table name="cfg_organizations_contacts_relation" phpName="OrganizationsContactsRelation" idMethod="native">
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true"/>
