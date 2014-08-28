@@ -46,7 +46,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
      *
      * @var string
      */
-    public static $tableName = 'host';
+    public static $tableName = 'cfg_hosts';
     
     /**
      *
@@ -106,7 +106,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM host WHERE host_activate = '1' AND host_register = '0' ORDER BY host_name";
+        $query = "SELECT $field FROM cfg_hosts WHERE host_activate = '1' AND host_register = '0' ORDER BY host_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -189,7 +189,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         
         /* Get information into the database. */
         $query = "SELECT host_tpl_id, host_name, `order` "
-            . "FROM host h, host_template_relation hr "
+            . "FROM cfg_hosts h, cfg_hosst_templates_relations hr "
             . "WHERE h.host_id = hr.host_tpl_id "
             . "AND hr.host_host_id = '$host_id' "
             . "AND host_activate = '1' "
@@ -223,7 +223,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         
         /* Get information into the database. */
         $query = "SELECT host_tpl_id, host_name, host_id, `order` "
-            . "FROM host h, host_template_relation hr "
+            . "FROM cfg_hosts h, cfg_hosts_templates_relations hr "
             . "WHERE h.host_id = hr.host_tpl_id "
             . "AND hr.host_host_id = '$host_id' "
             . "AND host_activate = '1' "
@@ -255,7 +255,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         $contactList = "";
 
         $query = "SELECT contact_alias "
-            . "FROM contact c, contact_host_relation ch "
+            . "FROM cfg_contacts c, cfg_contacts_hosts_relations ch "
             . "WHERE host_host_id = '$host_id' "
             . "AND c.contact_id = ch.contact_id "
             . "ORDER BY contact_alias";
@@ -285,7 +285,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         $contactgroupList = "";
 
         $query = "SELECT cg_name "
-            . "FROM contactgroup cg, contactgroup_host_relation cgh "
+            . "FROM cfg_contactgroups cg, cfg_contactgroups_hosts_relations cgh "
             . "WHERE host_host_id = '$host_id' "
             . "AND cg.cg_id = cgh.contactgroup_cg_id "
             . "ORDER BY cg_name";

@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Contact extends CentreonRelationModel
 {
-    protected static $relationTable = "contact_host_relation";
+    protected static $relationTable = "cfg_contacts_hosts_relations";
     protected static $firstKey = "contact_id";
     protected static $secondKey = "host_host_id";
     public static $firstObject = "\CentreonConfiguration\Models\Contact";

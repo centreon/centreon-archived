@@ -73,13 +73,13 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
                 ((object_type = 'host' AND
                 object_id IN (
                     SELECT host_host_id
-                        FROM centreon.ns_host_relation
+                        FROM centreon.cfg_engine_hosts_relations
                         WHERE engine_server_id = '$poller_id'
                 )) OR
                     (object_type = 'service') AND
                         object_id IN (
                     SELECT service_service_id
-                    FROM centreon.ns_host_relation nhr, centreon.host_service_relation hsr
+                    FROM centreon.cfg_engine_hosts_relations nhr, centreon.cfg_hosts_services_relations hsr
                     WHERE engine_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id
         ))";
         $DBRESULT = $dbconnStorage->query($request);

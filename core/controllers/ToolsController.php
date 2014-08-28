@@ -88,7 +88,7 @@ class ToolsController extends \Centreon\Internal\Controller
         $params = $router->request()->paramsNamed();
         $filename = $params['image'] . $params['format'];
         $query = 'SELECT binary_content, mimetype
-            FROM binaries
+            FROM cfg_binaries
             WHERE filename = :filename
                 AND filetype = 1';
         $stmt = $dbconn->prepare($query);
@@ -154,7 +154,7 @@ class ToolsController extends \Centreon\Internal\Controller
         }
         
         $query = 'SELECT `checksum` 
-            FROM `binaries`
+            FROM `cfg_binaries`
             WHERE `checksum` = :checksum
             AND `mimetype` = :mimetype';
         $stmt = $dbconn->prepare($query);

@@ -62,7 +62,7 @@ class ConfigCorrelationRepository
 
         /* Declare Host */
         $query = "SELECT host_id, engine_server_id "
-            . "FROM host, ns_host_relation "
+            . "FROM host, cfg_engine_hosts_relations "
             . "WHERE host_host_id = host_id ORDER BY host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -74,7 +74,7 @@ class ConfigCorrelationRepository
         
         /* Declare Service */
         $query = "SELECT service_id, host_id, engine_server_id "
-            . "FROM host, service, host_service_relation ns, ns_host_relation hp "
+            . "FROM host, service, cfg_hosts_services_relations ns, cfg_engine_hosts_relations hp "
             . "WHERE host_id = ns.host_host_id "
             . "AND service_id = ns.service_service_id AND hp.host_host_id = host_id";
         $stmt = $dbconn->query($query);

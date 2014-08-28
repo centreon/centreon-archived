@@ -40,7 +40,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Hosttemplate extends CentreonRelationModel
 {
-    protected static $relationTable = "host_service_relation";
+    protected static $relationTable = "cfg_hosts_services_relations";
     protected static $firstKey = "service_service_id";
     protected static $secondKey = "host_host_id";
     public static $firstObject = "\CentreonConfiguration\Models\Servicetemplate";

@@ -153,7 +153,7 @@ class Generator
             }
             
             $blockQuery = 'SELECT block_id, name '
-            . 'FROM cg_forms_blocks '
+            . 'FROM cfg_forms_blocks '
             . 'WHERE section_id='.$section['section_id'].' '
             . 'ORDER BY rank ASC';
             
@@ -166,7 +166,7 @@ class Generator
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
                     . 'f.type, f.help, f.help_url, f.advanced, mandatory, parent_field, child_actions '
-                    . 'FROM cfg_forms_fields f, cg_forms_blocks_fields_relations bfr '
+                    . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
                     . 'ORDER BY rank ASC';

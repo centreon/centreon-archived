@@ -41,9 +41,9 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Hostchild extends CentreonRelationModel
 {
-    protected static $relationTable = "host_hostparent_relation";
-    protected static $firstKey = "host_host_id";
-    protected static $secondKey = "host_parent_hp_id";
+    protected static $relationTable = "cfg_hosts_hostparents_relations";
+    protected static $firstKey = "cfg_hosts_hosts_id";
+    protected static $secondKey = "cfg_hosts_parent_hp_id";
     public static $firstObject = "\CentreonConfiguration\Models\Host";
     public static $secondObject = "\CentreonConfiguration\Models\Host";
     
@@ -129,7 +129,7 @@ class Hostchild extends CentreonRelationModel
         }
         
         $sql = "SELECT ".$fString.$sString."
-        		FROM host, ".static::$relationTable."
+        		FROM cfg_hosts, ".static::$relationTable."
         		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
                 ." = ".static::$relationTable.".".static::$firstKey;
         $filterTab = array();

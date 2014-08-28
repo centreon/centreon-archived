@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Hostcategory extends CentreonRelationModel
 {
-    protected static $relationTable = "hostcategories_relation";
+    protected static $relationTable = "cfg_hostcategories_relations";
     protected static $firstKey = "hostcategories_hc_id";
     protected static $secondKey = "host_host_id";
     public static $firstObject = "\CentreonConfiguration\Models\Hostcategory";

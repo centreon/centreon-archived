@@ -195,7 +195,7 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
         $this->output[] = _("Generated servicegroups.cfg");
 
         /* Templates config files */
-        HosttemplateRepository::generate(
+        HostTemplateRepository::generate(
             $this->filesDir,
             $this->pollerId,
             $this->path,
