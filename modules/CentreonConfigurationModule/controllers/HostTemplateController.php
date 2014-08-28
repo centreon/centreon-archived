@@ -292,25 +292,25 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
         
         $requestParam = $this->getParams('named');
         
-        $hostparentList = Hostparent::getMergedParameters(
+        $HostparentsList = Hostparents::getMergedParameters(
             array('host_id', 'host_name'),
             array(),
             -1,
             0,
             null,
             "ASC",
-            array('host_hostparent_relation.host_host_id' => $requestParam['id']),
+            array('cfg_hosts_hostparents_relations.host_host_id' => $requestParam['id']),
             "AND"
         );
 
         $finalHostList = array();
-        foreach ($hostparentList as $hostparent) {
+        foreach ($HostparentsList as $Hostparents) {
             $finalHostList[] = array(
-                "id" => $hostparent['host_id'],
-                "text" => $hostparent['host_name'],
+                "id" => $Hostparents['host_id'],
+                "text" => $Hostparents['host_name'],
                 "theming" => \Centreon\Repository\HostRepository::getIconImage(
-                    $hostparent['host_name']
-                ).' '.$hostparent['host_name']
+                    $Hostparents['host_name']
+                ).' '.$Hostparents['host_name']
             );
         }
         
@@ -329,25 +329,25 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
         
         $requestParam = $this->getParams('named');
         
-        $hostchildList = Hostchild::getMergedParameters(
+        $HostchildrenList = Hostchildren::getMergedParameters(
             array('host_id', 'host_name'),
             array(),
             -1,
             0,
             null,
             "ASC",
-            array('host_hostparent_relation.host_parent_hp_id' => $requestParam['id']),
+            array('cfg_hosts_hostparents_relations.host_parent_hp_id' => $requestParam['id']),
             "AND"
         );
 
         $finalHostList = array();
-        foreach ($hostchildList as $hostchild) {
+        foreach ($HostchildrenList as $Hostchildren) {
             $finalHostList[] = array(
-                "id" => $hostchild['host_id'],
-                "text" => $hostchild['host_name'],
+                "id" => $Hostchildren['host_id'],
+                "text" => $Hostchildren['host_name'],
                 "theming" => \Centreon\Repository\HostRepository::getIconImage(
-                    $hostchild['host_name']
-                ).' '.$hostchild['host_name']
+                    $Hostchildren['host_name']
+                ).' '.$Hostchildren['host_name']
             );
         }
         

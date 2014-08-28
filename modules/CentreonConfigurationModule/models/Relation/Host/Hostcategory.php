@@ -144,7 +144,7 @@ class Hostcategory extends CentreonRelationModel
             $args = array($fkey);
         }
         
-        $sql .= "AND host_host_id IN (SELECT host_id FROM host WHERE host.host_register = '1')";
+        $sql .= "AND host_host_id IN (SELECT host_id FROM cfg_hosts WHERE cfg_hosts.host_register = '1')";
         
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
