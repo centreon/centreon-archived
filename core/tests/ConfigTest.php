@@ -64,7 +64,7 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
         if (is_null($this->conn)) {
             $dbconn = new \Centreon\Internal\Db('sqlite::memory:');
             $dbconn->exec(
-                "CREATE TABLE IF NOT EXISTS `options` (
+                "CREATE TABLE IF NOT EXISTS `cfg_options` (
                 `group` VARCHAR(255) NOT NULL DEFAULT 'default',
                 `key` VARCHAR(255) NULL,
                 `value` VARCHAR(255) NULL
@@ -120,8 +120,8 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
         $config->loadFromDb();
         $config->set('default', 'variable2', 'test');
         $this->assertEquals('test', $config->get('default', 'variable2'));
-        $datasetDb = $this->getConnection()->createQueryTable('options', 'SELECT * FROM options');
-        $datasetTest = $this->createFlatXmlDataSet($this->datadir . '/test-config-set.xml')->getTable('options');
+        $datasetDb = $this->getConnection()->createQueryTable('cfg_options', 'SELECT * FROM cfg_options');
+        $datasetTest = $this->createFlatXmlDataSet($this->datadir . '/test-config-set.xml')->getTable('cfg_options');
         $this->assertTablesEqual($datasetTest, $datasetDb);
     }
 

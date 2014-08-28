@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <dataset>
-    <options group="default" key="variable1" value="value1"/>
-    <options group="default" key="variable2" value="value2"/>
+    <cfg_options group="default" key="variable1" value="value1"/>
+    <cfg_options group="default" key="variable2" value="value2"/>
 </dataset>
