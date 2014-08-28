@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <dataset>
-  <traps_vendor
+  <cfg_traps_vendors
     id="1"
     name="Generic"
     alias="Generic"
     description="References Generic Traps"/>
-  <traps_vendor
+  <cfg_traps_vendors
     id="2"
     name="Cisco"
     alias="Cisco Networks"
     description=""/>
-  <traps_vendor
+  <cfg_traps_vendors
     id="3"
     name="HP"
     alias="HP Networks"
     description=""/>
-  <traps_vendor
+  <cfg_traps_vendors
     id="5"
     name="Linksys"
     alias="Linksys"

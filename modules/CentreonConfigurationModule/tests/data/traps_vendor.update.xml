@@ -1,26 +1,26 @@
 <?xml version="1.0"?>
 <dataset>
-  <traps_vendor
+  <cfg_traps_vendors
     id="1"
     name="Centreon Generic Traps"
     alias="Centreon Generic Traps"
     description="References Generic Traps for Centreon"/>
-  <traps_vendor
+  <cfg_traps_vendors
     id="2"
     name="Cisco"
     alias="Cisco Networks"
     description=""/>
-  <traps_vendor
+  <cfg_traps_vendors
     id="3"
     name="HP"
     alias="HP Networks"
     description=""/>
-  <traps_vendor
+  <cfg_traps_vendors
     id="4"
     name="3com"
     alias="3com"
     description=""/>
-  <traps_vendor
+  <cfg_traps_vendors
     id="5"
     name="Linksys"
     alias="Linksys"

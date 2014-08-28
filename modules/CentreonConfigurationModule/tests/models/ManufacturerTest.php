@@ -56,10 +56,10 @@ class ManufacturerTest extends DbTestCase
         /* Assert for test insert in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/traps_vendor.insert.xml'
-        )->getTable('traps_vendor');
+        )->getTable('cfg_traps_vendors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'cfg_traps_vendors',
+            'SELECT * FROM cfg_traps_vendors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
 
@@ -97,10 +97,10 @@ class ManufacturerTest extends DbTestCase
         /* Assert for test delete in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/traps_vendor.delete.xml'
-        )->getTable('traps_vendor');
+        )->getTable('cfg_traps_vendors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'cfg_traps_vendors',
+            'SELECT * FROM cfg_traps_vendors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -125,10 +125,10 @@ class ManufacturerTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/traps_vendor.update.xml'
-        )->getTable('traps_vendor');
+        )->getTable('cfg_traps_vendors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'cfg_traps_vendors',
+            'SELECT * FROM cfg_traps_vendors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -177,10 +177,10 @@ class ManufacturerTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/traps_vendor.duplicate-1.xml'
-        )->getTable('traps_vendor');
+        )->getTable('cfg_traps_vendors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'cfg_traps_vendors',
+            'SELECT * FROM cfg_traps_vendors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -188,10 +188,10 @@ class ManufacturerTest extends DbTestCase
         /* Assert for test update in DB */
         $dataset = $this->createFlatXmlDataSet(
             dirname(__DIR__) . '/data/traps_vendor.duplicate-2.xml'
-        )->getTable('traps_vendor');
+        )->getTable('cfg_traps_vendors');
         $tableResult = $this->getConnection()->createQueryTable(
-            'traps_vendor',
-            'SELECT * FROM traps_vendor'
+            'cfg_traps_vendors',
+            'SELECT * FROM cfg_traps_vendors'
         );
         $this->assertTablesEqual($dataset, $tableResult);
         
@@ -265,7 +265,7 @@ class ManufacturerTest extends DbTestCase
     
     public function testGetTableName()
     {
-        $this->assertEquals('traps_vendor', Manufacturer::getTableName());
+        $this->assertEquals('cfg_traps_vendors', Manufacturer::getTableName());
     }
 
     public function testGetColumns()
