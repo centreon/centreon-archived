@@ -42,7 +42,7 @@ use \Centreon\Models\CentreonRelationModel;
 class Contact extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_acl_group_contacts_relations";
-    protected static $firstKey = "cfg_acl_group_id";
+    protected static $firstKey = "acl_group_id";
     protected static $secondKey = "contact_contact_id";
     public static $firstObject =  "\CentreonConfiguration\Models\Acl\Group";
     public static $secondObject = "\CentreonConfiguration\Models\Contact";

@@ -68,7 +68,7 @@ class Command extends CentreonRelationModel
      */
     public static function delete($skey, $fkey = null)
     {
-        $sql = "UPDATE command SET connector_id = NULL WHERE connector_id = ?";
+        $sql = "UPDATE cfg_commands SET connector_id = NULL WHERE connector_id = ?";
         $args = array($skey);
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);

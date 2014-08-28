@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Icon extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_services_templates_relation";
+    protected static $relationTable = "cfg_services_images_relations";
     protected static $firstKey = "service_id";
     protected static $secondKey = "service_tpl_id";
     public static $firstObject = "\CentreonConfiguration\Models\Service";
@@ -55,7 +55,7 @@ class Icon extends CentreonRelationModel
     public static function insert($fkey, $skey = null)
     {
         if (isset($skey) && is_numeric($skey)) {
-            $sql = 'INSERT INTO service_image_relation(service_id, binary_id) VALUES(?, ?)';
+            $sql = 'INSERT INTO cfg_services_images_relations(service_id, binary_id) VALUES(?, ?)';
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare($sql);
             $stmt->execute(array($fkey, $skey));
@@ -69,7 +69,7 @@ class Icon extends CentreonRelationModel
      */
     public static function delete($fkey, $skey = null)
     {
-        $sql = 'DELETE FROM service_image_relation WHERE service_id = ?';
+        $sql = 'DELETE FROM cfg_services_images_relations WHERE service_id = ?';
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey));
@@ -83,7 +83,7 @@ class Icon extends CentreonRelationModel
      */
     public static function getIconForService($hostId, $limit = 1)
     {
-        $sql = "SELECT b.binary_id, b.filename FROM cfg_binaries b, service_image_relation hir "
+        $sql = "SELECT b.binary_id, b.filename FROM cfg_binaries b, cfg_services_images_relations hir "
             . "WHERE hir.service_id = ? "
             . "AND filetype = 1 "
             . "AND hir.binary_id = b.binary_id "

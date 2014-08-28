@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
-    <table name="cfg_servicegroups_relation" phpName="ServicegroupRelation" idMethod="native">
+    <table name="cfg_servicegroups_relations" phpName="ServicegroupRelation" idMethod="native">
         <column name="sgr_id" phpName="SgrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="host_host_id" phpName="HostHostId" type="INTEGER" required="false"/>
         <column name="hostgroup_hg_id" phpName="HostgroupHgId" type="INTEGER" required="false"/>

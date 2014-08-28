@@ -46,189 +46,13 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'contact';
+    public static $tableName = 'cfg_contacts';
     
     /**
      *
      * @var string
      */
     public static $objectName = 'User';
-    
-    /**
-     *
-     * @var array Main database field to get
-     */
-    public static $datatableColumn = array(
-        '<input id="allContact" class="allContact" type="checkbox">' => 'contact_id',
-        'Alias / Login' => 'contact_alias',
-        'Full name' => 'contact_name',
-        'Email' => 'contact_email',
-        'Notifications Period' => array(
-            'Hosts' => 'contact_host_notification_options',
-            'Services' => 'contact_service_notification_options'
-        ),
-        'Language' => 'contact_lang',
-        'Access' => 'contact_oreon',
-        'Admin' => 'contact_admin',
-        'Status' => 'contact_activate'
-    );
-    
-    /**
-     *
-     * @var array Column name for the search index
-     */
-    public static $researchIndex = array(
-        'contact_id',
-        'contact_alias',
-        'contact_name',
-        'contact_email',
-        'contact_host_notification_options',
-        'contact_service_notification_options',
-        'contact_lang',
-        'contact_oreon',
-        'contact_admin',
-        'contact_activate'
-    );
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = "contact_register = '1' ";
-    
-    /**
-     * @inherit doc
-     * @var array 
-     */
-    public static $columnCast = array(
-        'contact_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::contact_name::'
-            )
-        ),
-        'contact_admin' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">No</span>',
-                '1' => '<span class="label label-success">Yes</span>'
-            )
-        ),
-        'contact_oreon' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>'
-            )
-        ),
-        'contact_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>'
-            )
-        ),
-        'contact_alias' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/user/[i:id]',
-                'routeParams' => array(
-                    'id' => '::contact_id::'
-                ),
-                'linkName' => '::contact_alias::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'text',
-        'text',
-        'text',
-        'none',
-        'none',
-        'text',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        ),
-        array(
-            'select' => array(
-                'Yes' => '1',
-                'No' => '0'
-            )
-        ),
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'text',
-        'text',
-        'text',
-        'none',
-        'none',
-        'text',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        ),
-        array(
-            'select' => array(
-                'Yes' => '1',
-                'No' => '0'
-            )
-        ),
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-    
-    /**
-     * 
-     * @param array $resultSet
-     */
-    public static function formatDatas(&$resultSet)
-    {
-        foreach ($resultSet as &$myUserSet) {
-            insertAfter(
-                $myUserSet,
-                'contact_email',
-                array(
-                    'contact_host_notification_options' => self::getNotificationInfos(
-                        $myUserSet['contact_id'],
-                        'host'
-                    ),
-                    'contact_service_notification_options' => self::getNotificationInfos(
-                        $myUserSet['contact_id'],
-                        'service'
-                    )
-                )
-            );
-
-            $myUserSet['contact_alias'] = self::getUserIcon($myUserSet['contact_alias'], $myUserSet['contact_email']);
-        }
-    }
     
     /**
      * 
@@ -249,7 +73,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         }
         
         $query = "SELECT tp_name, contact_".$object."_notification_options "
-            . "FROM contact, timeperiod "
+            . "FROM cfg_contacts, cfg_timeperiods "
             . "WHERE contact_id='$contactId' "
             . "AND tp_id = $ctp" ;
         
@@ -300,7 +124,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM contact WHERE contact_activate = '1' ORDER BY contact_name";
+        $query = "SELECT $field FROM cfg_contacts WHERE contact_activate = '1' ORDER BY contact_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -348,7 +172,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         /* Launch Request */
-        $query = "SELECT command_name FROM contact_".$type."commands_relation, command "
+        $query = "SELECT command_name FROM contacts_".$type."commands_relation, cfg_commands "
             . "WHERE contact_contact_id = $contact_id AND command_command_id = command_id";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
@@ -370,7 +194,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         $dbconn = $di->get('db_centreon');
 
         /* Launch Request */
-        $query = "SELECT cg_name FROM contactgroup_contact_relation cgr, contactgroup cg "
+        $query = "SELECT cg_name FROM cfg_contactgroups_contacts_relations cgr, cfg_contactgroups cg "
             . "WHERE contact_contact_id = ".$contact_id." AND cgr.contactgroup_cg_id = cg.cg_id";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();

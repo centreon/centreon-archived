@@ -306,24 +306,27 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             // Set Tpl Chain
             $tplStr = null;
             $tplArr = ServiceRepository::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
-            $tplRoute = str_replace(
-                "//",
-                "/",
-                $router->getPathFor(
-                    '/configuration/servicetemplate/[i:id]',
-                    array('id' => $tplArr['id'])
-                )
-            );
             
-            $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/configuration/servicetemplate/viewconf/').
-                $myServiceSet['service_template_model_stm_id'].
-                '"><a href="'.
-                $tplRoute.
-                '" class="overlay">'.
-                $tplArr['description'].
-                '</a></span>';
-            
-            $myServiceSet['service_template_model_stm_id'] = $tplStr;
+            if (!is_null($tplArr)) {
+                $tplRoute = str_replace(
+                    "//",
+                    "/",
+                    $router->getPathFor(
+                        '/configuration/servicetemplate/[i:id]',
+                        array('id' => $tplArr['id'])
+                    )
+                );
+
+                $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/configuration/servicetemplate/viewconf/').
+                    $myServiceSet['service_template_model_stm_id'].
+                    '"><a href="'.
+                    $tplRoute.
+                    '" class="overlay">'.
+                    $tplArr['description'].
+                    '</a></span>';
+
+                $myServiceSet['service_template_model_stm_id'] = $tplStr;
+            }
             
             $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
                 '/configuration/service/snapshot/'

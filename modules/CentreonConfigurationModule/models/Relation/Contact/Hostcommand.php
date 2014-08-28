@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Hostcommand extends CentreonRelationModel
 {
-    protected static $relationTable = "contact_hostcommands_relation";
+    protected static $relationTable = "cfg_contacts_hostcommands_relations";
     protected static $firstKey = "command_command_id";
     protected static $secondKey = "contact_contact_id";
     public static $firstObject = "\CentreonConfiguration\Models\Command";

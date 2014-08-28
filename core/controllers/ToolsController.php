@@ -224,9 +224,9 @@ class ToolsController extends \Centreon\Internal\Controller
                         }
 
                         // Redimensionnement
-                        $image_p = imagecreatetruecolor($new_width, $new_height);
+                        $image_p = \imagecreatetruecolor($new_width, $new_height);
                         $image = $imageCreateFunction($fileDestination);
-                        imagecopyresampled($image_p, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+                        \imagecopyresampled($image_p, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
                         $imageGenerateFunction($image_p, $thumbDestination);
                         
                         $fileUploadResult['thumbnailUrl'] = $thumbBaseUrl.$uploadedFile['name'];
