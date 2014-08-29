@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Contactgroup extends CentreonRelationModel
 {
-    protected static $relationTable = "contactgroup_service_relation";
+    protected static $relationTable = "cfg_contactgroups_services_relations";
     protected static $firstKey = "contactgroup_cg_id";
     protected static $secondKey = "service_service_id";
     public static $firstObject = "\CentreonConfiguration\Models\Contactgroup";

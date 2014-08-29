@@ -41,7 +41,7 @@ use \Centreon\Models\CentreonRelationModel;
 
 class Servicecategory extends CentreonRelationModel
 {
-    protected static $relationTable = "servicecategories_relation";
+    protected static $relationTable = "cfg_servicecategories_relations";
     protected static $firstKey = "sc_id";
     protected static $secondKey = "service_service_id";
     public static $firstObject = "\CentreonConfiguration\Models\Servicecategory";

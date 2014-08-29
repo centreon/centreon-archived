@@ -46,7 +46,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
      *
      * @var string
      */
-    public static $tableName = 'service';
+    public static $tableName = 'cfg_services';
     
     /**
      *
@@ -72,7 +72,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         }
 
         /* Get information into the database. */
-        $query = "SELECT service_description FROM service WHERE service_id = '$template_id' AND service_register = '0'";
+        $query = "SELECT service_description FROM cfg_services WHERE service_id = '$template_id' AND service_register = '0'";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -139,7 +139,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         
         /* Get information into the database. */
         $query = "SELECT $field "
-            . "FROM service "
+            . "FROM cfg_services "
             . "WHERE service_activate = '1' "
             . "AND service_register = '0' "
             . "ORDER BY service_description";
@@ -233,7 +233,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         $contactList = "";
 
         $query = "SELECT contact_alias "
-            . "FROM contact c, contact_service_relation cs "
+            . "FROM cfg_contacts c, cfg_contacts_services_relations cs "
             . "WHERE service_service_id = '$service_id' "
             . "AND c.contact_id = ccontact_id "
             . "ORDER BY contact_alias";
@@ -263,7 +263,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         $contactgroupList = "";
 
         $query = "SELECT cg_name "
-            . "FROM contactgroup cg, contactgroup_service_relation cgs "
+            . "FROM cfg_contactgroups cg, cfg_contactgroups_services_relations cgs "
             . "WHERE service_service_id = '$service_id' "
             . "AND cg.cg_id = cgs.contactgroup_cg_id "
             . "ORDER BY cg_name";
@@ -290,7 +290,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         $dbconn = $di->get('db_centreon');
         
         $stmt = $dbconn->query(
-            "SELECT service_description FROM service WHERE service_id = '".$service_template_id."' LIMIT 1"
+            "SELECT service_description FROM cfg_services WHERE service_id = '".$service_template_id."' LIMIT 1"
         );
         
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);

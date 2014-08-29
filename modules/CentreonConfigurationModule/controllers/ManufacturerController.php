@@ -43,6 +43,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $datatableObject = '\CentreonConfiguration\Internal\ManufacturerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Manufacturer';
     protected $repository = '\CentreonConfiguration\Repository\ManufacturerRepository';
+    public static $relationMap = array();
 
     /**
      * List manufacturers

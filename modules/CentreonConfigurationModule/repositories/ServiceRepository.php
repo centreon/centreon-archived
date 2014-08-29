@@ -46,7 +46,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'service';
+    public static $tableName = 'cfg_services';
     
     /**
      *
@@ -96,7 +96,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                 "SELECT "
                 . "`".$field."`, "
                 . "service_template_model_stm_id "
-                . "FROM service "
+                . "FROM cfg_services "
                 . "WHERE "
                 . "service_id = '".$service_id."' LIMIT 1"
             );
@@ -131,7 +131,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
                 "SELECT "
                 . "service_notifications_enabled, "
                 . "service_template_model_stm_id "
-                . "FROM service "
+                . "FROM cfg_services "
                 . "WHERE "
                 . "service_id = '".$service_id."' LIMIT 1"
             );
@@ -156,15 +156,18 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         // Initializing connection
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
+        $tplArr = null;
         
         $stmt = $dbconn->query(
-            "SELECT service_description FROM service WHERE service_id = '".$service_template_id."' LIMIT 1"
+            "SELECT service_description FROM cfg_services WHERE service_id = '".$service_template_id."' LIMIT 1"
         );
         $row = $stmt->fetchAll();
-        $tplArr = array(
-            'id' => $service_template_id,
-            'description' => \html_entity_decode(self::db2str($row[0]["service_description"]), ENT_QUOTES, "UTF-8")
-        );
+        if (count($row) > 0) {
+            $tplArr = array(
+                'id' => $service_template_id,
+                'description' => \html_entity_decode(self::db2str($row[0]["service_description"]), ENT_QUOTES, "UTF-8")
+            );
+        }
         return $tplArr;
     }
     
@@ -199,7 +202,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
             $stmt = $dbconn->query(
                 "SELECT "
                 . "service_alias, service_template_model_stm_id "
-                . "FROM service "
+                . "FROM cfg_services "
                 . "WHERE "
                 . "service_id = '".$service_id."' LIMIT 1"
             );
@@ -235,7 +238,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         while (1) {
             $stmt = $dbconn->query(
                 "SELECT b.filename, s.service_template_model_stm_id "
-                . "FROM service s, service_image_relation sir, binaries b "
+                . "FROM cfg_services s, cfg_services_images_relations sir, cfg_binaries b "
                 . "WHERE s.service_id = '$service_id' "
                 . "AND s.service_id = sir.service_id"
             );
@@ -322,7 +325,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         
         /* Get information into the database. */
         $query = "SELECT $field "
-            . "FROM host h, service s, cfg_hosts_services_relations r "
+            . "FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations r "
             . "WHERE h.host_id = $host_id "
             . "AND h.host_id = r.host_host_id "
             . "AND s.service_id = r.service_service_id "
@@ -413,7 +416,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         $contactList = "";
 
         $query = "SELECT contact_name "
-            . "FROM contact c, contact_service_relation cs "
+            . "FROM cfg_contacts c, cfg_contacts_services_relations cs "
             . "WHERE service_service_id = '$service_id' "
             . "AND c.contact_id = cs.contact_id "
             . "ORDER BY contact_alias";
@@ -443,7 +446,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
         $contactgroupList = "";
 
         $query = "SELECT cg_name "
-            . "FROM contactgroup cg, contactgroup_service_relation cgs "
+            . "FROM cfg_contactgroups cg, cfg_contactgroups_services_relations cgs "
             . "WHERE service_service_id = '$service_id' "
             . "AND cg.cg_id = cgs.contactgroup_cg_id "
             . "ORDER BY cg_name";

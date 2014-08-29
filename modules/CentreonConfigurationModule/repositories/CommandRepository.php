@@ -109,12 +109,18 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
         $dbconn = $di->get('db_centreon');
 
         $result = "";
+        
+        if ($object == 'host') {
+            $objectTable = 'cfg_hosts';
+        } elseif ($object == 'service') {
+            $objectTable = 'cfg_services';
+        }
 
         /* Get Object Stats */
         for ($i = 1; $i != -1; $i--) {
             $stmt = $dbconn->prepare(
                 "SELECT count(*) AS number "
-                . "FROM $object "
+                . "FROM $objectTable "
                 . "WHERE (command_command_id = '$id' "
                 . "OR command_command_id2 = '$id') "
                 . "AND ".$object."_register = '$i'"
