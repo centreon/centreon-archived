@@ -52,7 +52,7 @@ class AclmenuRepository
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $sql = "SELECT menu_id, acl_level
-            FROM acl_menu_menu_relations
+            FROM cfg_acl_menu_menu_relations
             WHERE acl_menu_id = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($acl_menu_id));
@@ -73,9 +73,9 @@ class AclmenuRepository
     public static function updateAclLevel($acl_menu_id, $menus)
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("DELETE FROM acl_menu_menu_relations WHERE acl_menu_id = ?");
+        $stmt = $db->prepare("DELETE FROM cfg_acl_menu_menu_relations WHERE acl_menu_id = ?");
         $stmt->execute(array($acl_menu_id));
-        $sql = "INSERT INTO acl_menu_menu_relations (acl_menu_id, menu_id, acl_level) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO cfg_acl_menu_menu_relations (acl_menu_id, menu_id, acl_level) VALUES (?, ?, ?)";
         $db->beginTransaction();
         $stmt = $db->prepare($sql);
         foreach ($menus as $menuId => $aclLevel) {
