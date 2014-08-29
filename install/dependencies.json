@@ -1,0 +1,15 @@
+[
+    "Core",
+    "fileinfo",
+    "gd",
+    "gettext",
+    "hash",
+    "json",
+    "libxml",
+    "PDO",
+    "pdo_mysql",
+    "Reflection",
+    "session",
+    "SPL",
+    "standard"
+]
