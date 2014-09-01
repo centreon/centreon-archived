@@ -57,6 +57,140 @@ abstract class CentreonModel
     protected static $databaseName = null;
 
     /**
+     * List all objects with all their parameters
+     * Data heavy, use with as many parameters as possible
+     * in order to limit it
+     *
+     * @param mixed $parameterNames
+     * @param int $count
+     * @param int $offset
+     * @param string $order
+     * @param string $sort
+     * @param array $filters
+     * @param string $filterType
+     * @return array
+     * @throws Exception
+     */
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
+            throw new Exception('Unknown filter type');
+        } elseif (is_array($filterType)) {
+            foreach ($filterType as $key => $type) {
+                if ($type != "OR" && $type != "AND") {
+                    throw new Exception('Unknown filter type');
+                }
+            }
+            /* Add default if not set */
+            if (!isset($filterType['*'])) {
+                $filterType['*'] = 'OR';
+            }
+        }
+        if (is_array($parameterNames)) {
+            $params = implode(",", $parameterNames);
+        } else {
+            $params = $parameterNames;
+        }
+        $sql = "SELECT $params FROM " . static::$table;
+        $filterTab = array();
+        $first = true;
+        if (count($filters)) {
+            foreach ($filters as $key => $rawvalue) {
+                if (is_array($rawvalue)) {
+                    $filterStr = "(";
+                    $filterStr .= join(" OR ",
+                        array_pad(array(), count($rawvalue), $key . " LIKE ?")
+                    );
+                    $filterStr .= ")";
+                    $filterTab = array_merge(
+                        $filterTab,
+                        array_map(
+                            array('\Centreon\Models\CentreonBaseModel', 'parseValueForSearch'),
+                            $rawvalue
+                        )
+                    );
+                } else {
+                    $filterStr = $key . " LIKE ?";
+                    $filterTab[] = CentreonBaseModel::parseValueForSearch($rawvalue);
+                }
+                if ($first) {
+                    $sql .= " WHERE " . $filterStr;
+                    $first = false;
+                } else {
+                    if (is_string($filterType)) {
+                        $sql .= " $filterType " . $filterStr;
+                    } elseif (is_array($filterType)) {
+                        if (isset($filterType[$key])) {
+                            $sql .= $filterType[$key] . " " . $filterStr;
+                        } else {
+                            $sql .= $filterType['*'] . " " . $filterStr;
+                        }
+                    }
+                }
+            }
+        }
+        if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
+            $sql .= " ORDER BY $order $sort ";
+        }
+        if (isset($count) && $count != -1) {
+            $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+            $sql = $db->limit($sql, $count, $offset);
+        }
+        return static::getResult($sql, $filterTab, "fetchAll");
+    }
+    
+    /**
+     * List all objects with all their parameters
+     * Data heavy, use with as many parameters as possible
+     * in order to limit it
+     *
+     * @param mixed $parameterNames
+     * @param int $count
+     * @param int $offset
+     * @param string $order
+     * @param string $sort
+     * @param array $filters
+     * @param string $filterType
+     * @return array
+     * @throws Exception
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $searchFilters = array();
+        foreach ($filters as $name => $values) {
+            if (is_array($values)) {
+                $searchFilters[$name] = array_map(function($value) {
+                    return '%' . $value . '%';
+                }, $values);
+            } else {
+                $searchFilters[$name] = '%' . $values . '%';
+            }
+        }
+        return static::getList(
+            $parameterNames,
+            $count,
+            $offset,
+            $order,
+            $sort,
+            $searchFilters,
+            $filterType);
+    }
+
+    /**
      * Get result
      *
      * @param string $sql The SQL query
