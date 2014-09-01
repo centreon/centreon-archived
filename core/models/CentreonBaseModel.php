@@ -44,7 +44,7 @@ use Centreon\Internal\Exception;
  *
  * @author sylvestre
  */
-abstract class CentreonBaseModel
+abstract class CentreonBaseModel extends CentreonModel
 {
     /**
      * Table name of the object
@@ -61,6 +61,13 @@ abstract class CentreonBaseModel
      */
     protected static $uniqueLabelField = null;
 
+    /**
+     * Database logical name
+     *
+     * @var string
+     */
+    protected static $databaseName = 'db_centreon';
+
 
     /**
      * Array of relation objects 
@@ -71,23 +78,6 @@ abstract class CentreonBaseModel
 
 
     const OBJ_NOT_EXIST = 'Object not in database.';
-
-    /**
-     * Get result from sql query
-     *
-     * @param string $sqlQuery
-     * @param array $sqlParams
-     * @param string $fetchMethod
-     * @return array
-     */
-    protected static function getResult($sqlQuery, $sqlParams = array(), $fetchMethod = "fetchAll")
-    {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare($sqlQuery);
-        $stmt->execute($sqlParams);
-        $result = $stmt->{$fetchMethod}(\PDO::FETCH_ASSOC);
-        return $result;
-    }
 
     /**
      * Set attribute properties
@@ -119,7 +109,7 @@ abstract class CentreonBaseModel
      */
     public static function insert($params = array())
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
         $sql = "INSERT INTO " . static::$table;
         $sqlFields = "";
         $sqlValues = "";
@@ -175,7 +165,7 @@ abstract class CentreonBaseModel
      */
     public static function delete($objectId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
         $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
@@ -224,7 +214,7 @@ abstract class CentreonBaseModel
         }
 
         if ($sqlUpdate) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
             $sqlParams[] = array('value' => $objectId, 'type' => \PDO::PARAM_INT);
             $sql .= $sqlUpdate . " WHERE " . static::$primaryKey . " =  ?";
             $stmt = $db->prepare($sql);
@@ -248,7 +238,7 @@ abstract class CentreonBaseModel
      */
     public static function duplicate($sourceObjectId, $duplicateEntries = 1)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
         $sourceParams = static::getParameters($sourceObjectId, "*");
         if (false === $sourceParams) {
             throw new Exception(static::OBJ_NOT_EXIST);
@@ -346,7 +336,10 @@ abstract class CentreonBaseModel
         if (false === $result) {
             throw new Exception(static::OBJ_NOT_EXIST);
         }
-        return $result;
+        if (count($result) !== 1) {
+            throw new Exception(static::OBJ_NOT_EXIST);
+        }
+        return $result[0];
     }
 
     /**
@@ -433,7 +426,7 @@ abstract class CentreonBaseModel
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
             $sql = $db->limit($sql, $count, $offset);
         }
         return static::getResult($sql, $filterTab, "fetchAll");
@@ -604,7 +597,7 @@ abstract class CentreonBaseModel
      */
     public static function isUnique($uniqueFieldvalue, $id = 0, $fieldName=null)
     {
-        $dbconn = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $dbconn = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
         /* Test if the field name is in unique field */
         if (false === is_null($fieldName)) {
             if (is_array(static::$uniqueLabelField) && false === in_array($fieldName, static::$uniqueLabelField)) {
@@ -664,7 +657,7 @@ abstract class CentreonBaseModel
      */
     public static function getColumns()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare("SHOW COLUMNS FROM " . static::$table);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -673,20 +666,5 @@ abstract class CentreonBaseModel
             $result[] = $row['Field'];
         }
         return $result;
-    }
-
-    /**
-     * Convert value for searching
-     *
-     * @param string $value The value to parse
-     * @return string
-     */
-    protected static function parseValueForSearch($value)
-    {
-        $value = trim($value);
-        $value = str_replace("\\", "\\\\", $value);
-        $value = str_replace("_", "\_", $value);
-        $value = str_replace(" ", "\ ", $value);
-        return $value;
     }
 }
