@@ -37,13 +37,17 @@
 
 namespace Centreon\Models;
 
+use \Centreon\Internal\Exception;
+
 /**
  * Centreon Object Relation
  *
  * @author sylvestre
  */
-abstract class CentreonRelationModel
+abstract class CentreonRelationModel extends CentreonModel
 {
+    protected static $errMsg = 'Object not in database.';
+
     /**
      * Relation Table
      */
@@ -71,19 +75,35 @@ abstract class CentreonRelationModel
     public static $secondObject = null;
 
     /**
+     * Database logical name
+     *
+     * @var string
+     */
+    protected static $databaseName = 'db_centreon';
+
+    /**
      * Used for inserting relation into database
      *
-     * @param int $fkey
-     * @param int $skey
-     * @return void
+     * @param int $fkey The value of first relation key
+     * @param int $skey The value of first relation key
+     * @param array $extra The list of key value for extra fields for the relation
      */
-    public static function insert($fkey, $skey = null)
+    public static function insert($fkey, $skey, $extra = array())
     {
-        $sql = "INSERT INTO " . static::$relationTable . " ( " . static::$firstKey . ", " . static::$secondKey . ") 
-            VALUES (?, ?)";
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+    	$sql = "INSERT INTO " . static::$relationTable . " ( " . static::$firstKey . ", " . static::$secondKey;
+        if (count($extra) > 0) {
+            $sql .= ", " . join(', ', array_keys($extra));
+        }
+        $sql .= ") VALUES (?, ?";
+        if (count($extra) > 0) {
+            $sql .= ", " . join(', ', array_fill(0, count($extra), '?'));
+        }
+        $sql .= ")";
+        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($fkey, $skey));
+        $values = array_values($extra);
+        array_unshift($values, $fkey, $skey);
+        $stmt->execute($values);
     }
 
     /**
@@ -97,7 +117,7 @@ abstract class CentreonRelationModel
     {
         if (isset($fkey) && isset($skey)) {
             $sql = "DELETE FROM " . static::$relationTable .
-                "WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
+                " WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
             $args = array($fkey, $skey);
         } elseif (isset($skey)) {
             $sql = "DELETE FROM " . static::$relationTable . " WHERE ". static::$secondKey . " = ?";
@@ -106,25 +126,12 @@ abstract class CentreonRelationModel
             $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
             $args = array($fkey);
         }
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
         $stmt->execute($args);
-    }
-
-    /**
-     * Get result
-     *
-     * @param string $sql
-     * @param array $params
-     * @return array
-     */
-    protected static function getResult($sql, $params = array())
-    {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare($sql);
-        $stmt->execute($params);
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        return $result;
+        if (0 === $stmt->rowCount()) {
+            throw new Exception(self::$errMsg);
+        }
     }
 
     /**
@@ -151,55 +158,23 @@ abstract class CentreonRelationModel
         $filterType = "OR",
         $relationTableParams = array()
     ) {
-        $fString = "";
-        $sString = "";
-        $rString = "";
-        $firstObj = static::$firstObject;
-        foreach ($firstTableParams as $fparams) {
-            if ($fString != "") {
-                $fString .= ",";
-            }
-            $fString .= $firstObj::getTableName().".".$fparams;
+        /* Convert params for getList */
+        $params = array();
+        $firstObject = static::$firstObject;
+        $secondObject = static::$secondObject;
+        array_walk($firstTableParams, array('static', 'addTablePrefix'), $firstObject::getTableName());
+        array_walk($secondTableParams, array('static', 'addTablePrefix'), $secondObject::getTableName());
+        array_walk($relationTableParams, array('static', 'addTablePrefix'), static::$relationTable);
+        $params = array_merge($firstTableParams, $secondTableParams, $relationTableParams);
+        if (count($params) == 0) {
+            $params = '*';
         }
-        $secondObj = static::$secondObject;
-        foreach ($secondTableParams as $sparams) {
-            if ($fString != "" || $sString != "") {
-                $sString .= ",";
-            }
-            $sString .= $secondObj::getTableName().".".$sparams;
-        }
-        foreach ($relationTableParams as $rparams) {
-            if ($fString != "" || $sString != "" || $rString != "") {
-                $rString .= ",";
-            }
-            $rString .= static::$relationTable.".".$rparams;
-        }
-        $sql = "SELECT $fString $sString $rString
-        		FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
-        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
-                    ." = ".static::$relationTable.".".static::$firstKey."
-        		AND ".static::$relationTable.".".static::$secondKey
-                    ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey();
-        $filterTab = array();
-        if (count($filters)) {
-            foreach ($filters as $key => $rawvalue) {
-                $sql .= " $filterType $key LIKE ? ";
-                $value = trim($rawvalue);
-                $value = str_replace("\\", "\\\\", $value);
-                $value = str_replace("_", "\_", $value);
-                $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = $value;
-            }
-        }
-        if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
-            $sql .= " ORDER BY $order $sort ";
-        }
-        if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $sql = $db->limit($sql, $count, $offset);
-        }
-        $result = static::getResult($sql, $filterTab);
-        return $result;
+        $listTable = $firstObject::getTableName() . ", " . $secondObject::getTableName() . ", " . static::$relationTable;
+        $staticFilter = $firstObject::getTableName() . "." . $firstObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$firstKey;
+        $staticFilter .= " AND ";
+        $staticFilter .= $secondObject::getTableName() . "." . $secondObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$secondKey;
+
+        return static::getList($params, $count, $offset, $order, $sort, $filters, $filterType, $listTable, $staticFilter);
     }
 
     /**
@@ -226,55 +201,23 @@ abstract class CentreonRelationModel
         $filterType = "OR",
         $relationTableParams = array()
     ) {
-        $fString = "";
-        $sString = "";
-        $rString = "";
-        $firstObj = static::$firstObject;
-        foreach ($firstTableParams as $fparams) {
-            if ($fString != "") {
-                $fString .= ",";
-            }
-            $fString .= $firstObj::getTableName().".".$fparams;
+        /* Convert params for getList */
+        $params = array();
+        $firstObject = static::$firstObject;
+        $secondObject = static::$secondObject;
+        array_walk($firstTableParams, array('static', 'addTablePrefix'), $firstObject::getTableName());
+        array_walk($secondTableParams, array('static', 'addTablePrefix'), $secondObject::getTableName());
+        array_walk($relationTableParams, array('static', 'addTablePrefix'), static::$relationTable);
+        $params = array_merge($firstTableParams, $secondTableParams, $relationTableParams);
+        if (count($params) == 0) {
+            $params = '*';
         }
-        $secondObj = static::$secondObject;
-        foreach ($secondTableParams as $sparams) {
-            if ($fString != "" || $sString != "") {
-                $sString .= ",";
-            }
-            $sString .= $secondObj::getTableName().".".$sparams;
-        }
-        foreach ($relationTableParams as $rparams) {
-            if ($fString != "" || $sString != "" || $rString != "") {
-                $rString .= ",";
-            }
-            $rString .= static::$relationTable.".".$rparams;
-        }
-        $sql = "SELECT $fString $sString $rString
-        		FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
-        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()
-                    ." = ".static::$relationTable.".".static::$firstKey."
-        		AND ".static::$relationTable.".".static::$secondKey
-                    ." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey();
-        $filterTab = array();
-        if (count($filters)) {
-            foreach ($filters as $key => $rawvalue) {
-                $sql .= " $filterType $key LIKE ? ";
-                $value = trim($rawvalue);
-                $value = str_replace("\\", "\\\\", $value);
-                $value = str_replace("_", "\_", $value);
-                $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = '%'.$value.'%';
-            }
-        }
-        if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
-            $sql .= " ORDER BY $order $sort ";
-        }
-        if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $sql = $db->limit($sql, $count, $offset);
-        }
-        $result = static::getResult($sql, $filterTab);
-        return $result;
+        $listTable = $firstObject::getTableName() . ", " . $secondObject::getTableName() . ", " . static::$relationTable;
+        $staticFilter = $firstObject::getTableName() . "." . $firstObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$firstKey;
+        $staticFilter .= " AND ";
+        $staticFilter .= $secondObject::getTableName() . "." . $secondObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$secondKey;
+
+        return static::getListBySearch($params, $count, $offset, $order, $sort, $filters, $filterType, $listTable, $staticFilter);
     }
 
     /**
@@ -353,5 +296,17 @@ abstract class CentreonRelationModel
     public static function getSecondKey()
     {
         return static::$secondKey;
+    }
+
+    /**
+     * Add table prefix to a column
+     *
+     * @param string $value The value
+     * @param string $key The column name
+     * @param string $prefix The table name
+     */
+    private static function addTablePrefix(&$value, &$key, $prefix)
+    {
+        $key = $prefix . '.' . $key;
     }
 }
