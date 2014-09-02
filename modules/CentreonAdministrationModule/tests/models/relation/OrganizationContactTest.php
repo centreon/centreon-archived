@@ -131,23 +131,159 @@ class OrganizationContactTest extends DbTestCase
                 'contact_charset' => null,
                 'is_default' => '0',
                 'is_admin' => '0'
+            ),
+            array(
+                'organization_id' => '2',
+                'name' => 'Client organization',
+                'shortname' => 'client',
+                'active' => '0',
+                'contact_id' => '2',
+                'timeperiod_tp_id' => null,
+                'timeperiod_tp_id2' => null,
+                'contact_name' => 'John Smith',
+                'contact_alias' => 'jsmith',
+                'contact_passwd' => '2995cb0650c5f107230ed569a8c4d6e5',
+                'contact_lang' => 'fr_FR',
+                'contact_host_notification_options' => 'n',
+                'contact_service_notification_options' => 'n',
+                'contact_email' => 'jsmith@localhost',
+                'contact_pager' => null,
+                'contact_address1' => null,
+                'contact_address2' => null,
+                'contact_address3' => null,
+                'contact_address4' => null,
+                'contact_address5' => null,
+                'contact_address6' => null,
+                'contact_comment' => null,
+                'contact_js_effects' => '0',
+                'contact_location' => '0',
+                'contact_oreon' => '1',
+                'contact_enable_notifications' => '2',
+                'contact_template_id' => null,
+                'contact_admin' => '0',
+                'contact_type_msg' => 'txt',
+                'contact_activate' => '0',
+                'contact_auth_type' => 'local',
+                'contact_ldap_dn' => null,
+                'ar_id' => null,
+                'contact_acl_group_list' => null,
+                'contact_autologin_key' => null,
+                'contact_register' => '1',
+                'contact_charset' => null,
+                'is_default' => '0',
+                'is_admin' => '0'
             )
         );
         $result = Contact::getMergedParameters();
         $this->assertEquals($testResult, $result);
 
+        $testResult = array(
+            array(
+                'organization_id' => '1',
+                'name' => 'Default organization',
+                'shortname' => 'default_organization',
+                'active' => '1',
+                'contact_id' => '1',
+                'timeperiod_tp_id' => null,
+                'timeperiod_tp_id2' => null,
+                'contact_name' => 'John Doe',
+                'contact_alias' => 'jdoe',
+                'contact_passwd' => '2995cb0650c5f107230ed569a8c4d6e5',
+                'contact_lang' => 'en_US',
+                'contact_host_notification_options' => 'n',
+                'contact_service_notification_options' => 'n',
+                'contact_email' => 'jdoe@localhost',
+                'contact_pager' => null,
+                'contact_address1' => null,
+                'contact_address2' => null,
+                'contact_address3' => null,
+                'contact_address4' => null,
+                'contact_address5' => null,
+                'contact_address6' => null,
+                'contact_comment' => null,
+                'contact_js_effects' => '0',
+                'contact_location' => '0',
+                'contact_oreon' => '1',
+                'contact_enable_notifications' => '2',
+                'contact_template_id' => null,
+                'contact_admin' => '0',
+                'contact_type_msg' => 'txt',
+                'contact_activate' => '0',
+                'contact_auth_type' => 'local',
+                'contact_ldap_dn' => null,
+                'ar_id' => null,
+                'contact_acl_group_list' => null,
+                'contact_autologin_key' => null,
+                'contact_register' => '1',
+                'contact_charset' => null,
+                'is_default' => '0',
+                'is_admin' => '0'
+            )
+        );
         $result = Contact::getMergedParameters(array(), array(), 1);
         $this->assertEquals($testResult, $result);
 
+        $testResult = array(
+            array(
+                'organization_id' => '2',
+                'name' => 'Client organization',
+                'shortname' => 'client',
+                'active' => '0',
+                'contact_id' => '2',
+                'timeperiod_tp_id' => null,
+                'timeperiod_tp_id2' => null,
+                'contact_name' => 'John Smith',
+                'contact_alias' => 'jsmith',
+                'contact_passwd' => '2995cb0650c5f107230ed569a8c4d6e5',
+                'contact_lang' => 'fr_FR',
+                'contact_host_notification_options' => 'n',
+                'contact_service_notification_options' => 'n',
+                'contact_email' => 'jsmith@localhost',
+                'contact_pager' => null,
+                'contact_address1' => null,
+                'contact_address2' => null,
+                'contact_address3' => null,
+                'contact_address4' => null,
+                'contact_address5' => null,
+                'contact_address6' => null,
+                'contact_comment' => null,
+                'contact_js_effects' => '0',
+                'contact_location' => '0',
+                'contact_oreon' => '1',
+                'contact_enable_notifications' => '2',
+                'contact_template_id' => null,
+                'contact_admin' => '0',
+                'contact_type_msg' => 'txt',
+                'contact_activate' => '0',
+                'contact_auth_type' => 'local',
+                'contact_ldap_dn' => null,
+                'ar_id' => null,
+                'contact_acl_group_list' => null,
+                'contact_autologin_key' => null,
+                'contact_register' => '1',
+                'contact_charset' => null,
+                'is_default' => '0',
+                'is_admin' => '0'
+            )
+        );
         $result = Contact::getMergedParameters(array(), array(), 1, 1);
-        $this->assertEquals(array(), $result);
+        $this->assertEquals($testResult, $result);
+
+        $testResult = array(
+            array(
+                'name' => 'Default organization',
+                'contact_name' => 'John Doe',
+                'is_default' => '0'
+            ),
+            array(
+                'name' => 'Client organization',
+                'contact_name' => 'John Smith',
+                'is_default' => '0'
+            )
+        );
 
         $result = Contact::getMergedParameters(array('name'), array('contact_name'), -1, 0, null, 'ASC', array(), 'OR', array('is_default'));
-        $this->assertEquals(array(array(
-            'name' => 'Default organization',
-            'contact_name' => 'John Doe',
-            'is_default' => '0'
-        )), $result);
+        $this->assertEquals($testResult, $result);
     }
 
     public function testgetMergedParametersBySearch()

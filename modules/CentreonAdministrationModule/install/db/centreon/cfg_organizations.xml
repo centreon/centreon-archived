@@ -11,5 +11,8 @@
         <unique name="cfg_organizations_idx02">
             <unique-column name="shortname"/>
         </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
     </table>
 </database>

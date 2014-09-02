@@ -5,11 +5,14 @@
         <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="is_default" phpName="IsDefault" type="TINYINT" default="0"/>
         <column name="is_admin" phpName="IsAdmin" type="TINYINT" default="0"/>
-        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_contacts_relation_fk01">
+        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_contacts_relation_fk01" onDelete="CASCADE">
             <reference local="organization_id" foreign="organization_id" />
         </foreign-key>
-        <foreign-key foreignTable="cfg_contacts" name="cfg_organizations_contacts_relation_fk02">
+        <foreign-key foreignTable="cfg_contacts" name="cfg_organizations_contacts_relation_fk02" onDelete="CASCADE">
             <reference local="contact_id" foreign="contact_id" />
         </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
     </table>
 </database>
