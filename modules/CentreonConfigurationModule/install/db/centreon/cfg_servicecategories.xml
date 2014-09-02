@@ -10,7 +10,7 @@
         <column name="sc_activate" phpName="ScActivate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_organizations" name="servicecategorie_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="organization_id" foreign="tp_id"/>
+            <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

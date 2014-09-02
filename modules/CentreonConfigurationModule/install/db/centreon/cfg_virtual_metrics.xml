@@ -15,7 +15,7 @@
         <column name="ck_state" phpName="CkState" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_organizations" name="virtual_metrics_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="organization_id" foreign="tp_id"/>
+            <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

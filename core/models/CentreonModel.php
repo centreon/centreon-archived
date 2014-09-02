@@ -78,7 +78,9 @@ abstract class CentreonModel
         $order = null,
         $sort = "ASC",
         $filters = array(),
-        $filterType = "OR"
+        $filterType = "OR",
+        $tablesString = null,
+        $staticFilter = null
     ) {
         if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
@@ -98,9 +100,20 @@ abstract class CentreonModel
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params FROM " . static::$table;
+        $sql = "SELECT $params FROM ";
+        if (is_null($tablesString)) {
+            $sql .=  static::$table;
+        } else {
+            $sql .= $tablesString;
+        }
         $filterTab = array();
+        $nextFilterType = null;
         $first = true;
+        if (false === is_null($staticFilter)) {
+            $sql .= " WHERE " . $staticFilter;
+            $first = false;
+            $nextFilterType = "AND";
+        }
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 if (is_array($rawvalue)) {
@@ -112,7 +125,7 @@ abstract class CentreonModel
                     $filterTab = array_merge(
                         $filterTab,
                         array_map(
-                            array('\Centreon\Models\CentreonBaseModel', 'parseValueForSearch'),
+                            array('static', 'parseValueForSearch'),
                             $rawvalue
                         )
                     );
@@ -124,7 +137,9 @@ abstract class CentreonModel
                     $sql .= " WHERE " . $filterStr;
                     $first = false;
                 } else {
-                    if (is_string($filterType)) {
+                    if (false === is_null($nextFilterType)) {
+                        $sql .= " $nextFilterType " . $filterStr;
+                    } elseif (is_string($filterType)) {
                         $sql .= " $filterType " . $filterStr;
                     } elseif (is_array($filterType)) {
                         if (isset($filterType[$key])) {
@@ -168,7 +183,9 @@ abstract class CentreonModel
         $order = null,
         $sort = "ASC",
         $filters = array(),
-        $filterType = "OR"
+        $filterType = "OR",
+        $tablesString = null,
+        $staticFilter = null
     ) {
         $searchFilters = array();
         foreach ($filters as $name => $values) {
@@ -187,7 +204,9 @@ abstract class CentreonModel
             $order,
             $sort,
             $searchFilters,
-            $filterType);
+            $filterType,
+            $tablesString,
+            $staticFilter);
     }
 
     /**

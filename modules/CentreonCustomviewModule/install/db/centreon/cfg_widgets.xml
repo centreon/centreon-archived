@@ -7,7 +7,7 @@
         <column name="custom_view_id" phpName="CustomViewId" type="INTEGER" required="true"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_organizations" name="widget_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="organization_id" foreign="tp_id"/>
+            <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_custom_views" name="fk_widget_custom_view_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="custom_view_id" foreign="custom_view_id"/>

@@ -7,7 +7,7 @@
         <column name="acl_action_activate" phpName="AclActionActivate" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="1"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_organizations" name="acl_actions_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="organization_id" foreign="tp_id"/>
+            <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

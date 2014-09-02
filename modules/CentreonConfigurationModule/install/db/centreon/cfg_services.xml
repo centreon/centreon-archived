@@ -56,7 +56,7 @@
             <reference local="timeperiod_tp_id2" foreign="tp_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_organizations" name="service_ibfk_5" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="organization_id" foreign="tp_id"/>
+            <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <index name="stm_index">
             <index-column name="service_template_model_stm_id"/>

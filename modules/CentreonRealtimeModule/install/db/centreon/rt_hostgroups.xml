@@ -9,7 +9,7 @@
         <column name="notes" phpName="Notes" type="VARCHAR" size="160" required="false"/>
         <column name="notes_url" phpName="NotesUrl" type="VARCHAR" size="160" required="false"/>
         <column name="enabled" phpName="Enabled" type="BOOLEAN" size="1" required="true" defaultValue="true"/>
-        <foreign-key foreignTable="rt_instances" name="hostgroups_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="rt_instances" name="rt_hostgroups_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="instance_id" foreign="instance_id"/>
         </foreign-key>
         <unique name="name">

@@ -1,4 +1,5 @@
 [
     "cfg_organizations",
-    "cfg_contacts"
+    "cfg_contacts",
+    "cfg_organizations_contacts_relation"
 ]
