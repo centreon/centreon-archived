@@ -5,6 +5,10 @@
         <column name="ba_group_name" phpName="BaGroupName" type="VARCHAR" size="255" required="false"/>
         <column name="ba_group_description" phpName="BaGroupDescription" type="VARCHAR" size="255" required="false"/>
         <column name="visible" phpName="Visible" type="CHAR" required="false" defaultValue="1"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="cfg_organizations" name="bam_bagroups_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="organization_id" foreign="tp_id"/>
+        </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

@@ -4,7 +4,7 @@
         <column name="mcr_id" phpName="McrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="meta_id" phpName="MetaId" type="INTEGER" required="false"/>
         <column name="cg_cg_id" phpName="CgCgId" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="cfg_metaservices" name="meta_contactgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_meta_services" name="meta_contactgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="meta_id" foreign="meta_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_contactgroups" name="meta_contactgroup_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">

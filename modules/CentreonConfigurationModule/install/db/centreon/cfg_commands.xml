@@ -11,11 +11,15 @@
         <column name="command_comment" phpName="CommandComment" type="LONGVARCHAR" required="false"/>
         <column name="graph_id" phpName="GraphId" type="INTEGER" required="false"/>
         <column name="cmd_cat_id" phpName="CmdCatId" type="INTEGER" required="false"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <unique name="command_name">
             <unique-column name="command_name"/>
         </unique>
         <foreign-key foreignTable="cfg_connectors" name="command_ibfk_1" onDelete="SET NULL" onUpdate="CASCADE">
             <reference local="connector_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_organizations" name="command_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="organization_id" foreign="tp_id"/>
         </foreign-key>
         <index name="connector_id">
             <index-column name="connector_id"/>

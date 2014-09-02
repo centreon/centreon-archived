@@ -3,8 +3,8 @@
     <table name="cfg_organizations_contacts_relation" phpName="OrganizationsContactsRelation" idMethod="native">
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true"/>
-        <column name="is_default" phpName="IsDefault" type="TINYINT" default="1"/>
-        <column name="is_admin" phpName="IsAdmin" type="TINYINT" default="1"/>
+        <column name="is_default" phpName="IsDefault" type="TINYINT" default="0"/>
+        <column name="is_admin" phpName="IsAdmin" type="TINYINT" default="0"/>
         <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_contacts_relation_fk01">
             <reference local="organization_id" foreign="organization_id" />
         </foreign-key>

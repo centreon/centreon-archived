@@ -8,6 +8,10 @@
         <column name="execution_failure_criteria" phpName="ExecutionFailureCriteria" type="VARCHAR" size="255" required="false"/>
         <column name="notification_failure_criteria" phpName="NotificationFailureCriteria" type="VARCHAR" size="255" required="false"/>
         <column name="dep_comment" phpName="DepComment" type="LONGVARCHAR" required="false"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="cfg_organizations" name="dependencies_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="organization_id" foreign="tp_id"/>
+        </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
