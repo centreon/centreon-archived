@@ -305,8 +305,8 @@ abstract class CentreonRelationModel extends CentreonModel
      * @param string $key The column name
      * @param string $prefix The table name
      */
-    private static function addTablePrefix(&$value, &$key, $prefix)
+    private static function addTablePrefix(&$value, $key, $prefix)
     {
-        $key = $prefix . '.' . $key;
+        $value = $prefix . '.' . $value;
     }
 }

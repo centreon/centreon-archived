@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_organizations_widget_models_relation">
+    <column>organization_id</column>
+    <column>widget_model_id</column>
+    <row>
+      <value>2</value>
+      <value>2</value>
+    </row> 
+  </table>
+</dataset>
