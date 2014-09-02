@@ -5,6 +5,10 @@
         <column name="code" phpName="Code" type="TINYINT" required="true"/>
         <column name="impact" phpName="Impact" type="FLOAT" required="true"/>
         <column name="color" phpName="Color" type="VARCHAR" size="7" required="false"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="cfg_organizations" name="bam_impacts_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="organization_id" foreign="tp_id"/>
+        </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

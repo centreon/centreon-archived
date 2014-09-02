@@ -8,12 +8,16 @@
         <column name="enabled" phpName="Enabled" type="INTEGER" size="1" sqlType="int(1) unsigned" required="true" defaultValue="1"/>
         <column name="created" phpName="Created" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
         <column name="modified" phpName="Modified" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <unique name="name">
             <unique-column name="name"/>
         </unique>
         <index name="enabled">
             <index-column name="enabled"/>
         </index>
+        <foreign-key foreignTable="cfg_organizations" name="connectors_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="organization_id" foreign="tp_id"/>
+        </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

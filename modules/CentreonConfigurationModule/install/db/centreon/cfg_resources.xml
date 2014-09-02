@@ -6,6 +6,10 @@
         <column name="resource_line" phpName="ResourceLine" type="VARCHAR" size="255" required="false"/>
         <column name="resource_comment" phpName="ResourceComment" type="VARCHAR" size="255" required="false"/>
         <column name="resource_activate" phpName="ResourceActivate" type="CHAR" sqlType="enum('0','1')" required="false"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="cfg_organizations" name="resources_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="organization_id" foreign="tp_id"/>
+        </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
