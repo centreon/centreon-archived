@@ -25,7 +25,7 @@
         <column name="engine_version" phpName="EngineVersion" type="VARCHAR" size="255" required="false"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_organizations" name="engine_servers_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="organization_id" foreign="tp_id"/>
+            <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

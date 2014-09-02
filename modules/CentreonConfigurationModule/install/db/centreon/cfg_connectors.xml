@@ -16,7 +16,7 @@
             <index-column name="enabled"/>
         </index>
         <foreign-key foreignTable="cfg_organizations" name="connectors_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="organization_id" foreign="tp_id"/>
+            <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
