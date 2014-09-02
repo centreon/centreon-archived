@@ -49,7 +49,8 @@ class ServiceTest extends DbTestCase
             'service_description' => 'test',
             'service_alias' => 'test alias',
             'service_template_model_stm_id' => '1',
-            'service_activate' => '1'
+            'service_activate' => '1',
+            'organization_id' => 1
         );
         Service::insert($insert);
         $this->tableEqualsXml(

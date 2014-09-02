@@ -59,7 +59,8 @@ class ContactTest extends DbTestCase
             'contact_enable_notifications' => '1',
             'contact_activate' => '1',
             'contact_auth_type' => 'local',
-            'contact_register' => '1'
+            'contact_register' => '1',
+            'organization_id' => 1
         );
         Contact::insert($newContact);
         /* Assert for test insert in DB */

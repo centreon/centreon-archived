@@ -4,13 +4,15 @@
     "sg_name": "france",
     "sg_alias": "france",
     "sg_comment": "French services",
-    "sg_activate": "1"
+    "sg_activate": "1",
+    "organization_id": "1"
   },
   {
     "sg_id": "2",
     "sg_name": "england",
     "sg_alias": "england",
     "sg_comment": "English services",
-    "sg_activate": "1"
+    "sg_activate": "1",
+    "organization_id": "1"
   }
 ]

@@ -86,7 +86,8 @@ class HostTemplateRepositoryTest extends RepositoryTestCase
                 'host_name' => 'Test hosttemplate',
                 'host_alias' => 'Test hosttemplate',
                 'display_name' => 'Test hosttemplate',
-                'host_comment' => 'Testing hosttemplate'
+                'host_comment' => 'Testing hosttemplate',
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(

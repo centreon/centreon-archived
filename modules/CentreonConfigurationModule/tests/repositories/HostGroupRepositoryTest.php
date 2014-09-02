@@ -90,7 +90,8 @@ class HostGroupRepositoryTest extends RepositoryTestCase
                 'hg_name' => 'test',
                 'hg_alias' => 'test alias',
                 'hg_comment' => 'test comment',
-                'hg_activate' => '1'
+                'hg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(

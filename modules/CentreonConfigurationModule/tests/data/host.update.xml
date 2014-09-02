@@ -44,6 +44,7 @@
     <column>host_comment</column>
     <column>host_register</column>
     <column>host_activate</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <null/>
@@ -88,6 +89,7 @@
       <value>Host template</value>
       <value>0</value>
       <value>1</value>
+      <value>1</value>
     </row>
     <row>
       <value>2</value>
@@ -131,6 +133,7 @@
       <null/>
       <value>0</value>
       <value>First host</value>
+      <value>1</value>
       <value>1</value>
       <value>1</value>
     </row>
@@ -178,6 +181,7 @@
       <value>Modified host</value>
       <value>1</value>
       <value>0</value>
+      <value>1</value>
     </row>
   </table>
 </dataset>

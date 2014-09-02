@@ -4,40 +4,48 @@
     id="1"
     name="Generic"
     alias="Generic"
-    description="References Generic Traps"/>
+    description="References Generic Traps"
+    organization_id="1"/>
   <cfg_traps_vendors
     id="2"
     name="Cisco"
     alias="Cisco Networks"
-    description=""/>
+    description=""
+    organization_id="1"/>
   <cfg_traps_vendors
     id="3"
     name="HP"
     alias="HP Networks"
-    description=""/>
+    description=""
+    organization_id="1"/>
   <cfg_traps_vendors
     id="4"
     name="3com"
     alias="3com"
-    description=""/>
+    description=""
+    organization_id="1"/>
   <cfg_traps_vendors
     id="5"
     name="Linksys"
     alias="Linksys"
-    description=""/>
+    description=""
+    organization_id="1"/>
   <cfg_traps_vendors
     id="6"
     name="Generic_1"
     alias="Generic"
-    description="References Generic Traps"/>
+    description="References Generic Traps"
+    organization_id="1"/>
   <cfg_traps_vendors
     id="7"
     name="Cisco_1"
     alias="Cisco Networks"
-    description=""/>
+    description=""
+    organization_id="1"/>
   <cfg_traps_vendors
     id="8"
     name="Cisco_2"
     alias="Cisco Networks"
-    description=""/>
+    description=""
+    organization_id="1"/>
 </dataset>

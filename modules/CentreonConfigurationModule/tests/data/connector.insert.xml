@@ -7,7 +7,8 @@
     command_line="$CONNECTORS$/perl"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
   <cfg_connectors
     id="2"
     name="SSH"
@@ -15,7 +16,8 @@
     command_line="$CONNECTORS$/ssh"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
   <cfg_connectors
     id="3"
     name="TestConnector"
@@ -23,5 +25,6 @@
     command_line="$CONNECTORS$/my_connector"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
 </dataset>

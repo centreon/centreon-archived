@@ -49,7 +49,8 @@ class ManufacturerTest extends DbTestCase
         $newManufacturer = array(
             "name"  => "Test Manufacturer",
             "alias" => "Test Manufacturer",
-            "description" => "Test for traps manufacturer"
+            "description" => "Test for traps manufacturer",
+            "organization_id" => 1
         );
         
         Manufacturer::insert($newManufacturer);

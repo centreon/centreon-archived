@@ -9,7 +9,8 @@
     "tp_wednesday": "00:00-24:00",
     "tp_thursday": "00:00-24:00",
     "tp_friday": "00:00-24:00",
-    "tp_saturday": "00:00-24:00"
+    "tp_saturday": "00:00-24:00",
+    "organization_id": "1"
   },
   {
     "tp_id": "2",
@@ -19,6 +20,7 @@
     "tp_tuesday": "00:00-24:00",
     "tp_wednesday": "00:00-24:00",
     "tp_thursday": "00:00-24:00",
-    "tp_friday": "00:00-24:00"
+    "tp_friday": "00:00-24:00",
+    "organization_id": "1"
   }
 ]

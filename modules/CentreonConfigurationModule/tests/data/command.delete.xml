@@ -11,6 +11,7 @@
     <column>command_comment</column>
     <column>graph_id</column>
     <column>cmd_cat_id</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <null/>
@@ -22,6 +23,7 @@
       <value>Notification : send a mail</value>
       <null/>
       <null/>
+      <value>1</value>
     </row>
     <row>
       <value>3</value>
@@ -34,6 +36,7 @@
       <value>Check : check connector</value>
       <null/>
       <null/>
+      <value>1</value>
     </row>
   </table>
 </dataset>

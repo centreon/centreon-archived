@@ -44,6 +44,7 @@
     <column>host_comment</column>
     <column>host_register</column>
     <column>host_activate</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <null/>
@@ -88,6 +89,7 @@
       <value>Modified hosttemplate</value>
       <value>0</value>
       <value>0</value>
+      <value>1</value>
     </row>
     <row>
       <value>2</value>
@@ -133,6 +135,7 @@
       <value>First host</value>
       <value>1</value>
       <value>1</value>
+      <value>1</value>
     </row>
     <row>
       <value>3</value>
@@ -176,6 +179,7 @@
       <null/>
       <value>0</value>
       <value>Second host</value>
+      <value>1</value>
       <value>1</value>
       <value>1</value>
     </row>

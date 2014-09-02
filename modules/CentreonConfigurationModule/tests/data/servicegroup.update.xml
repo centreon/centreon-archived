@@ -6,11 +6,13 @@
     <column>sg_alias</column>
     <column>sg_comment</column>
     <column>sg_activate</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <value>france</value>
       <value>france</value>
       <value>French services</value>
+      <value>1</value>
       <value>1</value>
     </row>
     <row>
@@ -18,6 +20,7 @@
       <value>england</value>
       <value>new_alias</value>
       <value>English services</value>
+      <value>1</value>
       <value>1</value>
     </row>
   </table>

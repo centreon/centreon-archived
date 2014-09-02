@@ -91,7 +91,8 @@ class HostCategoryRepositoryTest extends RepositoryTestCase
                 'hc_name' => 'test',
                 'hc_alias' => 'test alias',
                 'hc_comment' => 'test comment',
-                'hc_activate' => '1'
+                'hc_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(

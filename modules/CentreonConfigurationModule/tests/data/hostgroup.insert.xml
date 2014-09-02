@@ -12,6 +12,7 @@
     <column>hg_rrd_retention</column>
     <column>hg_comment</column>
     <column>hg_activate</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <value>france</value>
@@ -23,6 +24,7 @@
       <null/>
       <null/>
       <value>French servers</value>
+      <value>1</value>
       <value>1</value>
     </row>
     <row>
@@ -37,6 +39,7 @@
       <null/>
       <value>English servers</value>
       <value>1</value>
+      <value>1</value>
     </row>
     <row>
       <value>3</value>
@@ -49,6 +52,7 @@
       <null/>
       <null/>
       <value>test comment</value>
+      <value>1</value>
       <value>1</value>
     </row>
   </table>

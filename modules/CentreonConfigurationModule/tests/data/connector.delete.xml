@@ -7,5 +7,6 @@
     command_line="$CONNECTORS$/perl"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
 </dataset>

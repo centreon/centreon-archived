@@ -9,6 +9,7 @@
     <column>cg_type</column>
     <column>cg_ldap_dn</column>
     <column>ar_id</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <value>Contactgroup 1</value>
@@ -18,6 +19,7 @@
       <value>local</value>
       <null/>
       <null/>
+      <value>1</value>
     </row>
     <row>
       <value>2</value>
@@ -28,6 +30,7 @@
       <value>local</value>
       <null/>
       <null/>
+      <value>1</value>
     </row>
     <row>
       <value>3</value>
@@ -38,6 +41,7 @@
       <value>local</value>
       <null/>
       <null/>
+      <value>1</value>
     </row>
     <row>
       <value>4</value>
@@ -48,6 +52,7 @@
       <value>local</value>
       <null/>
       <null/>
+      <value>1</value>
     </row>
     <row>
       <value>5</value>
@@ -58,6 +63,7 @@
       <value>local</value>
       <null/>
       <null/>
+      <value>1</value>
     </row>
   </table>
 </dataset>

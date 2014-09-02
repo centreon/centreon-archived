@@ -22,6 +22,7 @@
         <column>traps_routing_value</column>
         <column>traps_exec_method</column>
         <column>traps_comments</column>
+        <column>organization_id</column>
         <row>
             <value>1</value>
             <value>linkDown</value>
@@ -44,6 +45,7 @@
             <null />
             <value>0</value>
             <value>A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agents configuration.</value>
+            <value>1</value>
         </row>
         <row>
             <value>2</value>
@@ -67,6 +69,7 @@
             <null />
             <value>0</value>
             <value>A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agents configuration has come up.</value>
+            <value>1</value>
         </row>
         <row>
             <value>3</value>
@@ -90,6 +93,7 @@
             <null />
             <value>0</value>
             <value>A warmStart(1) trap signifies that the sending protocol entity is reinitializing itself such that neither the agent configuration nor the protocol entity implementation is altered.</value>
+            <value>1</value>
         </row>
         <row>
             <value>4</value>
@@ -113,6 +117,7 @@
             <null />
             <value>0</value>
             <value>A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agents configuration or the protocol entity implementation may be altered.</value>
+            <value>1</value>
         </row>
         <row>
             <value>5</value>
@@ -136,6 +141,7 @@
             <null />
             <value>0</value>
             <value>A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agents configuration.</value>
+            <value>1</value>
         </row>
     </table>
 </dataset>

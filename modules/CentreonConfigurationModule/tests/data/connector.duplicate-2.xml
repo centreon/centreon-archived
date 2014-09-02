@@ -7,7 +7,8 @@
     command_line="$CONNECTORS$/perl"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
   <cfg_connectors
     id="2"
     name="SSH"
@@ -15,7 +16,8 @@
     command_line="$CONNECTORS$/ssh"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
   <cfg_connectors
     id="3"
     name="Perl_1"
@@ -23,7 +25,8 @@
     command_line="$CONNECTORS$/perl"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
   <cfg_connectors
     id="4"
     name="SSH_1"
@@ -31,7 +34,8 @@
     command_line="$CONNECTORS$/ssh"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
   <cfg_connectors
     id="5"
     name="SSH_2"
@@ -39,5 +43,6 @@
     command_line="$CONNECTORS$/ssh"
     enabled="1"
     created="1407836372"
-    modified="1407836372"/>
+    modified="1407836372"
+    organization_id="1"/>
 </dataset>

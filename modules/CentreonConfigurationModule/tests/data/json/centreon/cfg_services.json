@@ -13,7 +13,8 @@
     "service_active_checks_enabled": "1",
     "service_passive_checks_enabled": "0",
     "service_register": "0",
-    "service_activate": "1"
+    "service_activate": "1",
+    "organization_id": "1"
   },
   {
     "service_id": "2",
@@ -29,7 +30,8 @@
     "service_active_checks_enabled": "1",
     "service_passive_checks_enabled": "0",
     "service_register": "0",
-    "service_activate": "1"
+    "service_activate": "1",
+    "organization_id": "1"
   },
   {
     "service_id": "3",
@@ -37,7 +39,8 @@
     "service_description": "ping",
     "service_alias": "ping",
     "service_register": "1",
-    "service_activate": "1"
+    "service_activate": "1",
+    "organization_id": "1"
   },
   {
     "service_id": "4",
@@ -45,6 +48,7 @@
     "service_description": "load",
     "service_alias": "load",
     "service_register": "1",
-    "service_activate": "1"
+    "service_activate": "1",
+    "organization_id": "1"
   }
 ]

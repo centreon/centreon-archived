@@ -49,7 +49,8 @@ class ServiceCategoryTest extends DbTestCase
             'sc_name' => 'test',
             'sc_description' => 'test description',
             'sc_comment' => 'test comment',
-            'sc_activate' => '1'
+            'sc_activate' => '1',
+            'organization_id' => 1
         );
         Servicecategory::insert($insert);
         $this->tableEqualsXml(

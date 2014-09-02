@@ -90,7 +90,8 @@ class CommandRepositoryTest extends RepositoryTestCase
                 'command_example' => '$USER1$/bin/my_check -w 90',
                 'command_type' => 2,
                 'enable_shell' => 0,
-                'command_comment' => "My check command"
+                'command_comment' => "My check command",
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(

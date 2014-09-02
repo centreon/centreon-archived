@@ -94,7 +94,8 @@ class TimePeriodRepositoryTest extends RepositoryTestCase
                 'tp_tuesday' => '09:00-18:00',
                 'tp_wednesday' => '09:00-18:00',
                 'tp_thursday' => '09:00-18:00',
-                'tp_friday' => '09:00-17:00'
+                'tp_friday' => '09:00-17:00',
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(
