@@ -42,7 +42,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
     protected $objectBaseUrl = '/bam/business-activity';
     protected $objectClass = '\CentreonBam\Models\Businessactivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessactivityDatatable';
-    
+    protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
     public static $relationMap = array();
     
     /**

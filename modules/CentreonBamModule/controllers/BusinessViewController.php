@@ -43,7 +43,7 @@ class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAb
     protected $objectBaseUrl = '/bam/business-view';
     protected $objectClass = '\CentreonBam\Models\Businessview';
     protected $datatableObject = '\CentreonBam\Internal\BusinessviewDatatable';
-    
+    protected $repository = '\CentreonBam\Repository\BusinessViewRepository';     
     public static $relationMap = array();
     
     /**

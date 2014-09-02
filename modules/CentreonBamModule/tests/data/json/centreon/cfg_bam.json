@@ -1,0 +1,24 @@
+[
+    {
+        "id": "1",
+        "name": "accounting",
+        "description": "accounting",
+        "level_w": "80",
+        "level_c": "65",
+        "calculate": "0",
+        "downtime": "0",
+        "acknowledged": "0",
+        "activate": "1"
+    },
+    {
+        "id": "2",
+        "name": "hotline",
+        "description": "hotline",
+        "level_w": "75",
+        "level_c": "60",
+        "calculate": "0",
+        "downtime": "0",
+        "acknowledged": "0",
+        "activate": "1"
+    }
+]

@@ -36,10 +36,10 @@
 namespace CentreonBam\Repository;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Sylvestre Ho <sho@merethis.com>
  * @package CentreonBam
  * @subpackage Repository
  */
-class IndicatorRepository extends \CentreonConfiguration\Repository\Repository
+class BusinessViewRepository extends \CentreonConfiguration\Repository\Repository
 {
 }
