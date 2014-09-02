@@ -36,13 +36,13 @@
 namespace CentreonBam\Models;
 
 /**
- * Used for interacting with host categories
+ * Used for interacting with Business activities
  *
  * @author sylvestre
  */
 class Businessactivity extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "bam";
+    protected static $table = "cfg_bam";
     protected static $primaryKey = "ba_id";
     protected static $uniqueLabelField = "name";
 }

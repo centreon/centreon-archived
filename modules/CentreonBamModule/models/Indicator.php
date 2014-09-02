@@ -42,6 +42,6 @@ namespace CentreonBam\Models;
  */
 class Indicator extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "bam_kpi";
+    protected static $table = "cfg_bam_kpi";
     protected static $primaryKey = "kpi_id";
 }

@@ -1,0 +1,28 @@
+[
+    {
+        "kpi_id": "1",
+        "state_type": "1",
+        "kpi_type": "1",
+        "host_id": "3",
+        "service_id": "3",
+        "drop_warning": "10",
+        "drop_critical": "20",
+        "drop_unknown": "5",
+        "activate": "1",
+        "ignore_downtime": "0",
+        "ignore_acknowledged": "0"
+    },
+    {
+        "kpi_id": "2",
+        "state_type": "1",
+        "kpi_type": "1",
+        "host_id": "4",
+        "service_id": "4",
+        "drop_warning": "30",
+        "drop_critical": "100",
+        "drop_unknown": "5",
+        "activate": "1",
+        "ignore_downtime": "0",
+        "ignore_acknowledged": "0"
+    }
+]
