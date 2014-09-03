@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<dataset>
+    <table name="cfg_bam_bagroups">
+        <column>id_ba_group</column>
+        <column>ba_group_name</column>
+        <column>ba_group_description</column>
+        <column>visible</column>
+        <column>organization_id</column>
+        <row>
+            <value>1</value>
+            <value>view 1</value>
+            <value>view 1</value>
+            <value>1</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>view 2</value>
+            <value>view 2</value>
+            <value>1</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>view 1_1</value>
+            <value>view 1</value>
+            <value>1</value>
+            <value>1</value>
+        </row>
+    </table>
+</dataset>
