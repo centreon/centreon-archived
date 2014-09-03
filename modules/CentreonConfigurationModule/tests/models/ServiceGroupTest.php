@@ -65,7 +65,8 @@ class ServiceGroupTest extends DbTestCase
             'sg_name' => 'test',
             'sg_alias' => 'test alias',
             'sg_comment' => 'test comment',
-            'sg_activate' => '1'
+            'sg_activate' => '1',
+            'organization_id' => 1
         );
         Servicegroup::insert($insert);
         $this->setExpectedException(
@@ -167,7 +168,8 @@ class ServiceGroupTest extends DbTestCase
             'sg_name' => 'england',
             'sg_alias' => 'england',
             'sg_comment' => 'English services',
-            'sg_activate' => '1'
+            'sg_activate' => '1',
+            'organization_id' => 1
         );
         $arr = Servicegroup::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -235,14 +237,16 @@ class ServiceGroupTest extends DbTestCase
                 'sg_name' => 'france',
                 'sg_alias' => 'france',
                 'sg_comment' => 'French services',
-                'sg_activate' => '1'
+                'sg_activate' => '1',
+                'organization_id' => 1
             ),
             array(
                 'sg_id' => 2,
                 'sg_name' => 'england',
                 'sg_alias' => 'england',
                 'sg_comment' => 'English services',
-                'sg_activate' => '1'
+                'sg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Servicegroup::getList());
@@ -256,7 +260,8 @@ class ServiceGroupTest extends DbTestCase
                 'sg_name' => 'france',
                 'sg_alias' => 'france',
                 'sg_comment' => 'French services',
-                'sg_activate' => '1'
+                'sg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Servicegroup::getList('*', 1));
@@ -270,7 +275,8 @@ class ServiceGroupTest extends DbTestCase
                 'sg_name' => 'england',
                 'sg_alias' => 'england',
                 'sg_comment' => 'English services',
-                'sg_activate' => '1'
+                'sg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Servicegroup::getList('*', 1, 1));
@@ -389,7 +395,8 @@ class ServiceGroupTest extends DbTestCase
             'sg_name' => 'france',
             'sg_alias' => 'france',
             'sg_comment' => 'French services',
-            'sg_activate' => '1'
+            'sg_activate' => '1',
+            'organization_id' => 1
         );
         $this->assertEquals($expectedResult, Servicegroup::get(1));
     }
@@ -463,7 +470,8 @@ class ServiceGroupTest extends DbTestCase
                 'sg_name',
                 'sg_alias',
                 'sg_comment',
-                'sg_activate'
+                'sg_activate',
+                'organization_id'
             ),
             Servicegroup::getColumns()
         );

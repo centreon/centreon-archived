@@ -65,7 +65,8 @@ class HostCategoryTest extends DbTestCase
             'hc_name' => 'test',
             'hc_alias' => 'test alias',
             'hc_comment' => 'test comment',
-            'hc_activate' => '1'
+            'hc_activate' => '1',
+            'organization_id' => 1
         );
         Hostcategory::insert($insert);
         $this->setExpectedException(
@@ -169,7 +170,8 @@ class HostCategoryTest extends DbTestCase
             'level' => null,
             'icon_id' => null,
             'hc_comment' => 'Web servers',
-            'hc_activate' => '1'
+            'hc_activate' => '1',
+            'organization_id' => 1
         );
         $arr = Hostcategory::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -239,7 +241,8 @@ class HostCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'hc_comment' => 'Network devices',
-                'hc_activate' => '1'
+                'hc_activate' => '1',
+                'organization_id' => 1
             ),
             array(
                 'hc_id' => 2,
@@ -248,7 +251,8 @@ class HostCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'hc_comment' => 'Web servers',
-                'hc_activate' => '1'
+                'hc_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Hostcategory::getList());
@@ -264,7 +268,8 @@ class HostCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'hc_comment' => 'Network devices',
-                'hc_activate' => '1'
+                'hc_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Hostcategory::getList('*', 1));
@@ -280,7 +285,8 @@ class HostCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'hc_comment' => 'Web servers',
-                'hc_activate' => '1'
+                'hc_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Hostcategory::getList('*', 1, 1));
@@ -401,7 +407,8 @@ class HostCategoryTest extends DbTestCase
             'level' => null,
             'icon_id' => null,
             'hc_comment' => 'Web servers',
-            'hc_activate' => '1'
+            'hc_activate' => '1',
+            'organization_id' => 1
         );
         $this->assertEquals($expectedResult, Hostcategory::get(2));
     }
@@ -477,7 +484,8 @@ class HostCategoryTest extends DbTestCase
                 'level',
                 'icon_id',
                 'hc_comment',
-                'hc_activate'
+                'hc_activate',
+                'organization_id'
             ),
             Hostcategory::getColumns()
         );

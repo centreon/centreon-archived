@@ -215,7 +215,8 @@ class ManufacturerTest extends DbTestCase
             'id' => 1,
             'name' => 'Generic',
             'alias' => 'Generic',
-            'description' => 'References Generic Traps'
+            'description' => 'References Generic Traps',
+            'organization_id' => 1
         );
         $manufacturer = Manufacturer::getParameters(1, '*');
         $this->assertEquals($manufacturer, $testInformation);
@@ -276,7 +277,8 @@ class ManufacturerTest extends DbTestCase
                 'id',
                 'name',
                 'alias',
-                'description'
+                'description',
+                'organization_id'
             ),
             Manufacturer::getColumns()
         );

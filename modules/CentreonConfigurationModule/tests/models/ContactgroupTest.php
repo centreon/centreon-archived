@@ -51,8 +51,7 @@ class ContactgroupTest extends DbTestCase
             'cg_name' => 'Contactgroup test',
             'cg_alias' => 'Contactgroup test',
             'cg_comment' => 'Test contactgroup',
-            'cg_activate' => '1',
-            'organization_id' => 1
+            'cg_activate' => '1'
         );
         Contactgroup::insert($newContactgroup);
         /* Assert for test insert in DB */

@@ -83,7 +83,8 @@ class TrapTest extends DbTestCase
             "traps_args" => "test $1",
             "traps_status" => "1",
             "manufacturer_id" => "24",
-            "traps_comments" => "Test for traps"
+            "traps_comments" => "Test for traps",
+            'organization_id' => 1
         );
         
         /* Test exception unique */
@@ -124,7 +125,8 @@ class TrapTest extends DbTestCase
             "traps_args" => "test $3",
             "traps_status" => "0",
             "manufacturer_id" => "1",
-            "traps_comments" => "Test for traps"
+            "traps_comments" => "Test for traps",
+            'organization_id' => 1
         );
         
         Trap::update(1, $updatedTrap);
@@ -284,7 +286,8 @@ class TrapTest extends DbTestCase
                 "traps_routing_mode",
                 "traps_routing_value",
                 "traps_exec_method",
-                "traps_comments"
+                "traps_comments",
+                "organization_id"
             ),
             Trap::getColumns()
         );
