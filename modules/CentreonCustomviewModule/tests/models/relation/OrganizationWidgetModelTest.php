@@ -47,7 +47,7 @@ class OrganizationWidgetModelModelTest extends DbTestCase
     {
         WidgetModel::insert(1, 2);
         $this->tableEqualsXml(
-            'cfg_organizations_widget_models_relation',
+            'cfg_organizations_widget_models_relations',
             dirname(dirname(__DIR__)) . '/data/organization_widget_model.insert.xml'
         );
     }
@@ -66,12 +66,12 @@ class OrganizationWidgetModelModelTest extends DbTestCase
     {
         WidgetModel::delete(1, 1);
         $this->tableEqualsXml(
-            'cfg_organizations_widget_models_relation',
+            'cfg_organizations_widget_models_relations',
             dirname(dirname(__DIR__)) . '/data/organization_widget_model.delete-1.xml'
         );
         WidgetModel::delete(2);
         $this->tableEqualsXml(
-            'cfg_organizations_widget_models_relation',
+            'cfg_organizations_widget_models_relations',
             dirname(dirname(__DIR__)) . '/data/organization_widget_model.delete-2.xml'
         );
     }

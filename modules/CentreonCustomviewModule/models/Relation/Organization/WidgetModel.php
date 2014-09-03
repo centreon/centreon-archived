@@ -47,7 +47,7 @@ use \Centreon\Models\CentreonRelationModel;
  */
 class WidgetModel extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_organizations_widget_models_relation";
+    protected static $relationTable = "cfg_organizations_widget_models_relations";
     protected static $firstKey = "organization_id";
     protected static $secondKey = "widget_model_id";
     public static $firstObject = "\\CentreonAdministration\\Models\\Organization";

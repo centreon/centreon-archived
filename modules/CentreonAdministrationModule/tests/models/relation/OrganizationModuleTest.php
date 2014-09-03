@@ -49,7 +49,7 @@ class OrganizationModuleTest extends DbTestCase
             'is_activated' => 1
         ));
         $this->tableEqualsXml(
-            'cfg_organizations_modules_relation',
+            'cfg_organizations_modules_relations',
             dirname(dirname(__DIR__)) . '/data/organization_module.insert.xml'
         );
     }
@@ -68,12 +68,12 @@ class OrganizationModuleTest extends DbTestCase
     {
         Module::delete(1, 1);
         $this->tableEqualsXml(
-            'cfg_organizations_modules_relation',
+            'cfg_organizations_modules_relations',
             dirname(dirname(__DIR__)) . '/data/organization_module.delete-1.xml'
         );
         Module::delete(2);
         $this->tableEqualsXml(
-            'cfg_organizations_modules_relation',
+            'cfg_organizations_modules_relations',
             dirname(dirname(__DIR__)) . '/data/organization_module.delete-2.xml'
         );
     }

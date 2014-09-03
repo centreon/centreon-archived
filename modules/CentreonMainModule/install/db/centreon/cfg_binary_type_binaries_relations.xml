@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_main" defaultIdMethod="native">
-    <table name="cfg_binary_type_binaries_relation" phpName="BinaryTypeBinariesRelation" idMethod="native">
+    <table name="cfg_binary_type_binaries_relations" phpName="BinaryTypeBinariesRelation" idMethod="native">
         <column name="binary_type_id" phpName="BinaryTypeId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="binary_id" phpName="BinaryId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <foreign-key foreignTable="cfg_binary_type" name="binary_type_binaries_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
