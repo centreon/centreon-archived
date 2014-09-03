@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <dataset>
-  <table name="cfg_organizations_modules_relation">
+  <table name="cfg_organizations_modules_relations">
   </table>
 </dataset>

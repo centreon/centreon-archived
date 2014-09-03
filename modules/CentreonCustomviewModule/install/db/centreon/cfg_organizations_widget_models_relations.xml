@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_customviews" defaultIdMethod="native">
-    <table name="cfg_organizations_widget_models_relation" phpName="OrganizationsWidgetModels" idMethod="native">
+    <table name="cfg_organizations_widget_models_relations" phpName="OrganizationsWidgetModels" idMethod="native">
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="widget_model_id" phpName="WidgetModelId" type="INTEGER" primaryKey="true" required="true"/>
-        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_widget_models_relation_fk01" onDelete="CASCADE">
+        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_widget_models_relations_fk01" onDelete="CASCADE">
             <reference local="organization_id" foreign="organization_id" />
         </foreign-key>
-        <foreign-key foreignTable="cfg_widgets_models" name="cfg_organizations_widget_models_relation_fk02" onDelete="CASCADE">
+        <foreign-key foreignTable="cfg_widgets_models" name="cfg_organizations_widget_models_relations_fk02" onDelete="CASCADE">
             <reference local="widget_model_id" foreign="widget_model_id" />
         </foreign-key>
         <vendor type="mysql">

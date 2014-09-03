@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
-    <table name="cfg_organizations_contacts_relation" phpName="OrganizationsContactsRelation" idMethod="native">
+    <table name="cfg_organizations_contacts_relations" phpName="OrganizationsContactsRelation" idMethod="native">
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="is_default" phpName="IsDefault" type="TINYINT" default="0"/>
         <column name="is_admin" phpName="IsAdmin" type="TINYINT" default="0"/>
-        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_contacts_relation_fk01" onDelete="CASCADE">
+        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_contacts_relations_fk01" onDelete="CASCADE">
             <reference local="organization_id" foreign="organization_id" />
         </foreign-key>
-        <foreign-key foreignTable="cfg_contacts" name="cfg_organizations_contacts_relation_fk02" onDelete="CASCADE">
+        <foreign-key foreignTable="cfg_contacts" name="cfg_organizations_contacts_relations_fk02" onDelete="CASCADE">
             <reference local="contact_id" foreign="contact_id" />
         </foreign-key>
         <vendor type="mysql">

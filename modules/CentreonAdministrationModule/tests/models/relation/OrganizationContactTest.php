@@ -49,7 +49,7 @@ class OrganizationContactTest extends DbTestCase
             'is_default' => 1
         ));
         $this->tableEqualsXml(
-            'cfg_organizations_contacts_relation',
+            'cfg_organizations_contacts_relations',
             dirname(dirname(__DIR__)) . '/data/organization_contact.insert.xml'
         );
     }
@@ -68,12 +68,12 @@ class OrganizationContactTest extends DbTestCase
     {
         Contact::delete(1, 1);
         $this->tableEqualsXml(
-            'cfg_organizations_contacts_relation',
+            'cfg_organizations_contacts_relations',
             dirname(dirname(__DIR__)) . '/data/organization_contact.delete-1.xml'
         );
         Contact::delete(2);
         $this->tableEqualsXml(
-            'cfg_organizations_contacts_relation',
+            'cfg_organizations_contacts_relations',
             dirname(dirname(__DIR__)) . '/data/organization_contact.delete-2.xml'
         );
     }
