@@ -9,6 +9,10 @@
         <foreign-key foreignTable="cfg_organizations" name="bam_bagroups_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
+        <unique name="unique_name">
+            <unique-column name="ba_group_name"/>
+            <unique-column name="organization_id"/>
+        </unique>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

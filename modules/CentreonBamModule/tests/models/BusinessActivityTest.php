@@ -166,19 +166,36 @@ class BusinessActivityTest extends DbTestCase
         BusinessActivity::duplicate(9999, 2);
     }
 
-    /*public function testGetAllParameters()
+    public function testGetAllParameters()
     {
         $testInformation = array(
-            'tp_id' => 2,
-            'tp_name' => 'workhours',
-            'tp_alias' => 'workhours',
-            'tp_sunday' => null,
-            'tp_monday' => '00:00-24:00',
-            'tp_tuesday' => '00:00-24:00',
-            'tp_wednesday' => '00:00-24:00',
-            'tp_thursday' => '00:00-24:00',
-            'tp_friday' => '00:00-24:00',
-            'tp_saturday' => null
+            "ba_id" =>  2,
+            "name" =>  "hotline",
+            "description" =>  "hotline",
+            "level_w" =>  "75",
+            "level_c" =>  "60",
+            "sla_type" => null,
+            "sla_warning" => null,
+            "sla_critical" => null,
+            "id_notification_period" =>  null,
+            "id_check_period"  => null,
+            "id_reporting_period"  => null,
+            "notification_interval"  => null,
+            "notification_options"  => null,
+            "notifications_enabled"  => null,
+            "max_check_attempts"  => null,
+            "normal_check_interval"  => null,
+            "retry_check_interval"  => null,
+            "current_level"  => null,
+            "calculate" =>  "0",
+            "downtime" =>  "0",
+            "acknowledged" =>  "0",
+             "dependency_dep_id"  => null,
+            "icon_id"  => null,
+            "graph_style"  => null,
+            "activate" =>  "1",
+            "comment"  => null,
+            "organization_id" =>  '1'
         );
         $arr = BusinessActivity::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -187,20 +204,20 @@ class BusinessActivityTest extends DbTestCase
     public function testGetSpecificParameter()
     {
         $testInformation = array(
-            'tp_name' => 'workhours',
+            'name' => 'hotline',
         );
-        $arr = BusinessActivity::getParameters(2, 'tp_name');
+        $arr = BusinessActivity::getParameters(2, 'name');
         $this->assertEquals($arr, $testInformation);
     }
 
     public function testGetSpecificParameters()
     {
         $testInformation = array(
-            'tp_name' => 'workhours',
-            'tp_alias' => 'workhours',
-            'tp_monday' => '00:00-24:00'
+            'name' => 'hotline',
+            'description' => 'hotline',
+            'level_w' => '75'
         );
-        $arr = BusinessActivity::getParameters(2, array('tp_name', 'tp_alias', 'tp_monday'));
+        $arr = BusinessActivity::getParameters(2, array('name', 'description', 'level_w'));
         $this->assertEquals($arr, $testInformation);
     }
 
@@ -216,13 +233,13 @@ class BusinessActivityTest extends DbTestCase
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::getParameters(9999, 'tp_name');
+        BusinessActivity::getParameters(9999, 'name');
         
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::getParameters(9999, array('tp_name', 'tp_alias'));
+        BusinessActivity::getParameters(9999, array('name', 'description'));
     }
 
     public function testGetUnknownParameters()
@@ -235,35 +252,69 @@ class BusinessActivityTest extends DbTestCase
        $this->setExpectedException(
            'PDOException'
        );
-       BusinessActivity::getParameters(2, array('tp_name', 'idontexist'));
+       BusinessActivity::getParameters(2, array('name', 'idontexist'));
     }
 
     public function testGetList()
     {
         $expectedResult = array(
             array(
-                'tp_id' => 1,
-                'tp_name' => '24x7',
-                'tp_alias' => '24_Hours_A_Day,_7_Days_A_Week',
-                'tp_sunday' => '00:00-24:00',
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => '00:00-24:00'
+                "ba_id" =>  1,
+                "name" =>  "accounting",
+                "description" =>  "accounting",
+                "level_w" =>  "80",
+                "level_c" =>  "65",
+                "sla_type" => null,
+                "sla_warning" => null,
+                "sla_critical" => null,
+                "id_notification_period" =>  null,
+                "id_check_period"  => null,
+                "id_reporting_period"  => null,
+                "notification_interval"  => null,
+                "notification_options"  => null,
+                "notifications_enabled"  => null,
+                "max_check_attempts"  => null,
+                "normal_check_interval"  => null,
+                "retry_check_interval"  => null,
+                "current_level"  => null,
+                "calculate" =>  "0",
+                "downtime" =>  "0",
+                "acknowledged" =>  "0",
+                 "dependency_dep_id"  => null,
+                "icon_id"  => null,
+                "graph_style"  => null,
+                "activate" =>  "1",
+                "comment"  => null,
+                "organization_id" =>  1
             ),
             array(
-                'tp_id' => 2,
-                'tp_name' => 'workhours',
-                'tp_alias' => 'workhours',
-                'tp_sunday' => null,
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => null
+                "ba_id" =>  2,
+                "name" =>  "hotline",
+                "description" =>  "hotline",
+                "level_w" =>  "75",
+                "level_c" =>  "60",
+                "sla_type" => null,
+                "sla_warning" => null,
+                "sla_critical" => null,
+                "id_notification_period" =>  null,
+                "id_check_period"  => null,
+                "id_reporting_period"  => null,
+                "notification_interval"  => null,
+                "notification_options"  => null,
+                "notifications_enabled"  => null,
+                "max_check_attempts"  => null,
+                "normal_check_interval"  => null,
+                "retry_check_interval"  => null,
+                "current_level"  => null,
+                "calculate" =>  "0",
+                "downtime" =>  "0",
+                "acknowledged" =>  "0",
+                 "dependency_dep_id"  => null,
+                "icon_id"  => null,
+                "graph_style"  => null,
+                "activate" =>  "1",
+                "comment"  => null,
+                "organization_id" =>  1
             )
         );
         $this->assertEquals($expectedResult, BusinessActivity::getList());
@@ -273,16 +324,33 @@ class BusinessActivityTest extends DbTestCase
     {
         $expectedResult = array(
             array(
-                'tp_id' => 1,
-                'tp_name' => '24x7',
-                'tp_alias' => '24_Hours_A_Day,_7_Days_A_Week',
-                'tp_sunday' => '00:00-24:00',
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => '00:00-24:00'
+                "ba_id" =>  1,
+                "name" =>  "accounting",
+                "description" =>  "accounting",
+                "level_w" =>  "80",
+                "level_c" =>  "65",
+                "sla_type" => null,
+                "sla_warning" => null,
+                "sla_critical" => null,
+                "id_notification_period" =>  null,
+                "id_check_period"  => null,
+                "id_reporting_period"  => null,
+                "notification_interval"  => null,
+                "notification_options"  => null,
+                "notifications_enabled"  => null,
+                "max_check_attempts"  => null,
+                "normal_check_interval"  => null,
+                "retry_check_interval"  => null,
+                "current_level"  => null,
+                "calculate" =>  "0",
+                "downtime" =>  "0",
+                "acknowledged" =>  "0",
+                 "dependency_dep_id"  => null,
+                "icon_id"  => null,
+                "graph_style"  => null,
+                "activate" =>  "1",
+                "comment"  => null,
+                "organization_id" =>  1
             )
         );
         $this->assertEquals($expectedResult, BusinessActivity::getList('*', 1));
@@ -292,16 +360,33 @@ class BusinessActivityTest extends DbTestCase
     {
         $expectedResult = array(
             array(
-                'tp_id' => 2,
-                'tp_name' => 'workhours',
-                'tp_alias' => 'workhours',
-                'tp_sunday' => null,
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => null
+                "ba_id" =>  2,
+                "name" =>  "hotline",
+                "description" =>  "hotline",
+                "level_w" =>  "75",
+                "level_c" =>  "60",
+                "sla_type" => null,
+                "sla_warning" => null,
+                "sla_critical" => null,
+                "id_notification_period" =>  null,
+                "id_check_period"  => null,
+                "id_reporting_period"  => null,
+                "notification_interval"  => null,
+                "notification_options"  => null,
+                "notifications_enabled"  => null,
+                "max_check_attempts"  => null,
+                "normal_check_interval"  => null,
+                "retry_check_interval"  => null,
+                "current_level"  => null,
+                "calculate" =>  "0",
+                "downtime" =>  "0",
+                "acknowledged" =>  "0",
+                 "dependency_dep_id"  => null,
+                "icon_id"  => null,
+                "graph_style"  => null,
+                "activate" =>  "1",
+                "comment"  => null,
+                "organization_id" =>  1
             )
         );
         $this->assertEquals($expectedResult, BusinessActivity::getList('*', 1, 1));
@@ -311,45 +396,45 @@ class BusinessActivityTest extends DbTestCase
     public function testGetListOneParameter()
     {
         $expectedResult = array(
-            array('tp_name' => '24x7'),
-            array('tp_name' => 'workhours')
+            array('name' => 'accounting'),
+            array('name' => 'hotline')
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList('tp_name'));
+        $this->assertEquals($expectedResult, BusinessActivity::getList('name'));
     }
 
     public function testGetListMultipleParameters()
     {
         $expectedResult = array(
-            array('tp_id' => 1, 'tp_name' => '24x7'),
-            array('tp_id' => 2, 'tp_name' => 'workhours')
+            array('ba_id' => 1, 'name' => 'accounting'),
+            array('ba_id' => 2, 'name' => 'hotline')
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList(array('tp_id', 'tp_name')));
+        $this->assertEquals($expectedResult, BusinessActivity::getList(array('ba_id', 'name')));
     }
 
     public function testGetListWithOrder()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours'),
-            array('tp_name' => '24x7')
+            array('name' => 'hotline'),
+            array('name' => 'accounting')
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList('tp_name', null, null, 'tp_id', 'DESC'));
+        $this->assertEquals($expectedResult, BusinessActivity::getList('name', null, null, 'ba_id', 'DESC'));
     }
 
     public function testGetListWithOneFilter()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours')
+            array('name' => 'hotline')
         );
         $this->assertEquals(
             $expectedResult, 
             BusinessActivity::getList(
-                'tp_name', 
+                'name', 
                 null, 
                 null, 
                 null, 
                 null, 
                 array(
-                    'tp_name' => 'workhours'
+                    'name' => 'hotline'
                 )
             )
         );
@@ -358,19 +443,19 @@ class BusinessActivityTest extends DbTestCase
     public function testGetListWithMultipleFilters()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours')
+            array('name' => 'hotline')
         );
         $this->assertEquals(
             $expectedResult, 
             BusinessActivity::getList(
-                'tp_name', 
+                'name', 
                 null, 
                 null, 
                 null, 
                 null, 
                 array(
-                    'tp_name' => 'workhours',
-                    'tp_id' => 2
+                    'name' => 'hotline',
+                    'ba_id' => 2
                 )
             )
         );
@@ -382,13 +467,13 @@ class BusinessActivityTest extends DbTestCase
         $this->assertEquals(
             $expectedResult, 
             BusinessActivity::getList(
-                'tp_name', 
+                'name', 
                 null, 
                 null, 
                 null, 
                 null, 
                 array(
-                    'tp_name' => 'idontexist',
+                    'name' => 'idontexist',
                 )
             )
 
@@ -398,17 +483,17 @@ class BusinessActivityTest extends DbTestCase
     public function testGetListBySearch()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours')
+            array('name' => 'hotline')
         );
         $this->assertEquals(
             $expectedResult, 
             BusinessActivity::getListBySearch(
-                'tp_name', 
+                'name', 
                 null, 
                 null, 
                 null, 
                 null,
-                array('tp_name' => 'hours')
+                array('name' => 'line')
             )
         );
     }
@@ -416,19 +501,36 @@ class BusinessActivityTest extends DbTestCase
     public function testGet()
     {
         $expectedResult = array(
-            'tp_id' => 2,
-            'tp_name' => 'workhours',
-            'tp_alias' => 'workhours',
-            'tp_sunday' => null,
-            'tp_monday' => '00:00-24:00',
-            'tp_tuesday' => '00:00-24:00',
-            'tp_wednesday' => '00:00-24:00',
-            'tp_thursday' => '00:00-24:00',
-            'tp_friday' => '00:00-24:00',
-            'tp_saturday' => null
+            "ba_id" =>  2,
+                "name" =>  "hotline",
+                "description" =>  "hotline",
+                "level_w" =>  "75",
+                "level_c" =>  "60",
+                "sla_type" => null,
+                "sla_warning" => null,
+                "sla_critical" => null,
+                "id_notification_period" =>  null,
+                "id_check_period"  => null,
+                "id_reporting_period"  => null,
+                "notification_interval"  => null,
+                "notification_options"  => null,
+                "notifications_enabled"  => null,
+                "max_check_attempts"  => null,
+                "normal_check_interval"  => null,
+                "retry_check_interval"  => null,
+                "current_level"  => null,
+                "calculate" =>  "0",
+                "downtime" =>  "0",
+                "acknowledged" =>  "0",
+                 "dependency_dep_id"  => null,
+                "icon_id"  => null,
+                "graph_style"  => null,
+                "activate" =>  "1",
+                "comment"  => null,
+                "organization_id" =>  1
         );
         $this->assertEquals($expectedResult, BusinessActivity::get(2));
-    }*/
+    }
 
     public function testGetWithOneParameter()
     {

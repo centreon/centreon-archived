@@ -43,13 +43,10 @@
         <foreign-key foreignTable="cfg_organizations" name="bam_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
-        <unique name="name">
+        <unique name="unique_name">
             <unique-column name="name"/>
             <unique-column name="organization_id"/>
         </unique>
-        <index name="name_index">
-            <index-column name="name"/>
-        </index>
         <index name="description_index">
             <index-column name="description"/>
         </index>

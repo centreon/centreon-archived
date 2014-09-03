@@ -160,19 +160,14 @@ class BusinessViewTest extends DbTestCase
         BusinessView::duplicate(9999, 2);
     }
 
-    /*public function testGetAllParameters()
+    public function testGetAllParameters()
     {
         $testInformation = array(
-            'tp_id' => 2,
-            'tp_name' => 'workhours',
-            'tp_alias' => 'workhours',
-            'tp_sunday' => null,
-            'tp_monday' => '00:00-24:00',
-            'tp_tuesday' => '00:00-24:00',
-            'tp_wednesday' => '00:00-24:00',
-            'tp_thursday' => '00:00-24:00',
-            'tp_friday' => '00:00-24:00',
-            'tp_saturday' => null
+            "id_ba_group" => "2",
+            "ba_group_name" => "view 2",
+            "ba_group_description" => "view 2",
+            "visible" => '1',
+            "organization_id" => 1,
         );
         $arr = BusinessView::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -181,20 +176,20 @@ class BusinessViewTest extends DbTestCase
     public function testGetSpecificParameter()
     {
         $testInformation = array(
-            'tp_name' => 'workhours',
+            'ba_group_description' => 'view 2',
         );
-        $arr = BusinessView::getParameters(2, 'tp_name');
+        $arr = BusinessView::getParameters(2, 'ba_group_description');
         $this->assertEquals($arr, $testInformation);
     }
 
     public function testGetSpecificParameters()
     {
         $testInformation = array(
-            'tp_name' => 'workhours',
-            'tp_alias' => 'workhours',
-            'tp_monday' => '00:00-24:00'
+            'ba_group_name' => 'view 2',
+            'ba_group_description' => 'view 2',
+            'visible' => '1'
         );
-        $arr = BusinessView::getParameters(2, array('tp_name', 'tp_alias', 'tp_monday'));
+        $arr = BusinessView::getParameters(2, array('ba_group_name', 'ba_group_description', 'visible'));
         $this->assertEquals($arr, $testInformation);
     }
 
@@ -210,13 +205,13 @@ class BusinessViewTest extends DbTestCase
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessView::getParameters(9999, 'tp_name');
+        BusinessView::getParameters(9999, 'ba_group_name');
         
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessView::getParameters(9999, array('tp_name', 'tp_alias'));
+        BusinessView::getParameters(9999, array('ba_group_name', 'ba_group_description'));
     }
 
     public function testGetUnknownParameters()
@@ -229,35 +224,25 @@ class BusinessViewTest extends DbTestCase
        $this->setExpectedException(
            'PDOException'
        );
-       BusinessView::getParameters(2, array('tp_name', 'idontexist'));
+       BusinessView::getParameters(2, array('ba_group_name', 'idontexist'));
     }
 
     public function testGetList()
     {
         $expectedResult = array(
             array(
-                'tp_id' => 1,
-                'tp_name' => '24x7',
-                'tp_alias' => '24_Hours_A_Day,_7_Days_A_Week',
-                'tp_sunday' => '00:00-24:00',
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => '00:00-24:00'
+                "id_ba_group" => "1",
+                "ba_group_name" => "view 1",
+                "ba_group_description" => "view 1",
+                "visible" => '1',
+                "organization_id" => 1,
             ),
             array(
-                'tp_id' => 2,
-                'tp_name' => 'workhours',
-                'tp_alias' => 'workhours',
-                'tp_sunday' => null,
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => null
+                "id_ba_group" => "2",
+                "ba_group_name" => "view 2",
+                "ba_group_description" => "view 2",
+                "visible" => '1',
+                "organization_id" => 1,
             )
         );
         $this->assertEquals($expectedResult, BusinessView::getList());
@@ -267,16 +252,11 @@ class BusinessViewTest extends DbTestCase
     {
         $expectedResult = array(
             array(
-                'tp_id' => 1,
-                'tp_name' => '24x7',
-                'tp_alias' => '24_Hours_A_Day,_7_Days_A_Week',
-                'tp_sunday' => '00:00-24:00',
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => '00:00-24:00'
+                "id_ba_group" => "1",
+                "ba_group_name" => "view 1",
+                "ba_group_description" => "view 1",
+                "visible" => '1',
+                "organization_id" => 1,
             )
         );
         $this->assertEquals($expectedResult, BusinessView::getList('*', 1));
@@ -286,16 +266,11 @@ class BusinessViewTest extends DbTestCase
     {
         $expectedResult = array(
             array(
-                'tp_id' => 2,
-                'tp_name' => 'workhours',
-                'tp_alias' => 'workhours',
-                'tp_sunday' => null,
-                'tp_monday' => '00:00-24:00',
-                'tp_tuesday' => '00:00-24:00',
-                'tp_wednesday' => '00:00-24:00',
-                'tp_thursday' => '00:00-24:00',
-                'tp_friday' => '00:00-24:00',
-                'tp_saturday' => null
+                "id_ba_group" => "2",
+                "ba_group_name" => "view 2",
+                "ba_group_description" => "view 2",
+                "visible" => '1',
+                "organization_id" => 1,
             )
         );
         $this->assertEquals($expectedResult, BusinessView::getList('*', 1, 1));
@@ -305,45 +280,45 @@ class BusinessViewTest extends DbTestCase
     public function testGetListOneParameter()
     {
         $expectedResult = array(
-            array('tp_name' => '24x7'),
-            array('tp_name' => 'workhours')
+            array('ba_group_name' => 'view 1'),
+            array('ba_group_name' => 'view 2')
         );
-        $this->assertEquals($expectedResult, BusinessView::getList('tp_name'));
+        $this->assertEquals($expectedResult, BusinessView::getList('ba_group_name'));
     }
 
     public function testGetListMultipleParameters()
     {
         $expectedResult = array(
-            array('tp_id' => 1, 'tp_name' => '24x7'),
-            array('tp_id' => 2, 'tp_name' => 'workhours')
+            array('id_ba_group' => 1, 'ba_group_name' => 'view 1'),
+            array('id_ba_group' => 2, 'ba_group_name' => 'view 2')
         );
-        $this->assertEquals($expectedResult, BusinessView::getList(array('tp_id', 'tp_name')));
+        $this->assertEquals($expectedResult, BusinessView::getList(array('id_ba_group', 'ba_group_name')));
     }
 
     public function testGetListWithOrder()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours'),
-            array('tp_name' => '24x7')
+            array('ba_group_name' => 'view 2'),
+            array('ba_group_name' => 'view 1')
         );
-        $this->assertEquals($expectedResult, BusinessView::getList('tp_name', null, null, 'tp_id', 'DESC'));
+        $this->assertEquals($expectedResult, BusinessView::getList('ba_group_name', null, null, 'id_ba_group', 'DESC'));
     }
 
     public function testGetListWithOneFilter()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours')
+            array('ba_group_name' => 'view 2')
         );
         $this->assertEquals(
             $expectedResult, 
             BusinessView::getList(
-                'tp_name', 
+                'ba_group_name', 
                 null, 
                 null, 
                 null, 
                 null, 
                 array(
-                    'tp_name' => 'workhours'
+                    'ba_group_name' => 'view 2'
                 )
             )
         );
@@ -352,19 +327,19 @@ class BusinessViewTest extends DbTestCase
     public function testGetListWithMultipleFilters()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours')
+            array('ba_group_name' => 'view 1')
         );
         $this->assertEquals(
             $expectedResult, 
             BusinessView::getList(
-                'tp_name', 
+                'ba_group_name', 
                 null, 
                 null, 
                 null, 
                 null, 
                 array(
-                    'tp_name' => 'workhours',
-                    'tp_id' => 2
+                    'ba_group_name' => 'view 1',
+                    'id_ba_group' => 1
                 )
             )
         );
@@ -376,13 +351,13 @@ class BusinessViewTest extends DbTestCase
         $this->assertEquals(
             $expectedResult, 
             BusinessView::getList(
-                'tp_name', 
+                'ba_group_name', 
                 null, 
                 null, 
                 null, 
                 null, 
                 array(
-                    'tp_name' => 'idontexist',
+                    'ba_group_name' => 'idontexist',
                 )
             )
 
@@ -392,17 +367,18 @@ class BusinessViewTest extends DbTestCase
     public function testGetListBySearch()
     {
         $expectedResult = array(
-            array('tp_name' => 'workhours')
+            array('ba_group_name' => 'view 1'),
+            array('ba_group_name' => 'view 2')
         );
         $this->assertEquals(
             $expectedResult, 
             BusinessView::getListBySearch(
-                'tp_name', 
+                'ba_group_name', 
                 null, 
                 null, 
                 null, 
                 null,
-                array('tp_name' => 'hours')
+                array('ba_group_name' => 'view')
             )
         );
     }
@@ -410,19 +386,14 @@ class BusinessViewTest extends DbTestCase
     public function testGet()
     {
         $expectedResult = array(
-            'tp_id' => 2,
-            'tp_name' => 'workhours',
-            'tp_alias' => 'workhours',
-            'tp_sunday' => null,
-            'tp_monday' => '00:00-24:00',
-            'tp_tuesday' => '00:00-24:00',
-            'tp_wednesday' => '00:00-24:00',
-            'tp_thursday' => '00:00-24:00',
-            'tp_friday' => '00:00-24:00',
-            'tp_saturday' => null
+            "id_ba_group" => "2",
+            "ba_group_name" => "view 2",
+            "ba_group_description" => "view 2",
+            "visible" => '1',
+            "organization_id" => 1,
         );
         $this->assertEquals($expectedResult, BusinessView::get(2));
-    }*/
+    }
 
     public function testGetWithOneParameter()
     {
