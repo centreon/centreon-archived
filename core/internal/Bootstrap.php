@@ -203,6 +203,6 @@ class Bootstrap
      */
     private function initOrganization()
     {
-        $this->di->set('organization', 1);
+        $this->di->setShared('organization', 1);
     }
 }

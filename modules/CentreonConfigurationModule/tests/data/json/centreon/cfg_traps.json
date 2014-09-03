@@ -1,34 +1,38 @@
 [
     {
-        "traps_name" : "linkDown",
-        "traps_oid" : ".1.3.6.1.6.3.1.1.5.3",
-        "traps_args" : "Link down on interface $2. State: $4.",
-        "traps_status" : "2",
-        "manufacturer_id" : 1,
-        "traps_comments" : "A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agents configuration."
+        "traps_name": "linkDown",
+        "traps_oid": ".1.3.6.1.6.3.1.1.5.3",
+        "traps_args": "Link down on interface $2. State: $4.",
+        "traps_status": "2",
+        "manufacturer_id": 1,
+        "traps_comments" : "A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agents configuration.",
+        "organization_id": 1
     },
     {
-        "traps_name" : "linkUp",
-        "traps_oid" : ".1.3.6.1.6.3.1.1.5.4",
-        "traps_args" : "Link up on interface $2. State: $4.",
-        "traps_status" : "0",
-        "manufacturer_id" : 1,
-        "traps_comments" : "A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agents configuration has come up."
+        "traps_name": "linkUp",
+        "traps_oid": ".1.3.6.1.6.3.1.1.5.4",
+        "traps_args": "Link up on interface $2. State: $4.",
+        "traps_status": "0",
+        "manufacturer_id": 1,
+        "traps_comments" : "A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agents configuration has come up.",
+        "organization_id": 1
     },
     {
-        "traps_name" : "warmStart",
-        "traps_oid" : ".1.3.6.1.6.3.1.1.5.2",
-        "traps_args" : "SNMP is reinitializing",
-        "traps_status" : "0",
-        "manufacturer_id" : 1,
-        "traps_comments" : "A warmStart(1) trap signifies that the sending protocol entity is reinitializing itself such that neither the agent configuration nor the protocol entity implementation is altered."
+        "traps_name": "warmStart",
+        "traps_oid": ".1.3.6.1.6.3.1.1.5.2",
+        "traps_args": "SNMP is reinitializing",
+        "traps_status": "0",
+        "manufacturer_id": 1,
+        "traps_comments": "A warmStart(1) trap signifies that the sending protocol entity is reinitializing itself such that neither the agent configuration nor the protocol entity implementation is altered.",
+        "organization_id": 1
     },
     {
-        "traps_name" : "coldStart",
-        "traps_oid" : ".1.3.6.1.6.3.1.1.5.1",
-        "traps_args" : "SNMP is restarting",
-        "traps_status" : "1",
-        "manufacturer_id" : 1,
-        "traps_comments" : "A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agents configuration or the protocol entity implementation may be altered."
+        "traps_name": "coldStart",
+        "traps_oid": ".1.3.6.1.6.3.1.1.5.1",
+        "traps_args": "SNMP is restarting",
+        "traps_status": "1",
+        "manufacturer_id": 1,
+        "traps_comments": "A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agents configuration or the protocol entity implementation may be altered.",
+        "organization_id": 1
     }
 ]

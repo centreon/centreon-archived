@@ -56,7 +56,13 @@ class DbTestCase extends \PHPUnit_Extensions_Database_TestCase
 
     public static function setUpBeforeClass()
     {
-        $bootstrapSteps = array('configuration', 'database', 'cache', 'routes');
+        $bootstrapSteps = array(
+            'configuration', 
+            'database', 
+            'cache', 
+            'routes',
+            'organization'
+        );
         $bootstrap = new Bootstrap();
         $bootstrap->init($bootstrapSteps);
         self::dropTables();
