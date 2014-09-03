@@ -1,6 +1,5 @@
 [
     {
-        "id": "1",
         "name": "accounting",
         "description": "accounting",
         "level_w": "80",
@@ -8,10 +7,10 @@
         "calculate": "0",
         "downtime": "0",
         "acknowledged": "0",
-        "activate": "1"
+        "activate": "1",
+        "organization_id": "1"
     },
     {
-        "id": "2",
         "name": "hotline",
         "description": "hotline",
         "level_w": "75",
@@ -19,6 +18,7 @@
         "calculate": "0",
         "downtime": "0",
         "acknowledged": "0",
-        "activate": "1"
+        "activate": "1",
+        "organization_id": "1"
     }
 ]

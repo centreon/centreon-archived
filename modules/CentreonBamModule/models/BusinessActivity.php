@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -34,3 +33,16 @@
  * 
  */
 
+namespace CentreonBam\Models;
+
+/**
+ * Used for interacting with Business activities
+ *
+ * @author sylvestre
+ */
+class BusinessActivity extends \Centreon\Models\CentreonBaseModel
+{
+    protected static $table = "cfg_bam";
+    protected static $primaryKey = "ba_id";
+    protected static $uniqueLabelField = "name";
+}

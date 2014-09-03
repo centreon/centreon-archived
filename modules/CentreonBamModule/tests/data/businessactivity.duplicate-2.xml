@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<dataset>
+    <table name="cfg_bam">
+        <column>ba_id</column>
+        <column>name</column>
+        <column>description</column>
+        <column>level_w</column>
+        <column>level_c</column>
+        <column>sla_type</column>
+        <column>sla_warning</column>
+        <column>sla_critical</column>
+        <column>id_notification_period</column>
+        <column>id_check_period</column>
+        <column>id_reporting_period</column>
+        <column>notification_interval</column>
+        <column>notification_options</column>
+        <column>notifications_enabled</column>
+        <column>max_check_attempts</column>
+        <column>normal_check_interval</column>
+        <column>retry_check_interval</column>
+        <column>current_level</column>
+        <column>calculate</column>
+        <column>downtime</column>
+        <column>acknowledged</column>
+        <column>dependency_dep_id</column>
+        <column>icon_id</column>
+        <column>graph_style</column>
+        <column>activate</column>
+        <column>comment</column>
+        <column>organization_id</column>
+        <row>
+            <value>1</value>
+            <value>accounting</value>
+            <value>accounting</value>
+            <value>80</value>
+            <value>65</value>
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <null />
+            <null />
+            <value>1</value>
+            <null />
+            <value>1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>hotline</value>
+            <value>hotline</value>
+            <value>75</value>
+            <value>60</value>
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <null />
+            <null />
+            <value>1</value>
+            <null />
+            <value>1</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>accounting_1</value>
+            <value>accounting</value>
+            <value>80</value>
+            <value>65</value>
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <null />
+            <null />
+            <value>1</value>
+            <null />
+            <value>1</value>
+        </row>
+        <row>
+            <value>4</value>
+            <value>accounting_2</value>
+            <value>accounting</value>
+            <value>80</value>
+            <value>65</value>
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <null />
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <null />
+            <null />
+            <null />
+            <value>1</value>
+            <null />
+            <value>1</value>
+        </row>
+    </table>
+</dataset>

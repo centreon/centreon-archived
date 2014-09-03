@@ -1,0 +1,50 @@
+[
+  {
+    "service_id": "1",
+    "command_command_id": "2",
+    "command_command_id2": "1",
+    "service_description": "ping-template",
+    "service_alias": "ping",
+    "service_max_check_attempts": "3",
+    "service_normal_check_interval": "5",
+    "service_retry_check_interval": "1",
+    "service_active_checks_enabled": "1",
+    "service_passive_checks_enabled": "0",
+    "service_register": "0",
+    "service_activate": "1",
+    "organization_id": 1
+  },
+  {
+    "service_id": "2",
+    "command_command_id": "2",
+    "command_command_id2": "1",
+    "service_description": "load-template",
+    "service_alias": "load",
+    "service_max_check_attempts": "3",
+    "service_normal_check_interval": "5",
+    "service_retry_check_interval": "1",
+    "service_active_checks_enabled": "1",
+    "service_passive_checks_enabled": "0",
+    "service_register": "0",
+    "service_activate": "1",
+    "organization_id": 1
+  },
+  {
+    "service_id": "3",
+    "service_template_model_stm_id": "1",
+    "service_description": "ping",
+    "service_alias": "ping",
+    "service_register": "1",
+    "service_activate": "1",
+    "organization_id": 1
+  },
+  {
+    "service_id": "4",
+    "service_template_model_stm_id": "2",
+    "service_description": "load",
+    "service_alias": "load",
+    "service_register": "1",
+    "service_activate": "1",
+    "organization_id": 1
+  }
+]

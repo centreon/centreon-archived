@@ -1,0 +1,14 @@
+[
+  {
+    "organization_id": 1,
+    "name": "Default organization",
+    "shortname": "default_organization",
+    "active": 1
+  },
+  {
+    "organization_id": 2,
+    "name": "Client organization",
+    "shortname": "client",
+    "active": 0
+  }
+]

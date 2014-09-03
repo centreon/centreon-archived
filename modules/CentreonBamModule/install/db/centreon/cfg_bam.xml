@@ -27,7 +27,7 @@
         <column name="graph_style" phpName="GraphStyle" type="VARCHAR" size="254" required="false"/>
         <column name="activate" phpName="Activate" type="CHAR" required="false" defaultValue="1"/>
         <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
-        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true" defaultValue="1"/>
         <foreign-key foreignTable="cfg_timeperiods" name="bam_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="id_notification_period" foreign="tp_id"/>
         </foreign-key>
@@ -43,6 +43,10 @@
         <foreign-key foreignTable="cfg_organizations" name="bam_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
+        <unique name="name">
+            <unique-column name="name"/>
+            <unique-column name="organization_id"/>
+        </unique>
         <index name="name_index">
             <index-column name="name"/>
         </index>

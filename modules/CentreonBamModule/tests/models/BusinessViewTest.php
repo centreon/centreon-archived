@@ -33,19 +33,19 @@
  *
  */
 
-namespace Test\CentreonBusinessActivity\Models;
+namespace Test\CentreonBusinessView\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonBam\Models\BusinessActivity;
+use \CentreonBam\Models\BusinessView;
 
-class BusinessActivityTest extends DbTestCase
+class BusinessViewTest extends DbTestCase
 {
     protected $errMsg = 'Object not in database.';
     protected $dataPath = '/modules/CentreonBamModule/tests/data/json/';
 
     public function testInsert()
     {
-        $newBusinessActivity = array(
+        $newBusinessView = array(
             "name" => "Ba test",
             "description" => "Ba For Testing",
             "level_w" => "90",
@@ -56,31 +56,31 @@ class BusinessActivityTest extends DbTestCase
             "activate" => "1",
             "organization_id" => "1"
         );
-        BusinessActivity::insert($newBusinessActivity);
+        BusinessView::insert($newBusinessView);
         $this->tableEqualsXml(
             'cfg_bam',
-            dirname(__DIR__) . '/data/businessactivity.insert.xml'
+            dirname(__DIR__) . '/data/businessview.insert.xml'
         );
     }
 
     public function testInsertDuplicateKey()
     {
-        $newBusinessActivity = array(
+        $newBusinessView = array(
             'name' => 'accouting',
             'organization' => '1',
         );
         $this->setExpectedException(
             'PDOException'
         );
-        BusinessActivity::insert($newBusinessActivity);
+        BusinessView::insert($newBusinessView);
     }
 
     public function testDelete()
     {
-        BusinessActivity::delete(1);
+        BusinessView::delete(1);
         $this->tableEqualsXml(
             'cfg_bam',
-            dirname(__DIR__) . '/data/businessactivity.delete.xml'
+            dirname(__DIR__) . '/data/businessview.delete.xml'
         );
     }
 
@@ -90,7 +90,7 @@ class BusinessActivityTest extends DbTestCase
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::delete(9999);
+        BusinessView::delete(9999);
     }
 
     public function testUpdate()
@@ -100,10 +100,10 @@ class BusinessActivityTest extends DbTestCase
             'level_w' => 25,
             'level_c' => 10
         );
-        BusinessActivity::update(2, $newInfo);
+        BusinessView::update(2, $newInfo);
         $this->tableEqualsXml(
             'cfg_bam',
-            dirname(__DIR__) . '/data/businessactivity.update.xml'
+            dirname(__DIR__) . '/data/businessview.update.xml'
         );
     }
 
@@ -118,7 +118,7 @@ class BusinessActivityTest extends DbTestCase
             '',
             23000
         );
-        BusinessActivity::update(2, $newInfo);
+        BusinessView::update(2, $newInfo);
     }
 
     public function testUpdateUnknownId()
@@ -130,24 +130,24 @@ class BusinessActivityTest extends DbTestCase
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::update(9999, $newInfo);
+        BusinessView::update(9999, $newInfo);
     }
 
     public function testDuplicateItemOnce()
     {
-        BusinessActivity::duplicate(1);
+        BusinessView::duplicate(1);
         $this->tableEqualsXml(
             'cfg_bam',
-            dirname(__DIR__) . '/data/businessactivity.duplicate-1.xml'
+            dirname(__DIR__) . '/data/businessview.duplicate-1.xml'
         );
     }
 
     public function testDuplicateItemMultipleTimes()
     {
-        BusinessActivity::duplicate(1, 2);
+        BusinessView::duplicate(1, 2);
         $this->tableEqualsXml(
             'cfg_bam',
-            dirname(__DIR__) . '/data/businessactivity.duplicate-2.xml'
+            dirname(__DIR__) . '/data/businessview.duplicate-2.xml'
         );
     }
 
@@ -157,13 +157,13 @@ class BusinessActivityTest extends DbTestCase
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::duplicate(9999);
+        BusinessView::duplicate(9999);
 
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::duplicate(9999, 2);
+        BusinessView::duplicate(9999, 2);
     }
 
     /*public function testGetAllParameters()
@@ -180,7 +180,7 @@ class BusinessActivityTest extends DbTestCase
             'tp_friday' => '00:00-24:00',
             'tp_saturday' => null
         );
-        $arr = BusinessActivity::getParameters(2, '*');
+        $arr = BusinessView::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
     }
 
@@ -189,7 +189,7 @@ class BusinessActivityTest extends DbTestCase
         $testInformation = array(
             'tp_name' => 'workhours',
         );
-        $arr = BusinessActivity::getParameters(2, 'tp_name');
+        $arr = BusinessView::getParameters(2, 'tp_name');
         $this->assertEquals($arr, $testInformation);
     }
 
@@ -200,7 +200,7 @@ class BusinessActivityTest extends DbTestCase
             'tp_alias' => 'workhours',
             'tp_monday' => '00:00-24:00'
         );
-        $arr = BusinessActivity::getParameters(2, array('tp_name', 'tp_alias', 'tp_monday'));
+        $arr = BusinessView::getParameters(2, array('tp_name', 'tp_alias', 'tp_monday'));
         $this->assertEquals($arr, $testInformation);
     }
 
@@ -210,19 +210,19 @@ class BusinessActivityTest extends DbTestCase
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::getParameters(9999, '*');
+        BusinessView::getParameters(9999, '*');
         
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::getParameters(9999, 'tp_name');
+        BusinessView::getParameters(9999, 'tp_name');
         
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::getParameters(9999, array('tp_name', 'tp_alias'));
+        BusinessView::getParameters(9999, array('tp_name', 'tp_alias'));
     }
 
     public function testGetUnknownParameters()
@@ -230,12 +230,12 @@ class BusinessActivityTest extends DbTestCase
        $this->setExpectedException(
            'PDOException'
        );
-       BusinessActivity::getParameters(2, 'idontexist');
+       BusinessView::getParameters(2, 'idontexist');
 
        $this->setExpectedException(
            'PDOException'
        );
-       BusinessActivity::getParameters(2, array('tp_name', 'idontexist'));
+       BusinessView::getParameters(2, array('tp_name', 'idontexist'));
     }
 
     public function testGetList()
@@ -266,7 +266,7 @@ class BusinessActivityTest extends DbTestCase
                 'tp_saturday' => null
             )
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList());
+        $this->assertEquals($expectedResult, BusinessView::getList());
     }
 
     public function testGetListLimitOne()
@@ -285,7 +285,7 @@ class BusinessActivityTest extends DbTestCase
                 'tp_saturday' => '00:00-24:00'
             )
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList('*', 1));
+        $this->assertEquals($expectedResult, BusinessView::getList('*', 1));
     }
 
     public function testGetListSecondElementOnly()
@@ -304,7 +304,7 @@ class BusinessActivityTest extends DbTestCase
                 'tp_saturday' => null
             )
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList('*', 1, 1));
+        $this->assertEquals($expectedResult, BusinessView::getList('*', 1, 1));
 
     }
 
@@ -314,7 +314,7 @@ class BusinessActivityTest extends DbTestCase
             array('tp_name' => '24x7'),
             array('tp_name' => 'workhours')
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList('tp_name'));
+        $this->assertEquals($expectedResult, BusinessView::getList('tp_name'));
     }
 
     public function testGetListMultipleParameters()
@@ -323,7 +323,7 @@ class BusinessActivityTest extends DbTestCase
             array('tp_id' => 1, 'tp_name' => '24x7'),
             array('tp_id' => 2, 'tp_name' => 'workhours')
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList(array('tp_id', 'tp_name')));
+        $this->assertEquals($expectedResult, BusinessView::getList(array('tp_id', 'tp_name')));
     }
 
     public function testGetListWithOrder()
@@ -332,7 +332,7 @@ class BusinessActivityTest extends DbTestCase
             array('tp_name' => 'workhours'),
             array('tp_name' => '24x7')
         );
-        $this->assertEquals($expectedResult, BusinessActivity::getList('tp_name', null, null, 'tp_id', 'DESC'));
+        $this->assertEquals($expectedResult, BusinessView::getList('tp_name', null, null, 'tp_id', 'DESC'));
     }
 
     public function testGetListWithOneFilter()
@@ -342,7 +342,7 @@ class BusinessActivityTest extends DbTestCase
         );
         $this->assertEquals(
             $expectedResult, 
-            BusinessActivity::getList(
+            BusinessView::getList(
                 'tp_name', 
                 null, 
                 null, 
@@ -362,7 +362,7 @@ class BusinessActivityTest extends DbTestCase
         );
         $this->assertEquals(
             $expectedResult, 
-            BusinessActivity::getList(
+            BusinessView::getList(
                 'tp_name', 
                 null, 
                 null, 
@@ -381,7 +381,7 @@ class BusinessActivityTest extends DbTestCase
         $expectedResult = array();
         $this->assertEquals(
             $expectedResult, 
-            BusinessActivity::getList(
+            BusinessView::getList(
                 'tp_name', 
                 null, 
                 null, 
@@ -402,7 +402,7 @@ class BusinessActivityTest extends DbTestCase
         );
         $this->assertEquals(
             $expectedResult, 
-            BusinessActivity::getListBySearch(
+            BusinessView::getListBySearch(
                 'tp_name', 
                 null, 
                 null, 
@@ -427,7 +427,7 @@ class BusinessActivityTest extends DbTestCase
             'tp_friday' => '00:00-24:00',
             'tp_saturday' => null
         );
-        $this->assertEquals($expectedResult, BusinessActivity::get(2));
+        $this->assertEquals($expectedResult, BusinessView::get(2));
     }*/
 
     public function testGetWithOneParameter()
@@ -435,7 +435,7 @@ class BusinessActivityTest extends DbTestCase
         $expectedResult = array(
             'name' => 'accounting'
         );
-        $this->assertEquals($expectedResult, BusinessActivity::get(1, 'name'));
+        $this->assertEquals($expectedResult, BusinessView::get(1, 'name'));
     }
 
     public function testGetWithMultipleParameters()
@@ -444,7 +444,7 @@ class BusinessActivityTest extends DbTestCase
             'name' => 'accounting',
             'level_w' => 80
         );
-        $this->assertEquals($expectedResult, BusinessActivity::get(1, array('name', 'level_w')));
+        $this->assertEquals($expectedResult, BusinessView::get(1, array('name', 'level_w')));
     }
 
     public function testGetWithUnknownId()
@@ -453,19 +453,19 @@ class BusinessActivityTest extends DbTestCase
             '\Centreon\Internal\Exception',
             $this->errMsg
         );
-        BusinessActivity::get(9999);
+        BusinessView::get(9999);
     }
 
     public function testGetIdByParameter()
     {
         $expectedResult = array(1);
-        $this->assertEquals($expectedResult, BusinessActivity::getIdByParameter('name', 'accounting'));
+        $this->assertEquals($expectedResult, BusinessView::getIdByParameter('name', 'accounting'));
     }
 
     public function testGetMultipleIdsByParameters()
     {
         $expectedResult = array(1, 2);
-        $this->assertEquals($expectedResult, BusinessActivity::getIdByParameter('name', array('accounting', 'hotline')));
+        $this->assertEquals($expectedResult, BusinessView::getIdByParameter('name', array('accounting', 'hotline')));
     }
 
     public function testGetIdByParameterWithUnknownColumn()
@@ -473,22 +473,22 @@ class BusinessActivityTest extends DbTestCase
         $this->setExpectedException(
             'PDOException'
         );
-        BusinessActivity::getIdByParameter('idontexist', array('hotline'));
+        BusinessView::getIdByParameter('idontexist', array('hotline'));
     }
 
     public function testGetPrimaryKey()
     {
-        $this->assertEquals('ba_id', BusinessActivity::getPrimaryKey());
+        $this->assertEquals('ba_id', BusinessView::getPrimaryKey());
     }
 
     public function testGetUniqueLabelField()
     {
-        $this->assertEquals('name', BusinessActivity::getUniqueLabelField());
+        $this->assertEquals('name', BusinessView::getUniqueLabelField());
     }
 
     public function testGetTableName()
     {
-        $this->assertEquals('cfg_bam', BusinessActivity::getTableName());
+        $this->assertEquals('cfg_bam', BusinessView::getTableName());
     }
 
     public function testGetColumns()
@@ -523,7 +523,7 @@ class BusinessActivityTest extends DbTestCase
                 "comment",
                 "organization_id"
             ),
-            BusinessActivity::getColumns()
+            BusinessView::getColumns()
         );
     }
 }
