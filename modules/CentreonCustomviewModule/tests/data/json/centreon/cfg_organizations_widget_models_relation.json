@@ -1,0 +1,10 @@
+[
+  {
+    'organization_id': 1,
+    'widget_model_id': 1
+  },
+  {
+    'organization_id': 2,
+    'widget_model_id': 2
+  }
+]

@@ -52,7 +52,8 @@ class TrapTest extends DbTestCase
             "traps_args" => "test $1",
             "traps_status" => "1",
             "manufacturer_id" => "1",
-            "traps_comments" => "Test for traps"
+            "traps_comments" => "Test for traps",
+            "organization_id" => 1
         );
         
         Trap::insert($newTrap);

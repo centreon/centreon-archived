@@ -17,5 +17,24 @@
         "contact_activate": "0",
         "contact_auth_type": "local",
         "contact_register": "1"
+    },
+    {
+        "contact_id": "2",
+        "contact_name": "John Smith",
+        "contact_alias": "jsmith",
+        "contact_passwd": "2995cb0650c5f107230ed569a8c4d6e5",
+        "contact_lang": "fr_FR",
+        "contact_host_notification_options": "n",
+        "contact_service_notification_options": "n",
+        "contact_email": "jsmith@localhost",
+        "contact_js_effects": "0",
+        "contact_location": "0",
+        "contact_oreon": "1",
+        "contact_enable_notifications": "2",
+        "contact_admin": "0",
+        "contact_type_msg": "txt",
+        "contact_activate": "0",
+        "contact_auth_type": "local",
+        "contact_register": "1"
     }
 ]

@@ -4,13 +4,15 @@
     "hc_name": "network",
     "hc_alias": "network devices",
     "hc_comment": "Network devices",
-    "hc_activate": "1"
+    "hc_activate": "1",
+    "organization_id": "1"
   },
   {
     "hc_id": "2",
     "hc_name": "web",
     "hc_alias": "web servers",
     "hc_comment": "Web servers",
-    "hc_activate": "1"
+    "hc_activate": "1",
+    "organization_id": "1"
   }
 ]

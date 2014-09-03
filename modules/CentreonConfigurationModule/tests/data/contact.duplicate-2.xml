@@ -34,6 +34,7 @@
     <column>contact_autologin_key</column>
     <column>contact_charset</column>
     <column>contact_register</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <value>1</value>
@@ -68,6 +69,7 @@
       <null/>
       <null/>
       <value>0</value>
+      <value>1</value>
     </row>
     <row>
       <value>2</value>
@@ -102,6 +104,7 @@
       <null/>
       <null/>
       <null/>
+      <value>1</value>
       <value>1</value>
     </row>
     <row>
@@ -138,6 +141,7 @@
       <null/>
       <null/>
       <value>1</value>
+      <value>1</value>
     </row>
     <row>
       <value>4</value>
@@ -172,6 +176,7 @@
       <null/>
       <null/>
       <null/>
+      <value>1</value>
       <value>1</value>
     </row>
     <row>
@@ -208,6 +213,7 @@
       <null/>
       <null/>
       <value>1</value>
+      <value>1</value>
     </row>
     <row>
       <value>6</value>
@@ -242,6 +248,7 @@
       <null/>
       <null/>
       <null/>
+      <value>1</value>
       <value>1</value>
     </row>
   </table>

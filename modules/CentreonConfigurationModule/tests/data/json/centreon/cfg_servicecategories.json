@@ -4,13 +4,15 @@
     "sc_name": "ping",
     "sc_description": "ping",
     "sc_comment": "Ping services",
-    "sc_activate": "1"
+    "sc_activate": "1",
+    "organization_id": "1"
   },
   {
     "sc_id": "2",
     "sc_name": "storage",
     "sc_description": "storage",
     "sc_comment": "Storage services",
-    "sc_activate": "1"
+    "sc_activate": "1",
+    "organization_id": "1"
   }
 ]

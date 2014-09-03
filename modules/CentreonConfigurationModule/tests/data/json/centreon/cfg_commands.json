@@ -6,7 +6,8 @@
     "command_example": "/usr/bin/mail -s 'Subject'",
     "command_type": 1,
     "enable_shell": 1,
-    "command_comment": "Notification : send a mail"
+    "command_comment": "Notification : send a mail",
+    "organization_id": 1
   },
   {
     "command_id": 2,
@@ -15,7 +16,8 @@
     "command_example": "$USER1$/check_ping -w 1 -c 2",
     "command_type": 2,
     "enable_shell": 0,
-    "command_comment": "Check : check ping"
+    "command_comment": "Check : check ping",
+    "organization_id": 1
   },
   {
     "command_id": 3,
@@ -25,6 +27,7 @@
     "command_example": "$USER1$/check_connector.pl -w 80 -c 90",
     "command_type": 2,
     "enable_shell": 0,
-    "command_comment": "Check : check connector"
+    "command_comment": "Check : check connector",
+    "organization_id": 1
   }
 ]

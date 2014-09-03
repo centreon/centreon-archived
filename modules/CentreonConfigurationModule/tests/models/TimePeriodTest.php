@@ -53,6 +53,7 @@ class TimeperiodTest extends DbTestCase
             'tp_wednesday' => '09:00-18:00',
             'tp_thursday' => '09:00-18:00',
             'tp_friday' => '09:00-17:00',
+            'organization_id' => 1
         );
         Timeperiod::insert($tpInsert);
         $this->tableEqualsXml(

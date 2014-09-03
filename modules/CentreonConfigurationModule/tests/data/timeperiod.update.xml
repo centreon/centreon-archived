@@ -11,6 +11,7 @@
     <column>tp_thursday</column>
     <column>tp_friday</column>
     <column>tp_saturday</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <value>24x7</value>
@@ -22,6 +23,7 @@
       <value>00:00-24:00</value>
       <value>00:00-24:00</value>
       <value>00:00-24:00</value>
+      <value>1</value>
     </row>
     <row>
       <value>2</value>
@@ -34,6 +36,7 @@
       <value>00:00-24:00</value>
       <value>00:00-24:00</value>
       <null/>
+      <value>1</value>
     </row>
   </table>
 </dataset>

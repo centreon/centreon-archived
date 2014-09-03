@@ -4,20 +4,24 @@
     id="1"
     name="Generic"
     alias="Generic"
-    description="References Generic Traps"/>
+    description="References Generic Traps"
+    organization_id="1"/>
   <cfg_traps_vendors
     id="2"
     name="Cisco"
     alias="Cisco Networks"
-    description=""/>
+    description=""
+    organization_id="1"/>
   <cfg_traps_vendors
     id="3"
     name="HP"
     alias="HP Networks"
-    description=""/>
+    description=""
+    organization_id="1"/>
   <cfg_traps_vendors
     id="5"
     name="Linksys"
     alias="Linksys"
-    description=""/>
+    description=""
+    organization_id="1"/>
 </dataset>

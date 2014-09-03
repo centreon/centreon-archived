@@ -1,0 +1,32 @@
+[
+  {
+    "widget_model_id": 1,
+    "name": "Widget 1",
+    "shortname": "widget_1",
+    "description": "First widget",
+    "version": "3.0.0",
+    "directory": "/dir",
+    "author": "Author 1",
+    "email": "author_1@domain.tld",
+    "website": "http://modules.domain.tld",
+    "keywords": "keyword",
+    "isactivated": 1,
+    "isinstalled": 1,
+    "module_id": 1
+  },
+  {
+    "widget_model_id": 2,
+    "name": "Widget 2",
+    "shortname": "widget_2",
+    "description": "Second widget",
+    "version": "3.0.0",
+    "directory": "/dir",
+    "author": "Author 2",
+    "email": "author_2@domain.tld",
+    "website": "http://modules.domain.tld",
+    "keywords": "keyword",
+    "isactivated": 0,
+    "isinstalled": 1,
+    "module_id": 1
+  }
+]

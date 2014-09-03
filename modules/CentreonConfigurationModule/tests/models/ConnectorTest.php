@@ -53,7 +53,8 @@ class ConnectorTest extends DbTestCase
             'command_line' => '$CONNECTORS$/my_connector',
             'enabled' => 1,
             'created' => 1407836372,
-            'modified' => 1407836372
+            'modified' => 1407836372,
+            'organization_id' => 1
         );
         Connector::insert($newConnector);
         /* Assert for test insert in DB */

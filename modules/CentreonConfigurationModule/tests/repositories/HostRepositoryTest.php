@@ -89,7 +89,8 @@ class HostRepositoryTest extends RepositoryTestCase
                 'host_alias' => 'Test host',
                 'host_address' => '192.168.1.3',
                 'display_name' => 'Test host',
-                'host_comment' => 'Testing host'
+                'host_comment' => 'Testing host',
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(

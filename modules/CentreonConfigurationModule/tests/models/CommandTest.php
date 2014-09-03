@@ -53,7 +53,8 @@ class CommandTest extends DbTestCase
             'command_example' => '$USER1$/bin/my_check -w 90',
             'command_type' => 2,
             'enable_shell' => 0,
-            'command_comment' => "My check command"
+            'command_comment' => "My check command",
+            'organization_id' => 1
         );
         Command::insert($newCommand);
         /* Assert for test insert in DB */

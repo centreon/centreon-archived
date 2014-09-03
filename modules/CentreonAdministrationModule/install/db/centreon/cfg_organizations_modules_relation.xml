@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_mainmodule" defaultIdMethod="native">
+    <table name="cfg_organizations_modules_relation" phpName="OrganizationsModules" idMethod="native">
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="module_id" phpName="ModuleId" type="INTEGER" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
+        <column name="is_activated" phpName="IsActivated" type="TINYINT" default="0" required="true"/>
+        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_modules_relation_fk01" onDelete="CASCADE">
+            <reference local="organization_id" foreign="organization_id" />
+        </foreign-key>
+        <foreign-key foreignTable="cfg_modules" name="cfg_organizations_modules_relation_fk02" onDelete="CASCADE">
+            <reference local="module_id" foreign="id" />
+        </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

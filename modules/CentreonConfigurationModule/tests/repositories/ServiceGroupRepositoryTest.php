@@ -90,7 +90,8 @@ class ServiceGroupRepositoryTest extends RepositoryTestCase
                 'sg_name' => 'test',
                 'sg_alias' => 'test alias',
                 'sg_comment' => 'test comment',
-                'sg_activate' => '1'
+                'sg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(

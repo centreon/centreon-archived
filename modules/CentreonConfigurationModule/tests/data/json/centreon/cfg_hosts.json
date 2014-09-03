@@ -38,7 +38,8 @@
         "host_snmp_version": "2c",
         "host_comment": "Host template",
         "host_register": "0",
-        "host_activate": "1"
+        "host_activate": "1",
+        "organization_id": "1"
     },
     {
         "host_id": 2,
@@ -49,7 +50,8 @@
         "display_name": "Host 1",
         "host_comment": "First host",
         "host_register": "1",
-        "host_activate": "1"
+        "host_activate": "1",
+        "organization_id": "1"
     },
     {
         "host_id": 3,
@@ -63,6 +65,7 @@
         "host_passive_checks_enabled": "0",
         "host_comment": "Second host",
         "host_register": "1",
-        "host_activate": "1"
+        "host_activate": "1",
+        "organization_id": "1"
     }
 ]

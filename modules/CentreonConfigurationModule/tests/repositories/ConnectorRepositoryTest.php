@@ -89,7 +89,8 @@ class ConnectorRepositoryTest extends RepositoryTestCase
                 'command_line' => '$CONNECTORS$/my_connector',
                 'enabled' => 1,
                 'created' => 1407836372,
-                'modified' => 1407836372
+                'modified' => 1407836372,
+                'organization_id' => 1
             )
         );
         $this->tableEqualsXml(

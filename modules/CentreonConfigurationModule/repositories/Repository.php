@@ -47,6 +47,8 @@ use \CentreonConfiguration\Repository\AuditlogRepository;
  */
 abstract class Repository
 {
+    const ORGANIZATION_FIELD = 'organization_id';
+
     /**
      * @var array
      */
@@ -132,11 +134,18 @@ abstract class Repository
         } else {
             $class = static::$objectClass;
         }
+
         $idField = $class::getPrimaryKey();
         $uniqueField = $class::getUniqueLabelField();
         $filters = array(
             $uniqueField => '%'.$searchStr.'%'
         );
+
+        $columns = $class::getColumns();
+        if (in_array(static::ORGANIZATION_FIELD, $columns)) {
+           $filters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
+        }
+
         $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");
         $finalList = array();
         foreach ($list as $obj) {
@@ -161,6 +170,7 @@ abstract class Repository
         $db = Di::getDefault()->get('db_centreon');
         $columns = $class::getColumns();
         $insertParams = array();
+        $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
         foreach ($givenParameters as $key => $value) {
             if (in_array($key, $columns)) {
                 if (!is_array($value) && !empty($value)) {

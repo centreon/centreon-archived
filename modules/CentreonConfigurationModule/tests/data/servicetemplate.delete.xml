@@ -42,6 +42,7 @@
     <column>service_locked</column>
     <column>service_register</column>
     <column>service_activate</column>
+    <column>organization_id</column>
     <row>
       <value>1</value>
       <null/>
@@ -84,6 +85,7 @@
       <value>0</value>
       <value>0</value>
       <value>1</value>
+      <value>1</value>
     </row>
     <row>
       <value>3</value>
@@ -125,6 +127,7 @@
       <null/>
       <null/>
       <value>0</value>
+      <value>1</value>
       <value>1</value>
       <value>1</value>
     </row>
@@ -168,6 +171,7 @@
       <null/>
       <null/>
       <value>0</value>
+      <value>1</value>
       <value>1</value>
       <value>1</value>
     </row>

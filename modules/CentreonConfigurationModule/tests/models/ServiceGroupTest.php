@@ -49,7 +49,8 @@ class ServiceGroupTest extends DbTestCase
             'sg_name' => 'test',
             'sg_alias' => 'test alias',
             'sg_comment' => 'test comment',
-            'sg_activate' => '1'
+            'sg_activate' => '1',
+            'organization_id' => 1
         );
         Servicegroup::insert($insert);
         $this->tableEqualsXml(
