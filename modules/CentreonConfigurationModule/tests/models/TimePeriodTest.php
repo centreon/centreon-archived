@@ -72,6 +72,7 @@ class TimeperiodTest extends DbTestCase
             'tp_wednesday' => '09:00-18:00',
             'tp_thursday' => '09:00-18:00',
             'tp_friday' => '09:00-17:00',
+            'organization_id' => 1
         );
         Timeperiod::insert($tpInsert);
         $this->setExpectedException(
@@ -180,7 +181,8 @@ class TimeperiodTest extends DbTestCase
             'tp_wednesday' => '00:00-24:00',
             'tp_thursday' => '00:00-24:00',
             'tp_friday' => '00:00-24:00',
-            'tp_saturday' => null
+            'tp_saturday' => null,
+            'organization_id' => 1
         );
         $arr = Timeperiod::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -253,7 +255,8 @@ class TimeperiodTest extends DbTestCase
                 'tp_wednesday' => '00:00-24:00',
                 'tp_thursday' => '00:00-24:00',
                 'tp_friday' => '00:00-24:00',
-                'tp_saturday' => '00:00-24:00'
+                'tp_saturday' => '00:00-24:00',
+                'organization_id' => 1
             ),
             array(
                 'tp_id' => 2,
@@ -265,7 +268,8 @@ class TimeperiodTest extends DbTestCase
                 'tp_wednesday' => '00:00-24:00',
                 'tp_thursday' => '00:00-24:00',
                 'tp_friday' => '00:00-24:00',
-                'tp_saturday' => null
+                'tp_saturday' => null,
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Timeperiod::getList());
@@ -284,7 +288,8 @@ class TimeperiodTest extends DbTestCase
                 'tp_wednesday' => '00:00-24:00',
                 'tp_thursday' => '00:00-24:00',
                 'tp_friday' => '00:00-24:00',
-                'tp_saturday' => '00:00-24:00'
+                'tp_saturday' => '00:00-24:00',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Timeperiod::getList('*', 1));
@@ -303,7 +308,8 @@ class TimeperiodTest extends DbTestCase
                 'tp_wednesday' => '00:00-24:00',
                 'tp_thursday' => '00:00-24:00',
                 'tp_friday' => '00:00-24:00',
-                'tp_saturday' => null
+                'tp_saturday' => null,
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Timeperiod::getList('*', 1, 1));
@@ -427,7 +433,8 @@ class TimeperiodTest extends DbTestCase
             'tp_wednesday' => '00:00-24:00',
             'tp_thursday' => '00:00-24:00',
             'tp_friday' => '00:00-24:00',
-            'tp_saturday' => null
+            'tp_saturday' => null,
+            'organization_id' => 1
         );
         $this->assertEquals($expectedResult, Timeperiod::get(2));
     }
@@ -506,7 +513,8 @@ class TimeperiodTest extends DbTestCase
                 'tp_wednesday',
                 'tp_thursday',
                 'tp_friday',
-                'tp_saturday'
+                'tp_saturday',
+                'organization_id'
             ),
             Timeperiod::getColumns()
         );

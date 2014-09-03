@@ -236,7 +236,8 @@ class CommandTest extends DbTestCase
             'enable_shell' => 1,
             'command_comment' => 'Notification : send a mail',
             'graph_id' => null,
-            'cmd_cat_id' => null
+            'cmd_cat_id' => null,
+            'organization_id' => 1
         );
         $connector = Command::getParameters(1, '*');
 
@@ -292,7 +293,8 @@ class CommandTest extends DbTestCase
                 'enable_shell' => 1,
                 'command_comment' => 'Notification : send a mail',
                 'graph_id' => null,
-                'cmd_cat_id' => null
+                'cmd_cat_id' => null,
+                'organization_id' => 1
             ),
             array(
                 'command_id' => 2,
@@ -304,7 +306,8 @@ class CommandTest extends DbTestCase
                 'enable_shell' => 0,
                 'command_comment' => 'Check : check ping',
                 'graph_id' => null,
-                'cmd_cat_id' => null
+                'cmd_cat_id' => null,
+                'organization_id' => 1
             ),
             array(
                 'command_id' => 3,
@@ -316,7 +319,8 @@ class CommandTest extends DbTestCase
                 'enable_shell' => 0,
                 'command_comment' => 'Check : check connector',
                 'graph_id' => null,
-                'cmd_cat_id' => null
+                'cmd_cat_id' => null,
+                'organization_id' => 1
             )
         );
         $result = Command::getList();
@@ -333,7 +337,8 @@ class CommandTest extends DbTestCase
                 'enable_shell' => 1,
                 'command_comment' => 'Notification : send a mail',
                 'graph_id' => null,
-                'cmd_cat_id' => null
+                'cmd_cat_id' => null,
+                'organization_id' => 1
             )
         );
         $result = Command::getList('*', 1);
@@ -350,7 +355,8 @@ class CommandTest extends DbTestCase
                 'enable_shell' => 0,
                 'command_comment' => 'Check : check ping',
                 'graph_id' => null,
-                'cmd_cat_id' => null
+                'cmd_cat_id' => null,
+                'organization_id' => 1
             )
         );
         $result = Command::getList('*', 1, 1);
@@ -435,7 +441,8 @@ class CommandTest extends DbTestCase
             'enable_shell' => 1,
             'command_comment' => 'Notification : send a mail',
             'graph_id' => null,
-            'cmd_cat_id' => null
+            'cmd_cat_id' => null,
+            'organization_id' => 1
         );
         $result = Command::get(1);
         $this->assertEquals($testResult, $result);
@@ -525,7 +532,8 @@ class CommandTest extends DbTestCase
                 'enable_shell',
                 'command_comment',
                 'graph_id',
-                'cmd_cat_id'
+                'cmd_cat_id',
+                'organization_id'
             ),
             Command::getColumns()
         );

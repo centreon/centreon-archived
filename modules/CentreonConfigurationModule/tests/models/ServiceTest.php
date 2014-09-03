@@ -177,7 +177,8 @@ class ServiceTest extends DbTestCase
             'command_command_id_arg2' => null,
             'service_locked' => 0,
             'service_register' => 1,
-            'service_activate' => 1
+            'service_activate' => 1,
+            'organization_id' => 1
         );
         $arr = Service::getParameters(4, '*');
         $this->assertEquals($arr, $testInformation);
@@ -281,7 +282,8 @@ class ServiceTest extends DbTestCase
                 'command_command_id_arg2' => null,
                 'service_locked' => 0,
                 'service_register' => 1,
-                'service_activate' => 1
+                'service_activate' => 1,
+                'organization_id' => 1
             ),
             array(
                 'service_id' => 4,
@@ -324,7 +326,8 @@ class ServiceTest extends DbTestCase
                 'command_command_id_arg2' => null,
                 'service_locked' => 0,
                 'service_register' => 1,
-                'service_activate' => 1
+                'service_activate' => 1,
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Service::getList());
@@ -374,7 +377,8 @@ class ServiceTest extends DbTestCase
                 'command_command_id_arg2' => null,
                 'service_locked' => 0,
                 'service_register' => 1,
-                'service_activate' => 1
+                'service_activate' => 1,
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Service::getList('*', 1));
@@ -424,7 +428,8 @@ class ServiceTest extends DbTestCase
                 'command_command_id_arg2' => null,
                 'service_locked' => 0,
                 'service_register' => 1,
-                'service_activate' => 1
+                'service_activate' => 1,
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Service::getList('*', 1, 1));
@@ -588,7 +593,8 @@ class ServiceTest extends DbTestCase
             'command_command_id_arg2' => null,
             'service_locked' => 0,
             'service_register' => 1,
-            'service_activate' => 1
+            'service_activate' => 1,
+            'organization_id' => 1
         );
         $this->assertEquals($expectedResult, Service::get(4));
     }
@@ -698,7 +704,8 @@ class ServiceTest extends DbTestCase
                 'command_command_id_arg2',
                 'service_locked',
                 'service_register',
-                'service_activate'
+                'service_activate',
+                'organization_id'
             ),
             Service::getColumns()
         );

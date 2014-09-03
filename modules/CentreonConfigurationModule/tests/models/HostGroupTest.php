@@ -65,7 +65,8 @@ class HostGroupTest extends DbTestCase
             'hg_name' => 'test',
             'hg_alias' => 'test alias',
             'hg_comment' => 'test comment',
-            'hg_activate' => '1'
+            'hg_activate' => '1',
+            'organization_id' => 1
         );
         Hostgroup::insert($insert);
         $this->setExpectedException(
@@ -173,7 +174,8 @@ class HostGroupTest extends DbTestCase
             'hg_map_icon_image' => null,
             'hg_rrd_retention' => null,
             'hg_comment' => 'English servers',
-            'hg_activate' => '1'
+            'hg_activate' => '1',
+            'organization_id' => 1
         );
         $arr = Hostgroup::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -247,7 +249,8 @@ class HostGroupTest extends DbTestCase
                 'hg_map_icon_image' => null,
                 'hg_rrd_retention' => null,
                 'hg_comment' => 'French servers',
-                'hg_activate' => '1'
+                'hg_activate' => '1',
+                'organization_id' => 1
             ),
             array(
                 'hg_id' => 2,
@@ -260,7 +263,8 @@ class HostGroupTest extends DbTestCase
                 'hg_map_icon_image' => null,
                 'hg_rrd_retention' => null,
                 'hg_comment' => 'English servers',
-                'hg_activate' => '1'
+                'hg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Hostgroup::getList());
@@ -280,7 +284,8 @@ class HostGroupTest extends DbTestCase
                 'hg_map_icon_image' => null,
                 'hg_rrd_retention' => null,
                 'hg_comment' => 'French servers',
-                'hg_activate' => '1'
+                'hg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Hostgroup::getList('*', 1));
@@ -300,7 +305,8 @@ class HostGroupTest extends DbTestCase
                 'hg_map_icon_image' => null,
                 'hg_rrd_retention' => null,
                 'hg_comment' => 'English servers',
-                'hg_activate' => '1'
+                'hg_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Hostgroup::getList('*', 1, 1));
@@ -425,7 +431,8 @@ class HostGroupTest extends DbTestCase
             'hg_map_icon_image' => null,
             'hg_rrd_retention' => null,
             'hg_comment' => 'French servers',
-            'hg_activate' => '1'
+            'hg_activate' => '1',
+            'organization_id' => 1
         );
         $this->assertEquals($expectedResult, Hostgroup::get(1));
     }
@@ -505,7 +512,8 @@ class HostGroupTest extends DbTestCase
                 'hg_map_icon_image',
                 'hg_rrd_retention',
                 'hg_comment',
-                'hg_activate'
+                'hg_activate',
+                'organization_id'
             ),
             Hostgroup::getColumns()
         );

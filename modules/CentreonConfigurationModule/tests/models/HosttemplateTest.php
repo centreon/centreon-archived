@@ -51,7 +51,8 @@ class HosttemplateTest extends DbTestCase
             'host_name' => 'Test hosttemplate',
             'host_alias' => 'Test hosttemplate',
             'display_name' => 'Test hosttemplate',
-            'host_comment' => 'Testing hosttemplate'
+            'host_comment' => 'Testing hosttemplate',
+            'organization_id' => 1
         );
         Hosttemplate::insert($newHost);
         /* Assert for test insert in DB */
@@ -86,7 +87,8 @@ class HosttemplateTest extends DbTestCase
             'host_name' => 'Test hosttemplate',
             'host_alias' => 'Test hosttemplate',
             'display_name' => 'Test hosttemplate',
-            'host_comment' => 'Testing hosttemplate'
+            'host_comment' => 'Testing hosttemplate',
+            'organization_id' => 1
         );
         Hosttemplate::insert($newHost);
     }
@@ -104,7 +106,8 @@ class HosttemplateTest extends DbTestCase
             'host_name' => 'Test hosttemplate',
             'host_alias' => 'Test hosttemplate',
             'display_name' => 'Test hosttemplate',
-            'host_comment' => 'Testing hosttemplate'
+            'host_comment' => 'Testing hosttemplate',
+            'organization_id' => 1
         );
         Hosttemplate::insert($newHost);
     }
@@ -241,7 +244,8 @@ class HosttemplateTest extends DbTestCase
             'host_location' => '0',
             'host_comment' => 'Host template',
             'host_register' => '0',
-            'host_activate' => '1'
+            'host_activate' => '1',
+            'organization_id' => 1
         );
         $connector = Hosttemplate::getParameters(1, '*');
 
@@ -322,7 +326,8 @@ class HosttemplateTest extends DbTestCase
             	'host_location' => '0',
             	'host_comment' => 'Host template',
             	'host_register' => '0',
-            	'host_activate' => '1'
+            	'host_activate' => '1',
+                'organization_id' => 1
             )
         );
         $result = Hosttemplate::getList();
@@ -372,7 +377,8 @@ class HosttemplateTest extends DbTestCase
             	'host_location' => '0',
             	'host_comment' => 'Host template',
             	'host_register' => '0',
-            	'host_activate' => '1'
+            	'host_activate' => '1',
+                'organization_id' => 1
             )
         );
         $result = Hosttemplate::getList('*', 1);
@@ -474,7 +480,8 @@ class HosttemplateTest extends DbTestCase
             'host_location' => '0',
             'host_comment' => 'Host template',
             'host_register' => '0',
-            'host_activate' => '1'
+            'host_activate' => '1',
+            'organization_id' => 1
         );
         $result = Hosttemplate::get(1);
         $this->assertEquals($testResult, $result);
@@ -587,7 +594,8 @@ class HosttemplateTest extends DbTestCase
                 'host_location',
                 'host_comment',
                 'host_register',
-                'host_activate'
+                'host_activate',
+                'organization_id'
             ),
             Hosttemplate::getColumns()
         );

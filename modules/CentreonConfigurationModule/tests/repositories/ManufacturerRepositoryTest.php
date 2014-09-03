@@ -56,10 +56,10 @@ class ManufacturerRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 4, 'text' => '3com'),
-            array('id' => 2, 'text' => 'Cisco'),
             array('id' => 1, 'text' => 'Generic'),
+            array('id' => 2, 'text' => 'Cisco'),
             array('id' => 3, 'text' => 'HP'),
+            array('id' => 4, 'text' => '3com'),
             array('id' => 5, 'text' => 'Linksys')
         );
         $this->assertEquals($expectedResult, $rep::getFormList(''));

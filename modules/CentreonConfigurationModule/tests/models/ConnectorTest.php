@@ -183,7 +183,8 @@ class ConnectorTest extends DbTestCase
             'command_line' => '$CONNECTORS$/perl',
             'enabled' => 1,
             'created' => 1407836372,
-            'modified' => 1407836372
+            'modified' => 1407836372,
+            'organization_id' => 1
         );
         $connector = Connector::getParameters(1, '*');
 
@@ -228,7 +229,8 @@ class ConnectorTest extends DbTestCase
                 'command_line' => '$CONNECTORS$/perl',
                 'enabled' => 1,
                 'created' => 1407836372,
-                'modified' => 1407836372
+                'modified' => 1407836372,
+                'organization_id' => 1
             ),
             array(
                 'id' => 2,
@@ -237,7 +239,8 @@ class ConnectorTest extends DbTestCase
                 'command_line' => '$CONNECTORS$/ssh',
                 'enabled' => 1,
                 'created' => 1407836372,
-                'modified' => 1407836372
+                'modified' => 1407836372,
+                'organization_id' => 1
             )
         );
         $result = Connector::getList();
@@ -251,7 +254,8 @@ class ConnectorTest extends DbTestCase
                 'command_line' => '$CONNECTORS$/perl',
                 'enabled' => 1,
                 'created' => 1407836372,
-                'modified' => 1407836372
+                'modified' => 1407836372,
+                'organization_id' => 1
             )
         );
         $result = Connector::getList('*', 1);
@@ -265,7 +269,8 @@ class ConnectorTest extends DbTestCase
                 'command_line' => '$CONNECTORS$/ssh',
                 'enabled' => 1,
                 'created' => 1407836372,
-                'modified' => 1407836372
+                'modified' => 1407836372,
+                'organization_id' => 1
             )
         );
         $result = Connector::getList('*', 1, 1);
@@ -346,7 +351,8 @@ class ConnectorTest extends DbTestCase
             'command_line' => '$CONNECTORS$/perl',
             'enabled' => 1,
             'created' => 1407836372,
-            'modified' => 1407836372
+            'modified' => 1407836372,
+            'organization_id' => 1
         );
         $result = Connector::get(1);
         $this->assertEquals($testResult, $result);
@@ -427,7 +433,8 @@ class ConnectorTest extends DbTestCase
                 'command_line',
                 'enabled',
                 'created',
-                'modified'
+                'modified',
+                'organization_id'
             ),
             Connector::getColumns()
         );

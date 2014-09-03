@@ -65,7 +65,8 @@ class ServiceCategoryTest extends DbTestCase
             'sc_name' => 'test',
             'sc_description' => 'test description',
             'sc_comment' => 'test comment',
-            'sc_activate' => '1'
+            'sc_activate' => '1',
+            'organization_id' => 1
         );
         Servicecategory::insert($insert);
         $this->setExpectedException(
@@ -169,7 +170,8 @@ class ServiceCategoryTest extends DbTestCase
             'level' => null,
             'icon_id' => null,
             'sc_comment' => 'Storage services',
-            'sc_activate' => '1'
+            'sc_activate' => '1',
+            'organization_id' => 1
         );
         $arr = Servicecategory::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -239,7 +241,8 @@ class ServiceCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'sc_comment' => 'Ping services',
-                'sc_activate' => '1'
+                'sc_activate' => '1',
+                'organization_id' => 1
             ),
             array(
                 'sc_id' => 2,
@@ -248,7 +251,8 @@ class ServiceCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'sc_comment' => 'Storage services',
-                'sc_activate' => '1'
+                'sc_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Servicecategory::getList());
@@ -264,7 +268,8 @@ class ServiceCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'sc_comment' => 'Ping services',
-                'sc_activate' => '1' 
+                'sc_activate' => '1', 
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Servicecategory::getList('*', 1));
@@ -280,7 +285,8 @@ class ServiceCategoryTest extends DbTestCase
                 'level' => null,
                 'icon_id' => null,
                 'sc_comment' => 'Storage services',
-                'sc_activate' => '1' 
+                'sc_activate' => '1',
+                'organization_id' => 1
             )
         );
         $this->assertEquals($expectedResult, Servicecategory::getList('*', 1, 1));
@@ -401,7 +407,8 @@ class ServiceCategoryTest extends DbTestCase
             'level' => null,
             'icon_id' => null,
             'sc_comment' => 'Storage services',
-            'sc_activate' => '1'
+            'sc_activate' => '1',
+            'organization_id' => 1
         );
         $this->assertEquals($expectedResult, Servicecategory::get(2));
     }
@@ -477,7 +484,8 @@ class ServiceCategoryTest extends DbTestCase
                 'level',
                 'icon_id',
                 'sc_comment',
-                'sc_activate'
+                'sc_activate',
+                'organization_id'
             ),
             Servicecategory::getColumns()
         );
