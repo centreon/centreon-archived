@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -34,22 +33,16 @@
  * 
  */
 
-namespace Test\CentreonBam\Models;
+namespace CentreonBam\Models;
 
-require_once CENTREON_PATH . "/tests/DbTestCase.php";
-
-use \Test\Centreon\DbTestCase,
-    CentreonBam\Models\Businessactivity;
-
-class BusinessactivityTest extends Test\Centreon\DbTestCase
+/**
+ * Used for interacting with host categories
+ *
+ * @author sylvestre
+ */
+class BusinessView extends \Centreon\Models\CentreonBaseModel
 {
-    protected $errMsg = 'Object not in database.';
-    protected $dataPath = '/modules/CentreonBamModule/tests/data/json/';
-    
-    public function testInsert()
-    {
-        $newBusinessactivty = array(
-            
-        );
-    }
+    protected static $table = "cfg_bam_bagroups";
+    protected static $primaryKey = "id_ba_group";
+    protected static $uniqueLabelField = "ba_group_name";
 }

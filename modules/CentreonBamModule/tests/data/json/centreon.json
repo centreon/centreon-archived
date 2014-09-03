@@ -1,5 +1,9 @@
 [
-    "cfg_bam_ba_groups",
+    "cfg_organizations",
+    "cfg_commands",
+    "cfg_hosts",
+    "cfg_services",
+    "cfg_bam_bagroups",
     "cfg_bam",
     "cfg_bam_kpi"
 ]

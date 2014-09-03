@@ -38,11 +38,11 @@ namespace CentreonBam\Controllers;
 
 class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'Businessview';
-    protected $objectName = 'businessview';
+    protected $objectDisplayName = 'BusinessView';
+    protected $objectName = 'BusinessView';
     protected $objectBaseUrl = '/bam/business-view';
-    protected $objectClass = '\CentreonBam\Models\Businessview';
-    protected $datatableObject = '\CentreonBam\Internal\BusinessviewDatatable';
+    protected $objectClass = '\CentreonBam\Models\BusinessView';
+    protected $datatableObject = '\CentreonBam\Internal\BusinessViewDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessViewRepository';     
     public static $relationMap = array();
     

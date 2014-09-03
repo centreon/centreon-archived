@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class BusinessactivityDatatable extends \Centreon\Internal\Datatable
+class BusinessActivityDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -51,7 +51,7 @@ class BusinessactivityDatatable extends \Centreon\Internal\Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonBam\Models\Businessactivity';
+    protected static $datasource = '\CentreonBam\Models\BusinessActivity';
     
     /**
      *
@@ -69,7 +69,7 @@ class BusinessactivityDatatable extends \Centreon\Internal\Datatable
     
     public static $columns = array(
         array (
-            'title' => "<input id='allBusinessactivityid' class='allBusinessactivityid' type='checkbox'>",
+            'title' => "<input id='allBusinessActivityid' class='allBusinessActivityid' type='checkbox'>",
             'name' => 'ba_id',
             'data' => 'ba_id',
             'orderable' => true,

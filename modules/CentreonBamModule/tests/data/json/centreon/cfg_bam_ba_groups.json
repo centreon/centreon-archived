@@ -3,12 +3,14 @@
         "id_ba_group": "1",
         "ba_group_name": "view 1",
         "ba_group_description": "view 1",
-        "visible": "1"
+        "visible": "1",
+        "organization_id": "1"
     },
     {
         "id_ba_group": "2",
         "ba_group_name": "view 2",
         "ba_group_description": "view 2",
-        "visible": "1"
-    },
+        "visible": "1",
+        "organization_id": "1"
+    }
 ]

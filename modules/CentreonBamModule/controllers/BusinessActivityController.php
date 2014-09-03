@@ -37,11 +37,11 @@ namespace CentreonBam\Controllers;
 
 class BusinessActivityController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'Businessactivity';
-    protected $objectName = 'businessactivity';
+    protected $objectDisplayName = 'BusinessActivity';
+    protected $objectName = 'BusinessActivity';
     protected $objectBaseUrl = '/bam/business-activity';
-    protected $objectClass = '\CentreonBam\Models\Businessactivity';
-    protected $datatableObject = '\CentreonBam\Internal\BusinessactivityDatatable';
+    protected $objectClass = '\CentreonBam\Models\BusinessActivity';
+    protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
     public static $relationMap = array();
     
