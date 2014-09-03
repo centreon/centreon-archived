@@ -46,19 +46,14 @@ class BusinessViewTest extends DbTestCase
     public function testInsert()
     {
         $newBusinessView = array(
-            "name" => "Ba test",
-            "description" => "Ba For Testing",
-            "level_w" => "90",
-            "level_c" => "85",
-            "calculate" => "0",
-            "downtime" => "0",
-            "acknowledged" => "0",
-            "activate" => "1",
-            "organization_id" => "1"
+            "ba_group_name" => "Business View Test",
+            "ba_group_description" => "Business View Test",
+            "visible" => '1',
+            "organization_id" => 2,
         );
         BusinessView::insert($newBusinessView);
         $this->tableEqualsXml(
-            'cfg_bam',
+            'cfg_bam_bagroups',
             dirname(__DIR__) . '/data/businessview.insert.xml'
         );
     }
@@ -66,7 +61,7 @@ class BusinessViewTest extends DbTestCase
     public function testInsertDuplicateKey()
     {
         $newBusinessView = array(
-            'name' => 'accouting',
+            'ba_group_name' => 'accouting',
             'organization' => '1',
         );
         $this->setExpectedException(
@@ -79,7 +74,7 @@ class BusinessViewTest extends DbTestCase
     {
         BusinessView::delete(1);
         $this->tableEqualsXml(
-            'cfg_bam',
+            'cfg_bam_bagroups',
             dirname(__DIR__) . '/data/businessview.delete.xml'
         );
     }
@@ -96,13 +91,12 @@ class BusinessViewTest extends DbTestCase
     public function testUpdate()
     {
         $newInfo = array(
-            'name' => 'modified ba',
-            'level_w' => 25,
-            'level_c' => 10
+            'ba_group_name' => 'modified business view',
+            'visible' => '0',
         );
         BusinessView::update(2, $newInfo);
         $this->tableEqualsXml(
-            'cfg_bam',
+            'cfg_bam_bagroups',
             dirname(__DIR__) . '/data/businessview.update.xml'
         );
     }
@@ -110,7 +104,7 @@ class BusinessViewTest extends DbTestCase
     public function testUpdateDuplicateKey()
     {
         $newInfo = array(
-            'name' => 'accouting',
+            'ba_group_name' => 'view 1',
             "organization_id" => 1
         );
         $this->setExpectedException(
@@ -137,7 +131,7 @@ class BusinessViewTest extends DbTestCase
     {
         BusinessView::duplicate(1);
         $this->tableEqualsXml(
-            'cfg_bam',
+            'cfg_bam_bagroups',
             dirname(__DIR__) . '/data/businessview.duplicate-1.xml'
         );
     }
@@ -146,7 +140,7 @@ class BusinessViewTest extends DbTestCase
     {
         BusinessView::duplicate(1, 2);
         $this->tableEqualsXml(
-            'cfg_bam',
+            'cfg_bam_bagroups',
             dirname(__DIR__) . '/data/businessview.duplicate-2.xml'
         );
     }
@@ -433,18 +427,18 @@ class BusinessViewTest extends DbTestCase
     public function testGetWithOneParameter()
     {
         $expectedResult = array(
-            'name' => 'accounting'
+            'ba_group_name' => 'view 1'
         );
-        $this->assertEquals($expectedResult, BusinessView::get(1, 'name'));
+        $this->assertEquals($expectedResult, BusinessView::get(1, 'ba_group_name'));
     }
 
     public function testGetWithMultipleParameters()
     {
         $expectedResult = array(
-            'name' => 'accounting',
-            'level_w' => 80
+            'ba_group_name' => 'view 1',
+            'visible' => 1
         );
-        $this->assertEquals($expectedResult, BusinessView::get(1, array('name', 'level_w')));
+        $this->assertEquals($expectedResult, BusinessView::get(1, array('ba_group_name', 'visible')));
     }
 
     public function testGetWithUnknownId()
@@ -459,13 +453,13 @@ class BusinessViewTest extends DbTestCase
     public function testGetIdByParameter()
     {
         $expectedResult = array(1);
-        $this->assertEquals($expectedResult, BusinessView::getIdByParameter('name', 'accounting'));
+        $this->assertEquals($expectedResult, BusinessView::getIdByParameter('ba_group_name', 'view 1'));
     }
 
     public function testGetMultipleIdsByParameters()
     {
         $expectedResult = array(1, 2);
-        $this->assertEquals($expectedResult, BusinessView::getIdByParameter('name', array('accounting', 'hotline')));
+        $this->assertEquals($expectedResult, BusinessView::getIdByParameter('ba_group_name', array('view 1', 'view 2')));
     }
 
     public function testGetIdByParameterWithUnknownColumn()
@@ -478,49 +472,27 @@ class BusinessViewTest extends DbTestCase
 
     public function testGetPrimaryKey()
     {
-        $this->assertEquals('ba_id', BusinessView::getPrimaryKey());
+        $this->assertEquals('id_ba_group', BusinessView::getPrimaryKey());
     }
 
     public function testGetUniqueLabelField()
     {
-        $this->assertEquals('name', BusinessView::getUniqueLabelField());
+        $this->assertEquals('ba_group_name', BusinessView::getUniqueLabelField());
     }
 
     public function testGetTableName()
     {
-        $this->assertEquals('cfg_bam', BusinessView::getTableName());
+        $this->assertEquals('cfg_bam_bagroups', BusinessView::getTableName());
     }
 
     public function testGetColumns()
     {
         $this->assertEquals(
             array(
-                "ba_id",
-                "name",
-                "description",
-                "level_w",
-                "level_c",
-                "sla_type",
-                "sla_warning",
-                "sla_critical",
-                "id_notification_period",
-                "id_check_period",
-                "id_reporting_period",
-                "notification_interval",
-                "notification_options",
-                "notifications_enabled",
-                "max_check_attempts",
-                "normal_check_interval",
-                "retry_check_interval",
-                "current_level",
-                "calculate",
-                "downtime",
-                "acknowledged",
-                "dependency_dep_id",
-                "icon_id",
-                "graph_style",
-                "activate",
-                "comment",
+                "id_ba_group",
+                "ba_group_name",
+                "ba_group_description",
+                "visible",
                 "organization_id"
             ),
             BusinessView::getColumns()
