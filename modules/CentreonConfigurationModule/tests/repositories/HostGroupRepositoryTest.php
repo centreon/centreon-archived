@@ -59,8 +59,8 @@ class HostGroupRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
-            array('id' => 2, 'text' => 'england'),
-            array('id' => 1, 'text' => 'france')
+            array('id' => 1, 'text' => 'france'),
+            array('id' => 2, 'text' => 'england')
         );
         $this->assertEquals($expectedResult, $rep::getFormList(''));
     }

@@ -56,9 +56,9 @@ class CommandRepositoryTest extends RepositoryTestCase
     {
         $rep = $this->repository;
         $expectedResult = array(
+            array('id' => 1, 'text' => 'Test notif'),
             array('id' => 2, 'text' => 'Test check'),
-            array('id' => 3, 'text' => 'Test connector'),
-            array('id' => 1, 'text' => 'Test notif')
+            array('id' => 3, 'text' => 'Test connector')
         );
         $this->assertEquals($expectedResult, $rep::getFormList(''));
     }
