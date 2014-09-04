@@ -45,7 +45,7 @@ class OrganizationContactTest extends DbTestCase
 
     public function testInsert()
     {
-        Contact::insert(1, 2, array(
+        Contact::insert(2, 1, array(
             'is_default' => 1
         ));
         $this->tableEqualsXml(
@@ -106,6 +106,47 @@ class OrganizationContactTest extends DbTestCase
                 'contact_host_notification_options' => 'n',
                 'contact_service_notification_options' => 'n',
                 'contact_email' => 'jdoe@localhost',
+                'contact_pager' => null,
+                'contact_address1' => null,
+                'contact_address2' => null,
+                'contact_address3' => null,
+                'contact_address4' => null,
+                'contact_address5' => null,
+                'contact_address6' => null,
+                'contact_comment' => null,
+                'contact_js_effects' => '0',
+                'contact_location' => '0',
+                'contact_oreon' => '1',
+                'contact_enable_notifications' => '2',
+                'contact_template_id' => null,
+                'contact_admin' => '0',
+                'contact_type_msg' => 'txt',
+                'contact_activate' => '0',
+                'contact_auth_type' => 'local',
+                'contact_ldap_dn' => null,
+                'ar_id' => null,
+                'contact_acl_group_list' => null,
+                'contact_autologin_key' => null,
+                'contact_register' => '1',
+                'contact_charset' => null,
+                'is_default' => '0',
+                'is_admin' => '0'
+            ),
+            array(
+                'organization_id' => '1',
+                'name' => 'Default organization',
+                'shortname' => 'default_organization',
+                'active' => '1',
+                'contact_id' => '2',
+                'timeperiod_tp_id' => null,
+                'timeperiod_tp_id2' => null,
+                'contact_name' => 'John Smith',
+                'contact_alias' => 'jsmith',
+                'contact_passwd' => '2995cb0650c5f107230ed569a8c4d6e5',
+                'contact_lang' => 'fr_FR',
+                'contact_host_notification_options' => 'n',
+                'contact_service_notification_options' => 'n',
+                'contact_email' => 'jsmith@localhost',
                 'contact_pager' => null,
                 'contact_address1' => null,
                 'contact_address2' => null,
@@ -225,10 +266,10 @@ class OrganizationContactTest extends DbTestCase
 
         $testResult = array(
             array(
-                'organization_id' => '2',
-                'name' => 'Client organization',
-                'shortname' => 'client',
-                'active' => '0',
+                'organization_id' => '1',
+                'name' => 'Default organization',
+                'shortname' => 'default_organization',
+                'active' => '1',
                 'contact_id' => '2',
                 'timeperiod_tp_id' => null,
                 'timeperiod_tp_id2' => null,
@@ -273,6 +314,11 @@ class OrganizationContactTest extends DbTestCase
             array(
                 'name' => 'Default organization',
                 'contact_name' => 'John Doe',
+                'is_default' => '0'
+            ),
+            array(
+                'name' => 'Default organization',
+                'contact_name' => 'John Smith',
                 'is_default' => '0'
             ),
             array(

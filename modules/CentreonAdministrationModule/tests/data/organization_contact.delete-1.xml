@@ -6,6 +6,12 @@
     <column>is_default</column>
     <column>is_admin</column>
     <row>
+      <value>1</value>
+      <value>2</value>
+      <value>0</value>
+      <value>0</value>
+    </row> 
+    <row>
       <value>2</value>
       <value>2</value>
       <value>0</value>

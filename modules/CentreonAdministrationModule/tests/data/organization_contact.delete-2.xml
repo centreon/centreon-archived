@@ -1,5 +1,15 @@
 <?xml version="1.0"?>
 <dataset>
   <table name="cfg_organizations_contacts_relations">
+    <column>organization_id</column>
+    <column>contact_id</column>
+    <column>is_default</column>
+    <column>is_admin</column>
+    <row>
+      <value>1</value>
+      <value>2</value>
+      <value>0</value>
+      <value>0</value>
+    </row> 
   </table>
 </dataset>
