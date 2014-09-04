@@ -45,7 +45,7 @@ class OrganizationModuleTest extends DbTestCase
 
     public function testInsert()
     {
-        Module::insert(1, 2, array(
+        Module::insert(2, 1, array(
             'is_activated' => 1
         ));
         $this->tableEqualsXml(
@@ -107,6 +107,22 @@ class OrganizationModuleTest extends DbTestCase
 		'is_activated' => '0',
 		'module_id' => '1'
             ),
+	    array(
+                'organization_id' => '1',
+                'name' => 'Default organization',
+                'shortname' => 'default_organization',
+                'active' => '1',
+                'id' => '2',
+                'name' => 'centreon-administration',
+                'alias' => 'Centreon Administration',
+                'description' => 'Centreon Administration Module',
+                'version' => '3.0.0',
+                'author' => 'Merethis',
+                'isactivated' => '2',
+		'isinstalled' => '2',
+		'is_activated' => '0',
+		'module_id' => '2'
+            ),
             array(
                 'organization_id' => '2',
                 'name' => 'Client organization',
@@ -150,10 +166,10 @@ class OrganizationModuleTest extends DbTestCase
 
         $testResult = array(
             array(
-                'organization_id' => '2',
-                'name' => 'Client organization',
-                'shortname' => 'client',
-                'active' => '0',
+                'organization_id' => '1',
+                'name' => 'Default organization',
+                'shortname' => 'default_organization',
+                'active' => '1',
                 'id' => '2',
                 'name' => 'centreon-administration',
                 'alias' => 'Centreon Administration',
@@ -173,6 +189,11 @@ class OrganizationModuleTest extends DbTestCase
             array(
                 'name' => 'Default organization',
                 'alias' => 'Centreon Main',
+                'is_activated' => '0'
+            ),
+	    array(
+                'name' => 'Default organization',
+                'alias' => 'Centreon Administration',
                 'is_activated' => '0'
             ),
             array(

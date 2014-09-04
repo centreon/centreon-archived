@@ -5,6 +5,11 @@
     <column>module_id</column>
     <column>is_activated</column>
     <row>
+      <value>1</value>
+      <value>2</value>
+      <value>0</value>
+    </row> 
+    <row>
       <value>2</value>
       <value>2</value>
       <value>0</value>
