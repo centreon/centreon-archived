@@ -273,8 +273,8 @@ class OrganizationTest extends DbTestCase
         $this->assertEquals($testResult, $result);
 
         $testResult = array(
-            array('name' => 'Default organization', 'organization_id' => 1),
-            array('name' => 'Client organization', 'organization_id' => 2)
+            array('name' => 'Client organization', 'organization_id' => 2),
+            array('name' => 'Default organization', 'organization_id' => 1)
         );
         $result = Organization::getList(array('name', 'organization_id'));
         $this->assertEquals($testResult, $result);
@@ -293,8 +293,8 @@ class OrganizationTest extends DbTestCase
         $this->assertEquals($testResult, $result);
 
         $testResult = array(
-            array('name' => 'Client organization'),
-            array('name' => 'Default organization')
+            array('name' => 'Default organization'),
+            array('name' => 'Client organization')
         );
         $result = Organization::getList('name', -1, 0, null, 'ASC', array('shortname' => array('default_organization', 'client')));
         $this->assertEquals($testResult, $result);
