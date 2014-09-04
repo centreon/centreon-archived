@@ -4,6 +4,10 @@
     <column>organization_id</column>
     <column>widget_model_id</column>
     <row>
+      <value>1</value>
+      <value>2</value>
+    </row> 
+    <row>
       <value>2</value>
       <value>2</value>
     </row> 

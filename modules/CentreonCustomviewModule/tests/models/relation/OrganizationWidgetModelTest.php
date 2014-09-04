@@ -45,7 +45,7 @@ class OrganizationWidgetModelModelTest extends DbTestCase
 
     public function testInsert()
     {
-        WidgetModel::insert(1, 2);
+        WidgetModel::insert(2, 1);
         $this->tableEqualsXml(
             'cfg_organizations_widget_models_relations',
             dirname(dirname(__DIR__)) . '/data/organization_widget_model.insert.xml'
@@ -111,6 +111,27 @@ class OrganizationWidgetModelModelTest extends DbTestCase
                 'thumbnail' => null
             ),
             array(
+                'organization_id' => '1',
+                'name' => 'Default organization',
+                'shortname' => 'default_organization',
+                'active' => '1',
+                'widget_model_id' => '2',
+                'name' => 'Widget 2',
+                'shortname' => 'widget_2',
+                'description' => 'Second widget',
+                'version' => '3.0.0',
+                'directory' => '/dir',
+                'author' => 'Author 2',
+                'email' => 'author_2@domain.tld',
+                'website' => 'http://modules.domain.tld',
+                'keywords' => 'keyword',
+                'isactivated' => '0',
+                'isinstalled' => '1',
+                'module_id' => '1',
+                'screenshot' => null,
+                'thumbnail' => null
+            ),
+            array(
                 'organization_id' => '2',
                 'name' => 'Client organization',
                 'shortname' => 'client',
@@ -163,10 +184,10 @@ class OrganizationWidgetModelModelTest extends DbTestCase
 
         $testResult = array(
             array(
-                'organization_id' => '2',
-                'name' => 'Client organization',
-                'shortname' => 'client',
-                'active' => '0',
+                'organization_id' => '1',
+                'name' => 'Default organization',
+                'shortname' => 'default_organization',
+                'active' => '1',
                 'widget_model_id' => '2',
                 'name' => 'Widget 2',
                 'shortname' => 'widget_2',
@@ -193,6 +214,10 @@ class OrganizationWidgetModelModelTest extends DbTestCase
                 'name' => 'Widget 1'
             ),
             array(
+                'name' => 'Default organization',
+                'name' => 'Widget 2'
+            ),
+            array(
                 'name' => 'Client organization',
                 'name' => 'Widget 2'
             )
@@ -207,6 +232,10 @@ class OrganizationWidgetModelModelTest extends DbTestCase
             array(
                 'name' => 'Default organization',
                 'name' => 'Widget 1'
+            ),
+            array(
+                'name' => 'Default organization',
+                'name' => 'Widget 2'
             ),
             array(
                 'name' => 'Client organization',
