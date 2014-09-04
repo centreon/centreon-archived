@@ -41,7 +41,7 @@ namespace CentreonConfiguration\Internal\Contract;
  *
  * @author Sylvestre Ho
  */
-interface BrokerForm
+interface Form
 {
     /**
      * Render a new form | when user clicks on add a new poller
