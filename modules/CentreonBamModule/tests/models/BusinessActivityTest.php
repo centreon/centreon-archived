@@ -66,7 +66,7 @@ class BusinessActivityTest extends DbTestCase
     public function testInsertDuplicateKey()
     {
         $newBusinessActivity = array(
-            'name' => 'accouting',
+            'name' => 'accounting',
             'organization' => '1',
         );
         $this->setExpectedException(
@@ -110,7 +110,7 @@ class BusinessActivityTest extends DbTestCase
     public function testUpdateDuplicateKey()
     {
         $newInfo = array(
-            'name' => 'accouting',
+            'name' => 'accounting',
             "organization_id" => 1
         );
         $this->setExpectedException(

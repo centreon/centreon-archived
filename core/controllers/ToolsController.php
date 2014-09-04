@@ -57,7 +57,7 @@ class ToolsController extends \Centreon\Internal\Controller
         $response = $router->response();
         /* Get path to  */
         $baseUrl = $di->get('config')->get('global', 'base_url');
-        $route = str_replace($baseUrl, '/', $route);
+        $route = preg_replace('!' . $baseUrl . '!', '/', $route, 1);
         $route = str_replace('css', 'less', $route);
         /* Remove min */
         $route = str_replace('.min.', '.', $route);
