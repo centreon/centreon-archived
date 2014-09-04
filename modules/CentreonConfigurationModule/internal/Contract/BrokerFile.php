@@ -34,11 +34,11 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Interface;
+namespace CentreonConfiguration\Internal\Contract;
 
 /**
- * Interface for broker forms
+ * Interface for broker file generation
  *
  * @author Sylvestre Ho
  */
-interface BrokerForm extends Form {}
+interface BrokerFile extends File {}

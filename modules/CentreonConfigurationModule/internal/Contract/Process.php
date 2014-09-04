@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -34,11 +33,33 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Interface;
+namespace CentreonConfiguration\Internal\Contract;
 
 /**
- * Interface for broker process
+ * Interface for engine process
  *
  * @author Sylvestre Ho
  */
-interface BrokerProcess extends Process {}
+interface Process
+{
+    /**
+     * Reload
+     *
+     * @param int $pollerId
+     */
+    public function reload(int $pollerId);
+
+    /**
+     * Restart
+     *
+     * @param int $pollerId
+     */
+    public function restart(int $pollerId);
+
+    /**
+     * Stop
+     *
+     * @param int $pollerId
+     */
+    public function stop(int $pollerId);
+}

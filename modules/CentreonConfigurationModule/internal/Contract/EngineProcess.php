@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -34,19 +33,11 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Interface;
+namespace CentreonConfiguration\Internal\Contract;
 
 /**
- * Interface for broker file generation
+ * Interface for engine process
  *
  * @author Sylvestre Ho
  */
-interface File
-{
-    /**
-     * Generate broker configuration files for a poller
-     *
-     * @param int $pollerId
-     */
-    public function generate(int $pollerId);
-}
+interface EngineProcess extends Process {}

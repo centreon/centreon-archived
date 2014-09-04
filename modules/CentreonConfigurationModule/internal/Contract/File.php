@@ -34,27 +34,19 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Interface;
+namespace CentreonConfiguration\Internal\Contract;
 
 /**
- * Interface for engine file generation
+ * Interface for broker file generation
  *
  * @author Sylvestre Ho
  */
-interface EngineFile extends File
+interface File
 {
     /**
-     * Run tests on temporary configuration files
-     *
-     * @param int $pollerId
-     * @return string
-     */
-    public function runTest(int $pollerId);
-
-    /**
-     * Copy files to final directory
+     * Generate broker configuration files for a poller
      *
      * @param int $pollerId
      */
-    public function copyFiles(int $pollerId);
+    public function generate(int $pollerId);
 }

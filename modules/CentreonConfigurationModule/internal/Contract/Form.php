@@ -34,7 +34,7 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Interface;
+namespace CentreonConfiguration\Internal\Contract;
 
 /**
  * Interface for broker forms

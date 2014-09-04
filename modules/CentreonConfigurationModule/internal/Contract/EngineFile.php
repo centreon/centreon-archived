@@ -33,33 +33,27 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Interface;
+namespace CentreonConfiguration\Internal\Contract;
 
 /**
- * Interface for engine process
+ * Interface for engine file generation
  *
  * @author Sylvestre Ho
  */
-interface Process
+interface EngineFile extends File
 {
     /**
-     * Reload
+     * Run tests on temporary configuration files
      *
      * @param int $pollerId
+     * @return string
      */
-    public function reload(int $pollerId);
+    public function runTest(int $pollerId);
 
     /**
-     * Restart
+     * Copy files to final directory
      *
      * @param int $pollerId
      */
-    public function restart(int $pollerId);
-
-    /**
-     * Stop
-     *
-     * @param int $pollerId
-     */
-    public function stop(int $pollerId);
+    public function copyFiles(int $pollerId);
 }
