@@ -33,57 +33,40 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal;
 
-use \Centreon\Internal\Module\Informations;
-use \Centreon\Internal\Utils\Filesystem\File;
+namespace Centreon\Internal\Utils\Filesystem;
 
 /**
- * Description of Event
+ * Description of File
  *
  * @author lionel
  */
-class Event
+class File
 {
     /**
-     * Init event listeners of modules
+     * 
+     * @param string $dirname
+     * @param string $extension
+     * @return array
      */
-    public static function initEventListeners()
+    public static function getFiles($dirname, $extension)
     {
-        $moduleList = Informations::getModuleList();
-        foreach ($moduleList as $module) {
-            $listenersPath = Informations::getModulePath($module) . '/events/';
-            if (file_exists($listenersPath)) {
-                $ModuleListenersList = glob($listenersPath . '*');
-                foreach ($ModuleListenersList as $moduleListenersPath) {   
-                    $mName = substr($moduleListenersPath, strlen($listenersPath));
-                    self::attachModuleEventListeners($mName, $moduleListenersPath);
+        $finalFileList = array();
+        $path = realpath($dirname);
+        
+        if (file_exists($path)) {
+        
+            $listOfFiles = glob($path . '/*');
+
+            while (count($listOfFiles) > 0) {
+                $currentFile = array_shift($listOfFiles);
+                if (is_dir($currentFile)) {
+                    $listOfFiles = array_merge($listOfFiles, glob($currentFile . '/*'));
+                } elseif (pathinfo($currentFile, PATHINFO_EXTENSION) == $extension) {
+                    $finalFileList[] = $currentFile;
                 }
             }
         }
-    }
-    
-    /**
-     * 
-     * @param type $moduleName
-     * @param type $moduleListenersPath
-     */
-    private static function attachModuleEventListeners($moduleName, $moduleListenersPath)
-    {
-        $emitter = Di::getDefault()->get('events');
-        $myListeners = File::getFiles($moduleListenersPath, 'php');
-
-        foreach ($myListeners as $myListener) {
-            $eventName = $moduleName . '.' . basename($myListener, '.php');
-            $emitter->on(
-                $eventName,
-                function ($params) use ($myListener, $moduleName) {
-                    call_user_func(
-                        array("\\".$moduleName."\\".$myListener, "execute"),
-                        $params
-                    );
-                }
-            );
-        }
+        return $finalFileList;
     }
 }

@@ -36,6 +36,8 @@
 
 namespace Centreon\Internal\Module;
 
+use \Centreon\Internal\Di;
+
 /**
  * Description of ModuleInformations
  *

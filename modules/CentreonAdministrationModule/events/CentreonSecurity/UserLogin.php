@@ -33,57 +33,16 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal;
-
-use \Centreon\Internal\Module\Informations;
-use \Centreon\Internal\Utils\Filesystem\File;
 
 /**
- * Description of Event
+ * Description of UserLogin
  *
  * @author lionel
  */
-class Event
+class UserLogin
 {
-    /**
-     * Init event listeners of modules
-     */
-    public static function initEventListeners()
+    public function execute($context)
     {
-        $moduleList = Informations::getModuleList();
-        foreach ($moduleList as $module) {
-            $listenersPath = Informations::getModulePath($module) . '/events/';
-            if (file_exists($listenersPath)) {
-                $ModuleListenersList = glob($listenersPath . '*');
-                foreach ($ModuleListenersList as $moduleListenersPath) {   
-                    $mName = substr($moduleListenersPath, strlen($listenersPath));
-                    self::attachModuleEventListeners($mName, $moduleListenersPath);
-                }
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @param type $moduleName
-     * @param type $moduleListenersPath
-     */
-    private static function attachModuleEventListeners($moduleName, $moduleListenersPath)
-    {
-        $emitter = Di::getDefault()->get('events');
-        $myListeners = File::getFiles($moduleListenersPath, 'php');
-
-        foreach ($myListeners as $myListener) {
-            $eventName = $moduleName . '.' . basename($myListener, '.php');
-            $emitter->on(
-                $eventName,
-                function ($params) use ($myListener, $moduleName) {
-                    call_user_func(
-                        array("\\".$moduleName."\\".$myListener, "execute"),
-                        $params
-                    );
-                }
-            );
-        }
+        echo "Hello World";
     }
 }
