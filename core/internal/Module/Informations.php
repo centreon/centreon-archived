@@ -174,6 +174,28 @@ class Informations
     }
     
     /**
+     * 
+     * @param type $moduleName
+     * @return type
+     */
+    public static function getModulePath($moduleName)
+    {
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $realPath = $path . '/modules/' . self::getModuleCommonName($moduleName) . 'Module/';
+        return realpath($realPath);
+    }
+    
+    /**
+     * 
+     * @param type $moduleName
+     * @return type
+     */
+    public static function getModuleCommonName($moduleName)
+    {
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', $moduleName)));
+    }
+
+        /**
      * Set menu entry
      * Inserts into database if short_name does not exist, otherwise it just updates entry
      *

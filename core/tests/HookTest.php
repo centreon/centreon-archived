@@ -42,7 +42,7 @@ use \Centreon\Internal\Hook,
 
 class HookTest extends DbTestCase
 {
-    protected static $bootstrapExtraSteps = array('actionHooks', 'template');
+    protected static $bootstrapExtraSteps = array('Events', 'template');
 
     public function tearDown()
     {

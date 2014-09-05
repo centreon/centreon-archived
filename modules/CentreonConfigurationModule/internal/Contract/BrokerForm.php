@@ -36,9 +36,23 @@
 
 namespace CentreonConfiguration\Internal\Contract;
 
+use \Centreon\Internal\Di;
+
 /**
  * Interface for broker forms
  *
  * @author Sylvestre Ho
  */
-interface BrokerForm extends Form {}
+abstract class BrokerForm implements IForm
+{
+    public static function register()
+    {
+        $di = Di::getDefault();
+        $emitter = $di->get('events');
+        $emitter->on(
+            'poller.save',
+            array('static', 'save')
+        );
+        //$emitter.emit('poller.save', array($pollerId, $values));
+    }
+}

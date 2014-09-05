@@ -224,33 +224,6 @@ class Hook
     }
 
     /**
-     * Init action listeners of modules
-     *
-     */
-    public static function initActionListeners()
-    {
-        $hooks = self::getModulesFromHook(self::TYPE_ACTION);
-        $emitter = Di::getDefault()->get('action_hooks');
-        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
-        foreach ($hooks as $hook) {
-            $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $hook['module'])));
-            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php";
-            if (file_exists($filename)) {
-                include_once $filename;
-                $emitter->on(
-                    $hook['hook_name'],
-                    function ($params) use ($hook, $commonName) {
-                        call_user_func(
-                            array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"),
-                            $params
-                        );
-                    }
-                );
-            }
-        }
-    }
-
-    /**
      * Get hook cache
      *
      * @return array

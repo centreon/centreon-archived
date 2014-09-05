@@ -33,33 +33,51 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal;
 
-namespace CentreonConfiguration\Internal\Contract;
+use \Centreon\Internal\Module\Informations;
 
 /**
- * Interface for broker forms
+ * Description of Event
  *
- * @author Sylvestre Ho
+ * @author lionel
  */
-interface IForm
+class Event
 {
     /**
-     * Render a new form | when user clicks on add a new poller
-     */
-    public function renderNew();
-
-    /**
-     * Render form with existing saved parameters
+     * Init action listeners of modules
      *
-     * @param int $pollerId
      */
-    public function render(int $pollerId);
-
-    /**
-     * Save parameters
-     *
-     * @param int $pollerId
-     * @param array $parameters
-     */
-    public function save(int $pollerId, array $parameters);
+    public static function initEventListeners()
+    {
+        $events = self::getEvents();
+        $emitter = Di::getDefault()->get('events');
+        foreach ($events as $eventName => $event) {
+            include_once $event;
+            /*$emitter->on(
+                $eventName,
+                function ($params) use ($hook, $commonName) {
+                    call_user_func(
+                        array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"),
+                        $params
+                    );
+                }
+            );*/
+        }
+    }
+    
+    public static function getEvents()
+    {
+        $moduleList = Informations::getModuleList();
+        $eventList = array();
+        
+        foreach ($moduleList as $module) {
+            $moduleEventPath = Informations::getModulePath($module) . 'events/';
+            if (file_exists($moduleEventPath)) {
+                $eventList = array_merge($eventList, glob($moduleEventPath . '*Event.php'));
+            }
+        }
+        
+        return $eventList;
+    }
 }

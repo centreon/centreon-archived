@@ -449,7 +449,7 @@ abstract class Repository
             'update' => 'c'
         );
         $di = Di::getDefault();
-        $event = $di->get('action_hooks');
+        $event = $di->get('events');
         $eventParams = array(
             'id' => $id,
             'params' => $params
