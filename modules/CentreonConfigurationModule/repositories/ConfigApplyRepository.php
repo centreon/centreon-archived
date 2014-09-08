@@ -33,7 +33,7 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Repository;
 
 /**
  * Factory for ConfigTest Engine
@@ -58,46 +58,18 @@ class ConfigApplyRepository extends ConfigRepositoryAbstract
     /**
      * 
      * @param string $method
+     * @return array
      */
     public function action($method)
     {
-        $this->$method();
-    }
-
-    /**
-     * 
-     * @param string $method
-     * @return array
-     */
-    public function applyConfig($method)
-    {
         try {
-            $command = "sudo /etc/init.d/centengine $method";
-
-            $this->output[] = sprintf(_("Executing command %s"), $command);
-
-            /* Launch Command */
-            exec($command, $this->output, $status);
+            $this->output[] = sprintf(_("Performing %s action"), $method);
+            $event = $this->di->get('action_hooks');
+            $event->emit("centreon-configuration.$action.engine", array($this->pollerId));
+            $event->emit("centreon-configuration.$action.broker", array($this->pollerId));
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;
-        }
-    }
-
-    /**
-     *
-     */
-    public function __call($method, $args)
-    {
-        $method = strtolower($method);
-        switch ($method) {
-            case "restart":
-            case "reload":
-                $this->applyConfig($method);
-                break;
-            case "forcereload":
-                $this->applyConfig('force-reload');
-                break;
         }
     }
 }

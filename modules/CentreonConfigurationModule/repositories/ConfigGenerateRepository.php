@@ -33,7 +33,7 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Repository;
 
 use \Centreon\Internal\Exception;
 
@@ -87,7 +87,9 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
         try {
             $this->checkPollerInformations();
             $this->generateObjectsFiles();
-            $this->generateMainFiles();
+            $event = $this->di->get('action_hooks');
+            $event->emit('centreon-configuration.generate.engine', array($this->pollerId));
+            $event->emit('centreon-configuration.generate.broker', array($this->pollerId));
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;
