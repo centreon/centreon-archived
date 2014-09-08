@@ -304,6 +304,7 @@ class Installer
     {
         $fname = $data['field_name'];
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['block_name']));
+	    $productVersion = '';
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
@@ -313,15 +314,18 @@ class Installer
             $stmt->bindParam(':field_id', self::$fields[$fname]);
             $stmt->execute();
 
-            $stmt = $db->prepare(
-                'REPLACE INTO cfg_forms_blocks_fields_relations (block_id, field_id, rank, mandatory) '
-                . 'VALUES (:block_id, :field_id, :rank, :mandatory)'
-            );
-            $stmt->bindParam(':block_id', self::$blocks[$key]);
-            $stmt->bindParam(':field_id', self::$fields[$fname]);
-            $stmt->bindParam(':rank', $data['rank']);
-            $stmt->bindParam(':mandatory', $data['mandatory']);
-            $stmt->execute();
+            foreach ($data['versions'] as $version) {
+                $stmt = $db->prepare(
+                    'REPLACE INTO cfg_forms_blocks_fields_relations (block_id, field_id, rank, mandatory, product_version) '
+                    . 'VALUES (:block_id, :field_id, :rank, :mandatory, :product_version)'
+                );
+                $stmt->bindParam(':block_id', self::$blocks[$key]);
+                $stmt->bindParam(':field_id', self::$fields[$fname]);
+                $stmt->bindParam(':rank', $data['rank']);
+                $stmt->bindParam(':mandatory', $data['mandatory']);
+	            $stmt->bindParam(':product_version', $productVersion);
+                $stmt->execute();
+            }
         }
         $tmp = $key . ';' . $fname;
         self::$blockFields[$tmp] = self::$blocks[$key] . ';' . self::$fields[$fname];
@@ -554,8 +558,12 @@ class Installer
                 $fieldRank = 1;
                 foreach ($block->field as $field) {
                     $attributes = array();
+                    $versions = array('');
                     if (isset($field->attributes)) {
                         $attributes = self::parseAttributes($field->attributes);
+                    }
+                    if (isset($field->versions)) {
+                        $versions = self::parseVersions($field->versions);
                     }
                     $attributes = json_encode($attributes);
                     $fieldData = array(
@@ -577,7 +585,8 @@ class Installer
                         'block_name' => $block['name'],
                         'field_name' => $field['name'],
                         'mandatory' => $field['mandatory'],
-                        'rank' => $fieldRank
+                        'rank' => $fieldRank,
+                        'versions' => $versions
                     );
                     self::addFieldToBlock(array_map('strval', $blockFieldData));
                     $fieldValidators = array(
@@ -627,6 +636,24 @@ class Installer
             }
         }
         return $finalAttributes;
+    }
+
+    /**
+     * Parse the list of versions for relation between fields and a block, if the form can use product version
+     *
+     * @param \SimpleXMLElement
+     * @return array
+     */
+    protected static function parseVersions($versions)
+    {
+        $finalVersions = array();
+        foreach ($versions->children() as $version) {
+            $finalVersions[] = strval($version);
+        }
+        if (0 === count($finalVersions)) {
+            return array('');
+        }
+        return $finalVersions;
     }
 
     /**

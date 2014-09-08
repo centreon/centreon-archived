@@ -98,16 +98,25 @@ class Generator
      */
     protected $extraParams;
 
+    /**
+     * The product version
+     *
+     * @var string
+     */
+    protected $productVersion = '';
+
 
     /**
      * 
      * @param string $formRoute
      * @param array $extraParams
+     * @param string $productVersion The version of product when form accept multi version
      */
-    public function __construct($formRoute, $extraParams = array())
+    public function __construct($formRoute, $extraParams = array(), $productVersion = '')
     {
         $this->formRoute = $formRoute;
         $this->extraParams = $extraParams;
+	$this->productVersion = $productVersion;
         $this->getFormFromDatabase();
     }
     
@@ -168,7 +177,8 @@ class Generator
                     . 'f.type, f.help, f.help_url, f.advanced, mandatory, parent_field, child_actions '
                     . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
-                    . 'AND bfr.field_id = f.field_id '
+		    . 'AND bfr.field_id = f.field_id ' .
+		    . "AND bfr.product_version = '" . $this->productVersion . "' " .
                     . 'ORDER BY rank ASC';
                 
                 $this->formComponents[$section['name']][$block['name']] = array();
