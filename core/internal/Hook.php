@@ -85,6 +85,30 @@ class Hook
             throw new Exception(sprintf('Could not find hook id %s', $hookId));
         }
     }
+    
+    /**
+     * 
+     * @param type $hookName
+     * @param type $hookDescription
+     */
+    public static function insertHook($hookName, $hookDescription)
+    {
+        $db = Di::getDefault()->get('db_centreon');
+        $sql = "INSERT INTO cfg_hooks 
+            (hook_name, hook_description) VALUES
+            (?, ?)";
+        
+        $arr = array(
+            'hook_name' => $hookName,
+            'hook_description' => $hookDescription
+        );
+        $stmt = $db->prepare($sql);
+        $sqlarr = array();
+        foreach ($arr as $elem) {
+            $sqlarr[] = $elem;
+        }
+        $stmt->execute($sqlarr);
+    }
 
     /**
      * Register a hook

@@ -33,16 +33,34 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace CentreonSecurity\Events;
 
 /**
  * Description of UserLogin
  *
  * @author lionel
  */
-class UserLogin
+class UserPostLoginEvent
 {
-    public function execute($context)
+    const __name__ = 'centreon-security.user.postlogin';
+    
+    private $user;
+    
+    /**
+     * 
+     * @param \CentreonConfiguration\Models\Contact $user
+     */
+    public function __construct(\CentreonConfiguration\Models\Contact $user)
     {
-        echo "Hello World";
+        $this->user = $user;
+    }
+    
+    /**
+     * 
+     * @return \CentreonConfiguration\Models\Contact
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

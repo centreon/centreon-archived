@@ -33,57 +33,34 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal;
-
-use \Centreon\Internal\Module\Informations;
-use \Centreon\Internal\Utils\Filesystem\File;
+namespace CentreonSecurity\Events;
 
 /**
- * Description of Event
+ * Description of UserLogin
  *
  * @author lionel
  */
-class Event
+class UserPreLoginEvent
 {
+    const __name__ = 'centreon-security.user.prelogin';
+    
+    private $user;
+    
     /**
-     * Init event listeners of modules
+     * 
+     * @param \CentreonConfiguration\Models\Contact $user
      */
-    public static function initEventListeners()
+    public function __construct(\CentreonConfiguration\Models\Contact $user)
     {
-        $moduleList = Informations::getModuleList();
-        foreach ($moduleList as $module) {
-            $listenersPath = Informations::getModulePath($module) . '/listeners/';
-            if (file_exists($listenersPath)) {
-                $ModuleListenersList = glob($listenersPath . '*');
-                foreach ($ModuleListenersList as $moduleListenersPath) {   
-                    $mName = substr($moduleListenersPath, strlen($listenersPath));
-                    self::attachModuleEventListeners($mName, $moduleListenersPath);
-                }
-            }
-        }
+        $this->user = $user;
     }
     
     /**
      * 
-     * @param type $moduleName
-     * @param type $moduleListenersPath
+     * @return \CentreonConfiguration\Models\Contact
      */
-    private static function attachModuleEventListeners($moduleName, $moduleListenersPath)
+    public function getUser()
     {
-        $emitter = Di::getDefault()->get('events');
-        $myListeners = File::getFiles($moduleListenersPath, 'php');
-
-        foreach ($myListeners as $myListener) {
-            $eventName = $moduleName . '.' . basename($myListener, '.php');
-            $emitter->on(
-                $eventName,
-                function ($params) use ($myListener, $moduleName) {
-                    call_user_func(
-                        array("\\".$moduleName."\\".$myListener, "execute"),
-                        $params
-                    );
-                }
-            );
-        }
+        return $this->user;
     }
 }
