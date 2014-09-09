@@ -33,9 +33,10 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Repository;
 
 use \Centreon\Internal\Exception;
+use \CentreonConfiguration\Events\CopyFiles;
 
 /**
  * Factory for ConfigTest Engine
@@ -65,10 +66,8 @@ class ConfigMoveRepository extends ConfigRepositoryAbstract
     {
         try {
             /* Get Path */
-            $config = $this->di->get('config');
-            $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
-
-            system("cp -Rf $tmpdir/{$this->pollerId}/* /etc/centreon-engine/");
+            $event = $this->di->get('events');
+            $event->emit('centreon-configuration.copy.files', array(new CopyFiles($this->pollerId)));
             $this->output[] = _('Successfully copied files.');
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();

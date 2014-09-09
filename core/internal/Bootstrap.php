@@ -140,15 +140,15 @@ class Bootstrap
     /**
      * Init action hooks
      */
-    private function initActionHooks()
+    private function initEvents()
     {
         $this->di->set(
-            'action_hooks',
+            'events',
             function () {
                 return new \Evenement\EventEmitter();
             }
         );
-        Hook::initActionListeners();
+        Event::initEventListeners();
     }
 
     /**

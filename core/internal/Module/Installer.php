@@ -85,6 +85,7 @@ abstract class Installer
         $this->customPreInstall();
         $this->installForms();
         $this->installMenu();
+        $this->installHooks();
         $this->customInstall();
         $this->postInstall();
     }
@@ -128,6 +129,30 @@ abstract class Installer
         $formsFiles = $this->moduleDirectory . '/install/forms/*.xml';
         foreach (glob($formsFiles) as $xmlFile) {
             \Centreon\Internal\Form\Installer::installFromXml($this->moduleId, $xmlFile);
+        }
+    }
+    
+    public function installHooks()
+    {
+        $hooksFile = $this->moduleDirectory . '/install/hooks.json';
+        $moduleHooksFile = $this->moduleDirectory . '/install/registeredHooks.json';
+        if (file_exists($hooksFile)) {
+            $hooks = json_decode(file_get_contents($hooksFile), true);
+            foreach ($hooks as $hook) {
+                \Centreon\Internal\Hook::insertHook($hook['name'], $hook['description']);
+            }
+        }
+        
+        if (file_exists($moduleHooksFile)) {
+            $moduleHooks = json_decode(file_get_contents($moduleHooksFile), true);
+            foreach ($moduleHooks as $moduleHook) {
+                \Centreon\Internal\Hook::register(
+                    $this->moduleId,
+                    $moduleHook['name'],
+                    $moduleHook['moduleHook'],
+                    $moduleHook['moduleHookDescription']
+                );
+            }
         }
     }
     
@@ -206,6 +231,7 @@ abstract class Installer
     public function remove()
     {
         $this->preRemove();
+        $this->removeHook();
         $this->removeDb();
         $this->postRemove();
     }
@@ -229,30 +255,23 @@ abstract class Installer
     }
     
     /**
-     * Register hook
-     *
-     * @param string $hookName
-     * @param string $blockName
-     * @param string $blockDescription
-     */
-    public static function registerHook($hookName, $blockName, $blockDescription)
-    {
-        \Centreon\Internal\Hook::register(
-            $this->moduleId,
-            $hookName,
-            $blockName,
-            $blockDescription
-        );
-    }
-
-    /**
      * Unregister hook
      *
      * @param string $blockName
      */
-    public static function unregisterHook($blockName)
+    public static function removeHook()
     {
-        \Centreon\Internal\Hook::unregister($this->moduleId, $blockName);
+        $moduleHooksFile = $this->moduleDirectory . '/install/registeredHooks.json';
+        if (file_exists($moduleHooksFile)) {
+            $moduleHooks = json_decode(file_get_contents($moduleHooksFile), true);
+            foreach ($moduleHooks as $moduleHook) {
+                \Centreon\Internal\Hook::unregister(
+                    $this->moduleId,
+                    $moduleHook['name'],
+                    $moduleHook['moduleHook']
+                );
+            }
+        }
     }
     
     /**

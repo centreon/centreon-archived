@@ -64,7 +64,7 @@ $(function() {
         var pollerId = $(this).val();
 
         $.ajax({
-          url: '/api/configuration/1/generatecfg/' + pollerId,
+          url: '{'/api/configuration/1/generatecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
           $csl.append(data.output);
@@ -73,7 +73,7 @@ $(function() {
           } else {
             /* File testing */
             $.ajax({
-              url: '/api/configuration/1/testcfg/' + pollerId,
+              url: '{'/api/configuration/1/testcfg/'|url}' + pollerId,
               dataType: 'json'
             }).success(function(data2, textStatus2, jqXHR2) {
               $csl.append(data2.output);
@@ -103,7 +103,7 @@ $(function() {
         var pollerId = $(this).val();
 
         $.ajax({
-          url: '/api/configuration/1/movecfg/' + pollerId,
+          url: '{'/api/configuration/1/movecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
           $csl.append(data.output);
@@ -129,7 +129,7 @@ $(function() {
         var pollerId = $(this).val();
         
         $.ajax({
-          url: '/api/configuration/1/' + action + '/' + pollerId,
+          url: '{'/api/configuration/1/'|url}' + action + '/' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
           $csl.append(data.output);

@@ -33,7 +33,8 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Repository;
+use CentreonConfiguration\Events\GenerateEngine;
 
 use \Centreon\Internal\Exception;
 
@@ -87,7 +88,9 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
         try {
             $this->checkPollerInformations();
             $this->generateObjectsFiles();
-            $this->generateMainFiles();
+            $event = $this->di->get('events');
+            $event->emit('centreon-configuration.generate.engine', array(new GenerateEngine($this->pollerId)));
+            //$event->emit('centreon-configuration.generate.broker', array($this->pollerId));
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;
@@ -165,7 +168,7 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
         );
         $this->output[] = _("Generated resources.cfg");
 
-        TimeperiodRepository::generate($this->filesDir, $this->pollerId, $this->path, "timeperiods.cfg");
+        TimePeriodRepository::generate($this->filesDir, $this->pollerId, $this->path, "timeperiods.cfg");
         $this->output[] = _("Generated timeperiods.cfg");
 
         ConnectorRepository::generate($this->filesDir, $this->pollerId, $this->path, "connectors.cfg");
@@ -223,7 +226,7 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
     public function checkPollerInformations()
     {
         $dbconn = $this->di->get('db_centreon');
-        $query = "SELECT * FROM engine_server WHERE id = ?";
+        $query = "SELECT * FROM cfg_engine_servers WHERE id = ?";
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array($this->pollerId));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);

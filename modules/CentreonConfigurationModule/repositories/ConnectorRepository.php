@@ -46,7 +46,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'connector';
+    public static $tableName = 'cfg_connectors';
     
     /**
      *
@@ -73,7 +73,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
         
         /* Get information into the database. */
         $query = "SELECT name AS connector_name, command_line AS connector_line "
-            . "FROM connector WHERE enabled = 1 "
+            . "FROM cfg_connectors WHERE enabled = 1 "
             . "ORDER BY name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();

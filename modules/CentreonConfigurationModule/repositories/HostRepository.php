@@ -262,7 +262,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         $contactList = "";
 
         $query = "SELECT contact_alias "
-            . "FROM cfg_contacts c, cfg_contacst_hosts_relations ch "
+            . "FROM cfg_contacts c, cfg_contacts_hosts_relations ch "
             . "WHERE host_host_id = '$host_id' "
             . "AND c.contact_id = ch.contact_id "
             . "ORDER BY contact_alias";

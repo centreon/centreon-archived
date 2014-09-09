@@ -46,7 +46,7 @@ interface EngineFile extends File
      * Run tests on temporary configuration files
      *
      * @param int $pollerId
-     * @return string
+     * @return array | array of strings
      */
     public function runTest(int $pollerId);
 

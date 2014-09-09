@@ -67,7 +67,7 @@ class UsergroupRepository extends \CentreonConfiguration\Repository\Repository
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT cg_name, cg_alias FROM contactgroup WHERE cg_activate = '1' ORDER BY cg_name";
+        $query = "SELECT cg_name, cg_alias FROM cfg_contactgroups WHERE cg_activate = '1' ORDER BY cg_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

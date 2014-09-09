@@ -33,9 +33,10 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Repository;
 
 use \Centreon\Internal\Exception;
+use CentreonConfiguration\Events\RunTest;
 
 /**
  * Factory for ConfigTest Engine
@@ -68,15 +69,10 @@ class ConfigTestRepository extends ConfigRepositoryAbstract
     public function checkConfig()
     {
         try {
-            /* Get Database Connexion */
-            $dbconn = $this->di->get('db_centreon');
-            $tmpdir = $this->di->get('config')->get('global', 'centreon_generate_tmp_dir');
-
-            $path = "{$tmpdir}/{$this->pollerId}/centengine-testing.cfg";
-            $command = "sudo ".$this->enginepath." -v $path 2>&1";
-        
-            /* Check */
-            $this->output[] = shell_exec($command);
+            $result = "";
+            $event = $this->di->get('events');
+            $event->emit('centreon-configuration.run.test', array(new RunTest($this->pollerId)));
+            $this->output[] = $result;
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;

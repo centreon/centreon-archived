@@ -33,7 +33,7 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonBroker\Repository;
 
 /**
  * Factory for ConfigTest Engine

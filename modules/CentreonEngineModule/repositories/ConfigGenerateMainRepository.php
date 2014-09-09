@@ -33,7 +33,10 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonEngine\Repository;
+
+use \Centreon\Internal\Di;
+use \CentreonConfiguration\Repository\WriteConfigFileRepository;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -97,7 +100,7 @@ class ConfigGenerateMainRepository
      */
     private static function getContent($poller_id, & $filesList, $testing)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -203,7 +206,7 @@ class ConfigGenerateMainRepository
      */
     private static function getBrokerConf($poller_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
