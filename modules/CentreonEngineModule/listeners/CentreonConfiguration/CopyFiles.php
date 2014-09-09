@@ -33,44 +33,25 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonEngine\Listeners\CentreonConfiguration;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use CentreonEngine\Repository\ConfigGenerateMainRepository;
+use CentreonConfiguration\Events\CopyFiles as CopyFilesEvent;
 
-/**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class CopyFiles
 {
     /**
-     * Constructor
-     * 
-     * @param int $pollerId
+     * Execute action 
+     *
+     * @param \CentreonConfiguration\Events\CopyFiles $event
      */
-    public function __construct($pollerId)
+    public static function execute(CopyFilesEvent $event)
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
-    }
+        $config = Di::getDefault()->get('config');
+        $config = $this->di->get('config');
+        $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
-    {
-        try {
-            /* Get Path */
-            $event = $this->di->get('action_hooks');
-            $event->emit('centreon-configuration.copy.files', array($this->pollerId));
-            $this->output[] = _('Successfully copied files.');
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
+        system("cp -Rf $tmpdir/{$event::$pollerId}/* /etc/centreon-engine/"); 
     }
 }

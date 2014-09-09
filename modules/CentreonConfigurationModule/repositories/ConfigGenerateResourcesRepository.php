@@ -33,7 +33,7 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Repository;
 
 /**
  * Factory for ConfigGenerate Engine For commands

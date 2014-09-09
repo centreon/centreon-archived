@@ -33,44 +33,28 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonEngine\Listeners\CentreonConfiguration;
 
-use \Centreon\Internal\Exception;
+use CentreonConfiguration\Events\EngineProcess as EngineProcessEvent;
+use Centreon\Internal\Exception;
 
-/**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class EngineProcess
 {
     /**
-     * Constructor
-     * 
-     * @param int $pollerId
+     * @param \CentreonConfiguration\Events\EngineProcess $event
+     * @throws \Centreon\Internal\Exception
      */
-    public function __construct($pollerId)
+    public static function execute(EngineProcessEvent $event)
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
-    }
-
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
-    {
-        try {
-            /* Get Path */
-            $event = $this->di->get('action_hooks');
-            $event->emit('centreon-configuration.copy.files', array($this->pollerId));
-            $this->output[] = _('Successfully copied files.');
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
+        $action = $event->getAction();
+        if (in_array($action, array('reload', 'restart', 'forcereload'))) {
+            throw new Exception(sprintf('Unknown action %s', $action));
         }
+        $command = "sudo /etc/init.d/centengine {$action}";
+        $status = 0;
+        $output = array();
+        exec($command, $output, $status);
+        $event->setOutput($output);
+        $event->setStatus($status);
     }
 }

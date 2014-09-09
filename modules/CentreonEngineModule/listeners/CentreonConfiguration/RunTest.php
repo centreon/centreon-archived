@@ -33,44 +33,26 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonEngine\Listeners\CentreonConfiguration;
 
-use \Centreon\Internal\Exception;
+use \CentreonConfiguration\Events\RunTest as RunTestEvent;
 
-/**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class RunTest
 {
     /**
-     * Constructor
-     * 
-     * @param int $pollerId
+     *
+     * @param \CentreonConfiguration\Events\RunTest $event
      */
-    public function __construct($pollerId)
+    public static function execute(RunTestEvent $event)
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
-    }
+       $di = Di::getDefault();
+       $dbconn = $di->get('db_centreon');
+       $tmpdir = $di->get('config')->get('global', 'centreon_generate_tmp_dir');
 
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
-    {
-        try {
-            /* Get Path */
-            $event = $this->di->get('action_hooks');
-            $event->emit('centreon-configuration.copy.files', array($this->pollerId));
-            $this->output[] = _('Successfully copied files.');
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
+       $pollerId = $event->getPollerId();
+       $enginePath = '/usr/sbin/centengine/';
+       $path = "{$tmpdir}/{$pollerId}/centengine-testing.cfg";
+       $command = "sudo {$enginePath} -v $path 2>&1";
+       $output = shell_exec($command);
     }
 }

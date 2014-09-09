@@ -33,44 +33,24 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonEngine\Internal;
 
-use \Centreon\Internal\Exception;
+use CentreonConfiguration\Contract\EngineFile;
 
-/**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class ConfigurationFileManagement implements EngineFile
 {
-    /**
-     * Constructor
-     * 
-     * @param int $pollerId
-     */
-    public function __construct($pollerId)
+    public function generate()
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
+
     }
 
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
+    public function copyFiles()
     {
-        try {
-            /* Get Path */
-            $event = $this->di->get('action_hooks');
-            $event->emit('centreon-configuration.copy.files', array($this->pollerId));
-            $this->output[] = _('Successfully copied files.');
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
+
+    }
+
+    public function runTest()
+    {
+
     }
 }

@@ -33,7 +33,10 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonEngine\Repository;
+
+use \Centreon\Internal\Di;
+use \CentreonConfiguration\;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg

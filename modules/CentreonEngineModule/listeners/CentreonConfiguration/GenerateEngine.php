@@ -33,44 +33,38 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonEngine\Listeners\CentreonConfiguration;
 
-use \Centreon\Internal\Exception;
+use CentreonEngine\Repository\ConfigGenerateMainRepository;
+use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 
-/**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class GenerateEngine
 {
     /**
-     * Constructor
-     * 
-     * @param int $pollerId
+     *
+     * @param \CentreonConfiguration\Events\GenerateEngine
      */
-    public function __construct($pollerId)
+    public static function execute(GenerateEngineEvent $event)
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
-    }
+        $config = Di::getDefault()->get('config');
+        $path = $config->get('global', 'centreon_generate_tmp_dir');
+        $fileList = array();
 
-    /**
-     * Move configuration files 
-     * 
-     */
-    public function moveConfig()
-    {
-        try {
-            /* Get Path */
-            $event = $this->di->get('action_hooks');
-            $event->emit('centreon-configuration.copy.files', array($this->pollerId));
-            $this->output[] = _('Successfully copied files.');
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
+        /* Generate Main File */
+        ConfigGenerateMainRepository::generate(
+            $fileList, 
+            $event::$pollerId, 
+            $path, 
+            "centengine.cfg"
+        );
+
+        /* Generate Debugging Main File */
+        ConfigGenerateMainRepository::generate(
+            $fileList,
+            $event::$pollerId,
+            $path,
+            "centengine-testing.cfg",
+            1
+        );
     }
 }

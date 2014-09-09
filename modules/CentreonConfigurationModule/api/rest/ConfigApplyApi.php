@@ -58,7 +58,7 @@ class ConfigApplyApi extends \Centreon\Internal\Controller
         $param = $router->request()->paramsNamed();
 
         $obj = new ConfigApplyRepository($param["id"]);
-        $obj->$action();
+        $obj->action($action);
 
         $router->response()->json(
             array(

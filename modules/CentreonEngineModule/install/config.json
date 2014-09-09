@@ -1,0 +1,28 @@
+{
+    "name": "Centreon Engine",
+    "shortname" : "centreon-engine",
+    "version": "3.0.0",
+    "author" : [
+        "Merethis"
+    ],
+    "isuninstallable" : false,
+    "isdisableable" : false,
+    "url" : "",
+    "description" : "Centreon Engine Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        {
+            "name" : "centreon-administration",
+            "version" : "3.0.0"
+        }
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        
+    ],
+    "program dependencies" : [
+        
+    ]
+}

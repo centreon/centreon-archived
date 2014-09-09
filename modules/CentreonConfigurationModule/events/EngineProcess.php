@@ -33,44 +33,83 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Events;
 
-use \Centreon\Internal\Exception;
-
-/**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class EngineProcess
 {
     /**
-     * Constructor
-     * 
-     * @param int $pollerId
+     * Refers to the poller id
+     * @var int
      */
-    public function __construct($pollerId)
+    private $pollerId;
+
+    /**
+     * Refers to the action to perform: restart, reload, forcereload
+     * @var string
+     */
+    private $action;
+
+    /**
+     * Array of output - should be the output of the process after 
+     * performing the action
+     * @var array 
+     */
+    private $output;
+
+    /**
+     * @param int $pollerId
+     * @param string $action
+     */
+    public function __construct($pollerId, $action)
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
+        $this->pollerId = $pollerId;
+        $this->action = $action;
+        $this->output = array();
+        $this->status = 0;
     }
 
     /**
-     * Move configuration files 
-     * 
+     * @return int
      */
-    public function moveConfig()
+    public function getPollerId()
     {
-        try {
-            /* Get Path */
-            $event = $this->di->get('action_hooks');
-            $event->emit('centreon-configuration.copy.files', array($this->pollerId));
-            $this->output[] = _('Successfully copied files.');
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
+        return $this->pollerId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action();
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param array $output
+     */
+    public function setOutput(array $output)
+    {
+        $this->output = $output;
+    }
+
+    public function setStatus(int $status)
+    {
+        $this->status = $status;
     }
 }

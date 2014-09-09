@@ -31,46 +31,45 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonEngine\Install;
 
-use \Centreon\Internal\Exception;
+use \Centreon\Internal\Module\Installer as ModuleInstaller;
 
 /**
- * Factory for ConfigTest Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
+ * 
  */
-
-class ConfigMoveRepository extends ConfigRepositoryAbstract
+class Installer extends ModuleInstaller
 {
     /**
-     * Constructor
      * 
-     * @param int $pollerId
+     * @param type $moduleInfo
      */
-    public function __construct($pollerId)
+    public function __construct($moduleDirectory, $moduleInfo)
     {
-        parent::__construct($pollerId);
-        $this->output[] = sprintf(_("Copying configuration files of poller %s"), $pollerId);
+        parent::__construct($moduleDirectory, $moduleInfo);
     }
-
+    
+    public function customPreInstall()
+    {
+        
+    }
+    
     /**
-     * Move configuration files 
      * 
      */
-    public function moveConfig()
+    public function customInstall()
     {
-        try {
-            /* Get Path */
-            $event = $this->di->get('action_hooks');
-            $event->emit('centreon-configuration.copy.files', array($this->pollerId));
-            $this->output[] = _('Successfully copied files.');
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
+        
+    }
+    
+    /**
+     * 
+     */
+    public function customRemove()
+    {
+        
     }
 }
