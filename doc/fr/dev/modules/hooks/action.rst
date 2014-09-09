@@ -5,8 +5,8 @@ Les hooks d'action permettent d'ajouter des méthodes fonctionnelles au moment d
 
 Par exemple, avant/après la sauvegarde d'un objet, au chargement de données ou avant l'exécution d'une requête SQL...
 
-CentreonConfiguration.CopyFiles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+centreon-configuration.copy.files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Description
 ###########
@@ -41,8 +41,8 @@ Exemple
         }
    }
 
-CentreonConfiguration.EngineProcess
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+centreon-configuration.engine.process
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Description
 ###########
@@ -84,8 +84,8 @@ Exemple
         }
    }
 
-CentreonConfiguration.GenerateEngine
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+centreon-configuration.generate.engine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Description
 ###########
@@ -122,8 +122,8 @@ Exemple
         }
    }
 
-CentreonConfiguration.RunTest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+centreon-configuration.run.test
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Description
 ###########
