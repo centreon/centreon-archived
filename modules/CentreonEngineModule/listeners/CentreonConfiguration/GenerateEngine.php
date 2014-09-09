@@ -35,6 +35,7 @@
 
 namespace CentreonEngine\Listeners\CentreonConfiguration;
 
+use Centreon\Internal\Di;
 use CentreonEngine\Repository\ConfigGenerateMainRepository;
 use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 
@@ -53,7 +54,7 @@ class GenerateEngine
         /* Generate Main File */
         ConfigGenerateMainRepository::generate(
             $fileList, 
-            $event::$pollerId, 
+            $event->getPollerId(), 
             $path, 
             "centengine.cfg"
         );
@@ -61,7 +62,7 @@ class GenerateEngine
         /* Generate Debugging Main File */
         ConfigGenerateMainRepository::generate(
             $fileList,
-            $event::$pollerId,
+            $event->getPollerId(),
             $path,
             "centengine-testing.cfg",
             1

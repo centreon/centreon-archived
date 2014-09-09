@@ -37,6 +37,7 @@ namespace Centreon\Internal;
 
 use \Centreon\Internal\Module\Informations;
 use \Centreon\Internal\Utils\Filesystem\File;
+use \Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
  * Description of Event
@@ -56,8 +57,9 @@ class Event
             if (file_exists($listenersPath)) {
                 $ModuleListenersList = glob($listenersPath . '*');
                 foreach ($ModuleListenersList as $moduleListenersPath) {   
-                    $mName = substr($moduleListenersPath, strlen($listenersPath));
-                    self::attachModuleEventListeners($mName, $moduleListenersPath);
+                    $mTarget = substr($moduleListenersPath, strlen($listenersPath));
+                    $mSource = CamelCaseTransformation::CustomToCamelCase($module, '-');
+                    self::attachModuleEventListeners($mSource, $mTarget, $moduleListenersPath);
                 }
             }
         }
@@ -68,18 +70,22 @@ class Event
      * @param type $moduleName
      * @param type $moduleListenersPath
      */
-    private static function attachModuleEventListeners($moduleName, $moduleListenersPath)
+    private static function attachModuleEventListeners($moduleSource, $moduleTarget, $moduleListenersPath)
     {
         $emitter = Di::getDefault()->get('events');
         $myListeners = File::getFiles($moduleListenersPath, 'php');
 
         foreach ($myListeners as $myListener) {
-            $eventName = $moduleName . '.' . basename($myListener, '.php');
+            $listener = (basename($myListener, '.php'));
+            
+            $eventName = CamelCaseTransformation::CamelCaseToCustom($moduleTarget, '-')
+                . '.'
+                . CamelCaseTransformation::CamelCaseToCustom($listener, '.');
             $emitter->on(
-                $eventName,
-                function ($params) use ($myListener, $moduleName) {
+                strtolower($eventName),
+                function ($params) use ($listener, $moduleSource, $moduleTarget) {
                     call_user_func(
-                        array("\\".$moduleName."\\".$myListener, "execute"),
+                        array($moduleSource . "\\Listeners\\".$moduleTarget."\\".$listener, "execute"),
                         $params
                     );
                 }

@@ -34,6 +34,7 @@
  */
 
 namespace CentreonConfiguration\Repository;
+use CentreonConfiguration\Events\GenerateEngine;
 
 use \Centreon\Internal\Exception;
 
@@ -88,8 +89,8 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
             $this->checkPollerInformations();
             $this->generateObjectsFiles();
             $event = $this->di->get('events');
-            $event->emit('centreon-configuration.generate.engine', array($this->pollerId));
-            $event->emit('centreon-configuration.generate.broker', array($this->pollerId));
+            $event->emit('centreon-configuration.generate.engine', array(new GenerateEngine($this->pollerId)));
+            //$event->emit('centreon-configuration.generate.broker', array($this->pollerId));
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;

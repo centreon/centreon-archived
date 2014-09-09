@@ -35,6 +35,7 @@
 
 namespace CentreonEngine\Listeners\CentreonConfiguration;
 
+use \Centreon\Internal\Di;
 use \CentreonConfiguration\Events\RunTest as RunTestEvent;
 
 class RunTest

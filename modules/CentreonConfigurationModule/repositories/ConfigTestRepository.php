@@ -36,6 +36,7 @@
 namespace CentreonConfiguration\Repository;
 
 use \Centreon\Internal\Exception;
+use CentreonConfiguration\Events\RunTest;
 
 /**
  * Factory for ConfigTest Engine
@@ -70,7 +71,7 @@ class ConfigTestRepository extends ConfigRepositoryAbstract
         try {
             $result = "";
             $event = $this->di->get('events');
-            $event->emit('centreon-configuration.run.test', array($this->pollerId, $result));
+            $event->emit('centreon-configuration.run.test', array(new RunTest($this->pollerId)));
             $this->output[] = $result;
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();

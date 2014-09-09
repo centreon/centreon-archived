@@ -49,9 +49,8 @@ class CopyFiles
     public static function execute(CopyFilesEvent $event)
     {
         $config = Di::getDefault()->get('config');
-        $config = $this->di->get('config');
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        system("cp -Rf $tmpdir/{$event::$pollerId}/* /etc/centreon-engine/"); 
+        system("cp -Rf $tmpdir/{$event->getPollerId()}/* /etc/centreon-engine/"); 
     }
 }
