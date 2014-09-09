@@ -189,7 +189,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         
         /* Get information into the database. */
         $query = "SELECT host_tpl_id, host_name, `order` "
-            . "FROM cfg_hosts h, cfg_hosst_templates_relations hr "
+            . "FROM cfg_hosts h, cfg_hosts_templates_relations hr "
             . "WHERE h.host_id = hr.host_tpl_id "
             . "AND hr.host_host_id = '$host_id' "
             . "AND host_activate = '1' "

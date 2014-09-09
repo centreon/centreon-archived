@@ -46,7 +46,7 @@ class HostcategoryRepository extends \CentreonConfiguration\Repository\Repositor
      *
      * @var string
      */
-    public static $tableName = 'hostcategories';
+    public static $tableName = 'cfg_hostcategories';
     
     /**
      *

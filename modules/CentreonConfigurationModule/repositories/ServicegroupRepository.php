@@ -46,97 +46,13 @@ class ServicegroupRepository extends \CentreonConfiguration\Repository\Repositor
      *
      * @var string
      */
-    public static $tableName = 'servicegroup';
+    public static $tableName = 'cfg_servicegroups';
     
     /**
      *
      * @var string
      */
     public static $objectName = 'Servicegroup';
-    
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allServicegroup" class="allServicegroup" type="checkbox">' => 'sg_id',
-        'Name' => 'sg_name',
-        'Alias' => 'sg_alias',
-        'Status' => 'sg_activate'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'sg_id',
-        'sg_name',
-        'sg_alias',
-        'sg_activate'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_alias',
-        array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array(
-        'sg_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-danger">Disabled</span>',
-                '1' => '<span class="label label-success">Enabled</span>',
-            )
-        ),
-        'sg_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::sg_name::'
-            )
-        ),
-        'sg_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/servicegroup/[i:id]/[i:advanced]',
-                'routeParams' => array(
-                    'id' => '::sg_id::',
-                    'advanced' => 0
-                ),
-                'linkName' => '::sg_alias::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search_name',
-        'search_alias',
-        array(
-            'select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
-        )
-    );
 
     /**
      * 
@@ -156,7 +72,7 @@ class ServicegroupRepository extends \CentreonConfiguration\Repository\Repositor
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT sg_name, sg_alias FROM servicegroup WHERE sg_activate = '1' ORDER BY sg_name";
+        $query = "SELECT sg_name, sg_alias FROM cfg_servicegroups WHERE sg_activate = '1' ORDER BY sg_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

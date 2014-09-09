@@ -46,104 +46,13 @@ class TimePeriodRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'timeperiod';
+    public static $tableName = 'cfg_timeperiods';
     
     /**
      *
      * @var string
      */
     public static $objectName = 'Timeperiod';
-    
-    /**
-     *
-     * @var array Main database field to get
-     */
-    public static $datatableColumn = array(
-        '<input id="allTimeperiod" class="allTimeperiod" type="checkbox">' => 'tp_id',
-        'Name' => 'tp_name',
-        'Alias' => 'tp_alias',
-        'Sunday' => 'tp_sunday',
-        'Monday' => 'tp_monday',
-        'Tuesday' => 'tp_tuesday',
-        'Wednesday' => 'tp_wednesday',
-        'Thursday' => 'tp_thursday',
-        'Friday' => 'tp_friday',
-        'Saturday' => 'tp_saturday'
-    );
-    
-    /**
-     *
-     * @var array Column name for the search index
-     */
-    public static $researchIndex = array(
-        'tp_id',
-        'tp_name',
-        'tp_alias',
-        'tp_sunday',
-        'tp_monday',
-        'tp_tuesday',
-        'tp_wednesday',
-        'tp_thursday',
-        'tp_friday',
-        'tp_saturday'
-    );
-    
-    /**
-     * @inherit doc
-     * @var array 
-     */
-    public static $columnCast = array(
-        'tp_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::tp_name::'
-            )
-        ),
-        'tp_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/timeperiod/[i:id]',
-                'routeParams' => array(
-                    'id' => '::tp_id::'
-                ),
-                'linkName' => '::tp_name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'text',
-        'text',
-        'none',
-        'none',
-        'none',
-        'none',
-        'none',
-        'none',
-        'none'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'text',
-        'text',
-        'none',
-        'none',
-        'none',
-        'none',
-        'none',
-        'none',
-        'none'
-    );
 
     /**
      * 
@@ -159,7 +68,7 @@ class TimePeriodRepository extends \CentreonConfiguration\Repository\Repository
 
         $contactList = "";
 
-        $query = "SELECT tp_name FROM timeperiod WHERE tp_id = '$tp_id'";
+        $query = "SELECT tp_name FROM cfg_timeperiods WHERE tp_id = '$tp_id'";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -188,7 +97,7 @@ class TimePeriodRepository extends \CentreonConfiguration\Repository\Repository
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT * FROM timeperiod ORDER BY tp_name";
+        $query = "SELECT * FROM cfg_timeperiods ORDER BY tp_name";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

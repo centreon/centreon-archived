@@ -46,102 +46,11 @@ class TrapRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'traps';
+    public static $tableName = 'cfg_traps';
     
     /**
      *
      * @var string
      */
     public static $objectName = 'Trap';
-    
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allTrap" class="allTrap" type="checkbox">' => 'traps_id',
-        'Name' => 'traps_name',
-        'OID' => 'traps_oid',
-        'Status' => 'traps_status'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'traps_id',
-        'traps_name',
-        'traps_oid',
-        'traps_status'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'search_name',
-        'search_oid',
-        array('select' => array(
-                'None' => '-1',
-                'OK' => '0',
-                'Warning' => '1',
-                'Critical' => '2',
-                'Unknown' => '3'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array(
-        'traps_status' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '-1' => '<span></span>',
-                '0' => '<span class="label label-success">OK</span>',
-                '1' => '<span class="label label-warning">Warning</span>',
-                '2' => '<span class="label label-danger">Critical</span>',
-                '3' => '<span>Unknown</span>',
-            )
-        ),
-        'traps_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::traps_name::'
-            )
-        ),
-        'traps_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/trap/[i:id]',
-                'routeParams' => array(
-                    'id' => '::traps_id::'
-                ),
-                'linkName' => '::traps_name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'search_name',
-        'search_oid',
-        array('select' => array(
-                'None' => '-1',
-                'OK' => '0',
-                'Warning' => '1',
-                'Critical' => '2',
-                'Unknown' => '3'
-            )
-        )
-    );
 }

@@ -46,7 +46,7 @@ class ManufacturerRepository extends \CentreonConfiguration\Repository\Repositor
      *
      * @var string
      */
-    public static $tableName = 'traps_vendor';
+    public static $tableName = 'cfg_traps_vendors';
     
     /**
      *

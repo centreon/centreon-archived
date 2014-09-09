@@ -44,7 +44,7 @@ use \Centreon\Internal\Exception;
  * @version 3.0.0
  */
 
-class ConfigTestRepository
+class ConfigTestRepository extends ConfigRepositoryAbstract
 {
     private $enginepath;
     
@@ -69,7 +69,7 @@ class ConfigTestRepository
     {
         try {
             $result = "";
-            $event = $this->di->get('action_hooks');
+            $event = $this->di->get('events');
             $event->emit('centreon-configuration.run.test', array($this->pollerId, $result));
             $this->output[] = $result;
         } catch (Exception $e) {

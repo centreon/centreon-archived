@@ -60,7 +60,7 @@ class ConfigGenerateResourcesRepository
         
         /* Get information into the database. */
         $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resource r, cfg_resource_instance_relations rr 
+                        FROM cfg_resources r, cfg_resources_instances_relations rr 
                         WHERE r.resource_id = rr.resource_id 
                                 AND rr.instance_id = 1 
                                 AND resource_activate = '$poller_id' 

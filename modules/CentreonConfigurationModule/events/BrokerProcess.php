@@ -33,53 +33,83 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonConfiguration\Events;
 
-/**
- * @author Lionel Assepo <lassepo@merethis.com>
- * @package Centreon
- * @subpackage Repository
- */
-class HostgroupRepository extends \CentreonConfiguration\Repository\Repository
+class BrokerProcess
 {
     /**
-     * Generate Hostgroup configuration file for monitoring engine
-     * 
-     * @param array $filesList
-     * @param int $poller_id
-     * @param string $path
-     * @param string $filename
+     * Refers to the poller id
+     * @var int
      */
-    public static function generate(& $filesList, $poller_id, $path, $filename)
+    private $pollerId;
+
+    /**
+     * Refers to the action to perform: restart, reload, forcereload
+     * @var string
+     */
+    private $action;
+
+    /**
+     * Array of output - should be the output of the process after 
+     * performing the action
+     * @var array 
+     */
+    private $output;
+
+    /**
+     * @param int $pollerId
+     * @param string $action
+     */
+    public function __construct($pollerId, $action)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $this->pollerId = $pollerId;
+        $this->action = $action;
+        $this->output = array();
+        $this->status = 0;
+    }
 
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
+    /**
+     * @return int
+     */
+    public function getPollerId()
+    {
+        return $this->pollerId;
+    }
 
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT hg_name, hg_alias FROM cfg_hostgroups WHERE hg_activate = '1' ORDER BY hg_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tmp = array("type" => "hostgroup");
-            $tmpData = array();
-            foreach ($row as $key => $value) {
-                if ($key == 'hg_name') {
-                    $key = 'hostgroup_name';
-                }
-                $key = str_replace("hg_", "", $key);
-                $tmpData[$key] = $value;
-            }
-            $tmp["content"] = $tmpData;
-            $content[] = $tmp;
-        }
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action();
+    }
 
-        /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
+    /**
+     * @return array
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param array $output
+     */
+    public function setOutput(array $output)
+    {
+        $this->output = $output;
+    }
+
+    public function setStatus(int $status)
+    {
+        $this->status = $status;
     }
 }

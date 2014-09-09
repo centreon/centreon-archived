@@ -172,7 +172,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         /* Launch Request */
-        $query = "SELECT command_name FROM contacts_".$type."commands_relation, cfg_commands "
+        $query = "SELECT command_name FROM cfg_contacts_".$type."commands_relations, cfg_commands "
             . "WHERE contact_contact_id = $contact_id AND command_command_id = command_id";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();

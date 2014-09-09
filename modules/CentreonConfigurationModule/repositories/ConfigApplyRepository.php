@@ -35,8 +35,8 @@
 
 namespace CentreonConfiguration\Repository;
 
-use CentreonConfiguration\Events\EngineProcess;
-use CentreonConfiguration\Events\BrokerProcess;
+use \CentreonConfiguration\Events\EngineProcess;
+use \CentreonConfiguration\Events\BrokerProcess;
 
 /**
  * Factory for ConfigTest Engine
@@ -67,11 +67,11 @@ class ConfigApplyRepository extends ConfigRepositoryAbstract
     {
         try {
             $this->output[] = sprintf(_("Performing %s action"), $method);
-            $event = $this->di->get('action_hooks');
-            $engineEvent = new EngineProcess($this->pollerId, $action);
-            $brokerEvent = new BrokerProcess($this->pollerId, $action);
-            $event->emit("centreon-configuration.$action.engine", array($engineEvent));
-            $event->emit("centreon-configuration.$action.broker", array($brokerEvent));
+            $event = $this->di->get('events');
+            $engineEvent = new EngineProcess($this->pollerId, $method);
+            $brokerEvent = new BrokerProcess($this->pollerId, $method);
+            $event->emit("centreon-configuration.$method.engine", array($engineEvent));
+            $event->emit("centreon-configuration.$method.broker", array($brokerEvent));
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;

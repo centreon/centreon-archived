@@ -258,13 +258,12 @@ class PollerDatatable extends \Centreon\Internal\Datatable
         // Get datatabases connections
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        $dbconnStorage = $di->get('db_storage');
         
         $sqlBroker = "SELECT start_time AS program_start_time, running AS is_currently_running, 
             instance_id, name AS instance_name , last_alive, version AS program_version,  
             engine AS program_name
-            FROM instances";
-        $stmtBroker = $dbconnStorage->query($sqlBroker);
+            FROM rt_instances";
+        $stmtBroker = $dbconn->query($sqlBroker);
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
         
         // Build Up the line

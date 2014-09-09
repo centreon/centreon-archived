@@ -65,7 +65,7 @@ class ConfigMoveRepository extends ConfigRepositoryAbstract
     {
         try {
             /* Get Path */
-            $event = $this->di->get('action_hooks');
+            $event = $this->di->get('events');
             $event->emit('centreon-configuration.copy.files', array($this->pollerId));
             $this->output[] = _('Successfully copied files.');
         } catch (Exception $e) {
