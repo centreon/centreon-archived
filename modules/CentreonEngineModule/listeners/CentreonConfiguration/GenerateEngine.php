@@ -36,14 +36,15 @@
 namespace CentreonEngine\Listeners\CentreonConfiguration;
 
 use CentreonEngine\Repository\ConfigGenerateMainRepository;
+use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 
 class GenerateEngine
 {
     /**
      *
-     * @param CentreonConfiguration\Events\GenerateEngine
+     * @param \CentreonConfiguration\Events\GenerateEngine
      */
-    public static function execute($event)
+    public static function execute(GenerateEngineEvent $event)
     {
         $config = Di::getDefault()->get('config');
         $path = $config->get('global', 'centreon_generate_tmp_dir');

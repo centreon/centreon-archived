@@ -37,15 +37,16 @@ namespace CentreonEngine\Listeners\CentreonConfiguration;
 
 use Centreon\Internal\Di;
 use CentreonEngine\Repository\ConfigGenerateMainRepository;
+use CentreonConfiguration\Events\CopyFiles as CopyFilesEvent;
 
 class CopyFiles
 {
     /**
      * Execute action 
      *
-     * @param CentreonConfiguration\Events\CopyFiles $event
+     * @param \CentreonConfiguration\Events\CopyFiles $event
      */
-    public static function execute($event)
+    public static function execute(CopyFilesEvent $event)
     {
         $config = Di::getDefault()->get('config');
         $config = $this->di->get('config');
