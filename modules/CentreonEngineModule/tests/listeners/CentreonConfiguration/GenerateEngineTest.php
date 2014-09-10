@@ -81,7 +81,7 @@ class GenerateEngineTest extends DbTestCase
         $eventParams = new GenerateEngineEvent(1);
         GenerateEngine::execute($eventParams);
         $genPath = Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir');
-        $this->assertTrue(file_exists($genPath . "/1/centengine.cfg"));
-        $this->assertTrue(file_exists($genPath . "/1/centengine-testing.cfg"));
+        $this->assertFileExists($genPath . "/1/centengine.cfg");
+        $this->assertFileExists($genPath . "/1/centengine-testing.cfg");
     }
 }
