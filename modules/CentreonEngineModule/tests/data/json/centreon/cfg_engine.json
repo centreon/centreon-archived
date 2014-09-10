@@ -1,0 +1,8 @@
+[
+  {
+    "engine_id": 1,
+    "log_file": "/tmp/log",
+    "cfg_dir": "/tmp/cfg",
+    "engine_server_id": 1
+  }
+]
