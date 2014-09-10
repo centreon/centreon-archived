@@ -206,13 +206,13 @@ class Generator
         $installerClass .= $this->indent() . 'public function __construct($moduleDirectory, $moduleInfo)' . "\n";
         $installerClass .= $this->indent() . "{\n";
         $installerClass .= $this->indent(2) . 'parent::__construct($moduleDirectory, $moduleInfo);';
-        $installerClass .= $this->indent() . "\n}\n";
+        $installerClass .= $this->indent() . "\n" . $this->indent() . "}\n\n";
         $installerClass .= $this->indent() . 'public function customPreInstall()' . "\n";
-        $installerClass .= $this->indent() . "{\n" . $this->indent(2) . "\n}\n";
+        $installerClass .= $this->indent() . "{\n" . $this->indent(2) . "\n" . $this->indent() . "}\n\n";
         $installerClass .= $this->indent() . 'public function customInstall()' . "\n";
-        $installerClass .= $this->indent() . "{\n" . $this->indent(2) . "\n}\n";
+        $installerClass .= $this->indent() . "{\n" . $this->indent(2) . "\n" . $this->indent() . "}\n\n";
         $installerClass .= $this->indent() . 'public function customRemove()' . "\n";
-        $installerClass .= $this->indent() . "{\n" . $this->indent(2) . "\n}\n";
+        $installerClass .= $this->indent() . "{\n" . $this->indent(2) . "\n" . $this->indent() . "}\n";
         $installerClass .= "}\n\n";
         file_put_contents($this->moduleFolderStructure['install'] . '/Installer.php', $installerClass);
     }
@@ -237,7 +237,6 @@ class Generator
         $controllerClass .= $this->indent() . " */\n";
         $controllerClass .= $this->indent() . "public function sampleAction()\n";
         $controllerClass .= $this->indent() . "{\n";
-        $controllerClass .= $this->indent(2) . '$this->assignVarToTpl(\'centreonVersion\', \'Centreon 3.0\');' . "\n";
         $controllerClass .= $this->indent(2) . '$this->assignVarToTpl(\'centreonVersion\', \'Centreon 3.0\');' . "\n";
         $controllerClass .= $this->indent(2) . '$this->display("sample.tpl");' . "\n";
         $controllerClass .= $this->indent() . "}\n}\n";
