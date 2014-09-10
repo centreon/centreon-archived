@@ -46,13 +46,15 @@ class PollerEvent
     /**
      * Array of output - should be the output of the process after 
      * performing the action
+     * The output strings will be displayed on the UI
      * @var array 
      */
     private $output;
 
     /**
-     * Whether or not action is successful, 0 = successful
-     * @var int
+     * Whether or not action is successful.
+     * true = successful, false = error
+     * @var bool
      */
     private $status;
 
@@ -63,7 +65,7 @@ class PollerEvent
     {
         $this->pollerId = $pollerId;
         $this->output = array();
-        $this->status = 0;
+        $this->status = true;
     }
 
     /**

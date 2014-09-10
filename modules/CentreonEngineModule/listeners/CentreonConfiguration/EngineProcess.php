@@ -55,6 +55,8 @@ class EngineProcess
         $output = array();
         exec($command, $output, $status);
         $event->setOutput($output);
-        $event->setStatus($status);
+        $event->setStatus(
+            $status ? false : true
+        );
     }
 }
