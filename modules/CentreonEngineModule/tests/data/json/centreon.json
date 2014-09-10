@@ -2,5 +2,7 @@
   "cfg_modules",
   "cfg_organizations",
   "cfg_engine_servers",
-  "cfg_engine"
+  "cfg_engine",
+  "cfg_timeperiods",
+  "cfg_contacts"
 ]

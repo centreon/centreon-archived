@@ -1,0 +1,10 @@
+[
+  {
+    "contact_id": 1,
+    "timeperiod_tp_id": 1,
+    "timeperiod_tp_id2": 1,
+    "contact_name": "Contact 1",
+    "contact_alias": "contact1",
+    "contact_email": "contact@domain.tld"
+  }
+]
