@@ -39,6 +39,7 @@ use \Test\Centreon\DbTestCase;
 use \Centreon\Internal\Di;
 use \CentreonEngine\Listeners\CentreonConfiguration\GenerateEngine;
 use \CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
+use \Centreon\Internal\Utils\Filesystem\Directory;
 
 class GenerateEngineTest extends DbTestCase
 {
@@ -55,23 +56,9 @@ class GenerateEngineTest extends DbTestCase
 
     static public function tearDownAfterClass()
     {
-        function delDir($dir) {
-            $fh = opendir($dir);
-            while ($file = readdir($fh)) {
-                if ($file != '.' && $file != '..') {
-                    if (is_dir($dir . '/' . $file)) {
-                        delDir($dir . '/' . $file);
-                    } else {
-                        unlink($dir . '/' . $file);
-                    }
-                }
-            }
-            closedir($fh);
-            rmdir($dir);
-        }
         $genPath = Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir');
         if ($genPath != "" && is_dir($genPath)) {
-            delDir($genPath);
+            Directory::delete($genPath, true);
         }
         parent::tearDownAfterClass();
     }
