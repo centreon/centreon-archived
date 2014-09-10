@@ -46,14 +46,14 @@ class RunTest
      */
     public static function execute(RunTestEvent $event)
     {
-       $di = Di::getDefault();
-       $dbconn = $di->get('db_centreon');
-       $tmpdir = $di->get('config')->get('global', 'centreon_generate_tmp_dir');
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $tmpdir = $di->get('config')->get('global', 'centreon_generate_tmp_dir');
 
-       $pollerId = $event->getPollerId();
-       $enginePath = '/usr/sbin/centengine/';
-       $path = "{$tmpdir}/{$pollerId}/centengine-testing.cfg";
-       $command = "sudo {$enginePath} -v $path 2>&1";
-       $output = shell_exec($command);
+        $pollerId = $event->getPollerId();
+        $enginePath = '/usr/sbin/centengine/';
+        $path = "{$tmpdir}/{$pollerId}/centengine-testing.cfg";
+        $command = "sudo {$enginePath} -v $path 2>&1";
+        $output = shell_exec($command);
     }
 }

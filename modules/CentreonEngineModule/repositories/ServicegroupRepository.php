@@ -33,24 +33,54 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonEngine\Repository;
 
-use Centreon\Internal\Di;
-use CentreonEngine\Repository\ConfigGenerateMainRepository;
-use CentreonConfiguration\Events\CopyFiles as CopyFilesEvent;
+use \Centreon\Internal\Di;
 
-class CopyFiles
+/**
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @package Centreon
+ * @subpackage Repository
+ */
+class ServicegroupRepository
 {
     /**
-     * Execute action 
-     *
-     * @param \CentreonConfiguration\Events\CopyFiles $event
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
      */
-    public static function execute(CopyFilesEvent $event)
+    public static function generate(& $filesList, $poller_id, $path, $filename)
     {
-        $config = Di::getDefault()->get('config');
-        $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
+        $di = Di::getDefault();
 
-        system("cp -Rf $tmpdir/{$event->getPollerId()}/* /etc/centreon-engine/");
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT sg_name, sg_alias FROM cfg_servicegroups WHERE sg_activate = '1' ORDER BY sg_name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "servicegroup");
+            $tmpData = array();
+            foreach ($row as $key => $value) {
+                if ($key == 'sg_name') {
+                    $key = 'servicegroup_name';
+                }
+                $key = str_replace("sg_", "", $key);
+                $tmpData[$key] = $value;
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        unset($content);
     }
 }

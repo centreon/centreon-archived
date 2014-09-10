@@ -33,24 +33,52 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonEngine\Repository;
 
-use Centreon\Internal\Di;
-use CentreonEngine\Repository\ConfigGenerateMainRepository;
-use CentreonConfiguration\Events\CopyFiles as CopyFilesEvent;
+use \Centreon\Internal\Di;
 
-class CopyFiles
+/**
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @package Centreon
+ * @subpackage Repository
+ */
+class ConnectorRepository
 {
     /**
-     * Execute action 
-     *
-     * @param \CentreonConfiguration\Events\CopyFiles $event
+     * 
+     * @param array $filesList
+     * @param int $poller_id
+     * @param string $path
+     * @param string $filename
      */
-    public static function execute(CopyFilesEvent $event)
+    public function generate(& $filesList, $poller_id, $path, $filename)
     {
-        $config = Di::getDefault()->get('config');
-        $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
+        $di = Di::getDefault();
 
-        system("cp -Rf $tmpdir/{$event->getPollerId()}/* /etc/centreon-engine/");
+        /* Get Database Connexion */
+        $dbconn = $di->get('db_centreon');
+
+        /* Init Content Array */
+        $content = array();
+        
+        /* Get information into the database. */
+        $query = "SELECT name AS connector_name, command_line AS connector_line "
+            . "FROM cfg_connectors WHERE enabled = 1 "
+            . "ORDER BY name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $tmp = array("type" => "connector");
+            $tmpData = array();
+            foreach ($row as $key => $value) {
+                $tmpData[$key] = $value;
+            }
+            $tmp["content"] = $tmpData;
+            $content[] = $tmp;
+        }
+
+        /* Write Check-Command configuration file */
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
+        unset($content);
     }
 }

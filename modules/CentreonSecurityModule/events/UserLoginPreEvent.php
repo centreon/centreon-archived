@@ -40,9 +40,9 @@ namespace CentreonSecurity\Events;
  *
  * @author lionel
  */
-class UserPreLoginEvent
+class UserLoginPreEvent
 {
-    const __name__ = 'centreon-security.user.prelogin';
+    const __NAME__ = 'centreon-security.user.login.pre';
     
     private $user;
     
