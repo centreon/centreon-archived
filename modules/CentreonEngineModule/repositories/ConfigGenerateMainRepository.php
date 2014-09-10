@@ -36,12 +36,11 @@
 namespace CentreonEngine\Repository;
 
 use \Centreon\Internal\Di;
-use \CentreonConfiguration\Repository\WriteConfigFileRepository;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
  *
- * @author Julien Mathis <jmathis@merethis.com>
+ * @author Sylvestre Ho <sho@merethis.com>
  * @version 3.0.0
  */
 

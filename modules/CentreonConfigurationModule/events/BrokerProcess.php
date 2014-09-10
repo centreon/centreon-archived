@@ -35,14 +35,8 @@
 
 namespace CentreonConfiguration\Events;
 
-class BrokerProcess
+class BrokerProcess extends PollerEvent
 {
-    /**
-     * Refers to the poller id
-     * @var int
-     */
-    private $pollerId;
-
     /**
      * Refers to the action to perform: restart, reload, forcereload
      * @var string
@@ -50,30 +44,13 @@ class BrokerProcess
     private $action;
 
     /**
-     * Array of output - should be the output of the process after 
-     * performing the action
-     * @var array 
-     */
-    private $output;
-
-    /**
      * @param int $pollerId
      * @param string $action
      */
     public function __construct($pollerId, $action)
     {
-        $this->pollerId = $pollerId;
+        parent::__construct($pollerId);
         $this->action = $action;
-        $this->output = array();
-        $this->status = 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPollerId()
-    {
-        return $this->pollerId;
     }
 
     /**
@@ -82,34 +59,5 @@ class BrokerProcess
     public function getAction()
     {
         return $this->action();
-    }
-
-    /**
-     * @return array
-     */
-    public function getOutput()
-    {
-        return $this->output;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param array $output
-     */
-    public function setOutput(array $output)
-    {
-        $this->output = $output;
-    }
-
-    public function setStatus(int $status)
-    {
-        $this->status = $status;
     }
 }

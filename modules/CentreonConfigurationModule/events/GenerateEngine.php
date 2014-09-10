@@ -35,4 +35,7 @@
 
 namespace CentreonConfiguration\Events;
 
-class GenerateEngine extends PollerEvent {}
+class GenerateEngine extends PollerEvent
+{
+
+}

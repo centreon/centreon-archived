@@ -76,48 +76,4 @@ class TimePeriodRepository extends \CentreonConfiguration\Repository\Repository
         }
         return "";
     }
-
-    /**
-     * 
-     * @param array $filesList
-     * @param int $poller_id
-     * @param string $path
-     * @param string $filename
-     */
-    public function generate(& $filesList, $poller_id, $path, $filename)
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        $enableField = array("tp_id" => 1);
-        
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT * FROM cfg_timeperiods ORDER BY tp_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tmp = array("type" => "timeperiod");
-            $tmpData = array();
-            foreach ($row as $key => $value) {
-                if ($key == 'tp_name') {
-                    $key = "timeperiod_name";
-                }
-                if (!isset($enableField[$key]) && $value != "") {
-                    $key = str_replace("tp_", "", $key);
-                    $tmpData[$key] = $value;
-                }
-            }
-            $tmp["content"] = $tmpData;
-            $content[] = $tmp;
-        }
-
-        /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
-    }
 }

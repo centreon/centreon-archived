@@ -41,20 +41,65 @@ class PollerEvent
      * Refers to the poller id
      * @var int
      */
-    protected $pollerId;
+    private $pollerId;
 
+    /**
+     * Array of output - should be the output of the process after 
+     * performing the action
+     * @var array 
+     */
+    private $output;
+
+    /**
+     * Whether or not action is successful, 0 = successful
+     * @var int
+     */
+    private $status;
+
+    /**
+     * @param int $pollerId
+     */
     public function __construct($pollerId)
     {
         $this->pollerId = $pollerId;
+        $this->output = array();
+        $this->status = 0;
     }
 
     /**
-     * Getter
-     *
      * @return int
      */
     public function getPollerId()
     {
         return $this->pollerId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $output
+     */
+    public function setOutput($output)
+    {
+        $this->output[] = $output;
+    }
+
+    public function setStatus(int $status)
+    {
+        $this->status = $status;
     }
 }

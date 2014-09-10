@@ -33,13 +33,11 @@
  *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonEngine\Repository;
 
 use \Centreon\Internal\Exception;
 
 /**
- * Factory for 
- *
  * @author Julien Mathis <jmathis@merethis.com>
  * @version 3.0.0
  */

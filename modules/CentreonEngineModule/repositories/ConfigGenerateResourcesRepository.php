@@ -33,11 +33,11 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonEngine\Repository;
+
+use \Centreon\Internal\Di;
 
 /**
- * Factory for ConfigGenerate Engine For commands
- *
  * @author Julien Mathis <jmathis@merethis.com>
  * @version 3.0.0
  */
@@ -50,7 +50,7 @@ class ConfigGenerateResourcesRepository
      */
     public function generate(& $filesList, $poller_id, $path, $filename)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');

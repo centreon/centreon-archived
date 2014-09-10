@@ -37,35 +37,154 @@ namespace CentreonEngine\Listeners\CentreonConfiguration;
 
 use Centreon\Internal\Di;
 use CentreonEngine\Repository\ConfigGenerateMainRepository;
+use CentreonEngine\Repository\CommandRepository;
+use CentreonEngine\Repository\TimePeriodRepository;
+use CentreonEngine\Repository\HostRepository;
+use CentreonEngine\Repository\HostTemplateRepository;
+use CentreonEngine\Repository\HostgroupRepository;
+use CentreonEngine\Repository\ConnectorRepository;
+use CentreonEngine\Repository\ServicetemplateRepository;
+use CentreonEngine\Repository\ServicegroupRepository;
+use CentreonEngine\Repository\UserRepository;
+use CentreonEngine\Repository\UsergroupRepository;
+use CentreonEngine\Repository\ConfigGenerateResourcesRepository;
 use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 
 class GenerateEngine
 {
+    private static $event;
+    private static $path;
+    private static $fileList; 
+
     /**
      *
      * @param \CentreonConfiguration\Events\GenerateEngine
      */
     public static function execute(GenerateEngineEvent $event)
     {
+        static::$event = $event;
         $config = Di::getDefault()->get('config');
-        $path = $config->get('global', 'centreon_generate_tmp_dir');
-        $fileList = array();
+        static::$path = $config->get('global', 'centreon_generate_tmp_dir');
+        static::$fileList = array();
 
+        $event->setOutput(
+            sprintf(
+                _('Generating temporary configuration files for poller %s:'), $event->getPollerId()
+            )
+        );
+
+        static::generateObjectsFiles();
+        static::generateMainFiles();
+    }
+
+    /**
+     * Generate main configuration files
+     */
+    public static function generateMainFiles()
+    {
+        $event = static::$event;
         /* Generate Main File */
         ConfigGenerateMainRepository::generate(
-            $fileList, 
+            static::$fileList, 
             $event->getPollerId(), 
-            $path, 
+            static::$path, 
             "centengine.cfg"
         );
+        $event->setOutput('centengine.cfg');
 
         /* Generate Debugging Main File */
         ConfigGenerateMainRepository::generate(
-            $fileList,
+            static::$fileList,
             $event->getPollerId(),
-            $path,
+            static::$path,
             "centengine-testing.cfg",
             1
         );
+        $event->setOutput('centengine-testing.cfg');
     }
+
+    /**
+     * Generate all object files (host, service, contacts etc...)
+     *
+     */
+    public static function generateObjectsFiles()
+    {
+        $event = static::$event;
+        /* Generate Configuration files */
+        CommandRepository::generate(
+            static::$fileList, 
+            $event->getPollerId(), 
+            static::$path, 
+            "check-command.cfg",
+            CommandRepository::CHECK_TYPE
+        );
+        $event->setOutput('check-command.cfg');
+
+        CommandRepository::generate(
+            static::$fileList, 
+            $event->getPollerId(), 
+            static::$path, 
+            "misc-command.cfg",
+            CommandRepository::NOTIF_TYPE
+        );
+        $event->setOutput('misc-command.cfg');
+
+        ConfigGenerateResourcesRepository::generate(
+            static::$fileList, 
+            $event->getPollerId(), 
+            static::$path, 
+            "resources.cfg"
+        );
+        $event->setOutput('resources.cfg');
+
+        TimePeriodRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "timeperiods.cfg");
+        $event->setOutput('timeperiods.cfg');
+
+        ConnectorRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "connectors.cfg");
+        $event->setOutput('connectors.cfg');
+
+        UserRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/contacts.cfg");
+        $event->setOutput('contacts.cfg');
+
+        UsergroupRepository::generate(
+            static::$fileList, 
+            $event->getPollerId(), 
+            static::$path, 
+            "objects/contactgroups.cfg"
+        );
+        $event->setOutput('contactgroups.cfg');
+
+        /* Generate config Object */
+        HostgroupRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/hostgroups.cfg");
+        $event->setOutput('hostgroups.cfg');
+
+        ServicegroupRepository::generate(
+            static::$fileList,
+            $event->getPollerId(),
+            static::$path,
+            "objects/servicegroups.cfg"
+        );
+        $event->setOutput('servicegroups.cfg');
+
+        /* Templates config files */
+        HostTemplateRepository::generate(
+            static::$fileList,
+            $event->getPollerId(),
+            static::$path,
+            "objects/hostTemplates.cfg"
+        );
+        $event->setOutput('hostTemplates.cfg');
+
+        ServicetemplateRepository::generate(
+            static::$fileList,
+            $event->getPollerId(),
+            static::$path,
+            "objects/serviceTemplates.cfg"
+        );
+        $event->setOutput('serviceTemplate.cfg');
+
+        /* Monitoring Resources files */
+        HostRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "resources/");
+        $event->setOutput('host configuration files');
+    } 
 }
