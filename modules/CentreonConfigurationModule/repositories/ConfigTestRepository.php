@@ -71,8 +71,9 @@ class ConfigTestRepository extends ConfigRepositoryAbstract
         try {
             $result = "";
             $event = $this->di->get('events');
-            $event->emit('centreon-configuration.run.test', array(new RunTest($this->pollerId)));
-            $this->output[] = $result;
+            $eventObj = new RunTest($this->pollerId);
+            $event->emit('centreon-configuration.run.test', array($eventObj));
+            $this->output = array_merge($this->output, $eventObj->getOutput());
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;

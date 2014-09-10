@@ -52,5 +52,6 @@ class CopyFiles
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
         system("cp -Rf $tmpdir/{$event->getPollerId()}/* /etc/centreon-engine/");
+        $event->setOutput(_('Successfully copied files.'));
     }
 }

@@ -47,10 +47,9 @@ class EngineProcess
     public static function execute(EngineProcessEvent $event)
     {
         $action = $event->getAction();
-        if (in_array($action, array('reload', 'restart', 'forcereload'))) {
+        if (!in_array($action, array('reload', 'restart', 'forcereload'))) {
             throw new Exception(sprintf('Unknown action %s', $action));
         }
-        echo "Hello Dude";
         $command = "sudo /etc/init.d/centengine {$action}";
         $status = 0;
         $output = array();

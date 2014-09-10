@@ -98,7 +98,7 @@ class PollerEvent
         $this->output[] = $output;
     }
 
-    public function setStatus(int $status)
+    public function setStatus($status)
     {
         $this->status = $status;
     }
