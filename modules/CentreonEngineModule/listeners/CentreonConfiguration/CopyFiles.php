@@ -51,6 +51,6 @@ class CopyFiles
         $config = Di::getDefault()->get('config');
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        system("cp -Rf $tmpdir/{$event->getPollerId()}/* /etc/centreon-engine/"); 
+        system("cp -Rf $tmpdir/{$event->getPollerId()}/* /etc/centreon-engine/");
     }
 }

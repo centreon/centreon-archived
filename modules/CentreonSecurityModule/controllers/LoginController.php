@@ -34,12 +34,12 @@
  */
 namespace CentreonSecurity\Controllers;
 
-use \CentreonAdministration\Internal\User,
-    \Centreon\Internal\Form,
-    \Centreon\Internal\Di,
-    \Centreon\Internal\Auth\Sso,
-    \Centreon\Internal\Session,
-    \Centreon\Internal\Acl;
+use \CentreonAdministration\Internal\User;
+use \Centreon\Internal\Form;
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Auth\Sso;
+use \Centreon\Internal\Session;
+use \Centreon\Internal\Acl;
 
 /**
  * Login controller

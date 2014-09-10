@@ -40,9 +40,9 @@ namespace CentreonSecurity\Events;
  *
  * @author lionel
  */
-class UserPostLoginEvent
+class UserLoginPostEvent
 {
-    const __name__ = 'centreon-security.user.postlogin';
+    const __NAME__ = 'centreon-security.user.login.post';
     
     private $user;
     

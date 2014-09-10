@@ -53,9 +53,9 @@ class GenerateEngine
 
         /* Generate Main File */
         ConfigGenerateMainRepository::generate(
-            $fileList, 
-            $event->getPollerId(), 
-            $path, 
+            $fileList,
+            $event->getPollerId(),
+            $path,
             "centengine.cfg"
         );
 
