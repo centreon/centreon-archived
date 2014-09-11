@@ -1,0 +1,16 @@
+[
+  {
+    "resource_id": 1,
+    "resource_name": "$USER1$",
+    "resource_line": "/usr/bin",
+    "resource_activate": 1,
+    "organization_id": 1
+  },
+  {
+    "resource_id": 2,
+    "resource_name": "$USER2$",
+    "resource_line": "/usr/lib/nagios",
+    "resource_activate": 1,
+    "organization_id": 1
+  }
+]

@@ -12,5 +12,7 @@
   "cfg_hosts",
   "cfg_servicegroups",
   "cfg_services",
-  "cfg_hosts_services_relations"
+  "cfg_hosts_services_relations",
+  "cfg_resources",
+  "cfg_resources_instances_relations"
 ]
