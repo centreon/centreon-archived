@@ -6,5 +6,6 @@
   "cfg_timeperiods",
   "cfg_contacts",
   "cfg_contactgroups",
-  "cfg_commands"
+  "cfg_commands",
+  "cfg_connectors"
 ]
