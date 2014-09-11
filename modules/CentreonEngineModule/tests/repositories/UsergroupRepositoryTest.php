@@ -33,14 +33,14 @@
  */
 
 
-namespace Test\CentreonEngine\Repository;
+namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
 
 use \Test\Centreon\DbTestCase;
 use \Centreon\Internal\Di;
 use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\UserRepository;
+use \CentreonEngine\Repository\UsergroupRepository;
 
-class UserRepositoryTest extends DbTestCase
+class UsergroupRepositoryTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
     protected $tmpDir;
@@ -54,7 +54,7 @@ class UserRepositoryTest extends DbTestCase
     public function tearDown()
     {
         if ($this->tmpDir != '' && is_dir($this->tmpDir)) {
-            Directory::delete($this->tmpDir, true);
+           Directory::delete($this->tmpDir, true);
         }
         parent::tearDown();
     }
@@ -63,18 +63,18 @@ class UserRepositoryTest extends DbTestCase
     {
         $fileList = array();
         $pollerId = 1;
-        UserRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'contacts.cfg');
+        UsergroupRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'contactgroups.cfg');
         $this->assertEquals(
             array('cfg_dir' => array(
                 $this->tmpDir . '/1/'
             )), $fileList
         );
-        $content = file_get_contents($this->tmpDir . '/1/contacts.cfg');
+        $content = file_get_contents($this->tmpDir . '/1/contactgroups.cfg');
         /* Remove line with the generate date */
         $lines = split("\n", $content);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $content = join("\n", $lines);
-        $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/user1.cfg');
+        $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/usergroup1.cfg');
         $this->assertEquals($resultContent, $content);
     }
 }
