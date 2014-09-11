@@ -36,10 +36,10 @@
 namespace CentreonEngine\Repository;
 
 use \Centreon\Internal\Di;
-use \CentreonConfiguration\Repository\CommandRepository;
-use \CentreonConfiguration\Repository\TimeperiodRepository;
+use \CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
+use \CentreonConfiguration\Repository\TimePeriodRepository;
 use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
-use \CentreonConfiguration\Repository\ServiceRepository as ServicetemplateConfigurationRepository;
+use \CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -120,11 +120,11 @@ class ServiceRepository extends ServicetemplateRepository
                             $writeParam = 0;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandRepository::getCommandName($value).html_entity_decode($args);
+                            $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
                             $args = "";
                         }
                         if ($key == 'check_period' || $key == 'notification_period') {
-                            $value = TimeperiodRepository::getPeriodName($value);
+                            $value = TimePeriodRepository::getPeriodName($value);
                         }
                         if ($key == "template_model_stm_id") {
                             $key = "use";

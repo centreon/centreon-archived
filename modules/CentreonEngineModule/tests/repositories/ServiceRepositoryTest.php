@@ -38,51 +38,49 @@ namespace Test\CentreonEngine\Repository;
 use \Test\Centreon\DbTestCase;
 use \Centreon\Internal\Di;
 use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\HostRepository;
+use \CentreonEngine\Repository\ServiceRepository;
 
-class HostRepositoryTest extends DbTestCase
+class ServiceRepositoryTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
     protected $tmpDir;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->tmpDir = Directory::temporary('ut_', true);
-    }
-
-    public function tearDown()
-    {
-        if ($this->tmpDir != '' && is_dir($this->tmpDir)) {
-            //Directory::delete($this->tmpDir, true);
-        }
-        parent::tearDown();
-    }
-
     public function testGenerate()
     {
-        $fileList = array();
-        $pollerId = 1;
-        HostRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'hosts_');
-        $this->assertEquals(
-            array('cfg_dir' => array(
-                $this->tmpDir . '/1/'
-            )), $fileList
+        $resultContent = array(
+            array(
+                "type" => "service",
+                "content" => array(
+                    "_SERVICE_ID" => "2",
+                    "host_name" => "host1",
+                    "service_description" => "service1",
+                    "alias" => "Service 1",
+                    "command_command_id_arg" => "90",
+                    "check_command" => "Check command 190",
+                    "check_period" => "all",
+                    "display_name" => "Service 1",
+                    "check_interval" => "10",
+                    "retry_interval" => "10",
+                    "initial_state" => "u"
+                )
+            )
         );
-        $content = file_get_contents($this->tmpDir . '/1/hosts_host1-2.cfg');
-        /* Remove line with the generate date */
-        $lines = split("\n", $content);
-        $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
-        $content = join("\n", $lines);
-        $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/host1.cfg');
+        $content = ServiceRepository::generate(2);
         $this->assertEquals($resultContent, $content);
-
-        $content = file_get_contents($this->tmpDir . '/1/hosts_host2-3.cfg');
-        /* Remove line with the generate date */
-        $lines = split("\n", $content);
-        $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
-        $content = join("\n", $lines);
-        $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/host2.cfg');
+        $resultContent = array(
+            array(
+                "type" => "service",
+                "content" => array(
+                    "_SERVICE_ID" => "3",
+                    "host_name" => "host2",
+                    "service_description" => "service2",
+                    "display_name" => "Service 2",
+                    "alias" => "Service 2",
+                    "use" => "servicetemplate1"
+                )
+            )
+        );
+        $content = ServiceRepository::generate(3);
         $this->assertEquals($resultContent, $content);
     }
 }

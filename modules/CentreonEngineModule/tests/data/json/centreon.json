@@ -11,5 +11,6 @@
   "cfg_hostgroups",
   "cfg_hosts",
   "cfg_servicegroups",
-  "cfg_services"
+  "cfg_services",
+  "cfg_hosts_services_relations"
 ]
