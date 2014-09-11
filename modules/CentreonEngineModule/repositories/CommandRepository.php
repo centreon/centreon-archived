@@ -58,9 +58,9 @@ class CommandRepository
     public static function generate(& $filesList, $poller_id, $path, $filename, $cmdType)
     {
         if ($cmdType == self::CHECK_TYPE) {
-            self::generateCheckCommand($fileList, $poller_id, $path, $filename);
+            self::generateCheckCommand($filesList, $poller_id, $path, $filename);
         } elseif ($cmdType == self::NOTIF_TYPE) {
-            self::generateMiscCommand($fileList, $poller_id, $path, $filename);
+            self::generateMiscCommand($filesList, $poller_id, $path, $filename);
         } else {
             throw new Exception(sprintf('Unknown command type %s', $cmdType));
         }
