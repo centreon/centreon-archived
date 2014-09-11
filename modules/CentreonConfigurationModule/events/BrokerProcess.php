@@ -58,6 +58,6 @@ class BrokerProcess extends PollerEvent
      */
     public function getAction()
     {
-        return $this->action();
+        return $this->action;
     }
 }
