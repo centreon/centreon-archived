@@ -68,9 +68,13 @@ class ConfigApplyRepository extends ConfigRepositoryAbstract
         try {
             $this->output[] = sprintf(_("Performing %s action"), $method);
             $event = $this->di->get('events');
+
+            /* Engine */
             $engineEvent = new EngineProcess($this->pollerId, $method);
-            $brokerEvent = new BrokerProcess($this->pollerId, $method);
             $event->emit("centreon-configuration.engine.process", array($engineEvent));
+
+            /* Broker */
+            $brokerEvent = new BrokerProcess($this->pollerId, $method);
             $event->emit("centreon-configuration.broker.process", array($brokerEvent));
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();

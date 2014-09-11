@@ -31,17 +31,45 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonBroker\Events\CentreonConfiguration;
+namespace CentreonBroker\Install;
 
-class ReloadBroker
+use \Centreon\Internal\Module\Installer as ModuleInstaller;
+
+/**
+ * 
+ */
+class Installer extends ModuleInstaller
 {
     /**
-     *
+     * 
+     * @param type $moduleInfo
      */
-    public static function execute($pollerId)
+    public function __construct($moduleDirectory, $moduleInfo)
     {
-
+        parent::__construct($moduleDirectory, $moduleInfo);
+    }
+    
+    public function customPreInstall()
+    {
+        
+    }
+    
+    /**
+     * 
+     */
+    public function customInstall()
+    {
+        
+    }
+    
+    /**
+     * 
+     */
+    public function customRemove()
+    {
+        
     }
 }

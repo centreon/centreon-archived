@@ -1,0 +1,28 @@
+{
+    "name": "Centreon Broker",
+    "shortname" : "centreon-broker",
+    "version": "3.0.0",
+    "author" : [
+        "Merethis"
+    ],
+    "isuninstallable" : false,
+    "isdisableable" : false,
+    "url" : "",
+    "description" : "Centreon Broker Module",
+    "core version" : "3.0.0",
+    "dependencies" : [
+        {
+            "name" : "centreon-administration",
+            "version" : "3.0.0"
+        }
+    ],
+    "optionnal dependencies" : [
+        
+    ],
+    "php module dependencies" : [
+        
+    ],
+    "program dependencies" : [
+        
+    ]
+}

@@ -33,15 +33,30 @@
  *
  */
 
-namespace CentreonBroker\Events\CentreonConfiguration;
+namespace CentreonBroker\Listeners\CentreonConfiguration;
 
-class RestartBroker
+use CentreonConfiguration\Events\BrokerProcess as BrokerProcessEvent;
+use Centreon\Internal\Exception;
+
+class BrokerProcess
 {
     /**
-     *
+     * @param \CentreonConfiguration\Events\BrokerProcess $event
+     * @throws \Centreon\Internal\Exception
      */
-    public static function execute($pollerId)
+    public static function execute(BrokerProcessEvent $event)
     {
-
+        $action = $event->getAction();
+        if (!in_array($action, array('reload', 'restart', 'forcereload'))) {
+            throw new Exception(sprintf('Unknown action %s', $action));
+        }
+        $command = "sudo /etc/init.d/cbd {$action}";
+        $status = 0;
+        $output = array();
+        exec($command, $output, $status);
+        $event->setOutput($output);
+        $event->setStatus(
+            $status ? false : true
+        );
     }
 }

@@ -33,15 +33,6 @@
  *
  */
 
-namespace CentreonBroker\Events\CentreonConfiguration;
+namespace CentreonConfiguration\Events;
 
-class ForcereloadBroker
-{
-    /**
-     *
-     */
-    public static function execute($pollerId)
-    {
-
-    }
-}
+class GenerateBroker extends PollerEvent {}

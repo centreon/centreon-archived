@@ -35,6 +35,8 @@
 
 namespace CentreonBroker\Repository;
 
+use \Centreon\Internal\Di;
+
 /**
  * Factory for ConfigTest Engine
  *
@@ -45,11 +47,11 @@ class ConfigCorrelationRepository
 {
     /**
      * 
-     * @param int $poller_id
+     * @param int $pollerId
      */
-    public function generate($poller_id)
+    public function generate($pollerId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         $xml = new \XMLWriter();
@@ -62,7 +64,7 @@ class ConfigCorrelationRepository
 
         /* Declare Host */
         $query = "SELECT host_id, engine_server_id "
-            . "FROM host, cfg_engine_hosts_relations "
+            . "FROM cfg_hosts, cfg_engine_hosts_relations "
             . "WHERE host_host_id = host_id ORDER BY host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -74,9 +76,10 @@ class ConfigCorrelationRepository
         
         /* Declare Service */
         $query = "SELECT service_id, host_id, engine_server_id "
-            . "FROM host, service, cfg_hosts_services_relations ns, cfg_engine_hosts_relations hp "
+            . "FROM cfg_hosts, cfg_services, cfg_hosts_services_relations ns, cfg_engine_hosts_relations hp "
             . "WHERE host_id = ns.host_host_id "
-            . "AND service_id = ns.service_service_id AND hp.host_host_id = host_id";
+            . "AND service_id = ns.service_service_id "
+            . "AND hp.host_host_id = host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('service');
