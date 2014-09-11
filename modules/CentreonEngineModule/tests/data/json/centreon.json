@@ -9,5 +9,6 @@
   "cfg_commands",
   "cfg_connectors",
   "cfg_hostgroups",
-  "cfg_hosts"
+  "cfg_hosts",
+  "cfg_servicegroups"
 ]

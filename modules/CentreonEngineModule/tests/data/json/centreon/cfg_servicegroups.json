@@ -1,0 +1,9 @@
+[
+  {
+    "sg_id": 1,
+    "sg_name": "Service group 1",
+    "sg_alias": "servicegroup1",
+    "sg_comment": "First servicegroup",
+    "organization_id": 1
+  }
+]
