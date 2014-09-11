@@ -207,7 +207,7 @@ class Informations
     {
         $menus = null;
 
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         if (is_null($menus)) {
             $sql = "SELECT menu_id, short_name FROM cfg_menus";
             $stmt = $db->prepare($sql);
@@ -266,5 +266,40 @@ class Informations
                 $stmt->execute();
             }
         }
+    }
+    
+    /**
+     * 
+     * @param type $moduleName
+     * @return \Centreon\Commands\classCall
+     * @throws \Exception
+     */
+    public static function getModuleInstaller($moduleName, $moduleId = null)
+    {
+        $config =  Di::getDefault()->get('config');
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        
+        $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $moduleName)));
+        
+        $moduleDirectory = $centreonPath
+            . '/modules/'
+            . $commonName
+            . 'Module/';
+        
+        if (!file_exists(realpath($moduleDirectory . 'install/config.json'))) {
+            throw new \Exception("The module is not valid because of a missing configuration file");
+        }
+        $moduleInfo = json_decode(file_get_contents($moduleDirectory . 'install/config.json'), true);
+        
+        // Launched Install
+        $classCall = '\\'.$commonName.'\\Install\\Installer';
+        
+        if (isset($moduleId)) {
+            $moduleInfo['id'] = $moduleId;
+        }
+        
+        $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);
+        
+        return $moduleInstaller;
     }
 }

@@ -37,38 +37,44 @@ namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
 
 use \Test\Centreon\DbTestCase;
 use \Centreon\Internal\Di;
-use \CentreonEngine\Listeners\CentreonConfiguration\GenerateEngine;
-use \CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
 use \Centreon\Internal\Utils\Filesystem\Directory;
+use \CentreonEngine\Repository\UsergroupRepository;
 
-class GenerateEngineTest extends DbTestCase
+class UsergroupRepositoryTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
+    protected $tmpDir;
 
-    static public function setUpBeforeClass()
+    public function setUp()
     {
-        parent::setUpBeforeClass();
-        $genPath = Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir');
-        if ($genPath != ""  && !is_dir($genPath)) {
-            mkdir($genPath);
-        }
+        parent::setUp();
+        $this->tmpDir = Directory::temporary('ut_', true);
     }
 
-    static public function tearDownAfterClass()
+    public function tearDown()
     {
-        $genPath = Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir');
-        if ($genPath != "" && is_dir($genPath)) {
-            Directory::delete($genPath, true);
+        if ($this->tmpDir != '' && is_dir($this->tmpDir)) {
+           Directory::delete($this->tmpDir, true);
         }
-        parent::tearDownAfterClass();
+        parent::tearDown();
     }
 
-    public function testExecute()
+    public function testGenerate()
     {
-        $eventParams = new GenerateEngineEvent(1);
-        GenerateEngine::execute($eventParams);
-        $genPath = Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir');
-        $this->assertFileExists($genPath . "/1/centengine.cfg");
-        $this->assertFileExists($genPath . "/1/centengine-testing.cfg");
+        $fileList = array();
+        $pollerId = 1;
+        UsergroupRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'contactgroups.cfg');
+        $this->assertEquals(
+            array('cfg_dir' => array(
+                $this->tmpDir . '/1/'
+            )), $fileList
+        );
+        $content = file_get_contents($this->tmpDir . '/1/contactgroups.cfg');
+        /* Remove line with the generate date */
+        $lines = split("\n", $content);
+        $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
+        $content = join("\n", $lines);
+        $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/usergroup1.cfg');
+        $this->assertEquals($resultContent, $content);
     }
 }

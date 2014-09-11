@@ -33,14 +33,16 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Commands;
+namespace Centreon\Commands\Module;
+
+use \Centreon\Internal\Module\Informations;
 
 /**
- * Description of ModuleCommand
+ * Description of ManageCommand
  *
  * @author lionel
  */
-class ModuleCommand extends \Centreon\Internal\Command\AbstractCommand
+class ManageCommand extends \Centreon\Internal\Command\AbstractCommand
 {
     /**
      * 
@@ -84,7 +86,7 @@ class ModuleCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function installAction($moduleName)
     {
-        $moduleInstaller = $this->getModuleInstaller($moduleName);
+        $moduleInstaller = Informations::getModuleInstaller($moduleName);
         $moduleInstaller->install();
     }
     
@@ -94,11 +96,11 @@ class ModuleCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function reinstallAction($moduleName)
     {
-        $moduleId = \Centreon\Internal\Module\Informations::getModuleIdByName($moduleName);
-        $moduleInstaller = $this->getModuleInstaller($moduleName, $moduleId);
+        $moduleId = Informations::getModuleIdByName($moduleName);
+        $moduleInstaller = Informations::getModuleInstaller($moduleName, $moduleId);
         $moduleInstaller->remove();
         unset($moduleInstaller);
-        $moduleInstaller = $this->getModuleInstaller($moduleName);
+        $moduleInstaller = Informations::getModuleInstaller($moduleName);
         $moduleInstaller->install();
     }
     
@@ -117,42 +119,9 @@ class ModuleCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function removeAction($moduleName)
     {
-        $moduleInstaller = $this->getModuleInstaller($moduleName);
+        $moduleInstaller = Informations::getModuleInstaller($moduleName);
         $moduleInstaller->remove();
     }
     
-    /**
-     * 
-     * @param type $moduleName
-     * @return \Centreon\Commands\classCall
-     * @throws \Exception
-     */
-    private function getModuleInstaller($moduleName, $moduleId = null)
-    {
-        $config = $this->di->get('config');
-        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
-        
-        $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $moduleName)));
-        
-        $moduleDirectory = $centreonPath
-            . '/modules/'
-            . $commonName
-            . 'Module/';
-        
-        if (!file_exists(realpath($moduleDirectory . 'install/config.json'))) {
-            throw new \Exception("The module is not valid because of a missing configuration file");
-        }
-        $moduleInfo = json_decode(file_get_contents($moduleDirectory . 'install/config.json'), true);
-        
-        // Launched Install
-        $classCall = '\\'.$commonName.'\\Install\\Installer';
-        
-        if (isset($moduleId)) {
-            $moduleInfo['id'] = $moduleId;
-        }
-        
-        $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);
-        
-        return $moduleInstaller;
-    }
+    
 }
