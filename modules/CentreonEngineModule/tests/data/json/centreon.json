@@ -8,5 +8,6 @@
   "cfg_contactgroups",
   "cfg_commands",
   "cfg_connectors",
-  "cfg_hostgroups"
+  "cfg_hostgroups",
+  "cfg_hosts"
 ]
