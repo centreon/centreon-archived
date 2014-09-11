@@ -33,14 +33,14 @@
  */
 
 
-namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
+namespace Test\CentreonEngine\Repository;
 
 use \Test\Centreon\DbTestCase;
 use \Centreon\Internal\Di;
 use \Centreon\Internal\Utils\Filesystem\Directory;
 use \CentreonEngine\Repository\UserRepository;
 
-class GenerateEngineTest extends DbTestCase
+class UserRepositoryTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
     protected $tmpDir;
