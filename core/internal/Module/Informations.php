@@ -37,6 +37,7 @@
 namespace Centreon\Internal\Module;
 
 use \Centreon\Internal\Di;
+use \Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
  * Description of ModuleInformations
@@ -189,15 +190,55 @@ class Informations
     
     /**
      * 
-     * @param type $moduleName
-     * @return type
+     * @param string $moduleName
+     * @return string
      */
     public static function getModuleCommonName($moduleName)
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $moduleName)));
     }
+    
+    /**
+     * 
+     * @param string $canonicalName
+     * @param array $result
+     */
+    public static function isCanonicalNameValid($canonicalName, &$result)
+    {
+        $canonicalNameNotOk = true;
+        $error = "";
+        if (!CamelCaseTransformation::isCamelCase($canonicalName)) {
+            $canonicalNameNotOk = false;
+            $error = "The given canonical name is not in CamelCase";
+        } elseif (ucwords(substr($canonicalName, -6)) === "Module") {
+            $canonicalNameNotOk = false;
+            $error = "The given canonical name contains 'Module' at the end";
+        } elseif (self::isModuleCanonicalExists($canonicalName)) {
+            $canonicalNameNotOk = false;
+            $error = "A module with the same canonical name already exist in your centreon";
+        }
+        
+        $result['success'] = $canonicalNameNotOk;
+        $result['message'] = $error;
+    }
+    
+    /**
+     * 
+     * @param string $canonicalName
+     * @return boolean
+     */
+    public static function isModuleCanonicalExists($canonicalName)
+    {
+        $moduleExists = false;
+        $config =  Di::getDefault()->get('config');
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        if (file_exists($centreonPath . '/modules/' . $canonicalName .'Module')) {
+            $moduleExists = true;
+        }
+        return $moduleExists;
+    }
 
-        /**
+    /**
      * Set menu entry
      * Inserts into database if short_name does not exist, otherwise it just updates entry
      *

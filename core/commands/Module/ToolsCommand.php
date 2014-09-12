@@ -39,6 +39,7 @@ namespace Centreon\Commands\Module;
 use \Centreon\Internal\Utils\String\CamelCaseTransformation;
 use \Centreon\Internal\Module\Generator;
 use \Centreon\Internal\Module\Informations;
+use \Centreon\Internal\Utils\CommandLine\InputOutput;
 
 /**
  * Description of Generate
@@ -47,52 +48,58 @@ use \Centreon\Internal\Module\Informations;
  */
 class ToolsCommand extends \Centreon\Internal\Command\AbstractCommand
 {
+    /**
+     * 
+     */
     public function generateAction()
     {
-        // Set Module Name
-        echo _("Type the module name here => ");
-        $userAnswer = trim(fgets(STDIN));
-        $moduleCanonicalName = CamelCaseTransformation::CustomToCamelCase($userAnswer, " ");
+        $moduleCanonicalName = InputOutput::prompt(
+            _("Type the module canonical name here (in CamelCase, it must not contains Module at the ends)"),
+            function($params, &$result) {
+                call_user_func_array(
+                    array('\Centreon\Internal\Module\Informations', 'isCanonicalNameValid'),
+                    array($params, &$result)
+                );
+            }
+        );
+        
+        // Display Name and short name
+        $moduleDisplayName = CamelCaseTransformation::CamelCaseToCustom($moduleCanonicalName, " ");
         $moduleShortname = strtolower(CamelCaseTransformation::CamelCaseToCustom($moduleCanonicalName, "-"));
         $moduleGenerator = new Generator($moduleCanonicalName);
         $moduleGenerator->setModuleShortName($moduleShortname);
-        $moduleGenerator->setModuleDisplayName($userAnswer);
+        $moduleGenerator->setModuleDisplayName($moduleDisplayName);
 
-        // Set Module ShortName
-        echo _(
-            "Type the module shortname here (seperate by -) ["
-            . $moduleShortname
-            ."] => ");
-        unset($userAnswer);
-        $userAnswer = trim(fgets(STDIN));
+        // Get Module ShortName set by user
+        $userAnswer = InputOutput::prompt(
+            _("Type the module shortname here (seperate by -) [" . $moduleShortname ."]")
+        );
         if (!empty($userAnswer)) {
             $moduleShortname = $userAnswer;
         }
         
         // Type User Name
-        echo _("Type your name here => ");
-        unset($userAnswer);
-        $moduleAuthor = trim(fgets(STDIN));
+        $moduleAuthor = InputOutput::prompt(
+            _("Type your name here")
+        );
         $moduleGenerator->setModuleAuthor($moduleAuthor);
         
         // Ask For generating Directory Structure
-        echo _("Generating module full structure... ");
+        InputOutput::display(_("Generating module full structure... "), false);
         $moduleGenerator->generateFileStructure();
         $moduleGenerator->generateConfigFile();
         $moduleGenerator->createSampleInstaller();
-        echo _("Done\n");
+        InputOutput::display(_("Done\n"), true, "bgreen");
         
         // Ask For sample Controller/View
-        echo _("Generate sample controller/view (yes/no)? [yes] ");
-        $generateController = strtolower(trim(fgets(STDIN)));
+        $generateController = InputOutput::prompt(_("Generate sample controller/view (yes/no)? [yes]"));
         if (empty($generateController) || $generateController == "yes" || $generateController == "y") {
             $moduleGenerator->createSampleController();
             $moduleGenerator->createSampleView();
         }
         
         // Ask to install the module
-        echo _("Install the module(yes/no)? [no] ");
-        $installModule = strtolower(trim(fgets(STDIN)));
+        $installModule = InputOutput::prompt(_("Install the module(yes/no)? [no] "));
         if (!empty($installModule) && ($installModule == "yes" || $installModule == "y")) {
             $moduleInstaller = Informations::getModuleInstaller($moduleShortname);
             $moduleInstaller->install();

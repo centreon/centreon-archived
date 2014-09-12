@@ -34,53 +34,66 @@
  * 
  */
 
-namespace Centreon\Internal\Utils\String;
+namespace Centreon\Internal\Utils\CommandLine;
+
+use Centreon\Internal\Utils\CommandLine\Colorize;
 
 /**
- * Description of CamelCaseToCustom
+ * Description of InputOutput
  *
  * @author lionel
  */
-class CamelCaseTransformation
+class InputOutput
 {
-    const __REGEX__ = '/((?:^|[A-Z])[a-z]+)/';
-    
     /**
      * 
-     * @param string $string
-     * @param string $separator
-     * @return string
+     * @param string $message
+     * @param type $conditions
+     * @return type
      */
-    public static function CamelCaseToCustom($string, $separator = "")
+    public static function prompt($message = "", $conditions = null)
     {
-        $matches = array();
-        preg_match_all(self::__REGEX__, $string, $matches);
-        return implode($separator, $matches[0]);
-    }
-    
-    /**
-     * 
-     * @param string $string
-     * @param string $separator
-     * @return string
-     */
-    public static function CustomToCamelCase($string, $separator = "")
-    {
-        $stringExploded = ucwords(implode(' ', explode($separator, $string)));
-        return str_replace(' ', '', $stringExploded);
-    }
-    
-    /**
-     * 
-     * @param string $string
-     * @return boolean
-     */
-    public static function isCamelCase($string)
-    {
-        $isCamelCase = false;
-        if (preg_match(self::__REGEX__, $string) === 1) {
-            $isCamelCase = true;
+        $returnNotOk = true;
+        
+        $message = Colorize::colorizeText($message, "blue");
+        
+        $promptMessage = $message;
+        while ($returnNotOk) {
+            echo $promptMessage . " => ";
+            $userAnswer = trim(fgets(STDIN));
+
+            if (isset($conditions)) {
+                $conditions($userAnswer, $result);
+                if ($result['success']) {
+                    $returnNotOk = false;
+                } else {
+                    $promptMessage = Colorize::colorizeText($result['message'], "red") . "\n" . $message;
+                }
+            } else {
+                $returnNotOk = false;
+            }
         }
-        return $isCamelCase;
+        return $userAnswer;
+    }
+    
+    /**
+     * 
+     * @param string $message
+     * @param boolean $withEndOfLine
+     * @param string $color
+     */
+    public static function display($message, $withEndOfLine = true, $color = null)
+    {
+        $endOfLine = "";
+        
+        if (isset($color)) {
+            $message = Colorize::colorizeText($message, $color);
+        }
+        
+        if ($withEndOfLine) {
+            $endOfLine .= "\n";
+        }
+        
+        echo $message . $endOfLine;
     }
 }

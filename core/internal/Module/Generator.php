@@ -36,7 +36,7 @@
 namespace Centreon\Internal\Module;
 
 use \Centreon\Internal\Di;
-use \Centreon\Internal\Informations;
+use \Centreon\Internal\Informations as CentreonInformations;
 
 /**
  * Description of Generate
@@ -161,11 +161,11 @@ class Generator
             'isdisableable' => 1,
             'url' => "",
             'description' => $this->moduleDisplayName,
-            'core version' => Informations::getCentreonVersion(),
+            'core version' => CentreonInformations::getCentreonVersion(),
             'dependencies' => array(
                 array(
                     'name' => 'centreon-administration',
-                    'version' => Informations::getCentreonVersion()
+                    'version' => CentreonInformations::getCentreonVersion()
                 )
             ),
             'optionnal dependencies' => array(),
