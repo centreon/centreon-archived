@@ -37,7 +37,7 @@ namespace CentreonEngine\Repository;
 
 use \Centreon\Internal\Di;
 use \CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
-use \CentreonConfiguration\Repository\TimePeriodRepository;
+use \CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigurationRepository;
 use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
 use \CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
 
@@ -124,7 +124,7 @@ class ServiceRepository extends ServicetemplateRepository
                             $args = "";
                         }
                         if ($key == 'check_period' || $key == 'notification_period') {
-                            $value = TimePeriodRepository::getPeriodName($value);
+                            $value = TimePeriodConfigurationRepository::getPeriodName($value);
                         }
                         if ($key == "template_model_stm_id") {
                             $key = "use";
