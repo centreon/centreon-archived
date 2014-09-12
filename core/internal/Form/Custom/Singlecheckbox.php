@@ -32,47 +32,44 @@
  * For more information : contact@centreon.com
  *
  */
-
-namespace CentreonEngine\Repository;
-
-use \Centreon\Internal\Di;
+namespace Centreon\Internal\Form\Custom;
 
 /**
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
+ * Html Checkobox element
+ * Checkbox with no label
+ * 
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @package Centreon
+ * @subpackage Core
  */
-class ConfigGenerateResourcesRepository
+class Singlecheckbox extends Customobject
 {
-    /** 
-     * Generate Resources.cfg
-     * @param  
-     * @return value
+    /**
+     * Return the HTML ouput of the checkbox field
+     * 
+     * @param array $element
+     * @return array
      */
-    public function generate(& $filesList, $poller_id, $path, $filename)
+    public static function renderHtmlInput(array $element)
     {
-        $di = Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        /* Init Content Array */
-        $content = array();
+        (isset($element['html']) ? $value = $element['html'] :  $value = '');
         
-        /* Get information into the database. */
-        $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resources r, cfg_resources_instances_relations rr 
-                        WHERE r.resource_id = rr.resource_id 
-                                AND r.resource_activate = '1' 
-                                AND rr.instance_id = $poller_id 
-                  ORDER BY resource_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $content[$row["resource_name"]] = $row["resource_line"];
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
         }
-
-        /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
+        
+        $htmlSelected = '';
+        if ($value) {
+            $htmlSelected = 'checked=checked';
+        }
+        $inputHtml = '<label class="label-controller" for="'. $element['id'] . $i . '">&nbsp;' .
+                    '<input id="' . $element['id'] . $i . '" ' .
+                    'type="checkbox" name="' . $element['name'] . '" ' .
+                    'value=1 ' . $htmlSelected . ' />' . $key .
+                    '</label>&nbsp;&nbsp;';
+        return array(
+            'html' => $inputHtml,
+            'js' => ''
+        );
     }
 }

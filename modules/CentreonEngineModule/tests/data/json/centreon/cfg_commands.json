@@ -1,0 +1,16 @@
+[
+  {
+    "command_id": 1,
+    "command_name": "Check command 1",
+    "command_line": "$USER1$/check_command1 -w $ARG1$",
+    "command_type": "2",
+    "organization_id": 1
+  },
+  {
+    "command_id": 2,
+    "command_name": "Notif command 1",
+    "command_line": "$USER1$/check_notif1 -e $ARG1$",
+    "command_type": "1",
+    "organization_id": 1
+  }
+]

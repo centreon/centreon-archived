@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+  <form name="engine_form">
+	<route>/engine/update</route>
+	<redirect>0</redirect>
+	<redirect_route></redirect_route>
+	<section name="Engine">
+	  <block name="General information">
+		<field name="accept_passive_host_checks" label="Accept passive host checks" default_value="1" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="accept_passive_service_checks" label="Accept passive service checks" default_value="1" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="check_host_freshness" label="Check host freshness" default_value="0" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="check_service_freshness" label="Check service freshness" default_value="1" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="debug_file" label="Debug file" default_value="" advanced="1" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="debug_level" label="Debug level" default_value="0" advanced="1" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="debug_verbosity" label="Debug file" default_value="" advanced="1" type="radio" parent_field="" mandatory="0">
+		  <attributes>
+			<choices>
+			  <Basic>0</Basic>
+			  <Detailed>1</Detailed>
+			  <HighlyDetailed>2</HighlyDetailed>
+			</choices>
+		  </attributes>
+		  <help></help>
+		</field>
+		<field name="enable_event_handlers" label="Enable event handlers" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="enable_failure_prediction" label="Enable failure prediction" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="enable_flap_detection" label="Enable flap detection" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="enable_notifications" label="Enable notifications" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+        </field>
+		<field name="enable_predictive_host_dependency_checks" label="Enable predictive host dependency checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+        </field>
+		<field name="enable_predictive_service_dependency_checks" label="Enable predictive service dependency checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="event_broker_options" label="Event broker options" default_value="-1" advanced="0" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="event_handler_timeout" label="Event handler timeout" default_value="30" advanced="0" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="execute_host_checks" label="Execute host checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+        </field>
+		<field name="execute_service_checks" label="Execute service checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="global_host_event_handler" label="Global host event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+		  <attributes>
+			<object_type>object</object_type>
+		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+			<listValuesRoute>/engine/[i:id]/globalHostEventHandler</listValuesRoute>
+		    <multiple>false</multiple>
+		  </attributes>
+		  <help></help>
+		</field>
+		<field name="global_service_event_handler" label="Global service event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
+		  <attributes>
+			<object_type>object</object_type>
+		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+			<listValuesRoute>/engine/[i:id]/globalServiceEventHandler</listValuesRoute>
+		    <multiple>false</multiple>
+		  </attributes>
+		  <help></help>
+		</field>
+		<field name="high_host_flap_threshold" label="High host flap threshold" default_value="30" advanced="0" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="high_service_flap_threshold" label="High service flap threshold" default_value="30" advanced="0" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="host_check_timeout" label="Host check timeout" default_value="30" advanced="0" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+		<field name="host_freshness_check_interval" label="Host check timeout" default_value="30" advanced="0" type="text" parent_field="" mandatory="0">
+		  <help></help>
+		</field>
+      </block>
+    </section>
+  </form>
+</forms>

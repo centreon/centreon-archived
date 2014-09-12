@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "name": "Perl",
+    "description": "Connector perl",
+    "command_line": "$USER1$/connector_perl",
+    "created": 0,
+    "modified": 0,
+    "organization_id": 1
+  }
+]

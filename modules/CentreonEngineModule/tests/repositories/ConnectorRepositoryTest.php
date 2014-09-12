@@ -30,49 +30,51 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
  */
 
-namespace CentreonEngine\Repository;
 
+namespace Test\CentreonEngine\Repository;
+
+use \Test\Centreon\DbTestCase;
 use \Centreon\Internal\Di;
+use \Centreon\Internal\Utils\Filesystem\Directory;
+use \CentreonEngine\Repository\ConnectorRepository;
 
-/**
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-class ConfigGenerateResourcesRepository
+class ConnectorRepositoryTest extends DbTestCase
 {
-    /** 
-     * Generate Resources.cfg
-     * @param  
-     * @return value
-     */
-    public function generate(& $filesList, $poller_id, $path, $filename)
+    protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
+    protected $tmpDir;
+
+    public function setUp()
     {
-        $di = Di::getDefault();
+        parent::setUp();
+        $this->tmpDir = Directory::temporary('ut_', true);
+    }
 
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resources r, cfg_resources_instances_relations rr 
-                        WHERE r.resource_id = rr.resource_id 
-                                AND r.resource_activate = '1' 
-                                AND rr.instance_id = $poller_id 
-                  ORDER BY resource_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $content[$row["resource_name"]] = $row["resource_line"];
+    public function tearDown()
+    {
+        if ($this->tmpDir != '' && is_dir($this->tmpDir)) {
+            Directory::delete($this->tmpDir, true);
         }
+        parent::tearDown();
+    }
 
-        /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
+    public function testGenerate()
+    {
+        $fileList = array();
+        $pollerId = 1;
+        ConnectorRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'connectors.cfg');
+        $this->assertEquals(
+            array('cfg_file' => array(
+                $this->tmpDir . '/1/connectors.cfg'
+            )), $fileList
+        );
+        $content = file_get_contents($this->tmpDir . '/1/connectors.cfg');
+        /* Remove line with the generate date */
+        $lines = split("\n", $content);
+        $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
+        $content = join("\n", $lines);
+        $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/connector1.cfg');
+        $this->assertEquals($resultContent, $content);
     }
 }

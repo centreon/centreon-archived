@@ -30,49 +30,57 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
  */
 
-namespace CentreonEngine\Repository;
 
+namespace Test\CentreonEngine\Repository;
+
+use \Test\Centreon\DbTestCase;
 use \Centreon\Internal\Di;
+use \Centreon\Internal\Utils\Filesystem\Directory;
+use \CentreonEngine\Repository\ServiceRepository;
 
-/**
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-class ConfigGenerateResourcesRepository
+class ServiceRepositoryTest extends DbTestCase
 {
-    /** 
-     * Generate Resources.cfg
-     * @param  
-     * @return value
-     */
-    public function generate(& $filesList, $poller_id, $path, $filename)
+    protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
+    protected $tmpDir;
+
+    public function testGenerate()
     {
-        $di = Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resources r, cfg_resources_instances_relations rr 
-                        WHERE r.resource_id = rr.resource_id 
-                                AND r.resource_activate = '1' 
-                                AND rr.instance_id = $poller_id 
-                  ORDER BY resource_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $content[$row["resource_name"]] = $row["resource_line"];
-        }
-
-        /* Write Check-Command configuration file */
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
+        $resultContent = array(
+            array(
+                "type" => "service",
+                "content" => array(
+                    "_SERVICE_ID" => "2",
+                    "host_name" => "host1",
+                    "service_description" => "service1",
+                    "alias" => "Service 1",
+                    "command_command_id_arg" => "90",
+                    "check_command" => "Check command 190",
+                    "check_period" => "all",
+                    "display_name" => "Service 1",
+                    "check_interval" => "10",
+                    "retry_interval" => "10",
+                    "initial_state" => "u"
+                )
+            )
+        );
+        $content = ServiceRepository::generate(2);
+        $this->assertEquals($resultContent, $content);
+        $resultContent = array(
+            array(
+                "type" => "service",
+                "content" => array(
+                    "_SERVICE_ID" => "3",
+                    "host_name" => "host2",
+                    "service_description" => "service2",
+                    "display_name" => "Service 2",
+                    "alias" => "Service 2",
+                    "use" => "servicetemplate1"
+                )
+            )
+        );
+        $content = ServiceRepository::generate(3);
+        $this->assertEquals($resultContent, $content);
     }
 }

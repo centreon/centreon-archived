@@ -5,5 +5,14 @@
   "cfg_engine",
   "cfg_timeperiods",
   "cfg_contacts",
-  "cfg_contactgroups"
+  "cfg_contactgroups",
+  "cfg_commands",
+  "cfg_connectors",
+  "cfg_hostgroups",
+  "cfg_hosts",
+  "cfg_servicegroups",
+  "cfg_services",
+  "cfg_hosts_services_relations",
+  "cfg_resources",
+  "cfg_resources_instances_relations"
 ]

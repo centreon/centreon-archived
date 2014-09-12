@@ -1,0 +1,9 @@
+[
+  {
+    "hg_id": 1,
+    "hg_name": "Hostgroup 1",
+    "hg_alias": "hostgroup1",
+    "hg_notes_url": "http://wiki/hg1",
+    "organization_id": 1
+  }
+]

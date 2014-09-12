@@ -1,0 +1,45 @@
+[
+  {
+    "host_id": 1,
+    "command_command_id": 1,
+    "command_command_id_arg1": "90",
+    "timeperiod_tp_id": 1,
+    "timeperiod_tp_id2": 1,
+    "host_name": "host_template1",
+    "host_alias": "Host Template 1",
+    "display_name": "Host Template 1",
+    "host_check_interval": 5,
+    "host_retry_check_interval": 5,
+    "host_active_checks_enabled": 1,
+    "host_passive_checks_enabled": 1,
+    "initial_state": "u",
+    "host_register": 0,
+    "organization_id": 1
+  },
+  {
+    "host_id": 2,
+    "command_command_id": 1,
+    "command_command_id_arg1": "90",
+    "timeperiod_tp_id": 1,
+    "timeperiod_tp_id2": 1,
+    "host_name": "host1",
+    "host_alias": "Host 1",
+    "display_name": "Host 1",
+    "host_check_interval": 5,
+    "host_retry_check_interval": 5,
+    "host_active_checks_enabled": 1,
+    "host_passive_checks_enabled": 1,
+    "initial_state": "d",
+    "host_register": 1,
+    "organization_id": 1
+  },
+  {
+    "host_id": 3,
+    "host_template_model_htm_id": 1,
+    "host_name": "host2",
+    "host_alias": "Host 2",
+    "display_name": "Host 2",
+    "host_register": 1,
+    "organization_id": 1
+  }
+]
