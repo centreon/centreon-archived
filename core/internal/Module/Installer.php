@@ -39,16 +39,31 @@ namespace Centreon\Internal\Module;
 use \Centreon\Internal\Utils\CommandLine\Colorize;
 
 /**
- * Description of AbstractInstaller
+ * Module Abstract Install
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 abstract class Installer
 {
+    /**
+     *
+     * @var array 
+     */
     protected $moduleInfo;
     
+    /**
+     *
+     * @var type 
+     */
     protected $moduleDirectory;
     
+    /**
+     *
+     * @var int 
+     */
     protected $moduleId;
 
 
@@ -63,6 +78,9 @@ abstract class Installer
         $this->moduleDirectory = $moduleDirectory;
     }
     
+    /**
+     * 
+     */
     abstract public function customPreInstall();
     
     /**
@@ -132,6 +150,9 @@ abstract class Installer
         }
     }
     
+    /**
+     * 
+     */
     public function installHooks()
     {
         $hooksFile = $this->moduleDirectory . '/install/hooks.json';
@@ -255,9 +276,7 @@ abstract class Installer
     }
     
     /**
-     * Unregister hook
-     *
-     * @param string $blockName
+     * 
      */
     public static function removeHook()
     {

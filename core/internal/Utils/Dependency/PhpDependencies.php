@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,8 +35,24 @@
 
 namespace Centreon\Internal\Utils\Dependency;
 
+/**
+ * Check for PHP Dependencies
+ *
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
+ */
 class PhpDependencies
 {
+    /**
+     * 
+     * @param array $dependencies
+     * @param boolean $strict
+     * @param boolean $fullScan
+     * @return array
+     * @throws Exception
+     */
     public static function checkDependencies($dependencies = array(), $strict = true, $fullScan = true)
     {
         $status = true;

@@ -37,12 +37,18 @@
 namespace Centreon\Internal\Utils\String;
 
 /**
- * Description of CamelCaseToCustom
+ * Utils for CamelCase strings
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 class CamelCaseTransformation
 {
+    /**
+     * 
+     */
     const __REGEX__ = '/((?:^|[A-Z])[a-z]+)/';
     
     /**

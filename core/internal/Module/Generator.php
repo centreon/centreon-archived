@@ -39,9 +39,12 @@ use \Centreon\Internal\Di;
 use \Centreon\Internal\Informations as CentreonInformations;
 
 /**
- * Description of Generate
+ * Module Generator
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 class Generator
 {
@@ -98,6 +101,14 @@ class Generator
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
         $this->licensePath = $centreonPath . '/infos/header.txt';
         $this->moduleFolderPath = $centreonPath . '/modules/' . $moduleCanonicalName . 'Module';
+        $this->defineModuleFolderStructure();
+    }
+    
+    /**
+     * 
+     */
+    public function defineModuleFolderStructure()
+    {
         $this->moduleFolderStructure= array(
             'api' => $this->moduleFolderPath . '/api',
             'apiInternal' => $this->moduleFolderPath . '/api/internal',
@@ -182,7 +193,7 @@ class Generator
     /**
      * 
      */
-    public function generateFileStructure()
+    public function generateModuleStructure()
     {
         mkdir($this->moduleFolderPath, 0777, true);
         foreach ($this->moduleFolderStructure as $subFolder) {

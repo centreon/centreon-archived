@@ -38,9 +38,12 @@ namespace Centreon\Commands\Module;
 use \Centreon\Internal\Module\Informations;
 
 /**
- * Description of ManageCommand
+ * COmmand Line to manage
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 class ManageCommand extends \Centreon\Internal\Command\AbstractCommand
 {
@@ -122,6 +125,4 @@ class ManageCommand extends \Centreon\Internal\Command\AbstractCommand
         $moduleInstaller = Informations::getModuleInstaller($moduleName);
         $moduleInstaller->remove();
     }
-    
-    
 }

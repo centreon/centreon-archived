@@ -101,7 +101,7 @@ class Datetime
      * Convert timestamp into human readable date time
      *
      * @param int $timestamp
-
+     * @return string
      * @todo handle locales
      */
     public static function format($timestamp)

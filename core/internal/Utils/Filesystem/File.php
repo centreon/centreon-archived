@@ -37,9 +37,12 @@
 namespace Centreon\Internal\Utils\Filesystem;
 
 /**
- * Description of File
+ * Utils for filesystem files
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 class File
 {

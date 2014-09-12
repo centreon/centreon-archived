@@ -36,6 +36,14 @@
 
 namespace Centreon\Internal\Module;
 
+/**
+ * Dependencies resolver for entreon modules
+ *
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
+ */
 class Dependency
 {
     /**
@@ -64,6 +72,7 @@ class Dependency
     
     /**
      * 
+     * @param array $modules
      */
     public function __construct($modules)
     {
@@ -77,7 +86,7 @@ class Dependency
     
     /**
      * 
-     * @param type $modules
+     * @return array
      */
     public function resolve()
     {

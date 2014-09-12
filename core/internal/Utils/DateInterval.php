@@ -37,8 +37,8 @@ namespace Centreon\Internal\Utils;
  * Class for simulate DateInterval and fix bug https://bugs.php.net/bug.php?id=45545
  *
  * @authors Maximilien Bersoult
- * @package CentreonRealtime
- * @subpackage Controllers
+ * @package Centreon
+ * @subpackage Core
  */
 class DateInterval
 {

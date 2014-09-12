@@ -36,18 +36,18 @@
 namespace Centreon\Internal\Utils;
 
 /**
- * 
+ * Utils for Array in Centreon
  *
  * @authors Lionel Assepo
- * @package Core
- * @subpackage Internals
+ * @package Centreon
+ * @subpackage Core
  */
 class CentreonArray
 {
     /**
     * 
     * @param array $array
-    * @return type
+    * @return int
     */
    public static function arrayDepth(array $array)
    {
@@ -72,7 +72,8 @@ class CentreonArray
     * @param array $array
     * @param sting/integer $position
     * @param array $values
-    * @throws Exception
+    * @return array
+    * @throws \Exception
     */
    public static function insertAfter(array &$array, $position, array $values)
    {

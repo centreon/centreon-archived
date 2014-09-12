@@ -37,9 +37,12 @@
 namespace Centreon\Internal\Utils\Dependency;
 
 /**
- * Description of Graph
+ * Graph Dependency class
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 class Graph
 {

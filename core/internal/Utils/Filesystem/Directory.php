@@ -50,7 +50,7 @@ class Directory
     /**
      * @var array List of directory where cannot delete files
      */
-    static private $securityDir = array(
+    private static $securityDir = array(
         '',
         '/etc',
         '/usr',
@@ -66,7 +66,7 @@ class Directory
      * @param boolean $recursive If delete recursive or not
      * @return boolean
      */
-    static public function delete($dirname, $recursive = false)
+    public static function delete($dirname, $recursive = false)
     {
         if (in_array($dirname, self::$securityDir)) {
             return false;
@@ -109,7 +109,7 @@ class Directory
      * @return string The full path of temporary directory
      * @throws \Centreon\Internal\Exception When cannot create the directory
      */
-    static public function temporary($prefix = '', $create = false)
+    public static function temporary($prefix = '', $create = false)
     {
         $dirname = sys_get_temp_dir() . '/' . uniqid($prefix);
         if ($create) {

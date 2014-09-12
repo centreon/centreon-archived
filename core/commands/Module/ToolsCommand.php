@@ -86,7 +86,7 @@ class ToolsCommand extends \Centreon\Internal\Command\AbstractCommand
         
         // Ask For generating Directory Structure
         InputOutput::display(_("Generating module full structure... "), false);
-        $moduleGenerator->generateFileStructure();
+        $moduleGenerator->generateModuleStructure();
         $moduleGenerator->generateConfigFile();
         $moduleGenerator->createSampleInstaller();
         InputOutput::display(_("Done\n"), true, "bgreen");

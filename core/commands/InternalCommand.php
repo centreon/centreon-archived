@@ -35,6 +35,14 @@
  */
 namespace Centreon\Commands;
 
+/**
+ * Command Line for Centreon Internal actions
+ *
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
+ */
 class InternalCommand extends \Centreon\Internal\Command\AbstractCommand
 {
     /**

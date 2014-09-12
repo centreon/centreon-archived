@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -39,9 +38,12 @@ namespace Centreon\Internal\Utils\CommandLine;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 
 /**
- * Description of InputOutput
+ * Utils to Prompt and display in COmmand line
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 class InputOutput
 {

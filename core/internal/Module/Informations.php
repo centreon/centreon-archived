@@ -40,9 +40,12 @@ use \Centreon\Internal\Di;
 use \Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
- * Description of ModuleInformations
+ * Gives informations about modules
  *
- * @author lionel
+ * @author Lionel Assepo
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Core
  */
 class Informations
 {
