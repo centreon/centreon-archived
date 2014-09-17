@@ -902,6 +902,7 @@ if ($valid && $action["action"]["action"]) {
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('isServiceTemplate', 1);
     $tpl->display("formService.ihtml");
     ?>
 <script type="text/javascript">
