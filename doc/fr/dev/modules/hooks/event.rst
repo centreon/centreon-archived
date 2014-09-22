@@ -1,7 +1,7 @@
-Les hooks d'action
+Les "events"
 ------------------
 
-Les hooks d'action permettent d'ajouter des méthodes fonctionnelles au moment de certaines actions.
+Les "events" permettent d'ajouter des méthodes fonctionnelles au moment de certaines actions.
 
 Par exemple, avant/après la sauvegarde d'un objet, au chargement de données ou avant l'exécution d'une requête SQL...
 

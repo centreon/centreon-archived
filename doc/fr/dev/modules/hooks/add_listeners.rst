@@ -1,19 +1,19 @@
 Gestion des hooks
 ~~~~~~~~~~~~~~~~~
 
-Les hooks sont divisés en deux parties, les hooks d'affichage qui permet d'ajouter des informations au moment de l'affichage de l'interface et les hooks d'action qui permet d'ajouter des modifications fonctionnelles au moteurs Centreon.
+Les hooks sont divisés en deux parties, les hooks d'affichage qui permet d'ajouter des informations au moment de l'affichage de l'interface et les events qui permettent d'ajouter des modifications fonctionnelles au moteur Centreon.
 
 Enrgistrement de hooks
 ######################
 
-Les hooks d'action
+Les events
 ^^^^^^^^^^^^^^^^^^
 
-Pour enregistrer une action auprès d'un hook d'action, il faut créer un fichier dans le répertoire *listeners* du module.
+Pour enregistrer une action auprès d'un event, il faut créer un fichier dans le répertoire *listeners* du module.
 
 Voici le format du fichier : listeners\ModuleSource\EventName.php
 
-Ce fichier répondera au hook d'action **ModuleSource.EventName**. Ce fichier contient une classe avec un méthode statique *execute*. Cette méthode prend un paramètre qui est un objet.
+Ce fichier répondera au event **ModuleSource.EventName**. Ce fichier contient une classe avec un méthode statique *execute*. Cette méthode prend un paramètre qui est un objet.
 
 Exemple
 
@@ -31,7 +31,7 @@ Exemple
    }
 
  
-La liste des hooks d'action ce trouve `ici`.
+La liste des events ce trouve `ici`.
 
 Les hooks d'affichage
 ^^^^^^^^^^^^^^^^^^^^^
@@ -67,15 +67,15 @@ Exemple hooks/HookNameInModule.php
         }
    }
 
-La liste des hooks d'action ce trouve `ici`.
+La liste des events ce trouve `ici`.
 
 Mise à disposition d'un nouveau hook
 ####################################
 
-Les hooks d'action
+Les events
 ^^^^^^^^^^^^^^^^^^
 
-Pour mettre à disposition un hook d'action, il faut effectuer un appel avec son nom.
+Pour mettre à disposition un event, il faut effectuer un appel avec son nom.
 
 Exemple
 
@@ -107,6 +107,6 @@ Pour effectuer un appel aux actions enregistrées au hook. Il faut ajouter l'app
 
 .. highlight:: jinja2
 
-   <div>{{ 'hookName' container='<ul>[hook]</ul>'}</div>
+   <div>{{ 'hookName' container='<ul>[hook]</ul>' }}</div>
 
 Le paramètre *container* est un chaîne HTML avec un macro **[hook]** qui sera remplacé par le retour du hook.
