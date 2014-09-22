@@ -304,7 +304,6 @@ class Installer
     {
         $fname = $data['field_name'];
         $key = implode(';', array($data['form_name'], $data['section_name'], $data['block_name']));
-	    $productVersion = '';
         if (isset(self::$blocks[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
@@ -323,7 +322,7 @@ class Installer
                 $stmt->bindParam(':field_id', self::$fields[$fname]);
                 $stmt->bindParam(':rank', $data['rank']);
                 $stmt->bindParam(':mandatory', $data['mandatory']);
-	            $stmt->bindParam(':product_version', $productVersion);
+                $stmt->bindParam(':product_version', $version);
                 $stmt->execute();
             }
         }
@@ -580,15 +579,15 @@ class Installer
                     );
                     self::insertField(array_map('strval', $fieldData));
                     $blockFieldData = array(
-                        'form_name' => $form['name'],
-                        'section_name' => $section['name'],
-                        'block_name' => $block['name'],
-                        'field_name' => $field['name'],
-                        'mandatory' => $field['mandatory'],
+                        'form_name' => strval($form['name']),
+                        'section_name' => strval($section['name']),
+                        'block_name' => strval($block['name']),
+                        'field_name' => strval($field['name']),
+                        'mandatory' => strval($field['mandatory']),
                         'rank' => $fieldRank,
                         'versions' => $versions
                     );
-                    self::addFieldToBlock(array_map('strval', $blockFieldData));
+                    self::addFieldToBlock($blockFieldData);
                     $fieldValidators = array(
                         'field_name' => $field['name'],
                         'validators' => $field->validators
