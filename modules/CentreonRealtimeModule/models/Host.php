@@ -41,9 +41,9 @@ namespace CentreonRealtime\Models;
  *
  * @author sylvestre
  */
-class Host extends \Centreon\Models\CentreonStorageBaseModel
+class Host extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "hosts";
+    protected static $table = "rt_hosts";
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "name";
 }
