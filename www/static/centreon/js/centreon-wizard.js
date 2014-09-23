@@ -168,6 +168,10 @@
         retVal = { step: this.currentStep };
       }
       return retVal;
+    },
+
+    reloadSteps: function() {
+      this.numSteps = this.$elem.find( ".steps li" ).length;
     }
   };
 
