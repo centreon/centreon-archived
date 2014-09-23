@@ -127,6 +127,8 @@ class Datatable
     private static $nonDatatableParams = array(
         'cast',
         'searchParam',
+        'source',
+        'searchvalues'
     );
     
     /**
@@ -232,25 +234,22 @@ class Datatable
             $searchable = false;
             
             foreach ($column as $key => $value) {
-                
-                if (in_array($key, self::$nonDatatableParams)) {
-                    continue;
-                }
-                
-                if (is_string($value)) {
-                    $columnHeader .= '"' . $key . '":"' . addslashes($value) . '",';
-                } elseif (is_bool($value)) {
-                    if ($value === true) {
-                        $columnHeader .= '"' . $key . '":true,';
+                if (!in_array($key, self::$nonDatatableParams)) {
+                    if (is_string($value)) {
+                        $columnHeader .= '"' . $key . '":"' . addslashes($value) . '",';
+                    } elseif (is_bool($value)) {
+                        if ($value === true) {
+                            $columnHeader .= '"' . $key . '":true,';
+                        } else {
+                            $columnHeader .= '"' . $key . '":false,';
+                        }
                     } else {
-                        $columnHeader .= '"' . $key . '":false,';
+                        $columnHeader .= '"' . $key . '":' . (string)$value . ',';
                     }
-                } else {
-                    $columnHeader .= '"' . $key . '":' . (string)$value . ',';
-                }
-                
-                if (($key === 'searchable')) {
-                    $searchable = $value;
+
+                    if (($key === 'searchable')) {
+                        $searchable = $value;
+                    }
                 }
             }
             
