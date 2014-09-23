@@ -30,49 +30,23 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
  */
 
-namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Di;
+namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
 
-/**
- * @author Sylvestre Ho <sho@merethis.com>
- * @package CentreonEngine
- * @subpackage Repository
- */
-class EngineRepository
+use \Test\Centreon\DbTestCase;
+use \CentreonEngine\Listeners\CentreonConfiguration\FormSave;
+use \CentreonConfiguration\Events\EngineFormSave;
+
+class FormSaveTest extends DbTestCase
 {
-    /**
-     * Save engine parameters of a node
-     *
-     * @param int $nodeId
-     * @param array $params
-     */
-    public static function save($nodeId, $params)
+    protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
+
+    public function testExecute()
     {
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT engine_server_id FROM cfg_engine WHERE engine_server_id = ?");
-        $stmt->execute(array($nodeId));
-        if (!$stmt->rowCount()) {
-            $stmt = $db->prepare("INSERT INTO cfg_engine (engine_server_id) VALUES (?)");
-            $stmt->execute(array($nodeId));
-        }
-        $sqlParams = array(':engine_server_id' => $nodeId);
-        $updateSql = "";
-        foreach ($params as $k => $v) {
-            $newkey = ':' . $k;
-            $sqlParams[$newkey] = $v;
-            if ($updateSql != "") {
-                $updateSql .= ', ';
-            }
-            $updateSql .= "{$k} = :{$k}";
-        }
-        if ($updateSql) {
-            $sql = "UPDATE cfg_engine SET {$updateSql} WHERE engine_server_id = :engine_server_id";
-            $stmt = $db->prepare($sql);
-            $stmt->execute($sqlParams);
-        }
+        $event = new EngineFormSave(1, array('enable_notifications' => 1));
+        FormSave::execute($event);
+        $this->markTestIncomplete("Must finish the function.");
     }
 }
