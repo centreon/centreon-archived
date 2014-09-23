@@ -265,9 +265,9 @@ class CentreonGraph {
     protected function cleanupDsName($dsname, $reverse = false)
     {
         if ($reverse === true) {
-            $newDsName = str_replace(array("slash_", "bslash_", "pct_"), array("/","\\", "%"), $dsname);
+            $newDsName = str_replace(array("slash_", "bslash_", "pct_", "\\#"), array("/","\\", "%", "#"), $dsname);
         } else {
-            $newDsName = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $dsname);
+            $newDsName = str_replace(array("/","\\", "%", "#"), array("slash_", "bslash_", "pct_", "\\#"), $dsname);
         }
         $newDsName = preg_replace("/[^\w\-_]/", "-", $newDsName);
         return $newDsName;
