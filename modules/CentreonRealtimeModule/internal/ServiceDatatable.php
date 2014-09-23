@@ -66,7 +66,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
         'paging' => true,
     );
     
-    protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonStorageDb';
+    protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
      *
