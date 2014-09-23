@@ -66,7 +66,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
         'paging' => true,
     );
     
-    protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
+    protected static $dataprovider = '\CentreonRealtime\Internal\CentreonStorageDb';
     
     /**
      *
@@ -106,7 +106,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'type' => 'string',
             'visible' => true,
             'source' => array(
-                'table' => 'hosts h',
+                'table' => 'rt_hosts h',
                 'condition' => array(
                     'first' => 'h.host_id',
                     'second' => 's.host_id'

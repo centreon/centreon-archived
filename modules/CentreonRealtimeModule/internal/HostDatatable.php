@@ -59,7 +59,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
         'paging' => true,
     );
     
-    protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
+    protected static $dataprovider = '\CentreonRealtime\Internal\CentreonStorageDb';
     
     /**
      *
