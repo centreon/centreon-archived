@@ -33,20 +33,40 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonEngine\Repository;
 
-use \CentreonEngine\Repository\EngineRepository;
-use \CentreonConfiguration\Events\EngineFormSave;
+use \Centreon\Internal\Di;
 
-class FormSave
+/**
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @package CentreonEngine
+ * @subpackage Repository
+ */
+class EngineRepository
 {
     /**
+     * Save engine parameters of a node
      *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
-     * @todo insert data into table
+     * @param int $nodeId
+     * @param array $params
      */
-    public static function execute(EngineFormSave $event)
+    public static function save($nodeId, $params)
     {
-        EngineRepository::save($event->getParams());
+        $db = Di::getDefault()->get('db_centreon');
+        $db->prepare("DELETE FROM cfg_engine WHERE engine_server_id = ?");
+        $db->execute(array($nodeId));
+        $params['engine_server_id'] = $nodeId;
+        $sqlParams = array();
+        foreach ($params as $k => $v) {
+            $newkey = ':' . $k;
+            $sqlParams[$newkey] = $v;
+        }
+        $sql = "INSERT INTO cfg_engine (";
+        $sql .= implode(',', array_keys($params)); 
+        $sql .= ") VALUES ( ";
+        $sql .= implode(',', array_keys($sqlParams));
+        $sql .= ")";
+        $db->prepare($sql);
+        $db->execute($sqlParams);
     }
 }
