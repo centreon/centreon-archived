@@ -33,19 +33,26 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonConfiguration\Events;
 
-use \CentreonEngine\Repository\EngineRepository;
-use \CentreonConfiguration\Events\EngineFormSave;
-
-class FormSave
+class BrokerFormSave
 {
+    private $params;
+
+    /**
+     * @param array $brokerParams
+     */
+    public function __construct($brokerParams)
+    {
+        $this->params = $brokerParams;
+    }
+
     /**
      *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
+     * @return array
      */
-    public static function execute(EngineFormSave $event)
+    public function getParams()
     {
-        EngineRepository::save($event->getParams());
+        return $this->params;
     }
 }

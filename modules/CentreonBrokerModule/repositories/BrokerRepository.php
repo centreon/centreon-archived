@@ -33,19 +33,25 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonBroker\Repository;
 
-use \CentreonEngine\Repository\EngineRepository;
-use \CentreonConfiguration\Events\EngineFormSave;
+use \Centreon\Internal\Di;
 
-class FormSave
+/**
+ * @author Sylvestre Ho <sho@merethis.com>
+ * @package CentreonEngine
+ * @subpackage Repository
+ */
+class BrokerRepository
 {
     /**
+     * Save broker parameters of a node
      *
-     * @param \CentreonConfiguration\Events\EngineFormSave $event
+     * @param int $nodeId
+     * @param array $params
      */
-    public static function execute(EngineFormSave $event)
+    public static function save($nodeId, $params)
     {
-        EngineRepository::save($event->getParams());
+        $db = Di::getDefault()->get('db_centreon');
     }
 }
