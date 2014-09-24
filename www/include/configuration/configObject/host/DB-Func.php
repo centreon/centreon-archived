@@ -285,7 +285,7 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
             $val = null;
             foreach ($row as $key2=>$value2)	{
                 $key2 == "host_name" ? ($host_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=NULL?(", '".$pearDB->escape($value2)."'"):", NULL") : $val .= ($value2!=NULL?("'".$pearDB->escape($value2)."'"):"NULL");
                 if ($key2 != "host_id")
                     $fields[$key2] = $value2;
                 if (isset($host_name))
