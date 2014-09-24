@@ -566,7 +566,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         
         $requestParam = $this->getParams('named');
         $repository = $this->repository;
-        $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParams['id']);
+        $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParam['id']);
         $router->response()->json($list);
     }
 }
