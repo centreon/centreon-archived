@@ -37,7 +37,8 @@ namespace CentreonConfiguration\Controllers;
 
 use \Centreon\Internal\Di;
 
-use \CentreonConfiguration\Models\Poller;
+use \CentreonConfiguration\Models\Poller as PollerModel,
+    \CentreonConfiguration\Repository\PollerRepository;
 
 class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -84,7 +85,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         
         $requestParams = $this->getParams('get');
         
-        $pollerObj = new Poller();
+        $pollerObj = new PollerModel();
         $filters = array('name' => $requestParams['q'].'%');
         $pollerList = $pollerObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
         
@@ -120,7 +121,35 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     {
         $tpl = Di::getDefault()->get('template');
         $tpl->assign('validateUrl', '/configuration/poller/add');
-        parent::addAction();
+        /* Prepare default information */
+        $form = new \Centreon\Internal\Form("add_poller");
+        $form->add(array(
+            'type' => 'text',
+            'label' => 'Poller name',
+            'name' => 'poller_name',
+            'mandatory' => true
+        ));
+        $form->add(array(
+            'type' => 'text',
+            'label' => 'IP Address',
+            'name' => 'ip_address',
+            'mandatory' => true
+        ));
+        $selectParams = array(
+            'object_type' => 'object',
+            'listValuesRoute' => '/configuration/poller/templates',
+            'defaultValuesRoute' => '?',
+            'multiple' => false
+        );
+        $form->add(array(
+            'type' => 'templatepoller',
+            'label' => 'Poller Template',
+            'name' => 'poller_tmpl',
+            'mandatory' => false,
+            'attributes' => json_encode($selectParams)
+        ));
+        $tpl->assign('form', $form->toSmarty());
+        $tpl->display('file:[CentreonConfigurationModule]addPoller.tpl');
     }
 
     /**
