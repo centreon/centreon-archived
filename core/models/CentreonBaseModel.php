@@ -37,7 +37,8 @@
 
 namespace Centreon\Models;
 
-use Centreon\Internal\Exception;
+use \Centreon\Internal\Exception;
+use \Centreon\Internal\Di;
 
 /**
  * Abstract Centreon Object class
@@ -110,7 +111,7 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     public static function insert($params = array())
     {
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $sql = "INSERT INTO " . static::$table;
         $sqlFields = "";
         $sqlValues = "";
@@ -166,7 +167,7 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     public static function delete($objectId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $sql = "DELETE FROM  " . static::$table . " WHERE ". static::$primaryKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
@@ -215,7 +216,7 @@ abstract class CentreonBaseModel extends CentreonModel
         }
 
         if ($sqlUpdate) {
-            $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+            $db = Di::getDefault()->get(static::$databaseName);
             $sqlParams[] = array('value' => $objectId, 'type' => \PDO::PARAM_INT);
             $sql .= $sqlUpdate . " WHERE " . static::$primaryKey . " =  ?";
             $stmt = $db->prepare($sql);
@@ -239,7 +240,7 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     public static function duplicate($sourceObjectId, $duplicateEntries = 1)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $sourceParams = static::getParameters($sourceObjectId, "*");
         if (false === $sourceParams) {
             throw new Exception(static::OBJ_NOT_EXIST);
@@ -464,7 +465,7 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     public static function isUnique($uniqueFieldvalue, $id = 0, $fieldName=null)
     {
-        $dbconn = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $dbconn = Di::getDefault()->get(static::$databaseName);
         /* Test if the field name is in unique field */
         if (false === is_null($fieldName)) {
             if (is_array(static::$uniqueLabelField) && false === in_array($fieldName, static::$uniqueLabelField)) {
@@ -524,7 +525,7 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     public static function getColumns()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare("SHOW COLUMNS FROM " . static::$table);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);

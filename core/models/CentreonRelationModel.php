@@ -34,10 +34,10 @@
  *
  */
 
-
 namespace Centreon\Models;
 
 use \Centreon\Internal\Exception;
+use \Centreon\Internal\Di;
 
 /**
  * Centreon Object Relation
@@ -99,7 +99,7 @@ abstract class CentreonRelationModel extends CentreonModel
             $sql .= ", " . join(', ', array_fill(0, count($extra), '?'));
         }
         $sql .= ")";
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
         $values = array_values($extra);
         array_unshift($values, $fkey, $skey);
@@ -126,7 +126,7 @@ abstract class CentreonRelationModel extends CentreonModel
             $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
             $args = array($fkey);
         }
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
         $stmt->execute($args);
         if (0 === $stmt->rowCount()) {
