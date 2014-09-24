@@ -285,7 +285,7 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
             $val = null;
             foreach ($row as $key2=>$value2)	{
                 $key2 == "host_name" ? ($host_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=NULL?(", '".$pearDB->escape($value2)."'"):", NULL") : $val .= ($value2!=NULL?("'".$pearDB->escape($value2)."'"):"NULL");
+                $val ? $val .= ($value2!=NULL?(", '".CentreonDB::escape($value2)."'"):", NULL") : $val .= ($value2!=NULL?("'".CentreonDB::escape($value2)."'"):"NULL");
                 if ($key2 != "host_id")
                     $fields[$key2] = $value2;
                 if (isset($host_name))
@@ -768,7 +768,7 @@ function insertHost($ret, $macro_on_demand = NULL)	{
                     $my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
                     $macName = $my_tab[$macInput];
                     $macVal = $my_tab[$macValue];
-                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id['MAX(host_id)'] .")";
+                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". CentreonDB::escape($macVal) ."', ". $host_id['MAX(host_id)'] .")";
                     $DBRESULT = $pearDB->query($rq);
                     $fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
                     $already_stored[strtolower($my_tab[$macInput])] = 1;
