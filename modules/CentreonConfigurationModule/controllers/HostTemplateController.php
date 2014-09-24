@@ -202,7 +202,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAb
             0,
             null,
             "ASC",
-            array('host.host_id' => $requestParam['id']),
+            array('cfg_hosts.host_id' => $requestParam['id']),
             "AND"
         );
         
