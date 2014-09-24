@@ -94,6 +94,7 @@ abstract class CentreonStorageBaseModel
      */
     protected static function setAttributeProps($params, &$not_null_attributes, &$is_int_attribute)
     {
+        $params = (array)$params;
         if (array_search("", $params)) {
             $sql_attr = "SHOW FIELDS FROM " . static::$table;
             $res = static::getResult($sql_attr, array(), "fetchAll");
