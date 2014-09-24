@@ -241,4 +241,17 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $params = $this->getParams();
         $tpl->display('file:[CentreonConfigurationModule]applycfg.tpl');
     }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/poller/templates
+     */
+    public function getPollerTemplatesAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $data = \CentreonConfiguration\Repository\PollerRepository::getPollerTemplates();
+        $router->response()->json($data);
+    }
 }

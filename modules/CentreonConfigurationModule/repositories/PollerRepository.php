@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Repository;
 
+use \Centreon\Internal\Module\Informations;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -106,5 +108,30 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         $resultCalengineServer = $stmtCalengineServer->fetchAll(\PDO::FETCH_ASSOC);
         
         return $resultCalengineServer[0]['nb_poller'];
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public static function getPollerTemplates()
+    {
+        $rawTemplatesList = array();
+        $moduleList = Informations::getModuleList();
+        foreach ($moduleList as $module) {
+            $modulePath = Informations::getModulePath($module);
+            $pollerTemplatesPath = $modulePath . '/pollers/*.json';
+            $rawTemplatesList = array_merge($rawTemplatesList, glob($pollerTemplatesPath));
+        }
+        
+        $templatesList = array();
+        foreach ($rawTemplatesList as $template) {
+            $tplName = basename($template, '.json');
+            if (!in_array($tplName, array_keys($templatesList))) {
+                $templatesList [$tplName] = $template;
+            }
+        }
+        
+        return $templatesList;
     }
 }
