@@ -115,11 +115,11 @@ abstract class CentreonRelationModel extends CentreonModel
      */
     public static function delete($fkey, $skey = null)
     {
-        if (isset($fkey) && isset($skey)) {
+        if (!is_null($fkey) && !is_null($skey)) {
             $sql = "DELETE FROM " . static::$relationTable .
                 " WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
             $args = array($fkey, $skey);
-        } elseif (isset($skey)) {
+        } elseif (!is_null($skey)) {
             $sql = "DELETE FROM " . static::$relationTable . " WHERE ". static::$secondKey . " = ?";
             $args = array($skey);
         } else {
