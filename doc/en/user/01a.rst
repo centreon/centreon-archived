@@ -130,6 +130,7 @@ Select the network card that you want to use and go on tab "IPv4 Settings" or "I
 
 .. image :: /images/guide_utilisateur/anetworkconfig.png
    :align: center
+   :scale: 65%
 
 Click on **Close** and click on **Next** to continue.
 
@@ -155,9 +156,13 @@ Choose the type of server
 
 When the question **Which server type would you like to install ?** appears you can select different options :
 
+
+
 .. image :: /images/guide_utilisateur/aservertoinstall.png
    :align: center
    :scale: 65%
+
+|
 
 *	Central server with database : Install Centreon (web interface and database), monitoring engine and broker
 *	Central server without database : Install Centreon (web interface only), monitoring engine and broker
