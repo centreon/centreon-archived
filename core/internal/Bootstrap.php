@@ -114,7 +114,10 @@ class Bootstrap
                 return new \Centreon\Internal\Db(
                     $config->get('db_centreon', 'dsn'),
                     $config->get('db_centreon', 'username'),
-                    $config->get('db_centreon', 'password')
+                    $config->get('db_centreon', 'password'),
+                    array(
+                        \PDO::MYSQL_ATTR_FOUND_ROWS => true
+                    )
                 );
             }
         );

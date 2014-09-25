@@ -199,7 +199,8 @@ abstract class CentreonBaseModel extends CentreonModel
             if ($sqlUpdate != "") {
                 $sqlUpdate .= ",";
             }
-            $sqlUpdate .= $key . " = ? ";
+            $paramKey = ":{$key}";
+            $sqlUpdate .= $key . " = {$paramKey} ";
             if ($value == "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             } elseif (!is_numeric($value) && isset($is_int_attribute[$key])) {
@@ -212,18 +213,16 @@ abstract class CentreonBaseModel extends CentreonModel
             } else {
                 $type = \PDO::PARAM_STR;
             }
-            $sqlParams[] = array('value' => $value, 'type' => $type);
+            $sqlParams[$paramKey] = array('value' => $value, 'type' => $type);
         }
 
         if ($sqlUpdate) {
             $db = Di::getDefault()->get(static::$databaseName);
-            $sqlParams[] = array('value' => $objectId, 'type' => \PDO::PARAM_INT);
-            $sql .= $sqlUpdate . " WHERE " . static::$primaryKey . " =  ?";
+            $sqlParams[':source_object_id'] = array('value' => $objectId, 'type' => \PDO::PARAM_INT);
+            $sql .= $sqlUpdate . " WHERE " . static::$primaryKey . " =  :source_object_id";
             $stmt = $db->prepare($sql);
-            $i = 1;
-            foreach ($sqlParams as $v) {
-                $stmt->bindValue($i, $v['value'], $v['type']);
-                $i++;
+            foreach ($sqlParams as $k => $v) {
+                $stmt->bindParam($k, $v['value'], $v['type']);
             }
             $stmt->execute();
             if (1 !== $stmt->rowCount()) {
