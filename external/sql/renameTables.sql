@@ -118,7 +118,7 @@ RENAME TABLE hostgroup_relation TO cfg_hostgroups_relations;
 RENAME TABLE informations TO cfg_information;
 -- RENAME TABLE menus TO cfg_menus;
 RENAME TABLE meta_contactgroup_relation TO cfg_meta_contactgroups_relations;
-RENAME TABLE meta_service TO cfgmeta_services;
+RENAME TABLE meta_service TO cfg_meta_services;
 RENAME TABLE meta_service_relation TO cfg_meta_services_relations;
 -- RENAME TABLE module TO cfg_modules;
 -- RENAME TABLE module_hooks TO cfg_modules_hooks;
