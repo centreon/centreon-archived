@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
-    <table name="cfg_acl_group_menu_relations" phpName="AclGroupMenuRelations" idMethod="native">
+    <table name="cfg_acl_groups_menus_relations" phpName="AclGroupMenuRelations" idMethod="native">
         <column name="acl_group_id" phpName="AclGroupId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="acl_menu_id" phpName="AclMenuId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <foreign-key foreignTable="cfg_acl_groups" name="acl_group_menu_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">

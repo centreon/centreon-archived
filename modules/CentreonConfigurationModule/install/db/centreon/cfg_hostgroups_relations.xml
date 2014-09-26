@@ -4,7 +4,7 @@
         <column name="hgr_id" phpName="HgrId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="hostgroup_hg_id" phpName="HostgroupHgId" type="INTEGER" required="false"/>
         <column name="host_host_id" phpName="HostHostId" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="cfg_hostgroups" name="hostgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hostgroups" name="cfg_hostgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="hostgroup_hg_id" foreign="hg_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_hosts" name="hostgroup_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">

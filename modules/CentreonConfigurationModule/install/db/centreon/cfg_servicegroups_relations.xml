@@ -12,7 +12,7 @@
         <foreign-key foreignTable="cfg_hosts" name="servicegroup_relation_ibfk_7" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_host_id" foreign="host_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_hostgroups" name="servicegroup_relation_ibfk_8" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hostgroups" name="cfg_servicegroup_relation_ibfk_8" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="hostgroup_hg_id" foreign="hg_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_services" name="servicegroup_relation_ibfk_9" onDelete="CASCADE" onUpdate="RESTRICT">

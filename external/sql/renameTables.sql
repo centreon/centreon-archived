@@ -1,4 +1,5 @@
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+RENAME TABLE information TO cfg_informations;
 RENAME TABLE acl_actions TO cfg_acl_actions;
 RENAME TABLE acl_actions_rules TO cfg_acl_actions_rules;
 RENAME TABLE acl_group_actions_relations TO cfg_acl_group_actions_relations;

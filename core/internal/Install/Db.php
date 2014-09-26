@@ -51,11 +51,7 @@ class Db
         $di = \Centreon\Internal\Di::getDefault();
         $config = $di->get('config');
         
-        if ($targetDbName == 'centreon_storage') {
-            $targetDb = 'db_storage';
-        } else {
-            $targetDb = 'db_' . $targetDbName;
-        }
+        $targetDb = 'db_centreon';
         $db = $di->get($targetDb);
         
         // Configuration for Propel
@@ -83,16 +79,18 @@ class Db
         
         // Retreive target DB State
         $updatedAppData = new \AppData($platform);
-        self::getDbFromXml($updatedAppData, $targetDbName);
+        self::getDbFromXml($updatedAppData, 'centreon');
         
         // Get diff between current db state and target db state
         $diff = \PropelDatabaseComparator::computeDiff(
             $currentDb,
-            $updatedAppData->getDatabase($targetDbName),
+            $updatedAppData->getDatabase('centreon'),
             false
         );
         $strDiff = $platform->getModifyDatabaseDDL($diff);
+        file_put_contents("/tmp/installSqlLog.sql", $strDiff);
         //$sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
+        //unlink("/tmp/installSqlLog.sql");
         
         // Loading Modules Pre Update Operations
         self::preUpdate();

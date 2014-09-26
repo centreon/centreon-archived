@@ -6,13 +6,13 @@
         <column name="localhost" phpName="Localhost" type="CHAR" sqlType="enum('0','1')" required="false"/>
         <column name="is_default" phpName="IsDefault" type="INTEGER" required="false" defaultValue="0"/>
         <column name="last_restart" phpName="LastRestart" type="INTEGER" required="false"/>
-        <column name="ip_address" phpName="NsIpAddress" type="VARCHAR" size="255" required="false"/>
-        <column name="activate" phpName="NsActivate" type="CHAR" sqlType="enum('1','0')" required="false" defaultValue="1"/>
-        <column name="status" phpName="NsStatus" type="CHAR" sqlType="enum('0','1','2','3','4')" required="false" defaultValue="0"/>
+        <column name="ip_address" phpName="IpAddress" type="VARCHAR" size="255" required="false"/>
+        <column name="activate" phpName="Activate" type="CHAR" sqlType="enum('1','0')" required="false" defaultValue="1"/>
+        <column name="status" phpName="Status" type="CHAR" sqlType="enum('0','1','2','3','4')" required="false" defaultValue="0"/>
         <column name="init_script" phpName="InitScript" type="VARCHAR" size="255" required="false"/>
         <column name="monitoring_engine" phpName="MonitoringEngine" type="VARCHAR" size="20" required="false"/>
         <column name="engine_bin" phpName="engineBin" type="VARCHAR" size="255" required="false"/>
-        <column name="enginetats_bin" phpName="enginetatsBin" type="VARCHAR" size="255" required="false"/>
+        <column name="enginestats_bin" phpName="enginestatsBin" type="VARCHAR" size="255" required="false"/>
         <column name="engine_perfdata" phpName="enginePerfdata" type="VARCHAR" size="255" required="false"/>
         <column name="centreonbroker_cfg_path" phpName="CentreonbrokerCfgPath" type="VARCHAR" size="255" required="false"/>
         <column name="centreonbroker_module_path" phpName="CentreonbrokerModulePath" type="VARCHAR" size="255" required="false"/>

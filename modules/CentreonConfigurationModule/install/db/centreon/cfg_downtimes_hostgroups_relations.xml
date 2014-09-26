@@ -3,7 +3,7 @@
     <table name="cfg_downtimes_hostgroups_relations" phpName="DowntimeHostgroupRelation" idMethod="native">
         <column name="dt_id" phpName="DtId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="hg_hg_id" phpName="HgHgId" type="INTEGER" primaryKey="true" required="true"/>
-        <foreign-key foreignTable="cfg_hostgroups" name="downtime_hostgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hostgroups" name="cfg_downtime_hostgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="hg_hg_id" foreign="hg_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_downtimes" name="downtime_hostgroup_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
