@@ -137,15 +137,15 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         ));
         $selectParams = array(
             'object_type' => 'object',
-            'listValuesRoute' => '/configuration/poller/templates',
-            'defaultValuesRoute' => '?',
+            'defaultValuesRoute' => '/configuration/poller/templates',
+            'listValuesRoute' => '/configuration/poller/[i:id]/template',
             'multiple' => false
         );
         $form->add(array(
             'type' => 'templatepoller',
             'label' => 'Poller Template',
             'name' => 'poller_tmpl',
-            'mandatory' => false,
+            'mandatory' => true,
             'attributes' => json_encode($selectParams)
         ));
         $tpl->assign('form', $form->toSmarty());
@@ -252,6 +252,26 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $di = Di::getDefault();
         $router = $di->get('router');
         $data = \CentreonConfiguration\Repository\PollerRepository::getPollerTemplates();
-        $router->response()->json($data);
+        $returnData = array();
+        foreach ($data as $id => $file) {
+            $returnData[] = array(
+                'id' => $id,
+                'text' => ucfirst($id)
+            );
+        }
+        $router->response()->json($returnData);
+    }
+
+    /**
+     * Get default template for a poller
+     *
+     * @method get
+     * @route /configuration/poller/[i:id]/template
+     */
+    public function getPollerDefaultTemplateAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $router->response()->json(array());
     }
 }
