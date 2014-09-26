@@ -37,6 +37,7 @@
 namespace Centreon\Internal\Install;
 
 use \Centreon\Internal\Utils\CommandLine\Colorize;
+use \Centreon\Internal\Install\Install;
 
 class Migrate extends \Centreon\Internal\Install\AbstractInstall
 {
@@ -48,7 +49,7 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
     {
         $migrationNeeded = false;
         try {
-            if (version_compare(\Centreon\Internal\Informations::getCentreonVersion(), '3.0.0')) {
+            if (version_compare(\Centreon\Internal\Informations::getCentreonVersion(), '3.0.0', '<')) {
                 $migrationNeeded = true;
             }
         } catch (\Exception $e) {
@@ -63,9 +64,13 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
      */
     public static function migrateCentreon()
     {
-        if (!\Centreon\Internal\Install\Migrate::checkForMigration()) {
-            \Centreon\Internal\Install\Install::installCentreon();
+        if (!self::checkForMigration()) {
+            Install::installCentreon();
         } else {
+            $di = \Centreon\Internal\Di::getDefault();
+            $config = $di->get('config');
+            $dbName = $config->get('db_centreon', 'dbname');
+            
             echo Colorize::colorizeMessage("Starting to migrate to Centreon 3.0", "info") . "\n";
             
             echo "Preparing Migration... ";
@@ -73,10 +78,7 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             
             echo "Migrating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-            \Centreon\Internal\Install\Db::update('centreon');
-            echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
-            echo "Migrating " . Colorize::colorizeText('centreon_storage', 'blue', 'black', true) . " database... ";
-            \Centreon\Internal\Install\Db::update('centreon_storage');
+            \Centreon\Internal\Install\Db::update($dbName);
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
 
             $modulesToInstall = self::getCoreModules();
@@ -88,11 +90,11 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
                 $currentModule = $modulesToInstall['modules'][$moduleName];
                 $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
                 echo "Installing ". Colorize::colorizeText($moduleName, 'purple', 'black', true) . " module... ";
-                $moduleInstaller->install();
+                $moduleInstaller->install(false);
                 echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             }
             
-            echo Colorize::colorizeMessage("Centreon 3.0 has been successfully migrated", "success") . "\n";
+            echo Colorize::colorizeMessage("Your Centreon has been successfully migrated to Centreon 3.0", "success") . "\n";
         }
     }
     

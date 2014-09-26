@@ -96,10 +96,10 @@ abstract class Installer
     /**
      * 
      */
-    public function install()
+    public function install($installDefault = true)
     {
         $this->preInstall();
-        $this->installDb();
+        $this->installDb($installDefault);
         $this->customPreInstall();
         $this->installForms();
         $this->installMenu();
@@ -123,12 +123,18 @@ abstract class Installer
     /**
      * @todo After seeing Propel
      */
-    public function installDb()
+    public function installDb($installDefault = true)
     {
+        // Initialize configuration
+        $di = \Centreon\Internal\Di::getDefault();
+        $config = $di->get('config');
+        $dbName = $config->get('db_centreon', 'dbname');
         echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-        \Centreon\Internal\Install\Db::update('centreon');
+        \Centreon\Internal\Install\Db::update($dbName);
         echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
-        \Centreon\Internal\Install\Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
+        if ($installDefault) {
+            \Centreon\Internal\Install\Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
+        }
     }
     
     /**

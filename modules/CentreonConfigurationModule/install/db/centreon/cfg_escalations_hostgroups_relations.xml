@@ -7,7 +7,7 @@
         <foreign-key foreignTable="cfg_escalations" name="escalation_hostgroup_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="escalation_esc_id" foreign="esc_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_hostgroups" name="escalation_hostgroup_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_hostgroups" name="cfg_escalation_hostgroup_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="hostgroup_hg_id" foreign="hg_id"/>
         </foreign-key>
         <index name="escalation_index">

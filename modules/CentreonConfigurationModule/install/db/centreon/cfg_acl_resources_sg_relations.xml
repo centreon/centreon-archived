@@ -4,7 +4,7 @@
         <column name="asgr" phpName="Asgr" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="sg_id" phpName="SgId" type="INTEGER" required="false"/>
         <column name="acl_res_id" phpName="AclResId" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="cfg_acl_resources" name="acl_resources_sg_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_acl_resources" name="cfg_acl_resources_sg_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="acl_res_id" foreign="acl_res_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_servicegroups" name="acl_resources_sg_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
