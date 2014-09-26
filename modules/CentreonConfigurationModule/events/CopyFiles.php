@@ -35,4 +35,4 @@
 
 namespace CentreonConfiguration\Events;
 
-class CopyFiles extends PollerEvent {}
+class CopyFiles extends NodeEvent {}
