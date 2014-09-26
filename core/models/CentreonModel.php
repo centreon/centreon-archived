@@ -34,10 +34,10 @@
  *
  */
 
-
 namespace Centreon\Models;
 
-use Centreon\Internal\Exception;
+use \Centreon\Internal\Exception;
+use \Centreon\Internal\Di;
 
 /**
  * Abtract class for manage models
@@ -155,7 +155,7 @@ abstract class CentreonModel
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+            $db = Di::getDefault()->get(static::$databaseName);
             $sql = $db->limit($sql, $count, $offset);
         }
         return static::getResult($sql, $filterTab, "fetchAll");
@@ -218,7 +218,7 @@ abstract class CentreonModel
      */
     protected static function getResult($sql, $params = array())
     {
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);

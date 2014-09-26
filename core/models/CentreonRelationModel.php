@@ -34,10 +34,10 @@
  *
  */
 
-
 namespace Centreon\Models;
 
 use \Centreon\Internal\Exception;
+use \Centreon\Internal\Di;
 
 /**
  * Centreon Object Relation
@@ -99,7 +99,7 @@ abstract class CentreonRelationModel extends CentreonModel
             $sql .= ", " . join(', ', array_fill(0, count($extra), '?'));
         }
         $sql .= ")";
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
         $values = array_values($extra);
         array_unshift($values, $fkey, $skey);
@@ -115,18 +115,18 @@ abstract class CentreonRelationModel extends CentreonModel
      */
     public static function delete($fkey, $skey = null)
     {
-        if (isset($fkey) && isset($skey)) {
+        if (!is_null($fkey) && !is_null($skey)) {
             $sql = "DELETE FROM " . static::$relationTable .
                 " WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
             $args = array($fkey, $skey);
-        } elseif (isset($skey)) {
+        } elseif (!is_null($skey)) {
             $sql = "DELETE FROM " . static::$relationTable . " WHERE ". static::$secondKey . " = ?";
             $args = array($skey);
         } else {
             $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
             $args = array($fkey);
         }
-        $db = \Centreon\Internal\Di::getDefault()->get(static::$databaseName);
+        $db = Di::getDefault()->get(static::$databaseName);
         $stmt = $db->prepare($sql);
         $stmt->execute($args);
         if (0 === $stmt->rowCount()) {

@@ -237,10 +237,14 @@ abstract class Repository
                 if (!isset($givenParameters[$k])) {
                     continue;
                 }
-                if ($rel::$firstObject == static::$objectClass) {
-                    $rel::delete($id);
-                } else {
-                    $rel::delete(null, $id);
+                try {
+                    if ($rel::$firstObject == static::$objectClass) {
+                        $rel::delete($id);
+                    } else {
+                        $rel::delete(null, $id);
+                    }
+                } catch (Exception $e) {
+                    ; // it's okay if nothing got deleted
                 }
                 $arr = explode(',', ltrim($givenParameters[$k], ','));
                 $db->beginTransaction();
@@ -263,11 +267,14 @@ abstract class Repository
                 $db->commit();
                 unset($givenParameters[$k]);
             } catch (Exception $e) {
-                $updateErrorMessage = $e->getMessage();
+                throw new Exception('Error while updating', 0, $e);
             }
         }
         $columns = $class::getColumns();
         foreach ($givenParameters as $key => $value) {
+            if (is_string($value)) {
+                $givenParameters[$key] = trim($value);
+            }
             if (!in_array($key, $columns)) {
                 unset($givenParameters[$key]);
             }

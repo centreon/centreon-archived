@@ -110,7 +110,7 @@ class CommandRepository
              * Manage connector
              */
             if (isset($row["connector_id"])) {
-                $query = "SELECT `name` FROM `cfg_connectors` WHERE `connector`.`id` = '".$row["connector_id"]."'";
+                $query = "SELECT `name` FROM `cfg_connectors` WHERE `id` = '".$row["connector_id"]."'";
                 $stmt2 = $dbconn->prepare($query);
                 $stmt2->execute();
                 while ($connector = $stmt2->fetch(\PDO::FETCH_ASSOC)) {

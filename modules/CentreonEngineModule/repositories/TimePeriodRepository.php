@@ -71,6 +71,9 @@ class TimePeriodRepository
             $tmp = array("type" => "timeperiod");
             $tmpData = array();
             foreach ($row as $key => $value) {
+                if ($key == 'organization_id') {
+                    continue;
+                }
                 if ($key == 'tp_name') {
                     $key = "timeperiod_name";
                 }
