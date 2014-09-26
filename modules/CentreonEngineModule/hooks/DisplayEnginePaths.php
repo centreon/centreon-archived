@@ -33,58 +33,85 @@
  *
  */
 
-namespace CentreonConfiguration\Events;
+namespace CentreonEngine;
 
-class NodePaths
+use Centreon\Internal\Di;
+
+class DisplayEnginePaths
 {
     /**
-     * Refers to the configuration paths
-     * @var array
-     */
-    private $paths;
-
-    /**
-     * Refers to the node id
-     * @var int
-     */
-    private $nodeId;
-
-    /**
-     * @param int $nodeId | can be null if node hasn't been inserted yet
-     */
-    public function __construct($nodeId = null)
-    {
-        $this->nodeId = $nodeId;
-        $this->paths = array();
-    }
-
-    /**
-     * Get node id
+     * Execute action 
      *
-     * @return mixed
+     * @param array $params
      */
-    public function getNodeId()
+    public static function execute($params)
     {
-        return $this->nodeId;
+        $paths = static::getPathList();
+        if (isset($params['nodeId']) && $params['nodeId']) {
+            $paths = static::getPathValues($params['nodeId'], $paths);
+        }
+
+        return array(
+            'template' => 'displayEnginePaths.tpl',
+            'variables' => array(
+                'paths' => $paths
+            )
+        );
     }
 
     /**
-     * Set paths
-     *
-     * @param array $paths
-     */
-    public function setPaths($paths)
-    {
-        $this->paths = array_merge($this->paths, $paths);
-    }
-
-    /**
-     * Get paths
+     * Get path list
      *
      * @return array
      */
-    public function getPaths()
+    protected static function getPathList()
     {
-        return $this->paths;
+        $paths = array();
+
+        $paths['broker_module_directory'] = array(
+            'label' => _('Broker module directory'),
+            'value' => ''
+        );
+
+        $paths['resource_file'] = array(
+            'label' => _('Resource file'),
+            'value' => ''
+        );
+        
+        $paths['state_retention_file'] = array(
+            'label' => _('State retention file'),
+            'value' => ''
+        );
+
+        $paths['status_file'] = array(
+            'label' => _('Status file'),
+            'value' => ''
+        );
+
+        return $paths;
+    }
+
+    /**
+     * Get path values
+     *
+     * @param int $nodeId
+     * @param array $paths
+     * @return array
+     */
+    protected static function getPathValues($nodeId, $paths)
+    {
+        if (!count($paths)) {
+            return $paths;
+        }
+        $db = Di::getDefault()->get('db_centreon');
+        $columns = implode(', ', array_keys($paths));
+        $sql = "SELECT {$columns} FROM cfg_engine WHERE engine_server_id ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($nodeId));
+        $rows = $stmt->fetchAll();
+        foreach ($rows as $k => $v) {
+            $paths[$k]['value'] = $v;
+        }
+        return $paths;
     }
 }

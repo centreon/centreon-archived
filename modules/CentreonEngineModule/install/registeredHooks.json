@@ -1,0 +1,7 @@
+[
+    {
+        "name": "displayNodePaths",
+        "moduleHook": "displayEnginePaths",
+        "moduleHookDescription": "Display engine paths"
+    }
+]
