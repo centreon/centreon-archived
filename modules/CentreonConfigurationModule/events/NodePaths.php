@@ -75,7 +75,7 @@ class NodePaths
      */
     public function setPaths($paths)
     {
-        $this->paths = $paths;
+        $this->paths = array_merge($this->paths, $paths);
     }
 
     /**
