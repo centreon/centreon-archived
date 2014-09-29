@@ -44,5 +44,53 @@
 <script>
 $(function() {
   {$customJs}
+
+  $( "#poller_tmpl" ).on( "change", function() {
+    var $this = $( this );
+    $.ajax({
+      url: "{url_for url='/configuration/poller/templates/form'}",
+      type: "post",
+      data: { name: $this.val() },
+      dataType: "json",
+      success: function( data, textStatus, jqXHR ) {
+        var nbStep = 2,
+            $btnEngine = $this.parents( ".form-group" ).find( ".fa-gear" ),
+            $btnBroker = $this.parents( ".form-group" ).find( ".fa-database" );
+        /* Set active configuration type */
+        if ( data.engine ) {
+          $btnEngine.removeClass( "fa-btn-inactive" ).addClass( "fa-btn-active" );
+        } else {
+          $btnEngine.removeClass( "fa-btn-active" ).addClass( "fa-btn-inactive" );
+        }
+        if ( data.broker ) {
+          $btnBroker.removeClass( "fa-btn-inactive" ).addClass( "fa-btn-active" );
+        } else {
+          $btnBroker.removeClass( "fa-btn-active" ).addClass( "fa-btn-inactive" );
+        }
+        /* Remove old additional steps */
+        $( "#modal" ).find( ".additional-step" ).remove();
+        /* Add additional steps */
+        $.each( data.steps, function( idx, step ) {
+          var stepName = "add_poller";
+          nbStep++;
+          stepName += nbStep;
+          /* Add step in header */
+          $( "<li></li>" )
+            .data( "target", "#" + stepName )
+            .addClass( "additional-step" )
+            .html( "<span class=\"badge badge-info\">" + nbStep + "</span>" + step.name + "<span class=\"chevron\"></span>" )
+            .appendTo( "ul.steps" );
+          /* Add step in wizard body */
+          $( "<div></div>" )
+            .attr( "id", stepName )
+            .addClass( "step-pane additional-step" )
+            .html( step.html )
+            .appendTo( "div.step-content" );
+        });
+        /* Reload steps wizard */
+        $( "#modal" ).centreonWizard( "reloadSteps" );
+      }
+    });
+  });
 });
 </script>
