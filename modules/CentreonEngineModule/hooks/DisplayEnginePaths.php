@@ -50,11 +50,36 @@ class DisplayEnginePaths
         if (isset($params['nodeId']) && $params['nodeId']) {
             $paths = static::getPathValues($params['nodeId'], $paths);
         }
-
+        $js = '
+            $(".param-help").each(function() {
+                $(this).qtip({
+                    content: {
+                        text: $(this).data("help"),
+                        title: $(this).data("helptitle"),
+                        button: true
+                    },
+                    position: {
+                        my: "top right",
+                        at: "bottom left",
+                        target: $(this)
+                    },
+                    show: {
+                        event: "click",
+                        solo: "true"
+                    },
+                    style: {
+                        classes: "qtip-bootstrap"
+                    },
+                    hide: {
+                        event: "unfocus"
+                    }
+                });
+            });';
         return array(
             'template' => 'displayEnginePaths.tpl',
             'variables' => array(
-                'paths' => $paths
+                'paths' => $paths,
+                'js' => $js
             )
         );
     }
@@ -70,19 +95,19 @@ class DisplayEnginePaths
 
         $paths['resource_file'] = array(
             'label' => _('Resource file'),
-            'help' => _(''),
+            'help' => _('Resource file path.'),
             'value' => ''
         );
         
         $paths['state_retention_file'] = array(
             'label' => _('State retention file'),
-            'help' => _(''),
+            'help' => _('State retention file path.'),
             'value' => ''
         );
 
         $paths['status_file'] = array(
             'label' => _('Status file'),
-            'help' => _(''),
+            'help' => _('Status file path.'),
             'value' => ''
         );
 
