@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonEngine;
+namespace CentreonEngine\Hooks;
 
 use Centreon\Internal\Di;
 

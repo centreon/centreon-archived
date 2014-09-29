@@ -30,37 +30,40 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
  */
-namespace CentreonCustomview\Hooks;
 
-class DisplayBookmarkedViews
+
+namespace Test\CentreonEngine\Hooks;
+
+use \Test\Centreon\DbTestCase;
+use \CentreonEngine\Hooks\DisplayEnginePaths;
+
+class DisplayEnginePathsTest extends DbTestCase
 {
-    /**
-     * Execute hook
-     *
-     * @param array $params
-     */
-    public static function execute($params)
+    protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
+
+    public function testExecuteWithoutNodeId()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
-        if (!preg_match("/^\/customview/", $router->getCurrentUri())) {
-            return;
-        }
-        $user = $_SESSION['user'];
-        $bookmarkedViews = \CentreonCustomview\Repository\CustomviewRepository::getCustomViewsOfUser($user->getId());
-        $publicViews = \CentreonCustomview\Repository\CustomviewRepository::getPublicViews();
-        foreach ($publicViews as $viewId => $view) {
-            if (isset($bookmarkedViews[$viewId])) {
-                unset($publicViews[$viewId]);
-            }
-        }
-        return array(
-            'template' => 'displayLeftMenu.tpl',
-            'variables' => array(
-                'bookmarkedViews' => $bookmarkedViews,
-                'publicViews' => $publicViews
-            )
-        );
+        $params = array();
+        $result = DisplayEnginePaths::execute($params);
+        $this->assertArrayHasKey('template', $result);
+        $this->assertArrayHasKey('variables', $result);
+        $this->assertEquals('displayEnginePaths.tpl', $result['template']);
+        $this->assertArrayHasKey('paths', $result['variables']);
+        $this->assertArrayHasKey('resource_file', $result['variables']['paths']);
+        $this->assertEquals('', $result['variables']['paths']['resource_file']['value']);
+    }
+
+    public function testExecuteWithNodeId()
+    {
+        $this->markTestIncomplete("Must finish this test");
+/*        $params = array('nodeId' => 1);
+        $result = DisplayEnginePaths::execute($params);
+        $this->assertArrayHasKey('template', $result);
+        $this->assertArrayHasKey('variables', $result);
+        $this->assertEquals('displayEnginePaths.tpl', $result['template']);
+        $this->assertArrayHasKey('paths', $result['variables']);
+        $this->assertArrayHasKey('resource_file', $result['variables']['paths']);
+        $this->assertEquals('', $result['variables']['paths']['resource_file']['value']);*/
     }
 }

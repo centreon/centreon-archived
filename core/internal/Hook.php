@@ -225,7 +225,7 @@ class Hook
             if (file_exists($filename)) {
                 include_once $filename;
                 $data = call_user_func(
-                    array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"),
+                    array("\\".$commonName."\\Hooks\\".ucfirst($hook['module_hook_name']), "execute"),
                     $params
                 );
                 /* has template */
