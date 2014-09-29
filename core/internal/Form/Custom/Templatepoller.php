@@ -52,10 +52,10 @@ class Templatepoller extends Select
         $info = parent::renderHtmlInput($element);
         $info['css'] = 'col-sm-7';
         $info['extrahtml'] = '<div class="col-sm-1">
-            <button class="btn" disabled><i class="fa fa-gear"></i></button>
+            <button class="btn" disabled><i class="fa fa-gear fa-btn-inactive"></i></button>
             </div>
             <div class="col-sm-1">
-            <button class="btn" disabled><i class="fa fa-database"></i></button>
+            <button class="btn" disabled><i class="fa fa-database fa-btn-inactive"></i></button>
             </div>';
         return $info;
     }
