@@ -142,6 +142,7 @@
 	function insertContactGroupInDB ($ret = array())	{
 		$cg_id = insertContactGroup($ret);
 		updateContactGroupContacts($cg_id, $ret);
+		updateContactGroupAclGroups($cg_id, $ret);
 		return $cg_id;
 	}
 
@@ -174,6 +175,7 @@
 			return;
 		updateContactGroup($cg_id, $params);
 		updateContactGroupContacts($cg_id, $params);
+		updateContactGroupAclGroups($cg_id, $params);
 	}
 
 	function updateContactGroup($cg_id = null, $params = array()) {
@@ -220,6 +222,28 @@
 
 		for ($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) ";
+			$rq .= "VALUES ('".$ret[$i]."', '".$cg_id."')";
+			$DBRESULT = $pearDB->query($rq);
+		}
+	}
+
+	function updateContactGroupAclGroups($cg_id, $ret = array()) {
+		global $form, $pearDB;
+
+		if (!$cg_id) {
+			return;
+		}
+		
+		$rq = "DELETE FROM `acl_group_contactgroups_relations` WHERE `cg_cg_id` = ".$pearDB->escape($cg_id);
+		$res = $pearDB->query($rq);
+                                
+		if (isset($ret["cg_acl_groups"]))
+			$ret = $ret["cg_acl_groups"];
+		else
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'cg_acl_groups');
+
+		for ($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO `acl_group_contactgroups_relations` (`acl_group_id`, `cg_cg_id`) ";
 			$rq .= "VALUES ('".$ret[$i]."', '".$cg_id."')";
 			$DBRESULT = $pearDB->query($rq);
 		}

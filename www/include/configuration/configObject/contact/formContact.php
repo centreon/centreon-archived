@@ -141,7 +141,11 @@ if (($o == "c" || $o == "w") && $contact_id) {
      */
     $DBRESULT = $pearDB->query("SELECT acl_group_id FROM `acl_group_contacts_relations` WHERE `contact_contact_id` = '".$contact_id."'");
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
-        $cct["contact_acl_groups"][$i] = $data["acl_group_id"];
+        if (!$oreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
+            $initialValues['contact_acl_groups'] = $data['acl_group_id'];
+        } else {
+            $cct["contact_acl_groups"][$i] = $data["acl_group_id"];
+        }
     }
     $DBRESULT->free();
 }
@@ -196,7 +200,15 @@ while ($notifCmd = $DBRESULT->fetchRow())
  * Get ACL Groups List
  */
 $aclGroups = array();
-$DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
+$aclCond = "";
+if (!$oreon->user->admin) {
+    $aclCond = " WHERE acl_group_id IN (".$acl->getAccessGroupsString().") ";
+}
+$sql = "SELECT acl_group_id, acl_group_name 
+    FROM acl_groups 
+    {$aclCond}
+    ORDER BY acl_group_name"; 
+$DBRESULT = $pearDB->query($sql);
 while ($aclGroup = $DBRESULT->fetchRow()) {
     $aclGroups[$aclGroup["acl_group_id"]] = $aclGroup["acl_group_name"];
 }

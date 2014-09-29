@@ -17,6 +17,7 @@
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="members"> {$form.cg_contacts.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.cg_contacts.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="acl_groups"> {$form.cg_acl_groups.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.cg_acl_groups.html}</p></td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cg_activate.label}</td><td class="FormRowValue">{$form.cg_activate.html}</td></tr>

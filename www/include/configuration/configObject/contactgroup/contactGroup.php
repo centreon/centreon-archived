@@ -78,7 +78,8 @@
                                                                             'contact_name'),
                                                          'keys'    => array('contact_id'),
                                                          'get_row' => 'contact_name',
-                                                         'order'   => 'contact_name'));
+														 'order'   => 'contact_name'));
+		$allowedAclGroups = $acl->getAccessGroups();
         $contactstring = "";
         if (count($allowedContacts)) {
             $first = true;
