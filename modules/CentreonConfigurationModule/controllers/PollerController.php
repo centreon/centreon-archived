@@ -120,8 +120,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        $tpl = Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/poller/add');
+        $this->tpl->assign('validateUrl', '/configuration/poller/add');
         /* Prepare default information */
         $form = new \Centreon\Internal\Form("add_poller");
         $form->add(array(
@@ -149,8 +148,8 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
             'mandatory' => true,
             'attributes' => json_encode($selectParams)
         ));
-        $tpl->assign('form', $form->toSmarty());
-        $tpl->display('file:[CentreonConfigurationModule]addPoller.tpl');
+        $this->tpl->assign('form', $form->toSmarty());
+        $this->tpl->display('addPoller.tpl');
     }
 
     /**
