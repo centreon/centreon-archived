@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+    <table name="cfg_pollers" phpName="Node" idMethod="native">
+        <column name="poller_id" phpName="PollerId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="node_id" phpName="NodeId" type="INTEGER" required="true"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="port" phpName="Port" type="INTEGER" required="true" />
+        <column name="one_per_retention" phpName="OnePerRetention" type="INTEGER" size="1" default="1" required="true"/>
+        <column name="tmpl_name" phpName="TmplName" type="VARCHAR" size="50" required="true"/>
+        <column name="enable" phpName="Enable" type="INTEGER" size="1" default="1" required="true"/>
+        <unique name="cfg_pollers_idx01">
+            <unique-column name="name" />
+        </unique>
+        <foreign-key foreignTable="cfg_organizations" onDelete="cascade">
+            <reference local="organization_id" foreign="organization_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_nodes" onDelete="cascade">
+            <reference local="node_id" foreign="node_id"/>
+        </foreign-key>
+    </table>
+</database>
