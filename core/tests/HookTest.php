@@ -123,37 +123,6 @@ class HookTest extends DbTestCase
         $this->assertEquals(0, $this->getConnection()->getRowCount('cfg_modules_hooks'));
     }
 
-    public function testUnregisterException()
-    {
-        $this->setExpectedException(
-            "\Centreon\Internal\Exception",
-            "Could not find module hook named idontexist"
-        );
-        Hook::unregister(
-            6,
-            'displayLeftMenu',
-            'idontexist'
-        );
-        $this->setExpectedException(
-            "\Centreon\Internal\Exception",
-            "Could not find module hook named idontexist"
-        );
-        Hook::unregister(
-            9999,
-            'displayLeftMenu',
-            'displayBookmarkedViews'
-        );
-        $this->setExpectedException(
-            "\Centreon\Internal\Exception",
-            "Could not find module hook named idontexist"
-        );
-        Hook::unregister(
-            6,
-            'idontexist',
-            'displayBookmarkedViews'
-        ); 
-    }
-
     public function testGetModulesFromHook()
     {
         $arr = Hook::getModulesFromHook();
