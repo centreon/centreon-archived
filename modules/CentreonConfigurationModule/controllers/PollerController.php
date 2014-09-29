@@ -281,13 +281,12 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
             $defaultPoller = array_slice($di->get('pollerTemplate'), 0, 1, true);
             $p = key($defaultPoller);
             
-            
             $returnData['id'] = $p;
             $returnData['text'] = ucfirst($p);
         }
         
         
-        $router->response()->json(array());
+        $router->response()->json($returnData);
     }
     
     /**
