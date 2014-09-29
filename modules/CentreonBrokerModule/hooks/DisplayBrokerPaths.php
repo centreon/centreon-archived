@@ -51,10 +51,37 @@ class DisplayEnginePaths
             $paths = static::getPathValues($params['nodeId'], $paths);
         }
 
+        $js = '
+            $(".param-help").each(function() {
+                $(this).qtip({
+                    content: {
+                        text: $(this).data("help"),
+                        title: $(this).data("helptitle"),
+                        button: true
+                    },
+                    position: {
+                        my: "top right",
+                        at: "bottom left",
+                        target: $(this)
+                    },
+                    show: {
+                        event: "click",
+                        solo: "true"
+                    },
+                    style: {
+                        classes: "qtip-bootstrap"
+                    },
+                    hide: {
+                        event: "unfocus"
+                    }
+                });
+        });';
+
         return array(
             'template' => 'displayBrokerPaths.tpl',
             'variables' => array(
-                'paths' => $paths
+                'paths' => $paths,
+                'js' => $js
             )
         );
     }
@@ -70,7 +97,7 @@ class DisplayEnginePaths
 
         $paths['broker_module_directory'] = array(
             'label' => _('Broker module directory'),
-            'help' => _(''),
+            'help' => _('Broker module directory.'),
             'value' => ''
         );
 

@@ -9,7 +9,10 @@
 			</span>
 		</div>
 		<div class="col-sm-1">
-			<button id="{$k}_help" type="button" class="btn btn-info"></button>
+			<button id="{$k}_help" type="button" class="btn btn-info param-help" data-helptitle="{$mypath.label}" data-help="{$mypath.help}"></button>
 		</div>
 	</div>
 {/foreach}
+<script>
+{$variables.js}
+</script>
