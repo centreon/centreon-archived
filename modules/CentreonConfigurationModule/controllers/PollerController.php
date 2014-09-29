@@ -290,6 +290,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         
         $params = $this->getParams();
         
+        PollerRepository::getPollerTemplates();
         $pollerTemplateList = $di->get('pollerTemplate');
         
         $myFile = $pollerTemplateList[$params['name']];
