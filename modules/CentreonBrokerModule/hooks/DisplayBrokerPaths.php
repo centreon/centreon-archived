@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonEngine;
+namespace CentreonBroker;
 
 use Centreon\Internal\Di;
 
@@ -52,7 +52,7 @@ class DisplayEnginePaths
         }
 
         return array(
-            'template' => 'displayEnginePaths.tpl',
+            'template' => 'displayBrokerPaths.tpl',
             'variables' => array(
                 'paths' => $paths
             )
@@ -74,24 +74,6 @@ class DisplayEnginePaths
             'value' => ''
         );
 
-        $paths['resource_file'] = array(
-            'label' => _('Resource file'),
-            'help' => _(''),
-            'value' => ''
-        );
-        
-        $paths['state_retention_file'] = array(
-            'label' => _('State retention file'),
-            'help' => _(''),
-            'value' => ''
-        );
-
-        $paths['status_file'] = array(
-            'label' => _('Status file'),
-            'help' => _(''),
-            'value' => ''
-        );
-
         return $paths;
     }
 
@@ -107,15 +89,7 @@ class DisplayEnginePaths
         if (!count($paths)) {
             return $paths;
         }
-        $db = Di::getDefault()->get('db_centreon');
-        $columns = implode(', ', array_keys($paths));
-        $sql = "SELECT {$columns} FROM cfg_engine WHERE engine_server_id ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(array($nodeId));
-        $rows = $stmt->fetchAll();
-        foreach ($rows as $k => $v) {
-            $paths[$k]['value'] = $v;
-        }
+        // @todo retrieve values
         return $paths;
     }
 }
