@@ -23,14 +23,21 @@
 <div class="row-divider"></div>
 <form role="form" class="form-horizontal" id="wizard_form">
 <div class="step-content">
-  <div class="step-pane active" id="add_poller_1">
+  <div class="step-pane active" id="add_poller1">
     {$form.poller_name.html}
     {$form.ip_address.html}
     {$form.poller_tmpl.html}
   </div>
 
-  <div class="step-pane" id="add_poller_2">
+  <div class="step-pane" id="add_poller2">
+    {hook name='displayNodePaths'}
   </div>
+</div>
+
+<div class="modal-footer">
+  {$form.hidden}
+  <button class="btn btn-default btn-prev" disabled>{t}Prev{/t}</button>
+  <button class="btn btn-default btn-next" data-last="{t}Finish{/t}" id="wizard_submit">{t}Next{/t}</button>
 </div>
 </form>
 
