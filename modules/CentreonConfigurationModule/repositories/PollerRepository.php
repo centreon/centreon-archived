@@ -36,6 +36,7 @@
 namespace CentreonConfiguration\Repository;
 
 use \Centreon\Internal\Module\Informations;
+use \Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -99,7 +100,7 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
     public static function getTotalRecordsForDatatable($params)
     {
         // Get centreon DB and centreon storage DB connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         //
@@ -116,6 +117,8 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getPollerTemplates()
     {
+        $di = Di::getDefault();
+        
         $rawTemplatesList = array();
         $moduleList = Informations::getModuleList();
         foreach ($moduleList as $module) {
@@ -132,6 +135,11 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
             }
         }
         
-        return $templatesList;
+        $di->set(
+            'pollerTemplate',
+            function() use ($templatesList) {
+                return $templatesList;
+            }
+        );
     }
 }

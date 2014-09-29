@@ -37,8 +37,9 @@ namespace CentreonConfiguration\Controllers;
 
 use \Centreon\Internal\Di;
 
-use \CentreonConfiguration\Models\Poller as PollerModel,
-    \CentreonConfiguration\Repository\PollerRepository;
+use \CentreonConfiguration\Models\Poller as PollerModel;
+use \CentreonConfiguration\Repository\PollerRepository;
+use CentreonConfiguration\Internal\PollerTemplateManager;
 
 class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -251,7 +252,8 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        $data = \CentreonConfiguration\Repository\PollerRepository::getPollerTemplates();
+        PollerRepository::getPollerTemplates();
+        $data = $di->get('pollerTemplate');
         $returnData = array();
         foreach ($data as $id => $file) {
             $returnData[] = array(
@@ -273,5 +275,28 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $di = Di::getDefault();
         $router = $di->get('router');
         $router->response()->json(array());
+    }
+    
+    /**
+     * Get default template for a poller
+     *
+     * @method post
+     * @route /configuration/poller/templates/form
+     */
+    public function getFormForTemplateAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        
+        $params = $this->getParams();
+        
+        PollerRepository::getPollerTemplates();
+        $pollerTemplateList = $di->get('pollerTemplate');
+        
+        $myFile = $pollerTemplateList[$params['name']];
+        $tplManager = new PollerTemplateManager($myFile);
+        
+        $router->response()->json($tplManager->generateFormForTemplate());
+        
     }
 }
