@@ -68,12 +68,6 @@ class DisplayEnginePaths
     {
         $paths = array();
 
-        $paths['broker_module_directory'] = array(
-            'label' => _('Broker module directory'),
-            'help' => _(''),
-            'value' => ''
-        );
-
         $paths['resource_file'] = array(
             'label' => _('Resource file'),
             'help' => _(''),
