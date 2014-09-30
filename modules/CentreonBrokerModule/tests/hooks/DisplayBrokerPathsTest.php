@@ -30,37 +30,41 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
  */
-namespace CentreonCustomview\Hooks;
 
-class DisplayBookmarkedViews
+
+namespace Test\CentreonBroker\Hooks;
+
+use \Test\Centreon\DbTestCase;
+use \CentreonEngine\Hooks\DisplayBrokerPaths;
+
+class DisplayBrokerPathsTest extends DbTestCase
 {
-    /**
-     * Execute hook
-     *
-     * @param array $params
-     */
-    public static function execute($params)
+    protected $dataPath = '/modules/CentreonBrokerModule/tests/data/json/';
+
+    public function testExecuteWithoutNodeId()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
-        if (!preg_match("/^\/customview/", $router->getCurrentUri())) {
-            return;
-        }
-        $user = $_SESSION['user'];
-        $bookmarkedViews = \CentreonCustomview\Repository\CustomviewRepository::getCustomViewsOfUser($user->getId());
-        $publicViews = \CentreonCustomview\Repository\CustomviewRepository::getPublicViews();
-        foreach ($publicViews as $viewId => $view) {
-            if (isset($bookmarkedViews[$viewId])) {
-                unset($publicViews[$viewId]);
-            }
-        }
-        return array(
-            'template' => 'displayLeftMenu.tpl',
-            'variables' => array(
-                'bookmarkedViews' => $bookmarkedViews,
-                'publicViews' => $publicViews
-            )
-        );
+        $params = array();
+        $result = DisplayBrokerPaths::execute($params);
+        $this->assertArrayHasKey('template', $result);
+        $this->assertArrayHasKey('variables', $result);
+        $this->assertEquals('displayBrokerPaths.tpl', $result['template']);
+        $this->assertArrayHasKey('paths', $result['variables']);
+        $this->assertArrayHasKey('broker_module_directory', $result['variables']['paths']);
+        $this->assertEquals('', $result['variables']['paths']['broker_module_directory']['value']);
+    }
+
+    public function testExecuteWithNodeId()
+    {
+        $this->markTestIncomplete("Must finish this test");
+        /*$params = array('nodeId' => 1);
+        $result = DisplayBrokerPaths::execute($params);
+        $this->assertArrayHasKey('template', $result);
+        $this->assertArrayHasKey('variables', $result);
+        $this->assertEquals('displayBrokerPaths.tpl', $result['template']);
+        $this->assertArrayHasKey('paths', $result['variables']);
+        $this->assertArrayHasKey('broker_module_directory', $result['variables']['paths']);
+        $this->assertEquals('', $result['variables']['paths']['broker_module_directory']['value']);*/
+
     }
 }

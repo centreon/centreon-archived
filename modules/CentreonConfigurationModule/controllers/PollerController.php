@@ -275,7 +275,20 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        $router->response()->json(array());
+        $params = $this->getParams();
+        $returnData = array();
+        
+        if ($params['id'] == 0) {
+            PollerRepository::getPollerTemplates();
+            $defaultPoller = array_slice($di->get('pollerTemplate'), 0, 1, true);
+            $p = key($defaultPoller);
+            
+            $returnData['id'] = $p;
+            $returnData['text'] = ucfirst($p);
+        }
+        
+        
+        $router->response()->json($returnData);
     }
     
     /**

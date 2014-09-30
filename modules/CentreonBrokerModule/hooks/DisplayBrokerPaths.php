@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonBroker;
+namespace CentreonBroker\Hooks;
 
 use Centreon\Internal\Di;
 
