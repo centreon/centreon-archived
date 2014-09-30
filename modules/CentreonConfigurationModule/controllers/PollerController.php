@@ -139,7 +139,8 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
             'object_type' => 'object',
             'defaultValuesRoute' => '/configuration/poller/templates',
             'listValuesRoute' => '/configuration/poller/[i:id]/template',
-            'multiple' => false
+            'multiple' => false,
+            'initCallback' => 'loadTemplateSteps'
         );
         $form->add(array(
             'type' => 'templatepoller',
