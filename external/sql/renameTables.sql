@@ -1,5 +1,4 @@
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-RENAME TABLE informations TO cfg_informations;
 RENAME TABLE acl_actions TO cfg_acl_actions;
 RENAME TABLE acl_actions_rules TO cfg_acl_actions_rules;
 RENAME TABLE acl_group_actions_relations TO cfg_acl_group_actions_relations;
@@ -115,7 +114,7 @@ RENAME TABLE hostcategories_relation TO cfg_hostcategories_relations;
 RENAME TABLE hostgroup TO cfg_hostgroups;
 RENAME TABLE hostgroup_hg_relation TO cfg_hostgroups_hostgroups_relations;
 RENAME TABLE hostgroup_relation TO cfg_hostgroups_relations;
-RENAME TABLE informations TO cfg_information;
+RENAME TABLE informations TO cfg_informations;
 -- RENAME TABLE menus TO cfg_menus;
 RENAME TABLE meta_contactgroup_relation TO cfg_meta_contactgroups_relations;
 RENAME TABLE meta_service TO cfg_meta_services;
