@@ -147,6 +147,8 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
             'name' => 'poller_tmpl',
             'mandatory' => true,
             'attributes' => json_encode($selectParams)
+        ), array(
+            'id' => 0
         ));
         $this->tpl->assign('form', $form->toSmarty());
         $this->tpl->display('addPoller.tpl');
