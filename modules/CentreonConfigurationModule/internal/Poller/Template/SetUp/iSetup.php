@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,21 +33,14 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace CentreonConfiguration\Internal\PollerTemplate;
+
+namespace CentreonConfiguration\Internal\Poller\Template\Setup;
 
 /**
- * Description of EngineTemplateManager
  *
  * @author lionel
  */
-class EngineSetUp extends SetUp
+interface iSetup
 {
-    /**
-     * 
-     * @param array $content
-     */
-    public function __construct($content)
-    {
-        parent::__construct($content);
-    }
+    //put your code here
 }

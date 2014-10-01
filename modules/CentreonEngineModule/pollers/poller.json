@@ -1,0 +1,22 @@
+{
+    "name" : "poller",
+    "content" : {
+        "engine" : {
+            "setup" : [
+                {
+                    "name" : "Main",
+                    "params" : {
+                        "file" : {
+                            "state-file" : "",
+                            "lock-file" : ""
+                        },
+                        "debug" : {
+                            "debug-file" : "",
+                            "debug-level" : ""
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

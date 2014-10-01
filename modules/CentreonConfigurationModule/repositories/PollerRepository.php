@@ -35,8 +35,8 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Module\Informations;
 use \Centreon\Internal\Di;
+use \CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -94,46 +94,18 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param array $params
-     * @return integer
-     */
-    public static function getTotalRecordsForDatatable($params)
-    {
-        // Get centreon DB and centreon storage DB connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        //
-        $sqlCalengineServer = "SELECT COUNT(`id`) as nb_poller FROM `engine_server`";
-        $stmtCalengineServer = $dbconn->query($sqlCalengineServer);
-        $resultCalengineServer = $stmtCalengineServer->fetchAll(\PDO::FETCH_ASSOC);
-        
-        return $resultCalengineServer[0]['nb_poller'];
-    }
-    
-    /**
-     * 
      * @return array
      */
     public static function getPollerTemplates()
     {
         $di = Di::getDefault();
         
-        $rawTemplatesList = array();
-        $moduleList = Informations::getModuleList();
-        foreach ($moduleList as $module) {
-            $modulePath = Informations::getModulePath($module);
-            $pollerTemplatesPath = $modulePath . '/pollers/*.json';
-            $rawTemplatesList = array_merge($rawTemplatesList, glob($pollerTemplatesPath));
-        }
-        
-        $templatesList = array();
-        foreach ($rawTemplatesList as $template) {
-            $tplName = basename($template, '.json');
-            if (!in_array($tplName, array_keys($templatesList))) {
-                $templatesList [$tplName] = $template;
-            }
-        }
+        $templatesList = array_map(
+            function($t) {
+                return serialize($t);
+            },
+            TemplateManager::buildTemplatesList()
+        );
         
         $di->set(
             'pollerTemplate',

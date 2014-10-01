@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,21 +33,53 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace CentreonConfiguration\Internal\PollerTemplate;
+
+namespace CentreonConfiguration\Internal\Poller\Template;
+
+use CentreonConfiguration\Internal\Poller\Template\SetUp\Broker as BrokerSetUp;
 
 /**
- * Description of BrokerTemplateManager
+ * Description of Broker
  *
  * @author lionel
  */
-class BrokerSetUp extends SetUp
+class Broker
 {
     /**
-     * 
-     * @param type $content
+     *
+     * @var string 
      */
-    public function __construct($content)
+    private $brokerPath;
+    
+    /**
+     *
+     * @var array 
+     */
+    private $setUp;
+    
+    /**
+     * 
+     * @param string $brokerPath
+     */
+    public function __construct($brokerPath)
     {
-        parent::__construct($content);
+        $this->brokerPath = $brokerPath;
+        $this->getBrokerPart();
+    }
+    
+    /**
+     * 
+     * @throws Exception
+     */
+    private function getBrokerPart()
+    {
+        $tplContent = json_decode(file_get_contents($this->brokerPath), true);
+        if (!isset($tplContent['content']['broker'])) {
+            throw new \Exception("No Broker Part Found");
+        }
+        foreach($tplContent['content']['broker']['setup'] as $section) {
+            var_dump($section);
+            $this->setUp = new BrokerSetUp($section);
+        }
     }
 }

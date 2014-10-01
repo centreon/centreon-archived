@@ -73,7 +73,7 @@ class PollerTemplateManager
     
     /**
      * 
-     * @param type $templateFilePath
+     * @param string $templateFilePath
      * @throws Exception
      */
     public function __construct($templateFilePath)
@@ -100,60 +100,7 @@ class PollerTemplateManager
     
     /**
      * 
-     */
-    private function parseTemplateFile()
-    {
-        $engineLoaded = false;
-        $brokerLoaded = false;
-        
-        $tempTemplateContent = json_decode(file_get_contents($this->templateFilePath), true);
-        $this->templateName = $tempTemplateContent['name'];
-        
-        foreach ($tempTemplateContent['content'] as $section) {
-            switch ($section['type']) {
-                default:
-                    break;
-                case 'engine':
-                    if (!$engineLoaded) {
-                        $this->initEngineSetUp($section);
-                        $engineLoaded = true;
-                    }
-                    break;
-                case 'broker':
-                    if (!$brokerLoaded) {
-                        $this->initBrokerSetUp($section);
-                        $brokerLoaded = true;
-                    }
-                    break;
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @param type $engineSection
-     */
-    private function initEngineSetUp($engineSection)
-    {
-        foreach($engineSection['setup'] as $section) {
-            $this->engine[$section['name']] = new EngineSetUp($section);
-        }
-    }
-    
-    /**
-     * 
-     * @param type $brokerSection
-     */
-    private function initBrokerSetUp($brokerSection)
-    {
-        foreach($brokerSection['setup'] as $section) {
-            $this->broker[$section['name']] = new BrokerSetUp($section);
-        }
-    }
-    
-    /**
-     * 
-     * @param type $steps
+     * @param array $steps
      */
     private function prepareSteps(&$steps)
     {
@@ -168,8 +115,8 @@ class PollerTemplateManager
     
     /**
      * 
-     * @param type $step
-     * @return type
+     * @param array $step
+     * @return array
      */
     private function buildFormComponents($step, &$fName)
     {
@@ -226,6 +173,7 @@ class PollerTemplateManager
                 'html' => $fields
             );
         }
+        
         return $rStep;
     }
 }

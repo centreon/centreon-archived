@@ -1,24 +1,24 @@
 {
-    "name" : "poller",
-    "content" : [
-        {
-            "type" : "engine",
+    "name" : "central",
+    "content" : {
+        "engine" : {
             "setup" : [
                 {
                     "name" : "Main",
-                    "file" : {
-                        "state-file" : "",
-                        "lock-file" : ""
-                    },
-                    "debug" : {
-                        "debug-file" : "",
-                        "debug-level" : ""
+                    "params" : {
+                        "file" : {
+                            "state-file" : "",
+                            "lock-file" : ""
+                        },
+                        "debug" : {
+                            "debug-file" : "",
+                            "debug-level" : ""
+                        }
                     }
                 }
             ]
         },
-        {
-            "type" : "broker",
+        "broker" : {
             "setup" : [
                 {
                     "name" : "Central Broker",
@@ -109,5 +109,5 @@
                 }
             ]
         }
-    ]
+    }
 }

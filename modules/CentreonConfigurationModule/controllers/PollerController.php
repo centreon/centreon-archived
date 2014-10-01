@@ -308,10 +308,12 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         PollerRepository::getPollerTemplates();
         $pollerTemplateList = $di->get('pollerTemplate');
         
-        $myFile = $pollerTemplateList[$params['name']];
-        $tplManager = new PollerTemplateManager($myFile);
+        $myLiteTemplate = unserialize($pollerTemplateList[$params['name']]);
+        $myTemplate = $myLiteTemplate->toFullTemplate();
         
-        $router->response()->json($tplManager->generateFormForTemplate());
+        echo '<pre>'; var_dump($myTemplate); echo '</pre>';
+        
+        //$router->response()->json($tplManager->generateFormForTemplate());
         
     }
 }

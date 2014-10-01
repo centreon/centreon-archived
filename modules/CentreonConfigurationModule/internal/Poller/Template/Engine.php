@@ -34,58 +34,52 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\PollerTemplate;
+namespace CentreonConfiguration\Internal\Poller\Template;
 
-use Centreon\Internal\Utils\CentreonArray;
+use CentreonConfiguration\Internal\Poller\Template\SetUp\Engine as EngineSetUp;
 
 /**
- * Description of SetUp
+ * Description of Engine
  *
  * @author lionel
  */
-class SetUp
+class Engine
 {
-    protected $name;
+    /**
+     *
+     * @var string 
+     */
+    private $enginePath;
     
-    protected $forms;
-    
-    protected $params;
+    /**
+     *
+     * @var array 
+     */
+    private $setUp;
     
     /**
      * 
-     * @param type $content
+     * @param string $enginePath
      */
-    public function __construct($content)
+    public function __construct($enginePath)
     {
-        if (isset($content['name'])) {
-            $this->name = $content['name'];
-        }
-        if (isset($content['forms'])) {
-            $this->forms = $content['forms'];
-        }
-        if (isset($content['params'])) {
-            $this->params = $content['params'];
-        }
+        $this->enginePath = $enginePath;
+        $this->getEnginePart();
     }
     
     /**
      * 
-     * @return type
+     * @throws Exception
      */
-    public function getName()
+    private function getEnginePart()
     {
-        return $this->name;
-    }
-    
-    /**
-     * 
-     */
-    public function genForm(&$steps)
-    {
-        if (!is_null($this->forms)) {
-            foreach ($this->forms['steps'] as $step) {
-                $steps[$step['name']] = $step['fields'];
-            }
+        $tplContent = json_decode(file_get_contents($this->enginePath), true);
+        if (!isset($tplContent['content']['engine'])) {
+            throw new \Exception("No Engine Part Found");
+        }
+        foreach($tplContent['content']['engine']['setup'] as $section) {
+            var_dump($section);
+            $this->setUp = new EngineSetUp($section);
         }
     }
 }
