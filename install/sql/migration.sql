@@ -24,3 +24,5 @@ CREATE TABLE `cfg_sessions` (
 ALTER TABLE cfg_widgets_preferences DROP FOREIGN KEY fk_widget_view_id;
 ALTER TABLE `cfg_options` ADD COLUMN `group` VARCHAR(255) NOT NULL DEFAULT 'default' FIRST;
 ALTER TABLE `cfg_widgets_models` DROP `url`;
+ALTER TABLE `cfg_custom_views_users_relations` DROP FOREIGN KEY fk_custom_views_usergroup_id;
+ALTER TABLE `cfg_meta_services` DROP FOREIGN KEY cfg_meta_services_ibfk_3;
