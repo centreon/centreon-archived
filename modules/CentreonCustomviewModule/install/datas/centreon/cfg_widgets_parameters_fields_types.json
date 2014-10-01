@@ -1,0 +1,77 @@
+[
+    {
+        "field_type_id": 1,
+        "ft_typename": "text",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 2,
+        "ft_typename": "boolean",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 3,
+        "ft_typename": "hidden",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 4,
+        "ft_typename": "password",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 5,
+        "ft_typename": "list",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 6,
+        "ft_typename": "range",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 7,
+        "ft_typename": "compare",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 8,
+        "ft_typename": "sort",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 9,
+        "ft_typename": "date",
+        "is_connector": 0
+    },
+    {
+        "field_type_id": 10,
+        "ft_typename": "host",
+        "is_connector": 1
+    },
+    {
+        "field_type_id": 11,
+        "ft_typename": "hostTemplate",
+        "is_connector": 1
+    },
+    {
+        "field_type_id": 12,
+        "ft_typename": "serviceTemplate",
+        "is_connector": 1
+    },
+    {
+        "field_type_id": 13,
+        "ft_typename": "hostgroup",
+        "is_connector": 1
+    },
+    {
+        "field_type_id": 14,
+        "ft_typename": "servicegroup",
+        "is_connector": 1
+    },
+    {
+        "field_type_id": 15,
+        "ft_typename": "service",
+        "is_connector": 1
+    }
+]
