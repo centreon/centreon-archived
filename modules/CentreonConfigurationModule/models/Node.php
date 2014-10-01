@@ -38,16 +38,16 @@
 namespace CentreonConfiguration\Models;
 
 /**
- * Used for interacting with pollers
+ * Used for interacting with node
  *
  * @author Maximilien Bersoult <mbersoult@merethis.com>
  * @package Centreon
  * @subpackage Configuration
  * @version 3.0.0
  */
-class Poller extends \Centreon\Models\CentreonBaseModel
+class Node extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "cfg_pollers";
-    protected static $primaryKey = "poller_id";
+    protected static $table = "cfg_nodes";
+    protected static $primaryKey = "node_id";
     protected static $uniqueLabelField = "name";
 }

@@ -31,23 +31,39 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
+namespace CentreonConfiguration\Repository;
 
-namespace CentreonConfiguration\Models;
+use \Centreon\Internal\Module\Informations;
+use \Centreon\Internal\Di;
+use \CentreonConfiguration\Models\Node;
 
 /**
- * Used for interacting with pollers
- *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
- * @subpackage Configuration
- * @version 3.0.0
+ * @subpackage Repository
  */
-class Poller extends \Centreon\Models\CentreonBaseModel
+class NodeRepository extends \CentreonConfiguration\Repository\Repository
 {
-    protected static $table = "cfg_pollers";
-    protected static $primaryKey = "poller_id";
-    protected static $uniqueLabelField = "name";
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = 'Node';
+
+    /**
+     * Create a node
+     *
+     * @param array $params The parameters for create a node
+     * @return int The id of node created
+     */
+    public static function create($params)
+    {
+        $di = Di::getDefault();
+        return Node::insert(array(
+            'name' => $params['poller_name'],
+            'ip_address' => $params['ip_address']
+        ));
+    }
 }
