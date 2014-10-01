@@ -163,7 +163,7 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
             'port' => 0,
             'tmpl_name' => $params['poller_tmpl']
         ));
-        $values = new EngineFormSave($params);
+        $values = new EngineFormSave($nodeId, $params);
         $di->get('events')->emit('centreon-configuration.form.save', array($values));
         return $pollerId;
     }
