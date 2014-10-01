@@ -46,6 +46,9 @@ class FormSave
      */
     public static function execute(EngineFormSave $event)
     {
-        EngineRepository::save($event->getParams());
+        EngineRepository::save(
+            $event->getNodeId(),
+            $event->getParams()
+        );
     }
 }

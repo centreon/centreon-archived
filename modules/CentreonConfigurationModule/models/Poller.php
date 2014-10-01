@@ -38,13 +38,16 @@
 namespace CentreonConfiguration\Models;
 
 /**
- * Used for interacting with hosts
+ * Used for interacting with pollers
  *
- * @author sylvestre
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @package Centreon
+ * @subpackage Configuration
+ * @version 3.0.0
  */
 class Poller extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $table = "cfg_engine_servers";
-    protected static $primaryKey = "id";
+    protected static $table = "cfg_pollers";
+    protected static $primaryKey = "poller_id";
     protected static $uniqueLabelField = "name";
 }

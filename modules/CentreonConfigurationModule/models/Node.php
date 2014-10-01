@@ -31,24 +31,23 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonBroker\Listeners\CentreonConfiguration;
 
-use \CentreonBroker\Repository\BrokerRepository;
-use \CentreonConfiguration\Events\BrokerFormSave;
+namespace CentreonConfiguration\Models;
 
-class FormSave
+/**
+ * Used for interacting with node
+ *
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @package Centreon
+ * @subpackage Configuration
+ * @version 3.0.0
+ */
+class Node extends \Centreon\Models\CentreonBaseModel
 {
-    /**
-     *
-     * @param \CentreonConfiguration\Events\BrokerFormSave $event
-     */
-    public static function execute(BrokerFormSave $event)
-    {
-        BrokerRepository::save(
-            $event->getNodeId(),
-            $event->getParams()
-        );
-    }
+    protected static $table = "cfg_nodes";
+    protected static $primaryKey = "node_id";
+    protected static $uniqueLabelField = "name";
 }

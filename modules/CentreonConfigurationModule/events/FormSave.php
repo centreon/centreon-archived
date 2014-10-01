@@ -33,22 +33,45 @@
  *
  */
 
-namespace CentreonBroker\Listeners\CentreonConfiguration;
-
-use \CentreonBroker\Repository\BrokerRepository;
-use \CentreonConfiguration\Events\BrokerFormSave;
+namespace CentreonConfiguration\Events;
 
 class FormSave
 {
     /**
-     *
-     * @param \CentreonConfiguration\Events\BrokerFormSave $event
+     * @var int | parameters 
      */
-    public static function execute(BrokerFormSave $event)
+    private $params;
+
+    /**
+     * @var int | refers to the node id
+     */
+    private $nodeId;
+
+    /**
+     * @param int $nodeId
+     * @param array $engineParams
+     */
+    public function __construct($nodeId, $params)
     {
-        BrokerRepository::save(
-            $event->getNodeId(),
-            $event->getParams()
-        );
+        $this->nodeId = $nodeId;
+        $this->params = $params;
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getNodeId()
+    {
+        return $this->nodeId;
     }
 }

@@ -33,22 +33,37 @@
  *
  */
 
-namespace CentreonBroker\Listeners\CentreonConfiguration;
+namespace CentreonConfiguration\Repository;
 
-use \CentreonBroker\Repository\BrokerRepository;
-use \CentreonConfiguration\Events\BrokerFormSave;
+use \Centreon\Internal\Module\Informations;
+use \Centreon\Internal\Di;
+use \CentreonConfiguration\Models\Node;
 
-class FormSave
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Repository
+ */
+class NodeRepository extends \CentreonConfiguration\Repository\Repository
 {
     /**
      *
-     * @param \CentreonConfiguration\Events\BrokerFormSave $event
+     * @var string
      */
-    public static function execute(BrokerFormSave $event)
+    public static $objectName = 'Node';
+
+    /**
+     * Create a node
+     *
+     * @param array $params The parameters for create a node
+     * @return int The id of node created
+     */
+    public static function create($params)
     {
-        BrokerRepository::save(
-            $event->getNodeId(),
-            $event->getParams()
-        );
+        $di = Di::getDefault();
+        return Node::insert(array(
+            'name' => $params['poller_name'],
+            'ip_address' => $params['ip_address']
+        ));
     }
 }

@@ -45,6 +45,9 @@
 $(function() {
   {$customJs}
 
+  /**
+   * Function loading template steps
+   */
   function loadTemplateSteps( data, $el ) {
     var $btnEngine, $btnBroker;
     if ( $el === undefined ) {
@@ -100,11 +103,47 @@ $(function() {
     }
   }
 
+  /* When select a poller template */
   $( "#poller_tmpl" ).on( "change", function() {
     var $this = $( this ),
         data = $this.select2( "data" );
  
     loadTemplateSteps( data, $this );
+  });
+
+  $( document ).unbind( "finished" );
+  $( document ).on( "finished", function( event ) {
+    var errorMsg = "",
+        validMandatory = true,
+        $form = $( event.target ).find( "form" );
+    /* Validate mandatory fields */
+    $form.find( "input.mandatory-field" ).each( function( idx ) {
+      if ( $( this ).val().trim() === "" ) {
+        validMandatory = false;
+        $( this ).parent().addClass( "has-error has-feedback" );
+        errorMsg += "<p>" + $( this ).attr( "placeholder" ) + " is required</p>";
+      }
+    });
+
+    if ( !validMandatory ) {
+      alertModalMessage( errorMsg, "alert-danger" );
+      return false;
+    }
+
+    $.ajax({
+      url: "{url_for url='/configuration/poller/add'}",
+      data: $( "#wizard_form" ).serializeArray(),
+      dataType: "json",
+      type: "post",
+      success: function( data, textStatus, jqXHR ) {
+        alertModalClose();
+        if ( data.success ) {
+          // @todo
+        } else {
+          alertModalMessage( data.error, "alert-danger" );
+        }
+      }
+    });
   });
 });
 </script>

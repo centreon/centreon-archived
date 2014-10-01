@@ -37,6 +37,8 @@ namespace CentreonConfiguration\Repository;
 
 use \Centreon\Internal\Di;
 use \CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
+use \CentreonConfiguration\Events\EngineFormSave;
+use \CentreonConfiguration\Models\Poller;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -113,5 +115,28 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
                 return $templatesList;
             }
         );
+    }
+
+    /**
+     * Create a poller
+     *
+     * @param array $params The parameters for create a poller
+     * @return int The id of poller created
+     */
+    public static function create($params)
+    {
+        $di = Di::getDefault();
+        $orgId = $di->get('organization');
+        $nodeId = NodeRepository::create($params);
+        $pollerId = Poller::insert(array(
+            'node_id' => $nodeId,
+            'name' => $params['poller_name'],
+            'organization_id' => $orgId,
+            'port' => 0,
+            'tmpl_name' => $params['poller_tmpl']
+        ));
+        $values = new EngineFormSave($nodeId, $params);
+        $di->get('events')->emit('centreon-configuration.form.save', array($values));
+        return $pollerId;
     }
 }

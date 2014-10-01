@@ -40,6 +40,8 @@ use \Centreon\Internal\Di;
 use \CentreonConfiguration\Models\Poller as PollerModel;
 use \CentreonConfiguration\Repository\PollerRepository;
 use CentreonConfiguration\Internal\PollerTemplateManager;
+use \Centreon\Internal\Form;
+use \Centreon\Internal\Exception;
 
 class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -120,7 +122,6 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/poller/add');
         /* Prepare default information */
         $form = new \Centreon\Internal\Form("add_poller");
         $form->add(array(
@@ -163,7 +164,22 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function createAction()
     {
-        parent::createAction();
+        $params = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+
+        /* Check security */
+        /*try {
+            Form::validateSecurity($params['token']);
+        } catch (Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }*/
+        try {
+            PollerRepository::create($params);
+        } catch (Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        return $router->response()->json(array('success' => true));
     }
 
     /**

@@ -35,24 +35,4 @@
 
 namespace CentreonConfiguration\Events;
 
-class EngineFormSave
-{
-    private $params;
-
-    /**
-     * @param array $engineParams
-     */
-    public function __construct($engineParams)
-    {
-        $this->params = $engineParams;
-    }
-
-    /**
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-}
+class EngineFormSave extends FormSave {}

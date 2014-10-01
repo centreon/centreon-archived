@@ -5,7 +5,7 @@
         <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
         <column name="ip_address" phpName="IpAddress" type="VARCHAR" size="255" required="true"/>
         <column name="enable" phpName="Enable" type="INTEGER" size="1" default="1" required="true"/>
-        <column name="multiple_poller" phpName="MultiplePoller" type="INTEGER" size="1" default="1" required="true"/>
+        <column name="multiple_poller" phpName="MultiplePoller" type="INTEGER" size="1" default="0" required="true"/>
         <unique name="cfg_nodes_idx01">
             <unique-column name="name" />
         </unique>

@@ -35,24 +35,4 @@
 
 namespace CentreonConfiguration\Events;
 
-class BrokerFormSave
-{
-    private $params;
-
-    /**
-     * @param array $brokerParams
-     */
-    public function __construct($brokerParams)
-    {
-        $this->params = $brokerParams;
-    }
-
-    /**
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-}
+class BrokerFormSave extends FormSave {}
