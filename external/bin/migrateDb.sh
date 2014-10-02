@@ -3,7 +3,7 @@
 # Notice
 # ------
 # This script is used for migrating from Centreon 2.5.x to Centreon 3.x
-# Make sure to back up your original database !!
+# Make sure to back up your original databases !!
 #
 
 SOURCE_DB=centreon
@@ -14,7 +14,9 @@ VERBOSE=0
 EXT_BIN="$(dirname $(dirname $0))/bin"
 SCRIPT_RENAME="$(dirname $(dirname $0))/sql/renameTables.sql"
 SCRIPT_PREMIGRATION="$(dirname $(dirname $0))/sql/migration.sql"
-CENTREON_CONSOLE="centreonConsole core:internal:Install"
+CENTREON_CONSOLE="centreonConsole"
+CENTREON_CONSOLE_PARAMS="core:internal:Install"
+
 
 usage() {
   echo -e "Usage: $1 [-s source] [-d dest] [-u dbuser] [-p dbpass] [-H dbhost] [-t tmp_dir] [-v] [-D]"
@@ -127,16 +129,16 @@ if [ $? -ne 0 ]; then
   clean_exit "${TMP_DUMP}" 1
 fi
 
-log "Preparing database for Propel : ${DEST_DB}"
+log "Preparing database for Propel"
 mysql ${MYSQL_ARGS} "${DEST_DB}" < "${SCRIPT_PREMIGRATION}"
 if [ $? -ne 0 ]; then
   echo "Error while preparing database" >&2
   clean_exit "${TMP_DUMP}" 1
 fi
 
-log "Migrating with Propel : ${DEST_DB}"
+log "Migrating with Propel"
 cd ${EXT_BIN}
-./"${CENTREON_CONSOLE}"
+./"${CENTREON_CONSOLE}" "${CENTREON_CONSOLE_PARAMS}"
 cd -
 if [ $? -ne 0 ]; then
   echo "Error while migrating database" >&2
