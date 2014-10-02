@@ -1,11 +1,20 @@
 #!/bin/bash
+#
+# Notice
+# ------
+# This script is used for migrating from Centreon 2.5.x to Centreon 3.x
+# Make sure to back up your original database !!
+#
 
 SOURCE_DB=centreon
 DEST_DB=centreon_storage
 TMP_DIR=/tmp
 DROP_DB=0
 VERBOSE=0
+EXT_BIN="$(dirname $(dirname $0))/bin"
 SCRIPT_RENAME="$(dirname $(dirname $0))/sql/renameTables.sql"
+SCRIPT_PREMIGRATION="$(dirname $(dirname $0))/sql/migration.sql"
+CENTREON_CONSOLE="centreonConsole core:internal:Install"
 
 usage() {
   echo -e "Usage: $1 [-s source] [-d dest] [-u dbuser] [-p dbpass] [-H dbhost] [-t tmp_dir] [-v] [-D]"
@@ -72,7 +81,13 @@ done
 
 # Test if the rename script file exists
 if [ ! -f "${SCRIPT_RENAME}" ]; then
-  echo "The script file for rename table does not exists." >&2
+  echo "The rename sql file does not exist." >&2
+  exit 1
+fi
+
+# Test if the pre migration script file exists
+if [ ! -f "${SCRIPT_PREMIGRATION}" ]; then
+  echo "The pre migration file does not exist." >&2
   exit 1
 fi
 
@@ -108,7 +123,23 @@ fi
 log "Rename tables in destination database : ${DEST_DB}"
 mysql ${MYSQL_ARGS} "${DEST_DB}" < "${SCRIPT_RENAME}"
 if [ $? -ne 0 ]; then
-  echo "Error in renaming tables" >&2
+  echo "Error while renaming tables" >&2
+  clean_exit "${TMP_DUMP}" 1
+fi
+
+log "Preparing database for Propel : ${DEST_DB}"
+mysql ${MYSQL_ARGS} "${DEST_DB}" < "${SCRIPT_PREMIGRATION}"
+if [ $? -ne 0 ]; then
+  echo "Error while preparing database" >&2
+  clean_exit "${TMP_DUMP}" 1
+fi
+
+log "Migrating with Propel : ${DEST_DB}"
+cd ${EXT_BIN}
+./"${CENTREON_CONSOLE}"
+cd -
+if [ $? -ne 0 ]; then
+  echo "Error while migrating database" >&2
   clean_exit "${TMP_DUMP}" 1
 fi
 
