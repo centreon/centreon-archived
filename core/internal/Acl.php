@@ -91,11 +91,11 @@ class Acl
                 AND ammr.menu_id = m.menu_id
                 AND agmr.acl_group_id IN (
                     SELECT acl_group_id 
-                    FROM acl_group_contacts_relations agcr
+                    FROM cfg_acl_group_contacts_relations agcr
                     WHERE agcr.contact_contact_id = :contactid
                     UNION
                     SELECT acl_group_id
-                    FROM cfg_acl_group_contactgroups_relations agcgr, contactgroup_contact_relation ccr
+                    FROM cfg_acl_group_contactgroups_relations agcgr, cfg_contactgroups_contacts_relations ccr
                     WHERE agcgr.cg_cg_id = ccr.contactgroup_cg_id
                     AND ccr.contact_contact_id = :contactid
                 ) "
