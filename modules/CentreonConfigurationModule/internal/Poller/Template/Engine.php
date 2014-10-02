@@ -78,8 +78,18 @@ class Engine
             throw new \Exception("No Engine Part Found");
         }
         foreach($tplContent['content']['engine']['setup'] as $section) {
-            var_dump($section);
-            $this->setUp = new EngineSetUp($section);
+            $this->setUp[] = new EngineSetUp($section);
+        }
+    }
+    
+    /**
+     * 
+     * @param array $steps
+     */
+    public function getSteps(&$steps)
+    {
+        foreach ($this->setUp as $singleSetUp) {
+            $singleSetUp->genForm($steps);
         }
     }
 }

@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Internal\Poller;
 
 use \CentreonConfiguration\Internal\Poller\Template\Engine;
 use \CentreonConfiguration\Internal\Poller\Template\Broker;
+use Centreon\Internal\Form;
 
 /**
  * Description of Template
@@ -70,8 +71,14 @@ class Template
     public function __construct($name, $enginePath = "", $brokerPath = "")
     {
         $this->name = $name;
-        $this->enginePart = new Engine($enginePath);
-        $this->brokerPart = new Broker($brokerPath);
+        
+        if (!empty($enginePath)) {
+            $this->enginePart = new Engine($enginePath);
+        }
+        
+        if (!empty($brokerPath)) {
+            $this->brokerPart = new Broker($brokerPath);
+        }
     }
     
     /**
@@ -110,8 +117,77 @@ class Template
         return $this->brokerPart;
     }
     
+    /**
+     * 
+     */
     public function genForm()
     {
+       return $this->loadSteps();
+    }
+    
+    /**
+     * 
+     * @param array $steps
+     */
+    private function loadSteps()
+    {
+        $steps = array();
         
+        $rStep = array(
+            'engine' => false,
+            'broker' => false
+        );
+        
+        if (!is_null($this->enginePart)) {
+            $rStep['engine'] = true;
+            $this->enginePart->getSteps($steps);
+        }
+        
+        if (!is_null($this->brokerPart)) {
+            $rStep['broker'] = true;
+            $this->brokerPart->getSteps($steps);
+        }
+        
+        foreach ($steps as $stepName => $step) {
+            $fName = array();
+            $fields = "<div>";
+            $fComponents = $this->buildFormComponents($step, $fName);
+            
+            foreach($fName as $field) {
+                $fields .= $fComponents[$field]['html'];
+            }
+            $fields .= "</div>";
+            $rStep['steps'][] = array(
+                'name' => $stepName,
+                'html' => $fields
+            );
+        }
+        
+        return $rStep;
+    }
+    
+    /**
+     * 
+     * @param array $step
+     * @return array
+     */
+    private function buildFormComponents($step, &$fName)
+    {
+        $myForm = new Form('pollerTemplate');
+        foreach ($step as $field) {
+            $fName[] = $field['name'];
+            $formField = array(
+                'name' => $field['name'],
+                'label' => $field['label'],
+                'type' => $field['type'],
+                'mandatory' => 1,
+                'attributes' => json_encode($field['attributes'])
+            );
+            $myForm->addStatic($formField);
+        }
+        $formComponents = $myForm->toSmarty();
+        unset($myForm);
+        
+        return $formComponents;
     }
 }

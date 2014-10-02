@@ -327,9 +327,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $myLiteTemplate = unserialize($pollerTemplateList[$params['name']]);
         $myTemplate = $myLiteTemplate->toFullTemplate();
         
-        echo '<pre>'; var_dump($myTemplate); echo '</pre>';
-        
-        //$router->response()->json($tplManager->generateFormForTemplate());
+        $router->response()->json($myTemplate->genForm());
         
     }
 }

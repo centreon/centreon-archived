@@ -78,8 +78,18 @@ class Broker
             throw new \Exception("No Broker Part Found");
         }
         foreach($tplContent['content']['broker']['setup'] as $section) {
-            var_dump($section);
-            $this->setUp = new BrokerSetUp($section);
+            $this->setUp[] = new BrokerSetUp($section);
+        }
+    }
+    
+    /**
+     * 
+     * @param array $steps
+     */
+    public function getSteps(&$steps)
+    {
+        foreach ($this->setUp as $singleSetUp) {
+            $singleSetUp->genForm($steps);
         }
     }
 }
