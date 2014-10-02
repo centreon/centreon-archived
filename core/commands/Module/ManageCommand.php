@@ -104,7 +104,7 @@ class ManageCommand extends \Centreon\Internal\Command\AbstractCommand
         $moduleInstaller->remove();
         unset($moduleInstaller);
         $moduleInstaller = Informations::getModuleInstaller($moduleName);
-        $moduleInstaller->install();
+        $moduleInstaller->install(false);
     }
     
     /**
