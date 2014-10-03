@@ -135,7 +135,8 @@ class Template
         
         $rStep = array(
             'engine' => false,
-            'broker' => false
+            'broker' => false,
+            'steps' => array()
         );
         
         if (!is_null($this->enginePart)) {
