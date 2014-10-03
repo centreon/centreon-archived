@@ -37,7 +37,7 @@ namespace CentreonBroker\Hooks;
 
 use Centreon\Internal\Di;
 
-class DisplayEnginePaths
+class DisplayBrokerPaths
 {
     /**
      * Execute action 
