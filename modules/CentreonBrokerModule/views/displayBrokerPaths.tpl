@@ -14,5 +14,7 @@
 	</div>
 {/foreach}
 <script>
-{$variables.js}
+window.onload = function() {
+	{$variables.js}
+};
 </script>
