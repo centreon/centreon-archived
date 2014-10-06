@@ -65,7 +65,10 @@ function loadTemplateSteps( data, $el ) {
     $.ajax({
       url: "{url_for url='/configuration/poller/templates/form'}",
       type: "post",
-      data: { name: data.id },
+      data: {
+        name: data.id,
+        poller: {$object_id}
+      },
       dataType: "json",
       success: function( data, textStatus, jqXHR ) {
         var nbStep = 2;
@@ -110,6 +113,45 @@ $(function() {
         data = $this.select2( "data" );
  
     loadTemplateSteps( data, $this );
+  });
+
+  /* Action for save */
+  $( "form" ).on( "submit", function( event ) {
+    var errorMsg = "",
+        validMandatory = true,
+        $form = $( this );
+    /* Validate mandatory fields */
+    $form.find( "input.mandatory-field" ).each( function( idx ) {
+      if ( $( this ).val().trim() === "" ) {
+        validMandatory = false;
+        $( this ).parent().addClass( "has-error has-feedback" );
+        errorMsg += "<p>" + $( this ).attr( "placeholder" ) + " is required</p>";
+      }
+    });
+
+    if ( !validMandatory ) {
+      alertMessage( errorMsg, "alert-danger" );
+      return false;
+    }
+
+    $.ajax({
+      url: "{url_for url='/configuration/poller/update'}",
+      data: $( "#wizard_form" ).serializeArray(),
+      dataType: "json",
+      type: "post",
+      success: function( data, textStatus, jqXHR ) {
+        alertClose();
+        if ( data.success ) {
+          {if isset($formRedirect) && $formRedirect}
+            window.location="{url_for url=$formRedirectRoute}";
+          {else}
+            alertMessage("The object has been successfully saved", "alert-success");
+          {/if}
+        } else {
+          alertMessage( data.error, "alert-danger" );
+        }
+      }
+    });
   });
 });
 </script>

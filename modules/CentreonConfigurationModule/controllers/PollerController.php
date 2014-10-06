@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Controllers;
 use \Centreon\Internal\Di;
 
 use \CentreonConfiguration\Models\Poller as PollerModel;
+use \CentreonConfiguration\Models\Node as NodeModel;
 use \CentreonConfiguration\Repository\PollerRepository;
 use CentreonConfiguration\Internal\PollerTemplateManager;
 use \Centreon\Internal\Form;
@@ -111,7 +112,17 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function updateAction()
     {
-        parent::updateAction();
+        $params = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+
+        /* Save information */
+        try {
+            PollerRepository::update($params);
+        } catch (Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        return $router->response()->json(array('success' => true));
     }
     
     /**
@@ -162,8 +173,16 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function editAction()
     {
+        $params = $this->getParams();
+        $poller = PollerModel::get($params['id']);
+        $node = NodeModel::get($poller['node_id']);
         /* Prepare form for edition */
-        $form = $this->getForm('edit_poller');
+        $form = $this->getForm('edit_poller', $params['id']);
+        $form->setDefaults(array(
+            'poller_name' => $poller['name'],
+            'ip_address' => $node['ip_address']
+        ));
+        $this->tpl->assign('object_id', $params['id']);
         $this->tpl->assign('form', $form->toSmarty());
         $this->tpl->display('editPoller.tpl');
     }
@@ -266,9 +285,10 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      * Return the form for add or edit a poller
      *
      * @param string $formName The form ID
+     * @param int $pollerId The poller id
      * @return \Centreon\Internal\Form
      */
-    private function getForm($formName)
+    private function getForm($formName, $pollerId = 0)
     {
         $form = new \Centreon\Internal\Form($formName);
         $form->add(array(
@@ -297,7 +317,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
             'mandatory' => true,
             'attributes' => json_encode($selectParams)
         ), array(
-            'id' => 0
+            'id' => $pollerId
         ));
         return $form;
     }

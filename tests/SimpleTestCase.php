@@ -34,19 +34,37 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal\Poller\Template;
+namespace Test\Centreon;
+
+use \Centreon\Internal\Di,
+    \Centreon\Internal\Bootstrap;
 
 /**
+ * Description of PollerTestCase
  *
  * @author lionel
  */
-interface iPart
+class SimpleTestCase extends \PHPUnit_Framework_TestCase
 {
-    public function getFilePath();
-    
-    public function setFilePath();
-    
-    public function addSetup();
-    
-    public function removeSetup();
+    protected static $config = null;
+    protected $dataPath = null;
+
+    public static function setUpBeforeClass()
+    {
+        $bootstrapSteps = array(
+            'configuration', 
+            'database',
+            'template',
+            'cache', 
+            'routes',
+            'organization'
+        );
+        $bootstrap = new Bootstrap();
+        $bootstrap->init($bootstrapSteps);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        Di::reset();
+    }
 }

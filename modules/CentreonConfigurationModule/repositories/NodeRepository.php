@@ -66,4 +66,20 @@ class NodeRepository extends \CentreonConfiguration\Repository\Repository
             'ip_address' => $params['ip_address']
         ));
     }
+
+    /**
+     * Update a node
+     *
+     * @param array $params The parameters for create a node
+     */
+    public static function update($params)
+    {
+        $nodeId = PollerRepository::getNode();
+        Node::update($nodeId,
+            array(
+                'name' => $params['poller_name'],
+                'ip_address' => $params['ip_address']
+            )
+        )
+    }
 }
