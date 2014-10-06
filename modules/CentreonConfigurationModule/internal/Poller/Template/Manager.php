@@ -46,12 +46,11 @@ use \Centreon\Internal\Module\Informations;
  */
 class Manager
 {
-    
-    public function fullFileParser($filePath)
-    {
-        
-    }
-    
+    /**
+     * 
+     * @param string $filePath
+     * @return boolean
+     */
     public static function liteFileParser($filePath)
     {
         $liteTemplate = array(

@@ -67,6 +67,9 @@ class Template
     
     /**
      * 
+     * @param string $name
+     * @param string $enginePath
+     * @param string $brokerPath
      */
     public function __construct($name, $enginePath = "", $brokerPath = "")
     {
@@ -110,6 +113,15 @@ class Template
     
     /**
      * 
+     * @param \CentreonConfiguration\Internal\Poller\Template\Engine $newEnginePart
+     */
+    public function setEnginePart(\CentreonConfiguration\Internal\Poller\Template\Engine $newEnginePart)
+    {
+        $this->enginePart = $newEnginePart;
+    }
+    
+    /**
+     * 
      * @return \CentreonConfiguration\Internal\Poller\Template\Broker
      */
     public function getBrokerPart()
@@ -119,6 +131,16 @@ class Template
     
     /**
      * 
+     * @param \CentreonConfiguration\Internal\Poller\Template\Broker $newBrokerPart
+     */
+    public function setBrokerPart(\CentreonConfiguration\Internal\Poller\Template\Broker $newBrokerPart)
+    {
+        $this->brokerPart = $newBrokerPart;
+    }
+    
+    /**
+     * 
+     * @return array
      */
     public function genForm()
     {
@@ -127,7 +149,7 @@ class Template
     
     /**
      * 
-     * @param array $steps
+     * @return array
      */
     private function loadSteps()
     {
@@ -170,6 +192,7 @@ class Template
     /**
      * 
      * @param array $step
+     * @param array $fName
      * @return array
      */
     private function buildFormComponents($step, &$fName)
