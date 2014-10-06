@@ -25,7 +25,7 @@
         {$form.poller_tmpl.html}
       </div>
       <div class="tab-pane" id="pollerPaths">
-        {hook name='displayNodePaths'}
+        {hook name='displayNodePaths' params=$hookParams}
       </div>
     </div>
     <div>
