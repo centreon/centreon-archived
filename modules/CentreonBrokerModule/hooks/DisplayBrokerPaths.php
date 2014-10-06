@@ -47,8 +47,8 @@ class DisplayBrokerPaths
     public static function execute($params)
     {
         $paths = static::getPathList();
-        if (isset($params['nodeId']) && $params['nodeId']) {
-            $paths = static::getPathValues($params['nodeId'], $paths);
+        if (isset($params['pollerId']) && $params['pollerId']) {
+            $paths = static::getPathValues($params['pollerId'], $paths);
         }
 
         $js = '
@@ -107,11 +107,11 @@ class DisplayBrokerPaths
     /**
      * Get path values
      *
-     * @param int $nodeId
+     * @param int $pollerId
      * @param array $paths
      * @return array
      */
-    protected static function getPathValues($nodeId, $paths)
+    protected static function getPathValues($pollerId, $paths)
     {
         if (!count($paths)) {
             return $paths;
