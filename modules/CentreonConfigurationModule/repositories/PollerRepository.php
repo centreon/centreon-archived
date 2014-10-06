@@ -39,6 +39,7 @@ use \Centreon\Internal\Di;
 use \CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
 use \CentreonConfiguration\Events\EngineFormSave;
 use \CentreonConfiguration\Models\Poller;
+use \CentreonConfiguration\Models\Node;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -135,8 +136,39 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
             'port' => 0,
             'tmpl_name' => $params['poller_tmpl']
         ));
-        $values = new EngineFormSave($nodeId, $params);
+        $values = new EngineFormSave($pollerId, $params);
         $di->get('events')->emit('centreon-configuration.form.save', array($values));
         return $pollerId;
+    }
+
+
+    /**
+     * Poller update function
+     *
+     * @param array $givenParameters The parameters for update a poller
+     */
+    public static function update($params)
+    {
+        NodeRepository::update($params);
+        Poller::update(
+            $params['object_id'],
+            array(
+                'name' => $params['poller_name'],
+                'tmpl_name' => $params['poller_tmpl']
+            )
+        );
+        $values = new EngineFormSave($params['object_id'], $params);
+        $di->get('events')->emit('centreon-configuration.form.save', array($values));
+    }
+
+    /**
+     * Get the node information
+     *
+     * @return array
+     */
+    public static function getNode($pollerId)
+    {
+        $poller = Poller::get($pollerId);
+        return Node::get($poller['node_id']);
     }
 }
