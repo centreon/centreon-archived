@@ -42,7 +42,7 @@ class DisplayEnginePathsTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
 
-    public function testExecuteWithoutNodeId()
+    public function testExecuteWithoutPollerId()
     {
         $params = array();
         $result = DisplayEnginePaths::execute($params);
@@ -54,7 +54,7 @@ class DisplayEnginePathsTest extends DbTestCase
         $this->assertEquals('', $result['variables']['paths']['resource_file']['value']);
     }
 
-    public function testExecuteWithNodeId()
+    public function testExecuteWithPollerId()
     {
         $this->markTestIncomplete("Must finish this test");
 /*        $params = array('nodeId' => 1);
