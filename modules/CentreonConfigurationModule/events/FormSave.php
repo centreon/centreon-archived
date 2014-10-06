@@ -43,17 +43,17 @@ class FormSave
     private $params;
 
     /**
-     * @var int | refers to the node id
+     * @var int | refers to the poller id
      */
-    private $nodeId;
+    private $pollerId;
 
     /**
-     * @param int $nodeId
+     * @param int $pollerId
      * @param array $engineParams
      */
-    public function __construct($nodeId, $params)
+    public function __construct($pollerId, $params)
     {
-        $this->nodeId = $nodeId;
+        $this->pollerId = $pollerId;
         $this->params = $params;
     }
 
@@ -70,8 +70,8 @@ class FormSave
      *
      * @return int
      */
-    public function getNodeId()
+    public function getPollerId()
     {
-        return $this->nodeId;
+        return $this->pollerId;
     }
 }

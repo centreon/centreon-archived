@@ -38,10 +38,10 @@ namespace CentreonConfiguration\Events;
 class NodeEvent
 {
     /**
-     * Refers to the node id
+     * Refers to the poller id
      * @var int
      */
-    private $nodeId;
+    private $pollerId;
 
     /**
      * Array of output - should be the output of the process after 
@@ -59,11 +59,11 @@ class NodeEvent
     private $status;
 
     /**
-     * @param int $nodeId
+     * @param int $pollerId
      */
-    public function __construct($nodeId)
+    public function __construct($pollerId)
     {
-        $this->nodeId = $nodeId;
+        $this->pollerId = $pollerId;
         $this->output = array();
         $this->status = true;
     }
@@ -71,9 +71,9 @@ class NodeEvent
     /**
      * @return int
      */
-    public function getNodeId()
+    public function getPollerId()
     {
-        return $this->nodeId;
+        return $this->pollerId;
     }
 
     /**
