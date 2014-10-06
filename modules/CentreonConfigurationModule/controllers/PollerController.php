@@ -252,9 +252,11 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
             
             $returnData['id'] = $p;
             $returnData['text'] = ucfirst($p);
+        } else {
+            $poller = PollerModel::get($params['id']);
+            $returnData['id'] = $poller['tmpl_name'];
+            $returnData['text'] = ucfirst($poller['tmpl_name']);
         }
-        
-        
         $router->response()->json($returnData);
     }
     
