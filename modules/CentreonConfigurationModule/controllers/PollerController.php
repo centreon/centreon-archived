@@ -122,36 +122,8 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        /* Prepare default information */
-        $form = new \Centreon\Internal\Form("add_poller");
-        $form->add(array(
-            'type' => 'text',
-            'label' => 'Poller name',
-            'name' => 'poller_name',
-            'mandatory' => true
-        ));
-        $form->add(array(
-            'type' => 'text',
-            'label' => 'IP Address',
-            'name' => 'ip_address',
-            'mandatory' => true
-        ));
-        $selectParams = array(
-            'object_type' => 'object',
-            'defaultValuesRoute' => '/configuration/poller/templates',
-            'listValuesRoute' => '/configuration/poller/[i:id]/template',
-            'multiple' => false,
-            'initCallback' => 'loadTemplateSteps'
-        );
-        $form->add(array(
-            'type' => 'templatepoller',
-            'label' => 'Poller Template',
-            'name' => 'poller_tmpl',
-            'mandatory' => true,
-            'attributes' => json_encode($selectParams)
-        ), array(
-            'id' => 0
-        ));
+        /* Prepare form for wizard */
+        $form = $this->getForm('add_poller');
         $this->tpl->assign('form', $form->toSmarty());
         $this->tpl->display('addPoller.tpl');
     }
@@ -190,53 +162,12 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function editAction()
     {
-        parent::editAction();
+        /* Prepare form for edition */
+        $form = $this->getForm('edit_poller');
+        $this->tpl->assign('form', $form->toSmarty());
+        $this->tpl->display('editPoller.tpl');
     }
     
-    /**
-     * Duplicate a poller
-     *
-     * @method post
-     * @route /configuration/poller/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /configuration/poller/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-    
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /configuration/poller/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /configuration/poller/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
     /**
      * Delete action for poller
      *
@@ -329,5 +260,45 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         
         $router->response()->json($myTemplate->genForm());
         
+    }
+
+    /**
+     * Return the form for add or edit a poller
+     *
+     * @param string $formName The form ID
+     * @return \Centreon\Internal\Form
+     */
+    private function getForm($formName)
+    {
+        $form = new \Centreon\Internal\Form($formName);
+        $form->add(array(
+            'type' => 'text',
+            'label' => 'Poller name',
+            'name' => 'poller_name',
+            'mandatory' => true
+        ));
+        $form->add(array(
+            'type' => 'text',
+            'label' => 'IP Address',
+            'name' => 'ip_address',
+            'mandatory' => true
+        ));
+        $selectParams = array(
+            'object_type' => 'object',
+            'defaultValuesRoute' => '/configuration/poller/templates',
+            'listValuesRoute' => '/configuration/poller/[i:id]/template',
+            'multiple' => false,
+            'initCallback' => 'loadTemplateSteps'
+        );
+        $form->add(array(
+            'type' => 'templatepoller',
+            'label' => 'Poller Template',
+            'name' => 'poller_tmpl',
+            'mandatory' => true,
+            'attributes' => json_encode($selectParams)
+        ), array(
+            'id' => 0
+        ));
+        return $form;
     }
 }
