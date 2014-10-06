@@ -47,6 +47,11 @@ use \Centreon\Internal\Di;
 class ConfigGenerateMainRepository
 {
     /**
+     * @var string
+     */
+    protected static $path;
+
+    /**
      * Method for generating Main configuration file
      * 
      * @param array $filesList
@@ -57,6 +62,8 @@ class ConfigGenerateMainRepository
      */
     public static function generate(& $filesList, $poller_id, $path, $filename, $testing = 0)
     {
+        static::$path = $path;
+
         /* Get Content */
         $content = static::getContent($poller_id, $filesList, $testing);
         
@@ -70,10 +77,16 @@ class ConfigGenerateMainRepository
      * @param array $filesList
      * @param array $content
      * @param int $testing
+     * @param int $pollerId
      * @return array
      */
-    private static function getFilesList(& $filesList, $content, $testing)
+    private static function getFilesList($filesList, $content, $testing, $pollerId)
     {
+        $di = Di::getDefault();
+
+        $tmpPath = static::$path;
+        $engineEtcPath = rtrim($di->get('config')->get('global', 'centreon_generate_dir'), '/');
+
         foreach ($filesList as $category => $data) {
             if ($category != 'main_file') {
                 foreach ($data as $path) {
@@ -81,7 +94,7 @@ class ConfigGenerateMainRepository
                         $content[$category] = array();
                     }
                     if (!$testing) {
-                        $path = str_replace("/var/lib/centreon/tmp/1/", "/etc/centreon-engine/", $path);
+                        $path = str_replace("{$tmpPath}/{$pollerId}/", "{$engineEtcPath}/", $path);
                     }
                     $content[$category][] = $path;
                 }
@@ -113,12 +126,12 @@ class ConfigGenerateMainRepository
         $getCmd = static::getCommandIdField();
         
         /* get configuration files */
-        $content = static::getFilesList($filesList, $content, $testing);
+        $content = static::getFilesList($filesList, $content, $testing, $poller_id);
 
         /* Get information into the database. */
-        $query = "SELECT * FROM cfg_engine WHERE engine_server_id = '$poller_id'";
+        $query = "SELECT * FROM cfg_engine WHERE engine_server_id = ?";
         $stmt = $dbconn->prepare($query);
-        $stmt->execute();
+        $stmt->execute(array($poller_id));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             foreach ($row as $key => $value) {
                 if ($key != "cfg_dir") {
@@ -134,7 +147,7 @@ class ConfigGenerateMainRepository
                         $content[$key] = $value;
                     } else {
                         if ($value != "") {
-                            $content[$key] = html_entity_decode($value);
+                            $content[$key] = $value;
                         }
                     }
                 }
@@ -154,8 +167,7 @@ class ConfigGenerateMainRepository
         $resList = array();
         $dirList = array();
         
-        /* TODO : Change hardcoded path */
-        $path = "/var/lib/centreon/tmp/";
+        $path = static::$path;
         
         /* Check that that basic path exists */
         if (!file_exists($path)) {
@@ -215,9 +227,11 @@ class ConfigGenerateMainRepository
 
         /* Get broker in DB */
         $stmt = $dbconn->prepare(
-            "SELECT broker_module FROM `cfg_engine_broker_module` WHERE `cfg_engine_id` = '".$poller_id."'"
+            "SELECT broker_module 
+            FROM `cfg_engine_broker_module` 
+            WHERE `cfg_engine_id` = ?"
         );
-        $stmt->execute();
+        $stmt->execute(array($poller_id));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $broker[] = $row["broker_module"];
         }
