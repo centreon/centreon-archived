@@ -102,7 +102,7 @@ class PollerDatatable extends \Centreon\Internal\Datatable
                 'parameters' => array(
                     'route' => '/configuration/poller/[i:id]',
                     'routeParams' => array(
-                        'id' => '::id::'
+                        'id' => '::poller_id::'
                     ),
                     'linkName' => '::name::'
                 )
