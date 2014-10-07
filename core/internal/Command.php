@@ -37,6 +37,7 @@
 namespace Centreon\Internal;
 
 use \Centreon\Internal\Utils\CommandLine\Colorize;
+use \Centreon\Internal\Module\Informations;
 
 class Command
 {
@@ -52,7 +53,7 @@ class Command
     public function __construct($requestLine, $parametersLine)
     {
         try {
-            $bootstrap = new \Centreon\Internal\Bootstrap();
+            $bootstrap = new Bootstrap();
             $sectionToInit = array('configuration', 'database', 'cache', 'logger');
             $bootstrap->init($sectionToInit);
             $this->requestLine = $requestLine;
@@ -163,7 +164,7 @@ class Command
         $action = $requestLineElements['action'];
         
         if (strtolower($module) != 'core') {
-            if (!\Centreon\Internal\Module\Informations::isModuleReachable($module)) {
+            if (!Informations::isModuleReachable($module)) {
                 throw new Exception("The module doesn't exist");
             }
         }
@@ -285,7 +286,7 @@ class Command
             $moduleName = str_replace('Module', '', $module);
             preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
             $moduleShortName = strtolower(implode('-', $myMatches[0]));
-            if (\Centreon\Internal\Module\Informations::isModuleReachable($moduleShortName)) {
+            if (Informations::isModuleReachable($moduleShortName)) {
                 $this->getCommandDirectoryContent(
                     realpath(__DIR__."/../../modules/$module/commands/"),
                     $moduleShortName,

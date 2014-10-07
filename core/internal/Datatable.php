@@ -33,6 +33,7 @@
  * For more information : contact@centreon.com
  * 
  */
+
 namespace Centreon\Internal;
 
 /**

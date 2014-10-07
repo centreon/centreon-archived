@@ -36,6 +36,7 @@
 namespace Centreon\Internal;
 
 use \Centreon\Internal\Di;
+use \Centreon\Internal\Exception;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -104,7 +105,7 @@ class Template extends \Smarty
      */
     public function initConfig()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         
         $this->setTemplateDir($this->buildTemplateDirList());
@@ -309,12 +310,12 @@ class Template extends \Smarty
      * @param mixed $varValue
      * @param boolean $nocache
      * @return \Centreon\Template
-     * @throws \Centreon\Exception
+     * @throws \Centreon\Internal\Exception
      */
     public function assign($varName, $varValue = null, $nocache = false)
     {
         if (in_array($varName, $this->exclusionList)) {
-            throw new \Centreon\Exception(_('This variable name is reserved'));
+            throw new Exception(_('This variable name is reserved'));
         }
         parent::assign($varName, $varValue, $nocache);
         return $this;
@@ -326,7 +327,7 @@ class Template extends \Smarty
      * @param string $filename
      * @param string $module
      * @return boolean
-     * @throws \Centreon\Exception
+     * @throws \Centreon\Internal\Exception
      */
     private function isStaticFileExist($type, $filename, $module)
     {
