@@ -97,11 +97,13 @@ Démarrez avec l'option **Install or upgrade an existing system**
 
 .. image :: /images/guide_utilisateur/abootmenu.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Next**
 
 .. image :: /images/guide_utilisateur/adisplayicon.png
    :align: center
+   :scale: 65%
 
 Etape 2 : Choix de la langue
 ============================
@@ -110,11 +112,13 @@ Choisissez votre langue et cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/ainstalllanguage.png
    :align: center
+   :scale: 65%
 
 Sélectionnez le clavier utilisé par votre système puis cliquez sur **Suivant**.
 
 .. image :: /images/guide_utilisateur/akeyboard.png
    :align: center
+   :scale: 65%
 
 Etape 3 : Configuration générale
 ================================
@@ -123,11 +127,13 @@ En fonction du type de stockage désiré, choisissez les options nécessaires po
 
 .. image :: /images/guide_utilisateur/adatastore1.png
    :align: center
+   :scale: 65%
 
 Un message d'avertissement peut apparaître 
 
 .. image :: /images/guide_utilisateur/adatastore2.png
    :align: center
+   :scale: 65%
 
 Choisissez le nom d'hôte de votre machine et cliquez sur **Configurer le réseau** afin de pouvoir modifier les paramètres de votre carte réseau.
 
@@ -136,6 +142,7 @@ afin de configurer l'adresse IP des interfaces. Cliquez sur **Appliquer...** afi
 
 .. image :: /images/guide_utilisateur/anetworkconfig.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Fermer** puis sur **Suivant** afin de continuer.
 
@@ -143,6 +150,7 @@ Sélectionnez votre fuseau horaire puis cliquez sur **Suivant**.
 
 .. image :: /images/guide_utilisateur/afuseauhoraire.png
    :align: center
+   :scale: 65%
 
 Entrez le mot de passe désiré du compte 'root', puis cliquez sur **Suivant**.
 
@@ -150,6 +158,7 @@ Sélectionnez les options de partitionnement qui vous conviennent le mieux. Puis
 
 .. image :: /images/guide_utilisateur/apartitionning.png
    :align: center
+   :scale: 65%
 
 Etape 4 : Sélection des composants
 ==================================
@@ -161,6 +170,10 @@ Il est possible de choisir différentes options à la question **Which server ty
 
 .. image :: /images/guide_utilisateur/aservertoinstall.png
    :align: center
+   :scale: 65%
+
+|
+
 
 *	Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
 *	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
