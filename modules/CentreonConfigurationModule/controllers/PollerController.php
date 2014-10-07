@@ -280,7 +280,6 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $myTemplate = $myLiteTemplate->toFullTemplate();
         
         $router->response()->json($myTemplate->genForm());
-        
     }
 
     /**
