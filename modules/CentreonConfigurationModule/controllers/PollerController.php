@@ -184,6 +184,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         ));
         $this->tpl->assign('object_id', $params['id']);
         $this->tpl->assign('form', $form->toSmarty());
+	$this->tpl->assign('hookParams', array('pollerId' => $params['id']));
         $this->tpl->display('editPoller.tpl');
     }
     

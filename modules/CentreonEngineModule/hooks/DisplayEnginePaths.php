@@ -47,8 +47,8 @@ class DisplayEnginePaths
     public static function execute($params)
     {
         $paths = static::getPathList();
-        if (isset($params['nodeId']) && $params['nodeId']) {
-            $paths = static::getPathValues($params['nodeId'], $paths);
+        if (isset($params['pollerId']) && $params['pollerId']) {
+            $paths = static::getPathValues($params['pollerId'], $paths);
         }
         $js = '
             $(".param-help").each(function() {
@@ -117,11 +117,11 @@ class DisplayEnginePaths
     /**
      * Get path values
      *
-     * @param int $nodeId
+     * @param int $pollerId
      * @param array $paths
      * @return array
      */
-    protected static function getPathValues($nodeId, $paths)
+    protected static function getPathValues($pollerId, $paths)
     {
         if (!count($paths)) {
             return $paths;
@@ -130,7 +130,7 @@ class DisplayEnginePaths
         $columns = implode(', ', array_keys($paths));
         $sql = "SELECT {$columns} FROM cfg_engine WHERE engine_server_id ?";
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($nodeId));
+        $stmt->execute(array($pollerId));
         $rows = $stmt->fetchAll();
         foreach ($rows as $k => $v) {
             $paths[$k]['value'] = $v;
