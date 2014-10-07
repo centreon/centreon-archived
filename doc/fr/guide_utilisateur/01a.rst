@@ -191,16 +191,19 @@ Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Brok
 
 .. image :: /images/guide_utilisateur/abrokertoinstall.png
    :align: center
+   :scale: 65%
 
 Une fois toutes ces options choisies, l'installation démarre. 
 
 .. image :: /images/guide_utilisateur/arpminstall.png
    :align: center
+   :scale: 65%
 
 Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 
 .. image :: /images/guide_utilisateur/arestartserver.png
    :align: center
+   :scale: 65%
 
 *************
 Configuration
@@ -214,42 +217,49 @@ L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/acentreonwelcome.png
    :align: center
+   :scale: 65%
 
 L'assistant de fin d'installation de Centreon contrôle la disponibilité des modules, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/acentreoncheckmodules.png
    :align: center
-
+   :scale: 65%
 Choisissez l'option **centreon-engine**. 
 
 .. image :: /images/guide_utilisateur/amonitoringengine1.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Next**. 
 
 .. image :: /images/guide_utilisateur/amonitoringengine2.png
    :align: center
+   :scale: 65%
 
 Lors du choix du broker, choisissez **centreon-broker**.
 
 .. image :: /images/guide_utilisateur/abrokerinfo1.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/abrokerinfo2.png
    :align: center
+   :scale: 65%
 
 Définissez les informations concernant l'utilisateur admin, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/aadmininfo.png
    :align: center
+   :scale: 65%
 
 Par défaut, le serveur 'localhost' est défini et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
 Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur accédant aux bases de données Centreon, à savoir 'centreon', cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/adbinfo.png
    :align: center
+   :scale: 65%
 
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
@@ -280,16 +290,19 @@ L'assistant de fin d'installation configure les bases de données, cliquez sur *
 
 .. image :: /images/guide_utilisateur/adbconf.png
    :align: center
+   :scale: 65%
 
 L'installation est terminée, cliquez sur **Finish**.
 
 .. image :: /images/guide_utilisateur/aendinstall.png
    :align: center
+   :scale: 65%
 
 Vous pouvez maintenant vous connecter.
 
 .. image :: /images/guide_utilisateur/aconnection.png
    :align: center
+   :scale: 65%
 
 Configuration de base
 =====================
