@@ -8,7 +8,7 @@ Merethis provides RPM for its products through Centreon Entreprise
 Server (CES). Open source products are freely available from our
 repository.
 
-These packages have been successfully tested with CentOS 5 and RedHat 5.
+These packages have been successfully tested with CentOS 5 and RedHat 5 for CES 2.2 and with CentOS 6 and RedHat 6 for CES 3.0.
 
 *************
 Prerequisites
@@ -17,7 +17,7 @@ Prerequisites
 In order to use RPM from the CES repository, you have to install the
 appropriate repo file. Run the following command as privileged user::
 
-  $ wget http://yum.centreon.com/standard/2.2/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+  $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
 
 The repo file is now installed.
 
@@ -25,7 +25,7 @@ The repo file is now installed.
 Centreon installation
 *********************
 
-In CES 2.2, there are two choise of basic configuration.
+In CES 2.2 and CES 3.0, there are two choise of basic configuration.
 
 +---------------------------------------+-------------------+-----------------+
 | Configuration package name            | Monitoring Engine | Broker module   |
