@@ -19,12 +19,14 @@ dépôts l'intégralité des dépendances nécessaires à l'installation
 de Centreon. Vous devez ajouter le dépôt *RPM Forge*
 
 Système 32-bits :
+
   ::
 
     $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
     $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
 Système 64-bits :
+
   ::
 
     $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.x86_64.rpm
