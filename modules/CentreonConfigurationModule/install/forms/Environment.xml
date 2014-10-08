@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="environment_form">
+		<route>/configuration/environment/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/configuration/environment</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+					<validators>
+						<validator events="blur">unique</validator>
+						<validator events="blur">forbiddenChar</validator>
+					</validators>
+				</field>
+				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+				<field name="level" label="Level" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+			</block>
+		</section>
+	</form>
+	<wizard name="add_environment">
+		<route>/configuration/environment/add</route>
+		<step name="General">
+			<field name="name" mandatory="1"></field>
+			<field name="description" mandatory="0"></field>
+			<field name="level" mandatory="1"></field>
+		</step>
+    </wizard>
+</forms>

@@ -341,6 +341,18 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
     }
     
     /**
+     * Get list of Environment for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/environment
+     */
+    public function checkEnvironmentHostAction()
+    {
+        parent::getSimpleRelation('environment_id', '\CentreonConfiguration\Models\Environment');
+    }
+    
+    /**
      * Get list of Timeperiods for a specific host
      *
      *

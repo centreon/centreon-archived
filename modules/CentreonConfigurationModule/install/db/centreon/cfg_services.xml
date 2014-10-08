@@ -43,7 +43,7 @@
         <column name="service_register" phpName="ServiceRegister" type="CHAR" sqlType="enum('0','1','2','3')" required="true" defaultValue="0"/>
         <column name="service_activate" phpName="ServiceActivate" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="1"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
-        <column name="environment_id" phpName="EnvironmentId" type="INTEGER" required="true"/>
+        <column name="environment_id" phpName="EnvironmentId" type="INTEGER" required="false"/>
         <foreign-key foreignTable="cfg_commands" name="service_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="command_command_id" foreign="command_id"/>
         </foreign-key>

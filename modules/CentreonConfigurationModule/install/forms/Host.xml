@@ -42,6 +42,15 @@
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
 				</field>
+                <field name="environment_id" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help>Define the environment of the host</help>
+                    <attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/environment/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/environment</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
+				</field>
 			</block>
             <block name="Macros">
                 <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
@@ -321,6 +330,7 @@
 			<field name="host_address" mandatory="1"></field>
 			<field name="host_hosttemplates" mandatory="0"></field>
 			<field name="host_custommacros" mandatory="0"></field>
+			<field name="environment_id" mandatory="0"></field>
 			<field name="host_icon" mandatory="0"></field>
 		</step>
 		<step name="Relations">

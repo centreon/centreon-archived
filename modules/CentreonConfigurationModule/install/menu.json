@@ -40,6 +40,11 @@
         "bgcolor": "#CCC",
         "menus": [
             {
+                "name" : "Environments",
+                "short_name": "conf_environments_list",
+                "route": "/configuration/environment"
+            },
+            {
                 "name": "Hosts",
                 "short_name": "conf_hosts",
                 "menus": [

@@ -226,9 +226,5 @@
     {
         "key": "interval_length",
         "value": 60
-    },
-    {
-        "key": "illegal_object_name_chars",
-        "value" : "~!$%^&amp;*&quot;|&#039;&lt;&gt;?,()="
     }
 ]

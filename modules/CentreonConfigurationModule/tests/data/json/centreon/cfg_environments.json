@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Production",
+        "description": "Production environment",
+        "level": 5,
+        "organization_id": 1
+    },
+    {
+        "name": "Preproduction",
+        "description": "Preproduction environment",
+        "level": 10,
+        "organization_id": 1
+    }
+]

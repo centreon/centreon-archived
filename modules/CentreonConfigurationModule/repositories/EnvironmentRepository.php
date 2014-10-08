@@ -33,41 +33,24 @@
  *
  */
 
-namespace Centreon\Internal\Form\Validator;
+namespace CentreonConfiguration\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
- * @subpackage Core
+ * @subpackage Repository
  */
-class ForbiddenChar implements Ivalidator
+class EnvironmentRepository extends \CentreonConfiguration\Repository\Repository
 {
     /**
-     * 
+     *
+     * @var string
      */
-    public static function validate($value, $objectName = "", $id = null, $fieldname = '')
-    {
-        $forbiddenCharDetected = false;
-        $illegalCharsStr = "~!$%^&|<>?,()=";
-        $illegalCharsStr .= '"';
-        $illegalCharsArr = str_split($illegalCharsStr);
-
-        $forbiddenCharsList = '';
-        foreach ($illegalCharsArr as $char) {
-            if (strpos($value, $char) !== false) {
-                $forbiddenCharDetected = true;
-                $forbiddenCharsList .= $char.' ';
-            }
-        }
-        
-        if (!$forbiddenCharDetected) {
-            $result = array('success' => true);
-        } else {
-            $result = array(
-                'success' => false,
-                'error' => _('One of these illegal chars ('.$forbiddenCharsList.') have been found')
-            );
-        }
-        return $result;
-    }
+    public static $tableName = 'cfg_environments';
+    
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = 'Environment';
 }

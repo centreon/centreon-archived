@@ -31,43 +31,20 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace Centreon\Internal\Form\Validator;
+
+namespace CentreonConfiguration\Models;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
- * @package Centreon
- * @subpackage Core
+ * Used for interacting with Environments
+ *
+ * @author lionel
  */
-class ForbiddenChar implements Ivalidator
+class Environment extends \Centreon\Models\CentreonBaseModel
 {
-    /**
-     * 
-     */
-    public static function validate($value, $objectName = "", $id = null, $fieldname = '')
-    {
-        $forbiddenCharDetected = false;
-        $illegalCharsStr = "~!$%^&|<>?,()=";
-        $illegalCharsStr .= '"';
-        $illegalCharsArr = str_split($illegalCharsStr);
-
-        $forbiddenCharsList = '';
-        foreach ($illegalCharsArr as $char) {
-            if (strpos($value, $char) !== false) {
-                $forbiddenCharDetected = true;
-                $forbiddenCharsList .= $char.' ';
-            }
-        }
-        
-        if (!$forbiddenCharDetected) {
-            $result = array('success' => true);
-        } else {
-            $result = array(
-                'success' => false,
-                'error' => _('One of these illegal chars ('.$forbiddenCharsList.') have been found')
-            );
-        }
-        return $result;
-    }
+    protected static $table = "cfg_environments";
+    protected static $primaryKey = "environment_id";
+    protected static $uniqueLabelField = "name";
 }
