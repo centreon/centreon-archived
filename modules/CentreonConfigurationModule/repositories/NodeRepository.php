@@ -80,6 +80,6 @@ class NodeRepository extends \CentreonConfiguration\Repository\Repository
                 'name' => $params['poller_name'],
                 'ip_address' => $params['ip_address']
             )
-        )
+        );
     }
 }
