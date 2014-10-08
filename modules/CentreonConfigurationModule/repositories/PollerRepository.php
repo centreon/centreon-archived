@@ -137,7 +137,7 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
             'tmpl_name' => $params['poller_tmpl']
         ));
         $values = new EngineFormSave($pollerId, $params);
-        $di->get('events')->emit('centreon-configuration.form.save', array($values));
+        $di->get('events')->emit('centreon-configuration.engine.form.save', array($values));
         return $pollerId;
     }
 
@@ -158,7 +158,7 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
             )
         );
         $values = new EngineFormSave($params['object_id'], $params);
-        $di->get('events')->emit('centreon-configuration.form.save', array($values));
+        $di->get('events')->emit('centreon-configuration.engine.form.save', array($values));
     }
 
     /**

@@ -36,15 +36,15 @@
 namespace CentreonBroker\Listeners\CentreonConfiguration;
 
 use \CentreonBroker\Repository\BrokerRepository;
-use \CentreonConfiguration\Events\BrokerFormSave;
+use \CentreonConfiguration\Events\BrokerFormSave as BrokerFormSaveEvent;
 
-class FormSave
+class BrokerFormSave
 {
     /**
      *
      * @param \CentreonConfiguration\Events\BrokerFormSave $event
      */
-    public static function execute(BrokerFormSave $event)
+    public static function execute(BrokerFormSaveEvent $event)
     {
         BrokerRepository::save(
             $event->getPollerId(),
