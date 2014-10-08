@@ -186,11 +186,6 @@ abstract class Repository
             if (!isset($givenParameters[$k])) {
                 continue;
             }
-            if ($rel::$firstObject == static::$objectClass) {
-                $rel::delete($id);
-            } else {
-                $rel::delete(null, $id);
-            }
             $arr = explode(',', ltrim($givenParameters[$k], ','));
             $db->beginTransaction();
 
