@@ -158,18 +158,17 @@ class Hook
         $hookId = self::getHookId($hookName);
         $unique = implode("_", array($moduleId, $hookId, $moduleHookName));
         $moduleHookCache = self::getModuleHookCache();
-        if (!isset($moduleHookCache[$unique])) {
-            throw new Exception(sprintf('Could not find module hook named %s', $moduleHookName));
+        if (isset($moduleHookCache[$unique])) {
+            $db = Di::getDefault()->get('db_centreon');
+            $stmt = $db->prepare(
+                "DELETE FROM cfg_modules_hooks 
+                WHERE module_id = ? 
+                AND hook_id = ? 
+                AND module_hook_name = ?"
+            );
+            $stmt->execute(array($moduleId, $hookId, $moduleHookName));
+            unset(self::$moduleHookCache[$unique]);
         }
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare(
-            "DELETE FROM cfg_modules_hooks 
-            WHERE module_id = ? 
-            AND hook_id = ? 
-            AND module_hook_name = ?"
-        );
-        $stmt->execute(array($moduleId, $hookId, $moduleHookName));
-        unset(self::$moduleHookCache[$unique]);
     }
 
     /**

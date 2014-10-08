@@ -284,7 +284,7 @@ abstract class Installer
     /**
      * 
      */
-    public static function removeHook()
+    public function removeHook()
     {
         $moduleHooksFile = $this->moduleDirectory . '/install/registeredHooks.json';
         if (file_exists($moduleHooksFile)) {

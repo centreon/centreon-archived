@@ -34,8 +34,10 @@
  *
  */
 
-
 namespace Centreon\Internal;
+
+use \Centreon\Internal\Module\Informations;
+use \CentreonSecurity\Controllers\LoginController;
 
 class Router extends \Klein\Klein
 {
@@ -91,7 +93,7 @@ class Router extends \Klein\Klein
             $moduleName = str_replace('Module', '', $module);
             preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
             $moduleShortName = strtolower(implode('-', $myMatches[0]));
-            if (\Centreon\Internal\Module\Informations::isModuleReachable($moduleShortName)) {
+            if (Informations::isModuleReachable($moduleShortName)) {
                 $myModuleControllersFiles = glob(__DIR__."/../../modules/$module/controllers/*Controller.php");
                 foreach ($myModuleControllersFiles as $moduleController) {
                     $controllersList[] = '\\'.$moduleName.'\\Controllers\\'.basename($moduleController, '.php');
@@ -138,7 +140,7 @@ class Router extends \Klein\Klein
                         function ($request, $response) use ($controllerName, $action, $routeName) {
                             if (!isset($_SESSION['user']) && !strstr($routeName, ".css") &&
                                 !strstr($controllerName, "LoginController")) {
-                                $obj = new \CentreonSecurity\Controllers\LoginController($request);
+                                $obj = new LoginController($request);
                                 $obj->loginAction();
                             } else {
                                 $obj = new $controllerName($request);
@@ -153,7 +155,7 @@ class Router extends \Klein\Klein
         $this->respond(
             '404',
             function ($request, $response) {
-                $tmpl = \Centreon\Internal\Di::getDefault()->get('template');
+                $tmpl = Di::getDefault()->get('template');
                 $response->body($tmpl->fetch('404.tpl'));
             }
         );

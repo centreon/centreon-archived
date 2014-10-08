@@ -36,7 +36,14 @@
 
 namespace CentreonCustomview\Controllers;
 
-class ExtensionsController extends \Centreon\Internal\Controller
+use \CentreonCustomview\Repository\WidgetRepository;
+use \Centreon\Internal\Controller;
+use \Centreon\Models\WidgetModel;
+use \Centreon\Internal\Exception;
+use \Centreon\Internal\Di;
+use \Centreon\Internal\Form;
+
+class ExtensionsController extends Controller
 {
     public static $objectName = 'WidgetModel';
     public static $objectDisplayName = 'WidgetModel';
@@ -70,7 +77,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
     public function displayWidgetAction()
     {
         $params = $this->getParams();
-        $widget = \Centreon\Models\WidgetModel::get($params['id']);
+        $widget = WidgetModel::get($params['id']);
         echo "<pre>"; var_dump($widget); echo "<pre>";
     }
     
@@ -92,7 +99,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
             $dir = glob(rtrim($centreonPath, '/') . "/modules/*Module/widgets/" . $commonName . "Widget/");
         }
         if (!isset($dir[0])) {
-            throw new \Centreon\Internal\Exception("Could not find widget directory");
+            throw new Exception("Could not find widget directory");
         }
         $jsonFile = $dir[0] . 'install/config.json';
         
@@ -104,9 +111,13 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $moduleShortName = strtolower(implode('-', $myMatches[0]));
         
         if (!file_exists(realpath($jsonFile))) {
-            throw new \Centreon\Internal\Exception("The widget is not valid because of a missing configuration file");
+            throw new Exception("The widget is not valid because of a missing configuration file");
         }
-        \CentreonCustomview\Repository\WidgetRepository::install($jsonFile, $moduleShortName);
+        try {
+            WidgetRepository::install($jsonFile, $moduleShortName);
+        } catch (\Exception $e) {
+            throw new Exception("Could not install widget. Error: " . $e->getMessage(), 0, $e);
+        }
         
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
@@ -122,7 +133,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         $params = $this->getParams();
         
-        \CentreonCustomview\Repository\WidgetRepository::uninstall($params['id']);
+        WidgetRepository::uninstall($params['id']);
 
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
@@ -138,7 +149,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \CentreonCustomview\Models\WidgetModel::update($params['id'], array('isactivated' => '1'));
+        WidgetModel::update($params['id'], array('isactivated' => '1'));
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
@@ -153,7 +164,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \CentreonCustomview\Models\WidgetModel::update($params['id'], array('isactivated' => '0'));
+        WidgetModel::update($params['id'], array('isactivated' => '0'));
         $backUrl = $router->getPathFor('/administration/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
@@ -165,7 +176,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
@@ -180,7 +191,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
      */
     protected function init()
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->di = Di::getDefault();
         /* Init template */
         $this->tpl = $this->di->get('template');
         
@@ -212,7 +223,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $this->tpl->assign('datatableObject', $this->datatableObject);
 
         /* Set Cookie */
-        $token = \Centreon\Internal\Form::getSecurityToken();
+        $token = Form::getSecurityToken();
         setcookie("ajaxToken", $token, time()+15, '/');
     }
 }

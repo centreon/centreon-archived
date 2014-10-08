@@ -49,7 +49,7 @@ class Informations
      */
     public static function getCentreonVersion()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $db = $di->get('db_centreon');
         
         try {
