@@ -96,6 +96,7 @@ les fichiers MIBs ne sont pas disponibles par défaut sous Debian. Pour les ajou
 modifiez le fichier */etc/apt/sources.list* et ajouter la catégorie **non-free**.
 
 Puis exécutez les commandes suivantes :
+
   ::
 
     $ apt-get update
@@ -105,6 +106,7 @@ Suse
 ====
 
 Installez les dépendances nécessaires :
+
   ::
 
     $ yast -i gcc gcc-c++ make automake apache2 php5 php5-mysql apache2-mod_php5 php5-pear \
@@ -123,12 +125,14 @@ Centreon. Editez le fichier */etc/mime.types* et rechercher les lignes :
     text/x-xslt xslt xsl
 
 Remplacez-les par :
+
   ::
   
     text/xml xsl
     text/xml xslt xsl
 
 Sauvegardez le fichier et redémarrez apache :
+
   ::
   
     $ /etc/init.d/apache2 restart
@@ -166,16 +170,19 @@ Installation shell
 ==================
 
 Extraire Centreon de l'archive :
+
  ::
     
 	$ tar zxf centreon-2.x.x.tar.gz
 
 Déplacez-vous dans le répertoire extrait :
+
   ::
 
     $ cd centreon-2.x.x
 
 Exécutez le script d'installation :
+
   ::
 
     $ ./install.sh -i
@@ -784,6 +791,7 @@ Installation web
    Vérifiez que les serveurs Apache et MySQL sont en cours d'exécution avant de poursuivre.
 
 Ouvrez votre navigateur web favori et rendez-vous à l'adresse :
+
   ::
 
     http://SERVER_ADDRESS/centreon

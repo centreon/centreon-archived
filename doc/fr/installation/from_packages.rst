@@ -28,7 +28,7 @@ Exécuter la commande suivante à partir d'un utilisateur possédant les droits 
 
 Le dépôt est maintenant installé.
 
-CES 3.0 (CentOS 5.x)
+CES 2.2 (CentOS 5.x)
 --------------------
 
 Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants :
