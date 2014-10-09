@@ -50,6 +50,9 @@ class Installer extends \Centreon\Internal\Module\Installer
         parent::__construct($moduleDirectory, $moduleInfo);
     }
     
+    /**
+     * 
+     */
     public function customPreInstall()
     {
         

@@ -290,7 +290,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      * @method get
      * @route /configuration/service/[i:id]/environment
      */
-    public function checkEnvironmentServiceAction()
+    public function environmentForServiceAction()
     {
         parent::getSimpleRelation('environment_id', '\CentreonConfiguration\Models\Environment');
     }
