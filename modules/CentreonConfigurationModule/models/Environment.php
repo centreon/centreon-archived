@@ -34,43 +34,17 @@
  *
  */
 
-namespace CentreonCustomview\Install;
+
+namespace CentreonConfiguration\Models;
 
 /**
- * 
+ * Used for interacting with Environments
+ *
+ * @author lionel
  */
-class Installer extends \Centreon\Internal\Module\Installer
+class Environment extends \Centreon\Models\CentreonBaseModel
 {
-    /**
-     * 
-     * @param type $moduleInfo
-     */
-    public function __construct($moduleDirectory, $moduleInfo)
-    {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
-    
-    /**
-     * 
-     */
-    public function customPreInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
-    {
-        
-    }
+    protected static $table = "cfg_environments";
+    protected static $primaryKey = "environment_id";
+    protected static $uniqueLabelField = "name";
 }

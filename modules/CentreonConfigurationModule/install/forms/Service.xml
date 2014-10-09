@@ -36,6 +36,15 @@
 		  </attributes>
           <help>Specify one or multiple host templates, that should be linked to this template. A service, that uses this service template, will complete the missing host relation and result in a full service definition.</help>
 		</field>
+        <field name="environment_id" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+            <help>Define the environment of the host</help>
+            <attributes>
+                <object_type>object</object_type>
+                <defaultValuesRoute>/configuration/environment/formlist</defaultValuesRoute>
+                <listValuesRoute>/configuration/service/[i:id]/environment</listValuesRoute>
+                <multiple>false</multiple>
+            </attributes>
+        </field>
 	  </block>
 	  <block name="Check properties">
 		<field name="service_type" label="Type" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="1">
@@ -318,6 +327,7 @@
     	<field name="service_description" mandatory="1"></field>
     	<field name="service_template_model_stm_id" mandatory="0"></field>
     	<field name="service_custommacros" mandatory="0"></field>
+    	<field name="environment_id" mandatory="0"></field>
     </step>
     <step name="Relation">
     <field name="service_hosts" mandatory="1"></field>

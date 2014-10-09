@@ -1,5 +1,6 @@
 [
   "cfg_organizations",
+  "cfg_environments",
   "cfg_timeperiods",
   "cfg_connectors",
   "cfg_commands",

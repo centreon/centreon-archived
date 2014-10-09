@@ -31,46 +31,26 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonCustomview\Install;
+namespace CentreonConfiguration\Repository;
 
 /**
- * 
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Repository
  */
-class Installer extends \Centreon\Internal\Module\Installer
+class EnvironmentRepository extends \CentreonConfiguration\Repository\Repository
 {
     /**
-     * 
-     * @param type $moduleInfo
+     *
+     * @var string
      */
-    public function __construct($moduleDirectory, $moduleInfo)
-    {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
+    public static $tableName = 'cfg_environments';
     
     /**
-     * 
+     *
+     * @var string
      */
-    public function customPreInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
-    {
-        
-    }
+    public static $objectName = 'Environment';
 }

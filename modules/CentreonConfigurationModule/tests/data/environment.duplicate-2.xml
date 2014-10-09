@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_environments">
+    <column>environment_id</column>
+    <column>name</column>
+    <column>description</column>
+    <column>level</column>
+    <column>organization_id</column>
+    <row>
+      <value>1</value>
+      <value>Production</value>
+      <value>Production environment</value>
+      <value>5</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Preproduction</value>
+      <value>Preproduction environment</value>
+      <value>10</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>Production_1</value>
+      <value>Production environment</value>
+      <value>5</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>Production_2</value>
+      <value>Production environment</value>
+      <value>5</value>
+      <value>1</value>
+    </row>
+  </table>
+</dataset>

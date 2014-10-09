@@ -45,6 +45,7 @@
         <column name="host_register" phpName="HostRegister" type="CHAR" sqlType="enum('0','1','2','3')" required="false"/>
         <column name="host_activate" phpName="HostActivate" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="1"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <column name="environment_id" phpName="EnvironmentId" type="INTEGER" required="false"/>
         <foreign-key foreignTable="cfg_commands" name="host_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
           <reference local="command_command_id" foreign="command_id"/>
         </foreign-key>
@@ -59,6 +60,9 @@
         </foreign-key>
         <foreign-key foreignTable="cfg_organizations" name="host_ibfk_5" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_environments" name="host_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="environment_id" foreign="environment_id"/>
         </foreign-key>
         <index name="htm_index">
             <index-column name="host_template_model_htm_id"/>

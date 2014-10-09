@@ -285,9 +285,19 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     }
     
     /**
+     * Get list of Environment for a specific host
+     * 
+     * @method get
+     * @route /configuration/service/[i:id]/environment
+     */
+    public function environmentForServiceAction()
+    {
+        parent::getSimpleRelation('environment_id', '\CentreonConfiguration\Models\Environment');
+    }
+    
+    /**
      * Get list of Timeperiods for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/checkperiod
      */
@@ -298,8 +308,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     
     /**
      * Get list of Timeperiods for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/notificationperiod
      */
@@ -321,8 +330,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
 
     /**
      * Get list of Commands for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/eventhandler
      */
@@ -333,8 +341,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     
     /**
      * Get list of contacts for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/contact
      */
@@ -345,8 +352,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     
     /**
      * Get list of contact groups for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/contactgroup
      */
@@ -357,8 +363,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     
     /**
      * Get list of contact hosts for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/host
      */
@@ -369,8 +374,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     
     /**
      * Get list of service group for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/servicegroup
      */
@@ -381,8 +385,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
 
     /**
      * Get list of service categories for a specific service
-     *
-     *
+     * 
      * @method get
      * @route /configuration/service/[i:id]/servicecategory
      */
