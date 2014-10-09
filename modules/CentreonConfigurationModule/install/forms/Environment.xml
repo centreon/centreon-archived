@@ -14,6 +14,16 @@
 				</field>
 				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="level" label="Level" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+					<help>Define the image that should be associated with this environment here. This image will be displayed in the various places.</help>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+						<listValuesRoute>/configuration/environment/[i:id]/icon</listValuesRoute>
+						<multiple>false</multiple>
+						<wizardRoute>/administration/media/image/add</wizardRoute>
+					</attributes>
+				</field>
 			</block>
 		</section>
 	</form>
@@ -23,6 +33,7 @@
 			<field name="name" mandatory="1"></field>
 			<field name="description" mandatory="0"></field>
 			<field name="level" mandatory="1"></field>
+			<field name="icon_id" mandatory="0"></field>
 		</step>
     </wizard>
 </forms>

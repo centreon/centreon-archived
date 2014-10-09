@@ -56,7 +56,7 @@ abstract class Installer
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     protected $moduleDirectory;
     
@@ -69,8 +69,8 @@ abstract class Installer
 
     /**
      * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
+     * @param string $moduleDirectory
+     * @param array $moduleInfo
      */
     public function __construct($moduleDirectory, $moduleInfo)
     {
