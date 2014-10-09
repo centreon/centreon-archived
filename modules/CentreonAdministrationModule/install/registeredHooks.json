@@ -1,0 +1,7 @@
+[
+  {
+    "name": "displayTagList",
+    "moduleHook": "displayTagList",
+    "moduleHookDescription": "Display list of tags"
+  }
+]
