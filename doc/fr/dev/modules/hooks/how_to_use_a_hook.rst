@@ -7,7 +7,7 @@ Enregistrement de votre hook
 Afin d'utiliser un hook dans votre module, il faut enregistrer son appel dans le fichier
 **modules/YourModule/install/registeredHooks.json**. 
 
-Exemple du fichier **registerdHooks.json**::
+Exemple du fichier **registeredHooks.json**::
    [
       {
          "name": "displayLeftMenu",
