@@ -52,6 +52,7 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
      */
     public function listAction()
     {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
         $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addCss('centreon.tag.css', 'centreon-administration');
         $urls = array(

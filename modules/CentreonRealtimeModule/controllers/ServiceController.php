@@ -93,7 +93,7 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addJs('daterangepicker.js')
             ->addJs('centreon.search.js')
             ->addJs('centreon.overlay.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');

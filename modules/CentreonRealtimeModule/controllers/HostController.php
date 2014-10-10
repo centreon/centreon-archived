@@ -60,6 +60,7 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function displayHostsAction()
     {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
         /* Load css */
         $this->tpl->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
@@ -81,7 +82,7 @@ class HostController extends \Centreon\Internal\Controller
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('centreon.search.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
 
         /* Datatable */
         $this->tpl->assign('moduleName', 'CentreonRealtime');
