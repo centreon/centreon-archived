@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -46,6 +45,8 @@ use \Centreon\Internal\Utils\Datetime;
  */
 class HostDatatable extends \Centreon\Internal\Datatable
 {
+    protected static $objectId = 'host_id';
+
     /**
      *
      * @var array 
@@ -205,6 +206,11 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'type' => 'string',
             'visible' => false,
         ),
+    );
+
+    protected static $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'host'
     );
     
     /**

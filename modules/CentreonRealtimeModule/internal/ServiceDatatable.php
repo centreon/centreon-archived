@@ -47,7 +47,11 @@ use \Centreon\Internal\Utils\Datetime;
  */
 class ServiceDatatable extends \Centreon\Internal\Datatable
 {
-    protected static $hook = 'displayServiceRtColumn';
+    protected static $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'service'
+    );
+
     protected static $objectId = 'service_id';
     protected static $objectName = 'Service';
 

@@ -45,6 +45,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  */
 class BusinessActivityDatatable extends \Centreon\Internal\Datatable
 {
+    protected static $objectId = 'ba_id';
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
@@ -127,5 +128,10 @@ class BusinessActivityDatatable extends \Centreon\Internal\Datatable
                 )
             )
         ),
+    );
+
+    protected $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'ba'
     );
 }

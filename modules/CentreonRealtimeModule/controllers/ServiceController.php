@@ -62,6 +62,7 @@ class ServiceController extends \Centreon\Internal\Controller
     public function displayServicesAction()
     {
         $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
 
         /* Load css */
         $tpl->addCss('dataTables.tableTools.min.css')
@@ -71,7 +72,8 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addCss('dataTables.bootstrap.css')
             ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')
-            ->addCss('daterangepicker-bs3.css');
+            ->addCss('daterangepicker-bs3.css')
+            ->addCss('centreon.tag.css', 'centreon-administration');
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
@@ -90,7 +92,8 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addJs('moment-with-langs.min.js')
             ->addJs('daterangepicker.js')
             ->addJs('centreon.search.js')
-            ->addJs('centreon.overlay.js');
+            ->addJs('centreon.overlay.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
@@ -109,6 +112,14 @@ class ServiceController extends \Centreon\Internal\Controller
             'actions' => HostdetailRepository::getMonitoringActions()
         );
         $tpl->assign('actions', $actions);
+
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $tpl->append('jsUrl', $urls, true);
 
         $tpl->display('file:[CentreonRealtimeModule]console.tpl');
     }
