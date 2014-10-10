@@ -44,6 +44,8 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  */
 class HostGroupDatatable extends \Centreon\Internal\Datatable
 {
+    protected static $objectId = 'hg_id';
+
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
@@ -135,6 +137,11 @@ class HostGroupDatatable extends \Centreon\Internal\Datatable
             'width' => "50px",
             'className' => 'cell_center'
         ),
+    );
+
+    protected static $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'hostgroup'
     );
     
     /**

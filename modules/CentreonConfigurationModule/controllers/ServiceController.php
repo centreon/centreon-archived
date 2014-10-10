@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
+use \Centreon\Internal\Di;
+
 class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Service';
@@ -66,10 +68,20 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
      */
     public function listAction()
     {
+        $router = Di::getDefault()->get('router');
         $this->tpl->addJs('centreon.overlay.js')
             ->addJs('jquery.qtip.min.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addCss('jquery.qtip.min.css')
-            ->addCss('centreon.qtip.css');
+            ->addCss('centreon.qtip.css')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
 

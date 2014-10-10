@@ -44,6 +44,8 @@ $(function () {
       success: function( data, textStatus, jqXHR ) {
         if ( ! data.success ) {
           alertMessage( "Error during delete the tag." );
+        } else {
+          $newTag.remove();
         }
       }
     });
