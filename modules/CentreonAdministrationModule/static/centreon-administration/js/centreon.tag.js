@@ -1,39 +1,54 @@
 $(function () {
   var tagExpand = false;
-  /* Event for add a tag */
-  $( document ).on( "click", ".addtag a", function() {
+
+  function saveTag( $newTag ) {
     var tmplTagCmpl,
-        $newTag = $( this ).parent().parent(),
         tmplTag = "<div class='tag' data-resourceid='<%resourceid%>' data-resourcetype='<%resourcetype%>' data-tagid='<%tagid%>'>"
           + "<div class='title'><%tagname%></div>"
           + "<div class='remove'><a href='#'>&times;</a></div>"
-        + "</div> ";
+          + "</div>";
+        tagName = $newTag.find( "input" ).val().trim();
+    /* Does not accept empty tag */
+    if ( tagName === "" ) {
+      return;
+    }
     tmplTagCmpl = Hogan.compile( tmplTag, { delimiters: "<% %>" } );
-    if ( tagExpand ) {
-      $.ajax({
-        url: jsUrl.tag.add,
-        data: {
-          resourceId: $newTag.data( "resourceid" ),
-          resourceName: $newTag.data( "resourcetype" ),
-          tagName: $newTag.find( "input" ).val()
-        },
-        dataType: "json",
-        method: "post",
-        success: function( data, textStatus, jqXHR ) {
-          if ( ! data.success ) {
-            alertMessage( "Error during save the tag." );
-          } else {
-            tag = tmplTagCmpl.render({
-              resourceid: $newTag.data( "resourceid" ),
-              resourcetype: $newTag.data( "resourcetype" ),
-              tagname: $newTag.find( "input" ).val(),
-              tagid: data.tagId
-            });
-            $newTag.parent().prepend( $( tag ) );
-            $newTag.find( "input" ).val( "" );
-          }
+    $.ajax({
+      url: jsUrl.tag.add,
+      data: {
+        resourceId: $newTag.data( "resourceid" ),
+        resourceName: $newTag.data( "resourcetype" ),
+        tagName: tagName
+      },
+      dataType: "json",
+      method: "post",
+      success: function( data, textStatus, jqXHR ) {
+        if ( ! data.success ) {
+          alertMessage( "Error during save the tag." );
+        } else {
+          tag = tmplTagCmpl.render({
+            resourceid: $newTag.data( "resourceid" ),
+            resourcetype: $newTag.data( "resourcetype" ),
+            tagname: tagName,
+            tagid: data.tagId
+          });
+          $newTag.parent().prepend( $( tag ) );
+          $newTag.find( "input" )
+            .animate({
+              "width": 0
+            })
+            .val( "" );
+          tagExpand = false;
         }
-      });
+      }
+    });
+  }
+
+  /* Event for add a tag */
+  $( document ).on( "click", ".addtag a", function() {
+    var $newTag = $( this ).parent().parent();
+    if ( tagExpand ) {
+      saveTag( $newTag );
     } else {
       $( this ).parent().removeClass( "noborder" );
       $newTag.find( ".title > input" ).animate({
@@ -41,6 +56,17 @@ $(function () {
       });
       $newTag.find( "input" ).focus();
       tagExpand = true;
+    }
+  });
+
+  /* Save the tag when press enter */
+  $( document ).on( "keyup", ".addtag input", function( e ) {
+    var $newTag,
+        key = e.keyCode || e.which;
+
+    if ( key == 13 ) {
+      $newTag = $( e.currentTarget ).parent().parent();
+      saveTag( $newTag );
     }
   });
 
@@ -108,7 +134,7 @@ $(function () {
       .append( $footer );
     $( "#modal" ).modal();
 
-    $( "#saveAddToTag" ).on( "click", function() {
+    function saveTags() {
       var listObject = [],
           name = $( "#modal" ).find( "input[name='tagName']" ).val();
       $( ".allBox:checked" ).each( function( idx, value ) {
@@ -132,6 +158,16 @@ $(function () {
           }
         }
       });
+    }
+
+    $( "#modal" ).find( "form" ).on( "submit", function( e ) {
+      e.preventDefault();
+      e.stopPropagation();
+      saveTags();
+    });
+
+    $( "#saveAddToTag" ).on( "click", function() {
+      saveTags();
     });
   });
 });
