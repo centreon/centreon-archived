@@ -45,7 +45,7 @@ class ForbiddenChar implements Ivalidator
     /**
      * 
      */
-    public static function validate($value, $objectName = "", $id = null, $fieldname = '')
+    public static function validate($value, $module = "", $objectName = "", $id = null, $fieldname = '')
     {
         $forbiddenCharDetected = false;
         $illegalCharsStr = "~!$%^&|<>?,()=";

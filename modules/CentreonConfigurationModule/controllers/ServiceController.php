@@ -296,6 +296,17 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
     }
     
     /**
+     * Get list of Environment for a specific host
+     * 
+     * @method get
+     * @route /configuration/service/[i:id]/domain
+     */
+    public function domainForServiceAction()
+    {
+        parent::getSimpleRelation('domain_id', '\CentreonAdministration\Models\Domain');
+    }
+    
+    /**
      * Get list of Timeperiods for a specific service
      * 
      * @method get

@@ -31,31 +31,22 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace Centreon\Internal\Form\Validator;
+
+namespace CentreonAdministration\Models;
+
+use \Centreon\Models\CentreonBaseModel;
 
 /**
+ * Model for domain
+ *
  * @author Lionel Assepo <lassepo@merethis.com>
- * @package Centreon
- * @subpackage Core
  */
-class Unique implements Ivalidator
+class Domain extends CentreonBaseModel
 {
-    /**
-     * 
-     */
-    public static function validate($value, $module = "", $objectName = "", $id = null, $fieldname = '')
-    {
-        $callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
-        if ($callableObject::isUnique($value, $id)) {
-            $result = array('success' => true);
-        } else {
-            $result = array(
-                'success' => false,
-                'error' => _("\"<i>$value</i>\" is already in use for another $objectName")
-            );
-        }
-        return $result;
-    }
+    protected static $table = "cfg_domains";
+    protected static $primaryKey = "domain_id";
+    protected static $uniqueLabelField = "name";
 }
