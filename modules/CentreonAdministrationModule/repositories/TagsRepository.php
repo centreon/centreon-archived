@@ -173,6 +173,16 @@ class TagsRepository
     }
 
     /**
+     * Return the list of resource who can have 
+     *
+     * @return array
+     */
+    public static function getListResource()
+    {
+        return static::$resourceType;
+    }
+
+    /**
      * Return if a tag is used
      *
      * @param int $tagId The tag id

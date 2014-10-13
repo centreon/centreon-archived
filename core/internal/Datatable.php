@@ -140,7 +140,14 @@ class Datatable
         'source',
         'searchvalues'
     );
-    
+
+    /**
+     * Extra parameters for datatable
+     *
+     * @var array
+     */
+    protected static $extraParams = array();
+
     /**
      * 
      * @param array $params
@@ -319,6 +326,16 @@ class Datatable
         }
         
         return trim($configurationParams);
+    }
+
+    /**
+     * Get the list of extra parameters for datatable
+     *
+     * @return array
+     */
+    public static function getExtraParams()
+    {
+        return static::$extraParams;
     }
 
     /**

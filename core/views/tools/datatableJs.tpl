@@ -599,6 +599,11 @@
             });
             oTable.api().draw();
         });
+
+        /* Display or hide listing addto */
+        if ( $( "#addToGroup" ).find( "ul > li" ).length > 0 ) {
+          $( "#addToGroup" ).removeClass( "hidden" );
+        }
     });
     
     
