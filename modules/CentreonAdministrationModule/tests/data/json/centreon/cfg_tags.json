@@ -1,0 +1,12 @@
+[
+  {
+    "tag_id": 1,
+    "user_id": 1,
+    "tagname": "Tag1"
+  },
+  {
+    "tag_id": 2,
+    "user_id": 1,
+    "tagname": "Tag2"
+  }
+]
