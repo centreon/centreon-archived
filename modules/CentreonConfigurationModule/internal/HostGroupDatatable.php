@@ -139,6 +139,12 @@ class HostGroupDatatable extends \Centreon\Internal\Datatable
         ),
     );
 
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'hostgroup'
+        )
+    );
+
     protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'hostgroup'

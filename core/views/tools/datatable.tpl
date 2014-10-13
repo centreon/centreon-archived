@@ -25,6 +25,7 @@
           <ul class="dropdown-menu">
             {if isset($datatableParameters.groupname) }<li><a href="#">{$datatableParameters.groupname}</a></li>{/if}
             {if isset($datatableParameters.hasCategory) }<li><a href="#">{t}Category{/t}</a></li>{/if}
+            {if !isset($datatableParameters.addToHook) }{$datatableParameters.addToHook = array()}{/if}
             {hook name='displayAppendAddTo' container='[hook]' params=$datatableParameters.addToHook}
           </ul>
         </div>

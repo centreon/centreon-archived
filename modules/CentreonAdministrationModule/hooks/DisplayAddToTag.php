@@ -54,8 +54,8 @@ class DisplayAddToTag
      */
     public static function execute($params)
     {
-        $returnParams = array('display' => false);
-        if (in_array($params['objectType'], TagsRepository::getListResource())) {
+        $returnParams = array('display' => false, 'resourceType' => null);
+        if (isset($params['objectType']) && in_array($params['objectType'], TagsRepository::getListResource())) {
             $returnParams['display'] = true;
             $returnParams['resourceType'] =  $params['objectType'];
         } 

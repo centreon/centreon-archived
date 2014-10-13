@@ -243,6 +243,12 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
         ),
     );
 
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'service'
+        )
+    );
+
     protected static $hook= 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'service'

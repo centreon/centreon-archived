@@ -255,6 +255,12 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'visible' => false,
         ),
     );
+
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'service'
+        )
+    );
     
     /**
      * 
