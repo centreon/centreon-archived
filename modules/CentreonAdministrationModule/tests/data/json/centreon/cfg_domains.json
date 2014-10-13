@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Network",
+        "description": "Network domain",
+        "isroot": 1
+    },
+    {
+        "name": "Hardware",
+        "description": "Hardware domain",
+        "isroot": 1
+    },
+    {
+        "name": "System",
+        "description": "System domain",
+        "isroot": 1
+    },
+    {
+        "name": "Application",
+        "description": "Application domain",
+        "isroot": 1
+    }
+]

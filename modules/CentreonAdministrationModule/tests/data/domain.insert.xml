@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_domains">
+    <column>domain_id</column>
+    <column>name</column>
+    <column>description</column>
+    <column>isroot</column>
+    <column>parent_id</column>
+    <column>icon_id</column>
+    <row>
+      <value>1</value>
+      <value>Network</value>
+      <value>Network domain</value>
+      <value>1</value>
+      <null />
+      <null />
+    </row>
+    <row>
+      <value>2</value>
+      <value>Hardware</value>
+      <value>Hardware domain</value>
+      <value>1</value>
+      <null />
+      <null />
+    </row>
+    <row>
+      <value>3</value>
+      <value>System</value>
+      <value>System domain</value>
+      <value>1</value>
+      <null />
+      <null />
+    </row>
+    <row>
+      <value>4</value>
+      <value>Application</value>
+      <value>Application domain</value>
+      <value>1</value>
+      <null />
+      <null />
+    </row>
+    <row>
+      <value>5</value>
+      <value>test_name</value>
+      <value>test_description</value>
+      <value>0</value>
+      <value>4</value>
+      <null />
+    </row>
+  </table>
+</dataset>
