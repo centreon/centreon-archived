@@ -33,29 +33,37 @@
  *
  */
 
-namespace Centreon\Internal\Form\Validator;
+namespace CentreonAdministration\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
- * @subpackage Core
+ * @subpackage Repository
  */
-class Unique implements Ivalidator
+class DomainRepository extends \CentreonAdministration\Repository\Repository
 {
     /**
-     * 
+     *
+     * @var string
      */
-    public static function validate($value, $module = "", $objectName = "", $id = null, $fieldname = '')
+    public static $tableName = 'cfg_domains';
+    
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = 'Domain';
+    
+    /**
+     * Generic create action
+     *
+     * @param array $givenParameters
+     * @return int id of created object
+     */
+    public static function create($givenParameters)
     {
-        $callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
-        if ($callableObject::isUnique($value, $id)) {
-            $result = array('success' => true);
-        } else {
-            $result = array(
-                'success' => false,
-                'error' => _("\"<i>$value</i>\" is already in use for another $objectName")
-            );
-        }
-        return $result;
+        $givenParameters['parent_id'] = \CentreonAdministration\Models\Domain::getIdByParameter('name', array('Application'));
+        $givenParameters['isroot'] = 0;
+        parent::create($givenParameters);
     }
 }

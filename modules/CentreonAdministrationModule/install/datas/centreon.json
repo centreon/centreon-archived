@@ -2,5 +2,6 @@
     "cfg_organizations",
     "cfg_contacts",
     "cfg_contactgroups",
-    "cfg_contactgroups_contacts_relations"
+    "cfg_contactgroups_contacts_relations",
+    "cfg_domains"
 ]

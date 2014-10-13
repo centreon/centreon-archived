@@ -33,7 +33,7 @@
  *
  */
 
-namespace CentreonConfiguration\Controllers;
+namespace CentreonAdministration\Controllers;
 
 use \Centreon\Internal\Form;
 use \Centreon\Internal\Form\Wizard;
@@ -49,7 +49,7 @@ use \Centreon\Internal\Exception;
  */
 abstract class ObjectAbstract extends \Centreon\Internal\Controller
 {
-    public static $moduleName = 'CentreonConfiguration';
+    public static $moduleName = 'CentreonAdministration';
     
     public static $isDisableable = false;
 
@@ -80,10 +80,10 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $tpl = $di->get('template');
         
         // Load CssFile
-        $tpl->addCss('jquery.fileupload.css');
+        $this->tpl->addCss('jquery.fileupload.css');
 
         /* Load CssFile */
-        $tpl->addCss('jquery.dataTables.min.css')
+        $this->tpl->addCss('jquery.dataTables.min.css')
             ->addCss('jquery.fileupload.css')
             ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
@@ -95,7 +95,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             ->addCss('centreon-wizard.css');
 
         /* Load JsFile */
-        $tpl->addJs('jquery.dataTables.min.js')
+        $this->tpl->addJs('jquery.dataTables.min.js')
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
@@ -123,21 +123,21 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         setcookie("ajaxToken", $token, time()+15, '/');
         
         /* Display variable */
-        $tpl->assign('objectName', $this->objectDisplayName);
-        $tpl->assign('datatableObject', $this->datatableObject);
-        $tpl->assign('moduleName', static::$moduleName);
-        $tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
-        $tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
-        $tpl->assign('objectMcUrl', $this->objectBaseUrl . '/massive_change');
-        $tpl->assign('objectMcFieldsUrl', $this->objectBaseUrl . '/mc_fields');
-        $tpl->assign('isDisableable', static::$isDisableable);
+        $this->tpl->assign('objectName', $this->objectDisplayName);
+        $this->tpl->assign('datatableObject', $this->datatableObject);
+        $this->tpl->assign('moduleName', static::$moduleName);
+        $this->tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
+        $this->tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
+        $this->tpl->assign('objectMcUrl', $this->objectBaseUrl . '/massive_change');
+        $this->tpl->assign('objectMcFieldsUrl', $this->objectBaseUrl . '/mc_fields');
+        $this->tpl->assign('isDisableable', static::$isDisableable);
         if (static::$isDisableable) {
-            $tpl->assign('objectEnableUrl', $this->objectBaseUrl . '/enable');
-            $tpl->assign('objectDisableUrl', $this->objectBaseUrl . '/disable');
+            $this->tpl->assign('objectEnableUrl', $this->objectBaseUrl . '/enable');
+            $this->tpl->assign('objectDisableUrl', $this->objectBaseUrl . '/disable');
         }
-        $tpl->assign('objectDuplicateUrl', $this->objectBaseUrl . '/duplicate');
-        $tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
-        $tpl->display('file:[CentreonConfigurationModule]list.tpl');
+        $this->tpl->assign('objectDuplicateUrl', $this->objectBaseUrl . '/duplicate');
+        $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
+        $this->tpl->display('list.tpl');
     }
     
     /**
@@ -166,7 +166,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
         $form->addHiddenComponent('object', $this->objectName);
         $tpl = Di::getDefault()->get('template');
-        $tpl->assign('formName', $form->getName());
+        $this->tpl->assign('formName', $form->getName());
         $formGen = str_replace(
             array('alertMessage', 'alertClose'),
             array('alertModalMessage', 'alertModalClose'),
@@ -238,13 +238,13 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
                         );
         
         // Display page
-        $tpl->assign('pageTitle', $this->objectDisplayName);
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('advanced', $requestParam['advanced']);
-        $tpl->assign('formModeUrl', $formModeUrl);
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $tpl->display('file:[CentreonConfigurationModule]edit.tpl');
+        $this->tpl->assign('pageTitle', $this->objectDisplayName);
+        $this->tpl->assign('form', $myForm->generate());
+        $this->tpl->assign('advanced', $requestParam['advanced']);
+        $this->tpl->assign('formModeUrl', $formModeUrl);
+        $this->tpl->assign('formName', $myForm->getName());
+        $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
+        $this->tpl->display('edit.tpl');
     }
     
     /**
@@ -385,8 +385,8 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
         $form = new Form('default');
         $form->add($row, array('id' => 0));
         $formElements = $form->toSmarty();
-        $tpl->assign('field', $formElements[$row['name']]['html']);
-        $tpl->display('tools/mcField.tpl');
+        $this->tpl->assign('field', $formElements[$row['name']]['html']);
+        $this->tpl->display('tools/mcField.tpl');
     }
 
     /**

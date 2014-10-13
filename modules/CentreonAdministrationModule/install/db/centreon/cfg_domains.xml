@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_domains" phpName="Domains" idMethod="native">
+        <column name="domain_id" phpName="DomainId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="DomainName" type="VARCHAR" size="255" required="true"/>
+        <column name="description" phpName="DomainDescription" type="VARCHAR" size="255" required="false"/>
+        <column name="isroot" phpName="DomainIsRoot" type="INTEGER" required="true"/>
+        <column name="parent_id" phpName="ParentId" type="INTEGER" required="false"/>
+        <column name="icon_id" phpName="IconId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="false"/>
+        <foreign-key foreignTable="cfg_domains" name="domains_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="parent_id" foreign="domain_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_binaries" name="domains_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="icon_id" foreign="binary_id"/>
+        </foreign-key>
+        <unique name="name_index">
+            <unique-column name="name"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

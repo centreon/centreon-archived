@@ -1150,7 +1150,7 @@ class Form
      * 
      * @return type
      */
-    public static function validate($origin, $uri, &$submittedValues)
+    public static function validate($origin, $uri, $moduleName, &$submittedValues)
     {
         $isValidate = true;
         $errorMessage = '';
@@ -1168,6 +1168,7 @@ class Form
                     $validatorCall = '\Centreon\Internal\Form\Validator\\'.ucfirst($validatorsForField[$i]['call']);
                     $resultValidate = $validatorCall::validate(
                         $submittedValues[$validatorKey],
+                        $moduleName,
                         $submittedValues['object'],
                         $submittedValues['object_id'],
                         $validatorKey

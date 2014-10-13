@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="domain_form">
+		<route>/administration/domain/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/administration/domain</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+					<validators>
+						<validator events="blur">unique</validator>
+						<validator events="blur">forbiddenChar</validator>
+					</validators>
+				</field>
+				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="icon_id" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+					<help>Define the image that should be associated with this domain here. This image will be displayed in the various places.</help>
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+						<listValuesRoute>/administration/domain/[i:id]/icon</listValuesRoute>
+						<multiple>false</multiple>
+						<wizardRoute>/administration/media/image/add</wizardRoute>
+					</attributes>
+				</field>
+			</block>
+		</section>
+	</form>
+	<wizard name="add_domain">
+		<route>/administration/domain/add</route>
+		<step name="General">
+			<field name="name" mandatory="1"></field>
+			<field name="description" mandatory="0"></field>
+			<field name="icon_id" mandatory="0"></field>
+		</step>
+    </wizard>
+</forms>

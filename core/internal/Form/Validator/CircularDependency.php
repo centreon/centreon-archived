@@ -44,9 +44,9 @@ class CircularDependency implements Ivalidator
     /**
      * 
      */
-    public static function validate($value, $objectName = '', $id = null, $fieldname = '')
+    public static function validate($value, $module = "", $objectName = '', $id = null, $fieldname = '')
     {
-        $controller = '\CentreonConfiguration\Controllers\\' . ucfirst($objectName) . 'Controller';
+        $controller = '\\' . $module . '\Controllers\\' . ucfirst($objectName) . 'Controller';
         $result = true;
         $resultError = 'Redondance circulaire détectée';
         
