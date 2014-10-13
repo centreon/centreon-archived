@@ -37,6 +37,9 @@
 namespace Centreon\Internal\Install;
 
 use Centreon\Internal\Utils\Filesystem\File;
+use Centreon\Internal\Di;
+use Centreon\Custom\Propel\CentreonMysqlPlatform; 
+use Centreon\Internal\Module\Informations;
 
 class Db
 {
@@ -48,7 +51,7 @@ class Db
     public static function update($targetDbName = 'centreon')
     {
         ini_set('memory_limit', '-1');
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         
         $targetDb = 'db_centreon';
@@ -64,7 +67,7 @@ class Db
         );
         
         // Set the Current Platform and DB Connection
-        $platform = new \Centreon\Custom\Propel\CentreonMysqlPlatform($db);
+        $platform = new CentreonMysqlPlatform($db);
         
         // Initilize Schema Parser
         $propelDb = new \MysqlSchemaParser($db);
@@ -120,13 +123,13 @@ class Db
         $xmlDbFiles = self::buildTargetDbSchema($targetDbName);
         
         // Initialize XmlToAppData object
-        $appDataObject = new \XmlToAppData(new \Centreon\Custom\Propel\CentreonMysqlPlatform($db), null, 'utf-8');
+        $appDataObject = new \XmlToAppData(new CentreonMysqlPlatform($db), null, 'utf-8');
         
         // Get DB File
         foreach ($xmlDbFiles as $dbFile) {
             $myAppData->joinAppDatas(array($appDataObject->parseFile($dbFile)));
             unset($appDataObject);
-            $appDataObject = new \XmlToAppData(new \Centreon\Custom\Propel\CentreonMysqlPlatform($db), null, 'utf-8');
+            $appDataObject = new \XmlToAppData(new CentreonMysqlPlatform($db), null, 'utf-8');
         }
         
         unset($appDataObject);
@@ -153,7 +156,7 @@ class Db
     private static function deleteTargetDbSchema($targetDbName = 'centreon')
     {
         // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         $centreonPath = $config->get('global', 'centreon_path');
         
@@ -184,7 +187,7 @@ class Db
     private static function buildTargetDbSchema($targetDbName = 'centreon')
     {
         // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         $centreonPath = $config->get('global', 'centreon_path');
         
@@ -224,6 +227,10 @@ class Db
             $fileList,
             File::getFiles($centreonPath . '/modules/CentreonSecurityModule/install/db/' . $targetDbName, 'xml')
         );
+        $fileList = array_merge(
+            $fileList,
+            File::getFiles($centreonPath . '/modules/CentreonEngineModule/install/db/' . $targetDbName, 'xml')
+        );
         
         // Copy to destination
         if (!file_exists($targetFolder)) {
@@ -247,7 +254,7 @@ class Db
     private static function rightBuildTargetDbSchema($targetDbName = 'centreon')
     {
         // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         $centreonPath = $config->get('global', 'centreon_path');
         
@@ -260,7 +267,7 @@ class Db
             File::getFiles($centreonPath . '/install/db/' . $targetDbName, 'xml')
         );
         
-        $moduleList = \Centreon\Internal\Module\Informations::getModuleList();
+        $moduleList = Informations::getModuleList();
         foreach ($moduleList as $module) {
             $expModuleName = array_map(function ($n) { return ucfirst($n); }, explode('-', $module));
             $moduleFileSystemName = implode("", $expModuleName) . 'Module';
@@ -353,7 +360,7 @@ class Db
     
     private static function getDbConnector($dbName)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         if ($dbName == 'centreon_storage') {
             $targetDb = 'db_storage';
         } else {
