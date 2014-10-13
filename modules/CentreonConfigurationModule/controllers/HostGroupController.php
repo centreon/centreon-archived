@@ -66,7 +66,8 @@ class HostGroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
     public function listAction()
     {
         $router = Di::getDefault()->get('router');
-        $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+        $this->tpl->addJs('hogan-3.0.0.min.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addCss('centreon.tag.css', 'centreon-administration');
         $urls = array(
             'tag' => array(

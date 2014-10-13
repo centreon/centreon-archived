@@ -90,6 +90,7 @@ class TagsRepository
         $stmt->bindParam(':tag_id', $tagId, \PDO::PARAM_INT);
         $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
         $stmt->execute();
+        return $tagId;
     }
 
     /**

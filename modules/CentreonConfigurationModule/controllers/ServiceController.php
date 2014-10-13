@@ -71,6 +71,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstrac
         $router = Di::getDefault()->get('router');
         $this->tpl->addJs('centreon.overlay.js')
             ->addJs('jquery.qtip.min.js')
+            ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')

@@ -2,7 +2,13 @@ $(function () {
   var tagExpand = false;
   /* Event for add a tag */
   $( document ).on( "click", ".addtag a", function() {
-    var $newTag = $( this ).parent().parent();
+    var tmplTagCmpl,
+        $newTag = $( this ).parent().parent(),
+        tmplTag = "<div class='tag' data-resourceid='<%resourceid%>' data-resourcetype='<%resourcetype%>' data-tagid='<%tagid%>'>"
+          + "<div class='title'><%tagname%></div>"
+          + "<div class='remove'><a href='#'>&times;</a></div>"
+        + "</div> ";
+    tmplTagCmpl = Hogan.compile( tmplTag, { delimiters: "<% %>" } );
     if ( tagExpand ) {
       $.ajax({
         url: jsUrl.tag.add,
@@ -16,6 +22,15 @@ $(function () {
         success: function( data, textStatus, jqXHR ) {
           if ( ! data.success ) {
             alertMessage( "Error during save the tag." );
+          } else {
+            tag = tmplTagCmpl.render({
+              resourceid: $newTag.data( "resourceid" ),
+              resourcetype: $newTag.data( "resourcetype" ),
+              tagname: $newTag.find( "input" ).val(),
+              tagid: data.tagId
+            });
+            $newTag.parent().prepend( $( tag ) );
+            $newTag.find( "input" ).val( "" );
           }
         }
       });
@@ -59,7 +74,7 @@ $(function () {
     }
     $( ".addtag input" ).animate({
       width: "0"
-    });
+    }).val( "" );
     $( ".addtag .remove" ).addClass( "noborder" );
     tagExpand = false;
   });
