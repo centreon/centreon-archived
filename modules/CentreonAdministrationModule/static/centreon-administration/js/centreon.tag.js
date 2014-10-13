@@ -32,7 +32,7 @@ $(function () {
             tagname: tagName,
             tagid: data.tagId
           });
-          $newTag.parent().prepend( $( tag ) );
+          $newTag.parent().prepend( " " ).prepend( $( tag ) );
           $newTag.find( "input" )
             .animate({
               "width": 0
