@@ -93,18 +93,35 @@ class DisplayEnginePaths
     {
         $paths = array();
 
-        $paths['state_retention_file'] = array(
-            'label' => _('State retention file'),
-            'help' => _('State retention file path.'),
+        $paths['conf_dir'] = array(
+            'label' => _('Configuration directory'),
+            'help' => _('Configuration files will be placed there.'),
             'value' => ''
         );
 
-        $paths['status_file'] = array(
-            'label' => _('Status file'),
-            'help' => _('Status file path.'),
+        $paths['log_dir'] = array(
+            'label' => _('Log directory'),
+            'help' => _('Log files will be placed there.'),
             'value' => ''
         );
 
+        $paths['var_lib_dir'] = array(
+            'label' => _('Var Lib directory'),
+            'help' => _('Var lib files will be placed there.'),
+            'value' => ''
+        );
+
+	$paths['module_dir'] = array(
+            'label' => _('Module directory'),
+            'help' => _('Event broker modules will be placed there.'),
+            'value' => ''
+        );
+
+	$paths['init_script'] = array(
+            'label' => _('Init script'),
+            'help' => _('Path of init script'),
+            'value' => ''
+        );
         return $paths;
     }
 
