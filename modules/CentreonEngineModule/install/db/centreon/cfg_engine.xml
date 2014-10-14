@@ -2,169 +2,67 @@
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_engine" phpName="Cfgengine" idMethod="native">
         <column name="engine_id" phpName="engineId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-        <column name="engine_name" phpName="engineName" type="VARCHAR" size="255" required="false"/>
-        <column name="log_file" phpName="LogFile" type="VARCHAR" size="255" required="false"/>
-        <column name="cfg_dir" phpName="CfgDir" type="VARCHAR" size="255" required="false"/>
-        <column name="object_cache_file" phpName="ObjectCacheFile" type="VARCHAR" size="255" required="false"/>
-        <column name="precached_object_file" phpName="PrecachedObjectFile" type="VARCHAR" size="255" required="false"/>
-        <column name="temp_file" phpName="TempFile" type="VARCHAR" size="255" required="false"/>
-        <column name="temp_path" phpName="TempPath" type="VARCHAR" size="255" required="false"/>
-        <column name="status_file" phpName="StatusFile" type="VARCHAR" size="255" required="false"/>
-        <column name="check_result_path" phpName="CheckResultPath" type="VARCHAR" size="255" required="false"/>
-        <column name="use_check_result_path" phpName="UseCheckResultPath" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
-        <column name="max_check_result_file_age" phpName="MaxCheckResultFileAge" type="VARCHAR" size="255" required="false"/>
-        <column name="p1_file" phpName="P1File" type="VARCHAR" size="255" required="false"/>
-        <column name="status_update_interval" phpName="StatusUpdateInterval" type="INTEGER" required="false"/>
-        <column name="engine_user" phpName="engineUser" type="VARCHAR" size="255" required="false"/>
-        <column name="engine_group" phpName="engineGroup" type="VARCHAR" size="255" required="false"/>
-        <column name="enable_notifications" phpName="EnableNotifications" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="execute_service_checks" phpName="ExecuteServiceChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="accept_passive_service_checks" phpName="AcceptPassiveServiceChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="execute_host_checks" phpName="ExecuteHostChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="accept_passive_host_checks" phpName="AcceptPassiveHostChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="enable_event_handlers" phpName="EnableEventHandlers" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_rotation_method" phpName="LogRotationMethod" type="VARCHAR" size="255" required="false"/>
-        <column name="log_archive_path" phpName="LogArchivePath" type="VARCHAR" size="255" required="false"/>
-        <column name="check_external_commands" phpName="CheckExternalCommands" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="conf_dir" phpName="ConfDir" type="VARCHAR" size="255" required="false"/>
+        <column name="log_dir" phpName="LogDir" type="VARCHAR" size="255" required="false"/>
+        <column name="var_lib_dir" phpName="VarLibDir" type="VARCHAR" size="255" required="false"/>
+        <column name="module_dir" phpName="ModuleDir" type="VARCHAR" size="255" required="false"/>
+        <column name="init_script" phpName="InitScript" type="VARCHAR" size="255" required="false"/>
+        <column name="enable_notifications" phpName="EnableNotifications" type="TINYINT" size="1" required="false"/>
+        <column name="enable_event_handlers" phpName="EnableEventHandlers" type="TINYINT" size="1" required="false"/>
         <column name="external_command_buffer_slots" phpName="ExternalCommandBufferSlots" type="INTEGER" required="false"/>
         <column name="command_check_interval" phpName="CommandCheckInterval" type="VARCHAR" size="255" required="false"/>
         <column name="command_file" phpName="CommandFile" type="VARCHAR" size="255" required="false"/>
-        <column name="downtime_file" phpName="DowntimeFile" type="VARCHAR" size="255" required="false"/>
-        <column name="comment_file" phpName="CommentFile" type="VARCHAR" size="255" required="false"/>
-        <column name="lock_file" phpName="LockFile" type="VARCHAR" size="255" required="false"/>
-        <column name="retain_state_information" phpName="RetainStateInformation" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="state_retention_file" phpName="StateRetentionFile" type="VARCHAR" size="255" required="false"/>
-        <column name="retention_update_interval" phpName="RetentionUpdateInterval" type="INTEGER" required="false"/>
-        <column name="use_retained_program_state" phpName="UseRetainedProgramState" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="use_retained_scheduling_info" phpName="UseRetainedSchedulingInfo" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="retained_contact_host_attribute_mask" phpName="RetainedContactHostAttributeMask" type="BIGINT" required="false"/>
-        <column name="retained_contact_service_attribute_mask" phpName="RetainedContactServiceAttributeMask" type="BIGINT" required="false"/>
-        <column name="retained_process_host_attribute_mask" phpName="RetainedProcessHostAttributeMask" type="BIGINT" required="false"/>
-        <column name="retained_process_service_attribute_mask" phpName="RetainedProcessServiceAttributeMask" type="BIGINT" required="false"/>
-        <column name="retained_host_attribute_mask" phpName="RetainedHostAttributeMask" type="BIGINT" required="false"/>
-        <column name="retained_service_attribute_mask" phpName="RetainedServiceAttributeMask" type="BIGINT" required="false"/>
-        <column name="use_syslog" phpName="UseSyslog" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_notifications" phpName="LogNotifications" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_service_retries" phpName="LogServiceRetries" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_host_retries" phpName="LogHostRetries" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_event_handlers" phpName="LogEventHandlers" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_initial_states" phpName="LogInitialStates" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_external_commands" phpName="LogExternalCommands" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="log_passive_checks" phpName="LogPassiveChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="use_syslog" phpName="UseSyslog" type="TINYINT" size="1" required="false"/>
+        <column name="log_notifications" phpName="LogNotifications" type="TINYINT" size="1" required="false"/>
+        <column name="log_service_retries" phpName="LogServiceRetries" type="TINYINT" size="1" required="false"/>
+        <column name="log_host_retries" phpName="LogHostRetries" type="TINYINT" size=1 required="false"/>
+        <column name="log_event_handlers" phpName="LogEventHandlers" type="TINYINT" size=1 required="false"/>
+        <column name="log_initial_states" phpName="LogInitialStates" type="TINYINT" size=1 required="false"/>
+        <column name="log_external_commands" phpName="LogExternalCommands" type="TINYINT" size=1 required="false"/>
+        <column name="log_passive_checks" phpName="LogPassiveChecks" type="TINYINT" size=1 required="false"/>
         <column name="global_host_event_handler" phpName="GlobalHostEventHandler" type="INTEGER" required="false"/>
         <column name="global_service_event_handler" phpName="GlobalServiceEventHandler" type="INTEGER" required="false"/>
-        <column name="sleep_time" phpName="SleepTime" type="VARCHAR" size="10" required="false"/>
-        <column name="service_inter_check_delay_method" phpName="ServiceInterCheckDelayMethod" type="VARCHAR" size="255" required="false"/>
-        <column name="host_inter_check_delay_method" phpName="HostInterCheckDelayMethod" type="VARCHAR" size="255" required="false"/>
-        <column name="service_interleave_factor" phpName="ServiceInterleaveFactor" type="VARCHAR" size="255" required="false"/>
         <column name="max_concurrent_checks" phpName="MaxConcurrentChecks" type="INTEGER" required="false"/>
         <column name="max_service_check_spread" phpName="MaxServiceCheckSpread" type="INTEGER" required="false"/>
         <column name="max_host_check_spread" phpName="MaxHostCheckSpread" type="INTEGER" required="false"/>
         <column name="check_result_reaper_frequency" phpName="CheckResultReaperFrequency" type="INTEGER" required="false"/>
-        <column name="max_check_result_reaper_time" phpName="MaxCheckResultReaperTime" type="INTEGER" required="false"/>
-        <column name="interval_length" phpName="IntervalLength" type="INTEGER" required="false"/>
-        <column name="auto_reschedule_checks" phpName="AutoRescheduleChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="auto_rescheduling_interval" phpName="AutoReschedulingInterval" type="INTEGER" required="false"/>
-        <column name="auto_rescheduling_window" phpName="AutoReschedulingWindow" type="INTEGER" required="false"/>
-        <column name="use_aggressive_host_checking" phpName="UseAggressiveHostChecking" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="enable_flap_detection" phpName="EnableFlapDetection" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="enable_flap_detection" phpName="EnableFlapDetection" type="TINYINT" size=1 required="false"/>
         <column name="low_service_flap_threshold" phpName="LowServiceFlapThreshold" type="VARCHAR" size="255" required="false"/>
         <column name="high_service_flap_threshold" phpName="HighServiceFlapThreshold" type="VARCHAR" size="255" required="false"/>
         <column name="low_host_flap_threshold" phpName="LowHostFlapThreshold" type="VARCHAR" size="255" required="false"/>
         <column name="high_host_flap_threshold" phpName="HighHostFlapThreshold" type="VARCHAR" size="255" required="false"/>
-        <column name="soft_state_dependencies" phpName="SoftStateDependencies" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="service_check_timeout" phpName="ServiceCheckTimeout" type="INTEGER" required="false"/>
         <column name="host_check_timeout" phpName="HostCheckTimeout" type="INTEGER" required="false"/>
         <column name="event_handler_timeout" phpName="EventHandlerTimeout" type="INTEGER" required="false"/>
         <column name="notification_timeout" phpName="NotificationTimeout" type="INTEGER" required="false"/>
         <column name="ocsp_timeout" phpName="OcspTimeout" type="INTEGER" required="false"/>
         <column name="ochp_timeout" phpName="OchpTimeout" type="INTEGER" required="false"/>
-        <column name="perfdata_timeout" phpName="PerfdataTimeout" type="INTEGER" required="false"/>
-        <column name="obsess_over_services" phpName="ObsessOverServices" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="ocsp_command" phpName="OcspCommand" type="INTEGER" required="false"/>
-        <column name="obsess_over_hosts" phpName="ObsessOverHosts" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="ochp_command" phpName="OchpCommand" type="INTEGER" required="false"/>
-        <column name="process_performance_data" phpName="ProcessPerformanceData" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="host_perfdata_command" phpName="HostPerfdataCommand" type="INTEGER" required="false"/>
-        <column name="service_perfdata_command" phpName="ServicePerfdataCommand" type="INTEGER" required="false"/>
-        <column name="host_perfdata_file" phpName="HostPerfdataFile" type="VARCHAR" size="255" required="false"/>
-        <column name="service_perfdata_file" phpName="ServicePerfdataFile" type="VARCHAR" size="255" required="false"/>
-        <column name="host_perfdata_file_template" phpName="HostPerfdataFileTemplate" type="LONGVARCHAR" required="false"/>
-        <column name="service_perfdata_file_template" phpName="ServicePerfdataFileTemplate" type="LONGVARCHAR" required="false"/>
-        <column name="host_perfdata_file_mode" phpName="HostPerfdataFileMode" type="CHAR" sqlType="enum('a','w','2')" required="false"/>
-        <column name="service_perfdata_file_mode" phpName="ServicePerfdataFileMode" type="CHAR" sqlType="enum('a','w','2')" required="false"/>
-        <column name="host_perfdata_file_processing_interval" phpName="HostPerfdataFileProcessingInterval" type="INTEGER" required="false"/>
-        <column name="service_perfdata_file_processing_interval" phpName="ServicePerfdataFileProcessingInterval" type="INTEGER" required="false"/>
-        <column name="host_perfdata_file_processing_command" phpName="HostPerfdataFileProcessingCommand" type="INTEGER" required="false"/>
-        <column name="service_perfdata_file_processing_command" phpName="ServicePerfdataFileProcessingCommand" type="INTEGER" required="false"/>
-        <column name="check_for_orphaned_services" phpName="CheckForOrphanedServices" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="check_for_orphaned_hosts" phpName="CheckForOrphanedHosts" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="check_service_freshness" phpName="CheckServiceFreshness" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="service_freshness_check_interval" phpName="ServiceFreshnessCheckInterval" type="INTEGER" required="false"/>
+        <column name="check_service_freshness" phpName="CheckServiceFreshness" type="TINYINT" size=1 required="false"/>
         <column name="freshness_check_interval" phpName="FreshnessCheckInterval" type="INTEGER" required="false"/>
-        <column name="check_host_freshness" phpName="CheckHostFreshness" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="host_freshness_check_interval" phpName="HostFreshnessCheckInterval" type="INTEGER" required="false"/>
+        <column name="check_host_freshness" phpName="CheckHostFreshness" type="TINYINT" size=1 required="false"/>
         <column name="date_format" phpName="DateFormat" type="VARCHAR" size="255" required="false"/>
-        <column name="illegal_object_name_chars" phpName="IllegalObjectNameChars" type="VARCHAR" size="255" required="false"/>
-        <column name="illegal_macro_output_chars" phpName="IllegalMacroOutputChars" type="VARCHAR" size="255" required="false"/>
-        <column name="use_regexp_matching" phpName="UseRegexpMatching" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="use_true_regexp_matching" phpName="UseTrueRegexpMatching" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="admin_email" phpName="AdminEmail" type="VARCHAR" size="255" required="false"/>
-        <column name="admin_pager" phpName="AdminPager" type="VARCHAR" size="255" required="false"/>
-        <column name="engine_comment" phpName="engineComment" type="LONGVARCHAR" required="false"/>
-        <column name="engine_activate" phpName="engineActivate" type="CHAR" sqlType="enum('0','1')" required="false"/>
-        <column name="event_broker_options" phpName="EventBrokerOptions" type="VARCHAR" size="255" required="false"/>
-        <column name="translate_passive_host_checks" phpName="TranslatePassiveHostChecks" type="INTEGER" required="false"/>
-        <column name="engine_server_id" phpName="engineServerId" type="INTEGER" required="false"/>
-        <column name="enable_predictive_host_dependency_checks" phpName="EnablePredictiveHostDependencyChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="enable_predictive_service_dependency_checks" phpName="EnablePredictiveServiceDependencyChecks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="cached_host_check_horizon" phpName="CachedHostCheckHorizon" type="INTEGER" required="false"/>
-        <column name="cached_service_check_horizon" phpName="CachedServiceCheckHorizon" type="INTEGER" required="false"/>
-        <column name="passive_host_checks_are_soft" phpName="PassiveHostChecksAreSoft" type="INTEGER" required="false"/>
-        <column name="use_large_installation_tweaks" phpName="UseLargeInstallationTweaks" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="free_children_process_memory" phpName="FreeChildProcessMemory" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="children_processes_fork_twice" phpName="ChildProcessesForkTwice" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="enable_environment_macros" phpName="EnableEnvironmentMacros" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="use_setpgid" phpName="UseSetpgid" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="additional_freshness_latency" phpName="AdditionalFreshnessLatency" type="INTEGER" required="false"/>
-        <column name="enable_embedded_perl" phpName="EnableEmbeddedPerl" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="use_embedded_perl_implicitly" phpName="UseEmbeddedPerlImplicitly" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="debug_file" phpName="DebugFile" type="VARCHAR" size="255" required="false"/>
+        <column name="enable_predictive_host_dependency_checks" phpName="EnablePredictiveHostDependencyChecks" type="TINYINT" size=1 required="false"/>
+        <column name="enable_predictive_service_dependency_checks" phpName="EnablePredictiveServiceDependencyChecks" type="TINYINT" size=1 required="false"/>
         <column name="debug_level" phpName="DebugLevel" type="INTEGER" required="false"/>
-        <column name="debug_level_opt" phpName="DebugLevelOpt" type="VARCHAR" size="200" required="false" defaultValue="0"/>
-        <column name="debug_verbosity" phpName="DebugVerbosity" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
+        <column name="debug_verbosity" phpName="DebugVerbosity" type="TINYINT" size=1 required="false"/>
         <column name="max_debug_file_size" phpName="MaxDebugFileSize" type="INTEGER" required="false"/>
-        <column name="daemon_dumps_core" phpName="DaemonDumpsCore" type="CHAR" sqlType="enum('0','1')" required="false"/>
-        <column name="cfg_file" phpName="CfgFile" type="VARCHAR" size="255" required="true" defaultValue="centengine.cfg"/>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_15" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="service_perfdata_command" foreign="command_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_18" onDelete="SET NULL" onUpdate="RESTRICT">
+        <column name="poller_id" phpName="pollerId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_gheh" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="global_host_event_handler" foreign="command_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_19" onDelete="SET NULL" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_gseh" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="global_service_event_handler" foreign="command_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_20" onDelete="SET NULL" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_ocspc" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="ocsp_command" foreign="command_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_21" onDelete="SET NULL" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_ochpc" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="ochp_command" foreign="command_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_22" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="host_perfdata_command" foreign="command_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_23" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="service_perfdata_command" foreign="command_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_24" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="host_perfdata_file_processing_command" foreign="command_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_25" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="service_perfdata_file_processing_command" foreign="command_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_engine_servers" name="cfg_engine_ibfk_26" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="engine_server_id" foreign="id"/>
+        <foreign-key foreignTable="cfg_pollers" name="cfg_engine_ibfk_pid" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="poller_id" foreign="poller_id"/>
         </foreign-key>
         <index name="cmd1_index">
             <index-column name="global_host_event_handler"/>
@@ -178,20 +76,8 @@
         <index name="cmd4_index">
             <index-column name="ochp_command"/>
         </index>
-        <index name="cmd5_index">
-            <index-column name="host_perfdata_command"/>
-        </index>
-        <index name="cmd6_index">
-            <index-column name="service_perfdata_command"/>
-        </index>
-        <index name="cmd7_index">
-            <index-column name="host_perfdata_file_processing_command"/>
-        </index>
-        <index name="cmd8_index">
-            <index-column name="service_perfdata_file_processing_command"/>
-        </index>
-        <index name="engine_server_id">
-            <index-column name="engine_server_id"/>
+        <index name="poller_id">
+            <index-column name="poller_id"/>
         </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

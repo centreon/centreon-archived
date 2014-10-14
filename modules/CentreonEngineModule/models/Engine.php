@@ -31,58 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonEngine\Repository;
+namespace CentreonEngine\Models;
 
-use Centreon\Internal\Di;
+use Centreon\Models\CentreonBaseModel;
 
 /**
+ * Used for interacting with engine configuration objects
+ *
  * @author Sylvestre Ho <sho@merethis.com>
- * @package CentreonEngine
- * @subpackage Repository
+ * @package Centreo
+ * @subpackage Engine
+ * @version 3.0.0
  */
-class EngineRepository
+class Engine extends CentreonBaseModel
 {
-    /**
-     * @var string
-     */
-    private $engineModel = '\CentreonEngine\Models\Engine';
-
-    /**
-     * Save engine parameters of a poller
-     *
-     * @param int $pollerId
-     * @param array $params
-     */
-    public static function save($pollerId, $params)
-    {
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare("SELECT engine_id FROM cfg_engine WHERE poller_id = ?");
-        $stmt->execute(array($pollerId));
-        if (!$stmt->rowCount()) {
-            $stmt = $db->prepare("INSERT INTO cfg_engine (poller_id) VALUES (?)");
-            $stmt->execute(array($pollerId));
-        }
-        $sqlParams = array(':poller_id' => $pollerId);
-        $updateSql = "";
-        $model = $this->engineModel;
-        $columns = $model::getColumns();
-        foreach ($params as $k => $v) {
-            if (!in_array($k, $columns)) {
-                continue;
-            }
-            $newkey = ':' . $k;
-            $sqlParams[$newkey] = $v;
-            if ($updateSql != "") {
-                $updateSql .= ', ';
-            }
-            $updateSql .= "{$k} = :{$k}";
-        }
-        if ($updateSql) {
-            $sql = "UPDATE cfg_engine SET {$updateSql} WHERE poller_id = :poller_id";
-            $stmt = $db->prepare($sql);
-            $stmt->execute($sqlParams);
-        }
-    }
+    protected static $table = "cfg_engine";
+    protected static $primaryKey = "engine_id";
+    protected static $uniqueLabelField = "";
 }
