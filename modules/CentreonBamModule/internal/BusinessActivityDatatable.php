@@ -73,7 +73,7 @@ class BusinessActivityDatatable extends \Centreon\Internal\Datatable
             'name' => 'ba_id',
             'data' => 'ba_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(

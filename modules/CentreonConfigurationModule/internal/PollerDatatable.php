@@ -95,6 +95,7 @@ class PollerDatatable extends \Centreon\Internal\Datatable
             'data' => 'name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'poller',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

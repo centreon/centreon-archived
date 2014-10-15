@@ -93,6 +93,7 @@ class ServiceGroupDatatable extends \Centreon\Internal\Datatable
             'data' => 'sg_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'servicegroup',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

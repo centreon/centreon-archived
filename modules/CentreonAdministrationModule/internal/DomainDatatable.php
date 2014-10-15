@@ -78,6 +78,7 @@ class DomainDatatable extends \Centreon\Internal\Datatable
             'data' => 'domain_id',
             'orderable' => true,
             'searchable' => false,
+            'searchLabel' => 'domain',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

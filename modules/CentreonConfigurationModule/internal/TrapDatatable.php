@@ -93,6 +93,7 @@ class TrapDatatable extends \Centreon\Internal\Datatable
             'data' => 'traps_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'trap',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

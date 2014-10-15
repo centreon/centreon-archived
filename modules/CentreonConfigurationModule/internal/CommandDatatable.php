@@ -96,6 +96,7 @@ class CommandDatatable extends \Centreon\Internal\Datatable
             'data' => 'command_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'command',
             'type' => 'string',
             'visible' => true,
             'cast' => array(
@@ -129,12 +130,12 @@ class CommandDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
-                                      '1' => '<span class="label label-info">Notifications</span>',
-                                      '2' => '<span class="label label-info">Check</span>',
-                                      '3' => '<span class="label label-info">Miscelleanous</span>',
-                                      '4' => '<span class="label label-info">Discovery</span>',
+                    '1' => '<span class="label label-info">Notifications</span>',
+                    '2' => '<span class="label label-info">Check</span>',
+                    '3' => '<span class="label label-info">Miscelleanous</span>',
+                    '4' => '<span class="label label-info">Discovery</span>',
                 )
-                            ),
+            ),
             "className" => 'cell_center',
             'width' => "40px"
             

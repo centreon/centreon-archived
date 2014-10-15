@@ -95,6 +95,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'data' => 'name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'host',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

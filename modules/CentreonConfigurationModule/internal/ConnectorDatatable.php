@@ -93,6 +93,7 @@ class ConnectorDatatable extends \Centreon\Internal\Datatable
             'data' => 'name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'connector',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

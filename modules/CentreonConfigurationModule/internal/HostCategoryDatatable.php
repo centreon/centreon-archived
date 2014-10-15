@@ -94,6 +94,7 @@ class HostCategoryDatatable extends \Centreon\Internal\Datatable
             'data' => 'hc_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'hostcategory',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

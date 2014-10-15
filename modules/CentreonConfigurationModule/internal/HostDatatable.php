@@ -92,11 +92,12 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'className' => "cell_center"
         ),
         array (
-            'title' => 'Name',
+            'title' => 'Host',
             'name' => 'host_name',
             'data' => 'host_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'host',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

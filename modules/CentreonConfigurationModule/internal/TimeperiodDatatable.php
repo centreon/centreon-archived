@@ -93,6 +93,7 @@ class TimeperiodDatatable extends \Centreon\Internal\Datatable
             'data' => 'tp_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'timeperiod',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

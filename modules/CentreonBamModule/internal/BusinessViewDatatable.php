@@ -73,7 +73,7 @@ class BusinessViewDatatable extends \Centreon\Internal\Datatable
             'name' => 'id_ba_group',
             'data' => 'id_ba_group',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(

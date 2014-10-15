@@ -93,6 +93,7 @@ class ServiceCategoryDatatable extends \Centreon\Internal\Datatable
             'data' => 'sc_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'servicecategory',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

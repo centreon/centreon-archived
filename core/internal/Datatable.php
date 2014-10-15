@@ -260,6 +260,13 @@ class Datatable
                 if (isset($column['searchParam'])) {
                     $searchParam = array_merge($searchParam, $column['searchParam']);
                 }
+                if (isset($column['searchLabel'])) {
+                    $searchParam['searchLabel'] = $column['searchLabel'];
+                } else {
+                    $replaceChar = array(' ', '/', '\\');
+                    $firstReplace = str_replace($replaceChar, '_', $column['title']);
+                    $searchParam['searchLabel'] = strtolower(preg_replace('/(\_)+/', '_', $firstReplace));
+                }
                 $searchParam['title'] = $column['title'];
                 $searchParam['colIndex'] = array_search($column['name'], static::$fieldList);
                 

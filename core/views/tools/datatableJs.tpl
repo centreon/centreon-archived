@@ -575,7 +575,7 @@
                 {else}
                     {$fieldname="input[name='$colName']"}
                 {/if}
-                "{$colName}": "{$fieldname}",
+                "{$colSearch.searchLabel}": "{$fieldname}",
             {/foreach}
             },
             associateFields: {
@@ -585,7 +585,7 @@
                 {else}
                     {$fieldname="input[name='$colName']"}
                 {/if}
-                "{$colName}": "{$fieldname}",
+                "{$colSearch.searchLabel}": "{$fieldname}",
             {/foreach}
             }
         });

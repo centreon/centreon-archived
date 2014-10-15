@@ -4,7 +4,7 @@
             <div class="row">
                 {$clsOffset=""}
                 {$searchAdv=true}
-                {if false }
+                {if true }
                 <div class="col-md-8 form-group">
                     <div class=" input-group">
                         <input type="text" name="advsearch" class="form-control">

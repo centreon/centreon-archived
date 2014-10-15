@@ -116,6 +116,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'title' => 'Host',
             'name' => 'host_name',
             'data' => 'host_name',
+            'searchLabel' => 'host',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -133,11 +134,12 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             )
         ),
         array (
-            'title' => 'Name',
+            'title' => 'Service',
             'name' => 'service_description',
             'data' => 'service_description',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'service',
             'type' => 'string',
             'visible' => true,
             'cast' => array(
@@ -210,6 +212,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'data' => 'service_template_model_stm_id',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'servicetemplate',
             'type' => 'string',
             'visible' => true,
         ),
