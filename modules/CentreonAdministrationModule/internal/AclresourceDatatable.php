@@ -77,7 +77,7 @@ class AclresourceDatatable extends \Centreon\Internal\Datatable
             'name' => 'acl_res_id',
             'data' => 'acl_res_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '5%',

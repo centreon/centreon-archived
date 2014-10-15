@@ -77,7 +77,7 @@ class EnvironmentDatatable extends \Centreon\Internal\Datatable
             'name' => 'environment_id',
             'data' => 'environment_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(

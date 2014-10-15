@@ -77,7 +77,7 @@ class AclactionDatatable extends \Centreon\Internal\Datatable
             'name' => 'acl_action_id',
             'data' => 'acl_action_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '5%',

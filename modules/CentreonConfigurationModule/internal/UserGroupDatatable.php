@@ -77,7 +77,7 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
             'name' => 'cg_id',
             'data' => 'cg_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(

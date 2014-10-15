@@ -76,7 +76,7 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
             'name' => 'service_id',
             'data' => 'service_id',
             'orderable' => false,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(

@@ -76,7 +76,7 @@ class AclmenuDatatable extends \Centreon\Internal\Datatable
             'name' => 'acl_menu_id',
             'data' => 'acl_menu_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '5%',

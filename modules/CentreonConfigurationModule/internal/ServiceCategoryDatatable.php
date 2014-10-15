@@ -76,7 +76,7 @@ class ServiceCategoryDatatable extends \Centreon\Internal\Datatable
             'name' => 'sc_id',
             'data' => 'sc_id',
             'orderable' => false,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(

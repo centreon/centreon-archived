@@ -77,7 +77,7 @@ class CommandDatatable extends \Centreon\Internal\Datatable
             'name' => 'command_id',
             'data' => 'command_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '5%',

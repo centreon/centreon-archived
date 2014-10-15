@@ -77,7 +77,7 @@ class UserDatatable extends \Centreon\Internal\Datatable
             'name' => 'contact_id',
             'data' => 'contact_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'cast' => array(

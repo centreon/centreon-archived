@@ -77,7 +77,7 @@ class HostCategoryDatatable extends \Centreon\Internal\Datatable
             'name' => 'hc_id',
             'data' => 'hc_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '5%',

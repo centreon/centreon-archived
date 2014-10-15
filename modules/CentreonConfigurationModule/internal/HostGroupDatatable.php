@@ -76,7 +76,7 @@ class HostGroupDatatable extends \Centreon\Internal\Datatable
             'name' => 'hg_id',
             'data' => 'hg_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '5%',
