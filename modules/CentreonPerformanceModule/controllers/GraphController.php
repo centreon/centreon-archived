@@ -64,6 +64,7 @@ class GraphController extends \Centreon\Internal\Controller
         $tmpl->addJs('jquery.select2/select2.min.js');
         $tmpl->addJs('moment-with-langs.min.js');
         $tmpl->addJs('daterangepicker.js');
+        $tmpl->addJs('centreon.graph.js', 'bottom', 'centreon-performance');
         $tmpl->addCss('c3.css');
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');

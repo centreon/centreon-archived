@@ -1,0 +1,6 @@
+[
+  {
+    "name": "displaySvcTooltipGraph",
+    "description": "Hook for tooltip on graph icon in service view"
+  }
+]
