@@ -96,31 +96,31 @@ class DisplayEnginePaths
         $paths['conf_dir'] = array(
             'label' => _('Configuration directory'),
             'help' => _('Configuration files will be placed there.'),
-            'value' => ''
+            'value' => '/etc/centreon-engine/'
         );
 
         $paths['log_dir'] = array(
             'label' => _('Log directory'),
             'help' => _('Log files will be placed there.'),
-            'value' => ''
+            'value' => '/var/log/centreon-engine/'
         );
 
         $paths['var_lib_dir'] = array(
             'label' => _('Var Lib directory'),
             'help' => _('Var lib files will be placed there.'),
-            'value' => ''
+            'value' => '/var/lib/centreon-engine/'
         );
 
 	$paths['module_dir'] = array(
             'label' => _('Module directory'),
             'help' => _('Event broker modules will be placed there.'),
-            'value' => ''
+            'value' => '/usr/lib/centreon-engine/'
         );
 
 	$paths['init_script'] = array(
             'label' => _('Init script'),
             'help' => _('Path of init script'),
-            'value' => ''
+            'value' => '/etc/init.d/centengine'
         );
         return $paths;
     }
