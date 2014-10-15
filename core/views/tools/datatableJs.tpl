@@ -62,6 +62,7 @@
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
         setInterval(function () { 
+            $( ".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
         }, 60000);
 
