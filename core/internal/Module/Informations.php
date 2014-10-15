@@ -340,6 +340,11 @@ class Informations
         
         if (isset($moduleId)) {
             $moduleInfo['id'] = $moduleId;
+        } else {
+            $retrievedId = self::getModuleIdByName($moduleName);
+            if ($retrievedId !== false) {
+                $moduleInfo['id'] = $retrievedId;
+            }
         }
         
         $moduleInstaller = new $classCall($moduleDirectory, $moduleInfo);

@@ -36,10 +36,11 @@
 
 namespace Centreon\Internal\Install;
 
-use \Centreon\Internal\Utils\CommandLine\Colorize;
-use \Centreon\Internal\Install\Migrate;
+use Centreon\Internal\Utils\CommandLine\Colorize;
+use Centreon\Internal\Install\Migrate;
+use Centreon\Internal\Install\AbstractInstall;
 
-class Install extends \Centreon\Internal\Install\AbstractInstall
+class Install extends AbstractInstall
 {
     /**
      * 

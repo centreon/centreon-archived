@@ -12,7 +12,7 @@
     "core version" : "3.0.0",
     "dependencies" : [
         {
-            "name" : "centreon-administration",
+            "name" : "centreon-configuration",
             "version" : "3.0.0"
         }
     ],

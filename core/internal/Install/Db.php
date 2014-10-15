@@ -250,8 +250,17 @@ class Db
         $di = \Centreon\Internal\Di::getDefault();
         $config = $di->get('config');
         $centreonPath = $config->get('global', 'centreon_path');
+        $targetFolder = '';
+        $tmpFolder = '';
         
-        $targetFolder = $centreonPath . '/tmp/db/target/' . $targetDbName . '/';
+        
+        $tmpFolder .= trim($di->get('centreon_generate_tmp_dir'));
+        if (!empty($tmpFolder)) {
+            $targetFolder .= $tmpFolder . '/centreon/db/target/' . $targetDbName . '/';
+        } else {
+            $targetFolder .= $centreonPath . '/tmp/db/target/' . $targetDbName . '/';
+        }
+        
         $fileList = array();
         
         // Mandatory tables
@@ -274,7 +283,7 @@ class Db
         
         // Copy to destination
         if (!file_exists($targetFolder)) {
-            mkdir($targetFolder, 0700, true);
+            mkdir($targetFolder, 0777, true);
         }
         
         $nbOfFiles = count($fileList);
