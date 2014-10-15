@@ -35,18 +35,19 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Di;
-use \CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
-use \CentreonConfiguration\Events\EngineFormSave;
-use \CentreonConfiguration\Models\Poller;
-use \CentreonConfiguration\Models\Node;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
+use CentreonConfiguration\Events\EngineFormSave;
+use CentreonConfiguration\Models\Poller;
+use CentreonConfiguration\Models\Node;
+use CentreonConfiguration\Repository\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class PollerRepository extends \CentreonConfiguration\Repository\Repository
+class PollerRepository extends Repository
 {
     /**
      *
@@ -69,7 +70,7 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         // Get centreon DB and centreon storage DB connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconnStorage = $di->get('db_storage');
 
         $request = "SELECT *
@@ -149,15 +150,16 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function update($params)
     {
+        $di = Di::getDefault();
         NodeRepository::update($params);
         Poller::update(
-            $params['object_id'],
+            $params['poller_id'],
             array(
                 'name' => $params['poller_name'],
                 'tmpl_name' => $params['poller_tmpl']
             )
         );
-        $values = new EngineFormSave($params['object_id'], $params);
+        $values = new EngineFormSave($params['poller_id'], $params);
         $di->get('events')->emit('centreon-configuration.engine.form.save', array($values));
     }
 

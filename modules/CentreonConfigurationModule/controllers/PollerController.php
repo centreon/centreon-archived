@@ -35,14 +35,14 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
-use \CentreonConfiguration\Models\Poller as PollerModel;
-use \CentreonConfiguration\Models\Node as NodeModel;
-use \CentreonConfiguration\Repository\PollerRepository;
+use CentreonConfiguration\Models\Poller as PollerModel;
+use CentreonConfiguration\Models\Node as NodeModel;
+use CentreonConfiguration\Repository\PollerRepository;
 use CentreonConfiguration\Internal\PollerTemplateManager;
-use \Centreon\Internal\Form;
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Form;
+use Centreon\Internal\Exception;
 
 class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
 {
@@ -182,9 +182,10 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
             'poller_name' => $poller['name'],
             'ip_address' => $node['ip_address']
         ));
+        $form->addHidden('poller_id', $params['id']);
         $this->tpl->assign('object_id', $params['id']);
         $this->tpl->assign('form', $form->toSmarty());
-	$this->tpl->assign('hookParams', array('pollerId' => $params['id']));
+        $this->tpl->assign('hookParams', array('pollerId' => $params['id']));
         $this->tpl->display('editPoller.tpl');
     }
     
@@ -292,7 +293,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     private function getForm($formName, $pollerId = 0)
     {
-        $form = new \Centreon\Internal\Form($formName);
+        $form = new Form($formName);
         $form->add(array(
             'type' => 'text',
             'label' => 'Poller name',

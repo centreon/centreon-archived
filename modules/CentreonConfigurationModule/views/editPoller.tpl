@@ -5,7 +5,7 @@
 {block name="content"}
 <div class="content-container">
   <div class="row">
-    <form class="form-horizontal" role="form" method="post" id="edit_poller">
+    <form class="form-horizontal" role="form" method="post" id="edit_poller" action="/index.php">
     <div class="form-tabs-header">
       <div class="inline-block">
         <ul class="nav nav-tabs" id="formHeader">
@@ -136,7 +136,7 @@ $(function() {
 
     $.ajax({
       url: "{url_for url='/configuration/poller/update'}",
-      data: $( "#wizard_form" ).serializeArray(),
+      data: $( "form" ).serializeArray(),
       dataType: "json",
       type: "post",
       success: function( data, textStatus, jqXHR ) {
@@ -152,6 +152,7 @@ $(function() {
         }
       }
     });
+    return false;
   });
 });
 </script>
