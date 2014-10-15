@@ -1419,6 +1419,10 @@ function updateService_MC($service_id = null, $params = array())
         $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
         $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
     }
+    if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
+        $rq .= "service_inherit_contacts_from_host = '".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', ";
+        $fields["service_inherit_contacts_from_host"] = $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"];
+    }
     if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL) {
         $rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";
         $fields["service_stalOpts"] = implode(",", array_keys($ret["service_stalOpts"]));
