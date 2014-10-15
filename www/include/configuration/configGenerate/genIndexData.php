@@ -31,15 +31,12 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL:$
- * SVN : $Id:$
- *
  */
  
 define('DAY_SECS', 86400);
 define('NB_REQUEST', 1000);
 
-/* RRD retention cache*/
+/* RRD retention cache */
 $retentionCache = array();
 $serviceRetention = array();
 $retentionRes = $pearDB->query("SELECT host_host_id as id, MAX(hg_rrd_retention) as retention
@@ -56,11 +53,11 @@ while ($row = $retentionRes->fetchRow()) {
 $indexToAdd = array();
 $listIndexData = getListIndexData();
 
+// Get all service into Centreon Configuration
 $hostSvcSql = "SELECT host_id, service_id, host_name, service_description
 FROM host_service_relation hsr, host h, service s
 WHERE hsr.host_host_id IS NOT NULL
 AND hsr.host_host_id = h.host_id
-AND h.host_activate = '1'
 AND hsr.service_service_id = s.service_id
 AND s.service_register IN ('1', '2')
 UNION
@@ -68,7 +65,6 @@ SELECT host_id, service_id, host_name, service_description
 FROM host_service_relation hsr, hostgroup_relation hgr, host h, service s
 WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
 AND hgr.host_host_id = h.host_id
-AND h.host_activate = '1'
 AND hsr.service_service_id = s.service_id
 AND s.service_register = '1'";
 $hostSvcRes = $pearDB->query($hostSvcSql);
@@ -90,6 +86,7 @@ while ($hostSvcRow = $hostSvcRes->fetchRow()) {
     }
 }
 
+// Select service to delete into index_data
 $res = $pearDBO->query("SELECT host_id, service_id FROM index_data");
 $toDelete = "";
 $i = 0;
@@ -109,14 +106,13 @@ while ($row = $res->fetchRow()) {
         }
     }
 }
-
 if ($toDelete != "") {
     $pearDBO->query(sprintf($sql, substr($toDelete, 0, (strlen($toDelete)-1))));
 }
 unset($hostSvc);
 
 
-// 
+//
 $queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete) VALUES ";
 $queryAddIndexValues = "(%d, '%s', %d, '%s', 0),";
 $valuesToAdd = "";
