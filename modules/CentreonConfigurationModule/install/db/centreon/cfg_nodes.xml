@@ -9,5 +9,8 @@
         <unique name="cfg_nodes_idx01">
             <unique-column name="name" />
         </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
     </table>
 </database>

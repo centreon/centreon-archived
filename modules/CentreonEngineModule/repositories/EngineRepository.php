@@ -47,7 +47,7 @@ class EngineRepository
     /**
      * @var string
      */
-    private $engineModel = '\CentreonEngine\Models\Engine';
+    private static $engineModel = '\CentreonEngine\Models\Engine';
 
     /**
      * Save engine parameters of a poller
@@ -66,7 +66,7 @@ class EngineRepository
         }
         $sqlParams = array(':poller_id' => $pollerId);
         $updateSql = "";
-        $model = $this->engineModel;
+        $model = static::$engineModel;
         $columns = $model::getColumns();
         foreach ($params as $k => $v) {
             if (!in_array($k, $columns)) {

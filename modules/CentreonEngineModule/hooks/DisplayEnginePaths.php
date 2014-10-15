@@ -139,10 +139,10 @@ class DisplayEnginePaths
         }
         $db = Di::getDefault()->get('db_centreon');
         $columns = implode(', ', array_keys($paths));
-        $sql = "SELECT {$columns} FROM cfg_engine WHERE engine_server_id = ?";
+        $sql = "SELECT {$columns} FROM cfg_engine WHERE poller_id = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($pollerId));
-        $rows = $stmt->fetchAll();
+        $rows = $stmt->fetch(\PDO::FETCH_ASSOC);
         foreach ($rows as $k => $v) {
             $paths[$k]['value'] = $v;
         }

@@ -18,5 +18,8 @@
         <foreign-key foreignTable="cfg_nodes" onDelete="cascade">
             <reference local="node_id" foreign="node_id"/>
         </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
     </table>
 </database>
