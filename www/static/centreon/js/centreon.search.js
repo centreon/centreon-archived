@@ -286,10 +286,12 @@
     if ( !this.mousedover ) {
       this.cleanChoices();
     }
+    this.fillAssociateFields();
   };
 
   $.CentreonSearch.prototype.fillAssociateFields = function() {
-    var listUsedTags = {},
+    var regexSplit = new RegExp( "[^ ]\\w+:(\\w+|\"[^\"]+\"|'[^']+')", "g" ),
+        listUsedTags = {},
         self = this,
         input = this.dom.$elem;
     /* Clean all fields */
@@ -304,7 +306,10 @@
     });
 
     /* Get list of tags */
-    this.currentList = $( input ).val().split( " " );
+    this.currentList = [];
+    while ( matches = regexSplit.exec( $( input ).val() ) ) {
+      this.currentList.push( matches[ 0 ] );
+    }
     /* Found values */
     $.each( this.currentList, function( idx, element ) {
       var tagName,
