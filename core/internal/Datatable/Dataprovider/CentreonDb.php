@@ -84,6 +84,18 @@ class CentreonDb implements DataProviderInterface
             if (substr($key, 0, 7) == 'sSearch') {
                 if (!empty($value) || is_numeric($value)) {
                     $b = explode('_', $key);
+                    
+                    if (is_string($value)) {
+                        $possibleValues = array();
+                        preg_match_all('/[a-zA-Z\s]+|"[a-zA-Z\s]+"/i', $value, $possibleValues);
+                        if (count($possibleValues) > 0) {
+                            $value = array();
+                            foreach ($possibleValues[0] as $pVal) {
+                                $value[] = str_replace('"', '', trim($pVal));
+                            }
+                        }
+                    }
+                    
                     $conditions[$fieldList[$b[1]]] = $value;
                 }
             }

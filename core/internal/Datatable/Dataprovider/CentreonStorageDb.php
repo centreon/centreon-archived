@@ -101,6 +101,18 @@ class CentreonStorageDb implements DataProviderInterface
                         $conditions['s.enabled'] = $value;
                     } else {
                         $b = explode('_', $key);
+                        
+                        if (is_string($value)) {
+                            $possibleValues = array();
+                            preg_match_all('/[a-zA-Z\s]+|"[a-zA-Z\s]+"/i', $value, $possibleValues);
+                            if (count($possibleValues) > 0) {
+                                $value = array();
+                                foreach ($possibleValues[0] as $pVal) {
+                                    $value[] = str_replace('"', '', trim($pVal));
+                                }
+                            }
+                        }
+                        
                         $conditions[$fieldList[$b[1]]] = $value;
                     }
                 }
