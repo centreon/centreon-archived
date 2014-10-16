@@ -155,6 +155,7 @@ class HostController extends \Centreon\Internal\Controller
         } else {
             $this->tpl->assign('error', sprintf(_('No data found for host id:%s'), $params['id']));
         }
+        $this->tpl->assign('params', array('host_id' => $params['id']));
         $this->tpl->display('file:[CentreonRealtimeModule]host_tooltip.tpl');
     }
 

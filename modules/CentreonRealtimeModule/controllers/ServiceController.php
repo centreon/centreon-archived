@@ -199,6 +199,7 @@ class ServiceController extends \Centreon\Internal\Controller
         } else {
             $this->tpl->assign('error', sprintf(_('No data found for service id:%s'), $params['id']));
         }
+        $this->tpl->assign('params', array('host_id' => $params['hid'], 'svc_id' => $params['sid']));
         $this->tpl->display('file:[CentreonRealtimeModule]service_tooltip.tpl');
     }
 

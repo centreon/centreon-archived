@@ -15,3 +15,4 @@
 	{/foreach}
 	</table>
 {/if}
+{hook name="displaySvcTooltipDetail" container="" params=$params}
