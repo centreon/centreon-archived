@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_searches" phpName="Searches" idMethod="native">
+        <column name="search_id" phpName="SearchId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="user_id" phpName="UserId" type="INTEGER" required="true"/>
+        <column name="label" phpName="Label" type="VARCHAR" size="255" required="true"/>
+        <column name="route" phpName="Route" type="VARCHAR" size="255" required="true"/>
+        <column name="searchText" phpName="Search" type="LONGVARCHAR" required="true"/>
+        <unique name="searches_idx01">
+            <unique-column name="user_id"/>
+            <unique-column name="label"/>
+            <unique-column name="route"/>
+        </unique>
+        <foreign-key foreignTable="cfg_contacts" name="search_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="user_id" foreign="contact_id"/>
+        </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
