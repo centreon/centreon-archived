@@ -60,7 +60,9 @@ class SearchRepository
     
     /**
      * 
-     * @param type $parameters
+     * @param type $route
+     * @param type $label
+     * @param type $searchText
      */
     public static function saveSearch($route, $label, $searchText)
     {
@@ -72,6 +74,7 @@ class SearchRepository
                 'label' => $label
             )
         );
+        
         $result = Search::get($searchId[0]);
         
         if (count($result) > 0) {

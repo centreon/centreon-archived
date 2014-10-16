@@ -54,18 +54,8 @@ class SearchController extends Controller
         
         $params = $this->getParams();
         
-        $finalParamList = array();
-        $paramsToSent = array('user_id', 'label', 'route', 'searchText');
-        
-        
-        foreach ($params as $paramName => $paramValue) {
-            if ((in_array($paramName, $paramsToSent))) {
-                $finalParamList[$paramName] = $paramValue;
-            }
-        }
-        
         try {
-            SearchRepository::saveSearch($finalParamList);
+            SearchRepository::saveSearch($params['route'], $params['label'], $params['searchText']);
             $saveSuccess = true;
         } catch(Exception $e) {
             
@@ -90,8 +80,6 @@ class SearchController extends Controller
     {
         $params = $this->getParams();
         
-        
-        var_dump($params); die();
         $loadSuccess = false;
         $error = '';
         $data = '';
@@ -99,7 +87,7 @@ class SearchController extends Controller
         if (!isset($params['route'])) {
             
         } else {
-            $data = SearchRepository::loadSearch($params['route']);
+            $data = SearchRepository::loadSearch($params['route'], $params['label']);
             $loadSuccess = true;
         }
         
