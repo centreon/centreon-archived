@@ -1,8 +1,12 @@
 [
   {
     "engine_id": 1,
-    "log_file": "/tmp/log",
-    "cfg_dir": "/tmp/cfg",
-    "engine_server_id": 1
+    "conf_dir": "/etc/centreon-engine/",
+    "log_dir": "/var/log/centreon-engine/",
+    "var_lib_dir": "/var/lib/centreon-engine/",
+    "module_dir": "/usr/lib/centreon-engine/",
+    "init_script": "/etc/init.d/centengine",
+    "enable_notifications": 0,
+    "poller_id": 1
   }
 ]

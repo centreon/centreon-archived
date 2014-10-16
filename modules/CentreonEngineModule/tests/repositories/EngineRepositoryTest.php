@@ -33,20 +33,29 @@
  */
 
 
-namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
+namespace Test\CentreonEngine\Repository;
 
-use \Test\Centreon\DbTestCase;
-use \CentreonEngine\Listeners\CentreonConfiguration\FormSave;
-use \CentreonConfiguration\Events\EngineFormSave;
+use Test\Centreon\DbTestCase;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Filesystem\Directory;
+use CentreonEngine\Repository\EngineRepository;
 
-class FormSaveTest extends DbTestCase
+class EngineRepositoryTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
 
-    public function testExecute()
+    public function setUp()
     {
-        $event = new EngineFormSave(1, array('enable_notifications' => 1));
-        FormSave::execute($event);
-        $this->markTestIncomplete("Must finish the function.");
+        parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
+
+    public function testSave()
+    {
+
     }
 }
