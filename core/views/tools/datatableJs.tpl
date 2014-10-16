@@ -545,6 +545,7 @@
 
         var requestSent = true;
         $('input.centreon-search').on('keyup', function(e) {
+            var listSearch = [];
             if (this.value.length > 2) {
                 oTable.api().column($(this).data('column-index'))
                     .search(this.value)
@@ -558,6 +559,18 @@
                     requestSent = true;
                 }
             }
+        }).on( "blur", function( e ) {
+          /* Fill the advanced search */
+          var advString = $( "input[name='advsearch']" ).val(),
+              searchTag = $( this ).data( "searchtag" ),
+              tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" ),
+              splitRegex = new RegExp( "(\\w+|\"[^\"]+\"|'[^']+')", "g" );
+          /* Remove the existing values */
+          advString = advString.replace( tagRegex, "").trim();
+          while ( match = splitRegex.exec( $( this ).val() ) ) {
+            advString += " " + searchTag + ":" + match[1];
+          }
+          $( "input[name='advsearch']" ).val( advString.trim() );
         });
         
         $('select.centreon-search').on('change', function(e) {

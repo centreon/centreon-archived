@@ -23,14 +23,14 @@
                                 <div class="input-group">
                                     <span class="input-group-addon">{$colSearch.title}</span>
                                     {if $colSearch['type'] == 'select'}
-                                        <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}">
+                                        <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}" data-searchtag="{$colSearch.searchLabel}">
                                             <option value=""></option>
                                             {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
                                                 <option value="{$optionValue}">{$optionName}</option>
                                             {/foreach}
                                         </select>
                                     {else}
-                                        <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" />
+                                        <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" data-searchtag="{$colSearch.searchLabel}" />
                                     {/if}
                                 </div>
                             </div>
@@ -68,14 +68,14 @@
                         <div class="input-group">
                             <span class="input-group-addon">{$colSearch.title}</span>
                             {if $colSearch['type'] == 'select'}
-                                <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}">
+                                <select class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" placeholder="{$colSearch.title}" name="{$colName}" data-searchtag="{$colSearch.searchLabel}">
                                     <option value=""></option>
                                     {foreach $colSearch.additionnalParams as $optionName=>$optionValue}
                                         <option value="{$optionValue}">{$optionName}</option>
                                     {/foreach}
                                 </select>
                             {else}
-                                <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" />
+                                <input class="centreon-search form-control" data-column-index="{$colSearch.colIndex}" name="{$colName}" placeholder="{$colSearch.title}" type="text" data-searchtag="{$colSearch.searchLabel}"/>
                             {/if}
                         </div>
                     </div>
