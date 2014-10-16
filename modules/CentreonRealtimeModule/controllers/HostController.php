@@ -79,6 +79,7 @@ class HostController extends \Centreon\Internal\Controller
             ->addJs('jquery.select2/select2.min.js')
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
+            ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js');
 
         /* Datatable */

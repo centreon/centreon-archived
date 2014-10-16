@@ -116,6 +116,7 @@ abstract class ObjectAbstract extends \Centreon\Internal\Controller
             ->addJs('jquery.fileupload-image.js')
             ->addJs('jquery.fileupload-validate.js')
             ->addJs('jquery.fileupload-ui.js')
+            ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon-wizard.js');
 
         /* Set Cookie */

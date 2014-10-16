@@ -119,6 +119,8 @@ class Template extends \Smarty
             $this->compile_check = true;
             $this->force_compile = true;
         }
+        /* Set the current route */
+        $this->assign('currentRoute', $di->get('router')->request()->pathname());
     }
     
     private function buildTemplateDirList()

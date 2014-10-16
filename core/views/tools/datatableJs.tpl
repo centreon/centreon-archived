@@ -603,6 +603,116 @@
             }
         });
 
+        /* Get the list of saved search */
+        $( "input[name='filters']" ).typeahead({
+          minLength: 0,
+          source: function(query) {
+            var result = [];
+            $.ajax({
+              url: "{url_for url='/administration/search/list'}",
+              dataType: "json",
+              method: "post",
+              async: false,
+              data: {
+                searchText: query
+              },
+              success: function( data, textStatus, jqXHR ) {
+                if ( data.success ) {
+                  $.each( data.data, function( idx, value ) {
+                    result.push( value['text'] );
+                  });
+                }
+              }
+            });
+            return result;
+          }
+        });
+
+        /* Save search action */
+        $( "#saveView" ).on( "click", function( e ) {
+          alertClose();
+          if ( $( "input[name='filters']" ).val().trim() === "" ) {
+            alertMessage( "The filters name must be set.", "alert-danger" );
+            return;
+          } else if ( $( "input[name='advsearch']" ).val().trim() === "" ) {
+            alertMessage( "The search must be set.", "alert-danger" );
+            return;
+          }
+          $.ajax({
+            url: "{url_for url='/administration/search/save'}",
+            dataType: "json",
+            method: "post",
+            data: {
+              route: "{$currentRoute}",
+              label: $( "input[name='filters']" ).val().trim(),
+              searchText: $( "input[name='advsearch']" ).val().trim()
+            },
+            success: function( data, textStatus, jqXHR ) {
+              if ( data.success ) {
+                alertMessage( "Your search is saved.", "alert-success" );
+              } else {
+                alertMessage( data.error, "alert-danger" );
+              }
+            }
+          });
+        });
+
+        /* Delete search action */
+        $( "#deleteView" ).on( "click", function( e ) {
+          alertClose();
+          if ( $( "input[name='filters']" ).val().trim() === "" ) {
+            alertMessage( "The filters name must be set.", "alert-danger" );
+            return;
+          }
+          $.ajax({
+            url: "{url_for url='/administration/search/delete'}",
+            dataType: "json",
+            method: "post",
+            data: {
+              route: "{$currentRoute}",
+              label: $( "input[name='filters']" ).val().trim(),
+            },
+            success: function( data, textStatus, jqXHR ) {
+              if ( data.success ) {
+                alertMessage( "Your search is deleted.", "alert-success" );
+              } else {
+                alertMessage( data.error, "alert-danger" );
+              }
+            }
+          });
+        });
+
+        /* Load search action */
+        $( "#loadView" ).on( "click", function( e ) {
+          alertClose();
+          if ( $( "input[name='filters']" ).val().trim() === "" ) {
+            alertMessage( "The filters name must be set.", "alert-danger" );
+            return;
+          }
+          $.ajax({
+            url: "{url_for url='/administration/search/load'}",
+            dataType: "json",
+            method: "post",
+            data: {
+              route: "{$currentRoute}",
+              label: $( "input[name='filters']" ).val().trim(),
+            },
+            success: function( data, textStatus, jqXHR ) {
+              if ( data.success ) {
+                $( "input[name='advsearch']" ).val( data.data );
+                $( "input[name='advsearch']" ).centreonsearch( "fillAssociateFields" );
+                $( ".centreon-search" ).each( function( idx, element ) {
+                    oTable.api().column( $( element ).data( "column-index" ) )
+                        .search( $( element ).val()) ;
+                });
+                oTable.api().draw();
+              } else {
+                alertMessage( data.error, "alert-danger" );
+              }
+            }
+          });
+        });
+
         $("#btnSearch").on("click", function(e) {
             $("input[name='advsearch']").centreonsearch("fillAssociateFields");
             e.preventDefault();

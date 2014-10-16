@@ -89,6 +89,7 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-langs.min.js')
             ->addJs('daterangepicker.js')
+            ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js')
             ->addJs('centreon.overlay.js');
 
