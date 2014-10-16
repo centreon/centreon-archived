@@ -6,7 +6,7 @@
     "var_lib_dir": "/var/lib/centreon-engine/",
     "module_dir": "/usr/lib/centreon-engine/",
     "init_script": "/etc/init.d/centengine",
-    "enable_notifications": 0,
+    "log_initial_states": 0,
     "poller_id": 1
   }
 ]

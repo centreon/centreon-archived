@@ -15,18 +15,18 @@
         <column name="use_syslog" phpName="UseSyslog" type="TINYINT" size="1" required="false"/>
         <column name="log_notifications" phpName="LogNotifications" type="TINYINT" size="1" required="false"/>
         <column name="log_service_retries" phpName="LogServiceRetries" type="TINYINT" size="1" required="false"/>
-        <column name="log_host_retries" phpName="LogHostRetries" type="TINYINT" size=1 required="false"/>
-        <column name="log_event_handlers" phpName="LogEventHandlers" type="TINYINT" size=1 required="false"/>
-        <column name="log_initial_states" phpName="LogInitialStates" type="TINYINT" size=1 required="false"/>
-        <column name="log_external_commands" phpName="LogExternalCommands" type="TINYINT" size=1 required="false"/>
-        <column name="log_passive_checks" phpName="LogPassiveChecks" type="TINYINT" size=1 required="false"/>
+        <column name="log_host_retries" phpName="LogHostRetries" type="TINYINT" size="1" required="false"/>
+        <column name="log_event_handlers" phpName="LogEventHandlers" type="TINYINT" size="1" required="false"/>
+        <column name="log_initial_states" phpName="LogInitialStates" type="TINYINT" size="1" required="false"/>
+        <column name="log_external_commands" phpName="LogExternalCommands" type="TINYINT" size="1" required="false"/>
+        <column name="log_passive_checks" phpName="LogPassiveChecks" type="TINYINT" size="1" required="false"/>
         <column name="global_host_event_handler" phpName="GlobalHostEventHandler" type="INTEGER" required="false"/>
         <column name="global_service_event_handler" phpName="GlobalServiceEventHandler" type="INTEGER" required="false"/>
         <column name="max_concurrent_checks" phpName="MaxConcurrentChecks" type="INTEGER" required="false"/>
         <column name="max_service_check_spread" phpName="MaxServiceCheckSpread" type="INTEGER" required="false"/>
         <column name="max_host_check_spread" phpName="MaxHostCheckSpread" type="INTEGER" required="false"/>
         <column name="check_result_reaper_frequency" phpName="CheckResultReaperFrequency" type="INTEGER" required="false"/>
-        <column name="enable_flap_detection" phpName="EnableFlapDetection" type="TINYINT" size=1 required="false"/>
+        <column name="enable_flap_detection" phpName="EnableFlapDetection" type="TINYINT" size="1" required="false"/>
         <column name="low_service_flap_threshold" phpName="LowServiceFlapThreshold" type="VARCHAR" size="255" required="false"/>
         <column name="high_service_flap_threshold" phpName="HighServiceFlapThreshold" type="VARCHAR" size="255" required="false"/>
         <column name="low_host_flap_threshold" phpName="LowHostFlapThreshold" type="VARCHAR" size="255" required="false"/>
@@ -39,14 +39,14 @@
         <column name="ochp_timeout" phpName="OchpTimeout" type="INTEGER" required="false"/>
         <column name="ocsp_command" phpName="OcspCommand" type="INTEGER" required="false"/>
         <column name="ochp_command" phpName="OchpCommand" type="INTEGER" required="false"/>
-        <column name="check_service_freshness" phpName="CheckServiceFreshness" type="TINYINT" size=1 required="false"/>
+        <column name="check_service_freshness" phpName="CheckServiceFreshness" type="TINYINT" size="1" required="false"/>
         <column name="freshness_check_interval" phpName="FreshnessCheckInterval" type="INTEGER" required="false"/>
-        <column name="check_host_freshness" phpName="CheckHostFreshness" type="TINYINT" size=1 required="false"/>
+        <column name="check_host_freshness" phpName="CheckHostFreshness" type="TINYINT" size="1" required="false"/>
         <column name="date_format" phpName="DateFormat" type="VARCHAR" size="255" required="false"/>
-        <column name="enable_predictive_host_dependency_checks" phpName="EnablePredictiveHostDependencyChecks" type="TINYINT" size=1 required="false"/>
-        <column name="enable_predictive_service_dependency_checks" phpName="EnablePredictiveServiceDependencyChecks" type="TINYINT" size=1 required="false"/>
+        <column name="enable_predictive_host_dependency_checks" phpName="EnablePredictiveHostDependencyChecks" type="TINYINT" size="1" required="false"/>
+        <column name="enable_predictive_service_dependency_checks" phpName="EnablePredictiveServiceDependencyChecks" type="TINYINT" size="1" required="false"/>
         <column name="debug_level" phpName="DebugLevel" type="INTEGER" required="false"/>
-        <column name="debug_verbosity" phpName="DebugVerbosity" type="TINYINT" size=1 required="false"/>
+        <column name="debug_verbosity" phpName="DebugVerbosity" type="TINYINT" size="1" required="false"/>
         <column name="max_debug_file_size" phpName="MaxDebugFileSize" type="INTEGER" required="false"/>
         <column name="poller_id" phpName="pollerId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_gheh" onDelete="SET NULL" onUpdate="RESTRICT">

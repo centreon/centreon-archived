@@ -32,13 +32,13 @@
  * For more information : contact@centreon.com
  */
 
-
 namespace Test\CentreonEngine\Repository;
 
 use Test\Centreon\DbTestCase;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\Filesystem\Directory;
 use CentreonEngine\Repository\EngineRepository;
+use CentreonEngine\Models\Engine;
 
 class EngineRepositoryTest extends DbTestCase
 {
@@ -56,6 +56,9 @@ class EngineRepositoryTest extends DbTestCase
 
     public function testSave()
     {
-
+        $params['log_initial_states'] = 1;
+        EngineRepository::save(1, $params);
+        $value = Engine::get(1, 'log_initial_states');
+        $this->assertEquals(1, $value['log_initial_states']);
     }
 }
