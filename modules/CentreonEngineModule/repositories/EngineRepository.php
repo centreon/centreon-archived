@@ -58,12 +58,16 @@ class EngineRepository
     public static function save($pollerId, $params)
     {
         $db = Di::getDefault()->get('db_centreon');
+
+        /* Get engine id, if it does not exist, insert it */
         $stmt = $db->prepare("SELECT engine_id FROM cfg_engine WHERE poller_id = ?");
         $stmt->execute(array($pollerId));
         if (!$stmt->rowCount()) {
             $stmt = $db->prepare("INSERT INTO cfg_engine (poller_id) VALUES (?)");
             $stmt->execute(array($pollerId));
         }
+
+        /* Update parameters of engine only if the parameter name matches the column name */
         $sqlParams = array(':poller_id' => $pollerId);
         $updateSql = "";
         $model = static::$engineModel;
