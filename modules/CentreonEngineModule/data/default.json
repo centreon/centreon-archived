@@ -14,7 +14,7 @@
         "interval_length": "60",
         "log_event_handlers": "1",
         "log_external_commands": "1",
-        "log_file": "%log_dir%/centreon-engine.log",
+        "log_file": "%log_dir%/centengine.log",
         "log_host_retries": "1",
         "log_initial_states": "1",
         "log_notifications": "1",

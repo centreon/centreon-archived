@@ -164,7 +164,7 @@ class ConfigGenerateMainRepository
                     $finalConf[$macro] = rtrim($finalConf[$macro], '/');
                     $finalConf[$k] = str_replace("%{$macro}%", $finalConf[$macro], $v);
                 }
-                if ($macro == 'conf_dir') {
+                if ($macro == 'conf_dir' && $testing) {
                     $finalConf[$k] = str_replace('%conf_dir%', static::$path . "/" . $poller_id, $v);
                 }
             }
