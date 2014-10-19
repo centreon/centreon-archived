@@ -1,4 +1,5 @@
 @import "variables.less";
+@import "centreon.variables.less";
 
 /* Variables for login panel */
 @login-panel-radius: 0;
@@ -73,17 +74,47 @@ hr {
     }
 
     .btn-login {
-        background-color: #3fb11e;
-        border-color: #3d9623;
+        background-color: @topbar-bg-color;
+        border-color: darken(@topbar-bg-color, 10%);
         color: #fff;
     }
 }
 
 /* Topbar */
 .topbar {
-    margin-bottom: 0;
-    position: relative;
-    background-color: darken(@navbar-default-bg, 20%);
+   margin-bottom: 0;
+   position: relative;
+   background-color: @topbar-bg-color;
+   color: @topbar-color;
+   border-bottom: 1px @topbar-border-color solid;
+
+   a.navbar-brand {
+     color: @topbar-color;
+     
+     &:hover {
+       color: @topbar-color;
+       background-color: lighten(@topbar-bg-color, 5%);
+     }
+   }
+}
+
+.topbar .navbar-nav> li > a {
+  color: @topbar-color;
+  
+  &:hover,&:focus {
+    color: @topbar-color;
+    background-color:  lighten(@topbar-bg-color, 5%);
+  }
+}
+
+.topbar .navbar-nav> li.open > a {
+  color: @topbar-color;
+  background-color:  lighten(@topbar-bg-color, 5%);
+  
+  &:hover,&:focus {
+    color: @topbar-color;
+    background-color:  lighten(@topbar-bg-color, 5%);
+  }
 }
 
 /* Clock */
@@ -92,30 +123,13 @@ hr {
     padding-bottom: 15px;
     line-height: 20px;
     display: block;
-    color: @navbar-default-color;
+    color: @topbar-color;
     font-weight: bold;
 }
 
 .user .btn-group {
     padding: 3px 30px;
     padding-right: 0;
-}
-
-/* Buttons for theme */
-.btn-light {
-    color: #777;
-    background-color: #f8f8f8;
-    border-color: #e7e7e7;
-}
-
-.btn-dark {
-    color: #999;
-    background-color: #222;
-    border-color: #080808;
-}
-
-.btn-dark:hover {
-    color: #000;
 }
 
 /* Side left bar */
@@ -209,80 +223,6 @@ aside {
 /* .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
      background-color: #000;
 }*/
-
-/* Menu environment */
-.environment {
-    font-size: 16px;
-    height: 39px;
-    line-height: 39px;
-    background-color: darken(@navbar-default-bg, 10%);
-
-    span {
-        display: block;
-        height: 38px;
-        padding: 0 10px;
-        border-bottom: 1px solid @navbar-default-border;
-    }
-
-    .fa-dashboard {
-        font-size: 20px;
-    }
-
-    .fa-chevron-right {
-        font-size: 12px;
-    }
-
-    .env-menu {
-        padding-left: 10px;
-        width: 100%;
-    }
-}
-
-#environment-menu {
-    width: 100%;
-    height: 150px;
-    background-color: @navbar-default-bg;
-    background-color: fadeout(@navbar-default-bg, 20%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-
-    li {
-        color: #fff;
-        width: 110px;
-        height: 110px;
-        margin: 20px 10px;
-        border: 1px solid @gray-darker;
-        cursor: pointer;
-
-        &.active {
-            border: 1px solid @brand-primary;
-        }
-
-        &:first-child {
-            margin-left: 20px;
-        }
-
-        .icon {
-            height: 80px;
-            padding-left: 2px;
-            margin-top: 10px;
-            text-align: center;
-
-            i {
-                font-size: 76px;
-            }
-
-            .name {
-                font-size: 14px;
-                line-height: 18px;
-                height: 18px;
-                padding-left: 5px;
-            }
-        }
-    }
-}
 
 /* Content */
 .content {

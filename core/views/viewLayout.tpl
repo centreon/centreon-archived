@@ -1,12 +1,6 @@
 {extends file="baseLayout.tpl"}
 {block name="full-content"}
 <aside id="left-panel">
-  <div class="environment">
-    <span>
-      <a href="#"><i class="fa fa-dashboard"></i></a>
-      <a href="#" class="env-menu">{t}Environment{/t} <i class="fa fa-chevron-right"></i></a>
-    </span>
-  </div>
   <nav>
     <ul class="nav" id="menu1">
     </ul>
@@ -14,11 +8,6 @@
   {hook name='displayLeftMenu' container='<nav><ul class="nav" id="hook-menu">[hook]</ul></nav>'}
 </aside>
 <div class="content" id="main">
-<div class="breadcrumb-bar">
-  <ol class="breadcrumb">
-    {get_breadcrumb}
-  </ol>
-</div>
 <div class="flash alert fade in" id="flash-message" style="display: none;">
   <button type="button" class="close" aria-hidden="true">&times;</button>
 </div>
@@ -40,14 +29,11 @@ $(document).ready(function() {
     });
     var mdata = {get_environment_id};
     loadMenu('{url_for url="/menu/getmenu/"}', mdata.envid, mdata.subid, mdata.childid);
-    $('li.envmenu').on('click', function(e) {
+    $('a.envmenu').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         $("#hook-menu").html("");
         loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'), 0, 0);
-    });
-    $('.env-menu').on('click', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        displayEnvironmentMenu();
     });
     $('#flash-message').on('click', 'button.close', function() {
         alertClose();

@@ -10,11 +10,13 @@
     {block name="style-head"}{/block}
 </head>
 <body>
+<!-- Wrapper -->
 <div id="wrapper">
   <nav class="navbar navbar-default navbar-static-top topbar" role="navigation">
     <div class="navbar-header">
       <a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}Centreon{/block}</a>
     </div>
+    {environment}
     <div class="navbar-right">
       <ul class="nav navbar-nav navbar-left">
         <li class="infraInfo">
