@@ -1,3 +1,4 @@
+<h4 class="page-header">{t}Engine configuration{/t}</h4>
 {foreach from=$variables.paths item=mypath key=k}
 	<div class="form-group">
 		<div class="col-sm-2" style="text-align:right;">
@@ -14,7 +15,7 @@
 	</div>
 {/foreach}
 <script>
-window.onload = function() {
+$(function() {
 	{$variables.js}
-};
+});
 </script>
