@@ -35,7 +35,7 @@
 
 namespace CentreonBroker\Repository;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -47,11 +47,43 @@ class BrokerRepository
     /**
      * Save broker parameters of a node
      *
-     * @param int $nodeId
+     * @param int $pollerId
      * @param array $params
      */
-    public static function save($nodeId, $params)
+    public static function save($pollerId, $params)
     {
         $db = Di::getDefault()->get('db_centreon');
+
+        /* Save paths */
+        /* Test if exists in db */
+        $query = "SELECT COUNT(poller_id) as poller
+            FROM cfg_centreonbroker_paths
+            WHERE poller_id = :poller_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        $stmt->closeCursor();
+        if ($row['poller'] > 0) {
+            /* Update */
+            $query = "UPDATE cfg_centreonbroker_paths SET 
+                broker_etc_directory = :broker_etc_directory,
+                broker_module_directory = :broker_module_directory,
+                broker_logs_directory = :broker_logs_directory
+                broker_data_directory = :broker_data_directory
+                WHERE poller_id = :poller_id";
+        } else {
+            /* Insert */
+            $query = "INSERT INTO cfg_centreonbroker_paths
+                (poller_id, broker_etc_directory, broker_module_directory, broker_logs_directory, broker_data_directory) VALUES
+                (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory)";
+        }
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':poller_id', $pollerId);
+        $stmt->bindParam(':broker_etc_directory', $params['directory_config'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_module_directory', $params['directory_modules'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_logs_directory', $params['directory_logs'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_data_directory', $params['directory_data'], \PDO::PARAM_STR);
+        $stmt->execute();
     }
 }

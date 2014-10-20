@@ -95,9 +95,27 @@ class DisplayBrokerPaths
     {
         $paths = array();
 
+        $paths['broker_etc_directory'] = array(
+            'label' => _('Broker configuration directory'),
+            'help' => _('Directory to store configuration files for Broker'),
+            'value' =>''
+        );
+
         $paths['broker_module_directory'] = array(
             'label' => _('Broker module directory'),
             'help' => _('Broker module directory.'),
+            'value' => ''
+        );
+
+        $paths['broker_logs_directory'] = array(
+            'label' => _('Broker logs directory'),
+            'help' => _('Directory to store log file for Broker'),
+            'value' => ''
+        );
+
+        $paths['broker_data_directory'] = array(
+            'label' => _('Broker data directory'),
+            'help' => _('Directory to store data for Broker'),
             'value' => ''
         );
 
@@ -116,7 +134,20 @@ class DisplayBrokerPaths
         if (!count($paths)) {
             return $paths;
         }
-        // @todo retrieve values
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $query = "SELECT directory_config, directory_modules, directory_data, directory_logs
+            FROM cfg_centreonbroker_paths
+            WHERE poller_id = :poller_id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':poller_id', $poller_id, \PDO::PARAM_INT);
+        $row = $stmt->fetch();
+        if (is_null($row)) {
+            return $paths;
+        }
+        $paths['broker_etc_directory']['value'] = $row['directory_config'];
+        $paths['broker_module_directory']['value'] = $row['directory_modules'];
+        $paths['broker_logs_directory']['value'] = $row['directory_logs'];
+        $paths['broker_data_directory']['value'] = $row['directory_data'];
         return $paths;
     }
 }
