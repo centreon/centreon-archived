@@ -87,7 +87,7 @@ class CentreonDb implements DataProviderInterface
                     
                     if (is_string($value)) {
                         $possibleValues = array();
-                        preg_match_all('/[a-zA-Z\s]+|"[a-zA-Z\s]+"/i', $value, $possibleValues);
+                        preg_match_all('/(^| )([\w-_]+|"[^"]+"|\'[^\']+\')/i', $value, $possibleValues);
                         if (count($possibleValues) > 0) {
                             $value = array();
                             foreach ($possibleValues[0] as $pVal) {

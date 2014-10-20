@@ -676,7 +676,6 @@ class Form
      */
     public function add($field, $extraParams = array())
     {
-        var_dump($field);
         switch ($field['type']) {
             default:
                 $this->addStatic($field, $extraParams);
