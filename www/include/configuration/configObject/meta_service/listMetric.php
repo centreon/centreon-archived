@@ -137,7 +137,11 @@
             }
         }
     }
-	$tpl->assign("elemArr1", $elemArr1);
+    if (isset($elemArr1)) {
+	    $tpl->assign("elemArr1", $elemArr1);
+    } else {
+        $tpl->assign("elemArr1", array());
+    }
 
 	/*
 	 * Different messages we put in the template
