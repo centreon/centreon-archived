@@ -1,27 +1,20 @@
 {
-    "name" : "poller",
+    "name" : "Poller",
     "content" : {
         "broker" : {
             "setup" : [
                 {
-                    "name" : "Central Broker",
+                    "name" : "Broker Module",
                     "forms" : {
                         "steps" : [
                             {
-                                "name" : "MyStep",
+                                "name" : "Central connection",
                                 "order": 1,
                                 "fields": [
                                     {
-                                        "label" : "Peering",
-                                        "name": "OnePearRetentionOption",
-                                        "type" : "checkbox",
-                                        "attributes" : {
-                                            "choices" : {
-                                                "Yes": "1",
-                                                "No" : "0"
-                                            }
-                                        },
-                                        "defaultValue" : "0"
+                                        "label" : "Central IP Address",
+                                        "name": "broker_central_ip",
+                                        "type" : "input"
                                     }
                                 ]
                             }
@@ -33,56 +26,52 @@
                                 "normal" : [
                                     {
                                         "general" : {
-                                            "name" : "",
-                                            "configuration file name" : "",
-                                            "write-timestamp" : "",
-                                            "write-thread-id" : "",
-                                            "status" : "",
-                                            "events-queue-max-size" : ""
+                                            "name" : "cb_module",
                                         },
-                                        "correlation" : [
-                                            {
-                                                "name" : "",
-                                                "correlation-file" : "",
-                                                "retention-file" : ""
-                                            }
-                                        ],
-                                        "input" : [
+                                        "output" : [
                                             {
                                                 "type" :"IPV4",
-                                                "name" : "",
-                                                "port" : "",
-                                                "host" : "",
-                                                "failover-name" : ""
+                                                "name" : "central-output",
+                                                "host": "%central_ip%",
+                                                "port" : "5668"
                                             },
                                             {
-                                                "type" :"local-server-socket",
-                                                "name" : "",
-                                                "filepath" : "",
-                                                "buffering-timeout" : "",
-                                                "serialization-protocol" : ""
+                                                "type" :"file",
+                                                "name" : "failover-central-output",
+                                                "path" : "%broker_data_directory%/central-output.failover"
                                             }
+                                        ],
+                                        "logger": [
+                                          {
+                                            "type": "file",
+                                            "name": "%broker_logs_directory%/cb_module.log"
+                                          }
                                         ]
                                     }
                                 ],
                                 "one-peer-retention" : [
                                     {
                                         "general" : {
-                                            "name" : "",
-                                            "configuration file name" : "",
-                                            "write-timestamp" : "",
-                                            "write-thread-id" : "",
-                                            "status" : "",
-                                            "events-queue-max-size" : ""
+                                            "name" : "cb_module"
                                         },
-                                        "input" : [
+                                        "output" : [
                                             {
-                                                "type" :"local-server-socket",
-                                                "name" : "",
-                                                "filepath" : "",
-                                                "buffering-timeout" : "",
-                                                "serialization-protocol" : ""
+                                                "type":"IPV4",
+                                                "name": "central-output",
+                                                "port" : "5668",
+                                                "one_peer_retention_mode": "yes"
+                                            },
+                                            {
+                                                "type" :"file",
+                                                "name" : "failover-central-output",
+                                                "path" : "%broker_data_directory%/central-output.failover"
                                             }
+                                        ],
+                                        "logger": [
+                                          {
+                                            "type": "file",
+                                            "name": "%broker_logs_directory%/cb_module.log"
+                                          }
                                         ]
                                     }
                                 ]
