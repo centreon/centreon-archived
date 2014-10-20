@@ -48,7 +48,7 @@
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	if (isset($_GET["o"]) && $_GET["o"] == "r"){
-		$pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$_GET["session_id"]."'");
+		$pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
 		$pearDB->query("UPDATE acl_resources SET changed = '1'");
 		$msg = new CentreonMsg();
 		$msg->setTextStyle("bold");

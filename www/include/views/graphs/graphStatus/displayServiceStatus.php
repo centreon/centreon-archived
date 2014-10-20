@@ -36,7 +36,7 @@
  *
  */
 	function escape_command($command) {
-		return preg_replace("/(\\\$|`)/", "", $command);
+		return preg_replace("/(\\\$|;`)/", "", $command);
 	}
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
@@ -71,7 +71,7 @@
 	 * Verify if session is active
 	 */
 
-	$session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
 	if (!$session->numRows()){
 
 		$image = imagecreate(250,100);
@@ -142,8 +142,11 @@
 		/*
 		 * get all template infos
 		 */
+        if (!is_numeric($template_id)) {
+            exit();
+        }
 
-		$DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$pearDB->escape($template_id)."' LIMIT 1");
 		$GraphTemplate = $DBRESULT->fetchRow();
         if (is_null($GraphTemplate))
         {
