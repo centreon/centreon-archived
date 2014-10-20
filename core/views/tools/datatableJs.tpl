@@ -614,6 +614,7 @@
               method: "post",
               async: false,
               data: {
+                route: "{$currentRoute}",
                 searchText: query
               },
               success: function( data, textStatus, jqXHR ) {
