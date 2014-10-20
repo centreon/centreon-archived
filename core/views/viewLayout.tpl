@@ -6,6 +6,9 @@
     </ul>
   </nav>
   {hook name='displayLeftMenu' container='<nav><ul class="nav" id="hook-menu">[hook]</ul></nav>'}
+  <div class="toggle">
+    <a href="#"><i class="fa fa-angle-double-left"></i></a>
+  </div>
 </aside>
 <div class="content" id="main">
 <div class="flash alert fade in" id="flash-message" style="display: none;">
@@ -54,6 +57,13 @@ $(document).ready(function() {
         if (targetUrl !== undefined) {
             document.location.href = targetUrl;
         }
+    });
+
+    $( "#left-panel .toggle a" ).on( "click", function( e ) {
+      e.preventDefault();
+      e.stopPropagation();
+      $( this ).find( "i.fa" ).toggleClass( "fa-angle-double-left" ).toggleClass( "fa-angle-double-right" );
+      $( "aside" ).toggleClass( "mini" );
     });
 });
 </script>

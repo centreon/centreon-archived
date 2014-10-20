@@ -7,6 +7,7 @@
 
 /* Left bar */
 @left-bar-width: 220px;
+@left-bar-width-mini: 50px;
 @left-cursor-width: 4px;
 
 
@@ -139,6 +140,13 @@ aside {
     overflow: hidden;
     background-color: @navbar-default-bg;
     border-color: @navbar-default-border;
+
+    -webkit-transition: width 1s;
+    transition: width 1s;
+
+    &.mini {
+      width: @left-bar-width-mini;
+    }
 }
 
 #left-panel {
@@ -171,6 +179,21 @@ aside {
                 margin-left: 5px - @left-cursor-width;
             }
         }
+    }
+
+    .toggle {
+      position: absolute;
+      display: block;
+      bottom: 5px;
+      right: 5px;
+      
+      a {
+        color: @navbar-default-link-color;
+	
+        &:hover {
+          color: @navbar-default-link-hover-color;
+        }
+      }
     }
 }
 
