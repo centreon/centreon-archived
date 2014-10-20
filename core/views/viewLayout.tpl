@@ -14,7 +14,6 @@
 {block name="content"}
 {/block}
 </div>
-{environment}
 {/block}
 
 {block name="javascript-bottom" append}
