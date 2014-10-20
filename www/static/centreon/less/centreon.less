@@ -141,7 +141,6 @@ aside {
     background-color: @navbar-default-bg;
     border-color: @navbar-default-border;
 
-    -webkit-transition: width 1s;
     transition: width 1s;
 
     &.mini {
@@ -181,17 +180,22 @@ aside {
         }
     }
 
-    .toggle {
+    .toggle-button {
       position: absolute;
-      display: block;
-      bottom: 5px;
-      right: 5px;
+      width: 100%;
+      bottom: 0;
+      left: 0; 
+      border-top: 1px solid @navbar-default-border;
       
       a {
+        display: block;
+        padding: 10px 15px;
+	text-align: right;
         color: @navbar-default-link-color;
 	
         &:hover {
           color: @navbar-default-link-hover-color;
+	  background-color: darken(@navbar-default-bg, 5%);
         }
       }
     }
@@ -253,6 +257,12 @@ aside {
     margin: 0;
     margin-left: @left-bar-width;
     padding: 0;
+
+    transition: margin-left 1s;
+
+    &.mini {
+      margin-left: @left-bar-width-mini;
+    }
 
     /* Alert box */
     .flash {

@@ -99,6 +99,7 @@ function generateMenu($elParent, menu, subLevelId, childId) {
         } else if (menu[i].icon_img != '') {
             $('<img>').attr('src',menu[i].icon_img).addClass('').appendTo($link);
         }
+        $link.append( " " );
         $('<span></span>').text(menu[i].name).appendTo($link);
         $li.append($link);
         if (menu[i].children.length > 0) {

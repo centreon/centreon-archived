@@ -6,7 +6,7 @@
     </ul>
   </nav>
   {hook name='displayLeftMenu' container='<nav><ul class="nav" id="hook-menu">[hook]</ul></nav>'}
-  <div class="toggle">
+  <div class="toggle-button">
     <a href="#"><i class="fa fa-angle-double-left"></i></a>
   </div>
 </aside>
@@ -45,13 +45,7 @@ $(document).ready(function() {
         e.stopPropagation();
         var target = e.currentTarget;
         $(target).find('ul').collapse('toggle');
-        if ($(target).find('i.toggle').hasClass('fa-plus-square-o')) {
-            $(target).find('i.toggle').removeClass('fa-plus-square-o');
-            $(target).find('i.toggle').addClass('fa-minus-square-o');
-        } else {
-            $(target).find('i.toggle').removeClass('fa-minus-square-o');
-            $(target).find('i.toggle').addClass('fa-plus-square-o');
-        }
+        $(target).find('i.toggle').toggleClass('fa-plus-square-o').toggleClass('fa-minus-square-o');
         
         var targetUrl = $(target).find('a').attr('href');
         if (targetUrl !== undefined) {
@@ -59,11 +53,14 @@ $(document).ready(function() {
         }
     });
 
-    $( "#left-panel .toggle a" ).on( "click", function( e ) {
+    $( "#left-panel .toggle-button a" ).on( "click", function( e ) {
       e.preventDefault();
       e.stopPropagation();
       $( this ).find( "i.fa" ).toggleClass( "fa-angle-double-left" ).toggleClass( "fa-angle-double-right" );
       $( "aside" ).toggleClass( "mini" );
+      $( ".content" ).toggleClass( "mini" );
+      $( "#menu1" ).find( "li span" ).toggle();
+      $( "#menu1" ).find( ".toggle" ).toggle();
     });
 });
 </script>
