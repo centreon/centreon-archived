@@ -92,7 +92,7 @@
 
 	// Get Status Globals for hosts
 	if ($is_admin) {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) AS count, state" .
 			" FROM hosts " .
 			" WHERE enabled = 1 " .
             " AND state_type = 1 " .
@@ -100,7 +100,7 @@
 			" GROUP BY state " .
 			" ORDER BY state";
     } else {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) AS count, state" .
 			" FROM hosts, centreon_acl acl " .
 			" WHERE enabled = 1 " .
             " AND acl.host_id = hosts.host_id AND acl.service_id IS NULL ".
@@ -114,7 +114,7 @@
 
 	$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($ndo = $resNdo1->fetchRow()) {
-		$hostStatus[$ndo["state"]] = $ndo["count(state)"];
+		$hostStatus[$ndo["state"]] = $ndo["count"];
 	}
 	$resNdo1->free();
 
@@ -298,7 +298,7 @@
 	 * Get Host inactive objects
 	 */
     if ($is_admin) {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) as count, state" .
             " FROM hosts " .
             " WHERE enabled = 1 ".
             " AND state_type = 1 ".
@@ -307,7 +307,7 @@
             " GROUP BY state " .
             " ORDER BY state";
     } else {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) as count, state" .
             " FROM hosts, centreon_acl acl " .
             " WHERE enabled = 1 ".
             " AND state_type = 1 ".
@@ -321,7 +321,7 @@
 	$resNdo1 = $dbb->query($rq1);
 	$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
 	while ($ndo = $resNdo1->fetchRow())	{
-		$hostInactive[$ndo["state"]] = $ndo["count(state)"];
+		$hostInactive[$ndo["state"]] = $ndo["count"];
 		$hostUnhand[$ndo["state"]] -= $hostInactive[$ndo["state"]];
 	}
 	$resNdo1->free();
