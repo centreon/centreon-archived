@@ -660,8 +660,12 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
-	    $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
-		$xml->writeElement('servicename', $val, false);
+        if (isset($tab_svccriticality[$key)) {
+                $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
+        } else {
+                $xml->writeElement('servicecriticality', '');
+        } 
+        $xml->writeElement('servicename', $val, false);
 		$xml->writeElement('encodedservicename', urlencode($val), false);	
 		$xml->writeElement('hostname', $tab_hostname[$key], false);
 		$xml->writeElement('encodedhostname', urlencode($tab_hostname[$key]), false);
