@@ -1,0 +1,133 @@
+{
+  "name": "Central",
+  "content": {
+    "broker": {
+      "setup": [
+        "name": "Broker Module",
+        "params": {
+          "mode": [
+            {
+              "normal": [
+                {
+                  "general": {
+                    "name": "cb_module"
+                  },
+                  "output": [
+                    {
+                      "type" :"IPV4",
+                      "name" : "central-output",
+                      "port" : "5668"
+                    },
+                    {
+                      "type" :"file",
+                      "name" : "failover-central-output",
+                      "path" : "%broker_data_directory%/central-output.failover"
+                    }
+                  ],
+                  "logger": [
+                    {
+                      "type": "file",
+                      "name": "%broker_logs_directory%/cb_module.log"
+                    }
+                  ]
+                },
+                {
+                  "general": {
+                    "name": "cbd_storage"
+                  },
+                  "input": [
+                    {
+                      "type": "IPV4",
+                      "name": "central-input",
+                      "port": "5668"
+                    }
+                  ],
+                  "output": [
+                    {
+                      "type": "sql",
+                      "name": "central-sql",
+                      "db_type": "%db_type%",
+                      "db_host": "%db_host%",
+                      "db_port": "%db_port%",
+                      "db_name": "%db_name%",
+                      "db_user": "%db_user%",
+                      "db_password": "%db_password%"
+                    },
+                    {
+                      "type": "file",
+                      "name": "failover-central-sql",
+                      "path" : "%broker_data_directory%/central-sql.failover",
+                      "failover": "central-sql"
+                    },
+                    {
+                      "type": "storage",
+                      "name": "central-storage",
+                      "db_type": "%db_type%",
+                      "db_host": "%db_host%",
+                      "db_port": "%db_port%",
+                      "db_name": "%db_name%",
+                      "db_user": "%db_user%",
+                      "db_password": "%db_password%"
+                    },
+                    {
+                      "type": "file",
+                      "name": "failover-central-storage",
+                      "path" : "%broker_data_directory%/central-sql.failover",
+                      "failover": "central-storage"
+                    },
+                    {
+                      "type": "local_client",
+                      "name": "central-rrd",
+                      "path": "%broker_data_directory%/central-rdd.pipe"
+                    },
+                    {
+                      "type": "file",
+                      "name": "failover-central-rrd",
+                      "path" : "%broker_data_directory%/central-rrd.failover",
+                      "failover": "central-rrd"
+                    }
+                  ],
+                  "logger": [
+                    {
+                      "type": "file",
+                      "name": "%broker_logs_directory%/cb_module.log"
+                    }
+                  ]
+                },
+                {
+                  "general": {
+                    "name": "cbd_rrd"
+                  },
+                  "input": [
+                    {
+                      "type": "local_server",
+                      "name": "central-rrd",
+                      "path": "%broker_data_directory%/central-rdd.pipe"
+                    },
+                  ],
+                  "output": [
+                    {
+                      "type": "rrd",
+                      "name": "storage-rrd"
+                    },
+                    {
+                      "type": "failover",
+                      "name": "failover-storage-rrd",
+                      "path": "%broker_data_directory%/storage-rrd.failover"
+                    }
+                  ],
+                  "logger": [
+                    {
+                      "type": "file",
+                      "name": "%broker_logs_directory%/cb_rrd.log"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
