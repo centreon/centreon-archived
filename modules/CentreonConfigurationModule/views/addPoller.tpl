@@ -43,7 +43,7 @@
 
 <script>
 $(function() {
-  {$customJs}
+  {get_custom_js}
 
   /**
    * Function loading template steps

@@ -74,12 +74,13 @@ class DisplayEnginePaths
                         event: "unfocus"
                     }
                 });
-            });';
+        });';
+        $template = Di::getDefault()->get('template');
+        $template->addCustomJs($js);
         return array(
             'template' => 'displayEnginePaths.tpl',
             'variables' => array(
-                'paths' => $paths,
-                'js' => $js
+                'paths' => $paths
             )
         );
     }

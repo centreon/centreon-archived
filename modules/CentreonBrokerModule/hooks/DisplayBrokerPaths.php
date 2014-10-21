@@ -76,12 +76,12 @@ class DisplayBrokerPaths
                     }
                 });
         });';
-
+        $template = Di::getDefault()->get('template');
+        $template->addCustomJs($js);
         return array(
             'template' => 'displayBrokerPaths.tpl',
             'variables' => array(
-                'paths' => $paths,
-                'js' => $js
+                'paths' => $paths
             )
         );
     }
@@ -96,25 +96,25 @@ class DisplayBrokerPaths
         $paths = array();
 
         $paths['broker_etc_directory'] = array(
-            'label' => _('Broker configuration directory'),
+            'label' => _('Configuration directory'),
             'help' => _('Directory to store configuration files for Broker'),
             'value' =>''
         );
 
         $paths['broker_module_directory'] = array(
-            'label' => _('Broker module directory'),
+            'label' => _('Module directory'),
             'help' => _('Broker module directory.'),
             'value' => ''
         );
 
         $paths['broker_logs_directory'] = array(
-            'label' => _('Broker logs directory'),
+            'label' => _('Log directory'),
             'help' => _('Directory to store log file for Broker'),
             'value' => ''
         );
 
         $paths['broker_data_directory'] = array(
-            'label' => _('Broker data directory'),
+            'label' => _('Data directory'),
             'help' => _('Directory to store data for Broker'),
             'value' => ''
         );

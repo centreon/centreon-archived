@@ -14,8 +14,3 @@
 		</div>
 	</div>
 {/foreach}
-<script>
-$(function() {
-	{$variables.js}
-});
-</script>

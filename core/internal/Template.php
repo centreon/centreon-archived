@@ -169,6 +169,7 @@ class Template extends \Smarty
         $this->addJs('jquery.min.js');
         $this->addJs('jquery-ui.min.js');
         $this->addJs('jquery.qtip.min.js');
+        $this->addJs('centreon.help.tooltip.js');
         $this->addJs('bootstrap.min.js');
         $this->addJs('jquery.ba-resize.js');
         $this->addJs('centreon.functions.js');
@@ -355,5 +356,15 @@ class Template extends \Smarty
     public function addCustomJs($jsStr)
     {
         $this->customJs .= $jsStr . "\n";
+    }
+
+    /**
+     * Getter
+     *
+     * @return string
+     */
+    public function getCustomJs()
+    {
+        return $this->customJs;
     }
 }
