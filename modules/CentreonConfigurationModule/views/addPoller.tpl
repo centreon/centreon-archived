@@ -1,6 +1,6 @@
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-<h4>Add</h4>
+<h4>{t}Add{/t}</h4>
 </div>
 <div class="flash alert fade in" id="modal-flash-message" style="display: none;">
 <button type="button" class="close" aria-hidden="true">&times;</button>
@@ -44,6 +44,8 @@
 <script>
 $(function() {
   {get_custom_js}
+
+  initTooltips();
 
   /**
    * Function loading template steps

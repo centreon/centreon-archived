@@ -1,4 +1,4 @@
-$(function() {
+function initTooltips() {
   $(".param-help").each(function() {
     $(this).qtip({
       content: {
@@ -23,4 +23,4 @@ $(function() {
     }
     });
   });
-});
+}
