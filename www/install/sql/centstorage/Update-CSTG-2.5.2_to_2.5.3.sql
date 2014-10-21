@@ -22,3 +22,7 @@ ALTER TABLE services CONVERT TO CHARACTER SET utf8;
 ALTER TABLE services_servicegroups CONVERT TO CHARACTER SET utf8;
 ALTER TABLE services_services_dependencies CONVERT TO CHARACTER SET utf8;
 ALTER TABLE servicestateevents CONVERT TO CHARACTER SET utf8;
+
+ALTER TABLE instances ADD COLUMN outdated boolean NOT NULL DEFAULT false;
+ALTER TABLE hosts ADD COLUMN real_state smallint(6) DEFAULT NULL;
+ALTER TABLE services ADD COLUMN real_state smallint(6) DEFAULT NULL;

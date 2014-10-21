@@ -291,6 +291,7 @@ CREATE TABLE `hosts` (
   `state` smallint(6) DEFAULT NULL,
   `state_type` smallint(6) DEFAULT NULL,
   `statusmap_image` varchar(255) DEFAULT NULL,
+  `real_state` smallint(6) DEFAULT NULL,
   UNIQUE KEY `host_id` (`host_id`),
   KEY `instance_id` (`instance_id`),
   KEY `host_name` (`name`),
@@ -411,6 +412,7 @@ CREATE TABLE `instances` (
   `start_time` int(11) DEFAULT NULL,
   `version` varchar(16) DEFAULT NULL,
   `deleted` boolean NOT NULL default false, 
+  `outdated` boolean NOT NULL default false,
   PRIMARY KEY (`instance_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -663,6 +665,7 @@ CREATE TABLE `services` (
   `state` smallint(6) DEFAULT NULL,
   `state_type` smallint(6) DEFAULT NULL,
   `volatile` tinyint(1) DEFAULT NULL,
+  `real_state` smallint(6) DEFAULT NULL,
   UNIQUE KEY `host_id` (`host_id`,`service_id`),
   KEY `service_id` (`service_id`),
   KEY `service_description` (`description`),
