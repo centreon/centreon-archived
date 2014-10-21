@@ -265,9 +265,9 @@ class CentreonGraph {
     protected function cleanupDsName($dsname, $reverse = false)
     {
         if ($reverse === true) {
-            $newDsName = str_replace(array("slash_", "bslash_", "pct_"), array("/","\\", "%"), $dsname);
+            $newDsName = str_replace(array("slash_", "bslash_", "pct_", "\\#"), array("/","\\", "%", "#"), $dsname);
         } else {
-            $newDsName = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $dsname);
+            $newDsName = str_replace(array("/","\\", "%", "#"), array("slash_", "bslash_", "pct_", "\\#"), $dsname);
         }
         $newDsName = preg_replace("/[^\w\-_]/", "-", $newDsName);
         return $newDsName;
@@ -283,9 +283,7 @@ class CentreonGraph {
     protected function cleanupDsNameForLegend($dsname, $reverse = false)
     {
         $newDsName = str_replace(array("slash_", "bslash_", "pct_",  "#", "\\"), array("/", "\\", "%", "#", "\\\\"), $dsname);
-        if (mb_detect_encoding($newDsName) != "UTF-8") {
-            $newDsName = mb_convert_encoding($newDsName, "UTF-8");
-        }
+        $newDsName = mb_convert_encoding($newDsName, "UTF-8");
         return $newDsName;
     }
 
@@ -566,7 +564,7 @@ class CentreonGraph {
                         }
 
                         # Check regular
-                        if (is_null($ds_data_regular) && preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/', $metric["metric_name"])) {
+                        if (is_null($ds_data_regular) && preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/i', $metric["metric_name"])) {
                                 $ds_data_regular = $ds_val;
                         }
                     }

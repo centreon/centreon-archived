@@ -17,9 +17,9 @@ As usual, database backups are to be made before going any further.
 It does not matter whether you run the commands below before or after the web upgrade; do note that those scripts may take some execution time depending on
 the size of your log tables.
 
-======================
+**********************
 You are using NDOUtils
-======================
+**********************
 
 If you are using NDOUtils, chances are that you have plenty of duplicate entries in your log table. Follow the procedure in order to re insert the logs::
 
@@ -33,9 +33,9 @@ Then, execute the following script::
   /path/to/centreon/cron/logAnalyser -a
 
 
-=====================================
+*************************************
 You are upgrading from Centreon 2.5.0
-=====================================
+*************************************
 
 There was a bug in Centreon 2.5.0 that probably messed up your reporting data, you will have to recover by running these commands::
 

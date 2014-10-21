@@ -46,7 +46,7 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('cmd_category_id');
 		
-		$DBRESULT = $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT = $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".$pearDB->escape($name)."'");
 		$cat = $DBRESULT->fetchRow();
 		
 		if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] == $id)
@@ -88,14 +88,14 @@
 		global $pearDB;
 		
 		if (testCommandCategorieExistence($_POST["category_name"])){
-			$DBRESULT = $pearDB->query("INSERT INTO `command_categories` (`category_name` , `category_alias`, `category_order`) VALUES ('".$_POST["category_name"]."', '".$_POST["category_alias"]."', '1')");
+			$DBRESULT = $pearDB->query("INSERT INTO `command_categories` (`category_name` , `category_alias`, `category_order`) VALUES ('".$pearDB->escape($_POST["category_name"])."', '".$pearDB->escape($_POST["category_alias"])."', '1')");
 		}
 	}
 	
 	function updateCommandCategorieInDB(){
 		global $pearDB;
 		
-		$DBRESULT = $pearDB->query("UPDATE `command_categories` SET `category_name` = '".$_POST["category_name"]."' , `category_alias` = '".$_POST["category_alias"]."' , `category_order` = '".$_POST["category_order"]."' WHERE `cmd_category_id` = '".$_POST["cmd_category_id"]."'");
+		$DBRESULT = $pearDB->query("UPDATE `command_categories` SET `category_name` = '".$pearDB->escape($_POST["category_name"])."' , `category_alias` = '".$pearDB->escape($_POST["category_alias"])."' , `category_order` = '".$pearDB->escape($_POST["category_order"])."' WHERE `cmd_category_id` = '".$pearDB->escape($_POST["cmd_category_id"])."'");
 	}
 	
 	function deleteCommandCategorieInDB($sc_id = NULL){

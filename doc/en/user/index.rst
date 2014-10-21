@@ -7,7 +7,7 @@ User guide
 .. toctree::
 
    overview
-   get_started
+   01a
    basics
    advanced
 

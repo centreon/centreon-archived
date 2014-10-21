@@ -90,7 +90,7 @@
 		$where = " AND def_type='".$_GET["vdef"]."'";
 
 	if (isset($_GET["index_id"]) && $_GET["index_id"] != 0) {
-		$pq_sql = $pearDBO->query("SELECT metric_id, metric_name FROM metrics as ms, index_data as ixd WHERE ms.index_id = ixd.id and ms.index_id='".$_GET["index_id"]."';");
+		$pq_sql = $pearDBO->query("SELECT metric_id, metric_name FROM metrics as ms, index_data as ixd WHERE ms.index_id = ixd.id and ms.index_id='".$pearDB->escape($_GET["index_id"])."';");
 		while($fw_sql = $pq_sql->fetchRow()) {
 			$sd_l = strlen($fw_sql["metric_name"]);
 			$fw_sql["metric_name"] = $fw_sql["metric_name"]."&nbsp;&nbsp;&nbsp;";
@@ -99,7 +99,7 @@
 				$mx_l = $sd_l;
     	}
 		$pq_sql->free();
-		$pq_sql = $pearDB->query("SELECT vmetric_id, vmetric_name, def_type FROM virtual_metrics WHERE index_id='".$_GET["index_id"]."'".$where.";");
+		$pq_sql = $pearDB->query("SELECT vmetric_id, vmetric_name, def_type FROM virtual_metrics WHERE index_id='".$pearDB->escape($_GET["index_id"])."'".$where.";");
 
 		while($fw_sql = $pq_sql->fetchRow()) {
 			$sd_l = strlen($fw_sql["vmetric_name"]." [CDEF]");

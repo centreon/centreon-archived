@@ -94,6 +94,7 @@ Choose this option : **Install or upgrade an existing system**
 
 .. image :: /images/guide_utilisateur/abootmenu.png
    :align: center
+   :scale: 65%
 
 Step 2 : Choose your language
 =============================
@@ -102,11 +103,13 @@ Click on **Next**, choose your language and click on **Next**.
 
 .. image :: /images/guide_utilisateur/ainstalllanguage.png
    :align: center
+   :scale: 65%
 
 Select the keyboard used by your system and click on **Next**.
 
 .. image :: /images/guide_utilisateur/akeyboard.png
    :align: center
+   :scale: 65%
 
 Step 3 : General configuration
 ==============================
@@ -115,9 +118,11 @@ In term of type of storage used, choose the necessary options to dispose of the 
 
 .. image :: /images/guide_utilisateur/adatastore1.png
    :align: center
+   :scale: 65%
    
 .. image :: /images/guide_utilisateur/adatastore2.png
    :align: center
+   :scale: 65%
 
 Choose your hostname and click on **Configure network** in order to modify your network card configuration.
 
@@ -125,6 +130,7 @@ Select the network card that you want to use and go on tab "IPv4 Settings" or "I
 
 .. image :: /images/guide_utilisateur/anetworkconfig.png
    :align: center
+   :scale: 65%
 
 Click on **Close** and click on **Next** to continue.
 
@@ -132,6 +138,7 @@ Select your time zone and click on **Next**.
 
 .. image :: /images/guide_utilisateur/afuseauhoraire.png
    :align: center
+   :scale: 65%
 
 Enter the root password that you want, and click on **Next**.
 
@@ -139,6 +146,7 @@ Select the best partitioning option for you and validate.
 
 .. image :: /images/guide_utilisateur/apartitionning.png
    :align: center
+   :scale: 65%
 
 Step 4 : Components selection
 =============================
@@ -148,8 +156,13 @@ Choose the type of server
 
 When the question **Which server type would you like to install ?** appears you can select different options :
 
+
+
 .. image :: /images/guide_utilisateur/aservertoinstall.png
    :align: center
+   :scale: 65%
+
+|
 
 *	Central server with database : Install Centreon (web interface and database), monitoring engine and broker
 *	Central server without database : Install Centreon (web interface only), monitoring engine and broker
@@ -167,6 +180,7 @@ In this case, we will choose this option : **Centreon Engine and Centreon Broker
 
 .. image :: /images/guide_utilisateur/abrokertoinstall.png
    :align: center
+   :scale: 65%
 
 When you finish to select these options, installation start. When the installation is finish, Click on **Restart**.
 
@@ -215,16 +229,20 @@ Execute this operation :
 
 3.	Add theses lines to the file
 
-:: 
+.. raw:: latex 
 
+        \begin{lstlisting}
 	[mysqld] 
 	innodb_file_per_table=1
+        \end{lstlisting}
 
 4.	Restart mysql service
 
-::
+.. raw:: latex
 
+        \begin{lstlisting}
 	/etc/init.d/mysql restart
+        \end{lstlisting}
 
 5.	On web interface click on **Refresh**
 

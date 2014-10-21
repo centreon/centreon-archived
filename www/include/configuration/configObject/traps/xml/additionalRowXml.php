@@ -52,7 +52,7 @@
 	 */
 	require_once ($centreon_path . "www/class/centreonSession.class.php");
 	require_once ($centreon_path . "www/class/centreon.class.php");
-	if(!isset($_SESSION['centreon'])) {
+	if (!isset($_SESSION['centreon'])) {
 		CentreonSession::start();
 	}
 

@@ -186,7 +186,7 @@ $DBRESULT->free();
  */
 $svc_tmplt_who_use_me = array();
 if (isset($_GET["service_id"]) && $_GET["service_id"]) {
-    $DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_template_model_stm_id = '".$_GET["service_id"]."'");
+    $DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_template_model_stm_id = '".$pearDB->escape($_GET["service_id"])."'");
     while ($service_tmpl_father = $DBRESULT->fetchRow()) {
         $svc_tmplt_who_use_me[$service_tmpl_father["service_id"]] = $service_tmpl_father["service_description"];
     }
@@ -196,7 +196,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"]) {
 /*
  * Service Templates comes from DB -> Store in $svTpls Array
  */
-$svTpls = array(NULL=>NULL);
+$svTpls = array(NULL => NULL);
 $DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
 while ($svTpl = $DBRESULT->fetchRow())	{
     if (!$svTpl["service_description"]) {
@@ -902,6 +902,7 @@ if ($valid && $action["action"]["action"]) {
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('isServiceTemplate', 1);
     $tpl->display("formService.ihtml");
     ?>
 <script type="text/javascript">

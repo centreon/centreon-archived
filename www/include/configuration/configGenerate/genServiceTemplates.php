@@ -257,24 +257,19 @@
 			/*
 			 * Contact Group Relation
 			 */
-			if ($service["service_inherit_contacts_from_host"] === '0' && 
-				!isset($cgSvcCache[$service['service_id']])) {
-                $strTMP .= print_line("contact_groups", "null");
-			} else {
-                if (isset($cgSvcCache[$service["service_id"]])) {
-                    $strTMPTemp = "";
-                    foreach ($cgSvcCache[$service["service_id"]] as $cg_name) {
-                        if ($strTMPTemp != "") {
-                            $strTMPTemp .= ",";
-                        }
-                        $strTMPTemp .= $cg_name;
+            if (isset($cgSvcCache[$service["service_id"]])) {
+                $strTMPTemp = "";
+                foreach ($cgSvcCache[$service["service_id"]] as $cg_name) {
+                    if ($strTMPTemp != "") {
+                        $strTMPTemp .= ",";
                     }
-                    if ($strTMPTemp) {
-                        if ($service['cg_additive_inheritance']) {
-                            $strTMPTemp = "+".$strTMPTemp;
-                        }
-                        $strTMP .= print_line("contact_groups", str_replace(" ", "_", $strTMPTemp));
+                    $strTMPTemp .= $cg_name;
+                }
+                if ($strTMPTemp) {
+                    if ($service['cg_additive_inheritance']) {
+                        $strTMPTemp = "+".$strTMPTemp;
                     }
+                    $strTMP .= print_line("contact_groups", str_replace(" ", "_", $strTMPTemp));
                 }
             }
 			
@@ -282,26 +277,21 @@
 			 * Contact Relation
 			 */
             $DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id AND c.contact_activate = '1' AND c.contact_register = 1 ORDER BY `contact_name`");
-			if ($service["service_inherit_contacts_from_host"] === '0' &&
-				!$DBRESULT2->numRows()) {
-					$strTMP .= print_line("contacts", "null");
-			} else {
-                $contact = array();
-                $strTMPTemp = NULL;
-                while ($contact = $DBRESULT2->fetchRow())	{
-					if (isset($gbArr[0][$contact["contact_id"]])) {
-                        $strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
-                    }
+            $contact = array();
+            $strTMPTemp = NULL;
+            while ($contact = $DBRESULT2->fetchRow())	{
+				if (isset($gbArr[0][$contact["contact_id"]])) {
+                    $strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
                 }
-                $DBRESULT2->free();
-                if ($strTMPTemp) {
-                    if ($service['contact_additive_inheritance']) {
-                        $strTMPTemp = "+".$strTMPTemp;
-                    }
-                    $strTMP .= print_line("contacts", $strTMPTemp);
-                }
-                unset($contact);
             }
+            $DBRESULT2->free();
+            if ($strTMPTemp) {
+                if ($service['contact_additive_inheritance']) {
+                    $strTMPTemp = "+".$strTMPTemp;
+                }
+                $strTMP .= print_line("contacts", $strTMPTemp);
+			}
+            unset($contact);
 			
 			if ($service["service_stalking_options"]) {
 				$strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
