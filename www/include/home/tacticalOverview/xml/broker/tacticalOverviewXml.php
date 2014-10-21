@@ -103,7 +103,7 @@
         $rq1 = 	" SELECT count(state), state" .
 			" FROM hosts, centreon_acl acl " .
 			" WHERE enabled = 1 " .
-            " AND acl.host_id = hosts.host_id ".
+            " AND acl.host_id = hosts.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND state_type = 1 " .
 			" AND name NOT LIKE '_Module_%' " .
@@ -135,7 +135,7 @@
         $rq1 = 	" SELECT DISTINCT h.host_id, h.name, h.notes, h.notes_url, h.action_url, h.state, h.last_check, h.output, h.icon_image, h.address, h.last_state_change AS lsc, i.name as instance_name " .
 			" FROM hosts h, instances i, centreon_acl acl " .
 			" WHERE h.enabled = 1" .
-            " AND acl.host_id = h.host_id ".
+            " AND acl.host_id = h.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND h.state_type = 1" .
             " AND h.instance_id = i.instance_id" .
@@ -240,7 +240,7 @@
         $rq1 = 	" SELECT h.host_id, h.state ".
             " FROM hosts h, centreon_acl acl " .
             " WHERE h.enabled = 1 " .
-            " AND acl.host_id = h.host_id ".
+            " AND acl.host_id = h.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND h.state_type = 1 " .
             " AND h.name NOT LIKE '_Module_%' " .
@@ -272,7 +272,7 @@
         $rq1 = 	" SELECT name, state, acknowledged, scheduled_downtime_depth " .
             " FROM hosts, centreon_acl acl" .
             " WHERE enabled = 1 " .
-            " AND acl.host_id = hosts.host_id ".
+            " AND acl.host_id = hosts.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND state_type = 1 " .
 	        " AND name NOT LIKE '_Module_%' " .
@@ -312,7 +312,7 @@
             " WHERE enabled = 1 ".
             " AND state_type = 1 ".
             " AND active_checks = 0 " .
-            " AND acl.host_id = hosts.host_id ".
+            " AND acl.host_id = hosts.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND name NOT LIKE '_Module_%' " .
             " GROUP BY state " .
