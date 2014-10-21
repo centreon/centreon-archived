@@ -138,14 +138,15 @@ try {
     if (false !== $correlationPath && false !== $localId) {
         $tmpFilename = $centreonBrokerPath . '/' . $localId . '/correlation_*.xml';
 	/* Purge file */
-	$listRemovesFiles = glob($correlationPath . '/correlation_*.xml');
+	$listRemovesFiles = glob(dirname($correlationPath) . '/correlation_*.xml');
 	foreach ($listRemovesFiles as $file) {
 	    @unlink($file);
 	}
 	/* Copy file */
 	$listFiles = glob($tmpFilename);
+    $listFiles[] = $correlationPath;
 	foreach ($listFiles as $file) {
-            @copy($file, $correlationPath);
+            @copy($file, dirname($correlationPath));
 	}
     }
 
