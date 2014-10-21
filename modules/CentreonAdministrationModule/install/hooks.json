@@ -1,0 +1,10 @@
+[
+    {
+        "name": "displayEngineOptions",
+        "description" : "Displays engine options"
+    },
+    {
+        "name": "displayBrokerOptions",
+        "description" : "Displays broker options"
+    }
+]

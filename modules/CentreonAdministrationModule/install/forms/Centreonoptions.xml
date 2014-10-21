@@ -6,7 +6,7 @@
 		<redirect_route>/administration/options/centreon</redirect_route>
 		<section name="General Options">
 			<block name="Sessions Properties">
-				<field name="session_expire" label="Sessions Expiration Time" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+				<field name="session_expire" label="Sessions Expiration Time" default_value="" advanced="0" type="duration" parent_field="" mandatory="0">
                   <help>Life duration of sessions.</help>
                 </field>
 			</block>
@@ -14,7 +14,7 @@
                 <field name="listing_limit_per_page" label="Limit per page for listing" default_value="25" advanced="0" type="text" parent_field="" mandatory="0">
                   <help>The limit of number line per page for all listing of Centreon.</help>
                 </field>
-                <field name="listing_refresh_interval" label="Listing refresh interval" default_value="60" advanced="0" type="text" parent_field="" mandatory="0">
+                <field name="listing_refresh_interval" label="Listing refresh interval" default_value="60" advanced="0" type="duration" parent_field="" mandatory="0">
                   <help>The refresh interval for all listing of Centreon.</help>
                 </field>
             </block>
@@ -32,5 +32,41 @@
                 </field>
             </block>
 		</section>
+        <section name="Poller Options">
+            <block name="Scheduling">
+                <field name="interval_length" label="Interval length" default_value="60" advanced="0" type="duration" parent_field="" mandatory="0">
+                    <help>This is the number of seconds per "unit interval" used for timing in the scheduling queue, re-notifications, etc. "Units intervals" are used in the object configuration file to determine how often to run a service check, how often to re-notify a contact, etc. The default value for this is set to 60, which means that a "unit value" of 1 in the object configuration file will mean 60 seconds (1 minute).</help>
+                </field>
+            </block>
+            <block name="Object Naming">
+                <field name="illegal_macro_output_chars" label="Illegal Macro Output chars" default_value="`~$^&amp;&quot;'|&lt;&gt;" advanced="0" type="text" parent_field="" mandatory="0">
+                    <help></help>
+                </field>
+                <field name="illegal_object_name_chars" label="Illegal Object Name Chars" default_value="~!$%^&amp;*&quot;'|&lt;&gt;?,()=" advanced="0" type="text" parent_field="" mandatory="0">
+                    <help>Life duration of sessions.</help>
+                </field>
+            </block>
+            <block name="RRD">
+                <field name="rrd_metric_path" label="Metric Path" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>Path for the metrics files</help>
+                </field>
+                <field name="rrd_status_path" label="Status Path" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>Path for the status files</help>
+                </field>
+                <field name="rrd_path" label="RRD Path" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>Path for the rrd files</help>
+                </field>
+                <field name="rrd_port" label="RRD Port" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>RRD port</help>
+                </field>
+            </block>
+        </section>
+        <section name="Broker Options">
+            <block name="Storage">
+                <field name="storage_interval" label="interval" default_value="60" advanced="0" type="text" parent_field="" mandatory="0">
+                  <help>The interval.</help>
+                </field>
+			</block>
+        </section>
 	</form>
 </forms>

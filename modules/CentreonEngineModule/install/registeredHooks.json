@@ -1,0 +1,7 @@
+[
+    {
+        "name": "displayEngineOptions",
+        "moduleHook": "displayEngineOptions",
+        "moduleHookDescription": "Display engine options"
+    }
+]

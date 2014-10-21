@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,61 +32,53 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form\Generator;
+namespace CentreonAdministration\Repository;
+
 use CentreonAdministration\Models\Options;
-use CentreonAdministration\Repository\OptionsRepository;
+use Centreon\Internal\Form;
 
 /**
- * Description of OptionsController
- *
- * @author lionel
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Repository
  */
-class OptionsController extends \Centreon\Internal\Controller
+class OptionsRepository
 {
-    public static $moduleName = 'centreon-administration';
-    
-    /**
-     * @method get
-     * @route /administration/options/centreon
-     */
-    public function centreonAction()
+    public static function update($moduleName, $uri, $submittedValues, $group = "default")
     {
-        //
-        $objectFormUpdateUrl = '/administration/options/centreon/update';
+        $updateSuccessful = true;
+        $updateErrorMessage = '';
         
-        $myForm = new Generator($objectFormUpdateUrl);
-        
-        // get object Current Values
-        $myForm->setDefaultValues(Options::getList());
-        
-        // Display page
-        $this->tpl->assign('pageTitle', 'Centreon Options');
-        $this->tpl->assign('form', $myForm->getFormHandler()->toSmarty());
-        $this->tpl->assign('formComponents', $myForm->getFormComponents());
-        $this->tpl->assign('hookParams', array('pollerId' => 1));
-        $this->tpl->assign('formName', $myForm->getName());
-        $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $this->tpl->display('editoptions.tpl');
-    }
-    
-    /**
-     * @method post
-     * @route /administration/options/centreon/update
-     */
-    public function updateAction()
-    {
-        $givenParameters = clone $this->getParams('post');
-        
-        $updateResult = OptionsRepository::update(self::$moduleName, $this->getUri(), $givenParameters);
-        
-        if ($updateResult['updateSuccessful']) {
-            unset($_SESSION['form_token']);
-            unset($_SESSION['form_token_time']);
-            $this->router->response()->json(array('success' => true));
+        $validationResult = Form::validate("form", $uri, $moduleName, $submittedValues);
+        if ($validationResult['success']) {
+            if (isset($submittedValues['token'])) {
+                unset($submittedValues['token']);
+            }
+
+            $currentOptionsList = Options::getOptionsKeysList();
+            
+            $optionsToSave = array();
+            $optionsToUpdate = array();
+            
+            foreach ($submittedValues as $key => $value) {
+                if (in_array($key, $currentOptionsList)) {
+                    $optionsToUpdate[$key]= $value;
+                } else {
+                    $optionsToSave[$key]= $value;
+                }
+            }
+
+            Options::update($optionsToUpdate);
+            Options::insert($optionsToSave, $group);
         } else {
-            $this->router->response()->json(array('success' => false,'error' => $updateResult['updateErrorMessage']));
+            $updateSuccessful = false;
+            $updateErrorMessage = $validationResult['error'];
         }
+        
+        return array(
+            'updateSuccessful' => $updateSuccessful,
+            'updateErrorMessage' => $updateErrorMessage
+        );
     }
 }

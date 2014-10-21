@@ -54,21 +54,6 @@
                         "name" : "Centreon",
                         "short_name" : "centreon-options",
                         "route" : "/administration/options/centreon"
-                    },
-                    {
-                        "name" : "Monitoring",
-                        "short_name" : "monitoring-options",
-                        "route" : "/administration/options/monitoring"
-                    },
-                    {
-                        "name" : "Centcore",
-                        "short_name" : "centreon-options",
-                        "route" : "/administration/options/centcore"
-                    },
-                    {
-                        "name" : "RRDTool",
-                        "short_name" : "rrdtool-options",
-                        "route" : "/administration/options/rrdtool"
                     }
                 ]
             }
