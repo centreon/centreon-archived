@@ -6,7 +6,7 @@ foreach ($_POST as $key => $value) {
 $mandatoryFields = array('ADMIN_PASSWORD', 'confirm_password', 'firstname', 'lastname', 'email');
 $strError = '';
 
-$emailRegexp = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[_a-z0-9-]+(\.[_a-z0-9-]+)*$/';
+$emailRegexp = "/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/";
 if (!preg_match($emailRegexp, $_POST['email'])) {
     $strError .= 'jQuery("input[name=email]").next().html("Invalid E-mail");';
 }
