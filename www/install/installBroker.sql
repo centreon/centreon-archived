@@ -32,7 +32,7 @@ CREATE TABLE `acknowledgements` (
   KEY `entry_time_2` (`entry_time`),
   CONSTRAINT `acknowledgements_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `acknowledgements_ibfk_2` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `acknowledgements` WRITE;
@@ -64,7 +64,7 @@ CREATE TABLE `comments` (
   KEY `instance_id` (`instance_id`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `comments` WRITE;
@@ -85,7 +85,7 @@ CREATE TABLE `customvariables` (
   `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customvariable_id`),
   UNIQUE KEY `host_id` (`host_id`,`name`,`service_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `customvariables` WRITE;
@@ -122,7 +122,7 @@ CREATE TABLE `downtimes` (
   KEY `downtimeManager_hostList` (`host_id`,`start_time`),
   CONSTRAINT `downtimes_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `downtimes_ibfk_2` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `downtimes` WRITE;
@@ -150,7 +150,7 @@ CREATE TABLE `eventhandlers` (
   PRIMARY KEY (`eventhandler_id`),
   UNIQUE KEY `host_id` (`host_id`,`service_id`,`start_time`),
   CONSTRAINT `eventhandlers_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `eventhandlers` WRITE;
@@ -175,7 +175,7 @@ CREATE TABLE `flappingstatuses` (
   PRIMARY KEY (`flappingstatus_id`),
   UNIQUE KEY `host_id` (`host_id`,`service_id`,`event_time`),
   CONSTRAINT `flappingstatuses_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `flappingstatuses` WRITE;
@@ -197,7 +197,7 @@ CREATE TABLE `hostgroups` (
   UNIQUE KEY `name` (`name`,`instance_id`),
   KEY `instance_id` (`instance_id`),
   CONSTRAINT `hostgroups_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `hostgroups` WRITE;
@@ -295,7 +295,7 @@ CREATE TABLE `hosts` (
   KEY `instance_id` (`instance_id`),
   KEY `host_name` (`name`),
   CONSTRAINT `hosts_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `hosts` WRITE;
@@ -311,7 +311,7 @@ CREATE TABLE `hosts_hostgroups` (
   KEY `hostgroup_id` (`hostgroup_id`),
   CONSTRAINT `hosts_hostgroups_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `hosts_hostgroups_ibfk_2` FOREIGN KEY (`hostgroup_id`) REFERENCES `hostgroups` (`hostgroup_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `hosts_hostgroups` WRITE;
@@ -331,7 +331,7 @@ CREATE TABLE `hosts_hosts_dependencies` (
   KEY `host_id` (`host_id`),
   CONSTRAINT `hosts_hosts_dependencies_ibfk_1` FOREIGN KEY (`dependent_host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `hosts_hosts_dependencies_ibfk_2` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `hosts_hosts_dependencies` WRITE;
@@ -347,7 +347,7 @@ CREATE TABLE `hosts_hosts_parents` (
   KEY `parent_id` (`parent_id`),
   CONSTRAINT `hosts_hosts_parents_ibfk_1` FOREIGN KEY (`child_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `hosts_hosts_parents_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `hosts_hosts_parents` WRITE;
@@ -369,7 +369,7 @@ CREATE TABLE `hoststateevents` (
   UNIQUE KEY `host_id` (`host_id`,`start_time`),
   KEY `start_time` (`start_time`),
   KEY `end_time` (`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `hoststateevents` WRITE;
@@ -412,7 +412,7 @@ CREATE TABLE `instances` (
   `version` varchar(16) DEFAULT NULL,
   `deleted` boolean NOT NULL default false, 
   PRIMARY KEY (`instance_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `instances` WRITE;
@@ -432,7 +432,7 @@ CREATE TABLE `issues` (
   UNIQUE KEY `host_id` (`host_id`,`service_id`,`start_time`),
   KEY `start_time` (`start_time`),
   CONSTRAINT `issues_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `issues` WRITE;
@@ -450,7 +450,7 @@ CREATE TABLE `issues_issues_parents` (
   KEY `parent_id` (`parent_id`),
   CONSTRAINT `issues_issues_parents_ibfk_1` FOREIGN KEY (`child_id`) REFERENCES `issues` (`issue_id`) ON DELETE CASCADE,
   CONSTRAINT `issues_issues_parents_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `issues` (`issue_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `issues_issues_parents` WRITE;
@@ -485,7 +485,7 @@ CREATE TABLE `logs` (
   KEY `rq2` (`host_id`,`msg_type`,`status`,`ctime`),
   KEY `host_id` (`host_id`,`service_id`,`msg_type`,`ctime`,`status`),
   KEY `host_id_2` (`host_id`,`msg_type`,`ctime`,`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `logs` WRITE;
@@ -504,7 +504,7 @@ CREATE TABLE `modules` (
   PRIMARY KEY (`module_id`),
   KEY `instance_id` (`instance_id`),
   CONSTRAINT `modules_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `modules` WRITE;
@@ -532,7 +532,7 @@ CREATE TABLE `notifications` (
   PRIMARY KEY (`notification_id`),
   UNIQUE KEY `host_id` (`host_id`,`service_id`,`start_time`),
   CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `notifications` WRITE;
@@ -544,7 +544,7 @@ UNLOCK TABLES;
 CREATE TABLE `schemaversion` (
   `software` varchar(128) NOT NULL,
   `version` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `schemaversion` WRITE;
@@ -566,7 +566,7 @@ CREATE TABLE `servicegroups` (
   PRIMARY KEY (`servicegroup_id`),
   KEY `instance_id` (`instance_id`),
   CONSTRAINT `servicegroups_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `servicegroups` WRITE;
@@ -667,7 +667,7 @@ CREATE TABLE `services` (
   KEY `service_id` (`service_id`),
   KEY `service_description` (`description`),
   CONSTRAINT `services_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `services` WRITE;
@@ -684,7 +684,7 @@ CREATE TABLE `services_servicegroups` (
   KEY `servicegroup_id` (`servicegroup_id`),
   CONSTRAINT `services_servicegroups_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `services_servicegroups_ibfk_2` FOREIGN KEY (`servicegroup_id`) REFERENCES `servicegroups` (`servicegroup_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `services_servicegroups` WRITE;
@@ -706,7 +706,7 @@ CREATE TABLE `services_services_dependencies` (
   KEY `host_id` (`host_id`),
   CONSTRAINT `services_services_dependencies_ibfk_1` FOREIGN KEY (`dependent_host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `services_services_dependencies_ibfk_2` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `services_services_dependencies` WRITE;
@@ -729,7 +729,7 @@ CREATE TABLE `servicestateevents` (
   UNIQUE KEY `host_id` (`host_id`,`service_id`,`start_time`),
   KEY `start_time` (`start_time`),
   KEY `end_time` (`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `servicestateevents` WRITE;
