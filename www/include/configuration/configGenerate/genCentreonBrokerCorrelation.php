@@ -348,4 +348,23 @@
         file_put_contents($dir . '/correlation_' . $instanceId . '.xml', ob_get_contents());
         ob_end_clean();
     }
+
+    function generateCentreonBrokerCorrelationMain($dir, $filename, $pollers)
+    {
+        $configDir = dirname($filename);
+        $file = basename($filename);
+        $xml = new CentreonXML(true);
+        $xml->startElement('conf');
+        foreach ($pollers as $poller) {
+            $xml->writeElement('include', $configDir . '/correlation_' . $poller . '.xml');
+        }
+        $xml->endElement();
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+        ob_start();
+        $xml->output();
+        file_put_contents($dir . '/' . $file, ob_get_contents());
+        ob_end_clean();
+    }
 ?>

@@ -302,9 +302,12 @@ try {
             $tmpFilename = $centreonBrokerPath . '/' . $localId . '/';
 	    $query = "SELECT id FROM nagios_server";
 	    $res = $pearDB->query($query);
+        $pollers = array();
 	    while ($row = $res->fetchRow()) {
                 generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $row['id'], $pearDB);
+                $pollers[] = $row['id'];
 	    }
+        generateCentreonBrokerCorrelationMain($tmpFilename, $correlationPath, $pollers);
         }
     }
 
