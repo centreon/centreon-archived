@@ -56,6 +56,9 @@ $contents .= "<tr>
              </tr>";
 $allClear = 1;
 foreach ($requiredLib as $line) {
+    if (!$line) {
+        continue;
+    }
     $contents .= "<tr>";
     list($name, $lib) = explode(":", $line);
     $contents .= "<td>".$name."</td>";
