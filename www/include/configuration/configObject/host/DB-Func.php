@@ -415,8 +415,11 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     $multiTP_logStr = "";
                     while ($hst = $DBRESULT3->fetchRow()) {
                         if ($hst['host_tpl_id'] != $maxId["MAX(host_id)"]) {
-                            $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
-                                "('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
+                            if (!isset($hst['is_password'])) {
+                                $hst['is_password'] = '0';
+                            }
+                            $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`, `is_password`) VALUES" .
+                                "('".$maxId["MAX(host_id)"]."', '".$pearDB->escape($hst['host_tpl_id'])."', '".$pearDB->escape($hst['order'])."', '".$pearDB->escape($hst["is_password"])."')";
                             $DBRESULT4 = $pearDB->query($mTpRq2);
                             $multiTP_logStr .= $hst['host_tpl_id'] . ",";
                         }
