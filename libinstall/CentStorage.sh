@@ -112,10 +112,10 @@ fi
 
 ## Change right to RRD directory
 check_rrd_right
-    
+
 ###### CentStorage binary
 #################################
-	 
+
 log "INFO" "$(gettext "Copying CentStorage binary in final directory")"
 #cp $TMP_DIR/work/bin/centstorage $TMP_DIR/final/bin/centstorage >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -158,7 +158,7 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	cp $TMP_DIR/final/centstorage.default $INSTALL_DIR_CENTREON/examples/centstorage.default
 elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
-                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+        -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/centstorage.sysconfig > $TMP_DIR/work/centstorage.sysconfig
 	check_result $? "$(gettext "Replace CentStorage sysconfig script Macro")"
@@ -187,16 +187,16 @@ if [ "$RC" -eq "0" ] ; then
 	RC="1"
 	if [ "$DISTRIB" = "DEBIAN" ]; then
 	    log "INFO" "$(gettext "CentStorage default script installed")"
-            $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-                 $TMP_DIR/final/centstorage.default \
-                 /etc/default/centstorage >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+            $TMP_DIR/final/centstorage.default \
+            /etc/default/centstorage >> $LOG_FILE 2>&1
 	    check_result $? "$(gettext "CentStorage default script installed")"
 	    log "INFO" "$(gettext "CentStorage default script installed")"
 	elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 		log "INFO" "$(gettext "CentStorage sysconfig script installed")"
-            $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-                 $TMP_DIR/final/centstorage.sysconfig \
-                 /etc/sysconfig/centstorage >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+            $TMP_DIR/final/centstorage.sysconfig \
+            /etc/sysconfig/centstorage >> $LOG_FILE 2>&1
 	    check_result $? "$(gettext "CentStorage sysconfig script installed")"
 	    log "INFO" "$(gettext "CentStorage sysconfig script installed")"
     fi
@@ -219,28 +219,28 @@ if [ "$RC" -eq "0" ] ; then
 		/etc/init.d/centstorage stop
 		check_result $? "$(gettext "CentStorage stop")"
 	fi
-
+    
         # Install centstorage perl lib
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/common/ \
-                 $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                $TMP_DIR/src/lib/perl/centreon/script.pm \
-                $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/centstorage/ \
-                 $PERL_LIB_DIR/centreon/centstorage/ >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/script/centstorage.pm \
-                 $PERL_LIB_DIR/centreon/script/centstorage.pm >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/script/centstorage_purge.pm \
-                 $PERL_LIB_DIR/centreon/script/centstorage_purge.pm >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/script/centreon_check_perfdata.pm \
-                 $PERL_LIB_DIR/centreon/script/centreon_check_perfdata.pm >> $LOG_FILE 2>&1
-        echo_success "$(gettext "CentStorage Perl lib installed")" "$ok"
-        log "INFO" "$(gettext "CentStorage Perl lib installed")"
+        $TMP_DIR/src/lib/perl/centreon/common/ \
+        $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script.pm \
+        $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/centstorage/ \
+        $PERL_LIB_DIR/centreon/centstorage/ >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/centstorage.pm \
+        $PERL_LIB_DIR/centreon/script/centstorage.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/centstorage_purge.pm \
+        $PERL_LIB_DIR/centreon/script/centstorage_purge.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/centreon_check_perfdata.pm \
+        $PERL_LIB_DIR/centreon/script/centreon_check_perfdata.pm >> $LOG_FILE 2>&1
+    echo_success "$(gettext "CentStorage Perl lib installed")" "$ok"
+    log "INFO" "$(gettext "CentStorage Perl lib installed")"
 else
 	echo_passed "$(gettext "CentStorage init script not installed, please use "):\n $INSTALL_DIR_CENTREON/INSTALL_DIR_CENTREONexamples/centstorage.init.d" "$passed"
 	log "INFO" "$(gettext "CentStorage init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centstorage.init.d"
@@ -297,6 +297,7 @@ ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
 	-e 's|@WEB_USER@|'"$WEB_USER"'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMP_DIR/work/centstorage.cron
@@ -312,14 +313,14 @@ check_result $? "$(gettext "Install CentStorage cron")"
 ## Install Logrotate
 log "INFO" "$(gettext "Change macros for centstorage.logrotate")"
 ${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-        $TMP_DIR/src/logrotate/centstorage > $TMP_DIR/work/centstorage.logrotate
+    $TMP_DIR/src/logrotate/centstorage > $TMP_DIR/work/centstorage.logrotate
 check_result $? "$(gettext "Change macros for centstorage.logrotate")"
 cp $TMP_DIR/work/centstorage.logrotate $TMP_DIR/final/centstorage.logrotate >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install centstorage.logrotate")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-        -m 644 \
-        $TMP_DIR/final/centstorage.logrotate $LOGROTATE_D/centstorage >> "$LOG_FILE" 2>&1
+    -m 644 \
+    $TMP_DIR/final/centstorage.logrotate $LOGROTATE_D/centstorage >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install Centreon Storage logrotate.d file")"
 
 ###### Post Install

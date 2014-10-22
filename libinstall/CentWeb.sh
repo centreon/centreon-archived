@@ -364,6 +364,7 @@ check_result $? "$(gettext "Copying libinstall")"
 log "INFO" "$(gettext "Change macros for centreon.cron")"
 ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@PERL_BIN@|'"$BIN_PERL"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
