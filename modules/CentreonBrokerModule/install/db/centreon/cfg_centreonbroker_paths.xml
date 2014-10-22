@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_configuration" defaultIdMethod="native">
+  <table name="cfg_centreonbroker" phpName="CfgCentreonbroker" idMethod="native">
+    <column name="poller_id" phpName="PollerId" type="INTEGER" required="true" primaryKey="true"/>
+    <column name="directory_config" phpName="DirectoryConfig" type="VARCHAR" size="255" required="true"/>
+    <column name="directory_modules" phpName="DirectoryModules" type="VARCHAR" size="255" required="true"/>
+    <column name="directory_data" phpName="DirectoryData" type="VARCHAR" size="255" required="true"/>
+    <column name="directory_logs" phpName="DirectoryLogs" type="VARCHAR" size="255" required="true"/>
+    <foreign-key foreignTable="cfg_pollers" onDelete="cascade">
+      <reference local="poller_id" foreign="poller_id" />
+    </foreign-key>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>
+			
