@@ -17,7 +17,7 @@ CRONTAB_EXEC_USER=""
 
 ############################
 # Cron to build state events
-0 3 * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/eventReportBuilder >> @CENTREON_LOG@/eventReportBuilder.log 2>&1
+0 3 * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/eventReportBuilder --config=@CENTREON_ETC@/conf.pm" >> @CENTREON_LOG@/eventReportBuilder.log 2>&1
 
 # Cron to build reporting
-0 6 * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/dashboardBuilder >> @CENTREON_LOG@/dashboardBuilder.log 2>&1
+0 6 * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/dashboardBuilder --config=@CENTREON_ETC@/conf.pm" >> @CENTREON_LOG@/dashboardBuilder.log 2>&1

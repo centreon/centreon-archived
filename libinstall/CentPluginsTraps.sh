@@ -52,8 +52,8 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.default $TMP_DIR/src
 elif [ "$DISTRIB" = "SUSE" ]; then
-        cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.init.d $TMP_DIR/src
-        cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.sysconfig $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.init.d $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.sysconfig $TMP_DIR/src
 else
 	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.sysconfig $TMP_DIR/src
@@ -105,7 +105,7 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	cp $TMP_DIR/final/centreontrapd.default $INSTALL_DIR_CENTREON/examples/centreontrapd.default
 elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
-                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+        -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/centreontrapd.sysconfig > $TMP_DIR/work/centreontrapd.sysconfig
 	check_result $? "$(gettext "Replace CentreonTrapd sysconfig script Macro")"
@@ -161,31 +161,31 @@ if [ "$RC" -eq "0" ] ; then
 		log "INFO" "$(gettext "CentreonTrapd run level not installed")"
 	fi
 
-        # Install trapd perl lib
+    # Install trapd perl lib
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/common/ \
-                 $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                $TMP_DIR/src/lib/perl/centreon/script.pm \
-                $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/trapd/ \
-                 $PERL_LIB_DIR/centreon/trapd/ >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/script/centFillTrapDB.pm \
-                 $PERL_LIB_DIR/centreon/script/centFillTrapDB.pm >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/script/centreon_trap_send.pm \
-                 $PERL_LIB_DIR/centreon/script/centreon_trap_send.pm >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/script/centreontrapd.pm \
-                 $PERL_LIB_DIR/centreon/script/centreontrapd.pm >> $LOG_FILE 2>&1
-        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-                 $TMP_DIR/src/lib/perl/centreon/script/centreontrapdforward.pm \
-                 $PERL_LIB_DIR/centreon/script/centreontrapdforward.pm >> $LOG_FILE 2>&1
-        echo_success "$(gettext "trapd Perl lib installed")" "$ok"
-        log "INFO" "$(gettext "trapd Perl lib installed")"
-        # End
+        $TMP_DIR/src/lib/perl/centreon/common/ \
+        $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script.pm \
+        $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/trapd/ \
+        $PERL_LIB_DIR/centreon/trapd/ >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/centFillTrapDB.pm \
+        $PERL_LIB_DIR/centreon/script/centFillTrapDB.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/centreon_trap_send.pm \
+        $PERL_LIB_DIR/centreon/script/centreon_trap_send.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/centreontrapd.pm \
+        $PERL_LIB_DIR/centreon/script/centreontrapd.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/centreontrapdforward.pm \
+        $PERL_LIB_DIR/centreon/script/centreontrapdforward.pm >> $LOG_FILE 2>&1
+    echo_success "$(gettext "trapd Perl lib installed")" "$ok"
+    log "INFO" "$(gettext "trapd Perl lib installed")"
+    # End
 else
 	echo_passed "$(gettext "CentreonTrapd init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d" "$passed"
 	log "INFO" "$(gettext "CentreonTrapd init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d"
@@ -198,7 +198,7 @@ if [ "$upgrade" = "1" ]; then
     yes_no_default "$(gettext "Should I overwrite all your SNMP configuration files?")"
     if [ "$?" -eq 0 ] ; then
         write_snmp_conf="1"
-	log "INFO" "$(gettext "SNMP configuration will be overwritten")"
+	    log "INFO" "$(gettext "SNMP configuration will be overwritten")"
     else
         write_snmp_conf="0"
         log "INFO" "$(gettext "Keeping configuration files")"
@@ -207,10 +207,10 @@ fi
 if [ "$write_snmp_conf" = "1" ]; then
     log "INFO" "$(gettext "Install") : snmptrapd.conf"
     $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-            $TMP_DIR/work/snmptrapd/snmptrapd.conf \
-            $SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
+        $TMP_DIR/work/snmptrapd/snmptrapd.conf \
+        $SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
     check_result $? "$(gettext "Install") : snmptrapd.conf"
-
+    
 #    log "INFO" "$(gettext "Install") : snmp.conf"
 #    $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 #            $TMP_DIR/work/snmptrapd/snmp.conf \
