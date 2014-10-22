@@ -21,7 +21,7 @@
     },
     {
         "key": "ldap_dns_use_domain",
-        "value": null
+        "value": 0
     },
     {
         "key": "ldap_search_timeout",

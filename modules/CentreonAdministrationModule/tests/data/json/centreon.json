@@ -1,5 +1,6 @@
 [
     "cfg_organizations",
+    "cfg_options",
     "cfg_contacts",
     "cfg_organizations_contacts_relations",
     "cfg_organizations_modules_relations",

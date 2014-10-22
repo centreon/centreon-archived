@@ -43,42 +43,31 @@ use Centreon\Internal\Form;
  * @package Centreon
  * @subpackage Repository
  */
-class OptionsRepository
+class OptionRepository
 {
-    public static function update($moduleName, $uri, $submittedValues, $group = "default")
+    /**
+     * 
+     * @param type $submittedValues
+     * @param type $group
+     */
+    public static function update($submittedValues, $group = "default")
     {
-        $updateSuccessful = true;
-        $updateErrorMessage = '';
-        
-        $validationResult = Form::validate("form", $uri, $moduleName, $submittedValues);
-        if ($validationResult['success']) {
-            if (isset($submittedValues['token'])) {
-                unset($submittedValues['token']);
-            }
+        $currentOptionsList = Options::getOptionsKeysList();
 
-            $currentOptionsList = Options::getOptionsKeysList();
-            
-            $optionsToSave = array();
-            $optionsToUpdate = array();
-            
-            foreach ($submittedValues as $key => $value) {
-                if (in_array($key, $currentOptionsList)) {
-                    $optionsToUpdate[$key]= $value;
-                } else {
-                    $optionsToSave[$key]= $value;
-                }
-            }
+        $optionsToSave = array();
+        $optionsToUpdate = array();
 
-            Options::update($optionsToUpdate);
-            Options::insert($optionsToSave, $group);
-        } else {
-            $updateSuccessful = false;
-            $updateErrorMessage = $validationResult['error'];
+        foreach ($submittedValues as $key => $value) {
+            if (in_array($key, $currentOptionsList)) {
+                $optionsToUpdate[$key]= $value;
+            } else {
+                $optionsToSave[$key]= $value;
+            }
         }
-        
-        return array(
-            'updateSuccessful' => $updateSuccessful,
-            'updateErrorMessage' => $updateErrorMessage
-        );
+
+        Options::update($optionsToUpdate);
+        Options::insert($optionsToSave, $group);
     }
+    
+    
 }

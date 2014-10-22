@@ -35,9 +35,10 @@
  */
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form;
+use Centreon\Internal\Form\Generator;
 use CentreonAdministration\Models\Options;
-use CentreonAdministration\Repository\OptionsRepository;
+use CentreonAdministration\Repository\OptionRepository;
 
 /**
  * Description of OptionsController
@@ -80,14 +81,19 @@ class OptionsController extends \Centreon\Internal\Controller
     {
         $givenParameters = clone $this->getParams('post');
         
-        $updateResult = OptionsRepository::update(self::$moduleName, $this->getUri(), $givenParameters);
-        
-        if ($updateResult['updateSuccessful']) {
+        $validationResult = Form::validate("form", $this->getUri(), self::$moduleName, $givenParameters);
+        if ($validationResult['success']) {
+            if (isset($givenParameters['token'])) {
+                unset($givenParameters['token']);
+            }
+            
+            OptionRepository::update($givenParameters);
+            
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
         } else {
-            $this->router->response()->json(array('success' => false,'error' => $updateResult['updateErrorMessage']));
+            $this->router->response()->json(array('success' => false,'error' => $validationResult['error']));
         }
     }
 }
