@@ -631,6 +631,12 @@ class CentreonGraph {
                         $this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].")";
                     }
 
+                    /* Checks whether or not string must be decoded */
+                    $lgd = $this->metrics[$metric["metric_id"]]["legend"];
+                    if (preg_match('!!u', utf8_decode($lgd))) {
+                        $this->metrics[$metric["metric_id"]]["legend"] = utf8_decode($lgd);
+                    }
+
                     $this->metrics[$metric["metric_id"]]["legend_len"] = mb_strlen($this->metrics[$metric["metric_id"]]["legend"], 'UTF-8') - $escaped_chars_nb;
                     $this->metrics[$metric["metric_id"]]["stack"] = (isset($ds_data["ds_stack"]) && $ds_data["ds_stack"] ? $ds_data["ds_stack"] : 0);
                     if ($this->onecurve) {
