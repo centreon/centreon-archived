@@ -50,33 +50,7 @@ class DisplayEnginePaths
         if (isset($params['pollerId']) && $params['pollerId']) {
             $paths = static::getPathValues($params['pollerId'], $paths);
         }
-        $js = '
-            $(".param-help").each(function() {
-                $(this).qtip({
-                    content: {
-                        text: $(this).data("help"),
-                        title: $(this).data("helptitle"),
-                        button: true
-                    },
-                    position: {
-                        my: "top right",
-                        at: "bottom left",
-                        target: $(this)
-                    },
-                    show: {
-                        event: "click",
-                        solo: "true"
-                    },
-                    style: {
-                        classes: "qtip-bootstrap"
-                    },
-                    hide: {
-                        event: "unfocus"
-                    }
-                });
-        });';
-        $template = Di::getDefault()->get('template');
-        $template->addCustomJs($js);
+
         return array(
             'template' => 'displayEnginePaths.tpl',
             'variables' => array(

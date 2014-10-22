@@ -50,34 +50,6 @@ class DisplayBrokerPaths
         if (isset($params['pollerId']) && $params['pollerId']) {
             $paths = static::getPathValues($params['pollerId'], $paths);
         }
-
-        $js = '
-            $(".param-help").each(function() {
-                $(this).qtip({
-                    content: {
-                        text: $(this).data("help"),
-                        title: $(this).data("helptitle"),
-                        button: true
-                    },
-                    position: {
-                        my: "top right",
-                        at: "bottom left",
-                        target: $(this)
-                    },
-                    show: {
-                        event: "click",
-                        solo: "true"
-                    },
-                    style: {
-                        classes: "qtip-bootstrap"
-                    },
-                    hide: {
-                        event: "unfocus"
-                    }
-                });
-        });';
-        $template = Di::getDefault()->get('template');
-        $template->addCustomJs($js);
         return array(
             'template' => 'displayBrokerPaths.tpl',
             'variables' => array(
@@ -139,8 +111,8 @@ class DisplayBrokerPaths
             FROM cfg_centreonbroker_paths
             WHERE poller_id = :poller_id";
         $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':poller_id', $poller_id, \PDO::PARAM_INT);
-        $row = $stmt->fetch();
+        $stmt->execute(array(':poller_id' => $pollerId));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (is_null($row)) {
             return $paths;
         }

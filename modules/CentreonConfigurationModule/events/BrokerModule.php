@@ -71,7 +71,7 @@ class BrokerModule
      *
      * @param string $output
      */
-    public function setModules($moduleDefinition)
+    public function addModule($moduleDefinition)
     {
         $this->modules[] = trim($moduleDefinition);
     }

@@ -54,6 +54,11 @@ class BrokerRepository
     {
         $db = Di::getDefault()->get('db_centreon');
 
+        $arr = array();
+        foreach ($params as $k => $v) {
+            $arr[$k] = $v;
+        }
+
         /* Save paths */
         /* Test if exists in db */
         $query = "SELECT COUNT(poller_id) as poller
@@ -67,23 +72,43 @@ class BrokerRepository
         if ($row['poller'] > 0) {
             /* Update */
             $query = "UPDATE cfg_centreonbroker_paths SET 
-                broker_etc_directory = :broker_etc_directory,
-                broker_module_directory = :broker_module_directory,
-                broker_logs_directory = :broker_logs_directory
-                broker_data_directory = :broker_data_directory
+                directory_config = :broker_etc_directory,
+                directory_modules = :broker_module_directory,
+                directory_logs = :broker_logs_directory,
+                directory_data = :broker_data_directory
                 WHERE poller_id = :poller_id";
         } else {
             /* Insert */
             $query = "INSERT INTO cfg_centreonbroker_paths
-                (poller_id, broker_etc_directory, broker_module_directory, broker_logs_directory, broker_data_directory) VALUES
+                (poller_id, directory_config, directory_modules, directory_logs, directory_data) VALUES
                 (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory)";
         }
         $stmt = $db->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId);
-        $stmt->bindParam(':broker_etc_directory', $params['directory_config'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_module_directory', $params['directory_modules'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_logs_directory', $params['directory_logs'], \PDO::PARAM_STR);
-        $stmt->bindParam(':broker_data_directory', $params['directory_data'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_etc_directory', $arr['broker_etc_directory'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_module_directory', $arr['broker_module_directory'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_logs_directory', $arr['broker_logs_directory'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_data_directory', $arr['broker_data_directory'], \PDO::PARAM_STR);
         $stmt->execute();
+    }
+
+    /**
+     * Get params from poller id
+     * 
+     * @param int $pollerId
+     */
+    public static function getPathsFromPollerId($pollerId)
+    {
+        $db = Di::getDefault()->get('db_centreon');
+        $sql = "SELECT directory_modules, directory_config, directory_logs, directory_data
+            FROM cfg_centreonbroker_paths
+            WHERE poller_id = :poller_id";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array(
+            ':poller_id' => $pollerId
+        ));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $row;
     }
 }

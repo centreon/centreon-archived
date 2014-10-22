@@ -37,6 +37,7 @@ namespace CentreonBroker\Listeners\CentreonConfiguration;
 
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 use Centreon\Internal\Exception;
+use CentreonBroker\Repository\BrokerRepository;
 
 class BrokerModule
 {
@@ -46,9 +47,14 @@ class BrokerModule
      */
     public static function execute(BrokerModuleEvent $event)
     {
-        $pollerId = $event->getPollerId();
-
-        /* @todo: retrieve modules from database */
-        $event->setModules('/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml');
+        /* Retrieve etc and module path */
+        $paths = BrokerRepository::getPathsFromPollerId($event->getPollerId());
+        
+        /* Set modules */
+        if (isset($paths['directory_modules']) && isset($paths['directory_config'])) {
+            $moduleDir = rtrim($paths['directory_modules'], '/');
+            $etcDir = rtrim($paths['directory_config'], '/');
+            $event->addModule("{$moduleDir}/cbmod.so {$etcDir}/central-module.xml");
+        }
     }
 }

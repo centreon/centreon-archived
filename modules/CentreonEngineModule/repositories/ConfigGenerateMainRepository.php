@@ -76,7 +76,7 @@ class ConfigGenerateMainRepository
 
         /* Get Content */
         $content = static::getContent($poller_id, $filesList, $testing);
-        
+
         /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
@@ -278,7 +278,7 @@ class ConfigGenerateMainRepository
         $moduleEvent = new BrokerModuleEvent($pollerId);
         $events->emit('centreon-configuration.broker.module', array($moduleEvent));
         $brokerModules = $moduleEvent->getModules();
-
+        
         /* External command module */
         $brokerModules[] = rtrim($moduleDir, '/') . '/externalcmd.so';
 
