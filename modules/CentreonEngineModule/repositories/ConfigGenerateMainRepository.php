@@ -37,6 +37,7 @@ namespace CentreonEngine\Repository;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
+use CentreonConfiguration\Models\Poller;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -128,8 +129,11 @@ class ConfigGenerateMainRepository
         /* Init Content Array */
         $content = array();
 
-        /* Default values that can be overwritten by user */
-        $defaultValue = static::getDefaultValue();
+        /* Default values that can be overwritten by template and user */
+        $defaultValues = static::getDefaultValues();
+
+        /* Template values that can be overwritten by user */
+        $templateValues = static::getTemplateValues($poller_id);
 
         /* For command name resolution */
         $commandIdFields = static::getCommandIdField();
@@ -151,7 +155,10 @@ class ConfigGenerateMainRepository
                 $userValues[$key] = $val;
             }
         }
-        $finalConf = array_merge($defaultValue, $userValues);
+
+        /* Overwrite parameter */
+        $tmpConf = array_merge($defaultValues, $templateValues);
+        $finalConf = array_merge($tmpConf, $userValues);
 
         /* Set real etc path of the poller */
         static::$finalPath = $finalConf['conf_dir'];
@@ -277,21 +284,64 @@ class ConfigGenerateMainRepository
      * Returns the default configuration values of value
      * Those values are stored in the default.json file
      * 
-     * @return int
+     * @return array
      * @throws \Centreon\Internal\Exception
      */
-    private static function getDefaultValue()
+    private static function getDefaultValues()
     {
         $config = Di::getDefault()->get('config');
 
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
-        $jsonFile = $centreonPath . '/modules/CentreonEngineModule/data/default.json';
+        $jsonFile = "{$centreonPath}/modules/CentreonEngineModule/data/default.json";
         if (!file_exists($jsonFile)) {
             throw new Exception('Default engine configuration JSON file not found');
         }
         $defaultValue = json_decode(file_get_contents($jsonFile), true);
 
-        return $defaultValue[0];
+        return $defaultValue;
+    }
+
+    /**
+     * Returns the template configuration values
+     * 
+     * @param int $pollerId
+     * @return array
+     * @throws \Centreon\Internal\Exception
+     */
+    private static function getTemplateValues($pollerId)
+    {
+        $templateValues = array(); 
+
+        /* Retrieve template name  */
+        $pollerParam = Poller::get($pollerId, 'tmpl_name');
+        if (!isset($pollerParam['tmpl_name']) || is_null($pollerParam['tmpl_name'])) {
+            return $templateValues;
+        }
+
+        /* Look for template file */
+        $config = Di::getDefault()->get('config');
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        $jsonFile = "{$centreonPath}/modules/CentreonEngineModule/pollers/{$pollerParam['tmpl_name']}.json";
+        if (!file_exists($jsonFile)) {
+            throw new Exception('Engine template file not found: ' . $pollerParam['tmpl_name'] . '.json');
+        }
+
+        /* Checks whether or not template file has all the sections */
+        $arr = json_decode(file_get_contents($jsonFile), true);
+        if (!isset($arr['content']) || !isset($arr['content']['engine']) || 
+            !isset($arr['content']['engine']['setup'])) {
+                return $templateValues;
+        }
+
+        /* Retrieve parameter values */
+        foreach ($arr['content']['engine']['setup'] as $setup) {
+            if (isset($setup['params'])) {
+                foreach ($setup['params'] as $k => $v) {
+                    $templateValues[$k] = $v;
+                }
+            }
+        }
+        return $templateValues;
     }
 
     /**
