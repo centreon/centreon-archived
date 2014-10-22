@@ -660,7 +660,7 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
-        if (isset($tab_svccriticality[$key)) {
+        if (isset($tab_svccriticality[$key])) {
                 $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
         } else {
                 $xml->writeElement('servicecriticality', '');
