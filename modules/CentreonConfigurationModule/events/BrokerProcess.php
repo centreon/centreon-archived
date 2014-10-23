@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Events;
 
-class BrokerProcess extends PollerEvent
+class BrokerProcess extends NodeEvent
 {
     /**
      * Refers to the action to perform: restart, reload, forcereload

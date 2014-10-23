@@ -36,6 +36,8 @@
 namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
 
 use \Test\Centreon\DbTestCase;
+use \CentreonConfiguration\Events\EngineProcess as EngineProcessEvent;
+use \CentreonEngine\Listeners\CentreonConfiguration\EngineProcess;
 
 class EngineProcessTest extends DbTestCase
 {
@@ -43,6 +45,18 @@ class EngineProcessTest extends DbTestCase
 
     public function testExecute()
     {
-        $this->markTestIncomplete("Waiting manage in database the path of init script.");
+        $event = new EngineProcessEvent(1, 'reload');
+        EngineProcess::execute($event);
+        $this->assertFalse($event->getStatus());
+    }
+
+    public function testExecuteWithUnknownAction()
+    {
+        $event = new EngineProcessEvent(1, 'idontexist');
+        $this->setExpectedException(
+            '\Centreon\Internal\Exception',
+            'Unknown action idontexist'
+        );
+        EngineProcess::execute($event);
     }
 }

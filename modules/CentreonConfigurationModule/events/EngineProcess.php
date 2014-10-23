@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Events;
 
-class EngineProcess extends PollerEvent
+class EngineProcess extends NodeEvent
 {
     /**
      * Refers to the action to perform: restart, reload, forcereload

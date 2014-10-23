@@ -35,12 +35,20 @@
 
 namespace CentreonConfiguration\Repository;
 
+use Centreon\Internal\Di;
+use CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
+use CentreonConfiguration\Events\EngineFormSave;
+use CentreonConfiguration\Events\BrokerFormSave;
+use CentreonConfiguration\Models\Poller;
+use CentreonConfiguration\Models\Node;
+use CentreonConfiguration\Repository\Repository;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class PollerRepository extends \CentreonConfiguration\Repository\Repository
+class PollerRepository extends Repository
 {
     /**
      *
@@ -63,7 +71,7 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         // Get centreon DB and centreon storage DB connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconnStorage = $di->get('db_storage');
 
         $request = "SELECT *
@@ -91,20 +99,86 @@ class PollerRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param array $params
-     * @return integer
+     * @return array
      */
-    public static function getTotalRecordsForDatatable($params)
+    public static function getPollerTemplates()
     {
-        // Get centreon DB and centreon storage DB connection
-        $di = \Centreon\Internal\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
+        $di = Di::getDefault();
         
-        //
-        $sqlCalengineServer = "SELECT COUNT(`id`) as nb_poller FROM `engine_server`";
-        $stmtCalengineServer = $dbconn->query($sqlCalengineServer);
-        $resultCalengineServer = $stmtCalengineServer->fetchAll(\PDO::FETCH_ASSOC);
+        $templatesList = array_map(
+            function($t) {
+                return serialize($t);
+            },
+            TemplateManager::buildTemplatesList()
+        );
         
-        return $resultCalengineServer[0]['nb_poller'];
+        $di->set(
+            'pollerTemplate',
+            function() use ($templatesList) {
+                return $templatesList;
+            }
+        );
+    }
+
+    /**
+     * Create a poller
+     *
+     * @param array $params The parameters for create a poller
+     * @return int The id of poller created
+     */
+    public static function create($params)
+    {
+        $di = Di::getDefault();
+        $orgId = $di->get('organization');
+        $nodeId = NodeRepository::create($params);
+        $pollerId = Poller::insert(array(
+            'node_id' => $nodeId,
+            'name' => $params['poller_name'],
+            'organization_id' => $orgId,
+            'port' => 0,
+            'tmpl_name' => $params['poller_tmpl']
+        ));
+        $engineEvent = new EngineFormSave($pollerId, $params);
+        $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
+
+        $brokerEvent = new BrokerFormSave($pollerId, $params);
+        $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
+
+        return $pollerId;
+    }
+
+
+    /**
+     * Poller update function
+     *
+     * @param array $givenParameters The parameters for update a poller
+     */
+    public static function update($params)
+    {
+        $di = Di::getDefault();
+        NodeRepository::update($params);
+        Poller::update(
+            $params['poller_id'],
+            array(
+                'name' => $params['poller_name'],
+                'tmpl_name' => $params['poller_tmpl']
+            )
+        );
+        $engineEvent = new EngineFormSave($params['poller_id'], $params);
+        $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
+        
+        $brokerEvent = new BrokerFormSave($params['poller_id'], $params);
+        $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
+    }
+
+    /**
+     * Get the node information
+     *
+     * @return array
+     */
+    public static function getNode($pollerId)
+    {
+        $poller = Poller::get($pollerId);
+        return Node::get($poller['node_id']);
     }
 }

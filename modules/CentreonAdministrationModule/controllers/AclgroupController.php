@@ -37,7 +37,7 @@ namespace CentreonAdministration\Controllers;
 
 use \Centreon\Internal\Form;
 
-class AclgroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class AclgroupController extends BasicController
 {
     protected $objectDisplayName = 'AclGroup';
     protected $objectName = 'aclgroup';

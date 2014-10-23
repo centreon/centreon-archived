@@ -181,7 +181,7 @@ class Bootstrap
             }
         );
     }
-
+    
     /**
      * Init routes
      */

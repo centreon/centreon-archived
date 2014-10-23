@@ -36,7 +36,7 @@
 
 namespace CentreonBam\Controllers;
 
-class BusinessViewController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class BusinessViewController extends BasicController
 {
     protected $objectDisplayName = 'BusinessView';
     protected $objectName = 'BusinessView';

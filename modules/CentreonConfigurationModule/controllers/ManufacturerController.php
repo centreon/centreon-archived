@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class ManufacturerController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class ManufacturerController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Manufacturer';
     protected $objectName = 'manufacturer';

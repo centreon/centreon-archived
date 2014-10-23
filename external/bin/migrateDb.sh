@@ -17,7 +17,6 @@ SCRIPT_PREMIGRATION="$(dirname $(dirname $0))/sql/migration.sql"
 CENTREON_CONSOLE="centreonConsole"
 CENTREON_CONSOLE_PARAMS="core:internal:Install"
 
-
 usage() {
   echo -e "Usage: $1 [-s source] [-d dest] [-u dbuser] [-p dbpass] [-H dbhost] [-t tmp_dir] [-v] [-D]"
   echo -e "\t-s\tsource\tThe database source (Default : centreon)"

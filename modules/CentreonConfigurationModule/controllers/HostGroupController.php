@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class HostGroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class HostGroupController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Hostgroup';
     protected $objectName = 'hostgroup';

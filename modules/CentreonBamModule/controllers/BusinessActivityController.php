@@ -35,7 +35,7 @@
 
 namespace CentreonBam\Controllers;
 
-class BusinessActivityController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class BusinessActivityController extends BasicController
 {
     protected $objectDisplayName = 'BusinessActivity';
     protected $objectName = 'BusinessActivity';

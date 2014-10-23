@@ -39,7 +39,7 @@ use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact;
 use \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
 use \CentreonConfiguration\Repository\HostRepository;
 
-class HostTemplateController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class HostTemplateController extends \CentreonConfiguration\Controllers\BasicController
 {
     /**
      *

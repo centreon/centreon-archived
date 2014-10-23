@@ -38,7 +38,7 @@ namespace CentreonEngine\Repository;
 use \CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
 use \CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigurationRepository;
 use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
-use \CentreonConfiguration\Repository\ServiceRepository as ServicetemplateConfigurationRepository;
+use \CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
 use \Centreon\Internal\Di;
 
 /**

@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonCustomview;
+namespace CentreonCustomview\Hooks;
 
 class DisplayBookmarkedViews
 {

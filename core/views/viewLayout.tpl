@@ -75,6 +75,9 @@ $(document).ready(function() {
             document.location.href = targetUrl;
         }
     });
+
+    // init qTip
+    initTooltips();
 });
 </script>
 {/block}

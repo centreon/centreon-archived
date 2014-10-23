@@ -63,7 +63,7 @@ class PollerDatatable extends \Centreon\Internal\Datatable
         'autowidth' => true,
         'order' => array(
             array('name', 'asc'),
-            array('id', 'asc')
+            array('poller_id', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -76,8 +76,8 @@ class PollerDatatable extends \Centreon\Internal\Datatable
     public static $columns = array(
         array (
             'title' => '<input id="allPoller" class="allPoller" type="checkbox">',
-            'name' => 'id',
-            'data' => 'id',
+            'name' => 'poller_id',
+            'data' => 'poller_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
@@ -103,13 +103,13 @@ class PollerDatatable extends \Centreon\Internal\Datatable
                 'parameters' => array(
                     'route' => '/configuration/poller/[i:id]',
                     'routeParams' => array(
-                        'id' => '::id::'
+                        'id' => '::poller_id::'
                     ),
                     'linkName' => '::name::'
                 )
             )
         ),
-        array (
+        /*array (
             'title' => 'IP Address',
             'name' => 'ip_address',
             'data' => 'ip_address',
@@ -238,7 +238,7 @@ class PollerDatatable extends \Centreon\Internal\Datatable
                     '1' => '<span class="label label-success">Enabled</span>',
                 )
             )
-        ),
+        ),*/
     );
     
     /**
@@ -279,10 +279,10 @@ class PollerDatatable extends \Centreon\Internal\Datatable
                     $engineServer = array_merge($engineServer, $broker);
                 }
             }
-            $engineServer['hasChanged'] = PollerRepository::checkChangeState(
-                $engineServer['id'],
+            /*$engineServer['hasChanged'] = PollerRepository::checkChangeState(
+                $engineServer['poller_id'],
                 $engineServer['last_restart']
-            );
+            );*/
         }
     }
     

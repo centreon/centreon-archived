@@ -37,7 +37,7 @@ namespace CentreonConfiguration\Controllers;
 
 use \CentreonConfiguration\Models\Contact;
 
-class UserController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class UserController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'User';
     protected $objectName = 'user';

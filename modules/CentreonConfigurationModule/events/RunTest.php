@@ -35,4 +35,4 @@
 
 namespace CentreonConfiguration\Events;
 
-class RunTest extends PollerEvent {}
+class RunTest extends NodeEvent {}

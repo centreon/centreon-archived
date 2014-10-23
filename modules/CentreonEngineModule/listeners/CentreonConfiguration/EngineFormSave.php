@@ -36,15 +36,15 @@
 namespace CentreonEngine\Listeners\CentreonConfiguration;
 
 use \CentreonEngine\Repository\EngineRepository;
-use \CentreonConfiguration\Events\EngineFormSave;
+use \CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
 
-class FormSave
+class EngineFormSave
 {
     /**
      *
      * @param \CentreonConfiguration\Events\EngineFormSave $event
      */
-    public static function execute(EngineFormSave $event)
+    public static function execute(EngineFormSaveEvent $event)
     {
         EngineRepository::save(
             $event->getPollerId(),

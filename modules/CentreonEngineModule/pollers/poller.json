@@ -1,0 +1,14 @@
+{
+    "name" : "Poller",
+    "content" : {
+        "engine" : {
+            "setup" : [
+                {
+                    "name" : "main",
+                    "params" : {
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -47,7 +47,7 @@ use \CentreonConfiguration\Models\Command;
 use \CentreonConfiguration\Internal\HostDatatable;
 use \CentreonConfiguration\Repository\HostRepository;
 
-class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class HostController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Host';
     protected $objectName = 'host';
