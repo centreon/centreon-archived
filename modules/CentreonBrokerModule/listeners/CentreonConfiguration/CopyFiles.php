@@ -33,13 +33,12 @@
  *
  */
 
-namespace CentreonEngine\Listeners\CentreonConfiguration;
+namespace CentreonBroker\Listeners\CentreonConfiguration;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
-use CentreonEngine\Repository\ConfigGenerateMainRepository;
 use CentreonConfiguration\Events\CopyFiles as CopyFilesEvent;
-use CentreonEngine\Repository\EngineRepository;
+use CentreonBroker\Repository\BrokerRepository;
 
 class CopyFiles
 {
@@ -54,13 +53,13 @@ class CopyFiles
         $config = Di::getDefault()->get('config');
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        /* Get engine etc directory */
-        $dir = EngineRepository::getDirectories($event->getPollerId());
-        if (!isset($dir['conf_dir'])) {
-            throw new Exception('Engine configuration directory not set.');
+        /* Get broker etc directory */
+        $dir = BrokerRepository::getPathsFromPollerId($event->getPollerId());
+        if (!isset($dir['directory_config'])) {
+            throw new Exception('Broker configuration directory not set.');
         }
 
-        system("cp -Rf $tmpdir/engine/{$event->getPollerId()}/* {$dir['conf_dir']}");
-        $event->setOutput(_('Successfully copied files for Centreon Engine.'));
+        system("cp -Rf $tmpdir/broker/{$event->getPollerId()}/* {$dir['directory_config']}");
+        $event->setOutput(_('Successfully copied files for Centreon Broker.'));
     }
 }
