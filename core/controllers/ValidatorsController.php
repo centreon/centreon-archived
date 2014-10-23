@@ -111,6 +111,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
         $router = $di->get('router');
         $jsonResponse = \Centreon\Internal\Form\Validator\Unique::validate(
             $params['value'],
+            $params['module'],
             $params['object'],
             $params['object_id']
         );
@@ -127,7 +128,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
         $params = $this->getParams('post');
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
-        $jsonResponse = \Centreon\Internal\Form\Validator\Forbiddenchar::validate($params['value']);
+        $jsonResponse = \Centreon\Internal\Form\Validator\ForbiddenChar::validate($params['value']);
         $router->response()->code('200')->json($jsonResponse);
     }
 
@@ -143,6 +144,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
 
         $result = \Centreon\Internal\Form\Validator\CircularDependency::validate(
             $params['value'],
+            $params['module'],
             $params['object'],
             $params['id']
         );

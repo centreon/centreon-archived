@@ -82,6 +82,7 @@ abstract class Customobject
                             type: "POST",
                             data: {
                                 "value":$(this).val(),
+                                "module":$("[name=\'module\']").val(),
                                 "object":$("[name=\'object\']").val(),
                                 "object_id":$("[name=\'object_id\']").val()
                             },
