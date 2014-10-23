@@ -45,6 +45,7 @@
     <column>host_register</column>
     <column>host_activate</column>
     <column>organization_id</column>
+    <column>environment_id</column>
     <row>
       <value>2</value>
       <value>1</value>
@@ -90,6 +91,7 @@
       <value>1</value>
       <value>1</value>
       <value>1</value>
+      <null/>
     </row>
     <row>
       <value>3</value>
@@ -136,6 +138,7 @@
       <value>1</value>
       <value>1</value>
       <value>1</value>
+      <null/>
     </row>
   </table>
 </dataset>

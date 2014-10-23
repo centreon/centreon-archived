@@ -43,6 +43,8 @@
     <column>service_register</column>
     <column>service_activate</column>
     <column>organization_id</column>
+    <column>environment_id</column>
+    <column>domain_id</column>
     <row>
       <value>1</value>
       <null/>
@@ -86,6 +88,8 @@
       <value>0</value>
       <value>1</value>
       <value>1</value>
+      <null/>
+      <null/>
     </row>
     <row>
       <value>2</value>
@@ -130,6 +134,8 @@
       <value>0</value>
       <value>1</value>
       <value>1</value>
+      <null/>
+      <null/>
     </row>
     <row>
       <value>3</value>
@@ -174,6 +180,8 @@
       <value>1</value>
       <value>1</value>
       <value>1</value>
+      <null/>
+      <null/>
     </row>
     <row>
       <value>4</value>
@@ -218,6 +226,8 @@
       <value>1</value>
       <value>1</value>
       <value>1</value>
+      <null/>
+      <null/>
     </row>
     <row>
       <value>5</value>
@@ -262,6 +272,8 @@
       <value>1</value>
       <value>1</value>
       <value>1</value>
+      <null/>
+      <null/>
     </row>
     <row>
       <value>6</value>
@@ -306,6 +318,8 @@
       <value>1</value>
       <value>1</value>
       <value>1</value>
+      <null/>
+      <null/>
     </row>
   </table>
 </dataset>

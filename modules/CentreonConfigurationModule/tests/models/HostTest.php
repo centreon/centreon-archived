@@ -260,7 +260,8 @@ class HostTest extends DbTestCase
             'host_comment' => 'Host template',
             'host_register' => '0',
             'host_activate' => '1',
-            'organization_id' => 1
+            'organization_id' => 1,
+            'environment_id' => null
         );
         $connector = Host::getParameters(1, '*');
 
@@ -342,7 +343,8 @@ class HostTest extends DbTestCase
                 'host_comment' => 'First host',
                 'host_register' => '1',
                 'host_activate' => '1',
-                'organization_id' => 1
+                'organization_id' => 1,
+                'environment_id' => null
             ),
             array(
                 'host_id' => '3',
@@ -388,7 +390,8 @@ class HostTest extends DbTestCase
                 'host_comment' => 'Second host',
                 'host_register' => '1',
                 'host_activate' => '1',
-                'organization_id' => 1
+                'organization_id' => 1,
+                'environment_id' => null
             )
         );
         $result = Host::getList();
@@ -439,7 +442,8 @@ class HostTest extends DbTestCase
                 'host_comment' => 'First host',
                 'host_register' => '1',
                 'host_activate' => '1',
-                'organization_id' => 1
+                'organization_id' => 1,
+                'environment_id' => null
             )
         );
         $result = Host::getList('*', 1);
@@ -490,7 +494,8 @@ class HostTest extends DbTestCase
                 'host_comment' => 'Second host',
                 'host_register' => '1',
                 'host_activate' => '1',
-                'organization_id' => 1
+                'organization_id' => 1,
+                'environment_id' => null
             )
         );
         $result = Host::getList('*', 1, 1);
@@ -607,7 +612,8 @@ class HostTest extends DbTestCase
             'host_comment' => 'Host template',
             'host_register' => '0',
             'host_activate' => '1',
-            'organization_id' => 1
+            'organization_id' => 1,
+            'environment_id' => null
         );
         $result = Host::get(1);
         $this->assertEquals($testResult, $result);
@@ -725,7 +731,8 @@ class HostTest extends DbTestCase
                 'host_comment',
                 'host_register',
                 'host_activate',
-                'organization_id'
+                'organization_id',
+                'environment_id'
             ),
             Host::getColumns()
         );

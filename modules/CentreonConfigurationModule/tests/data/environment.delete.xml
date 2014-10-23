@@ -6,12 +6,14 @@
     <column>description</column>
     <column>level</column>
     <column>organization_id</column>
+    <column>icon_id</column>
     <row>
       <value>2</value>
       <value>Preproduction</value>
       <value>Preproduction environment</value>
       <value>10</value>
       <value>1</value>
+      <null />
     </row>
   </table>
 </dataset>
