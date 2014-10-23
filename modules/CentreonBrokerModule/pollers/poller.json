@@ -26,8 +26,8 @@
                                 "normal" : [
                                     {
                                         "general" : {
-                                            "name" : "cb_module",
-                                        },
+                                            "name" : "cb_module"
+                                        }
                                         "output" : [
                                             {
                                                 "type" :"IPV4",
@@ -38,13 +38,13 @@
                                             {
                                                 "type" :"file",
                                                 "name" : "failover-central-output",
-                                                "path" : "%broker_data_directory%/central-output.failover"
+                                                "path" : "%global_broker_data_directory%/central-output.failover"
                                             }
                                         ],
                                         "logger": [
                                           {
                                             "type": "file",
-                                            "name": "%broker_logs_directory%/cb_module.log"
+                                            "name": "%global_broker_logs_directory%/cb_module.log"
                                           }
                                         ]
                                     }
@@ -64,13 +64,13 @@
                                             {
                                                 "type" :"file",
                                                 "name" : "failover-central-output",
-                                                "path" : "%broker_data_directory%/central-output.failover"
+                                                "path" : "%global_broker_data_directory%/central-output.failover"
                                             }
                                         ],
                                         "logger": [
                                           {
                                             "type": "file",
-                                            "name": "%broker_logs_directory%/cb_module.log"
+                                            "name": "%global_broker_logs_directory%/cb_module.log"
                                           }
                                         ]
                                     }
