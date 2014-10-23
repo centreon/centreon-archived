@@ -76,13 +76,14 @@ class BrokerRepository
                 directory_config = :broker_etc_directory,
                 directory_modules = :broker_module_directory,
                 directory_logs = :broker_logs_directory,
-                directory_data = :broker_data_directory
+                directory_data = :broker_data_directory,
+                init_script = :init_script
                 WHERE poller_id = :poller_id";
         } else {
             /* Insert */
             $query = "INSERT INTO cfg_centreonbroker_paths
-                (poller_id, directory_config, directory_modules, directory_logs, directory_data) VALUES
-                (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory)";
+                (poller_id, directory_config, directory_modules, directory_logs, directory_data, init_script) VALUES
+                (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory, :init_script)";
         }
         $stmt = $db->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId);
@@ -90,6 +91,7 @@ class BrokerRepository
         $stmt->bindParam(':broker_module_directory', $arr['broker_module_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_logs_directory', $arr['broker_logs_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_data_directory', $arr['broker_data_directory'], \PDO::PARAM_STR);
+        $stmt->bindParam(':init_script', $arr['broker_init_script'], \PDO::PARAM_STR);
         $stmt->execute();
 
         /* Save extract params */
@@ -286,7 +288,7 @@ class BrokerRepository
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
         $stmt->execute();
-        $values;
+        $values = array();
         while ($row = $stmt->fetch()) {
             $values[$row['name']] = $row['value'];
         }
