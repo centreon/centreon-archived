@@ -48,6 +48,15 @@ class Datatable
      * @var string 
      */
     protected static $hook = '';
+
+    /**
+     * Parameters send to hook
+     *
+     * A var _ids is add to this parameters and content the list of id of the table
+     * 
+     * @var array
+     */
+    protected static $hookParams = array();
     
     /**
      *
@@ -494,14 +503,15 @@ class Datatable
      */
     public static function processHooks(&$resultSet)
     {
-        $arr = array();
+       	$params = static::$hookParams;
+        $params['_ids'] = array();
         foreach ($resultSet as $set) {
             if (isset($set[static::$objectId])) {
-                $arr[] = $set[static::$objectId];
+                $params['_ids'][] = $set[static::$objectId];
             }
         }
         if (isset(static::$hook) && static::$hook) {
-            $hookData = Hook::execute(static::$hook, $arr);
+            $hookData = Hook::execute(static::$hook, $params);
             foreach ($hookData as $data) {
                 $columnName = $data['columnName'];
                 foreach ($data['values'] as $k => $value) {
