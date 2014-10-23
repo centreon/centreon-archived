@@ -31,13 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
+namespace CentreonAdministration\Controllers;
 
-namespace Centreon\Controllers;
+use Centreon\Controllers\FormController;
 
-class ModuleController extends \Centreon\Internal\Controller
+class BasicController extends FormController
 {
-    
+    public static $moduleName = 'CentreonAdministration';
 }

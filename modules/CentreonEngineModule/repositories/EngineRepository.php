@@ -35,6 +35,8 @@
 
 namespace CentreonEngine\Repository;
 
+use Centreon\Repository\FormRepository;
+
 use Centreon\Internal\Di;
 
 /**
@@ -42,7 +44,7 @@ use Centreon\Internal\Di;
  * @package CentreonEngine
  * @subpackage Repository
  */
-class EngineRepository
+class EngineRepository extends FormRepository
 {
     /**
      * @var string
@@ -76,6 +78,13 @@ class EngineRepository
             if (!in_array($k, $columns)) {
                 continue;
             }
+            if (is_string($v)) {
+                $v = trim($v);
+            }
+            if (empty($v)) {
+                $v = null;
+            }
+            
             $newkey = ':' . $k;
             $sqlParams[$newkey] = $v;
             if ($updateSql != "") {

@@ -35,11 +35,13 @@
 
 namespace CentreonBam\Repository;
 
+use Centreon\Repository\FormRepository;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package CentreonBam
  * @subpackage Repository
  */
-class IndicatorRepository extends \CentreonConfiguration\Repository\Repository
+class IndicatorRepository extends FormRepository
 {
 }

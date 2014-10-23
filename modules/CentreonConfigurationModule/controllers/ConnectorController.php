@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class ConnectorController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class ConnectorController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Connector';
     protected $objectName = 'connector';

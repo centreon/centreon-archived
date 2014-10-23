@@ -33,15 +33,11 @@
  *
  */
 
-namespace CentreonBam\Repository;
+namespace CentreonBam\Controllers;
 
-use Centreon\Repository\FormRepository;
+use Centreon\Controllers\FormController;
 
-/**
- * @author Sylvestre Ho <sho@merethis.com>
- * @package CentreonBam
- * @subpackage Repository
- */
-class BusinessActivityRepository extends FormRepository
+class BasicController extends FormController
 {
+    public static $moduleName = 'CentreonBam';
 }

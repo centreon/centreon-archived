@@ -38,7 +38,7 @@ namespace CentreonAdministration\Controllers;
 
 use \Centreon\Internal\Form;
 
-class AclresourceController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class AclresourceController extends BasicController
 {
     protected $objectDisplayName = 'AclResource';
     protected $objectName = 'aclresource';
