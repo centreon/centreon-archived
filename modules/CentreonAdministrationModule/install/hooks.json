@@ -6,10 +6,9 @@
     {
         "name": "displayBrokerOptions",
         "description" : "Displays broker options"
+    },
+    {
+        "name": "displayTagList",
+        "description": "Get the list of tag"
     }
-]
-  {
-    "name": "displayTagList",
-    "description": "Get the list of tag"
-  }
 ]
