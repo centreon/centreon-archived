@@ -415,11 +415,8 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     $multiTP_logStr = "";
                     while ($hst = $DBRESULT3->fetchRow()) {
                         if ($hst['host_tpl_id'] != $maxId["MAX(host_id)"]) {
-                            if (!isset($hst['is_password'])) {
-                                $hst['is_password'] = '0';
-                            }
-                            $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`, `is_password`) VALUES" .
-                                "('".$maxId["MAX(host_id)"]."', '".$pearDB->escape($hst['host_tpl_id'])."', '".$pearDB->escape($hst['order'])."', '".$pearDB->escape($hst["is_password"])."')";
+                            $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
+                                "('".$maxId["MAX(host_id)"]."', '".$pearDB->escape($hst['host_tpl_id'])."', '".$pearDB->escape($hst['order'])."')";
                             $DBRESULT4 = $pearDB->query($mTpRq2);
                             $multiTP_logStr .= $hst['host_tpl_id'] . ",";
                         }
@@ -435,8 +432,11 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     while ($hst = $DBRESULT3->fetchRow()) {
                         $macName = str_replace("\$", "", $hst["host_macro_name"]);
                         $macVal = $hst['host_macro_value'];
-                        $mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
-                            "('".$maxId["MAX(host_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."')";
+                        if (!isset($hst['is_password'])) {
+                            $hst['is_password'] = '0';
+                        }
+                        $mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`, `is_password`) VALUES" .
+                            "('".$maxId["MAX(host_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."', '".$pearDB->escape($hst["is_password"])."')";
                         $DBRESULT4 = $pearDB->query($mTpRq2);
                         $fields["_".strtoupper($macName)."_"] = $macVal;
                     }
