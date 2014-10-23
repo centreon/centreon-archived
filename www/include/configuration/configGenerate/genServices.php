@@ -39,42 +39,6 @@
 	if (!isset($oreon))
 		exit();
 
-	/**
-	 * @param array $service
-	 * @param int $type | 0 = contact, 1 = contactgroup
-	 * @return bool
-	 */
-	function serviceHasContact($service, $type = 0)
-	{
-		global $cgSCache, $cctSCache, $pearDB;
-		static $serviceTemplateHasContactGroup = array();
-		static $serviceTemplateHasContact = array();
-
-		if ($type == 0) {
-			$staticArr =& $serviceTemplateHasContact;
-			$cache = $cctSCache;
-		} else {
-			$staticArr =& $serviceTemplateHasContactGroup;
-			$cache = $cgSCache;
-		}
-
-		if (isset($cache[$service['service_id']])) {
-			return true;
-		}
-		while (isset($service['service_template_model_stm_id']) && $service['service_template_model_stm_id']) {
-			$serviceId = $service['service_template_model_stm_id'];
-			if (isset($cache[$serviceId]) || isset($staticArr[$serviceId])) {
-				$staticArr[$serviceId] = true;
-				return true;
-			}
-			$res = $pearDB->query("SELECT service_template_model_stm_id 
-				FROM service 
-				WHERE service_id = {$serviceId}"
-			);
-			$service = $res->fetchRow();
-		}
-		return false;
-	}
 
 	require_once ($centreon_path . "/www/class/centreonService.class.php");
     require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
@@ -353,7 +317,7 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !serviceHasContact($service, 1)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
                     print_line("contact_groups", "null");
                 } else {
                     if (isset($cgSCache[$service["service_id"]])) {
@@ -377,7 +341,7 @@
 				/*
 				 * Contact Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !serviceHasContact($service, 0)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contacts", "null");
                 } else {
                     if (isset($cctSCache[$service["service_id"]])) {
@@ -708,7 +672,7 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !serviceHasContact($service, 1)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contact_groups", "null");
                 } else {
                     if (isset($cgSCache[$service["service_id"]])) {
@@ -732,7 +696,7 @@
 				/*
 				 * Contact Relation only for Nagios 3
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !serviceHasContact($service, 0)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contacts", "null");
                 } else {
                     if (isset($cctSCache[$service["service_id"]])) {

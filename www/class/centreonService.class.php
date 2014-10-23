@@ -418,5 +418,43 @@
                     )";
             $this->db->query($sql);
         }
- }
- ?>
+
+    /**
+	 * @param array $service
+     * @param int $type | 0 = contact, 1 = contactgroup
+     * @param array $cgSCache
+     * @param array $cctSCache
+	 * @return bool
+	 */
+     public function serviceHasContact($service, $type = 0, $cgSCache, $cctSCache)
+	 {
+ 	      static $serviceTemplateHasContactGroup = array();
+	      static $serviceTemplateHasContact = array();
+
+	      if ($type == 0) {
+		       $staticArr =& $serviceTemplateHasContact;
+			   $cache = $cctSCache;
+		  } else {
+		       $staticArr =& $serviceTemplateHasContactGroup;
+			   $cache = $cgSCache;
+		  }
+
+          if (isset($cache[$service['service_id']])) {
+		       return true;
+		  }
+		  while (isset($service['service_template_model_stm_id']) && $service['service_template_model_stm_id']) {
+		       $serviceId = $service['service_template_model_stm_id'];
+			   if (isset($cache[$serviceId]) || isset($staticArr[$serviceId])) {
+			        $staticArr[$serviceId] = true;
+				    return true;
+			   }
+			   $res = $this->db->query("SELECT service_template_model_stm_id 
+			   	    FROM service 
+				    WHERE service_id = {$serviceId}"
+			   );
+			   $service = $res->fetchRow();
+		  }
+		  return false;
+     } 
+}
+?>
