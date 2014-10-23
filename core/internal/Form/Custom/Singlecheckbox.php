@@ -62,10 +62,10 @@ class Singlecheckbox extends Customobject
         if ($value) {
             $htmlSelected = 'checked=checked';
         }
-        $inputHtml = '<label class="label-controller" for="'. $element['id'] . $i . '">&nbsp;' .
-                    '<input id="' . $element['id'] . $i . '" ' .
+        $inputHtml = '<label class="label-controller" for="'. $element['id'] . '">&nbsp;' .
+                    '<input id="' . $element['id'] . '" ' .
                     'type="checkbox" name="' . $element['name'] . '" ' .
-                    'value=1 ' . $htmlSelected . ' />' . $key .
+                    'value=1 ' . $htmlSelected . ' />' .
                     '</label>&nbsp;&nbsp;';
         return array(
             'html' => $inputHtml,

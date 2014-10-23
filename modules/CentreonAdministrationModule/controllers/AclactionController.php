@@ -40,7 +40,7 @@ use \Centreon\Internal\Form\Generator;
 use \CentreonAdministration\Repository\AclactionRepository;
 use \Centreon\Internal\Di;
 
-class AclactionController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class AclactionController extends BasicController
 {
     protected $objectDisplayName = 'AclAction';
     protected $objectName = 'aclaction';

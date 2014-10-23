@@ -31,15 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Controllers;
+namespace Centreon\Controllers;
 
-use \Centreon\Internal\Form;
-use \Centreon\Internal\Form\Wizard;
-use \Centreon\Internal\Form\Generator;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Form;
+use Centreon\Internal\Form\Wizard;
+use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * Abstact class for configuration controller
@@ -47,9 +48,9 @@ use \Centreon\Internal\Exception;
  * @version 3.0.0
  * @author Maximilien Bersoult <mbersoult@merethis.com>
  */
-abstract class ObjectAbstract extends \Centreon\Internal\Controller
+abstract class FormController extends \Centreon\Internal\Controller
 {
-    public static $moduleName = 'CentreonConfiguration';
+    public static $moduleName = '';
     
     public static $isDisableable = false;
 

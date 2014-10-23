@@ -39,7 +39,7 @@ use \CentreonConfiguration\Models\Timeperiod;
 use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
 use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
 
-class TimeperiodController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class TimeperiodController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Timeperiod';
     protected $objectName = 'timeperiod';

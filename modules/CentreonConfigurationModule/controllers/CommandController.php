@@ -37,7 +37,7 @@ namespace CentreonConfiguration\Controllers;
 
 use \CentreonConfiguration\Models\Command;
 
-class CommandController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class CommandController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Command';
     protected $objectName = 'command';

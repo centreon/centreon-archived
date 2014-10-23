@@ -37,7 +37,7 @@ namespace CentreonAdministration\Controllers;
 
 use \Centreon\Internal\Form;
 
-class AclmenuController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class AclmenuController extends BasicController
 {
     protected $objectDisplayName = 'AclMenu';
     protected $objectName = 'aclmenu';

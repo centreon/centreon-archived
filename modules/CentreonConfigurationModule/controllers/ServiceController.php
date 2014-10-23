@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class ServiceController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class ServiceController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Service';
     protected $objectName = 'service';
