@@ -76,9 +76,6 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function listAction()
     {
-        /* Init template */
-        $di = Di::getDefault();
-        
         // Load CssFile
         $this->tpl->addCss('jquery.fileupload.css');
 
@@ -148,13 +145,10 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function formListAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
         $requestParams = $this->getParams('get');
         $repository = $this->repository;
         $list = $repository::getFormList($requestParams['q']);
-        $router->response()->json($list);
+        $this->router->response()->json($list);
     }
     
     /**
@@ -167,7 +161,6 @@ abstract class FormController extends \Centreon\Internal\Controller
         $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
         $form->addHiddenComponent('object', $this->objectName);
         $form->addHiddenComponent('module', static::$moduleName);
-        $tpl = Di::getDefault()->get('template');
         $this->tpl->assign('formName', $form->getName());
         $formGen = str_replace(
             array('alertMessage', 'alertClose'),
@@ -188,7 +181,7 @@ abstract class FormController extends \Centreon\Internal\Controller
         $createSuccessful = true;
         $createErrorMessage = '';
         
-        $validationResult = Form::validate("wizard", $this->getUri(), self::$moduleName, $givenParameters);
+        $validationResult = Form::validate("wizard", $this->getUri(), static::$moduleName, $givenParameters);
         if ($validationResult['success']) {
             $requestParams = $this->getParams('get');
             $repository = $this->repository;
@@ -203,11 +196,10 @@ abstract class FormController extends \Centreon\Internal\Controller
             $createErrorMessage = $validationResult['error'];
         }
         
-        $router = Di::getDefault()->get('router');
         if ($createSuccessful) {
-            $router->response()->json(array('success' => true));
+            $this->router->response()->json(array('success' => true));
         } else {
-            $router->response()->json(array('success' => false, 'error' => $createErrorMessage));
+            $this->router->response()->json(array('success' => false, 'error' => $createErrorMessage));
         }
     }
     
@@ -216,10 +208,6 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function editAction()
     {
-        // Init template
-        $di = Di::getDefault();
-        $tpl = $di->get('template');
-        
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
         
@@ -259,7 +247,7 @@ abstract class FormController extends \Centreon\Internal\Controller
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = Form::validate("form", $this->getUri(), self::$moduleName, $givenParameters);
+        $validationResult = Form::validate("form", $this->getUri(), static::$moduleName, $givenParameters);
         if ($validationResult['success']) {
             $repository = $this->repository;
             try {
@@ -273,13 +261,13 @@ abstract class FormController extends \Centreon\Internal\Controller
             $updateErrorMessage = $validationResult['error'];
         }
         
-        $router = Di::getDefault()->get('router');
+        $this->router = Di::getDefault()->get('router');
         if ($updateSuccessful) {
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
-            $router->response()->json(array('success' => true));
+            $this->router->response()->json(array('success' => true));
         } else {
-            $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+            $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
     
@@ -290,14 +278,12 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function deleteAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $deleteSuccess = true;
         $errorMessage = '';
         
         try {
             Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
-            $params = $router->request()->paramsPost();
+            $params = $this->router->request()->paramsPost();
             $repository = $this->repository;
             $repository::delete($params['ids']);
             
@@ -309,7 +295,7 @@ abstract class FormController extends \Centreon\Internal\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(
+        $this->router->response()->json(
             array(
                 'success' => $deleteSuccess,
                 'errorMessage' => $errorMessage
@@ -322,13 +308,9 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function datatableAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
-        
-        $router->response()->json($myDataForDatatable);
+        $this->router->response()->json($myDataForDatatable);
     }
 
     /**
@@ -338,15 +320,11 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function getMassiveChangeFieldsAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        $dbconn = $di->get('db_centreon');
-
         $data = array(
             'listMc' => array()
         );
 
-        $stmt = $dbconn->prepare(
+        $stmt = $this->db->prepare(
             "SELECT f.field_id, f.label
             FROM form_field f, form_massive_change_field_relation mcfr, form_massive_change mc
             WHERE mc.route = :route
@@ -359,7 +337,7 @@ abstract class FormController extends \Centreon\Internal\Controller
             $data['listMc'][$row['field_id']] = $row['label'];
         }
 
-        $router->response()->json($data);
+        $this->router->response()->json($data);
     }
 
     /**
@@ -370,13 +348,12 @@ abstract class FormController extends \Centreon\Internal\Controller
     public function getMcFieldAction()
     {
         $di = Di::getDefault();
-        $router = $di->get('router');
+        $this->router = $di->get('router');
         $dbconn = $di->get('db_centreon');
-        $tpl = $di->get('template');
         
         $requestParam = $this->getParams('named');
 
-        $stmt = $dbconn->prepare(
+        $stmt = $this->routeprepare(
             "SELECT name, label, default_value, attributes, type, help
             FROM form_field
             WHERE field_id = :id"
@@ -398,14 +375,12 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function duplicateAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $duplicateSuccess = true;
         $errorMessage = '';
         
         try {
             Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
-            $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
+            $listDuplicate = json_decode($this->router->request()->param('duplicate'));
 
             $objClass = $this->objectClass;
             $repository = $this->repository;
@@ -419,7 +394,7 @@ abstract class FormController extends \Centreon\Internal\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(
+        $this->router->response()->json(
             array(
                 'success' => $duplicateSuccess,
                 'errorMessage' => $errorMessage
@@ -434,14 +409,12 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function enableAction($field)
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $enableSuccess = true;
         $errorMessage = '';
         
         try {
             Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
-            $params = $router->request()->paramsPost();
+            $params = $this->router->request()->paramsPost();
 
             $repository = $this->repository;
             foreach ($params['ids'] as $id) {
@@ -456,7 +429,7 @@ abstract class FormController extends \Centreon\Internal\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(
+        $this->router->response()->json(
             array(
                 'success' => $enableSuccess,
                 'errorMessage' => $errorMessage
@@ -471,14 +444,12 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function disableAction($field)
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $enableSuccess = true;
         $errorMessage = '';
         
         try {
             Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
-            $params = $router->request()->paramsPost();
+            $params = $this->router->request()->paramsPost();
 
             $repository = $this->repository;
             foreach ($params['ids'] as $id) {
@@ -493,7 +464,7 @@ abstract class FormController extends \Centreon\Internal\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(
+        $this->router->response()->json(
             array(
                 'success' => $enableSuccess,
                 'errorMessage' => $errorMessage
@@ -508,14 +479,12 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function massiveChangeAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $massiveChangeSuccess = true;
         $errorMessage = '';
         
         try {
             Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
-            $params = $router->request()->paramsPost();
+            $params = $this->router->request()->paramsPost();
 
             $objClass = $this->objectClass;
             foreach ($params['ids'] as $id) {
@@ -530,7 +499,7 @@ abstract class FormController extends \Centreon\Internal\Controller
             $errorMessage = $e->getMessage();
         }
         
-        $router->response()->json(
+        $this->router->response()->json(
             array(
                 'success' => $massiveChangeSuccess,
                 'errorMessage' => $errorMessage
@@ -545,13 +514,10 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     protected function getRelations($relClass)
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
         $requestParam = $this->getParams('named');
         $repository = $this->repository;
         $list = $repository::getRelations($relClass, $requestParam['id']);
-        $router->response()->json($list);
+        $this->router->response()->json($list);
     }
 
     /**
@@ -563,12 +529,9 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function getSimpleRelation($fieldName, $targetObj, $reverse = false)
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
         $requestParam = $this->getParams('named');
         $repository = $this->repository;
         $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParam['id']);
-        $router->response()->json($list);
+        $this->router->response()->json($list);
     }
 }
