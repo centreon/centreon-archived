@@ -61,7 +61,11 @@
 	$rq = "SELECT COUNT(*) FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
                         FROM dependency_serviceParent_relation dspr $aclFrom
-                        WHERE dspr.dependency_dep_id = dep.dep_id $aclCond) > 0 ";
+                        WHERE dspr.dependency_dep_id = dep.dep_id $aclCond ) > 0 
+			OR (
+			SELECT DISTINCT COUNT(*) 
+                        FROM dependency_serviceChild_relation dscr $aclFrom
+                        WHERE dscr.dependency_dep_id = dep.dep_id $aclCond) > 0 ";
 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
@@ -96,7 +100,11 @@
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
                         FROM dependency_serviceParent_relation dspr $aclFrom
-                        WHERE dspr.dependency_dep_id = dep.dep_id $aclCond) > 0 ";
+                        WHERE dspr.dependency_dep_id = dep.dep_id $aclCond) > 0
+			OR (
+			SELECT DISTINCT COUNT(*) 
+                        FROM dependency_serviceChild_relation dscr $aclFrom
+                        WHERE dscr.dependency_dep_id = dep.dep_id $aclCond) > 0 ";
 	if ($search)
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	$rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;

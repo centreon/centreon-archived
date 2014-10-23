@@ -60,7 +60,10 @@
 	$rq = "SELECT COUNT(*) FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
                         FROM dependency_hostParent_relation dhpr $aclFrom
-                        WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0 ";
+						WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
+			OR (SELECT DISTINCT COUNT(*)
+				FROM dependency_hostChild_relation dhcr $aclFrom
+				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond) > 0	";
 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
@@ -94,7 +97,10 @@
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
                         FROM dependency_hostParent_relation dhpr $aclFrom
-                        WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
+						WHERE dhpr.dependency_dep_id = dep.dep_id $aclCond) > 0
+			OR (SELECT DISTINCT COUNT(*)
+				FROM dependency_hostChild_relation dhcr $aclFrom
+				WHERE dhcr.dependency_dep_id = dep.dep_id $aclCond) > 0	";
 
 	if ($search)
 		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '".CentreonDB::escape($search)."')";
