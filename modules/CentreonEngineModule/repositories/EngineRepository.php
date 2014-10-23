@@ -89,4 +89,22 @@ class EngineRepository
             $stmt->execute($sqlParams);
         }
     }
+
+    /**
+     * Get directories from poller id
+     *
+     * @param int $pollerId
+     * @return array
+     */
+    public static function getDirectories($pollerId)
+    {
+        $sql = "SELECT conf_dir, log_dir, var_lib_dir, module_dir 
+            FROM cfg_engine
+            WHERE poller_id = :poller_id";
+        $db = Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array(':poller_id' => $pollerId));
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $data;
+    }
 }

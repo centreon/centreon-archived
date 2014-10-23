@@ -96,7 +96,7 @@ class ConfigGenerateMainRepository
 
         $tmpPath = static::$path;
         $engineEtcPath = static::$finalPath;
-
+        
         foreach ($filesList as $category => $data) {
             if ($category != 'main_file') {
                 foreach ($data as $path) {
