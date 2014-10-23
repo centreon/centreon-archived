@@ -231,6 +231,10 @@ class Db
             $fileList,
             File::getFiles($centreonPath . '/modules/CentreonEngineModule/install/db/' . $targetDbName, 'xml')
         );
+        $fileList = array_merge(
+            $fileList,
+            File::getFiles($centreonPath . '/modules/CentreonBrokerModule/install/db/' . $targetDbName, 'xml')
+        );
         
         // Copy to destination
         if (!file_exists($targetFolder)) {

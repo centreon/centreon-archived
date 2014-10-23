@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Internal\Poller\Template\Manager as TemplateManager;
 use CentreonConfiguration\Events\EngineFormSave;
+use CentreonConfiguration\Events\BrokerFormSave;
 use CentreonConfiguration\Models\Poller;
 use CentreonConfiguration\Models\Node;
 use CentreonConfiguration\Repository\Repository;
@@ -137,8 +138,12 @@ class PollerRepository extends Repository
             'port' => 0,
             'tmpl_name' => $params['poller_tmpl']
         ));
-        $values = new EngineFormSave($pollerId, $params);
-        $di->get('events')->emit('centreon-configuration.engine.form.save', array($values));
+        $engineEvent = new EngineFormSave($pollerId, $params);
+        $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
+
+        $brokerEvent = new BrokerFormSave($pollerId, $params);
+        $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
+
         return $pollerId;
     }
 
@@ -159,8 +164,11 @@ class PollerRepository extends Repository
                 'tmpl_name' => $params['poller_tmpl']
             )
         );
-        $values = new EngineFormSave($params['poller_id'], $params);
-        $di->get('events')->emit('centreon-configuration.engine.form.save', array($values));
+        $engineEvent = new EngineFormSave($params['poller_id'], $params);
+        $di->get('events')->emit('centreon-configuration.engine.form.save', array($engineEvent));
+        
+        $brokerEvent = new BrokerFormSave($params['poller_id'], $params);
+        $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
     }
 
     /**

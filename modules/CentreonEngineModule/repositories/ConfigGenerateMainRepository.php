@@ -38,6 +38,7 @@ namespace CentreonEngine\Repository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Poller;
+use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -75,7 +76,7 @@ class ConfigGenerateMainRepository
 
         /* Get Content */
         $content = static::getContent($poller_id, $filesList, $testing);
-        
+
         /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
@@ -185,7 +186,7 @@ class ConfigGenerateMainRepository
         }
 
         /* Write broker modules */
-        $finalConf['broker_module'] = static::getBrokerConf($finalConf['module_dir']);
+        $finalConf['broker_module'] = static::getBrokerConf($poller_id, $finalConf['module_dir']);
 
         /* Exclude parameters */
         static::unsetParameters($finalConf);
@@ -266,18 +267,22 @@ class ConfigGenerateMainRepository
     /**
      * Returns an array of broker module directives 
      *
+     * @param int $pollerId
      * @param string $moduleDir
      * @return array
      */
-    private static function getBrokerConf($moduleDir)
+    private static function getBrokerConf($pollerId, $moduleDir)
     {
-        $brokers = array();
-        $brokers[] = rtrim($moduleDir, '/') . '/externalcmd.so';
+        /* Retrieve broker modules */
+        $events = Di::getDefault()->get('events');
+        $moduleEvent = new BrokerModuleEvent($pollerId);
+        $events->emit('centreon-configuration.broker.module', array($moduleEvent));
+        $brokerModules = $moduleEvent->getModules();
+        
+        /* External command module */
+        $brokerModules[] = rtrim($moduleDir, '/') . '/externalcmd.so';
 
-        /* @todo: use event */
-        $brokers[] = '/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml';
-
-        return $brokers;
+        return $brokerModules;
     }
 
     /**
