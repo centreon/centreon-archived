@@ -3,4 +3,4 @@ GD:gd
 LDAP:ldap
 XML Writer:xmlwriter
 MB String:mbstring
-SQLite:sqlite3
+SQLite:pdo_sqlite
