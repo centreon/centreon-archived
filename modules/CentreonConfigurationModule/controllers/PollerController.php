@@ -280,8 +280,13 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
         
         $myLiteTemplate = unserialize($pollerTemplateList[$params['name']]);
         $myTemplate = $myLiteTemplate->toFullTemplate();
+
+        $pollerId = null;
+        if (isset($params['poller'])) {
+            $pollerId = $params['poller'];
+        }
         
-        $router->response()->json($myTemplate->genForm());
+        $router->response()->json($myTemplate->genForm($pollerId));
     }
 
     /**

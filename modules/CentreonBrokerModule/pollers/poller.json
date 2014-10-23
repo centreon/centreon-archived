@@ -14,7 +14,8 @@
                                     {
                                         "label" : "Central IP Address",
                                         "name": "broker_central_ip",
-                                        "type" : "input"
+                                        "type" : "text",
+                                        "require": false
                                     }
                                 ]
                             }
@@ -27,12 +28,12 @@
                                     {
                                         "general" : {
                                             "name" : "cb_module"
-                                        }
+                                        },
                                         "output" : [
                                             {
                                                 "type" :"IPV4",
                                                 "name" : "central-output",
-                                                "host": "%central_ip%",
+                                                "host": "%broker_central_ip%",
                                                 "port" : "5668"
                                             },
                                             {
