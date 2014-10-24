@@ -326,6 +326,7 @@ class ConfigGenerateMainRepository
         /* Look for template file */
         $config = Di::getDefault()->get('config');
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        $pollerParam['tmpl_name'] = strtolower($pollerParam['tmpl_name']);
         $jsonFile = "{$centreonPath}/modules/CentreonEngineModule/pollers/{$pollerParam['tmpl_name']}.json";
         if (!file_exists($jsonFile)) {
             throw new Exception('Engine template file not found: ' . $pollerParam['tmpl_name'] . '.json');
