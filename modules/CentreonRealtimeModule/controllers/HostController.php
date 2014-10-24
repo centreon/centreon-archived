@@ -83,7 +83,7 @@ class HostController extends \Centreon\Internal\Controller
             ->addJs('additional-methods.min.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.search.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js');
 
