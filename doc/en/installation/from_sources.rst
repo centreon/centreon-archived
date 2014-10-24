@@ -65,9 +65,9 @@ Debian / Ubuntu
 Install the following prerequisites::
 
   $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev \
-      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd \
+      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd php5-sqlite \
       rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
-      libdigest-sha1-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
+      libdigest-sha-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
 
 To finish, you must install SNMP mibs. Due to a licensing issue, those
 mibs are not available by default on Debian. To add them, first edit
@@ -87,7 +87,7 @@ Packages
 Install the following prerequisites::
 
   $ yast -i gcc gcc-c++ make automake apache2 php5 php5-mysql apache2-mod_php5 php5-pear \
-      php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-gettext php5-mbstring mysql \
+      php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-gettext php5-mbstring mysql php5-sqlite \
       libmysqlclient-devel perl-DBD-mysql mysql-community-server rrdtool perl-Config-IniFiles \
       net-snmp perl-Net-SNMP perl-SNMP gd libjpeg-devel libpng-devel fontconfig-devel \
       freetype2-devel sudo mailx fping iputils dos2unix cron dejavu
