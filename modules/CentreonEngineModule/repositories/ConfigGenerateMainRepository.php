@@ -231,35 +231,35 @@ class ConfigGenerateMainRepository
         }
 
         /* Check that poller directory exists */
-        if (!file_exists($path.$poller_id)) {
-            if (!is_dir($path.$poller_id)) {
-                mkdir($path.$poller_id);
+        if (!file_exists($path)) {
+            if (!is_dir($path)) {
+                mkdir($path);
             }
         }
 
         /* Check that Object directory exists */
-        if (!file_exists($path.$poller_id."/objects/")) {
-            if (!is_dir($path.$poller_id."/objects/")) {
-                mkdir($path.$poller_id."/objects/");
+        if (!file_exists($path."/objects/")) {
+            if (!is_dir($path."/objects/")) {
+                mkdir($path."/objects/");
             }
         }
 
         /* Check that Ressources directory exists */
-        if (!file_exists($path.$poller_id."/resources/")) {
-            if (!is_dir($path.$poller_id."/resources/")) {
-                mkdir($path.$poller_id."/resources/");
+        if (!file_exists($path."/resources/")) {
+            if (!is_dir($path."/resources/")) {
+                mkdir($path."/resources/");
             }
         }
 
         /* Add fixed path files */
-        $resList[] = $path."$poller_id/resources.cfg";
-        $pathList[] = $path."$poller_id/misc-command.cfg";
-        $pathList[] = $path."$poller_id/check-command.cfg";
-        $pathList[] = $path."$poller_id/timeperiods.cfg";
-        $pathList[] = $path."$poller_id/connectors.cfg";
+        $resList[] = $path."/resources.cfg";
+        $pathList[] = $path."/misc-command.cfg";
+        $pathList[] = $path."/check-command.cfg";
+        $pathList[] = $path."/timeperiods.cfg";
+        $pathList[] = $path."/connectors.cfg";
         
-        $dirList[] = $path."$poller_id/objects/";
-        $dirList[] = $path."$poller_id/resources/";
+        $dirList[] = $path."/objects/";
+        $dirList[] = $path."/resources/";
 
         return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList);
     }
