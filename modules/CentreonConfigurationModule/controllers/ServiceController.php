@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
+use Centreon\Internal\Di;
+
 class ServiceController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Service';

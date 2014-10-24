@@ -35,8 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Form;
-use \Centreon\Internal\Di;
+use Centreon\Form;
+use Centreon\Internal\Di;
 
 class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicController
 {
