@@ -65,6 +65,7 @@ if (file_exists("install.php") && (isset($requestUri[2]) && ($requestUri[2] != '
     try {
         $router->dispatch();
     } catch (\Exception $e) {
+        $tmpl = \Centreon\Internal\Di::getDefault()->get('template');
         $router->response()->code(500);
         if ("dev" === \Centreon\Internal\Di::getDefault()->get('config')->get('global', 'env')) {
             echo '<pre>';

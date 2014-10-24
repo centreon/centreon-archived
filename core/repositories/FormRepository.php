@@ -172,8 +172,11 @@ abstract class FormRepository
         $givenParameters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
         foreach ($givenParameters as $key => $value) {
             if (in_array($key, $columns)) {
-                if (!is_array($value) && !empty($value)) {
-                    $insertParams[$key] = trim($value);
+                if (!is_array($value)) {
+                    $value = trim($value);
+                    if (!empty($value)) {
+                        $insertParams[$key] = trim($value);
+                    }
                 }
             }
         }
@@ -273,6 +276,7 @@ abstract class FormRepository
                 unset($givenParameters[$key]);
             }
         }
+        
         $class::update($id, $givenParameters);
         static::postSave($id, 'update', $givenParameters);
     }

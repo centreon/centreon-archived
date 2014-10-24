@@ -49,7 +49,8 @@ class EnvironmentTest extends DbTestCase
             'name' => 'test_name',
             'description' => 'test_description',
             'level' => '1',
-            'organization_id' => '1'
+            'organization_id' => '1',
+            'icon_id' => null,
         );
         Environment::insert($envInsert);
         $this->tableEqualsXml(
@@ -168,7 +169,8 @@ class EnvironmentTest extends DbTestCase
             'name' => 'Preproduction',
             'description' => 'Preproduction environment',
             'level' => '10',
-            'organization_id' => '1'
+            'organization_id' => '1',
+            'icon_id' => null
         );
         $arr = Environment::getParameters(2, '*');
         $this->assertEquals($arr, $testInformation);
@@ -236,14 +238,16 @@ class EnvironmentTest extends DbTestCase
                 'name' => 'Production',
                 'description' => 'Production environment',
                 'level' => '5',
-                'organization_id' => '1'
+                'organization_id' => '1',
+                'icon_id' => null
             ),
             array(
                 'environment_id' => '2',
                 'name' => 'Preproduction',
                 'description' => 'Preproduction environment',
                 'level' => '10',
-                'organization_id' => '1'
+                'organization_id' => '1',
+                'icon_id' => null
             ),
         );
         $this->assertEquals($expectedResult, Environment::getList());
@@ -257,7 +261,8 @@ class EnvironmentTest extends DbTestCase
                 'name' => 'Production',
                 'description' => 'Production environment',
                 'level' => '5',
-                'organization_id' => '1'
+                'organization_id' => '1',
+                'icon_id' => null
             )
         );
         $this->assertEquals($expectedResult, Environment::getList('*', 1));
@@ -271,7 +276,8 @@ class EnvironmentTest extends DbTestCase
                 'name' => 'Preproduction',
                 'description' => 'Preproduction environment',
                 'level' => '10',
-                'organization_id' => '1'
+                'organization_id' => '1',
+                'icon_id' => null
             )
         );
         $this->assertEquals($expectedResult, Environment::getList('*', 1, 1));
@@ -390,7 +396,8 @@ class EnvironmentTest extends DbTestCase
             'name' => 'Preproduction',
             'description' => 'Preproduction environment',
             'level' => '10',
-            'organization_id' => '1'
+            'organization_id' => '1',
+            'icon_id' => null
         );
         $this->assertEquals($expectedResult, Environment::get(2));
     }
@@ -464,7 +471,8 @@ class EnvironmentTest extends DbTestCase
                 'name',
                 'description',
                 'level',
-                'organization_id'
+                'organization_id',
+                'icon_id'
             ),
             Environment::getColumns()
         );
