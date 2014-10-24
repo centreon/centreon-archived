@@ -59,7 +59,7 @@ class Service extends \CentreonPerformance\Repository\Graph
 
         /* Get the list of metrics */
         $query = "SELECT i.id, i.service_description, m.metric_id, m.metric_name, m.unit_name, m.warn, m.warn_low, m.crit, m.crit_low, m.min, m.max
-            FROM index_data i, metrics m
+            FROM rt_index_data i, rt_metrics m
             WHERE i.service_id = :service_id
                 AND i.id = m.index_id
                 AND m.hidden = '0'";
