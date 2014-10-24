@@ -1,0 +1,7 @@
+[
+  {
+    "name": "displaySvcTooltipGraph",
+    "moduleHook": "displaySvcGraph",
+    "moduleHookescription": "Display a service graph"
+  }
+]
