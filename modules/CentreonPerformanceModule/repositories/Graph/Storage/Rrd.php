@@ -50,17 +50,21 @@ class Rrd extends AbstractStorage
 
     /**
      * Constructor
+     * @todo use global options
      */
     public function __construct()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        /*$di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        /* Get the path for rrd metrics and status */
+        /* Get the path for rrd metrics and status *
         $query = "SELECT RRDdatabase_path, RRDdatabase_status_path FROM rt_configs WHERE id = 1";
         $stmt = $dbconn->query($query);
         $row = $stmt->fetch();
         $this->rrdPath = $row['RRDdatabase_path'];
-        $this->rrdStatusPath = $row['RRDdatabase_status_path'];
+        $this->rrdStatusPath = $row['RRDdatabase_status_path'];*/
+        
+        $this->rrdPath = '/var/lib/centreon/metrics/';
+        $this->rrdStatusPath = '/var/lib/centreon/status/';
 
         parent::__construct();
     }
