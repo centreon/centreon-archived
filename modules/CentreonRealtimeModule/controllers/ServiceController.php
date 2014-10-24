@@ -34,10 +34,11 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\ServicedetailRepository;
-use \CentreonRealtime\Repository\HostdetailRepository;
-use \Centreon\Internal\Utils\Status;
-use \Centreon\Internal\Utils\Datetime;
+use CentreonRealtime\Repository\ServicedetailRepository;
+use CentreonRealtime\Repository\HostdetailRepository;
+use Centreon\Internal\Utils\Status;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Hook;
 
 /**
  * Display service monitoring states
@@ -110,6 +111,9 @@ class ServiceController extends \Centreon\Internal\Controller
             'actions' => HostdetailRepository::getMonitoringActions()
         );
         $tpl->assign('actions', $actions);
+
+        /* Add javascript and css file for hooks */
+        Hook::addStaticFile('displaySvcTooltipGraph');
 
         $tpl->display('file:[CentreonRealtimeModule]console.tpl');
     }
@@ -196,7 +200,24 @@ class ServiceController extends \Centreon\Internal\Controller
         } else {
             $this->tpl->assign('error', sprintf(_('No data found for service id:%s'), $params['id']));
         }
+        $this->tpl->assign('params', array('host_id' => $params['hid'], 'svc_id' => $params['sid']));
         $this->tpl->display('file:[CentreonRealtimeModule]service_tooltip.tpl');
+    }
+
+    /**
+     * Display graph in a tooltip
+     *
+     * @method get
+     * @route /realtime/service/[i:hid]/[i:sid]/graph
+     */
+    public function serviceTooltipGraphAction()
+    {
+        $params = $this->getParams();
+        $this->tpl->assign(
+            'params',
+            array('svc_id' => $params['sid'])
+        );
+        $this->tpl->display('file:[CentreonRealtimeModule]service_graph_tooltip.tpl');
     }
 
     /**
