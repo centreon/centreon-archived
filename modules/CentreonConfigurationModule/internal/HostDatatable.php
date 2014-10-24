@@ -56,7 +56,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonConfiguration\Models\Host';
-    
+
     /**
      *
      * @var array 
@@ -205,6 +205,12 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'className' => "cell_center",
             'width' => '50px'
         ),
+    );
+
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'host'
+        )
     );
 
     protected static $hook= 'displayTagList';

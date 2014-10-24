@@ -60,12 +60,19 @@ class TagController extends \Centreon\Internal\Controller
         $router = $di->get('router');
         $post = $router->request()->paramsPost();
 
-        TagsRepository::add(
-            $post['tagName'],
-            $post['resourceName'],
-            $post['resourceId']
-        );
-        return $router->response()->json(array('success' => true));
+        if (!is_array($post['resourceId'])) {
+            $listResources = array($post['resourceId']);
+        } else {
+            $listResources = $post['resourceId'];
+        }
+        foreach ($listResources as $resourceId) {
+            $tagId = TagsRepository::add(
+                $post['tagName'],
+                $post['resourceName'],
+                $resourceId
+            );
+        }
+        return $router->response()->json(array('success' => true, 'tagId' => $tagId));
     }
 
     /**

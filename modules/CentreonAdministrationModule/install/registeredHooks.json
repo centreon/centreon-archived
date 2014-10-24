@@ -3,5 +3,10 @@
     "name": "displayTagList",
     "moduleHook": "displayTagList",
     "moduleHookDescription": "Display list of tags"
+  },
+  {
+    "name": "displayAppendAddTo",
+    "moduleHook": "displayAddToTag",
+    "moduleHookDescription": "Add option add to a tag when multi select"
   }
 ]

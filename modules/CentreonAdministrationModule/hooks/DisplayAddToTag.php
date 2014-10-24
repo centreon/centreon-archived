@@ -31,37 +31,37 @@
  *
  * For more information : contact@centreon.com
  *
+ */
+
+namespace CentreonAdministration\Hooks;
+
+use \CentreonAdministration\Repository\TagsRepository;
+
+/**
+ * Hook for button add to tag
  *
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage CentreonAdministrition
  */
-
-/*
- * Smarty plugin
- * -------------------------------------------------------------
- * File:     function.datatable.php
- * Type:     function
- * Name:     datatable
- * Purpose:  returns a datatable
- * -------------------------------------------------------------
- */
-function smarty_function_datatable($params, $smarty)
+class DisplayAddToTag
 {
-    $smarty->assign('object', $params['object']);
-    
-    if (isset($params['objectAddUrl'])) {
-        $smarty->assign('objectAddUrl', $params['objectAddUrl']);
+    /**
+     * Execute the hook
+     *
+     * @param array The parameters for the hook
+     */
+    public static function execute($params)
+    {
+        $returnParams = array('display' => false, 'resourceType' => null);
+        if (isset($params['objectType']) && in_array($params['objectType'], TagsRepository::getListResource())) {
+            $returnParams['display'] = true;
+            $returnParams['resourceType'] =  $params['objectType'];
+        } 
+        return array(
+            'template' => 'displayAddToTag.tpl',
+            'variables' => $returnParams
+        );
     }
-    
-    $datatableParameters = array();
-    $datatableParameters['header'] = $params['datatableObject']::getHeader();
-    $datatableParameters['configuration'] = $params['datatableObject']::getConfiguration();
-
-    $datatableParameters = array_merge($datatableParameters, $params['datatableObject']::getExtraParams());
-    
-    $smarty->assign('datatableParameters', $datatableParameters);
-    
-    if ($params['configuration']) {
-        return $smarty->fetch('tools/datatable.tpl');
-    }
-    
-    return $smarty->fetch('tools/datatable-table.tpl');
 }

@@ -60,12 +60,14 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function displayHostsAction()
     {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
         /* Load css */
         $this->tpl->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('dataTables.fixedHeader.min.css')
-            ->addCss('dataTables.bootstrap.css');
+            ->addCss('dataTables.bootstrap.css')
+            ->addCss('centreon.tag.css', 'centreon-administration');
 
         /* Load js */
         $this->tpl->addJs('jquery.min.js')
@@ -79,6 +81,9 @@ class HostController extends \Centreon\Internal\Controller
             ->addJs('jquery.select2/select2.min.js')
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
+            ->addJs('hogan-3.0.0.min.js')
+            ->addJs('centreon.search.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js');
 
@@ -88,6 +93,15 @@ class HostController extends \Centreon\Internal\Controller
         $this->tpl->assign('objectName', 'Host');
         $this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/realtime/host/list');
+
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
+
         $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
     }
 

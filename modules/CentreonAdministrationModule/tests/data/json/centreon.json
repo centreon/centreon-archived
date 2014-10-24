@@ -6,4 +6,7 @@
     "cfg_organizations_modules_relations",
     "cfg_domains",
     "cfg_searches"
+    "cfg_tags",
+    "cfg_hosts",
+    "cfg_tags_hosts"
 ]

@@ -45,6 +45,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  */
 class ServiceGroupDatatable extends \Centreon\Internal\Datatable
 {
+    protected static $objectId = 'sg_id';
     /**
      *
      * @var array 
@@ -140,6 +141,17 @@ class ServiceGroupDatatable extends \Centreon\Internal\Datatable
                 'Trash' => '2'
             )
         ),
+    );
+
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'servicegroup'
+        )
+    );
+
+    protected static $hook= 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'servicegroup'
     );
     
     /**

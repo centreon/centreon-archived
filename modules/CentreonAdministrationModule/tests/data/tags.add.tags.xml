@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_tags">
+    <column>tag_id</column>
+    <column>user_id</column>
+    <column>tagname</column>
+    <row>
+      <value>3</value>
+      <value>1</value>
+      <value>newTag</value>
+    </row>
+    <row>
+      <value>1</value>
+      <value>1</value>
+      <value>Tag1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>1</value>
+      <value>Tag2</value>
+    </row>
+  </table>
+</dataset>

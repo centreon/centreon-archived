@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_tags_hosts">
+    <column>tag_id</column>
+    <column>resource_id</column>
+  </table>
+</dataset>

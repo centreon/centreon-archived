@@ -63,6 +63,7 @@ class ServiceController extends \Centreon\Internal\Controller
     public function displayServicesAction()
     {
         $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
 
         /* Load css */
         $tpl->addCss('dataTables.tableTools.min.css')
@@ -72,7 +73,8 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addCss('dataTables.bootstrap.css')
             ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')
-            ->addCss('daterangepicker-bs3.css');
+            ->addCss('daterangepicker-bs3.css')
+            ->addCss('centreon.tag.css', 'centreon-administration');
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
@@ -89,10 +91,12 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-langs.min.js')
+            ->addJs('hogan-3.0.0.min.js')
             ->addJs('daterangepicker.js')
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js')
-            ->addJs('centreon.overlay.js');
+            ->addJs('centreon.overlay.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
@@ -112,6 +116,13 @@ class ServiceController extends \Centreon\Internal\Controller
         );
         $tpl->assign('actions', $actions);
 
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $tpl->append('jsUrl', $urls, true);
         /* Add javascript and css file for hooks */
         Hook::addStaticFile('displaySvcTooltipGraph');
 

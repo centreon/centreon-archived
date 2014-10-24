@@ -90,6 +90,7 @@ class TagsRepository
         $stmt->bindParam(':tag_id', $tagId, \PDO::PARAM_INT);
         $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
         $stmt->execute();
+        return $tagId;
     }
 
     /**
@@ -169,6 +170,16 @@ class TagsRepository
             throw new Exception("The tag is not found for user");
         }
         return $tag[0]['tag_id'];
+    }
+
+    /**
+     * Return the list of resource who can have 
+     *
+     * @return array
+     */
+    public static function getListResource()
+    {
+        return static::$resourceType;
     }
 
     /**
