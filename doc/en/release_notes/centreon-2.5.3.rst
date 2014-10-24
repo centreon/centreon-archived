@@ -7,8 +7,10 @@ Centreon 2.5.3
 Warning
 *******
 
-This version include a couple of security fixes. Please proceed to the update of your platform if your centreon is not in version 2.5.3 at least. 
+This version include a couple of security fixes. Please proceed to the update of your platform if your centreon is not in version 2.5.3 at least.
+If you're using Debian or Suse before doing the update, you need to install php5-sqlite package.
 
+The update can take some times due to the update to UTF-8 format (#5609)
 
 ******
 Notice
