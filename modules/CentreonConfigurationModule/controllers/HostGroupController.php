@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Controllers;
 
+use Centreon\Internal\Di;
+
 class HostGroupController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Hostgroup';
