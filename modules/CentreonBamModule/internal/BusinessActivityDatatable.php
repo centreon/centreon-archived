@@ -136,7 +136,7 @@ class BusinessActivityDatatable extends \Centreon\Internal\Datatable
         )
     );
 
-    protected $hook = 'displayTagList';
+    protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'ba'
     );
