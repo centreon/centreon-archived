@@ -748,7 +748,9 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
-(48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL);
+(48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL),
+(49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
+(50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `group_parent_id`) VALUES (1, 'filters', NULL);
 
@@ -960,7 +962,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (3, 48, 0, 16),
 (10, 48, 0, 16),
 (12, 48, 0, 16),
-(15, 48, 0, 16);
+(15, 48, 0, 16)
+(16, 49, 0, 18),
+(16, 50, 0, 19);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
