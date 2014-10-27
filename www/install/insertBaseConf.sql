@@ -962,7 +962,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (3, 48, 0, 16),
 (10, 48, 0, 16),
 (12, 48, 0, 16),
-(15, 48, 0, 16)
+(15, 48, 0, 16),
 (16, 49, 0, 18),
 (16, 50, 0, 19);
 
