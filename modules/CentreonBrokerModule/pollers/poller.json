@@ -31,7 +31,7 @@
                                         },
                                         "output" : [
                                             {
-                                                "type" :"IPV4",
+                                                "type" :"tcp",
                                                 "name" : "central-output",
                                                 "host": "%broker_central_ip%",
                                                 "port" : "5668"
@@ -39,7 +39,8 @@
                                             {
                                                 "type" :"file",
                                                 "name" : "failover-central-output",
-                                                "path" : "%global_broker_data_directory%/central-output.failover"
+                                                "path" : "%global_broker_data_directory%/central-output.failover",
+                                                "failover": "central-output"
                                             }
                                         ],
                                         "logger": [
@@ -57,7 +58,7 @@
                                         },
                                         "output" : [
                                             {
-                                                "type":"IPV4",
+                                                "type":"tcp",
                                                 "name": "central-output",
                                                 "port" : "5668",
                                                 "one_peer_retention_mode": "yes"
@@ -65,7 +66,8 @@
                                             {
                                                 "type" :"file",
                                                 "name" : "failover-central-output",
-                                                "path" : "%global_broker_data_directory%/central-output.failover"
+                                                "path" : "%global_broker_data_directory%/central-output.failover",
+                                                "failover": "central-output"
                                             }
                                         ],
                                         "logger": [

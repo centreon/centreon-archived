@@ -35,17 +35,20 @@
 
 namespace CentreonBroker\Listeners\CentreonConfiguration;
 
-use \CentreonConfiguration\Events\GenerateBroker as GenerateBrokerEvent;
-use \CentreonBroker\Repository\ConfigCorrelationRepository;
+use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
+use CentreonBroker\Repository\ConfigCorrelationRepository;
+use CentreonBroker\Repository\ConfigGenerateRepository;
 
-class GenerateBroker
+class GenerateEngine
 {
     /**
      *
-     * @param \CentreonConfiguration\Events\GenerateBroker $event
+     * @param \CentreonConfiguration\Events\GenerateEngine $event
      */
-    public static function execute(GenerateBrokerEvent $event)
+    public static function execute(GenerateEngineEvent $event)
     {
+        $configBroker = new ConfigGenerateRepository();
+        $configBroker->generate($event->getPollerId());
         ConfigCorrelationRepository::generate($event->getPollerId());        
     }
 }

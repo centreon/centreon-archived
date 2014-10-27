@@ -39,6 +39,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Poller;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
+use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -326,7 +327,13 @@ class ConfigGenerateMainRepository
         /* Look for template file */
         $config = Di::getDefault()->get('config');
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
-        $jsonFile = "{$centreonPath}/modules/CentreonEngineModule/pollers/{$pollerParam['tmpl_name']}.json";
+
+        /* Get template engine file */
+        $listTpl = PollerTemplateManager::buildTemplatesList();
+        if (!isset($listTpl[$pollerParam['tmpl_name']])) {
+            throw new Exception('The template is not found on list of templates');
+        }
+        $jsonFile = $listTpl[$pollerParam['tmpl_name']]->getEnginePath();
         if (!file_exists($jsonFile)) {
             throw new Exception('Engine template file not found: ' . $pollerParam['tmpl_name'] . '.json');
         }
