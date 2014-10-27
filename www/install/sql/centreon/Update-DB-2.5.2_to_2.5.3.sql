@@ -1,4 +1,4 @@
-UPDATE cb_field SET external = 'T=options:C=value:CK=key:K=index_data' WHERE cb_field_id = 43;
+UPDATE cb_field SET external = 'T=options:C=value:CK=key:K=index_data', fieldtype = 'text' WHERE cb_field_id = 43;
 INSERT cb_field (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
 (49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
 (50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL);
