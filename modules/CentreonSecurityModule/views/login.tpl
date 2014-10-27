@@ -9,7 +9,8 @@
     {/foreach}
 </head>
 <body>
-<div class="container">
+<div class="login-wrap">
+  <div class="container">
     <div class="row">
         <div class="col-sm-4 col-sm-offset-4 login-box">
             <div class="login-title">{t}Centreon{/t}</div>
@@ -43,8 +44,10 @@
                 </div>
                 </form>
             </div>
+            <div class='login-footer'>&copy; Centreon 2014 | <a href='http://www.centreon.com/' target='_blank'>Centreon 3.0</a></div>
         </div>
     </div>
+  </div>
 </div>
 {foreach from=$jsBottomFileList item='jsFile'}
 {$jsFile|js}
@@ -81,6 +84,8 @@ $(function() {
     });
 
     $("#login").focus();
+
+    $(".login-wrap").height($(window).height());
 });
 </script>
 </body>
