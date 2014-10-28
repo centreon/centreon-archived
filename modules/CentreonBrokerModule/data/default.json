@@ -1,0 +1,141 @@
+{
+  "general": {
+    "module_directory": "%global_broker_modules_directory%",
+    "instance": "%poller_id%",
+    "instance_name": "%name%",
+    "event_queue_max_size": 50000,
+    "flush_logs": "no",
+    "log_thread_id": "no",
+    "log_timestamp": "yes"
+  },
+  "logger": {
+    "config": "no",
+    "debug": "no",
+    "error": "yes",
+    "info": "no",
+    "level": 2
+  },
+  "output": {
+    "buffering_timeout": 10,
+    "read_timeout": 10,
+    "retry_interval": 60,
+    "type": {
+      "file": {
+        "max_size": 200000000,
+        "protocol": "bbdo"
+      },
+      "local_client": {
+        "one_peer_retention_mode": "no",
+        "protocol": "bbdo",
+        "negociation": "yes"
+      },
+      "local_server": {
+        "one_peer_retention_mode": "no",
+        "protocol": "bbdo",
+        "negociation": "yes"
+      },
+      "rrd": {
+        "metrics_path": "%global_rrd_metrics%",
+        "status_path": "%global_rrd_status%",
+        "path": "%global_rrd_path%",
+        "port": "%global_rrd_port%",
+        "write_metrics": "yes",
+        "write_status": "yes"
+      },
+      "storage": {
+        "db_type": "%global_db_type%",
+        "db_host": "%global_db_host%",
+        "db_port": "%global_db_port%",
+        "db_name": "%global_db_name%",
+        "db_user": "%global_db_user%",
+        "db_password": "%global_db_password%",
+        "queries_per_transaction": 1000,
+        "read_timeout": 2,
+        "check_replication": 0,
+        "with_state_events": "yes",
+        "store_in_data_bin": "yes",
+        "insert_in_index_data": "yes"
+      },
+      "sql": {
+        "db_type": "%global_db_type%",
+        "db_host": "%global_db_host%",
+        "db_port": "%global_db_port%",
+        "db_name": "%global_db_name%",
+        "db_user": "%global_db_user%",
+        "db_password": "%global_db_password%",
+        "queries_per_transaction": 1000,
+        "read_timeout": 2,
+        "check_replication": 0,
+        "interval": "%global_interval%",
+        "length": 15552000
+      },
+      "tcp": {
+        "one_peer_retention_mode": "no",
+        "protocol": "bbdo",
+        "negociation": "yes"
+      }
+    }
+  },
+  "input": {
+    "buffering_timeout": 10,
+    "read_timeout": 10,
+    "retry_interval": 60,
+    "type": {
+      "file": {
+        "max_size": 200000000,
+        "protocol": "bbdo"
+      },
+      "local_client": {
+        "one_peer_retention_mode": "no",
+        "protocol": "bbdo",
+        "negociation": "yes"
+      },
+      "local_server": {
+        "one_peer_retention_mode": "no",
+        "protocol": "bbdo",
+        "negociation": "yes"
+      },
+      "rrd": {
+        "metrics_path": "%global_rrd_metrics%",
+        "status_path": "%global_rrd_status%",
+        "path": "%global_rrd_path%",
+        "port": "%global_rrd_port%",
+        "write_metrics": "yes",
+        "write_status": "yes"
+      },
+      "storage": {
+        "db_type": "%global_db_type%",
+        "db_host": "%global_db_host%",
+        "db_port": "%global_db_port%",
+        "db_name": "%global_db_name%",
+        "db_user": "%global_db_user%",
+        "db_password": "%global_db_password%",
+        "queries_per_transaction": 1000,
+        "read_timeout": 2,
+        "check_replication": 0,
+        "with_state_events": "yes"
+      },
+      "sql": {
+        "db_type": "%global_db_type%",
+        "db_host": "%global_db_host%",
+        "db_port": "%global_db_port%",
+        "db_name": "%global_db_name%",
+        "db_user": "%global_db_user%",
+        "db_password": "%global_db_password%",
+        "queries_per_transaction": 1000,
+        "read_timeout": 2,
+        "check_replication": 0,
+        "interval": "%global_interval%",
+        "length": 15552000
+      },
+      "tcp": {
+        "one_peer_retention_mode": "no",
+        "protocol": "bbdo",
+        "negociation": "yes"
+      }
+    }
+  },
+  "statistics": {
+    "fifo": "%global_broker_data_directory%/stats.fifo"
+  }
+}

@@ -33,65 +33,21 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
-use CentreonConfiguration\Events\GenerateEngine;
-use CentreonConfiguration\Events\GenerateBroker;
+namespace CentreonBroker\Listeners\CentreonConfiguration;
 
-use \Centreon\Internal\Exception;
+use CentreonBroker\Repository\BrokerRepository;
+use CentreonConfiguration\Events\BrokerPollerConf as BrokerPollerConfEvent;
 
-/**
- * Factory for ConfigGenerate Engine
- *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
- */
-
-class ConfigGenerateRepository extends ConfigRepositoryAbstract
+class BrokerPollerConf
 {
     /**
-     * Method tests
-     * 
-     * @param int $pollerId
-     * @return type
-     */
-    public function __construct($pollerId)
-    {
-        parent::__construct($pollerId);
-    }
-
-    /**
-     * Generate all configuration files
      *
+     * @param \CentreonConfiguration\Events\BrokerFormSave $event
      */
-    public function generate()
+    public static function execute(BrokerPollerConfEvent $event)
     {
-        try {
-            $this->checkPollerInformations();
-            $event = $this->di->get('events');
-
-            /* Engine conf generation */
-            $engineEvent = new GenerateEngine($this->pollerId);
-            $event->emit('centreon-configuration.generate.engine', array($engineEvent));
-            $this->output = array_merge($this->output, $engineEvent->getOutput());
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
-    }
-
-    /**
-     * 
-     * @return array
-     */
-    public function checkPollerInformations()
-    {
-        $dbconn = $this->di->get('db_centreon');
-        $query = "SELECT * FROM cfg_engine_servers WHERE id = ?";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute(array($this->pollerId));
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (!isset($row)) {
-            $this->output[] = "Poller {$this->pollerId} is not defined or not enabled.";
-        }
+        $event->addValues(
+            BrokerRepository::loadValues($event->getPollerId())
+        );
     }
 }

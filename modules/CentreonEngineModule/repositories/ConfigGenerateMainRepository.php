@@ -39,6 +39,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Poller;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
+use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -231,35 +232,35 @@ class ConfigGenerateMainRepository
         }
 
         /* Check that poller directory exists */
-        if (!file_exists($path)) {
-            if (!is_dir($path)) {
-                mkdir($path);
+        if (!file_exists($path.$poller_id)) {
+            if (!is_dir($path.$poller_id)) {
+                mkdir($path.$poller_id);
             }
         }
 
         /* Check that Object directory exists */
-        if (!file_exists($path."/objects/")) {
-            if (!is_dir($path."/objects/")) {
-                mkdir($path."/objects/");
+        if (!file_exists($path.$poller_id."/objects/")) {
+            if (!is_dir($path.$poller_id."/objects/")) {
+                mkdir($path.$poller_id."/objects/");
             }
         }
 
         /* Check that Ressources directory exists */
-        if (!file_exists($path."/resources/")) {
-            if (!is_dir($path."/resources/")) {
-                mkdir($path."/resources/");
+        if (!file_exists($path.$poller_id."/resources/")) {
+            if (!is_dir($path.$poller_id."/resources/")) {
+                mkdir($path.$poller_id."/resources/");
             }
         }
 
         /* Add fixed path files */
-        $resList[] = $path."/resources.cfg";
-        $pathList[] = $path."/misc-command.cfg";
-        $pathList[] = $path."/check-command.cfg";
-        $pathList[] = $path."/timeperiods.cfg";
-        $pathList[] = $path."/connectors.cfg";
+        $resList[] = $path."$poller_id/resources.cfg";
+        $pathList[] = $path."$poller_id/misc-command.cfg";
+        $pathList[] = $path."$poller_id/check-command.cfg";
+        $pathList[] = $path."$poller_id/timeperiods.cfg";
+        $pathList[] = $path."$poller_id/connectors.cfg";
         
-        $dirList[] = $path."/objects/";
-        $dirList[] = $path."/resources/";
+        $dirList[] = $path."$poller_id/objects/";
+        $dirList[] = $path."$poller_id/resources/";
 
         return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList);
     }
@@ -326,8 +327,13 @@ class ConfigGenerateMainRepository
         /* Look for template file */
         $config = Di::getDefault()->get('config');
         $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
-        $pollerParam['tmpl_name'] = strtolower($pollerParam['tmpl_name']);
-        $jsonFile = "{$centreonPath}/modules/CentreonEngineModule/pollers/{$pollerParam['tmpl_name']}.json";
+
+        /* Get template engine file */
+        $listTpl = PollerTemplateManager::buildTemplatesList();
+        if (!isset($listTpl[$pollerParam['tmpl_name']])) {
+            throw new Exception('The template is not found on list of templates');
+        }
+        $jsonFile = $listTpl[$pollerParam['tmpl_name']]->getEnginePath();
         if (!file_exists($jsonFile)) {
             throw new Exception('Engine template file not found: ' . $pollerParam['tmpl_name'] . '.json');
         }

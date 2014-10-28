@@ -38,7 +38,7 @@
                     },
                     "input": [
                       {
-                        "type": "IPV4",
+                        "type": "tcp",
                         "name": "central-input",
                         "port": "5668"
                       }
@@ -46,13 +46,7 @@
                     "output": [
                       {
                         "type": "sql",
-                        "name": "central-sql",
-                        "db_type": "%global_db_type%",
-                        "db_host": "%global_db_host%",
-                        "db_port": "%global_db_port%",
-                        "db_name": "%global_db_name%",
-                        "db_user": "%global_db_user%",
-                        "db_password": "%global_db_password%"
+                        "name": "central-sql"
                       },
                       {
                         "type": "file",
@@ -62,13 +56,7 @@
                       },
                       {
                         "type": "storage",
-                        "name": "central-storage",
-                        "db_type": "%global_db_type%",
-                        "db_host": "%global_db_host%",
-                        "db_port": "%global_db_port%",
-                        "db_name": "%global_db_name%",
-                        "db_user": "%global_db_user%",
-                        "db_password": "%global_db_password%"
+                        "name": "central-storage"
                       },
                       {
                         "type": "file",
@@ -92,6 +80,12 @@
                       {
                         "type": "file",
                         "name": "%global_broker_logs_directory%/cb_module.log"
+                      }
+                    ],
+                    "correlation": [
+                      {
+                        "name": "correlation",
+                        "filepath": "%global_broker_etc_directory%/correlation.xml"
                       }
                     ]
                   },

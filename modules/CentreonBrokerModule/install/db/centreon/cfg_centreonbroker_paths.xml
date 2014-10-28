@@ -6,6 +6,7 @@
     <column name="directory_modules" phpName="DirectoryModules" type="VARCHAR" size="255" required="true"/>
     <column name="directory_data" phpName="DirectoryData" type="VARCHAR" size="255" required="true"/>
     <column name="directory_logs" phpName="DirectoryLogs" type="VARCHAR" size="255" required="true"/>
+    <column name="init_script" phpName="InitScript" type="VARCHAR" size="255" required="true"/>
     <foreign-key foreignTable="cfg_pollers" onDelete="cascade">
       <reference local="poller_id" foreign="poller_id" />
     </foreign-key>

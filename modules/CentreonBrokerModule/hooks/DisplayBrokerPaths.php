@@ -91,6 +91,12 @@ class DisplayBrokerPaths
             'value' => ''
         );
 
+        $paths['broker_init_script'] = array(
+            'label' => _('Init script'),
+            'help' => _('The init script for Broker'),
+            'value' => ''
+        );
+
         return $paths;
     }
 

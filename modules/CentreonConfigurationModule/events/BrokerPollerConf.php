@@ -33,65 +33,61 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
-use CentreonConfiguration\Events\GenerateEngine;
-use CentreonConfiguration\Events\GenerateBroker;
-
-use \Centreon\Internal\Exception;
+namespace CentreonConfiguration\Events;
 
 /**
- * Factory for ConfigGenerate Engine
+ * Parameters for events centreon-configuration.broker.poller.conf
  *
- * @author Julien Mathis <jmathis@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
  * @version 3.0.0
+ * @package Centreon
+ * @subpackage CentreonConfiguration
  */
-
-class ConfigGenerateRepository extends ConfigRepositoryAbstract
+class BrokerPollerConf
 {
     /**
-     * Method tests
-     * 
-     * @param int $pollerId
-     * @return type
+     * Refers to the poller id
+     * @var int
      */
-    public function __construct($pollerId)
-    {
-        parent::__construct($pollerId);
-    }
+    private $pollerId;
 
     /**
-     * Generate all configuration files
+     * The list of values saved in databases
+     * @var array
+     */
+    private $values;
+
+    /**
+     * Constructor
      *
+     * @param int $pollerId The poller id
+     * @param array $values The list of values
      */
-    public function generate()
+    public function __construct($pollerId, &$values)
     {
-        try {
-            $this->checkPollerInformations();
-            $event = $this->di->get('events');
-
-            /* Engine conf generation */
-            $engineEvent = new GenerateEngine($this->pollerId);
-            $event->emit('centreon-configuration.generate.engine', array($engineEvent));
-            $this->output = array_merge($this->output, $engineEvent->getOutput());
-        } catch (Exception $e) {
-            $this->output[] = $e->getMessage();
-            $this->status = false;
-        }
+        $this->pollerId = $pollerId;
+        $this->values = &$values;
     }
 
     /**
-     * 
-     * @return array
+     * Return the poller id
+     *
+     * @return int
      */
-    public function checkPollerInformations()
+    public function getPollerId()
     {
-        $dbconn = $this->di->get('db_centreon');
-        $query = "SELECT * FROM cfg_engine_servers WHERE id = ?";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute(array($this->pollerId));
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (!isset($row)) {
-            $this->output[] = "Poller {$this->pollerId} is not defined or not enabled.";
+        return $this->pollerId;
+    }
+
+    /**
+     * Append values to configuration
+     *
+     * @param array $values The values to append
+     */
+    public function addValues($values)
+    {
+        foreach ($values as $key => $value) {
+            $this->values[$key] = $value;
         }
     }
 }

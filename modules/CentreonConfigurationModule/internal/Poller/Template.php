@@ -36,9 +36,11 @@
 
 namespace CentreonConfiguration\Internal\Poller;
 
-use \CentreonConfiguration\Internal\Poller\Template\Engine;
-use \CentreonConfiguration\Internal\Poller\Template\Broker;
+use CentreonConfiguration\Internal\Poller\Template\Engine;
+use CentreonConfiguration\Internal\Poller\Template\Broker;
 use Centreon\Internal\Form;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Events\BrokerPollerConf as BrokerPollerConfEvent;
 
 /**
  * Description of Template
@@ -139,19 +141,29 @@ class Template
     }
     
     /**
+     * Generate form for a template
      * 
+     * @param int $pollerId The poller id for load the value in edition
      * @return array
      */
-    public function genForm()
+    public function genForm($pollerId = null)
     {
-       return $this->loadSteps();
+        $values = array();
+        if (!is_null($pollerId)) {
+            $events = Di::getDefault()->get('events');
+            $eventParams = new BrokerPollerConfEvent($pollerId, $values);
+            $events->emit('centreon-configuration.broker.poller.conf', array($eventParams));
+        }
+        return $this->loadSteps($values);
     }
     
     /**
+     * Load steps for a template
      * 
+     * @param array $pollerValues The default values
      * @return array
      */
-    private function loadSteps()
+    private function loadSteps($values)
     {
         $steps = array();
         
@@ -174,7 +186,7 @@ class Template
         foreach ($steps as $stepName => $step) {
             $fName = array();
             $fields = "<div>";
-            $fComponents = $this->buildFormComponents($step, $fName);
+            $fComponents = $this->buildFormComponents($step, $fName, $values);
             
             foreach($fName as $field) {
                 $fields .= $fComponents[$field]['html'];
@@ -193,22 +205,32 @@ class Template
      * 
      * @param array $step
      * @param array $fName
+     * @param array $value List of default values
      * @return array
      */
-    private function buildFormComponents($step, &$fName)
+    private function buildFormComponents($step, &$fName, $values)
     {
         $myForm = new Form('pollerTemplate');
         foreach ($step as $field) {
             $fName[] = $field['name'];
+            $attributes = array();
+            if (isset($field['attributes'])) {
+                $attributes = json_encode($field['attributes']);
+            }
+            $mandatory = 1;
+            if (isset($field['require']) && false === $field['require']) {
+                $mandatory = 0;
+            }
             $formField = array(
                 'name' => $field['name'],
                 'label' => $field['label'],
                 'type' => $field['type'],
-                'mandatory' => 1,
-                'attributes' => json_encode($field['attributes'])
+                'mandatory' => $mandatory,
+                'attributes' => $attributes
             );
             $myForm->addStatic($formField);
         }
+        $myForm->setDefaults($values);
         $formComponents = $myForm->toSmarty();
         unset($myForm);
         

@@ -76,13 +76,14 @@ class BrokerRepository
                 directory_config = :broker_etc_directory,
                 directory_modules = :broker_module_directory,
                 directory_logs = :broker_logs_directory,
-                directory_data = :broker_data_directory
+                directory_data = :broker_data_directory,
+                init_script = :init_script
                 WHERE poller_id = :poller_id";
         } else {
             /* Insert */
             $query = "INSERT INTO cfg_centreonbroker_paths
-                (poller_id, directory_config, directory_modules, directory_logs, directory_data) VALUES
-                (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory)";
+                (poller_id, directory_config, directory_modules, directory_logs, directory_data, init_script) VALUES
+                (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory, :init_script)";
         }
         $stmt = $db->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId);
@@ -90,6 +91,7 @@ class BrokerRepository
         $stmt->bindParam(':broker_module_directory', $arr['broker_module_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_logs_directory', $arr['broker_logs_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_data_directory', $arr['broker_data_directory'], \PDO::PARAM_STR);
+        $stmt->bindParam(':init_script', $arr['broker_init_script'], \PDO::PARAM_STR);
         $stmt->execute();
 
         /* Save extract params */
@@ -111,7 +113,7 @@ class BrokerRepository
                     if ($type == 'normal') {
                         /* module */
                         foreach ($config as $module) {
-                            $configId = static::insertConfig($pollerId, $module['general']['name']);
+                            static::insertConfig($pollerId, $module['general']['name']);
                             foreach ($listType as $type) {
                                 if (isset($module[$type])) {
                                     $groupNb = 1;
@@ -119,9 +121,8 @@ class BrokerRepository
                                         /* Key */
                                         foreach ($typeInfo as $key => $value) {
                                             if (preg_match("/%([\w_]+)%/", $value, $matches)) {
-                                                if (isset($params[$matches[1]])) {
-                                                    $parsedValue = preg_replace("/%([\w_]+)%/", $params[$matches[1]], $value);
-                                                    static::insertUserInfo($configId, $type, $groupNb, $key, $parsedValue);
+                                                if (isset($params[$matches[1]]) && trim($params[$matches[1]]) !== "") {
+                                                    static::insertPollerInfo($pollerId, $matches[1], $params[$matches[1]]);
                                                 }
                                             }
                                         }
@@ -156,7 +157,7 @@ class BrokerRepository
         $row = $stmt->fetch();
         $stmt->closeCursor();
         if (false !== $row) {
-            return $row['config_id'];
+            return;
         }
         $queryInsert = "INSERT INTO cfg_centreonbroker
             (poller_id, config_name) VALUES
@@ -165,11 +166,10 @@ class BrokerRepository
         $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
         $stmt->bindParam(':config_name', $configName, \PDO::PARAM_STR);
         $stmt->execute();
-        return static::insertConfig($pollerId, $configName);
     }
 
     /**
-     * Add or update a custom information for Centreon Broker
+     * Add or update a custom information for Centreon Broker set by a user
      *
      * @param int $pollerId The poller id
      * @param string $group The group name
@@ -196,11 +196,11 @@ class BrokerRepository
         $row = $stmt->fetch();
         if ($row['nb'] > 0) {
             $query = "UPDATE cfg_centreonbroker_info SET
-                config_key = :config_key,
-                config_group = :config_group,
-                config_group_id = :config_group_id,
                 config_value = :config_value,
-                WHERE config_id = :config_id";
+                WHERE config_id = :config_id
+                    AND config_key = :config_key
+                    AND config_group = :config_group,
+                    AND config_group_id = :config_group_id";
         } else {
             $query = "INSERT INTO cfg_centreonbroker_info
                 (config_id, config_key, config_value, config_group, config_group_id) VALUES
@@ -216,9 +216,47 @@ class BrokerRepository
     }
 
     /**
-     * Get params from poller id
+     * Insert a custom information for a poller
+     *
+     * @param int $pollerId The poller id
+     * @param string $key The name of configuration
+     * @param string $value The value of configuration
+     */
+    public static function insertPollerInfo($pollerId, $key, $value)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        /* Test if the information is in database */
+        $query = "SELECT COUNT(*) as nb
+            FROM cfg_centreonbroker_pollervalues
+            WHERE poller_id = :poller_id
+                AND name = :name";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
+        $stmt->bindParam(':name', $key, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if ($row['nb'] > 0) {
+            $query = "UPDATE cfg_centreonbroker_pollervalues SET
+                value = :value
+                WHERE poller_id = :poller_id
+                    AND name = :name";
+        } else {
+            $query = "INSERT INTO cfg_centreonbroker_pollervalues
+                (poller_id, name, value) VALUES
+                (:poller_id, :name, :value)";
+        }
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
+        $stmt->bindParam(':name', $key, \PDO::PARAM_INT);
+        $stmt->bindParam(':value', $value, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Get the paths for a Centreon Broker poller
      * 
      * @param int $pollerId
+     * @return array
      */
     public static function getPathsFromPollerId($pollerId)
     {
@@ -233,5 +271,27 @@ class BrokerRepository
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return $row;
+    }
+
+    /**
+     * Load custom configuration values for Centreon Broker
+     *
+     * @param int $pollerId The poller id
+     * @return array
+     */
+    public static function loadValues($pollerId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $query = "SELECT name, value
+            FROM cfg_centreonbroker_pollervalues
+            WHERE poller_id = :poller_id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $values = array();
+        while ($row = $stmt->fetch()) {
+            $values[$row['name']] = $row['value'];
+        }
+        return $values;
     }
 }
