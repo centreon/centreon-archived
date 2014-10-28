@@ -289,6 +289,7 @@ class ConfigGenerateRepository
      */
     private function loadMacros($pollerId)
     {
+        $config = Di::getDefault()->get('config');
         /* Load contant values */
         $this->baseConfig['broker_central_ip'] = getHostByName(getHostName());
         /* Load user value */
@@ -322,6 +323,21 @@ class ConfigGenerateRepository
         $paths = array_combine($pathsKeys, $pathsValue);
         $this->baseConfig = array_merge($this->baseConfig, $paths);
         $this->baseConfig['poller_id'] = $this->pollerId;
+        /* Information for database */
+        $dbInformation = \Centreon\Internal\Db::parseDsn(
+            $config->get('db_centreon', 'dsn'),
+            $config->get('db_centreon', 'username'),
+            $config->get('db_centreon', 'password')
+        );
+        $dbKeys = array_map(
+            function($name) {
+                return 'global_' . $name;
+            },
+            array_keys($dbInformation)
+        );
+        $dbInformation = array_combine($dbKeys, array_values($dbInformation));
+        $this->baseConfig = array_merge($dbInformation, $this->baseConfig);
+            
 
         /* Add % in begin and end of keys */
         $keys = array_keys($this->baseConfig);
@@ -335,6 +351,13 @@ class ConfigGenerateRepository
         $this->baseConfig = array_combine($keys, $values);
     }
 
+    /**
+     * Prepare default values by module and group
+     *
+     * @param string $module The module
+     * @param string $group The information of current group
+     * @return array
+     */
     private function getDefaults($module, $group)
     {
         if (isset($this->parsedDefault[$module])) {

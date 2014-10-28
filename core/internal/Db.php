@@ -125,4 +125,43 @@ class Db extends \PDO
         $row = $stmt->fetch();
         return $row['last_id'];
     }
+
+    /**
+     * Parse a DSN and return a array
+     *
+     * @param string $dsn The dsn
+     * @param string $user The username
+     * @param string $pass The password
+     * @return array
+     */
+    public static function parseDsn($dsn, $user = '', $pass = '')
+    {
+        $convertKeys = array(
+            'host' => 'db_host',
+            'port' => 'db_port',
+            'dbname' => 'db_name'
+        );
+        $defaultPorts = array(
+            'mysql' => 3306,
+            'pgsql' => 5432
+        );
+        $values = array(
+            'db_user' => $user,
+            'db_password' => $pass
+        );
+        list($type, $uri) = explode(':', $dsn, 2);
+        if (is_null($uri)) {
+            throw new Exception("Bad DSN format");
+        }
+        $values['db_type'] = $type;
+        $information = split(';', $uri);
+        foreach ($information as $info) {
+            list($infoType, $infoValue) = explode('=', $info, 2);
+            $values[$convertKeys[$infoType]] = $infoValue;
+        }
+        if (isset($values['db_host']) && false === isset($values['db_port'])) {
+            $values['db_port'] = $defaultPorts[$type];
+        }
+        return $values;
+    }
 }
