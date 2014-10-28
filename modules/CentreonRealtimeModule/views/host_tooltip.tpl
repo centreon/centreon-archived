@@ -13,3 +13,4 @@
 	{/foreach}
 	</table>
 {/if}
+{hook name="displayHostTooltipDetail" container="" params=$params}

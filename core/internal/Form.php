@@ -245,6 +245,12 @@ class Form
                     if (isset($in['html'])) {
                         $element['input'] = $in['html'];
                     }
+                    if (isset($in['css'])) {
+                        $element['css'] = $in['css'];
+                    }
+                    if (isset($in['extrahtml'])) {
+                        $element['extrahtml'] = $in['extrahtml'];
+                    }
                     $element['label'] = $this->renderHtmlLabel($element);
                     $element['html'] = $this->renderFinalHtml($element);
                     if (isset($in['js'])) {
@@ -273,9 +279,16 @@ class Form
         $helpButton = '';
         $classInput = 'col-sm-9';
         $classAdvanced = '';
+        $extraHtml = '';
         if ($inputElement['type'] !== 'submit') {
             $helpButton = $this->renderHelp($inputElement);
             $classInput = 'col-sm-9';
+        }
+        if (isset($inputElement['css'])) {
+            $classInput = $inputElement['css'];
+        }
+        if (isset($inputElement['extrahtml'])) {
+            $extraHtml = $inputElement['extrahtml'];
         }
         
         if (isset($inputElement['label_advanced']) && $inputElement['label_advanced'] == '1') {
@@ -284,7 +297,7 @@ class Form
         
         return '<div class="form-group ' . $classAdvanced . '">'.
                 '<div class="col-sm-2" style="text-align:right">'.$inputElement['label'].'</div>'.
-                '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'.
+                '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'. $extraHtml .
                 $helpButton.
                 '</div>';
     }
@@ -676,7 +689,6 @@ class Form
      */
     public function add($field, $extraParams = array())
     {
-        var_dump($field);
         switch ($field['type']) {
             default:
                 $this->addStatic($field, $extraParams);

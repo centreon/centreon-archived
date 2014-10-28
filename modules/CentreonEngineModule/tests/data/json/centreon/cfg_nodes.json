@@ -1,0 +1,9 @@
+[
+  {
+    "node_id": 1,
+    "name": "Node 1",
+    "ip_address": "127.0.0.1",
+    "enable": 1,
+    "multiple_poller": 0
+  }
+]

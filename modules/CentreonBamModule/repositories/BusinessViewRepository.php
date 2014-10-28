@@ -35,11 +35,13 @@
 
 namespace CentreonBam\Repository;
 
+use Centreon\Repository\FormRepository;
+
 /**
  * @author Sylvestre Ho <sho@merethis.com>
  * @package CentreonBam
  * @subpackage Repository
  */
-class BusinessViewRepository extends \CentreonConfiguration\Repository\Repository
+class BusinessViewRepository extends FormRepository
 {
 }

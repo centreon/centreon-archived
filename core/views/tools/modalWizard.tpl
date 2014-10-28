@@ -82,6 +82,6 @@ $(function() {
     return false;
   });
   {/if}
-  {$customJs}
+  {get_custom_js}
 });
 </script>

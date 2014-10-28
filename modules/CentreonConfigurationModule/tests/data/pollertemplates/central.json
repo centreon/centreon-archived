@@ -1,0 +1,108 @@
+{
+    "name" : "central",
+    "content" : {
+        "engine" : {
+            "setup" : [
+                {
+                    "name" : "Main",
+                    "params" : {
+                        "file" : {
+                            "state-file" : "",
+                            "lock-file" : ""
+                        },
+                        "debug" : {
+                            "debug-file" : "",
+                            "debug-level" : ""
+                        }
+                    }
+                }
+            ]
+        },
+        "broker" : {
+            "setup" : [
+                {
+                    "name" : "Central Broker",
+                    "forms" : {
+                        "steps" : [
+                            {
+                                "name" : "MyStep",
+                                "order": 1,
+                                "fields": [
+                                    {
+                                        "label" : "Temporay File Path",
+                                        "name": "TemporayFilePath",
+                                        "type" : "text",
+                                        "attributes" : {},
+                                        "defaultValue" : ""
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "params" : {
+                        "mode" : [
+                            {
+                                "normal" : [
+                                    {
+                                        "general" : {
+                                            "name" : "",
+                                            "configuration file name" : "",
+                                            "write-timestamp" : "",
+                                            "write-thread-id" : "",
+                                            "status" : "",
+                                            "events-queue-max-size" : ""
+                                        },
+                                        "correlation" : [
+                                            {
+                                                "name" : "",
+                                                "correlation-file" : "",
+                                                "retention-file" : ""
+                                            }
+                                        ],
+                                        "input" : [
+                                            {
+                                                "type" :"IPV4",
+                                                "name" : "",
+                                                "port" : "",
+                                                "host" : "",
+                                                "failover-name" : ""
+                                            },
+                                            {
+                                                "type" :"local-server-socket",
+                                                "name" : "",
+                                                "filepath" : "",
+                                                "buffering-timeout" : "",
+                                                "serialization-protocol" : ""
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "one-peer-retention" : [
+                                    {
+                                        "general" : {
+                                            "name" : "",
+                                            "configuration file name" : "",
+                                            "write-timestamp" : "",
+                                            "write-thread-id" : "",
+                                            "status" : "",
+                                            "events-queue-max-size" : ""
+                                        },
+                                        "input" : [
+                                            {
+                                                "type" :"local-server-socket",
+                                                "name" : "",
+                                                "filepath" : "",
+                                                "buffering-timeout" : "",
+                                                "serialization-protocol" : ""
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

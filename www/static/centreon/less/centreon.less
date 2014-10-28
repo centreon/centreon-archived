@@ -38,16 +38,36 @@ hr {
 }
 
 /* Login panel */
+.login-wrap:before {
+    position: absolute;
+    content: '';
+    background: url('./img/login.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    -webkit-filter: blur(10px) grayscale(70%);
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.login-footer {
+    text-align:center;
+    font-size: 12px;
+    color: #fff;
+}
+
 .login-box {
     margin-top: 200px;
 }
 
 .login-title {
-    font-size: @font-size-h4;
+    font-size: @font-size-h2;
+    color: #fff;
 }
 
 .panel-login {
-    margin-top: 30px;
+    margin-top: 15px;
     border-radius: @login-panel-radius;
 
     .panel-title {
@@ -576,4 +596,13 @@ td.incident-extended-info {
 
 .margin-top-10 {
   margin-top: 10px;
+}
+
+/* Button icon active / inactive */
+.fa-btn-active {
+  color: black;
+}
+
+.fa-btn-inactive {
+  color: #818181;
 }

@@ -225,7 +225,7 @@ class Hook
             if (file_exists($filename)) {
                 include_once $filename;
                 $data = call_user_func(
-                    array("\\".$commonName."\\".ucfirst($hook['module_hook_name']), "execute"),
+                    array("\\".$commonName."\\Hooks\\".ucfirst($hook['module_hook_name']), "execute"),
                     $params
                 );
                 /* has template */
@@ -244,6 +244,35 @@ class Hook
             }
         }
         return $hookData;
+    }
+
+    /**
+     * Add to template the list of static file (js / css)
+     *
+     * @param string $hookName The hook name
+     */
+    public static function addStaticFile($hookName)
+    {
+        if (!preg_match('/^'.self::DISPLAY_PREFIX.'/', $hookName)) {
+            throw new Exception(sprintf('Invalid hook name %s', $hookName));
+        }
+        $hooks = self::getModulesFromHook(self::TYPE_DISPLAY, $hookName);
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $tpl = Di::getDefault()->get('template');
+        foreach ($hooks as $hook) {
+            $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $hook['module'])));
+            $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php";
+            if (file_exists($filename)) {
+                include_once $filename;
+                $classname = "\\" . $commonName . "\\Hooks\\" . ucfirst($hook['module_hook_name']);
+                if (method_exists($classname, 'addJs')) {
+                    call_user_func(array($classname, 'addJs'), $tpl);
+                }
+                if (method_exists($classname, 'addCss')) {
+                    call_user_func(array($classname, 'addCss'), $tpl);
+                }
+            }
+        }
     }
 
     /**

@@ -1,0 +1,14 @@
+{
+    "name" : "Central",
+    "content" : {
+        "engine" : {
+            "setup" : [
+                {
+                    "name" : "main",
+                    "params" : {
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -35,4 +35,4 @@
 
 namespace CentreonConfiguration\Events;
 
-class GenerateBroker extends PollerEvent {}
+class GenerateBroker extends NodeEvent {}

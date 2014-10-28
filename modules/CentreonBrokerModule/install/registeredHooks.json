@@ -1,0 +1,7 @@
+[
+    {
+        "name": "displayNodePaths",
+        "moduleHook": "displayBrokerPaths",
+        "moduleHookDescription": "Display broker paths"
+    }
+]

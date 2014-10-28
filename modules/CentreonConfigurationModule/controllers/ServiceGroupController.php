@@ -35,9 +35,10 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Form;
+use Centreon\Form;
+use Centreon\Internal\Di;
 
-class ServiceGroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Servicegroup';
     protected $objectName = 'servicegroup';
@@ -59,6 +60,17 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\ObjectAb
      */
     public function listAction()
     {
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('hogan-3.0.0.min.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
 

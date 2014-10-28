@@ -75,15 +75,16 @@ class SearchRepository
             )
         );
         
-        $result = Search::get($searchId[0]);
-        
-        if (count($result) > 0) {
-            Search::update(
-                $searchId[0],
-                array(
-                    'searchText' => $searchText
-                )
-            );
+        if (count($searchId) > 0) {
+            $result = Search::get($searchId[0]);
+            if (count($result) > 0) {
+                Search::update(
+                    $searchId[0],
+                    array(
+                        'searchText' => $searchText
+                    )
+                );
+            }
         } else {
             Search::insert(
                 array(
@@ -110,8 +111,13 @@ class SearchRepository
                 'label' => $label
             )
         );
-        $searchText = Search::get($searchId[0]);
-        $result = $searchText['searchText'];
+        
+        if (count($searchId) > 0) {
+            $searchText = Search::get($searchId[0]);
+            $result = $searchText['searchText'];
+        } else {
+            throw new \Exception("Object not exist");
+        }
         
         return $result;
     }
@@ -131,7 +137,12 @@ class SearchRepository
                 'label' => $label
             )
         );
-        Search::delete($searchId[0]);
+        
+        if (count($searchId) > 0) {
+            Search::delete($searchId[0]);
+        } else {
+            throw new \Exception("Object not exist");
+        }
     }
     
     /**
@@ -140,7 +151,7 @@ class SearchRepository
      * @param string $searchStr
      * @return array
      */
-    public static function getSearchList($searchStr = "")
+    public static function getSearchList($route, $searchStr = "")
     {
         $searchList = Search::getList(
             array('search_id', 'label'),
@@ -148,7 +159,7 @@ class SearchRepository
             0,
             null,
             "ASC",
-            array('label' => $searchStr.'%'),
+            array('route' => $route, 'label' => $searchStr.'%'),
             "AND"
         );
 

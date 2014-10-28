@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <forms>
   <form name="engine_form">
-	<route>/engine/update</route>
+	<route>/centreon-engine/engine/update</route>
 	<redirect>0</redirect>
 	<redirect_route></redirect_route>
 	<section name="Engine">
@@ -52,23 +52,14 @@
 		<field name="enable_predictive_service_dependency_checks" label="Enable predictive service dependency checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
-		<field name="event_broker_options" label="Event broker options" default_value="-1" advanced="0" type="text" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
 		<field name="event_handler_timeout" label="Event handler timeout" default_value="30" advanced="0" type="text" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="execute_host_checks" label="Execute host checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-        </field>
-		<field name="execute_service_checks" label="Execute service checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
 		<field name="global_host_event_handler" label="Global host event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
 		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-			<listValuesRoute>/engine/[i:id]/globalHostEventHandler</listValuesRoute>
+			<listValuesRoute>/centreon-engine/engine/[i:id]/globalhosteventhandler</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>
 		  <help></help>
@@ -77,7 +68,7 @@
 		  <attributes>
 			<object_type>object</object_type>
 		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-			<listValuesRoute>/engine/[i:id]/globalServiceEventHandler</listValuesRoute>
+			<listValuesRoute>/centreon-engine/engine/[i:id]/globalserviceeventhandler</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>
 		  <help></help>
@@ -98,9 +89,6 @@
 		  <help></help>
 		</field>
 		<field name="log_external_commands" label="Log external commands" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="log_file" label="Log file" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
 		<field name="log_host_retries" label="Log host retries" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
@@ -130,23 +118,14 @@
 		<field name="max_debug_file_size" label="Max debug file size" default_value="1000000" advanced="1" type="text" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
-		<field name="max_log_file_size" label="Max log file size" default_value="0" advanced="1" type="text" parent_field="" mandatory="1">
-		  <help></help>
-		</field>
 		<field name="notification_timeout" label="Notification timeout" default_value="30" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help></help>
-		</field>
-		<field name="obsess_over_hosts" label="Obsess over hosts" default_value="0" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="obsess_over_services" label="Obsess over services" default_value="0" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
 		<field name="ochp_command" label="OCHP command" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
 		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-			<listValuesRoute>/engine/[i:id]/ochpCommand</listValuesRoute>
+			<listValuesRoute>/centreon-engine/engine/[i:id]/ochpcommand</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>
 		  <help></help>
@@ -158,21 +137,12 @@
 		  <attributes>
 			<object_type>object</object_type>
 		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-			<listValuesRoute>/engine/[i:id]/ocspCommand</listValuesRoute>
+			<listValuesRoute>/centreon-engine/engine/[i:id]/ocspcommand</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>
 		  <help></help>
 		</field>
 		<field name="ocsp_timeout" label="OCSP timeout" default_value="15" advanced="1" type="text" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="resource_file" label="resource_file" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help></help>
-		</field>
-		<field name="retain_state_information" label="Retain state information" default_value="0" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="retention_scheduling_horizon" label="Retention scheduling horizon" default_value="900" advanced="1" type="text" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
 		<field name="retention_update_interval" label="Retention update interval" default_value="60" advanced="0" type="text" parent_field="" mandatory="1">
@@ -184,25 +154,10 @@
 		<field name="service_freshness_check_interval" label="Service freshness check interval" default_value="60" advanced="1" type="text" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
-		<field name="soft_state_dependencies" label="Soft state dependencies" default_value="0" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="state_retention_file" label="State retention file" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help></help>
-		</field>
-		<field name="status_file" label="Status file" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help></help>
-		</field>
 		<field name="status_update_interval" label="Status update interval" default_value="60" advanced="0" type="text" parent_field="" mandatory="1">
 		  <help></help>
 		</field>
 		<field name="time_change_threshold" label="Time change threshold" default_value="900" advanced="0" type="text" parent_field="" mandatory="1">
-		  <help></help>
-		</field>
-		<field name="use_retained_program_state" label="Use retained program state" default_value="1" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="use_retained_scheduling_info" label="Use retained scheduling info" default_value="0" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
 		<field name="use_syslog" label="Use syslog" default_value="1" advanced="1" type="singlecheckbox" parent_field="" mandatory="0">

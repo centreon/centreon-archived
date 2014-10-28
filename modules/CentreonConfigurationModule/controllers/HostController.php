@@ -47,7 +47,7 @@ use \CentreonConfiguration\Models\Command;
 use \CentreonConfiguration\Internal\HostDatatable;
 use \CentreonConfiguration\Repository\HostRepository;
 
-class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class HostController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Host';
     protected $objectName = 'host';
@@ -77,10 +77,21 @@ class HostController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function listAction()
     {
+        $router = Di::getDefault()->get('router');
         $this->tpl->addJs('centreon.overlay.js')
             ->addJs('jquery.qtip.min.js')
+            ->addJs('hogan-3.0.0.min.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addCss('jquery.qtip.min.css')
-            ->addCss('centreon.qtip.css');
+            ->addCss('centreon.qtip.css')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
     

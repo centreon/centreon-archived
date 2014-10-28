@@ -42,41 +42,35 @@ use Centreon\Internal\Template;
 use Centreon\Internal\Form;
 use Centreon\Internal\Router;
 
-class FormTest extends \PHPUnit_Framework_TestCase
+class FormTest extends DbTestCase
 {
     private $datadir;
     private $formTpl;
+    protected static $bootstrapExtraSteps = array('template');
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        $config = new Config(CENTREON_PATH . '/core/tests/data/test-template.ini');
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $router->dispatch();
+        $di->setShared('config', $config);
+        $tpl = Di::getDefault()->get('template');
+        $tpl->setTemplateDir(CENTREON_PATH . '/core/tests/views/');
+    }
 
     public function setUp()
     {
-        $this->datadir = CENTREON_PATH . '/core/tests/data/';
         $this->formTpl = 'form/testForm.tpl';
-        $config = new Config($this->datadir . '/test-template.ini');
-        $di = new Di();
-        $di->setShared('config', $config);
-        $tpl = new Template();
-        $di->setShared('template', $tpl);
-        $tpl->setTemplateDir(CENTREON_PATH . '/core/tests/views/');
-        $di->set(
-            'router',
-            function () {
-                $modulesToParse = array();
-                foreach (glob(CENTREON_PATH . "/modules/*Module") as $moduleTemplateDir) {
-                    $modulesToParse[] = basename($moduleTemplateDir);
-                }
-                $router = new Router();
-                $router->parseRoutes($modulesToParse);
-                return $router;
-            }
-        );
         parent::setUp();
     }
-    
+
     public function tearDown()
     {
-        Di::reset();
+        parent::tearDown();
     }
-    
+
     public function testAddButton()
     {
         $tpl = Di::getDefault()->get('template');
@@ -94,12 +88,11 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertContains(
             '<div class="form-group ">'.
             '<div class="col-sm-2" style="text-align:right">'.
-            '<label class="label-controller" for="testSubmit">Validate</label>'.
-            '</div><div class="col-sm-9"><</div></div>',
+            '<label class="label-controller" for="testSubmit">Validate</label>',
             $printedResult
         );
     }
-    
+
     public function testSimpleCheckbox()
     {
         $tpl = Di::getDefault()->get('template');
@@ -124,7 +117,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
             $printedResult
         );
     }
-    
+
     public function testSimpleRadio()
     {
         $tpl = Di::getDefault()->get('template');
@@ -148,7 +141,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
             $printedResult
         );
     }
-    
+
     public function testAddText()
     {
         $tpl = Di::getDefault()->get('template');

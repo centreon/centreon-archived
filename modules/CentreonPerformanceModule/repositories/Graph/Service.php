@@ -55,16 +55,15 @@ class Service extends \CentreonPerformance\Repository\Graph
     public function __construct($serviceId, $startTime, $endTime)
     {
         $di = \Centreon\Internal\Di::getDefault();
-        $dbconnStorage = $di->get('db_storage');
-        $dbconnConfig = $di->get('db_centreon');
+        $dbconn = $di->get('db_centreon');
 
         /* Get the list of metrics */
         $query = "SELECT i.id, i.service_description, m.metric_id, m.metric_name, m.unit_name, m.warn, m.warn_low, m.crit, m.crit_low, m.min, m.max
-            FROM index_data i, metrics m
+            FROM rt_index_data i, rt_metrics m
             WHERE i.service_id = :service_id
                 AND i.id = m.index_id
                 AND m.hidden = '0'";
-        $stmt = $dbconnStorage->prepare($query);
+        $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':service_id', $serviceId);
         $stmt->execute();
 

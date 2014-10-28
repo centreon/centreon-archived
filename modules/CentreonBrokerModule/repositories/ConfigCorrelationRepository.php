@@ -35,7 +35,8 @@
 
 namespace CentreonBroker\Repository;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * Factory for ConfigTest Engine
@@ -48,14 +49,34 @@ class ConfigCorrelationRepository
     /**
      * 
      * @param int $pollerId
+     * @throws \Centreon\Internal\Exception;
      */
     public function generate($pollerId)
     {
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
+        /* Get tmp path */
+        $config = Di::getDefault()->get('config');
+        $tmpPath = rtrim($config->get('global', 'centreon_generate_tmp_dir'));
+        if (!isset($tmpPath)) {
+            throw new Exception('Temporary path not set');
+        }
+        $tmpPath = rtrim($tmpPath, '/') . '/broker';
+        
         $xml = new \XMLWriter();
-        $xml->openURI('/etc/centreon-broker/correlation_1.xml');
+
+        /* Create directories if they don't exist */
+        if (!is_dir($tmpPath)) {
+            mkdir($tmpPath);
+        }
+        if (!is_dir("{$tmpPath}/{$pollerId}")) {
+            mkdir("{$tmpPath}/{$pollerId}");
+        }
+        $correlationFile = "{$tmpPath}/{$pollerId}/correlation.xml";
+        if (false === @$xml->openURI($correlationFile)) {
+            throw new Exception(sprintf('Error while opening %s', $correlationFile));
+        }
 
         $xml->startDocument('1.0', 'UTF-8');
         

@@ -116,7 +116,7 @@ class Generator
     {
         $this->formRoute = $formRoute;
         $this->extraParams = $extraParams;
-	$this->productVersion = $productVersion;
+        $this->productVersion = $productVersion;
         $this->getFormFromDatabase();
     }
     
@@ -244,6 +244,24 @@ class Generator
     
     /**
      * 
+     * @return \Centreon\Internal\Form
+     */
+    public function getFormHandler()
+    {
+        return $this->formHandler;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    public function getFormComponents()
+    {
+        return $this->formComponents;
+    }
+    
+    /**
+     * 
      * @return string
      */
     protected function generateHtml()
@@ -284,44 +302,18 @@ class Generator
                 . '</li>';
         }
         $formRendering .= '</ul></div></div>';
-        /*
-        $formRendering .= '<div class="tab-content">';
-        foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
-            $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
-            foreach ($sectionComponents as $blockLabel => $blockComponents) {
-                $formRendering .= '<div class="panel panel-default">';
-                $formRendering .= '<div class="panel-heading">';
-                $formRendering .= '<h3 class="panel-title">'.$blockLabel.'</h3>';
-                $formRendering .= '</div>';
-                $formRendering .= '<div class="panel-body">';
-                foreach ($blockComponents as $component) {
-                    if (isset($formElements[$component['name']]['html'])) {
-                        $formRendering .= $formElements[$component['name']]['html'];
-                    }
-                }
-                $formRendering .= '</div>';
-                $formRendering .= '</div>';
-            }
-            $formRendering .= '</div>';
-        }
-        $formRendering .= '</div>';
-        */
 
         $formRendering .= '<div class="tab-content">';
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
             $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel => $blockComponents) {
-                //$formRendering .= '<div class="panel panel-default">';
-                //$formRendering .= '<div class="panel-heading">';
                 $formRendering .= '<h4 class="page-header" style="padding-top:0px;">'.$blockLabel.'</h4>';
-                //$formRendering .= '</div>';
                 $formRendering .= '<div class="panel-body">';
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
                         $formRendering .= $formElements[$component['name']]['html'];
                     }
                 }
-                //$formRendering .= '</div>';
                 $formRendering .= '</div>';
             }
             $formRendering .= '</div>';

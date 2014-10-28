@@ -36,7 +36,7 @@
 
 namespace CentreonBam\Controllers;
 
-class IndicatorController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class IndicatorController extends BasicController
 {
     protected $objectDisplayName = 'Indicator';
     protected $objectName = 'indicator';

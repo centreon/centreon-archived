@@ -49,6 +49,11 @@ use \CentreonConfiguration\Repository\HostRepository as HostConfigurationReposit
 class HostTemplateRepository
 {
     /**
+     * @var int
+     */
+    protected static $register = 0;
+
+    /**
      * 
      * @return int
      */
@@ -83,36 +88,25 @@ class HostTemplateRepository
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
 
-        /* Field to not display */
-        $disableField = static::getTripleChoice();
-        $field = "host_id, host_name, host_alias, host_address, display_name, "
-            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, "
-            . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
-            . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
-            . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
-            . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, "
-            . "host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, "
-            . "host_notification_interval, host_notification_options, cg_additive_inheritance, "
-            . "contact_additive_inheritance, timeperiod_tp_id2 AS notification_period, "
-            . "host_stalking_options, host_register ";
+        /* Get disfield */
+        $disableFields = static::getTripleChoice();
         
         /* Init Content Array */
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM cfg_hosts WHERE host_activate = '1' AND host_register = '0' ORDER BY host_name";
+        $query = static::getQuery();
         $stmt = $dbconn->prepare($query);
-        $stmt->execute();
+        $stmt->execute(array(static::$register));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $tmp = array("type" => "host");
             $tmpData = array();
             $args = "";
+            $host_id = null;
+
             foreach ($row as $key => $value) {
                 if ($key == "host_id") {
                     $host_id = $row["host_id"];
-                    
-                    /* Get Template List */
-                    $tmpData["use"] = "generic-host";
                 } elseif ((!isset($disableField[$key]) && $value != "")) {
                     if (isset($disableField[$key]) && $value != 2) {
                         ;
@@ -157,6 +151,12 @@ class HostTemplateRepository
                     }
                 }
             }
+            if (!is_null($host_id)) {
+                $templates = HostTemplateConfigurationRepository::getTemplates($host_id); 
+                if ($templates != "") {
+                    $tmpData['use'] = $templates;
+                }
+            }
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
         }
@@ -164,5 +164,28 @@ class HostTemplateRepository
         /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, "API");
         unset($content);
+    }
+
+    /**
+     * Return query to retrive host list
+     *
+     * @return string
+     */
+    protected static function getQuery()
+    {
+        $field = "host_id, host_name, host_alias, host_address, display_name, "
+            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, "
+            . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
+            . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
+            . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
+            . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, "
+            . "host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, "
+            . "host_notification_interval, host_notification_options, cg_additive_inheritance, "
+            . "contact_additive_inheritance, timeperiod_tp_id2 AS notification_period, "
+            . "host_stalking_options, host_register ";
+        
+        /* Get information into the database. */
+        $query = "SELECT $field FROM cfg_hosts WHERE host_activate = '1' AND host_register = ? ORDER BY host_name";
+        return $query;
     }
 }

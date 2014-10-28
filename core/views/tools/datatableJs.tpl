@@ -62,6 +62,7 @@
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
         setInterval(function () { 
+            $( ".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
         }, 60000);
 
@@ -614,6 +615,7 @@
               method: "post",
               async: false,
               data: {
+                route: "{$currentRoute}",
                 searchText: query
               },
               success: function( data, textStatus, jqXHR ) {
@@ -722,6 +724,11 @@
             });
             oTable.api().draw();
         });
+
+        /* Display or hide listing addto */
+        if ( $( "#addToGroup" ).find( "ul > li" ).length > 0 ) {
+          $( "#addToGroup" ).removeClass( "hidden" );
+        }
     });
     
     

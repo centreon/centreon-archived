@@ -42,11 +42,37 @@ namespace CentreonAdministration\Models;
  */
 class Options
 {
-    public static function getList()
+    public static function getOptionsKeysList()
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-        $stmt = $db->query("SELECT `key`, `value` FROM `options`");
-        return  $stmt->fetchAll();
+        $stmt = $db->query("SELECT `key` FROM `cfg_options`");
+        $list = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $finalList= array();
+        foreach ($list as $currentOpt) {
+            $finalList[] = $currentOpt['key'];
+        }
+        
+        return $finalList;
+    }
+    
+    public static function getList($group = null)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        
+        $conditions = "";
+        if (!is_null($group)) {
+            $conditions .= "WHERE `group` = '$group'";
+        }
+        $stmt = $db->query("SELECT `key`, `value` FROM `cfg_options` $conditions");
+        
+        $savedOptions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $optionsList = array();
+        foreach ($savedOptions as $savedOption) {
+            $optionsList[$savedOption['key']] = $savedOption['value'];
+        }
+        return $optionsList;
     }
     
     /**
@@ -58,7 +84,21 @@ class Options
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         
         foreach ($values as $key => $value) {
-            $sql = "UPDATE `options` SET `value`='$value' WHERE `key`='$key'";
+            $sql = "UPDATE `cfg_options` SET `value`='$value' WHERE `key`='$key'";
+            $db->exec($sql);
+        }
+    }
+    
+    /**
+     * 
+     * @param type $values
+     */
+    public static function insert($values, $group = "default")
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        
+        foreach ($values as $key => $value) {
+            $sql = "INSERT INTO `cfg_options`(`group`, `key`, `value`) VALUES('$group', '$key', '$value');";
             $db->exec($sql);
         }
     }

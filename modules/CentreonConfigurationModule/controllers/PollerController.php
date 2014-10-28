@@ -35,11 +35,16 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
-use \CentreonConfiguration\Models\Poller;
+use CentreonConfiguration\Models\Poller as PollerModel;
+use CentreonConfiguration\Models\Node as NodeModel;
+use CentreonConfiguration\Repository\PollerRepository;
+use CentreonConfiguration\Internal\PollerTemplateManager;
+use Centreon\Internal\Form;
+use Centreon\Internal\Exception;
 
-class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class PollerController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Poller';
     protected $objectName = 'poller';
@@ -84,7 +89,7 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         
         $requestParams = $this->getParams('get');
         
-        $pollerObj = new Poller();
+        $pollerObj = new PollerModel();
         $filters = array('name' => $requestParams['q'].'%');
         $pollerList = $pollerObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
         
@@ -107,7 +112,17 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function updateAction()
     {
-        parent::updateAction();
+        $params = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+
+        /* Save information */
+        try {
+            PollerRepository::update($params);
+        } catch (Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        return $router->response()->json(array('success' => true));
     }
     
     /**
@@ -118,9 +133,10 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function addAction()
     {
-        $tpl = Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/configuration/poller/add');
-        parent::addAction();
+        /* Prepare form for wizard */
+        $form = $this->getForm('add_poller');
+        $this->tpl->assign('form', $form->toSmarty());
+        $this->tpl->display('addPoller.tpl');
     }
 
     /**
@@ -131,7 +147,22 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function createAction()
     {
-        parent::createAction();
+        $params = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+
+        /* Check security */
+        /*try {
+            Form::validateSecurity($params['token']);
+        } catch (Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }*/
+        try {
+            PollerRepository::create($params);
+        } catch (Exception $e) {
+            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        return $router->response()->json(array('success' => true));
     }
 
     /**
@@ -142,53 +173,22 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
      */
     public function editAction()
     {
-        parent::editAction();
+        $params = $this->getParams();
+        $poller = PollerModel::get($params['id']);
+        $node = NodeModel::get($poller['node_id']);
+        /* Prepare form for edition */
+        $form = $this->getForm('edit_poller', $params['id']);
+        $form->setDefaults(array(
+            'poller_name' => $poller['name'],
+            'ip_address' => $node['ip_address']
+        ));
+        $form->addHidden('poller_id', $params['id']);
+        $this->tpl->assign('object_id', $params['id']);
+        $this->tpl->assign('form', $form->toSmarty());
+        $this->tpl->assign('hookParams', array('pollerId' => $params['id']));
+        $this->tpl->display('editPoller.tpl');
     }
     
-    /**
-     * Duplicate a poller
-     *
-     * @method post
-     * @route /configuration/poller/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /configuration/poller/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-    
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /configuration/poller/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /configuration/poller/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
     /**
      * Delete action for poller
      *
@@ -211,5 +211,122 @@ class PollerController extends \CentreonConfiguration\Controllers\ObjectAbstract
         $tpl = Di::getDefault()->get('template');
         $params = $this->getParams();
         $tpl->display('file:[CentreonConfigurationModule]applycfg.tpl');
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/poller/templates
+     */
+    public function getPollerTemplatesAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        PollerRepository::getPollerTemplates();
+        $data = $di->get('pollerTemplate');
+        $returnData = array();
+        foreach ($data as $id => $file) {
+            $returnData[] = array(
+                'id' => $id,
+                'text' => ucfirst($id)
+            );
+        }
+        $router->response()->json($returnData);
+    }
+
+    /**
+     * Get default template for a poller
+     *
+     * @method get
+     * @route /configuration/poller/[i:id]/template
+     */
+    public function getPollerDefaultTemplateAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $params = $this->getParams();
+        $returnData = array();
+        
+        if ($params['id'] == 0) {
+            PollerRepository::getPollerTemplates();
+            $defaultPoller = array_slice($di->get('pollerTemplate'), 0, 1, true);
+            $p = key($defaultPoller);
+            
+            $returnData['id'] = $p;
+            $returnData['text'] = ucfirst($p);
+        } else {
+            $poller = PollerModel::get($params['id']);
+            $returnData['id'] = $poller['tmpl_name'];
+            $returnData['text'] = ucfirst($poller['tmpl_name']);
+        }
+        $router->response()->json($returnData);
+    }
+    
+    /**
+     * Get default template for a poller
+     *
+     * @method post
+     * @route /configuration/poller/templates/form
+     */
+    public function getFormForTemplateAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        
+        $params = $this->getParams();
+        
+        PollerRepository::getPollerTemplates();
+        $pollerTemplateList = $di->get('pollerTemplate');
+        
+        $myLiteTemplate = unserialize($pollerTemplateList[$params['name']]);
+        $myTemplate = $myLiteTemplate->toFullTemplate();
+
+        $pollerId = null;
+        if (isset($params['poller'])) {
+            $pollerId = $params['poller'];
+        }
+        
+        $router->response()->json($myTemplate->genForm($pollerId));
+    }
+
+    /**
+     * Return the form for add or edit a poller
+     *
+     * @param string $formName The form ID
+     * @param int $pollerId The poller id
+     * @return \Centreon\Internal\Form
+     */
+    private function getForm($formName, $pollerId = 0)
+    {
+        $form = new Form($formName);
+        $form->add(array(
+            'type' => 'text',
+            'label' => 'Poller name',
+            'name' => 'poller_name',
+            'mandatory' => true
+        ));
+        $form->add(array(
+            'type' => 'text',
+            'label' => 'IP Address',
+            'name' => 'ip_address',
+            'mandatory' => true
+        ));
+        $selectParams = array(
+            'object_type' => 'object',
+            'defaultValuesRoute' => '/configuration/poller/templates',
+            'listValuesRoute' => '/configuration/poller/[i:id]/template',
+            'multiple' => false,
+            'initCallback' => 'loadTemplateSteps'
+        );
+        $form->add(array(
+            'type' => 'templatepoller',
+            'label' => 'Poller Template',
+            'name' => 'poller_tmpl',
+            'mandatory' => true,
+            'attributes' => json_encode($selectParams)
+        ), array(
+            'id' => $pollerId
+        ));
+        return $form;
     }
 }

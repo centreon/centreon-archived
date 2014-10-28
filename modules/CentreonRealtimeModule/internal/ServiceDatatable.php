@@ -47,7 +47,11 @@ use \Centreon\Internal\Utils\Datetime;
  */
 class ServiceDatatable extends \Centreon\Internal\Datatable
 {
-    protected static $hook = 'displayServiceRtColumn';
+    protected static $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'service'
+    );
+
     protected static $objectId = 'service_id';
     protected static $objectName = 'Service';
 
@@ -253,6 +257,12 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'visible' => false,
         ),
     );
+
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'service'
+        )
+    );
     
     /**
      * 
@@ -291,7 +301,10 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 '/tooltip"><span class="overlay">'.
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span></span>';
-            $myServiceSet['ico'] = "<i class='fa fa-bar-chart-o'></i>";
+            $myServiceSet['ico'] = '<span data-overlay-url="/realtime/service/'
+                . $myServiceSet['host_id']
+                . '/' . $myServiceSet['service_id']
+                . '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';
             $myServiceSet['duration'] = Datetime::humanReadable(
                 $myServiceSet['duration'],
                 Datetime::PRECISION_FORMAT,

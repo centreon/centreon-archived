@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class EnvironmentController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class EnvironmentController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Environment';
     protected $objectName = 'environment';

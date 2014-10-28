@@ -122,6 +122,18 @@ class Select extends Customobject
                     .'}'
                 .'},';
         }
+        $initCallback = '';
+        if (isset($element['label_initCallback']) && $element['label_initCallback'] != '') {
+            $initCallback = '
+                if ( typeof ' . $element['label_initCallback'] . ' === "function" ) {
+                    ' . $element['label_initCallback'] . '(data);
+                } else {
+                    callFunction = "' . $element['label_initCallback'] . '(data)";
+                    eval(callFunction);
+                }
+            ';
+        }
+
         if (isset($element['label_selectDefault']) && $element['label_selectDefault'] != "[]") {
             $myJs .= ''
                 .'initSelection: function(element, callback) {'
@@ -131,6 +143,7 @@ class Select extends Customobject
                     .'if (data.id) {'
                     .'  $(element).val(data.id);'
                     .'}'
+                    .$initCallback
                 .'}';
         } elseif (isset($element['label_listValuesRoute'])) {
             $myJs .= ''
@@ -148,7 +161,7 @@ class Select extends Customobject
                                 }
                                 if (id.match(/^,/)) {
                                     $(element).val(id.substring(1, id.length));
-                                }
+                                } ' . $initCallback . '
                             }
                         });
                      }

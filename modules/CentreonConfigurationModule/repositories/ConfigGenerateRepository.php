@@ -73,11 +73,6 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
             $engineEvent = new GenerateEngine($this->pollerId);
             $event->emit('centreon-configuration.generate.engine', array($engineEvent));
             $this->output = array_merge($this->output, $engineEvent->getOutput());
-            
-            /* Broker conf generation */
-            $brokerEvent = new GenerateBroker($this->pollerId);
-            $event->emit('centreon-configuration.generate.broker', array($brokerEvent));
-            $this->output = array_merge($this->output, $brokerEvent->getOutput());
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;

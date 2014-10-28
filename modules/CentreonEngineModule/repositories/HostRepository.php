@@ -49,6 +49,11 @@ use \CentreonConfiguration\Repository\HostRepository as HostConfigurationReposit
 class HostRepository extends HostTemplateRepository
 {
     /**
+     * @var int
+     */
+    protected static $register = 1;
+
+    /**
      * 
      * @param array $filesList
      * @param int $poller_id
@@ -62,31 +67,23 @@ class HostRepository extends HostTemplateRepository
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
 
-        /* Field to not display */
+        /* Get disabled fields */
         $disableField = static::getTripleChoice();
-        $field = "host_id, host_name, host_alias, host_address, display_name, host_max_check_attempts, "
-            . "host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, "
-            . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
-            . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
-            . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
-            . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, "
-            . "host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, "
-            . "host_notification_interval, cg_additive_inheritance, contact_additive_inheritance, "
-            . "host_notification_options, timeperiod_tp_id2 AS notification_period, host_stalking_options, "
-            . "host_register ";
         
         /* Init Content Array */
         $content = array();
         
         /* Get information into the database. */
-        $query = "SELECT $field FROM cfg_hosts WHERE host_activate = '1' AND host_register = '1' ORDER BY host_name";
+        $query = static::getQuery();
         $stmt = $dbconn->prepare($query);
-        $stmt->execute();
+        $stmt->execute(array(static::$register));
+
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $content = array();
             $tmp = array("type" => "host");
             $tmpData = array();
             $args = "";
+            $host_id = null;
 
             /* Write Host Properties */
             foreach ($row as $key => $value) {
@@ -131,20 +128,16 @@ class HostRepository extends HostTemplateRepository
                                 }
                                 $tmpData["contact_groups"] .= $tmpContact;
                             }
-                        } elseif ($key == "name") {
-                            $tmpData[$key] = $value;
-                            $template = HostTemplateConfigurationRepository::getTemplates($host_id);
-                            if ($template != "") {
-                                $tmpData["use"] = $template;
-                            }
                         } else {
                             $tmpData[$key] = $value;
-                            if ($key == "host_name") {
-                                /* Get Template List */
-                                $tmpData["use"] = "generic-host";
-                            }
                         }
                     }
+                }
+            }
+            if (!is_null($host_id)) {
+                $templates = HostTemplateConfigurationRepository::getTemplates($host_id); 
+                if ($templates != "") {
+                    $tmpData['use'] = $templates;
                 }
             }
             $tmp["content"] = $tmpData;

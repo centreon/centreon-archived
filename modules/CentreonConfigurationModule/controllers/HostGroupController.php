@@ -35,7 +35,9 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class HostGroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
+use Centreon\Internal\Di;
+
+class HostGroupController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Hostgroup';
     protected $objectName = 'hostgroup';
@@ -63,6 +65,17 @@ class HostGroupController extends \CentreonConfiguration\Controllers\ObjectAbstr
      */
     public function listAction()
     {
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('hogan-3.0.0.min.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
     

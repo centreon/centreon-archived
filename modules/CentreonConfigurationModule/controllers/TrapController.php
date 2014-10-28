@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class TrapController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class TrapController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Trap';
     protected $objectName = 'trap';

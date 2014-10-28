@@ -2,5 +2,9 @@
     {
         "name": "displayLeftMenu",
         "description" : ""
+    },
+    {
+        "name": "displayAppendAddTo",
+        "description": "Append an action to the button Add To, in datatable view."
     }
 ]

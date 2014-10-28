@@ -35,7 +35,11 @@
 
 namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use CentreonConfiguration\Models\Poller;
+use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
+use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
@@ -47,6 +51,18 @@ use \Centreon\Internal\Di;
 class ConfigGenerateMainRepository
 {
     /**
+     * @var string
+     */
+    protected static $path;
+
+    /**
+     * Final etc path
+     *
+     * @var string
+     */
+    protected static $finalPath;
+
+    /**
      * Method for generating Main configuration file
      * 
      * @param array $filesList
@@ -57,9 +73,11 @@ class ConfigGenerateMainRepository
      */
     public static function generate(& $filesList, $poller_id, $path, $filename, $testing = 0)
     {
+        static::$path = rtrim($path, '/');
+
         /* Get Content */
         $content = static::getContent($poller_id, $filesList, $testing);
-        
+
         /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
@@ -70,10 +88,16 @@ class ConfigGenerateMainRepository
      * @param array $filesList
      * @param array $content
      * @param int $testing
+     * @param int $pollerId
      * @return array
      */
-    private static function getFilesList(& $filesList, $content, $testing)
+    private static function getFilesList($filesList, $content, $testing, $pollerId)
     {
+        $di = Di::getDefault();
+
+        $tmpPath = static::$path;
+        $engineEtcPath = static::$finalPath;
+        
         foreach ($filesList as $category => $data) {
             if ($category != 'main_file') {
                 foreach ($data as $path) {
@@ -81,7 +105,7 @@ class ConfigGenerateMainRepository
                         $content[$category] = array();
                     }
                     if (!$testing) {
-                        $path = str_replace("/var/lib/centreon/tmp/1/", "/etc/centreon-engine/", $path);
+                        $path = str_replace("{$tmpPath}/{$pollerId}/", "{$engineEtcPath}/", $path);
                     }
                     $content[$category][] = $path;
                 }
@@ -107,40 +131,84 @@ class ConfigGenerateMainRepository
         /* Init Content Array */
         $content = array();
 
-        $disabledField = static::getDisabledField();
-        $defaultValue = static::getDefaultValue();
-        $command_id = static::getCommandIdField();
-        $getCmd = static::getCommandIdField();
+        /* Default values that can be overwritten by template and user */
+        $defaultValues = static::getDefaultValues();
+
+        /* Template values that can be overwritten by user */
+        $templateValues = static::getTemplateValues($poller_id);
+
+        /* For command name resolution */
+        $commandIdFields = static::getCommandIdField();
         
-        /* get configuration files */
-        $content = static::getFilesList($filesList, $content, $testing);
+        /* Get configuration files */
+        $content = static::getFilesList($filesList, $content, $testing, $poller_id);
 
-        /* Get information into the database. */
-        $query = "SELECT * FROM cfg_engine WHERE engine_server_id = '$poller_id'";
+        /* Get values from the table, those are saved by user */
+        $query = "SELECT * FROM cfg_engine WHERE poller_id = ?";
         $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            foreach ($row as $key => $value) {
-                if ($key != "cfg_dir") {
-                    if (isset($disabledField[$key]) || (isset($defaultValue[$key]) && $value == 2)) {
-                        ;
-                    } elseif (isset($commandId[$key]) && isset($value)) {
-                        $content[$key] = CommandRepository::getCommandName($value);
-                    } elseif ($key == "event_broker_options") {
-                        /* Get Brokers List */
-                        $content["broker_module"] = static::getBrokerConf($poller_id);
+        $stmt->execute(array($poller_id));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!count($row)) {
+            throw new Exception(sprintf('Could not find parameters for poller %s.', $poller_id));
+        }
+        $userValues = array();
+        foreach ($row as $key => $val) {
+            if (!is_null($val) && $val != "") {
+                $userValues[$key] = $val;
+            }
+        }
 
-                        /* Write param */
-                        $content[$key] = $value;
-                    } else {
-                        if ($value != "") {
-                            $content[$key] = html_entity_decode($value);
-                        }
-                    }
+        /* Overwrite parameter */
+        $tmpConf = array_merge($defaultValues, $templateValues);
+        $finalConf = array_merge($tmpConf, $userValues);
+
+        /* Set real etc path of the poller */
+        static::$finalPath = $finalConf['conf_dir'];
+
+        /* Replace path macros */
+        foreach ($finalConf as $k => $v) {
+            if (preg_match('/%([a-z_]+)%/', $v, $matches)) {
+                $macro = $matches[1];
+                if (isset($finalConf[$macro])) {
+                    $finalConf[$macro] = rtrim($finalConf[$macro], '/');
+                    $finalConf[$k] = str_replace("%{$macro}%", $finalConf[$macro], $v);
+                }
+                if ($macro == 'conf_dir' && $testing) {
+                    $finalConf[$k] = str_replace('%conf_dir%', static::$path . "/" . $poller_id, $v);
                 }
             }
         }
-        return $content;
+
+        /* Replace commands */
+        foreach ($commandIdFields as $fieldName) {
+            if (isset($finalConf[$fieldName]) && $finalConf[$fieldName]) {
+                $finalConf[$fieldName] = CommandRepository::getCommandName($finalConf[$fieldName]);
+            }
+        }
+
+        /* Write broker modules */
+        $finalConf['broker_module'] = static::getBrokerConf($poller_id, $finalConf['module_dir']);
+
+        /* Exclude parameters */
+        static::unsetParameters($finalConf);
+
+        return $finalConf;
+    }
+
+    /**
+     * Unset unwanted parameters for generation
+     *
+     * @param array $finalConf
+     */
+    private static function unsetParameters(& $finalConf)
+    {
+        unset($finalConf['engine_id']);
+        unset($finalConf['poller_id']);
+        unset($finalConf['conf_dir']);
+        unset($finalConf['log_dir']);
+        unset($finalConf['var_lib_dir']);
+        unset($finalConf['module_dir']);
+        unset($finalConf['init_script']);
     }
 
     /**
@@ -154,8 +222,7 @@ class ConfigGenerateMainRepository
         $resList = array();
         $dirList = array();
         
-        /* TODO : Change hardcoded path */
-        $path = "/var/lib/centreon/tmp/";
+        $path = static::$path;
         
         /* Check that that basic path exists */
         if (!file_exists($path)) {
@@ -199,84 +266,94 @@ class ConfigGenerateMainRepository
     }
 
     /**
-     * 
-     * @param int $poller_id
+     * Returns an array of broker module directives 
+     *
+     * @param int $pollerId
+     * @param string $moduleDir
      * @return array
      */
-    private static function getBrokerConf($poller_id)
+    private static function getBrokerConf($pollerId, $moduleDir)
     {
-        $di = Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
+        /* Retrieve broker modules */
+        $events = Di::getDefault()->get('events');
+        $moduleEvent = new BrokerModuleEvent($pollerId);
+        $events->emit('centreon-configuration.broker.module', array($moduleEvent));
+        $brokerModules = $moduleEvent->getModules();
         
-        /* Init Broker list */
-        $broker = array();
+        /* External command module */
+        $brokerModules[] = rtrim($moduleDir, '/') . '/externalcmd.so';
 
-        /* Get broker in DB */
-        $stmt = $dbconn->prepare(
-            "SELECT broker_module FROM `cfg_engine_broker_module` WHERE `cfg_engine_id` = '".$poller_id."'"
-        );
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $broker[] = $row["broker_module"];
-        }
-        return $broker;
+        return $brokerModules;
     }
 
     /**
+     * Returns the default configuration values of value
+     * Those values are stored in the default.json file
      * 
-     * @return int
+     * @return array
+     * @throws \Centreon\Internal\Exception
      */
-    private static function getDefaultValue()
+    private static function getDefaultValues()
     {
-        /* Field that we don't write if value = 2 */
-        $defaultValue = array();
-        $defaultValue["enable_notification"] = 1;
-        $defaultValue["execute_service_checks"] = 1;
-        $defaultValue["accept_passive_service_checks"] = 1;
-        $defaultValue["execute_host_checks"] = 1;
-        $defaultValue["accept_passive_host_checks"] = 1;
-        $defaultValue["enable_event_handlers"] = 1;
-        $defaultValue["check_external_commands"] = 1;
-        $defaultValue["retain_state_information"] = 1;
-        $defaultValue["use_retained_program_state"] = 1;
-        $defaultValue["use_retained_scheduling_info"] = 1;
-        $defaultValue["use_syslog"] = 1;
-        $defaultValue["log_notifications"] = 1;
-        $defaultValue["log_service_retries"] = 1;
-        $defaultValue["log_host_retries"] = 1;
-        $defaultValue["log_event_handlers"] = 1;
-        $defaultValue["log_initial_states"] = 1;
-        $defaultValue["log_external_commands"] = 1;
-        $defaultValue["log_passive_checks"] = 1;
-        $defaultValue["auto_reschedule_checks"] = 1;
-        $defaultValue["use_aggressive_host_checking"] = 1;
-        $defaultValue["enable_flap_detection"] = 1;
-        $defaultValue["soft_state_dependencies"] = 1;
-        $defaultValue["obsess_over_services"] = 1;
-        $defaultValue["obsess_over_hosts"] = 1;
-        $defaultValue["process_performance_data"] = 1;
-        $defaultValue["check_for_orphaned_hosts"] = 1;
-        $defaultValue["check_for_orphaned_services"] = 1;
-        $defaultValue["check_service_freshness"] = 1;
-        $defaultValue["check_host_freshness"] = 1;
-        $defaultValue["use_regexp_matching"] = 1;
-        $defaultValue["use_true_regexp_matching"] = 1;
-        $defaultValue["service_inter_check_delay_method"] = 1;
-        $defaultValue["host_inter_check_delay_method"] = 1;
-        $defaultValue["enable_predictive_host_dependency_checks"] = 1;
-        $defaultValue["enable_predictive_service_dependency_checks"] = 1;
-        $defaultValue["use_large_installation_tweaks"] = 1;
-        $defaultValue["free_child_process_memory"] = 1;
-        $defaultValue["child_processes_fork_twice"] = 1;
-        $defaultValue["enable_environment_macros"] = 1;
-        $defaultValue["use_setpgid"] = 1;
-        $defaultValue["enable_embedded_perl"] = 1;
-        $defaultValue["use_embedded_perl_implicitly"] = 1;
-        $defaultValue["host_perfdata_file_mode"] = 1;
-        $defaultValue["translate_passive_host_checks"] = 1;
+        $config = Di::getDefault()->get('config');
+
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        $jsonFile = "{$centreonPath}/modules/CentreonEngineModule/data/default.json";
+        if (!file_exists($jsonFile)) {
+            throw new Exception('Default engine configuration JSON file not found');
+        }
+        $defaultValue = json_decode(file_get_contents($jsonFile), true);
+
         return $defaultValue;
+    }
+
+    /**
+     * Returns the template configuration values
+     * 
+     * @param int $pollerId
+     * @return array
+     * @throws \Centreon\Internal\Exception
+     */
+    private static function getTemplateValues($pollerId)
+    {
+        $templateValues = array(); 
+
+        /* Retrieve template name  */
+        $pollerParam = Poller::get($pollerId, 'tmpl_name');
+        if (!isset($pollerParam['tmpl_name']) || is_null($pollerParam['tmpl_name'])) {
+            return $templateValues;
+        }
+
+        /* Look for template file */
+        $config = Di::getDefault()->get('config');
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+
+        /* Get template engine file */
+        $listTpl = PollerTemplateManager::buildTemplatesList();
+        if (!isset($listTpl[$pollerParam['tmpl_name']])) {
+            throw new Exception('The template is not found on list of templates');
+        }
+        $jsonFile = $listTpl[$pollerParam['tmpl_name']]->getEnginePath();
+        if (!file_exists($jsonFile)) {
+            throw new Exception('Engine template file not found: ' . $pollerParam['tmpl_name'] . '.json');
+        }
+
+        /* Checks whether or not template file has all the sections */
+        $arr = json_decode(file_get_contents($jsonFile), true);
+        if (!isset($arr['content']) || !isset($arr['content']['engine']) || 
+            !isset($arr['content']['engine']['setup'])) {
+                return $templateValues;
+        }
+
+        /* Retrieve parameter values */
+        foreach ($arr['content']['engine']['setup'] as $setup) {
+            if (isset($setup['params'])) {
+                foreach ($setup['params'] as $k => $v) {
+                    $templateValues[$k] = $v;
+                }
+            }
+        }
+        return $templateValues;
     }
 
     /**
@@ -285,42 +362,12 @@ class ConfigGenerateMainRepository
      */
     private static function getCommandIdField()
     {
-        $commandId = array();
-        $commandId["global_host_event_handler"] = 1;
-        $commandId["global_service_event_handler"] = 1;
-        $commandId["ocsp_command"] = 1;
-        $commandId["ochp_command"] = 1;
-        $commandId["host_perfdata_command"] = 1;
-        $commandId["service_perfdata_command"] = 1;
-        $commandId["host_perfdata_file_processing_command"] = 1;
-        $commandId["service_perfdata_file_processing_command"] = 1;
-        return $commandId;
-    }
-
-    /**
-     * 
-     * @return int
-     */
-    private static function getDisabledField()
-    {
-        /* Field that we don't want into the config file */
-        $disabledField = array();
-        $disabledField["engine_id"] = 1;
-        $disabledField["engine_name"] = 1;
-        $disabledField["engine_server_id"] = 1;
-        $disabledField["engine_comment"] = 1;
-        $disabledField["engine_activate"] = 1;
-        $disabledField["debug_level_opt"] = 1;
-        $disabledField["cfg_file"] = 1;
-        
-        /* Todo : Remove */
-        $disabledField["use_check_result_path"] = 1;
-        $disabledField["temp_file"] = 1;
-        $disabledField["engine_user"] = 1;
-        $disabledField["engine_group"] = 1;
-        $disabledField["log_rotation_method"] = 1;
-        $disabledField["log_archive_path"] = 1;
-        $disabledField["lock_file"] = 1;
-        return $disabledField;
+        $commands = array(
+            'global_host_event_handler',
+            'global_service_event_handler',
+            'ocsp_command',
+            'ochp_command'
+        );
+        return $commands;
     }
 }

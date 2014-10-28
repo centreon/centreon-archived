@@ -35,7 +35,7 @@
 
 namespace CentreonBam\Controllers;
 
-class BusinessActivityController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class BusinessActivityController extends BasicController
 {
     protected $objectDisplayName = 'BusinessActivity';
     protected $objectName = 'BusinessActivity';
@@ -52,6 +52,17 @@ class BusinessActivityController extends \CentreonConfiguration\Controllers\Obje
      */
     public function listAction()
     {
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $this->tpl->addJs('hogan-3.0.0.min.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
     

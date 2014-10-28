@@ -65,6 +65,7 @@ class GenerateEngine
         static::$event = $event;
         $config = Di::getDefault()->get('config');
         static::$path = $config->get('global', 'centreon_generate_tmp_dir');
+        static::$path = rtrim(static::$path, '/') . '/engine/';
         static::$fileList = array();
 
         $event->setOutput(

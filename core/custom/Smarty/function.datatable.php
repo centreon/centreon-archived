@@ -54,6 +54,8 @@ function smarty_function_datatable($params, $smarty)
     $datatableParameters = array();
     $datatableParameters['header'] = $params['datatableObject']::getHeader();
     $datatableParameters['configuration'] = $params['datatableObject']::getConfiguration();
+
+    $datatableParameters = array_merge($datatableParameters, $params['datatableObject']::getExtraParams());
     
     $smarty->assign('datatableParameters', $datatableParameters);
     

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "displaySvcTooltipGraph",
+    "description": "Hook for tooltip on graph icon in service view"
+  },
+  {
+    "name": "displayHostTooltipDetail",
+    "description": "Hook for add information in host tooltip"
+  },
+  {
+    "name": "displaySvcTooltipDetail",
+    "description": "Hook for add information in service tooltip"
+  }
+]

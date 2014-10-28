@@ -143,7 +143,7 @@ class SearchController extends Controller
         if (!isset($params['searchText'])) {
             
         } else {
-            $data = SearchRepository::getSearchList($params['searchText']);
+            $data = SearchRepository::getSearchList($params['route'], $params['searchText']);
             $listSuccess = true;
         }
         

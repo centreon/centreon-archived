@@ -36,8 +36,10 @@
 namespace CentreonEngine\Listeners\CentreonConfiguration;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 use CentreonEngine\Repository\ConfigGenerateMainRepository;
 use CentreonConfiguration\Events\CopyFiles as CopyFilesEvent;
+use CentreonEngine\Repository\EngineRepository;
 
 class CopyFiles
 {
@@ -45,13 +47,20 @@ class CopyFiles
      * Execute action 
      *
      * @param \CentreonConfiguration\Events\CopyFiles $event
+     * @throws Exception
      */
     public static function execute(CopyFilesEvent $event)
     {
         $config = Di::getDefault()->get('config');
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        system("cp -Rf $tmpdir/{$event->getPollerId()}/* /etc/centreon-engine/");
-        $event->setOutput(_('Successfully copied files.'));
+        /* Get engine etc directory */
+        $dir = EngineRepository::getDirectories($event->getPollerId());
+        if (!isset($dir['conf_dir'])) {
+            throw new Exception('Engine configuration directory not set.');
+        }
+
+        system("cp -Rf $tmpdir/engine/{$event->getPollerId()}/* {$dir['conf_dir']}");
+        $event->setOutput(_('Successfully copied files for Centreon Engine.'));
     }
 }

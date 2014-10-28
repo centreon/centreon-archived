@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_searches">
+    <column>search_id</column>
+    <column>user_id</column>
+    <column>route</column>
+    <column>label</column>
+    <column>searchText</column>
+    <row>
+      <value>1</value>
+      <value>1</value>
+      <value>/test/route</value>
+      <value>test search</value>
+      <value>host:test service:disk</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>1</value>
+      <value>/test/route</value>
+      <value>test search 2</value>
+      <value>host:testsearchhost2 service:testsearchservice2</value>
+    </row>
+  </table>
+</dataset>

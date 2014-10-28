@@ -49,6 +49,7 @@ use \Centreon\Internal\Di;
  */
 class ServiceDatatable extends \Centreon\Internal\Datatable
 {
+    protected static $objectId = 'service_id';
     /**
      *
      * @var array 
@@ -243,6 +244,17 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             "className" => 'cell_center',
             "width" => '40px'
         ),
+    );
+
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'service'
+        )
+    );
+
+    protected static $hook= 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'service'
     );
     
     /**

@@ -37,12 +37,14 @@ namespace CentreonEngine\Listeners\CentreonConfiguration;
 
 use CentreonConfiguration\Events\EngineProcess as EngineProcessEvent;
 use Centreon\Internal\Exception;
+use CentreonEngine\Models\Engine;
 
 class EngineProcess
 {
     /**
      * @param \CentreonConfiguration\Events\EngineProcess $event
      * @throws \Centreon\Internal\Exception
+     * @todo send command to centreon.d
      */
     public static function execute(EngineProcessEvent $event)
     {
@@ -50,7 +52,12 @@ class EngineProcess
         if (!in_array($action, array('reload', 'restart', 'forcereload'))) {
             throw new Exception(sprintf('Unknown action %s', $action));
         }
-        $command = "sudo /etc/init.d/centengine {$action}";
+        $engineParams = Engine::get($event->getPollerId(), 'init_script');
+        if (!isset($engineParams['init_script'])) {
+            throw new Exception(sprintf("Could not find init script for poller %s", $event->getPollerId()));
+        }
+        $initScript = $engineParams['init_script'];
+        $command = "sudo {$initScript} {$action}";
         $status = 0;
         $output = array();
         exec($command, $output, $status);

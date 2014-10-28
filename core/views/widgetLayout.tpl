@@ -17,7 +17,7 @@
 {$jsFile|js}
 {/foreach}
 {block name="javascript-bottom"}
-<script>{$customJs}</script>
+<script>{get_custom_js}</script>
 {/block}
 </body>
 </html>

@@ -21,6 +21,11 @@
 
 {block name="javascript-bottom" append}
 <script>
+{if isset($jsUrl)}
+var jsUrl = {$jsUrl|json_encode};
+{else}
+var jsUrl = {};
+{/if}
 $(document).ready(function() {
     leftPanelHeight();
     $('#main').on('resize', function() {

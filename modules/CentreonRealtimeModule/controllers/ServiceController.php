@@ -34,10 +34,11 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\ServicedetailRepository;
-use \CentreonRealtime\Repository\HostdetailRepository;
-use \Centreon\Internal\Utils\Status;
-use \Centreon\Internal\Utils\Datetime;
+use CentreonRealtime\Repository\ServicedetailRepository;
+use CentreonRealtime\Repository\HostdetailRepository;
+use Centreon\Internal\Utils\Status;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Hook;
 
 /**
  * Display service monitoring states
@@ -62,6 +63,7 @@ class ServiceController extends \Centreon\Internal\Controller
     public function displayServicesAction()
     {
         $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
 
         /* Load css */
         $tpl->addCss('dataTables.tableTools.min.css')
@@ -71,7 +73,8 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addCss('dataTables.bootstrap.css')
             ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')
-            ->addCss('daterangepicker-bs3.css');
+            ->addCss('daterangepicker-bs3.css')
+            ->addCss('centreon.tag.css', 'centreon-administration');
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
@@ -88,10 +91,12 @@ class ServiceController extends \Centreon\Internal\Controller
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-langs.min.js')
+            ->addJs('hogan-3.0.0.min.js')
             ->addJs('daterangepicker.js')
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js')
-            ->addJs('centreon.overlay.js');
+            ->addJs('centreon.overlay.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
@@ -110,6 +115,16 @@ class ServiceController extends \Centreon\Internal\Controller
             'actions' => HostdetailRepository::getMonitoringActions()
         );
         $tpl->assign('actions', $actions);
+
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/administration/tag/add'),
+                'del' => $router->getPathFor('/administration/tag/delete')
+            )
+        );
+        $tpl->append('jsUrl', $urls, true);
+        /* Add javascript and css file for hooks */
+        Hook::addStaticFile('displaySvcTooltipGraph');
 
         $tpl->display('file:[CentreonRealtimeModule]console.tpl');
     }
@@ -196,7 +211,24 @@ class ServiceController extends \Centreon\Internal\Controller
         } else {
             $this->tpl->assign('error', sprintf(_('No data found for service id:%s'), $params['id']));
         }
+        $this->tpl->assign('params', array('host_id' => $params['hid'], 'svc_id' => $params['sid']));
         $this->tpl->display('file:[CentreonRealtimeModule]service_tooltip.tpl');
+    }
+
+    /**
+     * Display graph in a tooltip
+     *
+     * @method get
+     * @route /realtime/service/[i:hid]/[i:sid]/graph
+     */
+    public function serviceTooltipGraphAction()
+    {
+        $params = $this->getParams();
+        $this->tpl->assign(
+            'params',
+            array('svc_id' => $params['sid'])
+        );
+        $this->tpl->display('file:[CentreonRealtimeModule]service_graph_tooltip.tpl');
     }
 
     /**

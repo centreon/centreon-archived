@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class UserGroupController extends \CentreonConfiguration\Controllers\ObjectAbstract
+class UserGroupController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Usergroup';
     protected $objectName = 'usergroup';

@@ -1,6 +1,6 @@
 {$field}
 <script>
 $(function() {
-  {$customJs}
+  {get_custom_js}
 });
 </script>

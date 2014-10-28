@@ -17,8 +17,7 @@
             <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>
           </ul>
         </div>
-        {if isset($datatableParameters.groupname) || isset($datatableParameters.hasCategory)}
-        <div class="btn-group">
+        <div class="btn-group hidden" id="addToGroup">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             {t}Add to{/t}
             <span class="caret"></span>
@@ -26,9 +25,10 @@
           <ul class="dropdown-menu">
             {if isset($datatableParameters.groupname) }<li><a href="#">{$datatableParameters.groupname}</a></li>{/if}
             {if isset($datatableParameters.hasCategory) }<li><a href="#">{t}Category{/t}</a></li>{/if}
+            {if !isset($datatableParameters.addToHook) }{$datatableParameters.addToHook = array()}{/if}
+            {hook name='displayAppendAddTo' container='[hook]' params=$datatableParameters.addToHook}
           </ul>
         </div>
-        {/if}
       </div>
     </div>
 </div>

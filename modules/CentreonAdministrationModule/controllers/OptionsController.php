@@ -35,7 +35,10 @@
  */
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form;
+use Centreon\Internal\Form\Generator;
+use CentreonAdministration\Models\Options;
+use CentreonAdministration\Repository\OptionRepository;
 
 /**
  * Description of OptionsController
@@ -44,36 +47,30 @@ use \Centreon\Internal\Form\Generator;
  */
 class OptionsController extends \Centreon\Internal\Controller
 {
+    public static $moduleName = 'centreon-administration';
+    
     /**
      * @method get
      * @route /administration/options/centreon
      */
     public function centreonAction()
     {
-        // Init template
-        $di = \Centreon\Internal\Di::getDefault();
-        $tpl = $di->get('template');
-        
         //
         $objectFormUpdateUrl = '/administration/options/centreon/update';
         
         $myForm = new Generator($objectFormUpdateUrl);
         
         // get object Current Values
-        $defaultValues = array();
-        $rawDefaultValues = \CentreonAdministration\Models\Options::getList();
-        foreach ($rawDefaultValues as $valuesToKeep) {
-            $defaultValues[$valuesToKeep['key']] = $valuesToKeep['value'];
-        }
-        
-        $myForm->setDefaultValues($defaultValues);
+        $myForm->setDefaultValues(Options::getList());
         
         // Display page
-        $tpl->assign('pageTitle', 'Centreon Options');
-        $tpl->assign('form', $myForm->generate());
-        $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $tpl->display('file:[CentreonAdministrationModule]editoptions.tpl');
+        $this->tpl->assign('pageTitle', 'Centreon Options');
+        $this->tpl->assign('form', $myForm->getFormHandler()->toSmarty());
+        $this->tpl->assign('formComponents', $myForm->getFormComponents());
+        $this->tpl->assign('hookParams', array('pollerId' => 1));
+        $this->tpl->assign('formName', $myForm->getName());
+        $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
+        $this->tpl->display('editoptions.tpl');
     }
     
     /**
@@ -83,33 +80,20 @@ class OptionsController extends \Centreon\Internal\Controller
     public function updateAction()
     {
         $givenParameters = clone $this->getParams('post');
-        $updateSuccessful = true;
-        $updateErrorMessage = '';
         
-        $validationResult = \Centreon\Internal\Form::validate("form", $this->getUri(), $givenParameters);
+        $validationResult = Form::validate("form", $this->getUri(), self::$moduleName, $givenParameters);
         if ($validationResult['success']) {
             if (isset($givenParameters['token'])) {
                 unset($givenParameters['token']);
             }
-
-            $optionsToSave = array();
-            foreach ($givenParameters as $key => $value) {
-                $optionsToSave[$key]= $value;
-            }
-
-            \CentreonAdministration\Models\Options::update($optionsToSave);
-        } else {
-            $updateSuccessful = false;
-            $updateErrorMessage = $validationResult['error'];
-        }
-        
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
-        if ($updateSuccessful) {
+            
+            OptionRepository::update($givenParameters);
+            
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
-            $router->response()->json(array('success' => true));
+            $this->router->response()->json(array('success' => true));
         } else {
-            $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+            $this->router->response()->json(array('success' => false,'error' => $validationResult['error']));
         }
     }
 }

@@ -1,0 +1,88 @@
+{
+    "name" : "Poller",
+    "content" : {
+        "broker" : {
+            "setup" : [
+                {
+                    "name" : "Broker Module",
+                    "forms" : {
+                        "steps" : [
+                            {
+                                "name" : "Central connection",
+                                "order": 1,
+                                "fields": [
+                                    {
+                                        "label" : "Central IP Address",
+                                        "name": "broker_central_ip",
+                                        "type" : "text",
+                                        "require": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "params" : {
+                        "mode" : [
+                            {
+                                "normal" : [
+                                    {
+                                        "general" : {
+                                            "name" : "cb_module"
+                                        },
+                                        "output" : [
+                                            {
+                                                "type" :"tcp",
+                                                "name" : "central-output",
+                                                "host": "%broker_central_ip%",
+                                                "port" : "5668"
+                                            },
+                                            {
+                                                "type" :"file",
+                                                "name" : "failover-central-output",
+                                                "path" : "%global_broker_data_directory%/central-output.failover",
+                                                "failover": "central-output"
+                                            }
+                                        ],
+                                        "logger": [
+                                          {
+                                            "type": "file",
+                                            "name": "%global_broker_logs_directory%/cb_module.log"
+                                          }
+                                        ]
+                                    }
+                                ],
+                                "one-peer-retention" : [
+                                    {
+                                        "general" : {
+                                            "name" : "cb_module"
+                                        },
+                                        "output" : [
+                                            {
+                                                "type":"tcp",
+                                                "name": "central-output",
+                                                "port" : "5668",
+                                                "one_peer_retention_mode": "yes"
+                                            },
+                                            {
+                                                "type" :"file",
+                                                "name" : "failover-central-output",
+                                                "path" : "%global_broker_data_directory%/central-output.failover",
+                                                "failover": "central-output"
+                                            }
+                                        ],
+                                        "logger": [
+                                          {
+                                            "type": "file",
+                                            "name": "%global_broker_logs_directory%/cb_module.log"
+                                          }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

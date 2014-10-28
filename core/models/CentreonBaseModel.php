@@ -34,11 +34,10 @@
  *
  */
 
-
 namespace Centreon\Models;
 
-use \Centreon\Internal\Exception;
-use \Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
 
 /**
  * Abstract Centreon Object class

@@ -43,7 +43,7 @@ namespace CentreonRealtime\Models;
  */
 class Host extends \Centreon\Models\CentreonStorageBaseModel
 {
-    protected static $table = "hosts";
+    protected static $table = "rt_hosts";
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "name";
 }

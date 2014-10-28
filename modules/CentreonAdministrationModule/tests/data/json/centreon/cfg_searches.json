@@ -1,0 +1,14 @@
+[
+    {
+        "user_id": "1",
+        "route": "/test/route",
+        "label": "test search",
+        "searchText": "host:testsearchhost service:testsearchservice"
+    },
+    {
+        "user_id": "1",
+        "route": "/test/route",
+        "label": "test search 2",
+        "searchText": "host:testsearchhost2 service:testsearchservice2"
+    }
+]
