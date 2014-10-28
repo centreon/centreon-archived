@@ -403,13 +403,17 @@ aside {
 
 /* Datatable */
 .centreon_table {
-    margin: 0 20px;
+    margin: 0 10px;
     padding-top: 20px;
     padding-bottom: 60px; /* For floating pagination */
 
     table {
+        thead>tr>th {
+            border-bottom-color: @topbar-border-color;
+	}
         td {
             font-size: 12px;
+	    white-space: nowrap;
         }
     }
 }
@@ -589,8 +593,18 @@ td.incident-extended-info {
 
 /* Search block */
 .search-body {
+   background-color: @panel-default-heading-bg;
+
   .row > div {
     margin-bottom: 10px;
+  }
+}
+
+.centreon-search-block {
+  margin: 10px;
+
+  .search-expand {
+    line-height: 36px;
   }
 }
 

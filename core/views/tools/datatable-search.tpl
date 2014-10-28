@@ -1,4 +1,4 @@
-<div class="panel-group" id="accordion">
+<div class="panel-group centreon-search-block" id="accordion">
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
@@ -43,18 +43,20 @@
                     {/if}
                 {/if}
                 <div class="{$clsOffset}col-md-4 form-group">
-                    <div class=" input-group">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="loadView" data-original-title="Load"><i class="fa fa-upload"></i></button>
-                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="saveView" data-original-title="Save"><i class="fa fa-floppy-o"></i></button>
-                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="deleteView" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
-                        </span>
-                        <input type="text" name="filters" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="pull-right">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-plus-square-o"></i></a>
+                    <div class="row">
+                      <div class="col-xs-11">
+                        <div class=" input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="loadView" data-original-title="Load"><i class="fa fa-upload"></i></button>
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="saveView" data-original-title="Save"><i class="fa fa-floppy-o"></i></button>
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="deleteView" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
+                            </span>
+                            <input type="text" name="filters" class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-xs-1">
+                          <a data-toggle="collapse" class="search-expand" data-parent="#accordion" href="#collapseOne"><i class="fa fa-plus-square-o"></i></a>
+                      </div>
                     </div>
                 </div>
             </div>
