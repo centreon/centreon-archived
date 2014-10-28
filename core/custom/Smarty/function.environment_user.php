@@ -37,17 +37,16 @@
 /*
  * Smarty plugin
  * -------------------------------------------------------------
- * File:     function.environment.php
+ * File:     function.environment_user.php
  * Type:     function
- * Name:     environment
+ * Name:     environment_user
  * Purpose:  returns html of environment
  * -------------------------------------------------------------
  */
-function smarty_function_environment($params, $template) {
-    $html = '<div class="navbar-left">';
-    $html .= '<ul class="nav navbar-nav navbar-left">';
+function smarty_function_environment_user($params, $template) {
+    $html = '';
     $m = \Centreon\Internal\Di::getDefault()->get('menu');
-    $envmenu = $m->getMenu(null, null, 'top');
+    $envmenu = $m->getMenu(null, null, 'user');
     foreach ($envmenu as $menu) {
         $html .= '<li>';
         $html .= '<a href="#" class="envmenu" data-menu="' . $menu['menu_id'] . '">';
@@ -60,7 +59,5 @@ function smarty_function_environment($params, $template) {
         $html .= "</a>";
         $html .= "</li>";
     }
-    $html .= "</ul>";
-    $html .= "</div>";
     return $html;
 }

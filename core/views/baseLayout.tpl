@@ -39,6 +39,8 @@
             </div>
           </a>
           <ul class="dropdown-menu">
+            {environment_user}
+            <li class="divider"></li>
             <li><a href="#"><i class="fa fa-user"></i> {t}Profile{/t}</a></li>
             <li><a href="#"><i class="fa fa-cog"></i> {t}Settings{/t}</a></li>
             <li><a href="#"><i class="fa fa-envelope"></i> {t}Messages{/t}</a></li>

@@ -274,8 +274,8 @@ class Informations
         
         if (!isset($menus[$data['short_name']])) {
             $sql = "INSERT INTO cfg_menus 
-                (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, module_id) VALUES
-                (:name, :short_name, :parent, :route, :icon_class, :icon, :bgcolor, :order, :module)";
+                (name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order, module_id, menu_block) VALUES
+                (:name, :short_name, :parent, :route, :icon_class, :icon, :bgcolor, :order, :module, :menu_block)";
         }
         
         $stmt = $db->prepare($sql);
@@ -294,6 +294,13 @@ class Informations
         $stmt->bindParam(':order', $order);
         $module = isset($data['module']) ? $data['module'] : 0;
         $stmt->bindParam(':module', $module);
+        $menuBlock = 'top';
+        if (isset($data['block'])) {
+            $menuBlock = $data['block'];
+        } elseif (isset($data['parent'])) {
+            $menuBlock = 'submenu';
+        }
+        $stmt->bindParam(':menu_block', $menuBlock, \PDO::PARAM_STR);
         $stmt->execute();
         if (!isset($menus[$data['short_name']])) {
             $menus[$data['short_name']] = $db->lastInsertId('cfg_menus', 'menu_id');

@@ -11,6 +11,7 @@
         <column name="bgcolor" phpName="Bgcolor" type="VARCHAR" size="55" required="false"/>
         <column name="module_id" phpName="ModuleId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
         <column name="menu_order" phpName="MenuOrder" type="TINYINT" size="5" required="false" defaultValue="0"/>
+        <column name="menu_block" phpName="MenuBlock" type="VARCHAR" size="10" required="true" defaultValue="submenu"/>
         <foreign-key foreignTable="cfg_modules" name="fk_menus_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="module_id" foreign="id"/>
         </foreign-key>
