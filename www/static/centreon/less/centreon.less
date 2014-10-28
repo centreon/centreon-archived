@@ -190,12 +190,12 @@ aside {
       a {
         display: block;
         padding: 10px 15px;
-	text-align: right;
+        text-align: right;
         color: @navbar-default-link-color;
 	
         &:hover {
           color: @navbar-default-link-hover-color;
-	  background-color: darken(@navbar-default-bg, 5%);
+          background-color: darken(@navbar-default-bg, 5%);
         }
       }
     }
@@ -234,6 +234,22 @@ aside {
 //        border-left: 1px solid @navbar-default-color;
         position: absolute;
         z-index: 1;
+    }
+}
+
+.dropdown-submenu {
+    position: absolute;
+    display: none;
+    z-index: 1000;
+
+    border: 1px solid @navbar-default-border;
+    background-color: @navbar-default-bg;
+
+    &.show {
+      display: block;
+    }
+
+    ul {
     }
 }
 

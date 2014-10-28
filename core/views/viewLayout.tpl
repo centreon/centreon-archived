@@ -44,9 +44,30 @@ $(document).ready(function() {
         e.preventDefault();
         e.stopPropagation();
         var target = e.currentTarget;
-        $(target).find('ul').collapse('toggle');
-        $(target).find('i.toggle').toggleClass('fa-plus-square-o').toggleClass('fa-minus-square-o');
-        
+        /* Test if extand */
+        if ($(target).parents("#left-panel").hasClass('mini')) {
+            var $a = $(target).find('a');
+            var menuId = $a.data('menuid');
+            if ($a.hasClass('accordion-toggle')) {
+                var $submenu = $("#submenu_" + menuId);
+                if ($submenu.length == 0) {
+                    return;
+                }
+                /* Get pos */
+                var pos = $a.offset();
+                $submenu.css({
+                    top: pos.top,
+                    left: pos.left + $(target).width()
+                }).toggleClass("show");
+            }
+            $('body').one('click', function() {
+                $submenu.toggleClass("show");
+            });
+        } else {
+            $(target).find('ul').collapse('toggle');
+            $(target).find('i.toggle').toggleClass('fa-plus-square-o').toggleClass('fa-minus-square-o');
+        }
+
         var targetUrl = $(target).find('a').attr('href');
         if (targetUrl !== undefined) {
             document.location.href = targetUrl;
@@ -57,6 +78,12 @@ $(document).ready(function() {
       e.preventDefault();
       e.stopPropagation();
       $( this ).find( "i.fa" ).toggleClass( "fa-angle-double-left" ).toggleClass( "fa-angle-double-right" );
+      /* Reduce submenu if go to mini */
+      if ( ! $( "aside" ).hasClass( "mini" )) {
+          var $listToggle = $( "#left-panel a.accordion-toggle" );
+          $listToggle.parent( "li" ).find( "ul" ).collapse( "hide" );
+          $listToggle.find( "i.toggle" ).removeClass( "fa-minus-square-o" ).addClass( "fa-plus-square-o" );
+      }
       $( "aside" ).toggleClass( "mini" );
       $( ".content" ).toggleClass( "mini" );
       $( "#menu1" ).find( "li span" ).toggle();

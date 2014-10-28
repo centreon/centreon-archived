@@ -48,16 +48,6 @@ function leftPanelHeight() {
     }
 }
 
-/* Display environmnent menu */
-function displayEnvironmentMenu() {
-    $('#environment-menu').show();
-    $(window).one('click', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        $('#environment-menu').hide();
-    });
-}
-
 /* Display full footer */
 function toggleFooter() {
     var footerHeight = $('.bottombar > div.label-button').height();
@@ -90,7 +80,7 @@ function generateMenu($elParent, menu, subLevelId, childId) {
     for (var i = 0; i < lenMenu; i++) {
         var $li = $('<li></li>');
         $li.appendTo($elParent);
-        var $link = $('<a></a>').attr('href', menu[i].url);
+        var $link = $('<a></a>').attr('href', menu[i].url).attr('data-menuid', menu[i].menu_id);
         if (menu[i].menu_id == childId) {
             $li.addClass('submenu-active');
         }
@@ -112,12 +102,15 @@ function generateMenu($elParent, menu, subLevelId, childId) {
             $('<i></i>').addClass('fa').addClass(sign).addClass('toggle').addClass('pull-right').appendTo($link);
             $link.addClass('accordion-toggle');
             var $childList = $('<ul></ul>');
+            var $submenu = $('<ul></ul>').addClass('nav');
+            $('<div></div>').addClass('dropdown-submenu').attr("id", "submenu_" + menu[i].menu_id).append($submenu).appendTo($('body'));
             if (menu[i].menu_id == subLevelId) {
                 $childList.addClass('in');
             }
             $childList.addClass('collapse').addClass('nav').addClass('submenu').appendTo($li);
             $childList.collapse({ toggle: false });
             generateMenu($childList, menu[i].children, subLevelId, childId);
+            generateMenu($submenu, menu[i].children, subLevelId, childId);
         } else if (childId === 0 && menu[i].menu_id == subLevelId) {
             $li.addClass('active');
 	    }

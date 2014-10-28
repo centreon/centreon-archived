@@ -8,21 +8,25 @@
             {
                 "name": "Incidents",
                 "short_name": "incidents",
+                "icon_class": "fa fa-bell",
                 "route": "/realtime/incident"
             },
             {
                 "name": "Services",
                 "short_name": "monitoring-services",
+                "icon_class": "fa fa-rss",
                 "route": "/realtime/service"
             },
             {
                 "name": "Hosts",
                 "short_name": "monitoring-hosts",
+                "icon_class": "fa fa-desktop",
                 "route": "/realtime/host"
             },
             {
                 "name": "EventLogs",
                 "short_name": "eventlogs",
+                "icon_class": "fa fa-edit",
                 "route": "/realtime/eventlogs"
             }
         ]

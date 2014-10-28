@@ -8,6 +8,7 @@
             {
                 "name": "Home page",
                 "short_name": "customviews",
+                "icon_class": "fa fa-home",
                 "route": "/customview"
             }
         ]

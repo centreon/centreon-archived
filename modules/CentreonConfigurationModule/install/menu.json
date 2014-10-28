@@ -42,11 +42,13 @@
             {
                 "name" : "Environments",
                 "short_name": "conf_environments_list",
+                "icon_class": "fa fa-tree",
                 "route": "/configuration/environment"
             },
             {
                 "name": "Hosts",
                 "short_name": "conf_hosts",
+                "icon_class": "fa fa-desktop",
                 "menus": [
                     {
                         "name": "Hosts",
@@ -73,6 +75,7 @@
             {
                 "name": "Services",
                 "short_name": "conf_services",
+                "icon_class": "fa fa-rss",
                 "menus": [
                     {
                         "name": "Services",
@@ -99,6 +102,7 @@
             {
                 "name": "Commands",
                 "short_name": "conf_commands",
+                "icon_class": "fa fa-terminal",
                 "menus": [
                     {
                         "name": "Commands",
@@ -115,6 +119,7 @@
             {
                 "name": "Users",
                 "short_name": "conf_users",
+                "icon_class": "fa fa-users",
                 "menus": [
                     {
                         "name": "Users",
@@ -131,6 +136,7 @@
             {
                 "name": "Traps",
                 "short_name": "conf_traps",
+                "icon_class": "fa fa-bell",
                 "menus": [
                     {
                         "name": "Traps",
@@ -145,29 +151,15 @@
                 ]
             },
             {
-                "name": "Users",
-                "short_name": "conf_users",
-                "menus": [
-                    {
-                        "name": "Users",
-                        "short_name": "conf_users_list",
-                        "route": "/configuration/user"
-                    },
-                    {
-                        "name": "User groups",
-                        "short_name": "conf_usergroups_list",
-                        "route": "/configuration/usergroup"
-                    }
-                ]
-            },
-            {
                 "name": "Timeperiods",
                 "short_name": "conf_timeperiod",
+                "icon_class": "fa fa-calendar",
                 "route": "/configuration/timeperiod"
             },
             {
                 "name": "Pollers",
                 "short_name": "conf_poller",
+                "icon_class": "fa fa-code-fork",
                 "route": "/configuration/poller"
             }
         ]
