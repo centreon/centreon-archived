@@ -409,12 +409,17 @@ aside {
 
     table {
         thead>tr>th {
-            border-bottom-color: @topbar-border-color;
+            border-bottom-color: @topbar-bg-color;
+	    border-bottom-width: 2px;
 	}
         td {
             font-size: 12px;
 	    white-space: nowrap;
         }
+    }
+
+    .dataTables_info {
+      font-size: 75%;
     }
 }
 

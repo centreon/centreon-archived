@@ -24,7 +24,7 @@
             },
             {$datatableParameters.configuration}
             "bSortCellsTop": true,
-            'sDom': "R<'row'r<'clear'><'col-sm-4'l><'col-sm-1 pull-right'C><'col-sm-1 pull-right'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            'sDom': "R<'row'r<'clear'><'col-sm-4'l><'col-sm-2 pull-right'<'row'<'col-sm-6'T><'col-sm-6 pull-right'C>>>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             "columns": [
                 {$datatableParameters.header.columnHeader}
             ],
