@@ -65,7 +65,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             array('h.name', 'asc'),
             array('s.description', 'asc')
         ),
-        'searchCols' => array('h.enabled' => '1', "s.enabled" => '1'),
+        'searchCols' => array(),
         'stateSave' => true,
         'paging' => true,
     );
