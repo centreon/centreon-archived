@@ -582,6 +582,14 @@
 
         $("input[name='advsearch']").centreonsearch({
             minChars: 2,
+            fnRunSearch: function(obj) {
+              obj.fillAssociateFields();
+              $('.centreon-search').each(function(idx, element) {
+                  oTable.api().column($(element).data('column-index'))
+                      .search($(element).val());
+              });
+              oTable.api().draw();
+            },
             tags: {
             {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
                 {if $colSearch['type'] == 'select'}

@@ -23,7 +23,8 @@
   $.fn.centreonsearch.defaults = {
     minChars: 3,
     tags: {},
-    associateFields: {}
+    associateFields: {},
+    fnRunSearch: function() {}
   };
 
   $.CentreonSearch = function( $elem, options ) {
@@ -101,6 +102,9 @@
 
       case 13: // enter
         this.valid();
+        if ( typeof self.options.fnRunSearch == 'function') {
+          self.options.fnRunSearch(self);
+        }
         break;
 
       case 27: // escape
