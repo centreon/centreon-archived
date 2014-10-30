@@ -14,8 +14,9 @@ Sommaire :
 .. toctree::
    :maxdepth: 2
 
-   a_propos/index
+   release_notes/index
    installation/index
+   upgrade/index
    guide_utilisateur/index
    guide_exploitation/index
    architecture/index
