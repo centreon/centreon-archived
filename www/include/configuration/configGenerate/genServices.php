@@ -317,7 +317,7 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
                     print_line("contact_groups", "null");
                 } else {
                     if (isset($cgSCache[$service["service_id"]])) {
@@ -341,7 +341,7 @@
 				/*
 				 * Contact Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contacts", "null");
                 } else {
                     if (isset($cctSCache[$service["service_id"]])) {
@@ -672,7 +672,7 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contact_groups", "null");
                 } else {
                     if (isset($cgSCache[$service["service_id"]])) {
@@ -696,7 +696,7 @@
 				/*
 				 * Contact Relation only for Nagios 3
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMeth->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contacts", "null");
                 } else {
                     if (isset($cctSCache[$service["service_id"]])) {
