@@ -60,6 +60,7 @@ class CopyFiles
             throw new Exception('Engine configuration directory not set.');
         }
 
+        system("rm -rf {$dir['conf_dir']}/resources/*.cfg");
         system("cp -Rf $tmpdir/engine/{$event->getPollerId()}/* {$dir['conf_dir']}");
         $event->setOutput(_('Successfully copied files for Centreon Engine.'));
     }

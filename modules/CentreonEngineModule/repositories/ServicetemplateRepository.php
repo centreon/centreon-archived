@@ -176,6 +176,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                     }
                 }
             }
+            $tmpData['register'] = 0;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
         }

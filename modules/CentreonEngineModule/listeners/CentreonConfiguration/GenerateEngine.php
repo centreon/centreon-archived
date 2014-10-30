@@ -68,6 +68,8 @@ class GenerateEngine
         static::$path = rtrim(static::$path, '/') . '/engine/';
         static::$fileList = array();
 
+        system("rm -rf " . static::$path . $event->getPollerId() . "/resources/");
+
         $event->setOutput(
             sprintf(
                 _('Generating temporary configuration files for poller %s:'), $event->getPollerId()
