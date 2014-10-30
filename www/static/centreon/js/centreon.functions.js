@@ -157,18 +157,28 @@ function topClock() {
     setTimeout(function() { topClock(); }, 500);
 }
 
-function alertMessage(msg, cls) {
+function alertMessage(msg, cls, timeClose) {
     var $alertBox = $('#flash-message'); 
     $alertBox.addClass(cls);
     $alertBox.append(msg);
     $alertBox.show();
+    if ( timeClose !== undefined ) {
+      setTimeout(function() {
+        alertClose();
+      }, timeClose * 1000);
+    }
 }
 
-function alertModalMessage(msg, cls) {
+function alertModalMessage(msg, cls, timeClose) {
     var $alertBox = $('#modal-flash-message'); 
     $alertBox.addClass(cls);
     $alertBox.append(msg);
     $alertBox.show();
+    if ( timeClose !== undefined ) {
+      setTimeout(function() {
+        alertModalClose();
+      }, timeClose * 1000);
+    }
 }
 
 function alertClose() {

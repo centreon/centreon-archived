@@ -145,7 +145,7 @@ $(function() {
           {if isset($formRedirect) && $formRedirect}
             window.location="{url_for url=$formRedirectRoute}";
           {else}
-            alertMessage("The object has been successfully saved", "alert-success");
+            alertMessage("{t}The object has been successfully saved{/t}", "alert-success", 3);
           {/if}
         } else {
           alertMessage( data.error, "alert-danger" );

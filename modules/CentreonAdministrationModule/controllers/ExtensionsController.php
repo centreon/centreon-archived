@@ -224,9 +224,13 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \Centreon\Models\Module::update($params['id'], array('isactivated' => '0'));
-        $backUrl = $router->getPathFor('/administration/extensions/module');
-        $router->response()->redirect($backUrl, 200);
+        try {
+            \Centreon\Models\Module::update($params['id'], array('isactivated' => '0'));
+        } catch (\Exception $e) {
+            $router->response()->json(array('success' => false));
+            return;
+        }
+        $router->response()->json(array('success' => true));
     }
     
     /**

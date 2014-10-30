@@ -173,7 +173,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -261,7 +261,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully duplicated{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully duplicated{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -358,7 +358,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The changes have been applied{/t}', 'alert-success');
+                            alertMessage('{t}The changes have been applied{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -457,7 +457,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully Enabled{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully Enabled{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -530,7 +530,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully Disabled{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully Disabled{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -642,10 +642,10 @@
         $( "#saveView" ).on( "click", function( e ) {
           alertClose();
           if ( $( "input[name='filters']" ).val().trim() === "" ) {
-            alertMessage( "The filters name must be set.", "alert-danger" );
+            alertMessage( "{t}The filters name must be set.{/t}", "alert-danger" );
             return;
           } else if ( $( "input[name='advsearch']" ).val().trim() === "" ) {
-            alertMessage( "The search must be set.", "alert-danger" );
+            alertMessage( "{t}The search must be set.{/t}", "alert-danger" );
             return;
           }
           $.ajax({
@@ -659,7 +659,7 @@
             },
             success: function( data, textStatus, jqXHR ) {
               if ( data.success ) {
-                alertMessage( "Your search is saved.", "alert-success" );
+                alertMessage( "{t}Your search is saved.{/t}", "alert-success", 3 );
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
@@ -671,7 +671,7 @@
         $( "#deleteView" ).on( "click", function( e ) {
           alertClose();
           if ( $( "input[name='filters']" ).val().trim() === "" ) {
-            alertMessage( "The filters name must be set.", "alert-danger" );
+            alertMessage( "{t}The filters name must be set.{/t}", "alert-danger" );
             return;
           }
           $.ajax({
@@ -684,7 +684,7 @@
             },
             success: function( data, textStatus, jqXHR ) {
               if ( data.success ) {
-                alertMessage( "Your search is deleted.", "alert-success" );
+                alertMessage( "{t}Your search is deleted.{/t}", "alert-success", 3 );
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
