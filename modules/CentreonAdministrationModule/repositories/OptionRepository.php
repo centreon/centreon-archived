@@ -69,5 +69,17 @@ class OptionRepository
         Options::insert($optionsToSave, $group);
     }
     
+    /**
+     * 
+     * @param type $group
+     * @param array $options
+     * @return array
+     */
+    public static function get($group = null, array $options = array())
+    {
+        $listOfOptions = Options::getList($group, $options);
+        return $listOfOptions;
+    }
+    
     
 }

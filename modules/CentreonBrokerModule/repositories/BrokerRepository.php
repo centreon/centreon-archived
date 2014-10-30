@@ -36,6 +36,7 @@
 namespace CentreonBroker\Repository;
 
 use Centreon\Internal\Di;
+use CentreonAdministration\Repository\OptionRepository;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
 /**
@@ -293,5 +294,46 @@ class BrokerRepository
             $values[$row['name']] = $row['value'];
         }
         return $values;
+    }
+    
+    public static function getGlobalValues()
+    {
+        $globalOptions = array();
+        
+        $defaultOptionskeys = array(
+            'rrd_metric_path',
+            'rrd_status_path',
+            'rrd_path',
+            'rrd_port',
+            'storage_interval',
+            'broker_modules_directory',
+            'broker_data_directory',
+        );
+        $defaultOptionsValues = OptionRepository::get('default', $defaultOptionskeys);
+        
+        
+        $defaultOptionsValuesKeys = array_keys($defaultOptionsValues);
+        foreach ($defaultOptionsValuesKeys as &$optValue) {
+            switch($optValue) {
+                default:
+                    break;
+                    
+                case 'rrd_metric_path':
+                    $optValue = 'rrd_metrics';
+                    break;
+                
+                case 'rrd_status_path':
+                    $optValue = 'rrd_status';
+                    break;
+                
+                case 'storage_interval':
+                    $optValue = 'interval';
+                    break;
+            }
+            $optValue = 'global_' . $optValue;
+        }
+        $globalOptions = array_combine($defaultOptionsValuesKeys, array_values($defaultOptionsValues));
+        
+        return $globalOptions;
     }
 }

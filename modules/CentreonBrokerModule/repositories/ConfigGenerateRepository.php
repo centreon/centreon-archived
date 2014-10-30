@@ -337,8 +337,11 @@ class ConfigGenerateRepository
         );
         $dbInformation = array_combine($dbKeys, array_values($dbInformation));
         $this->baseConfig = array_merge($dbInformation, $this->baseConfig);
-            
-
+        
+        /* get global value in database */
+        $globalOptions = BrokerRepository::getGlobalValues();
+        $this->baseConfig = array_merge($globalOptions, $this->baseConfig);
+        
         /* Add % in begin and end of keys */
         $keys = array_keys($this->baseConfig);
         $values = array_values($this->baseConfig);
