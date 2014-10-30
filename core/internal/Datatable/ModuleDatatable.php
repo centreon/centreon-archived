@@ -136,53 +136,6 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
             'visible' => true,
         ),
         array (
-            'title' => 'Status',
-            'name' => 'isactivated',
-            'data' => 'isactivated',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' => array(
-                    'selecttype' => 'url',
-                    'parameters' => array(
-                        '0' => array(
-                            'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]/enable',
-                                'routeParams' => array(
-                                    'id' => '::id::'
-                                ),
-                                'linkName' => 'Disabled',
-                                'styleClass' => 'btn btn-danger btn-block'
-                            )
-                        ),
-                        '1' => array(
-                            'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]/disable',
-                                'routeParams' => array(
-                                    'id' => '::id::'
-                                ),
-                                'linkName' => 'Enabled',
-                                'styleClass' => 'btn btn-success btn-block'
-                            )
-                        ),
-                        '2' => array(
-                            'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]',
-                                'routeParams' => array(
-                                    'id' => '::id::'
-                                ),
-                                'linkName' => 'Not Disableable',
-                                'styleClass' => 'btn btn-primary btn-block'
-                            )
-                        ),
-                    )
-                )
-            )
-        ),
-        array (
             'title' => 'Install Status',
             'name' => 'isinstalled',
             'data' => 'isinstalled',
@@ -229,6 +182,38 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
                 )
             )
         ),
+        array (
+            'title' => 'Status',
+            'name' => 'isactivated',
+            'data' => 'isactivated',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'className' => 'cell_center',
+            'cast' => array(
+                'type' => 'checkbox',
+                'parameters' => array(
+                    'styleClass' => 'enabled',
+                    'data' => array(
+                        'urlEnabled' => array(
+                            'type' => 'url',
+                            'route' => '/administration/extensions/module/[i:id]/enable',
+                            'routeParams' => array(
+                                'id' => '::id::'
+                            )
+                        ),
+                        'urlDisabled' => array(
+                            'type' => 'url',
+                            'route' => '/administration/extensions/module/[i:id]/disable',
+                            'routeParams' => array(
+                                'id' => '::id::'
+                            )
+                        )
+                    )
+                )
+            )
+        )
     );
     
     /**

@@ -430,21 +430,10 @@ class Datatable
             array_keys($values)
         );
         
-        $routeParams = array();
-        if (isset($cast['routeParams']) && is_array($cast['routeParams'])) {
-            $routeParams = str_replace($castedElement, $values, $cast['routeParams']);
-        }
-        
-        $finalRoute = str_replace(
-            "//",
-            "/",
-            \Centreon\Internal\Di::getDefault()
-                ->get('router')
-                ->getPathFor($cast['route'], $routeParams)
-        );
+        $finalRoute = self::parseUrl($cast, $castedElement, $values);
         
         $linkName =  str_replace($castedElement, $values, $cast['linkName']);
-        
+
         $class = '';
         if (isset($cast['styleClass'])) {
             $class .=$cast['styleClass'];
@@ -462,22 +451,29 @@ class Datatable
      */
     public static function addCheckbox($field, $values, $cast)
     {
-        $datasource = static::$datasource;
-        $uniqueField = $datasource::getUniqueLabelField();
-        $object = ucwords(str_replace('_', '', $field));
-        $input = '<input class="all'. static::$objectName .'Box" '
-            . 'id="'. static::$objectName .'::'. $field .'::" '
-            . 'name="'. static::$objectName .'[]" '
-            . 'type="checkbox" '
-            . 'value="::'. $field .'::" '
-            . 'data-name="' . htmlentities($values[$uniqueField]) . '"'
-            . '/>';
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
             },
             array_keys($values)
         );
+        $datasource = static::$datasource;
+        $uniqueField = $datasource::getUniqueLabelField();
+        $object = ucwords(str_replace('_', '', $field));
+        $className = 'all' . static::$objectName . 'Box';
+        if (isset($cast['styleClass'])) {
+            $className = $cast['styleClass'];
+        }
+        $input = '<input class="' . $className . '" '
+            . 'id="'. static::$objectName .'::'. $field .'::" '
+            . 'name="'. static::$objectName .'[]" '
+            . 'type="checkbox" '
+            . 'value="::'. $field .'::" '
+            . 'data-name="' . htmlentities($values[$uniqueField]) . '"';
+        if (isset($cast['data'])) {
+            $input .= self::setData($cast['data'], $castedElement, $values);
+        }
+        $input .= '>';
         
         return str_replace($castedElement, $values, $input);
     }
@@ -540,5 +536,45 @@ class Datatable
                 }
             }
         }
+    }
+
+    public static function setData($datas, $castedElement, $values)
+    {
+        $dataStr = '';
+        foreach ($datas as $key => $info) {
+            if (is_array($info)) {
+                if ($info['type'] == 'url') {
+                    $info = self::parseUrl($info, $castedElement, $values);
+                }
+            }
+            $dataStr .= ' data-' . $key . '="' . $info . '"';
+        }
+        return $dataStr;
+    }
+
+    /**
+     * Parse a array for generate the url
+     *
+     * @param array $params The url parameters
+     * @param array $castedElement The element converted
+     * @param array $values The values of row
+     * @return string
+     */
+    protected static function parseUrl($params, $castedElement, $values)
+    {
+        $routeParams = array();
+        if (isset($params['routeParams']) && is_array($params['routeParams'])) {
+            $routeParams = str_replace($castedElement, $values, $params['routeParams']);
+        }
+
+        $finalRoute = str_replace(
+            "//",
+            "/",
+            \Centreon\Internal\Di::getDefault()
+                ->get('router')
+                ->getPathFor($params['route'], $routeParams)
+        );
+
+        return $finalRoute;
     }
 }
