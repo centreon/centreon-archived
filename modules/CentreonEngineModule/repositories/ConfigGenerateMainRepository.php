@@ -215,7 +215,6 @@ file_put_contents("/tmp/mytest.txt", print_r($finalConf,true));
      */
     private static function unsetParameters(& $finalConf)
     {
-        unset($finalConf['engine_id']);
         unset($finalConf['poller_id']);
         unset($finalConf['conf_dir']);
         unset($finalConf['log_dir']);
