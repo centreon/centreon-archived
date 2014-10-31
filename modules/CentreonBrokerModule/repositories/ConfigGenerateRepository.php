@@ -189,6 +189,7 @@ class ConfigGenerateRepository
                 }
             }
         }
+        return array();
     }
 
     /**
