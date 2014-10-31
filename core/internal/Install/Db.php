@@ -166,7 +166,7 @@ class Db
         // Copy to destination
         if (!file_exists($currentFolder)) {
             mkdir($currentFolder, 0775, true);
-            if (getmyuid() == 0) {
+            if (posix_getuid() == 0) {
                 chown($currentFolder, 'centreon');
                 chgrp($currentFolder, 'centreon');
             }
@@ -177,8 +177,8 @@ class Db
         for ($i=0; $i<$nbOfFiles; $i++) {
             $targetFile = $currentFolder . basename($fileList[$i]);
             copy($fileList[$i], $targetFile);
-            chmod($targetFile, 0664);
-            if (getmyuid() == 0) {
+            if (posix_getuid() == 0) {
+                chmod($targetFile, 0664);
                 chown($targetFile, 'centreon');
                 chgrp($targetFile, 'centreon');
             }
@@ -248,7 +248,7 @@ class Db
         // Copy to destination
         if (!file_exists($targetFolder)) {
             mkdir($targetFolder, 0775, true);
-            if (getmyuid() == 0) {
+            if (posix_getuid() == 0) {
                 chown($targetFolder, 'centreon');
                 chgrp($targetFolder, 'centreon');
             }
@@ -258,8 +258,8 @@ class Db
         for ($i=0; $i<$nbOfFiles; $i++) {
             $targetFile = $targetFolder . basename($fileList[$i]);
             copy($fileList[$i], $targetFile);
-            chmod($targetFile, 0664);
-            if (getmyuid() == 0) {
+            if (posix_getuid() == 0) {
+                chmod($targetFile, 0664);
                 chown($targetFile, 'centreon');
                 chgrp($targetFile, 'centreon');
             }
