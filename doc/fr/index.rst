@@ -21,6 +21,7 @@ Sommaire :
    guide_exploitation/index
    architecture/index
    faq/index
+   extendcentreon/index
 
 Ressources en ligne supplémentaires:
 
