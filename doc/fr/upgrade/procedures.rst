@@ -1,38 +1,47 @@
-===========================
-Specific upgrade procedures
-===========================
+===================================
+Procédure de mise à jour spécifique
+===================================
 
-**************************************************
-Upgrade a poller after an update to *Centreon* 2.4
-**************************************************
+***************************************************************************
+Mettre à jour un collecteur distant après une mise à jour de *Centreon* 2.4
+***************************************************************************
 
-This procedure explains how to update a poller's configuration after a
-migration to *Centreon* 2.4. The given examples talk about *Nagios* but
-this procedure should also work with *Centreon Engine* if you replace
-binaries and pathes.
+Cette procédure explique comment mettre à jour la configuration d'un collecteur
+distant après une migration vers *Centreon* 2.4. Les exemples donnés parlent de 
+*Nagios*, mais cette procédure fonctionne également avec *Centreon Engine* si 
+vous remplacez les fichiers binaires et les chemins.
 
-Poller modifications
-====================
+Modification du collecteur
+==========================
 
-Create a ``centreon`` user with a password::
+Créer un utilisateur ``centreon`` avec un mot de passe associé :
+
+::
 
   $ useradd centreon
   $ passwd centreon
 
-Add the ``nagios`` user to the ``centreon`` group::
+Ajouter l'utilisateur ``nagios`` au groupe ``centreon`` :
+
+::
 
   $ usermod -a -G centreon nagios
 
-Open sudo's configuration file::
+Editer le fichier de droit sudo :
+
+::
 
   $ visudo
 
-Add the following line::
+Ajouter les lignes suivantes :
+
+::
 
   User_Alias CENTREON=nagios,centreon
   
-Then, update the existing configuration by replacing ``nagios`` by
-``CENTREON``::
+Puis mettre à jour la configuration existante en remplacement ``nagios`` par ``CENTREON`` :
+
+::
 
   CENTREON ALL=NOPASSWD: /etc/init.d/nagios restart
   CENTREON ALL=NOPASSWD: /etc/init.d/nagios stop
@@ -41,41 +50,47 @@ Then, update the existing configuration by replacing ``nagios`` by
   CENTREON ALL=NOPASSWD: /usr/bin/nagiostats
   CENTREON ALL=NOPASSWD: /usr/local/etc/bin/nagios *
 
-Save your modifications and close the file.
+Sauvegarder les modifications et clore le fichier.
 
-Change the permissions of the directory containing *Nagios*'
-configuration files::
+Modifier les droits du répertoire contenant la configuration *Nagios* :
+
+::
 
   $ chown centreon:centreon </nagios/path/etc/>
   $ chmod 775 </nagios/path/etc/>
 
-Also change the permissions of the *service-perfdata* file::
+Modifier également les droits du fichier *service-perfdata* :
+
+::
 
   $ chown centreon:centreon </nagios/path/var/>service-perfdata
   $ chmod 775 </nagios/path/var/>service-perfdata
 
-Finally, it is necessary to validate *Centreon* is able to manage the
-poller by exporting the configuration and by restarting the monitoring
-engine through the web interface.
+Enfin, il est nécessaire d'exporter les fichiers de configuration du collecteur
+et de redémarrer le moteur de supervision via l'interface web.
 
-You should see *Nagios* has received a restart instruction by looking at
-its log file.
+Vous devriez voir apparaître un message indiquant que *Nagios* a reçu une
+instruction de redémarrage via son journal d'évènements.
 
-Central modifications
-=====================
+Modifications du serveur central 
+================================
 
-Copy the SSH public key of the ``centreon`` user to the poller::
+Copier la clé publique de l'utilisateur ``centreon`` vers le collecteur distant :
+
+::
 
   $ su - centreon
   $ ssh-copy-id -i ~/.ssh/id_rsa.pub centreon@<poller_ip_address>
 
-Replace ``<poller_ip_address>`` with the appropriate value.
+Remplacer ``<poller_ip_address>`` par l'adresse IP du collecteur.
 
-To finalize the operation, connect to the poller server from the
-central one::
+Pour finaliser l'opération, se connecter au collecteur depuis le 
+serveur central :
+
+::
 
   $ su - centreon
   $ ssh <poller_ip_address>
 
-Answer ``y`` to the asked question. You should be able to connect
-without beeing prompted for a password.
+Répondre ``y`` à la question posée. Vous devriez vous connecter sans
+saisir le mot de passe.
