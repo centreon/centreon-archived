@@ -507,7 +507,33 @@ class Datatable
      */
     public static function addDate($field, $values, $cast)
     {
+
         return date($cast['date'], $values[$field]);
+    }
+
+    /**
+     * 
+     * @param type $field
+     * @param type $values
+     * @param type $cast
+     * @return type
+     */
+    public static function addTemplate($field, $values, $cast)
+    {
+        $castedElement = \array_map(
+            function ($n) {
+                return "::$n::";
+            },
+            array_keys($values)
+        );
+
+        $returnString = $cast['tmpl'];
+        if (isset($cast['route'])) {
+            $finalRoute = self::parseUrl($cast, $castedElement, $values);
+            $returnString = str_replace("::link::", $finalRoute, $returnString);
+        }
+        
+        return str_replace($castedElement, $values, $returnString);
     }
 
     /**

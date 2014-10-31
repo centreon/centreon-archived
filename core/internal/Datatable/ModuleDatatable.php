@@ -143,39 +143,33 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'className' => 'cell_center',
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
-                    'selecttype' => 'url',
+                    'selecttype' => 'template',
                     'parameters' => array(
                         '0' => array(
                             'parameters' => array(
+                                'tmpl' => '<span class="label label-default">Not installed</span>',
                                 'route' => '/administration/extensions/module/[*:shortname]/install',
                                 'routeParams' => array(
                                     'shortname' => '::name::'
-                                ),
-                                'linkName' => 'Uninstalled',
-                                'styleClass' => 'btn btn-danger btn-block'
+                                )
                             )
                         ),
                         '1' => array(
                             'parameters' => array(
+                                'tmpl' => '<span class="label label-primary">Installed</span>',
                                 'route' => '/administration/extensions/module/[i:id]/uninstall',
                                 'routeParams' => array(
                                     'id' => '::id::'
-                                ),
-                                'linkName' => 'Installed',
-                                'styleClass' => 'btn btn-success btn-block'
+                                )
                             )
                         ),
                         '2' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/module/[i:id]',
-                                'routeParams' => array(
-                                    'id' => '::id::'
-                                ),
-                                'linkName' => 'Core Module',
-                                'styleClass' => 'btn btn-primary btn-block'
+                                'tmpl' => '<span class="label label-primary">Core</span>'
                             )
                         ),
                     )
@@ -213,6 +207,48 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
                     )
                 )
             )
+        ),
+        array(
+            'title' => 'Action',
+            'name' => 'action',
+            'data' => 'action',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'className' => 'cell_center',
+            'source' => 'other',
+            'cast' => array(
+                'type' => 'select',
+                'parameters' => array(
+                    'selecttype' => 'template',
+                    'parameters' => array(
+                        '0' => array(
+                            'parameters' => array(
+                                'tmpl' => '<a class="btn btn-sm btn-primary">Install</a>',
+                                'route' => '/administration/extensions/module/[*:shortname]/install',
+                                'routeParams' => array(
+                                    'shortname' => '::name::'
+                                )
+                            )
+                        ),
+                        '1' => array(
+                            'parameters' => array(
+                                'tmpl' => '<a class="btn btn-sm btn-danger">Uninstall</a>',
+                                'route' => '/administration/extensions/module/[i:id]/uninstall',
+                                'routeParams' => array(
+                                    'id' => '::id::'
+                                )
+                            )
+                        ),
+                        '2' => array(
+                            'parameters' => array(
+                                'tmpl' => ''
+                            )
+                        ),
+                    )
+                )
+            )
         )
     );
     
@@ -231,7 +267,17 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
      */
     protected static function addAdditionnalDatas(&$resultSet)
     {
+        /*for ($i = 0; $i < count($resultSet); $i++) {
+            $resultSet[$i]['action'] = $resultSet[$i]['isinstalled'];
+    }*/
         self::getFilesystemModule($resultSet);
+    }
+
+    protected function formatDatas(&$resultSet) 
+    {
+        foreach ($resultSet as &$result) {
+            $result['action'] = $result['isinstalled'];
+        }
     }
     
     /**
@@ -256,6 +302,7 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
                         'author' => implode(", ", $b['author']),
                         'isactivated' => 0,
                         'isinstalled' => 0,
+                        'action' => 0,
                         'alias' => $b['name'],
                     );
                 }
