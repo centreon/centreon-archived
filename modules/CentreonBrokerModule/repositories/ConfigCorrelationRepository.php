@@ -73,7 +73,7 @@ class ConfigCorrelationRepository
         if (!is_dir("{$tmpPath}/{$pollerId}")) {
             mkdir("{$tmpPath}/{$pollerId}");
         }
-        $correlationFile = "{$tmpPath}/{$pollerId}/correlation.xml";
+        $correlationFile = "{$tmpPath}/{$pollerId}/correlation_{$pollerId}.xml";
         if (false === @$xml->openURI($correlationFile)) {
             throw new Exception(sprintf('Error while opening %s', $correlationFile));
         }
