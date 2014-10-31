@@ -1,7 +1,8 @@
 #!/usr/bin/php -q
 <?php
 
-    require_once "../../core/commandLine/bootstrap.php";
+    $bootstrap = realpath(__DIR__ . "/../../core/commandLine/bootstrap.php");
+    require_once $bootstrap;
 
     // Init Var
     $requestLine = "";

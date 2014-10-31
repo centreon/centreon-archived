@@ -35,14 +35,14 @@
  */
 
 /* Define the path to configuration files */
-define('CENTREON_ETC', '../../config/');
+define('CENTREON_ETC', realpath(__DIR__ . '/../../config/'));
 
 $centreon_path = realpath(__DIR__ . '/../..');
 
 /* Add classpath to include path */
 set_include_path($centreon_path . PATH_SEPARATOR . get_include_path());
 
-require_once '../../vendor/autoload.php';
+require_once realpath(__DIR__ . '/../../vendor/autoload.php');
 
 // Core
 spl_autoload_register(function ($classname) use ($centreon_path) {

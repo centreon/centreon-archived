@@ -288,7 +288,7 @@ class Command
             $moduleShortName = strtolower(implode('-', $myMatches[0]));
             if (Informations::isModuleReachable($moduleShortName)) {
                 $this->getCommandDirectoryContent(
-                    realpath(__DIR__."/../../modules/$module/commands/"),
+                    __DIR__ . "/../../modules/$module/commands/",
                     $moduleShortName,
                     $moduleName
                 );
