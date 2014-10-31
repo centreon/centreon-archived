@@ -60,7 +60,7 @@
         <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_ochpc" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="ochp_command" foreign="command_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_pollers" name="cfg_engine_ibfk_pid" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_pollers" name="cfg_engine_ibfk_poller_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="poller_id" foreign="poller_id"/>
         </foreign-key>
         <index name="cmd1_index">
