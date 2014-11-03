@@ -60,7 +60,8 @@ abstract class SetUp
      * @var array 
      */
     protected $params;
-    
+
+
     /**
      * 
      * @param array $content

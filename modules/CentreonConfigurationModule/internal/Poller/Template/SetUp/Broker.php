@@ -43,11 +43,58 @@ use \CentreonConfiguration\Internal\Poller\Template\Setup\Setup;
 class Broker extends SetUp
 {
     /**
+     *
+     * @var array 
+     */
+    private $modes;
+    
+    /**
      * 
      * @param type $content
      */
     public function __construct($content)
     {
         parent::__construct($content);
+        $this->setBrokerModes();
+    }
+    
+    /**
+     * 
+     */
+    private function setBrokerModes()
+    {
+        if (isset($this->params['mode'])) {
+            foreach ($this->params['mode'] as $mode) {
+                foreach ($mode as $modeName => $currentMode) {
+                    $this->modes[$modeName] = $currentMode;
+                }
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getModeList()
+    {
+        return array_keys($this->modes);
+    }
+    
+    /**
+     * 
+     * @param string $mode
+     */
+    public function getMode($mode)
+    {
+        if (!isset($this->modes[$mode])) {
+            throw new Exception("This setup $mode");
+        }
+        return $this->modes[$mode];
+    }
+    
+    public function getHtmlType($brokerType)
+    {
+        
     }
 }
