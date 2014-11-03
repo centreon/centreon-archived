@@ -93,7 +93,7 @@ class BrokerController extends FormController
      */
     public function updateAction()
     {
-        
+        $givenParameters = $this->getParams('post');
     }
     
     /**
@@ -132,7 +132,7 @@ class BrokerController extends FormController
         $this->tpl->assign('form', BrokerFormRepository::getFormForPoller($requestParam['id']));
         $this->tpl->assign('advanced', $requestParam['advanced']);
         $this->tpl->assign('formModeUrl', $formModeUrl);
-        $this->tpl->assign('formName', 'broker_form');
+        $this->tpl->assign('formName', 'broker_full_form');
         $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
         $this->tpl->display('file:[CentreonConfigurationModule]edit.tpl');
     }
