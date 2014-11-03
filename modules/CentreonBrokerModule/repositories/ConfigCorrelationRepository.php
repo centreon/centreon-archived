@@ -142,6 +142,7 @@ class ConfigCorrelationRepository
             $pollers = $rows;
 
             foreach ($rows as $row) {
+                /* @todo: replace hardcoded "correlation.xml" with value from template */
                 $correlationFile = rtrim($tmpPath, '/') . '/' . $row['poller_id'] . '/correlation.xml';
 
                 $xml = new \XMLWriter();
