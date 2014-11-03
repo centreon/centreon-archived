@@ -1,13 +1,13 @@
-.. _user_guide:
-
 ##########
 User guide
 ##########
 
 .. toctree::
+   :maxdepth: 2
+   :glob:
 
-   overview
    01a
-   basics
-   advanced
-
+   configuration/index
+   monitoring/index
+   graphic_management/index
+   01e

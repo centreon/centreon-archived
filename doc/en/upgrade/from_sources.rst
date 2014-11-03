@@ -40,7 +40,7 @@ go back to [Step 01] and install the prerequisites::
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.3                                     #
+  #                                    v2.5.0                                   #
   #                                                                             #
   #                               infos@centreon.com                            #
   #                                                                             #
@@ -447,7 +447,7 @@ The end of upgrade::
   ###############################################################################
   #                                                                             #
   #                 Go to the URL : http://localhost/centreon/                  #
-  #                   	     to finish the setup                              #
+  #                   	     to finish the setup                                #
   #                                                                             #
   #                  Report bugs at http://forge.centreon.com                   #
   #                                                                             #
@@ -480,16 +480,16 @@ This step checks the dependencies on php modules.
 .. image:: /_static/images/upgrade/step02.png
    :align: center
 
-Upgrade the database
---------------------
-
-This step upgrades database model and data, version by version.
+Release notes
+-------------
 
 .. image:: /_static/images/upgrade/step03.png
    :align: center
 
-Release notes
--------------
+Upgrade the database
+--------------------
+
+This step upgrades database model and data, version by version.
 
 .. image:: /_static/images/upgrade/step04.png
    :align: center

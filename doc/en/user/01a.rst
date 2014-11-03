@@ -1,3 +1,5 @@
+.. _firststepsces3:
+
 ========================
 Get started with CES 3.0
 ========================
@@ -8,78 +10,83 @@ Compared with CES 2.2
 
 The following array compares CES 2.2 to CES 3.0 :
 
-+------------------------+-----------------------------+
-|       CES 2.2          |         CES 3.0             | 
-+========================+=============================+
-|       CentOS 5         |         CentOS 6.5          |
-+------------------------+-----------------------------+
-| Centreon 2.4           |  Centreon 2.5               |
-+------------------------+-----------------------------+
-| MySQL 5.1              |  MariaDB 5.5                |
-+------------------------+-----------------------------+
-| Centreon Engine 1.2    |  Centreon Engine 1.3.7      |
-+------------------------+-----------------------------+
-| Centreon Broker 2.1    |  Centreon Broker 2.6.1      |
-+------------------------+-----------------------------+
-| N/A                    |  Centreon Connecteur 1.0.2  |
-+------------------------+-----------------------------+
++------------------------+----------------------------+
+|       CES 2.2          |         CES 3.0            | 
++========================+============================+
+|       CentOS 5         |         CentOS 6.5         |
++------------------------+----------------------------+
+| Centreon 2.4           |  Centreon 2.5              |
++------------------------+----------------------------+
+| MySQL 5.1              |  MariaDB 5.5               |
++------------------------+----------------------------+
+| Centreon Engine 1.2    |  Centreon Engine 1.3.7     |
++------------------------+----------------------------+
+| Centreon Broker 2.1    |  Centreon Broker 2.6.1     |
++------------------------+----------------------------+
+| N/A                    |  Centreon Connector 1.0.2  |
++------------------------+----------------------------+
 
-The list of new features is available by visiting these links :
+The list of new features is available at the following addresses:
 
 *	`Forge Centreon <https://forge.centreon.com/projects/centreon/roadmap>`_
 *	`Forge Centreon Engine <https://forge.centreon.com/projects/centreon-engine/roadmap>`_
 *	`Forge Centreon Broker <https://forge.centreon.com/projects/centreon-broker/roadmap>`_
 
-Why should you choose Centreon Engine and Broker ?
+Why choose Centreon Engine and Broker ?
 ==================================================
 
 Performances
 ------------
-All tests made by MERETHIS's teams and some blog's autors show without any doubts that Centreon Engine and Centreon Broker are 8 to 9 times more performant than Nagios and NDOUtils.
+The tests carried out by the MERETHIS teams and some independent users show clearly that the Centreon Engine and Centreon Broker pair performs 8 to 9 times better than the Nagios/NDOUtils pair.
 
-Best Centreon integration
--------------------------
-The Centreon web interface is more and more oriented to usage of Centreon Broker. Some examples :
+Better  integration into Centreon
+---------------------------------
+The Centreon web interface is more and more oriented towards the use of Centreon Broker. Here are a few examples:
 
-* You have a configuration assistant for Centreon Broker
-* The display performances are really improved
-* Some selection filters are available only with Centreon Broker
-* The next major version of Centreon will not support anymore Nagios and NDOUtils
+* There is a configuration assistant for Centreon Broker
+* Display performance is greatly improved
+* Some selection filters are only available with the Centreon Broker
+* The next major version of Centreon will no longer support the Nagios / NDOUtils pair
 
 New features
 ------------
-Many new features appear with Centreon Broker :
+Several new features make their appearance with Centreon Broker:
 
-* You can encrypt your monitoring datas which come back to the central server
-* You can compress your monitoring datas in order to do not overload bandwidth
-* The new protocol which encode data (BBDO Protocol) is more efficient than NDO protocol
-* You can filter the type of flow between Centreon Broker's components to decrease load and bandwidth
-* You can configure an unidirectional flow between central server and pollers (example : only LAN flow to DMZ)
+* Possibility of encrypting supervision data transmitted to the central server
+* Possibility of compressing supervision data to avoid overloading the bandwidth
+* Use of a new data encrypting protocol (the BBDO protocol) which is more efficient than the NDO protocol
+* Possibility of filtering the type of stream between the components of Centreon Broker to reduce the load and the bandwidth
+* Possibility unidirectional flow between the  Centreon server and its collectors (e.g.: only LAN flows to  DMZ )
  
 *************
 Prerequisites
 *************
 
-The next array show prerequisites to install CES 3.0 :
+The table below gives the prerequisites for the installation of CES 3.0:
 
-+------------------------+--------------------------+----------------+-----------------+-------------+---------------+
-|  Number of Service     |  Number of pollers       | Central CPU    | Central memory  | Poller CPU  | Poller memory |
-+========================+==========================+================+=================+=============+===============+
-|        < 500           |        1 central         |    1 * 2,5 Ghz |  1 Go           |             |               |
-+------------------------+--------------------------+----------------+-----------------+-------------+---------------+
-|      500 - 1000        |        1 central         |    2 * 2,5 Ghz |  2 Go           |             |               |
-+------------------------+--------------------------+----------------+-----------------+-------------+---------------+
-|      1000 - 2000       |        1 central         |  4 * 2,5 Ghz   |  4 Go           |             |               |
-+------------------------+--------------------------+----------------+-----------------+-------------+---------------+
-|      2000 - 5000       |        1 central         |  8 * 2,5 Ghz   |  8 Go           |             |               |
-+------------------------+--------------------------+----------------+-----------------+-------------+---------------+
-|      5000 - 10000      | 1 central + 1 poller     |  4 * 2,5 Ghz   |  8 Go           | 8 * 2,5 Ghz | 4 Go          |
-+------------------------+--------------------------+----------------+-----------------+-------------+---------------+
-|     10000 - 25000      | 1 central + 1 poller     |  4 * 2,5 Ghz   |  8 Go           | 8 * 2,5 Ghz | 4 Go          |
-+------------------------+--------------------------+----------------+-----------------+-------------+---------------+
++------------------------+--------------------------+----------------+---------------+
+|  Number of Services    |  Number of pollers       | Central        | Poller        |
++========================+==========================+================+===============+
+|        < 500           |        1 central         |  1 vCPU / 1 Go |               |
++------------------------+--------------------------+----------------+---------------+
+|       500 - 2000       |        1 central         |  2 vCPU / 2 Go |               |
++------------------------+--------------------------+----------------+---------------+
+|      2000 - 10000      | 1 central + 1 poller     |  4 vCPU / 4 Go | 1 vCPU / 2 Go |
++------------------------+--------------------------+----------------+---------------+
+|      10000 - 20000     |  1 central + 1 poller    |  4 vCPU / 8 Go | 2 vCPU / 2 Go |
++------------------------+--------------------------+----------------+---------------+
+|      20000 - 50000     | 1 central + 2 pollers    |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
++------------------------+--------------------------+----------------+---------------+
+|     50000 - 100000     | 1 central + 3 pollers    |  4 vCPU / 8 Go | 4 vCPU / 2 Go |
++------------------------+--------------------------+----------------+---------------+
 
 .. note::
-   These informations take into account the fact that all optimisations are made for Centreon Engine, all transactions were activated on Centreon Broker and all MariaDB optimisations were made.
+
+ This information is based on the assumption that all optimisations have been performed for Centreon Engine, that the transactions have been enabled in Centreon Broker and that the optimisations have been performed for MariaDB.
+
+ If not virtualized architecture, a minimum CPU frequency of 2.5 GHz is recommended.
+
+ Central server load depends on the number of simultaneous users, the content of pages visited and the refresh rate of the pages. Our studies were performed with 15 simultaneous users on the monitoring page and with 60 s of cooling. 
 
 ************
 Installation
@@ -88,77 +95,83 @@ Installation
 Step 1 : Start
 ==============
 
-In order to install Centreon, boot your server on Centreon Enterprise Server's CD-ROM.
+To install Centreon, start your server on the support (created from the ISO file) of the Centreon Enterprise Server.
+Start with the **Install or upgrade an existing system** option
 
-Choose this option : **Install or upgrade an existing system**
-
-.. image :: /images/guide_utilisateur/abootmenu.png
+.. image :: /images/user/abootmenu.png
    :align: center
    :scale: 65%
 
-Step 2 : Choose your language
-=============================
+Click on **Next**
 
-Click on **Next**, choose your language and click on **Next**.
+.. image :: /images/user/adisplayicon.png
+   :align: center
+   :scale: 65%
 
-.. image :: /images/guide_utilisateur/ainstalllanguage.png
+Step 2 : Choice of language
+===========================
+
+Choose your language and click on **Next**.
+
+.. image :: /images/user/ainstalllanguage.png
    :align: center
    :scale: 65%
 
 Select the keyboard used by your system and click on **Next**.
 
-.. image :: /images/guide_utilisateur/akeyboard.png
+.. image :: /images/user/akeyboard.png
    :align: center
    :scale: 65%
 
 Step 3 : General configuration
 ==============================
 
-In term of type of storage used, choose the necessary options to dispose of the partitioning plan that best suits you.
+Depending on the type of storage required, choose the options necessary to obtain the partitioning that suits you best.
 
-.. image :: /images/guide_utilisateur/adatastore1.png
+.. image :: /images/user/adatastore1.png
    :align: center
    :scale: 65%
    
-.. image :: /images/guide_utilisateur/adatastore2.png
+A warning message may appear
+
+.. image :: /images/user/adatastore2.png
    :align: center
    :scale: 65%
 
 Choose your hostname and click on **Configure network** in order to modify your network card configuration.
 
-Select the network card that you want to use and go on tab "IPv4 Settings" or "IPv6 Settings" (according to your need) in order to configure your IP addresses. Click on **Apply** to save your modifications.
+Select the network card that you want to use and go into "IPv4 Settings" or "IPv6 Settings" tab (depending on the requirement) to configure the IP address of the interfaces. Click on **Apply** to save the changes.
 
-.. image :: /images/guide_utilisateur/anetworkconfig.png
+.. image :: /images/user/anetworkconfig.png
    :align: center
    :scale: 65%
 
-Click on **Close** and click on **Next** to continue.
+Click on **Close** and  **Next** to continue.
 
 Select your time zone and click on **Next**.
 
-.. image :: /images/guide_utilisateur/afuseauhoraire.png
+.. image :: /images/user/afuseauhoraire.png
    :align: center
    :scale: 65%
 
-Enter the root password that you want, and click on **Next**.
+Enter the desired root password, and click on **Next**.
 
-Select the best partitioning option for you and validate.
+Select the partitioning options that suit you best. Then validate.
 
-.. image :: /images/guide_utilisateur/apartitionning.png
+.. image :: /images/user/apartitionning.png
    :align: center
    :scale: 65%
 
 Step 4 : Components selection
 =============================
 
-Choose the type of server
--------------------------
+Choose of the type of server
+----------------------------
 
-When the question **Which server type would you like to install ?** appears you can select different options :
+It is possible to choose different options in answer to the question: **Which server type would you like to install?**:
 
 
-
-.. image :: /images/guide_utilisateur/aservertoinstall.png
+.. image :: /images/user/aservertoinstall.png
    :align: center
    :scale: 65%
 
@@ -166,68 +179,96 @@ When the question **Which server type would you like to install ?** appears you 
 
 *	Central server with database : Install Centreon (web interface and database), monitoring engine and broker
 *	Central server without database : Install Centreon (web interface only), monitoring engine and broker
-*	Poller server : Install poller (monitoring engine and broker)
+*	Poller server : Install poller (monitoring engine and broker only)
 *	Database server : Install database server (use with **Central server without database** option)
 
-In this case, we will choose this option : **Centreon Server with database**.
+In our box, we shall choose the **Centreon Server with database** option.
 
-Choose the type of monitorign engine and broker
+Choose the type of monitoring engine and broker
 -----------------------------------------------
 
-When you'll choose monitoring engine and broker, you can choose between Centreon Engine/Centreon Broker or Nagios/NDOUtils.
+When choosing the monitoring engine and the broker, it is possible to choose between the Centreon Engine / Centreon Broker pair or the Nagios / NDOUtils pair.
 
-In this case, we will choose this option : **Centreon Engine and Centreon Broker**.
+In our box, we shall choose the Centreon Engine and Centreon Broker option.
 
-.. image :: /images/guide_utilisateur/abrokertoinstall.png
+.. image :: /images/user/abrokertoinstall.png
    :align: center
    :scale: 65%
 
-When you finish to select these options, installation start. When the installation is finish, Click on **Restart**.
+Once all these options have been selected, the installation starts.
+
+.. image :: /images/user/arpminstall.png
+   :align: center
+   :scale: 65%
+
+When the installation is finished, click on **Restart**.
+
+.. image :: /images/user/arestartserver.png
+   :align: center
+   :scale: 65%
 
 *************
 Configuration
 *************
 
-Discover web interface
-======================
+Via the web interface
+=====================
 
-Connect to web interface using this address : http://[SERVER_IP]/centreon.
+Log into web interface via : http://[SERVER_IP]/centreon.
+The End of installation wizard of Centreon is displayed, click on **Next**.
 
-The Centreon installation assistant starts. Click on **Next** up to monitoring engine choice.
-Choose **centreon-engine**. 
-
-.. image :: /images/guide_utilisateur/amonitoringengine.png
+.. image :: /images/user/acentreonwelcome.png
    :align: center
+   :scale: 65%
 
-Click on **Next**. When you choose the broker select **centreon-broker**.
+The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
 
-.. image :: /images/guide_utilisateur/abrokerinformation.png
+.. image :: /images/user/acentreoncheckmodules.png
    :align: center
+   :scale: 65%
 
-Click on **Next**. Define admin's user informations.
+Choose the **centreon-engine** option. 
 
-.. image :: /images/guide_utilisateur/aadmininfo.png
-   :align: center
-
-Click on **Next**. By default, the server localhost is defined and root password is empty. If you use an independent database server, you should modify these informations.
-In this case, we just need to define a password for user centreon.
-
-.. image :: /images/guide_utilisateur/adbinfo.png
+.. image :: /images/user/amonitoringengine1.png
    :align: center
 
 Click on **Next**.
 
-If this error appear : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
-Execute this operation :
+.. image :: /images/user/amonitoringengine2.png
+   :align: center
 
-1.	Log-on the central server using root user
+For the choice of broker, choose **Centreon-broker**.
+
+.. image :: /images/user/abrokerinfo1.png
+   :align: center
+   :scale: 65%
+
+Click on **Next**.
+
+.. image :: /images/user/abrokerinfo2.png
+   :align: center
+   :scale: 65%
+
+Define the data concerning the admin user, click on **Next**.
+
+.. image :: /images/user/aadmininfo.png
+   :align: center
+
+By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
+
+.. image :: /images/user/adbinfo.png
+   :align: center
+
+If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
+
+1.	Log-on to the ‘root’ user on your server
 2.	Modify this file 
 
 ::
 
 	/etc/my.cnf
 
-3.	Add theses lines to the file
+3.	Add these lines to the file
 
 .. raw:: latex 
 
@@ -244,50 +285,73 @@ Execute this operation :
 	/etc/init.d/mysql restart
         \end{lstlisting}
 
-5.	On web interface click on **Refresh**
+5.	click on **Refresh**
 
-Click on **Next** until you arrive to **Installation finished**.
+The End of installation wizard configures the databases, click on **Next**.
+
+.. image :: /images/user/adbconf.png
+   :align: center
+   :scale: 65%
+
+The installation is finished, click on Finish.
+
+.. image :: /images/user/aendinstall.png
+   :align: center
+   :scale: 65%
+
+You can now log in.
+
+.. image :: /images/user/aconnection.png
+   :align: center
+   :scale: 65%
 
 Start monitoring
 ================
 
-In order to start monitoring engine :
+To start monitoring engine :
  
  1.	On web interface, go to **Configuration** ==> **Monitoring engines**
- 2.	Leave default options and click on **Export**
- 3.	Clear **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 4.	Tick **Move Export Files** and **Restart Monitoring Engine**
- 5.	Click anew on **Export**
- 6. Log-on the central server using root user
- 7.	Start Centreon Broker using this command::
+ 2.	Leave the default options and click on **Export**
+ 3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 4.	Check **Move Export Files** and **Restart Monitoring Engine**
+ 5.	Click on **Export** again
+ 6.     Log into the ‘root’ user on your server
+ 7.	Start Centreon Broker
+
+::
  
 	/etc/init.d/cbd start
 
-Now, your monitoring engine works.
+Monitoring is now working.
 
-Discover web interface
-======================
+Introduction to the web interface
+=================================
 
-Web interface of Centreon uses several menus, each menu has a precise feature :
 
-.. image :: /images/guide_utilisateur/amenu.png
+Centreon web interface is made up of several menus, each menu has a specific function:
+
+.. image :: /images/user/amenu.png
    :align: center
 
-*	The menu **Home** allow to access to first page after the user login. It summarizes general state of monitoring
-*	The menu **Monitoring** regroups the state of all monitored elements in real time and in delayed using logs visualization
-*	The menu **Views** allow to view and configure graphs for each objects of information system
-*	The menu **Reporting** allow to view intuitively (using diagrams) the evolution of monitored elements on a time period
-*	The menu **Configuration** allow to configure all monitored objects and the supervision infrastructure
-*	The menu **Administration** allow to configure Centreon web interface and view general state of the servers
+|
+
+*       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs.
+*       The **Views** menu serves to view and configured the performances graphics for each element in the  information system.
+*       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
+*	The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
+*       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
 
 Before going further
 ====================
 
-Before going further, you should update your CES 3.0 server :
+it is necessary update the CES 3.0 server. To do this:
 
- #.	Log-on the central server using root user
+ #.	Log in as a ‘root’ on the central server
  #.	Enter this command
 
 ::
 
     yum -y update
+
+Allow the update to run fully and then restart the server in case of a kernel update.

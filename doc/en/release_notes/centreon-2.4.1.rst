@@ -16,10 +16,12 @@ be sure to fill this field and update the connector command line in ``Configurat
 ``Commands`` > ``Connectors`` by removing the *$USER3$* prefix.
 
 i.e::
-  $USER3$/centreon_connector_perl
+
+    $USER3$/centreon_connector_perl
 
 should become::
-  centreon_connector_perl
+
+    centreon_connector_perl
 
 Once you're done with updating those configurations, you may delete the former *$USER3$*
 as it will be no longer used.

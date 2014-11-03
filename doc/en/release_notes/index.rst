@@ -3,6 +3,7 @@ Release notes
 #############
 
 .. toctree::
-   :glob:
+    :maxdepth: 2
+    :glob:
 
-   *
+    *
