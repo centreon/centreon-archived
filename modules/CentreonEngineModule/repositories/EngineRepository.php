@@ -62,7 +62,7 @@ class EngineRepository extends FormRepository
         $db = Di::getDefault()->get('db_centreon');
 
         /* Get engine id, if it does not exist, insert it */
-        $stmt = $db->prepare("SELECT engine_id FROM cfg_engine WHERE poller_id = ?");
+        $stmt = $db->prepare("SELECT poller_id FROM cfg_engine WHERE poller_id = ?");
         $stmt->execute(array($pollerId));
         if (!$stmt->rowCount()) {
             $stmt = $db->prepare("INSERT INTO cfg_engine (poller_id) VALUES (?)");

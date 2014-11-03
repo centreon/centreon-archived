@@ -73,7 +73,7 @@ class ConfigCorrelationRepository
         if (!is_dir("{$tmpPath}/{$pollerId}")) {
             mkdir("{$tmpPath}/{$pollerId}");
         }
-        $correlationFile = "{$tmpPath}/{$pollerId}/correlation.xml";
+        $correlationFile = "{$tmpPath}/{$pollerId}/correlation_{$pollerId}.xml";
         if (false === @$xml->openURI($correlationFile)) {
             throw new Exception(sprintf('Error while opening %s', $correlationFile));
         }
@@ -113,5 +113,57 @@ class ConfigCorrelationRepository
         /* End conf Element */
         $xml->endElement();
         $xml->endDocument();
+
+        static::generateInclusionFile($tmpPath);
+    }
+
+    /**
+     * Generate inclusion file
+     *
+     * @param string $tmpPath Temporary path
+     */
+    protected static function generateInclusionFile($tmpPath)
+    {
+        static $generated = false;
+
+        /* We'll generate only once and for all */
+        if (false === $generated) {
+            $generated = true;
+
+            /* Retrieve active pollers */
+            $db = Di::getDefault()->get('db_centreon');
+            $sql = "SELECT poller.poller_id, directory_config
+                FROM cfg_pollers poller, cfg_centreonbroker_paths paths 
+                WHERE poller.poller_id = paths.poller_id 
+                AND poller.enable = 1";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $pollers = $rows;
+
+            foreach ($rows as $row) {
+                /* @todo: replace hardcoded "correlation.xml" with value from template */
+                $correlationFile = rtrim($tmpPath, '/') . '/' . $row['poller_id'] . '/correlation.xml';
+
+                $xml = new \XMLWriter();
+                if (false === @$xml->openURI($correlationFile)) {
+                    throw new Exception(sprintf('Error while opening %s', $correlationFile));
+                }
+                $xml->startDocument('1.0', 'UTF-8');
+                $xml->startElement('conf');
+
+                /* includes */
+                foreach ($pollers as $poller) {
+                    $tmpFile = rtrim($tmpPath, '/') . '/' . $row['poller_id']. '/correlation_' . $row['poller_id'] . '.xml';
+                    $file = rtrim($row['directory_config'], '/') . "/correlation_" . $row['poller_id'] . ".xml";
+                    if (is_file($tmpFile)) {
+                        $xml->writeElement('include', $file);
+                    }
+                }
+
+                $xml->endElement();
+                $xml->endDocument();
+            }
+        }
     }
 }

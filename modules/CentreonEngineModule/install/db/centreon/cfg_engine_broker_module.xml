@@ -2,13 +2,13 @@
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_engine_broker_module" phpName="CfgengineBrokerModule" idMethod="native">
         <column name="bk_mod_id" phpName="BkModId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-        <column name="cfg_engine_id" phpName="CfgengineId" type="INTEGER" required="false"/>
+        <column name="poller_id" phpName="PollerId" type="INTEGER" required="false"/>
         <column name="broker_module" phpName="BrokerModule" type="VARCHAR" size="255" required="false"/>
         <foreign-key foreignTable="cfg_engine" name="fk_engine_cfg" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="cfg_engine_id" foreign="engine_id"/>
+            <reference local="poller_id" foreign="poller_id"/>
         </foreign-key>
         <index name="fk_engine_cfg">
-            <index-column name="cfg_engine_id"/>
+            <index-column name="poller_id"/>
         </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

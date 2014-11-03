@@ -162,19 +162,32 @@ class ConfigGenerateMainRepository
         $tmpConf = array_merge($defaultValues, $templateValues);
         $finalConf = array_merge($tmpConf, $userValues);
 
+        /* For object directory */
+        $objectDirectives = static::getConfigFiles($poller_id);
+
+        $finalConf = array_merge($finalConf, $objectDirectives);
+file_put_contents("/tmp/mytest.txt", print_r($finalConf,true));
         /* Set real etc path of the poller */
         static::$finalPath = $finalConf['conf_dir'];
 
         /* Replace path macros */
         foreach ($finalConf as $k => $v) {
-            if (preg_match('/%([a-z_]+)%/', $v, $matches)) {
-                $macro = $matches[1];
-                if (isset($finalConf[$macro])) {
-                    $finalConf[$macro] = rtrim($finalConf[$macro], '/');
-                    $finalConf[$k] = str_replace("%{$macro}%", $finalConf[$macro], $v);
-                }
-                if ($macro == 'conf_dir' && $testing) {
-                    $finalConf[$k] = str_replace('%conf_dir%', static::$path . "/" . $poller_id, $v);
+            $arr = array();
+            if (!is_array($v)) {
+                $arr[] = $v;
+            } else {
+                $arr = $v;
+            }
+            foreach ($arr as $key => $val) {
+                if (preg_match('/%([a-z_]+)%/', $val, $matches)) {
+                    $macro = $matches[1];
+                    if (isset($finalConf[$macro])) {
+                        $finalConf[$macro] = rtrim($finalConf[$macro], '/');
+                        $finalConf[$k][$key] = str_replace("%{$macro}%", $finalConf[$macro], $val);
+                    }
+                    if ($macro == 'conf_dir' && $testing) {
+                        $finalConf[$k][$key] = str_replace('%conf_dir%', static::$path . "/" . $poller_id, $val);
+                    }
                 }
             }
         }
@@ -202,7 +215,6 @@ class ConfigGenerateMainRepository
      */
     private static function unsetParameters(& $finalConf)
     {
-        unset($finalConf['engine_id']);
         unset($finalConf['poller_id']);
         unset($finalConf['conf_dir']);
         unset($finalConf['log_dir']);
@@ -222,7 +234,7 @@ class ConfigGenerateMainRepository
         $resList = array();
         $dirList = array();
         
-        $path = static::$path;
+        $path = static::$path . '/';
         
         /* Check that that basic path exists */
         if (!file_exists($path)) {
@@ -253,14 +265,14 @@ class ConfigGenerateMainRepository
         }
 
         /* Add fixed path files */
-        $resList[] = $path."$poller_id/resources.cfg";
-        $pathList[] = $path."$poller_id/misc-command.cfg";
-        $pathList[] = $path."$poller_id/check-command.cfg";
-        $pathList[] = $path."$poller_id/timeperiods.cfg";
-        $pathList[] = $path."$poller_id/connectors.cfg";
+        $resList[] = "%conf_dir%/resources.cfg";
+        $pathList[] = "%conf_dir%/misc-command.cfg";
+        $pathList[] = "%conf_dir%/check-command.cfg";
+        $pathList[] = "%conf_dir%/timeperiods.cfg";
+        $pathList[] = "%conf_dir%/connectors.cfg";
         
-        $dirList[] = $path."$poller_id/objects/";
-        $dirList[] = $path."$poller_id/resources/";
+        $dirList[] = "%conf_dir%/objects/";
+        $dirList[] = "%conf_dir%/resources/";
 
         return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList);
     }
