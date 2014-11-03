@@ -77,7 +77,7 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true,
+
             'cast' => array(
                 'type' => 'checkbox',
                 'parameters' => array(
@@ -141,53 +141,6 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
             'visible' => true,
         ),
         array (
-            'title' => 'Status',
-            'name' => 'isactivated',
-            'data' => 'isactivated',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' => array(
-                    'selecttype' => 'url',
-                    'parameters' => array(
-                        '0' => array(
-                            'parameters' => array(
-                                'route' => '/administration/extensions/widgets/[i:id]/enable',
-                                'routeParams' => array(
-                                    'id' => '::widget_model_id::'
-                                ),
-                                'linkName' => 'Disabled',
-                                'styleClass' => 'btn btn-danger btn-block'
-                            )
-                        ),
-                        '1' => array(
-                            'parameters' => array(
-                                'route' => '/administration/extensions/widgets/[i:id]/disable',
-                                'routeParams' => array(
-                                    'id' => '::widget_model_id::'
-                                ),
-                                'linkName' => 'Enabled',
-                                'styleClass' => 'btn btn-success btn-block'
-                            )
-                        ),
-                        '2' => array(
-                            'parameters' => array(
-                                'route' => '/administration/extensions/widgets/[i:id]',
-                                'routeParams' => array(
-                                    'id' => '::widget_model_id::'
-                                ),
-                                'linkName' => 'Not Disableable',
-                                'styleClass' => 'btn btn-primary btn-block'
-                            )
-                        ),
-                    )
-                )
-            )
-        ),
-        array (
             'title' => 'Install Status',
             'name' => 'isinstalled',
             'data' => 'isinstalled',
@@ -195,45 +148,105 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'className' => 'cell_center',
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
-                    'selecttype' => 'url',
+                    'selecttype' => 'template',
                     'parameters' => array(
                         '0' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/widgets/[*:shortname]/install',
-                                'routeParams' => array(
-                                    'shortname' => '::shortname::'
-                                ),
-                                'linkName' => 'Uninstalled',
-                                'styleClass' => 'btn btn-danger btn-block'
+                                'tmpl' => '<span class="label label-default">Not installed</span>'
                             )
                         ),
                         '1' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/widgets/[i:id]/uninstall',
-                                'routeParams' => array(
-                                    'id' => '::widget_model_id::'
-                                ),
-                                'linkName' => 'Installed',
-                                'styleClass' => 'btn btn-success btn-block'
+                                'tmpl' => '<span class="label label-primary">Installed</span>'
                             )
                         ),
                         '2' => array(
                             'parameters' => array(
-                                'route' => '/administration/extensions/widgets/[i:id]',
-                                'routeParams' => array(
-                                    'id' => '::widget_model_id::'
-                                ),
-                                'linkName' => 'Core Widget',
-                                'styleClass' => 'btn btn-primary btn-block'
+                                'tmpl' => '<span class="label label-primary">Core</span>'
                             )
                         ),
                     )
                 )
             )
         ),
+        array (
+            'title' => 'Status',
+            'name' => 'isactivated',
+            'data' => 'isactivated',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'className' => 'cell_center',
+            'cast' => array(
+                'type' => 'checkbox',
+                'parameters' => array(
+                    'styleClass' => 'enabled',
+                    'data' => array(
+                        'urlEnabled' => array(
+                            'type' => 'url',
+                            'route' => '/administration/extensions/widgets/[i:id]/enable',
+                            'routeParams' => array(
+                                'id' => '::widget_model_id::'
+                            )
+                        ),
+                        'urlDisabled' => array(
+                            'type' => 'url',
+                            'route' => '/administration/extensions/widgets/[i:id]/disable',
+                            'routeParams' => array(
+                                'id' => '::widget_model_id::'
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        array(
+            'title' => 'Action',
+            'name' => 'action',
+            'data' => 'action',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'className' => 'cell_center',
+            'source' => 'other',
+            'cast' => array(
+                'type' => 'select',
+                'parameters' => array(
+                    'selecttype' => 'template',
+                    'parameters' => array(
+                        '0' => array(
+                            'parameters' => array(
+                                'tmpl' => '<a class="btn btn-sm btn-primary" href="::link::">Install</a>',
+                                'route' => '/administration/extensions/widgets/[*:shortname]/install',
+                                'routeParams' => array(
+                                    'shortname' => '::shortname::'
+                                )
+                            )
+                        ),
+                        '1' => array(
+                            'parameters' => array(
+                                'tmpl' => '<a class="btn btn-sm btn-danger" href="::link::">Uninstall</a>',
+                                'route' => '/administration/extensions/widgets/[i:id]/uninstall',
+                                'routeParams' => array(
+                                    'id' => '::widget_model_id::'
+                                )
+                            )
+                        ),
+                        '2' => array(
+                            'parameters' => array(
+                                'tmpl' => ''
+                            )
+                        ),
+                    )
+                )
+            )
+        )
     );
     
     /**
@@ -253,6 +266,13 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
     {
         static::getFilesystemWidget($resultSet);
     }
+
+    protected function formatDatas(&$resultSet) 
+    {
+        foreach ($resultSet as &$result) {
+            $result['action'] = $result['isinstalled'];
+        }
+    }
     
     private static function getFilesystemWidget(& $resultSet)
     {
@@ -263,11 +283,15 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
         }
 
         $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $modules = \Centreon\Internal\Module\Informations::getModuleList(true);
         // Add file system repo
         $possibleWidgetDir = array(
-            $path . "/widgets/*Widget/",
-            $path . "/modules/*Module/widgets/*Widget/"
+            $path . "/widgets/*Widget/"
         );
+        foreach ($modules as $module) {
+            $directoryModule = str_replace(' ', '', ucwords(str_replace('-', ' ', $module))) . "Module";
+            $possibleWidgetDir[] = $path . "/modules/" . $directoryModule . "/widgets/*Widget/";
+        }
         foreach ($possibleWidgetDir as $d) {
             $rawWidgetList = glob($d);
             foreach ($rawWidgetList as $widget) {

@@ -259,9 +259,6 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
      */
     protected static function addAdditionnalDatas(&$resultSet)
     {
-        /*for ($i = 0; $i < count($resultSet); $i++) {
-            $resultSet[$i]['action'] = $resultSet[$i]['isinstalled'];
-    }*/
         self::getFilesystemModule($resultSet);
     }
 

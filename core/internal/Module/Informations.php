@@ -133,12 +133,17 @@ class Informations
     }
     
     /**
-     * 
+     *
+     * @param bool $onlyActivated If list only module activated
      * @return array
      */
-    public static function getModuleList()
+    public static function getModuleList($onlyActivated = false)
     {
         $moduleList = array();
+        $activated = array('0', '1', '2');
+        if ($onlyActivated) {
+            $activated = array('1', '2');
+        }
         
         try {
             $rawModuleList = \Centreon\Models\Module::getList(
@@ -147,7 +152,7 @@ class Informations
                 0,
                 null,
                 "ASC",
-                array('isactivated' => array('0', '1', '2'))
+                array('isactivated' => $activated)
                 );
 
             foreach ($rawModuleList as $module) {

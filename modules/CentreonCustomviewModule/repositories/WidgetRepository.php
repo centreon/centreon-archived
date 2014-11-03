@@ -214,12 +214,14 @@ class WidgetRepository
             throw new Exception('No custom view or no widget selected');
         }
         $db = Di::getDefault()->get('db_centreon');
-        $query = "INSERT INTO cfg_widgets (title, widget_model_id, custom_view_id)
-            VALUES (:title, :model_id, :custom_view_id)";
+        $orgId = Di::getDefault()->get('organization');
+        $query = "INSERT INTO cfg_widgets (title, widget_model_id, custom_view_id, organization_id)
+            VALUES (:title, :model_id, :custom_view_id, :organization_id)";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':title', $params['title']);
         $stmt->bindParam(':model_id', $params['widget']);
         $stmt->bindParam(':custom_view_id', $params['custom_view_id']);
+        $stmt->bindParam(':organization_id', $orgId);
         $stmt->execute();
     }
 
