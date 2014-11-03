@@ -407,14 +407,29 @@ aside {
     padding-top: 20px;
     padding-bottom: 60px; /* For floating pagination */
 
+    .DTTT {
+        margin-right: 5px;
+    }
+
+    .dataTables_length {
+        display: block;
+	width: 100%;
+    }
+
     table {
         thead>tr>th {
-            border-bottom-color: @topbar-bg-color;
+            border-bottom-color: lighten(@topbar-bg-color, 20%);
 	    border-bottom-width: 2px;
 	}
-        td {
+        tbody>tr>td {
+            padding: 4px 10px;
             font-size: 12px;
 	    white-space: nowrap;
+        }
+
+        &.dataTable.no-footer {
+            border-bottom-color: lighten(@topbar-bg-color, 20%);
+	    border-bottom-width: 2px;
         }
     }
 
@@ -580,7 +595,7 @@ td.incident-extended-info {
 
 /* Configuration listing */
 .configuration-actions {
-  margin-left: 40px;
+ // margin-left: 40px;
   display: none;
 }
 

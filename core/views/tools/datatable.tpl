@@ -1,8 +1,8 @@
 <div class="first-content">
-    <div class="col-sm-12 col-md-7 configuration-actions">
-      <div><button class="btn btn-default" id="modalAdd">{t}Add{/t}</button></div>
+    <div class="col-sm-12 col-md-9 configuration-actions">
+      <div><button class="btn btn-default btn-sm" id="modalAdd">{t}Add{/t}</button></div>
       <div class="btn-group" id="selected_option" style="display: none;">
-        <div class="btn-group">
+        <div class="btn-group btn-group-sm">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             {t}Actions{/t}
             <span class="caret"></span>
@@ -17,7 +17,7 @@
             <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>
           </ul>
         </div>
-        <div class="btn-group hidden" id="addToGroup">
+        <div class="btn-group btn-group-sm hidden" id="addToGroup">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             {t}Add to{/t}
             <span class="caret"></span>
