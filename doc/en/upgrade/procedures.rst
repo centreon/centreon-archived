@@ -78,4 +78,4 @@ central one::
   $ ssh <poller_ip_address>
 
 Answer ``y`` to the asked question. You should be able to connect
-without beeing prompted for a password.
+without being prompted for a password.

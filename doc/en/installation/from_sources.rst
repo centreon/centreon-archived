@@ -11,31 +11,40 @@ Prerequisites
 CentOS
 ======
 
-In CentOS and RHEL5, following packages are not included in standard
-repositories. To install pre-requisites, you need to add *RPM Forge*
-repository. 
+.. warning::
+	This process has not been tested on versions 6.x of CentOS and RHEL environments. Nevertheless it should be compatible by changing the names of the packages to adapt them to version 6.
 
-On 32-bits::
+
+CentOS and RHEL environments do not possess as standard on archives all the dependences necessary for the installation of Centreon. You should add the *RPM Forge* archive
+
+32-bit system:
+
+ ::
 
   $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
   $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
-On 64-bits::
+64-bit system:
+
+ ::
 
   $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.x86_64.rpm
   $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
-Use your favourite editor to open *RPM-GPG-KEY.dag.txt*, and remove
-the first few lines. The file should start with::
+Use your favorite text editor and delete the first line of the RPM-GPG-KEY.dag.txt file. The first line should contain:
+
+ ::
 
   "-----BEGIN PGP PUBLIC KEY BLOCK-----"
 
-Then, execute the following::
+Then perform the following commands:
+
+ ::
 
   $ rpm --import RPM-GPG-KEY.dag.txt
   $ rpm -Uvh rpmforge-release-0.5.1-1.el5.rf.i386.rpm
 
-Now, you're ready to install the prerequisites::
+You can now install the necessary prerequisites::
 
   $ yum update
   $ yum upgrade
@@ -46,16 +55,20 @@ Now, you're ready to install the prerequisites::
       dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
       php-pear
 
-Additionnal commands are required to configure the environment properly::
+Additionnal commands are necessary to configure the environment correctly:
+
+ ::
 
   $ usermod -U apache
   $ pear channel-update pear.php.net
 
-If you can't access the Internet directly but throught a proxy, run the following::
+If you can’t access the Internet directly but have to pass via a proxy, perform the following command:
+
+ ::
 
   $ pear config-set http_proxy http://my_proxy.com:port
 
-And finally::
+Then execute::
 
   $ pear upgrade-all 
 
@@ -65,15 +78,13 @@ Debian / Ubuntu
 Install the following prerequisites::
 
   $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev \
-      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd php5-sqlite \
+      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd \
       rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
-      libdigest-sha-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
+      libdigest-sha1-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
 
-To finish, you must install SNMP mibs. Due to a licensing issue, those
-mibs are not available by default on Debian. To add them, first edit
-the */etc/apt/sources.list* file and add the ``non-free`` category.
+To finish, you should install SNMP MIBs. Because of a license problem the MIB files are not available by default in Debian. To add them, change the /etc/apt/sources.list file and add the *non-free* category.
 
-Then, run the following commands::
+Then execute the following commands::
 
   $ apt-get update
   $ apt-get install snmp-mibs-downloader
@@ -87,27 +98,28 @@ Packages
 Install the following prerequisites::
 
   $ yast -i gcc gcc-c++ make automake apache2 php5 php5-mysql apache2-mod_php5 php5-pear \
-      php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-gettext php5-mbstring mysql php5-sqlite \
+      php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-gettext php5-mbstring mysql \
       libmysqlclient-devel perl-DBD-mysql mysql-community-server rrdtool perl-Config-IniFiles \
       net-snmp perl-Net-SNMP perl-SNMP gd libjpeg-devel libpng-devel fontconfig-devel \
       freetype2-devel sudo mailx fping iputils dos2unix cron dejavu
 
-Configuring MIME types
-----------------------
+On some OpenSuse distributions, the default settings of the **mine** type are not valid to function with the Centreon web interface. Edit the */etc/mime.types* file and find the lines:
 
-On some OpenSuse distributions, the default mime types are not
-properly configured to work with the Centreon user interface. Edit the
-*/etc/mime.types* file and look for the lines::
+ ::
 
   text/x-xsl xsl
   text/x-xslt xslt xsl
 
-Replace them with the following::
+Replace them by:
+
+ ::
 
   text/xml xsl
   text/xml xslt xsl
 
-Save the file and restart apache::
+Save the file and restart Apache:
+
+ ::
 
   /etc/init.d/apache2 restart
 
@@ -115,38 +127,35 @@ Save the file and restart apache::
 Monitoring engine
 ******************
 
-Centreon is compatible with the following monitoring engines:
+Centreon is compatible with the following software:
 
 * :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`
 * `Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_
-* `Icinga <http://docs.icinga.org/latest/en/>`_
 
-Install one of these engines before going futher and make sure to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
+Install one of these engines before continuing with the installation. Don’t forget to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
+******************
+Stream Multiplexer
+******************
 
-**************
-Broker module
-**************
-
-Centreon is compatible with the following broker modules:
+Centreon is compatible with the following software:
 
 * :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
 * `NDOUtils <http://nagios.sourceforge.net/docs/ndoutils/NDOUtils.pdf>`_
 
-Install one of these broker modules before going further.
-
+Install one of these Stream Multiplexers before continuing with the installation.
 
 ********
 Centreon
 ********
 
-Download the newest Centreon package :ref:`here <download_web_src>`.
+Download the latest version of Centreon :ref:`here <download_web_src>`.
 
 
 Shell Installation
 ==================
 
-Extract the Centreon package::
+Extract the Centreon archive::
 
   tar zxf centreon-2.x.x.tar.gz
 
@@ -158,22 +167,23 @@ Run the installation script::
 
   ./install.sh -i
 
-The installation script allows custom configuration, this procedure
-will show you the best paths to use. Also, the Yes/No prompt questions
-will result in [y] answers most of the time.
+.. note::
+
+ The installation script allows customised configuration; this process will show you the best paths to use. Furthermore quick yes/no questions can be replied to by [y] most of the time.
 
 Prerequisites check
 -------------------
 
-If [Step 01] is successful, you should not have any problem
-here. Otherwise, go back to [Step 01] and install the prerequisites::
+If the Prerequisites installation step has been run successfully you should have no problem during this stage. Otherwise repeat the Prerequisites installation process:
+
+ ::
 
   ###############################################################################
   #                                                                             #
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.4.0                                   #
+  #                                    v2.5.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -215,7 +225,7 @@ License agreement
 Main components
 ---------------
 
-Answer [y] to all
+Answer [y] to all the questions
 
 ::
 
@@ -239,8 +249,8 @@ Answer [y] to all
   [y/n], default to [n]:
   > y
 
-Installation paths
-------------------
+Definition of installation paths
+--------------------------------
 
 ::
 
@@ -317,8 +327,10 @@ Installation paths
   > /usr/share/centreon/bin
   Path /usr/share/centreon/bin                               OK
 
-The RRDs.pm package can be located elsewhere. In order to locate it, run this in another terminal::
+The **RRDs.pm** file can be located anywhere on the server. Use the following commands:
 
+ ::
+  
   updatedb
   locate RRDs.pm
 
@@ -342,8 +354,9 @@ The RRDs.pm package can be located elsewhere. In order to locate it, run this in
 Centreon user and group
 -----------------------
 
-The group of Centreon applications: This group is used for access rights
-between monitoring applications::
+The Centreon applications group: This group is used for the access rights between the various Centreon softwares:
+
+ ::
 
   What is the Centreon group ? [centreon]
   default to [centreon]
@@ -357,40 +370,52 @@ between monitoring applications::
 Monitoring user
 ---------------
 
-User that will be used for running the monitoring engine
+This user executes the monitoring engine.
 
-If you are using Centreon Engine::
+If you use Centreon Engine:
+
+ ::
 
   What is the Monitoring engine user ?
   > centreon-engine
 
-If you are using Nagios::
+If you use Nagios:
+
+ ::
 
   What is the Monitoring engine user ?
   > nagios
 
-User that will be used for running the broker daemon:
+This user executes the Stream Multiplexer:
 
-If you are using Centreon Broker::
+If you use Centreon Broker:
+
+ ::
 
   What is the Broker user ? (optional)
   > centreon-broker
 
-If you are using NDOUtils::
+If you use NDOUtils:
+
+ ::
   
   What is the Broker user ? (optional)
   > nagios
 
 
-Monitoring log directory
+Monitoring logs directory
 ------------------------
 
-If you are using Centreon Engine::
+If you use Centreon Engine:
+
+ ::
 
   What is the Monitoring engine log directory ?
   > /var/log/centreon-engine
 
-If you are using Nagios::
+If you use Nagios:
+
+ ::
 
   What is the Monitoring engine log directory ?
   > /var/log/nagios
@@ -426,7 +451,9 @@ Sudo configuration
   /etc/sudoers                                               OK
 
 
-If you are using Centreon Engine::
+If you use Centreon Engine:
+
+ ::
 
   What is the Monitoring engine init.d script ?
   > /etc/init.d/centengine
@@ -437,7 +464,9 @@ If you are using Centreon Engine::
   What is the Monitoring engine configuration directory ?
   > /etc/centreon-engine
 
-If you are using Nagios ::
+If you use Nagios:
+
+ ::
 
   What is the Monitoring engine init.d script ?
   > /etc/init.d/nagios
@@ -448,7 +477,9 @@ If you are using Nagios ::
   What is the Monitoring engine configuration directory ?
   > /etc/nagios
 
-If you are using Centreon Broker::
+If you use Centreon Broker:
+
+ ::
 
   Where is the configuration directory for broker module ?
   > /etc/centreon-broker
@@ -456,7 +487,9 @@ If you are using Centreon Broker::
   Where is the init script for broker module daemon ?
   > /etc/init.d/cbd
 
-If you are using NDOUtils::
+If you use NDOUtils:
+
+ ::
   
   Where is the configuration directory for broker module ?
   > /etc/nagios
@@ -465,7 +498,10 @@ If you are using NDOUtils::
   > /etc/init.d/ndo2db
 
 
-Sudo configuration::
+Sudo configuration:
+
+ ::
+
   Do you want me to reconfigure your sudo ? (WARNING) 
   [y/n], default to [n]:
   >  y
@@ -757,10 +793,11 @@ Web Installation
 
 .. note::
 
-   Make sure that your Apache and MySQL servers are up and running before
-   going any further.
+   Make sure that your Apache and MySQL servers are up and running before continuing.
 
-Open your favorite web browser and go to:::
+Open your favorite web browser and go to the address:
+
+ ::
 
   http://SERVER_ADDRESS/centreon
 
@@ -769,79 +806,75 @@ You should see the following page:
 .. image:: /_static/images/installation/setup_1.png
    :align: center
 
-Press ``Next``:
+Click on the **Next** button:
 
 .. image:: /_static/images/installation/setup_2.png
    :align: center
 
-If there is any missing package, install them first then click on the ``Refresh`` button. Click on the ``Next`` button once everything is ``OK``
-
+If a package is missing install it and click on the **Refresh** button. Click on the **Next** button as soon as everything is **OK**:
 
 .. image:: /_static/images/installation/setup_3_1.png
    :align: center
 
-Select your monitoring engine.
+Select your monitoring engine. Depending on the selection, the settings are different.
 
-Depending on the chosen monitoring engine, you will be asked to enter some specific parameters.
-
-Case of Centreon Engine:
+For Centreon Engine:
 
 .. image:: /_static/images/installation/setup_3_2.png
    :align: center
 
-Case of Nagios:
+For Nagios:
 
 .. image:: /_static/images/installation/setup_3_3.png
    :align: center
 
-Click on the ``Next`` button when all parameters are filled.
+Click on the **Next** button as soon as all the fields are filled.
 
 .. image:: /_static/images/installation/setup_4.png
    :align: center
 
-Select your event broker module.
+Select your Stream Multiplexer. Depending on the selection, the settings are different.
 
-Depending on the chosen module, you will be asked to enter some specific parameters. 
-
-Case of Centreon Broker:
+For Centreon Broker:
 
 .. image:: /_static/images/installation/setup_4_2.png
    :align: center
 
-Case of NDOUtils:
+For NDOUtils:
 
 .. image:: /_static/images/installation/setup_4_3.png
    :align: center
 
-Click on the ``Next`` button when all parameters are filled.
+Click on the **Next** button when all parameters are filled.
 
 .. image:: /_static/images/installation/setup_5.png
    :align: center
 
-Fill the form with your information. Make sure to remember your password as it will be used for logging in. Click on the ``Next`` button.
+Fill the form with your data. Be sure to remember your password. Click on the **next** button.
 
 
 .. image:: /_static/images/installation/setup_6.png
    :align: center
 
-Fill the form with information regarding your database setup and credentials that will be used for connection. Click on the ``Next`` button.
+Fill the form with information about your database. Click on the **Next** button.
 
 .. image:: /_static/images/installation/setup_7.png
    :align: center
 
-The database structure will be installed during this process. Everything should pass and display ``OK``.
+The database structure will be installed during this process. All must be validated by **OK**.
 
 .. note::
-  You can be asked to add the ``innodb_file_per_table=1`` parameter in the MySQL configuration file.
 
-Click on the ``Next`` button.
+ The installation process may ask you to change the settings of the MySQL server to **add innodb_file_per_table=1** in the configuration file.
+
+Click on the **Next** button.
 
 .. image:: /_static/images/installation/setup_8.png
    :align: center
 
 The installation is now finished, click on the ``Finish`` button, you will be redirected to the login screen:
 
-.. image:: /_static/images/installation/login.png
+.. image:: /images/user/aconnection.png
    :align: center
 
-Enter your credentials, you can now start configuring your monitoring system.
+Enter your credentials to log in.

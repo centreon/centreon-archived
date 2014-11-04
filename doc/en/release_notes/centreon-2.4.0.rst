@@ -2,9 +2,9 @@
 Centreon 2.4
 ============
 
-**********
-What's new
-**********
+***********
+What's new?
+***********
 
 Better integration with Centreon Engine and Centreon Broker
 ===========================================================
@@ -49,7 +49,7 @@ New *autologin* mechanism
 
 A better :ref:`autologin <autologin>` mechanism has been introduced in
 this version. Now using randomly generated keys, it allows you to
-access specific pages without beeing prompted for a username and a
+access specific pages without being prompted for a username and a
 password.
 
 Database indexes verification tool

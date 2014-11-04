@@ -8,23 +8,20 @@ Downloads
 Formats
 *******
 
-Generally speaking, Open Source softwares by Merethis are provided in three possible formats:
+Open Source software supplied by Merethis is generally available in 3 formats:
 
-* binary RPM packages (recommended)
-* tarballs with sources
+* RPM packages (recommended)
+* archives containing the sources
 * git repository
 
-RPM packages are the best format you can get as you would not
-have to worry about compilation and installation, everything is
-already made by Merethis' experts.
+RPM packages are the best format to obtain our software. They are packaged by Merethis experts and relieve you of any concern over the installation process.
 
-If your platform is not currently supported by RPMs you might
-consider using tarball sources which are always provided for stable
-release. However, compilation has to be done manually and it can be
-cumbersome in some situations.
+If your platform does not support RPM packages, you should use archives containing the sources of stable versions of our software and install them manually. Manual compilation of some packages can be complex.
 
-The latter of these formats is for developers or beta-testers only. No official
-support is provided on them as they are most likely still under development.
+The last format available is oriented for developers or beta-testers. No official help can be provided on these software versions considered to be in the process of development.
+
+.. note::
+ Merethis recommends using the Centreon Enterprise Server packaged version. Installation is detailed in the chapter entitled: :ref:`First steps with CES 3.0<firststepsces3>`
 
 
 .. _download_web_src:
@@ -33,7 +30,7 @@ support is provided on them as they are most likely still under development.
 Centreon Web
 ************
 
-Tarballs: `<http://www.centreon.com/Content-Download/donwload-centreon>`_
+Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-stable-archive>`_
 
 git: `<http://git.centreon.com/centreon.git>`_
 
@@ -41,7 +38,7 @@ git: `<http://git.centreon.com/centreon.git>`_
 Centreon Engine
 ***************
 
-Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-engine-centreon>`_
+Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-engine>`_
 
 git: `<http://git.centreon.com/centreon-engine>`_
 
@@ -49,7 +46,7 @@ git: `<http://git.centreon.com/centreon-engine>`_
 Centreon Broker
 ***************
 
-Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-broker-centreon>`_
+Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-broker>`_
 
 git: `<http://git.centreon.com/centreon-broker.git>`_
 

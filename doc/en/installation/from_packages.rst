@@ -4,92 +4,120 @@
 Using packages
 ==============
 
-Merethis provides RPM for its products through Centreon Entreprise
-Server (CES). Open source products are freely available from our
-repository.
+Merethis supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
 
-These packages have been successfully tested with CentOS 5 and RedHat 5 for CES 2.2 and with CentOS 6 and RedHat 6 for CES 3.0.
+These packages have been successfully tested on CentOS and Red Hat environments in 5.x and 6.x versions
 
 *************
 Prerequisites
 *************
 
-In order to use RPM from the CES repository, you have to install the
-appropriate repo file. Run the following command as privileged user::
+To install Centreon software from the CES repository, you should first install the file linked to the repository.
 
-  $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+CES 3.0 (CentOS 6.x)
+--------------------
 
-The repo file is now installed.
+Perform the following command from a user with sufficient rights:
+
+ ::
+
+ $ wget http://yum.centreon.com/standard/3.0/stable/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+
+The repository is now installed.
+
+CES 2.2 (CentOS 5.x)
+--------------------
+
+Perform the following command from a user with sufficient rights:
+
+ ::
+
+ $ wget http://yum.centreon.com/standard/2.2/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
+
+The repository is now installed.
 
 *********************
 Centreon installation
 *********************
 
-In CES 2.2 and CES 3.0, there are two choise of basic configuration.
+From CES 2.2, two installation choices are available
 
 +---------------------------------------+-------------------+-----------------+
 | Configuration package name            | Monitoring Engine | Broker module   |
 +=======================================+===================+=================+
 | centreon-base-config-centreon-engine  | Centreon Engine   | Centreon Broker |
 +---------------------------------------+-------------------+-----------------+
-| centreon-base-config-nagios           | Nagios            | Ndoutils        |
+| centreon-base-config-nagios           | Nagios            | NDOutils        |
 +---------------------------------------+-------------------+-----------------+
 
-You must choose between this two templates.
+You should choose between one of the two configuration processes of your monitoring platform. Merethis recommends the first choice based on the “Centreon Engine” scheduler and the “Centreon Broker” stream multiplexer.
 
 Install a central server
 ------------------------
 
-This part is to install a central server.
+The chapter describes the installation of a Centreon central server.
 
-Install packages with Centreon Engine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation of the server with the Centreon Engine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Run the commands::
+Perform the command:
+
+ ::
 
   $ yum install centreon-base-config-centreon-engine centreon
 
-Install packages with Nagios
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Run the commands::
+Installation of the server with the Nagios engine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Perform the command:
+
+ ::
 
   $ yum install centreon-base-config-nagios centreon
 
-After this installation, you can connect to Centreon for finish installation.
-The steps of web installation is :ref:`here <installation_web>`.
+After this step you should connect to Centreon to finalise the installation process.
+This step is described :ref:`here <installation_web>`.
 
-Install a poller
-----------------
+Installing a poller
+-------------------
 
-This part is to install a poller server.
+This chapter describes the installation of a collector.
 
-Install packages with Centreon Engine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation of the server with Centreon Engine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Run the commands::
+Perform the command:
+
+ ::
 
   $ yum install centreon-poller-centreon-engine
 
-Install packages with Nagios
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation of the server with the Nagios engine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Run the commands::
+Perform the command:
+
+ ::
 
   $ yum install centreon-poller-nagios
 
-Base configuration of pollers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Base configuration of a poller
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The communication between a central server and a poller server is by SSH.
 
-You must exchange ssh keys this hosts.
+You should exchange the SSH keys between the servers.
 
-If you have not a ssh private on the central for user centreon::
+If you don’t have any private SSH keys on the central server for the Centreon user:
+
+ ::
 
   $ su - centreon
   $ ssh-keygen -t rsa
 
-You copy this key into the poller::
+Copy this key on the collector:
+
+ ::
 
   $ ssh-copy-id centreon@your_poller_ip
