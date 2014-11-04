@@ -94,6 +94,9 @@ class BrokerController extends FormController
     public function updateAction()
     {
         $givenParameters = $this->getParams('post');
+        $pollerId = $givenParameters['poller_id'];
+        unset($givenParameters['poller_id']);
+        \CentreonBroker\Repository\BrokerRepository::save($pollerId, $givenParameters);
     }
     
     /**
@@ -126,7 +129,6 @@ class BrokerController extends FormController
                 'id' => $requestParam['id']
             )
         );
-        
         
         $this->tpl->assign('pageTitle', $this->objectDisplayName);
         $this->tpl->assign('form', BrokerFormRepository::getFormForPoller($requestParam['id']));

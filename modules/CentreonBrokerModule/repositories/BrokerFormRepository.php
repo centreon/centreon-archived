@@ -69,7 +69,7 @@ class BrokerFormRepository extends FormRepository
         }
         
         $pollerValues = BrokerRepository::loadValues($pollerId);
-        $pollerForm = static::buildPollerTemplateForm($listTpl[$tmplName]->toFullTemplate());
+        $pollerForm = static::buildPollerTemplateForm($listTpl[$tmplName]->toFullTemplate(), $pollerId, $tmplName);
         unset($listTpl);
         return $pollerForm;
     }
@@ -80,7 +80,7 @@ class BrokerFormRepository extends FormRepository
      * @return type
      * @throws Exception
      */
-    public static function buildPollerTemplateForm(PollerTemplate $pollerTemplate)
+    public static function buildPollerTemplateForm(PollerTemplate $pollerTemplate, $pollerId, $tmplName)
     {
         $setUp = $pollerTemplate->getBrokerPart()->getSetup();
         if (count($setUp) < 1) {
@@ -91,6 +91,10 @@ class BrokerFormRepository extends FormRepository
         
         $formHandler = new \Centreon\Internal\Form('broker_full_form');
         $formComponents = array();
+        $defaultValues = array();
+        
+        $formComponents['General']['general'] = static::addGeneralParams($formHandler, $defaultValues, $pollerId);
+        $formComponents['General']['path'] = static::addPathParams($formHandler, $defaultValues, $pollerId);
 
         foreach ($brokerMode as $mode) {
             if (!isset($mode['general'])) {
@@ -107,25 +111,29 @@ class BrokerFormRepository extends FormRepository
                         continue;
                         break;
                     case 'logger':
-                        $elements = static::parseLoggerParams($formHandler, $blockInitialName, $blockContent);
+                        $elements = static::parseLoggerParams($formHandler, $blockInitialName, $blockContent, $defaultValues, $sectionName);
                         if (count($elements) > 0) {
                             $formComponents[$sectionName][$blockInitialName] = $elements;
                         }
                         break;
                     case 'input':
                     case 'output':
-                        $elements = static::parseOutputInputParams($formHandler, $blockInitialName, $blockContent);
+                        $elements = static::parseOutputInputParams($formHandler, $blockInitialName, $blockContent, $defaultValues, $sectionName);
                         if (count($elements) > 0) {
                             $formComponents[$sectionName][$blockInitialName] = $elements;
                         }
                         break;
                     case 'module_directory':
                     case 'event_queue_max_size':
-                    case 'log_thread_id':
+                    case 'write_thread_id':
+                    case 'write_timestamp':
+                    case 'flush_logs':
                         $elements = static::parseCustomParams(
                             $formHandler,
                             $blockInitialName,
-                            array($blockInitialName => $blockContent));
+                            array($blockInitialName => $blockContent),
+                            $defaultValues
+                        );
                         if (count($elements) > 0) {
                             $formComponents[$sectionName][$blockInitialName] = $elements;
                         }
@@ -138,10 +146,114 @@ class BrokerFormRepository extends FormRepository
             }
         }
         
+        $formHandler->addHidden('poller_id', $pollerId);
+        $formHandler->addHidden('poller_tmpl', $tmplName);
         $formHandler->addSubmit('save_form', _("Save"));
+        
+        static::getSavedDefaultValues($pollerId, $defaultValues);
+        
+        $formHandler->setDefaults($defaultValues);
         
         $finalForm = static::genForm($formHandler, $formComponents);
         return $finalForm;
+    }
+    
+    public static function getSavedDefaultValues($pollerId, &$defaultValues)
+    {
+        $userInfoList = BrokerRepository::getUserInfo($pollerId);
+        foreach ($userInfoList as $moduleName => $userInfoModules) {
+            foreach ($userInfoModules as $userInfo) {
+                $defaultValues[$userInfo['config_key']] = $userInfo['config_value'];
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param type $type
+     * @param type $sName
+     * @param type $element
+     * @return type
+     */
+    public static function buildElementName($type, $sName, $element, $sectionName)
+    {
+        return $finalName = $sectionName . '-' . $type . '-' . $element['type'] . '-' . $element['name'] . '-' . $sName;
+    }
+    
+    /**
+     * 
+     * @param type $formHandler
+     * @param type $defaultValues
+     * @param type $pollerId
+     * @return string
+     */
+    public static function addGeneralParams(&$formHandler, &$defaultValues, $pollerId)
+    {
+        $generalOptions = array(
+            'event_queue_max_size',
+            'write_thread_id',
+            'write_timestamp',
+            'flush_logs',
+        );
+        
+        $componentList = array();
+        
+        foreach ($generalOptions as $gOpt) {
+            $componentList[] = $gOpt;
+            $componentLabel = ucwords(str_replace('_', ' ', $gOpt));
+            $formHandler->addStatic(
+                array(
+                    'name' => $gOpt,
+                    'type' => 'text',
+                    'label' => $componentLabel,
+                    'mandatory' => '0'
+                )
+            );
+        }
+        
+        $defaultValues = array_merge($defaultValues, BrokerRepository::getGeneralValues($pollerId));
+        
+        return $componentList;
+    }
+    
+    /**
+     * 
+     * @param type $formHandler
+     * @param type $defaultValues
+     * @param type $pollerId
+     * @return type
+     */
+    public static function addPathParams(&$formHandler, &$defaultValues, $pollerId)
+    {
+        $pathOptions = array(
+            'broker_etc_directory' => 'directory_config',
+            'broker_module_directory' => 'directory_modules',
+            'broker_data_directory' => 'directory_data',
+            'broker_logs_directory' => 'directory_logs',
+            'init_script' => 'init_script'
+        );
+        
+        $componentList = array();
+        
+        foreach (array_keys($pathOptions) as $pOpt) {
+            $componentList[] = $pOpt;
+            $componentLabel = ucwords(str_replace('_', ' ', $pOpt));
+            $formHandler->addStatic(
+                array(
+                    'name' => $pOpt,
+                    'type' => 'text',
+                    'label' => $componentLabel,
+                    'mandatory' => '0'
+                )
+            );
+        }
+        
+        $currentValues = BrokerRepository::getPathsFromPollerId($pollerId);
+        foreach ($currentValues as $cKey => $cValue) {
+            $defaultValues[array_search($cKey, $pathOptions)] = $cValue;
+        }
+        
+        return $componentList;
     }
     
     /**
@@ -151,9 +263,8 @@ class BrokerFormRepository extends FormRepository
      * @param array $components
      * @return array
      */
-    public static function parseCustomParams(&$formHandler, $blockName, $components)
+    public static function parseCustomParams(&$formHandler, $blockName, $components, &$defaultValues)
     {
-        var_dump($components);
         $componentList = array();
         foreach ($components as $singleComponentName => $singleComponent) {
             $componentName = $blockName . '-' . $singleComponentName;
@@ -167,6 +278,7 @@ class BrokerFormRepository extends FormRepository
                     'mandatory' => '0'
                 )
             );
+            $defaultValues[$componentName] = $singleComponent;
         }
         return $componentList;
     }
@@ -178,7 +290,7 @@ class BrokerFormRepository extends FormRepository
      * @param array $components
      * @return array
      */
-    public static function parseOutputInputParams(&$formHandler, $blockName, $components)
+    public static function parseOutputInputParams(&$formHandler, $blockName, $components, &$defaultValues, $sectionName)
     {
         $excludeTypes = array('rrd', 'local', 'file');
         $overrideableFields = array(
@@ -192,7 +304,7 @@ class BrokerFormRepository extends FormRepository
             if (!in_array($singleComponent['type'], $excludeTypes)) {
                 foreach ($singleComponent as $sName => $svalue) {
                     if (isset($overrideableFields[$singleComponent['type']]) && in_array($sName, $overrideableFields[$singleComponent['type']])) {
-                        $componentName = $blockName . '-' . $sName;
+                        $componentName = static::buildElementName($blockName, $sName, $singleComponent, $sectionName);
                         $componentLabel = ucwords(str_replace('-', ' ', $singleComponent['type'].'-'.$sName));
                         $componentList[] = $componentName;
                         $formHandler->addStatic(
@@ -203,6 +315,7 @@ class BrokerFormRepository extends FormRepository
                                 'mandatory' => '0'
                             )
                         );
+                        $defaultValues[$componentName] = $svalue;
                     }
                 }
             }
@@ -217,14 +330,14 @@ class BrokerFormRepository extends FormRepository
      * @param array $components
      * @return array
      */
-    public static function parseLoggerParams(&$formHandler, $blockName, $components)
+    public static function parseLoggerParams(&$formHandler, $blockName, $components, &$defaultValues, $sectionName)
     {
         $overrideableFields = array('debug', 'info', 'level', 'facility', 'max_size');
         $componentList = array();
         foreach ($components as $singleComponent) {
             foreach ($singleComponent as $sName => $svalue) {
                 if (in_array($sName, $overrideableFields)) {
-                    $componentName = $blockName . '-' . $sName;
+                    $componentName = static::buildElementName($blockName, $sName, $singleComponent, $sectionName);
                     $componentLabel = ucwords(str_replace('-', ' ', $singleComponent['type'].'-'.$sName));
                     $componentList[] = $componentName;
                     $formHandler->addStatic(
@@ -235,6 +348,7 @@ class BrokerFormRepository extends FormRepository
                             'mandatory' => '0'
                         )
                     );
+                    $defaultValues[$componentName] = $svalue;
                 }
             }
         }
