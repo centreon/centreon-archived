@@ -62,7 +62,7 @@
   <div id="main">
   </div>
   {/block}
-  <div class="bottombar">
+  <!-- <div class="bottombar">
       <div class="label-button pull-right">
         Centreon &copy; 2005-2014 <a href="#" id="footer-button"><i class="fa fa-chevron-circle-up"></i></a>
       </div>
@@ -88,7 +88,7 @@
             </ul>
         </div>
      </div>
-  </div>
+  </div> -->
 </div>
 {foreach from=$jsBottomFileList item='jsFile'}
 {$jsFile|js}
@@ -102,11 +102,11 @@ $(document).ready(function() {
     $('.btn-dark').on('click', function() {
         switchTheme('dark');
     });
-    $('#footer-button').on('click', function(e) {
+    /*$('#footer-button').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         toggleFooter();
-    });
+    });*/
     $('#logout').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();

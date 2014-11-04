@@ -17,6 +17,14 @@
 {block name="content"}
 {/block}
 </div>
+<div class="bottombar">
+  <div class="text-center">
+    <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
+    <a href="https://github.com/centreon/centreon" data-toggle="tooltip" data-placement="top" title="{t}Source{/t}"><i class="fa fa-github"></i></a>
+    <a href="https://twitter.com/Centreon" data-toggle="tooltip" data-placement="top" title="{t}Twitter{/t}"><i class="fa fa-twitter"></i></a>
+    <a href="https://www.facebook.com/pages/Centreon/157748944280967" data-toggle="tooltip" data-placement="top" title="{t}Facebook{/t}"><i class="fa fa-facebook"></i></a>
+  </div>
+</div>
 {/block}
 
 {block name="javascript-bottom" append}
@@ -91,9 +99,13 @@ $(document).ready(function() {
       }
       $( "aside" ).toggleClass( "mini" );
       $( ".content" ).toggleClass( "mini" );
+      $( ".bottombar" ).toggleClass( "mini" );
       $( "#menu1" ).find( "li span" ).toggle();
       $( "#menu1" ).find( ".toggle" ).toggle();
     });
+
+  /* Init tooltips */
+  $( ".bottombar a" ).tooltip();
 });
 </script>
 {/block}

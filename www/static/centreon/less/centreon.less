@@ -310,78 +310,24 @@ aside {
 
 /* Bottombar */
 .bottombar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin-bottom: 0;
-    width: 100%;
-    min-height: 20px;
-    height: 20px;
-    overflow: hidden;
-    transition: height 1s;
-    z-index: 10;
+  display: block;
+  background-color: @navbar-default-bg;
+  border-top: 1px solid @navbar-default-border;
+  margin-left: 220px;
 
-    .label-button {
-        height: 20px;
-        background-color: fade(@navbar-default-bg, 20%);
-        color: @text-color;
-        font-size: 12px;
-        line-height: 20px;
-        padding: 0 3px;
-        border-top: 1px solid @navbar-default-border;
-        border-left: 1px solid @navbar-default-border;
-        border-right: 1px solid @navbar-default-border;
-        border-top-left-radius: 2px;
-        border-top-right-radius: 2px;
+  &.mini {
+    margin-left: @left-bar-width-mini;
+  }
+
+  a {
+    padding: 10px 5px;
+    display: inline-block;
+    color: @navbar-default-link-color;
+    
+    &:hover {
+      color: @navbar-default-link-hover-color;
     }
-
-    .label-button-active {
-        background-color: @navbar-default-bg;
-    }
-
-    a {
-        color: @text-color;
-        font-size: 10px;
-    }
-
-    .footer-extended {
-        margin-top: 20px;
-        background-color: @navbar-default-bg;
-        border-top: 1px solid @navbar-default-border;
-
-        div:last-child {
-            padding-bottom: 5px;
-        }
-
-        ul {
-            width: auto;
-            min-width: 0;
-            display: table;
-
-            li + li:before {
-                color: @text-color;
-                font-size: 12px;
-                content: "-";
-                padding-right: 10px;
-            }
-        }
-
-        .fa {
-            font-size: 24px;
-        }
-
-        .fa-twitter-square {
-            color: #9ae4e8;
-        }
-
-        .fa-google-plus-square {
-            color: #d34836;
-        }
-        
-        .fa-facebook-square {
-            color: #3b5998;
-        }
-    }
+  }
 }
 
 .content .first-content {

@@ -28,8 +28,8 @@ function switchTheme(theme) {
 function resizeContent()
 {
     var navbarHeight = $('.topbar').height();
-    //navbarHeight += $('.bottombar').height();
-    var contentHeight = $(window).height() - navbarHeight - 3;
+    navbarHeight += $('.bottombar').height();
+    var contentHeight = $(window).height() - navbarHeight -10; /* -10 is the margin-top of the first content */
     $('#main').css('min-height', contentHeight);
 }
 
