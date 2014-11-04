@@ -231,11 +231,13 @@ Choose the **centreon-engine** option.
 
 .. image :: /images/user/amonitoringengine1.png
    :align: center
+   :scale: 65%
 
 Click on **Next**.
 
 .. image :: /images/user/amonitoringengine2.png
    :align: center
+   :scale: 65%
 
 For the choice of broker, choose **Centreon-broker**.
 
@@ -253,11 +255,13 @@ Define the data concerning the admin user, click on **Next**.
 
 .. image :: /images/user/aadmininfo.png
    :align: center
+   :scale: 65%
 
 By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
 
 .. image :: /images/user/adbinfo.png
    :align: center
+   :scale: 65%
 
 If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
 
