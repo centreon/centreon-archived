@@ -194,12 +194,14 @@ class BrokerRepository
         }
         return $return;
     }
-
+    
     /**
      * Add a configuration for a module
-     *
+     * 
      * @param int $pollerId The poller id
      * @param string $configName The configuration module name
+     * @param array $params
+     * @return mixed
      */
     public static function insertConfig($pollerId, $configName, $params) {
         $dbconn = Di::getDefault()->get('db_centreon');
@@ -237,6 +239,7 @@ class BrokerRepository
     /**
      * 
      * @param type $pollerId
+     * @return type
      */
     public static function getUserInfo($pollerId)
     {
@@ -255,6 +258,7 @@ class BrokerRepository
     /**
      * 
      * @param type $configId
+     * @return type
      */
     public static function loadUserInfoForConfig($configId)
     {
@@ -375,6 +379,11 @@ class BrokerRepository
         return $row;
     }
     
+    /**
+     * 
+     * @param integer $pollerId
+     * @return array
+     */
     public static function getGeneralValues($pollerId)
     {
         $db = Di::getDefault()->get('db_centreon');
@@ -412,6 +421,10 @@ class BrokerRepository
         return $values;
     }
     
+    /**
+     * 
+     * @return type
+     */
     public static function getGlobalValues()
     {
         $globalOptions = array();
