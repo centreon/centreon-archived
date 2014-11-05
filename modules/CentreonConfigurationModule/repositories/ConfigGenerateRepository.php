@@ -86,7 +86,7 @@ class ConfigGenerateRepository extends ConfigRepositoryAbstract
     public function checkPollerInformations()
     {
         $dbconn = $this->di->get('db_centreon');
-        $query = "SELECT * FROM cfg_pollers WHERE id = ?";
+        $query = "SELECT * FROM cfg_pollers WHERE poller_id = ?";
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array($this->pollerId));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
