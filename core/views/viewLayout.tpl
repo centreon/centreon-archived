@@ -35,12 +35,13 @@ var jsUrl = {$jsUrl|json_encode};
 var jsUrl = {};
 {/if}
 $(document).ready(function() {
-    leftPanelHeight();
-    $('#main').on('resize', function() {
-        leftPanelHeight();
-    });
+    resizeContentLeftPanel();
+    $(window).off('resize');
     $(window).on('resize', function() {
-        leftPanelHeight();
+        resizeContentLeftPanel();
+    });
+    $('#main').on('resize', function() {
+        resizeContentLeftPanel();
     });
     var mdata = {get_environment_id};
     loadMenu('{url_for url="/menu/getmenu/"}', mdata.envid, mdata.subid, mdata.childid);
