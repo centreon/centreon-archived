@@ -256,8 +256,8 @@ try {
                     $flag_localhost = $tab['localhost'];
 
                     /*
-                    * Meta Services Generation
-                    */
+                     * Meta Services Generation
+                     */
                     if ($files = glob($path . "metaService/*.php")) {
                         foreach ($files as $filename) {
                             include $filename;
@@ -266,8 +266,8 @@ try {
                 }
 
                 /*
-                * Module Generation
-                */
+                 * Module Generation
+                 */
                 foreach ($oreon->modules as $key => $value) {
                     $addModule = true;
                     if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
