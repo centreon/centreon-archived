@@ -51,6 +51,14 @@ class CentreonAuthSSO extends CentreonAuth {
     protected function checkPassword($password, $token) {
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
            $this->login) {
+           # Mode LDAP autoimport. Need to call it
+           if ($autoimport) {
+                # Password is only because it needs one...
+                parent::checkPassword('test', $token, $autoimport);
+           }
+           # We delete old sessions with same SID
+           global $pearDB;
+           $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
            $this->passwdOk = 1;
         } else {
             # local connect (when sso not enabled and 'sso_mode' == 1
