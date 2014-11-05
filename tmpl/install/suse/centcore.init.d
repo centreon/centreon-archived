@@ -1,12 +1,15 @@
 #! /bin/bash
-#
-# crond          Start/Stop the centcore daemon.
-#
-# chkconfig: 2345 70 30
-# description: centcore is a Centreon program that manage pollers
-# processname: centcore
-# config: @CENTREON_ETC@
-# pidfile: ${RunDir}/centcore.pid
+### BEGIN INIT INFO
+# Provides:            centcore
+# Required-Start:   $syslog $remote_fs
+# Should-Start:     centcore
+# Required-Stop:    $syslog $remote_fs
+# Should-Stop:      centcore
+# Default-Start:       2 3 5
+# Default-Stop:        0 1 6
+# Description:         centcore is a Centreon program that manage pollers
+# Short-Description:   centcore is a Centreon program that manage pollers
+### END INIT INFO
 
 # Source function library.
 . /lib/lsb/init-functions
@@ -17,11 +20,16 @@ user=@CENTREON_USER@
 timeout=60
 start_timeout=5
 logfile=@CENTREON_LOG@/centcore.log
+config=@CENTREON_ETC@/conf.pm
 
 # Add optionnal option for centcore daemon
 opt_daemon=""
 if [ -n "${logfile}" ]; then
     opt_daemon=" --logfile=${logfile}"
+fi
+
+if [ -n "${config}" ]; then
+    opt_daemon="${opt_daemon} --config=${config}"
 fi
 
 pidfile=@CENTREON_RUNDIR@/centcore.pid

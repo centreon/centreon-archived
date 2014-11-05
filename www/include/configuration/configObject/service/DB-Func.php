@@ -448,181 +448,184 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
         $row = $DBRESULT->fetchRow();
         $row["service_id"] = '';
         // Loop on the number of Service we want to duplicate
-			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
-				$val = null;
-				# Create a sentence which contains all the value
-                    foreach ($row as $key2=>$value2) {
-                        if ($key2 == "service_description" && $descKey) {
-                            $service_description = $value2 = $value2."_".$i;
-                        } elseif ($key2 == "service_description") {
-                            $service_description = null;
+        for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
+            $val = null;
+            # Create a sentence which contains all the value
+                foreach ($row as $key2=>$value2) {
+                    if ($key2 == "service_description" && $descKey) {
+                        $service_description = $value2 = $value2."_".$i;
+                    } elseif ($key2 == "service_description") {
+                        $service_description = null;
+                    }
+                    $val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'") : ", NULL") : $val .= ($value2 !=NULL ? ("'".$pearDB->escape($value2)."'") : "NULL");
+                    if ($key2 != "service_id") {
+                        $fields[$key2] = $value2;
+                    }
+                    if (isset($service_description)) {
+                        $fields["service_description"] = $service_description;
+                    }
+                }
+
+            if (!count($hPars)) {
+                $hPars = getMyServiceHosts($key);
+            }
+            if (!count($hgPars)) {
+                $hgPars = getMyServiceHostGroups($key);
+            }
+
+            if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params)) ||
+                (!$row["service_register"] && testServiceTemplateExistence($service_description))) {
+                $hPars = array();
+                $hgPars = array();
+                (isset($val) && $val != "NULL" && $val) ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = NULL;
+                if (isset($rq)) {
+                    $DBRESULT = $pearDB->query($rq);
+                    $DBRESULT = $pearDB->query("SELECT MAX(service_id) FROM service");
+                    $maxId = $DBRESULT->fetchRow();
+                    if (isset($maxId["MAX(service_id)"]))	{
+                        // Host duplication case -> Duplicate the Service for the Host we create
+                        if ($host) {
+                            $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$host."', NULL, '".$maxId["MAX(service_id)"]."')");
+                            setHostChangeFlag($pearDB, $host, null);
+                        } elseif ($hostgroup) {
+                            $pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$hostgroup."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
+                            setHostChangeFlag($pearDB, null, $hostgroup);
+                        } else {
+                            // Service duplication case -> Duplicate the Service for each relation the base Service have
+                            $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
+                            $fields["service_hPars"] = "";
+                            $fields["service_hgPars"] = "";
+                            while($service = $DBRESULT->fetchRow()) {
+                                if ($service["host_host_id"]) {
+                                    $DBRESULT2 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
+                                    setHostChangeFlag($pearDB, $service['host_host_id'], null);
+                                    $fields["service_hPars"] .= $service["host_host_id"] . ",";
+                                } elseif ($service["hostgroup_hg_id"]) {
+                                    $DBRESULT2 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$service["hostgroup_hg_id"]."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
+                                    setHostChangeFlag($pearDB, null, $service["hostgroup_hg_id"]);
+                                    $fields["service_hgPars"] .= $service["hostgroup_hg_id"] . ",";
+                                }
+                            }
+                            $fields["service_hPars"] = trim($fields["service_hPars"], ",");
+                            $fields["service_hgPars"] = trim($fields["service_hgPars"], ",");
                         }
-                        $val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'") : ", NULL") : $val .= ($value2 !=NULL ? ("'".$pearDB->escape($value2)."'") : "NULL");
-                        if ($key2 != "service_id") {
-                            $fields[$key2] = $value2;
+
+                        /*
+                         * Contact duplication
+                         */
+                        $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$key."'");
+                        $fields["service_cs"] = "";
+                        while ($C = $DBRESULT->fetchRow()) {
+                            $DBRESULT2 = $pearDB->query("INSERT INTO contact_service_relation VALUES ('', '".$maxId["MAX(service_id)"]."', '".$C["contact_id"]."')");
+                            $fields["service_cs"] .= $C["contact_id"] . ",";
                         }
-                        if (isset($service_description)) {
-                            $fields["service_description"] = $service_description;
+                        $fields["service_cs"] = trim($fields["service_cs"], ",");
+
+                        /*
+                         * ContactGroup duplication
+                         */
+                        $DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$key."'");
+                        $fields["service_cgs"] = "";
+                        while($Cg = $DBRESULT->fetchRow()) {
+                            $DBRESULT2 = $pearDB->query("INSERT INTO contactgroup_service_relation VALUES ('', '".$Cg["contactgroup_cg_id"]."', '".$maxId["MAX(service_id)"]."')");
+                            $fields["service_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
+                        }
+                        $fields["service_cgs"] = trim($fields["service_cgs"], ",");
+
+                        /*
+                         * Servicegroup duplication
+                         */
+                        $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
+                        $fields["service_sgs"] = "";
+                        while($Sg = $DBRESULT->fetchRow()) {
+                            if (isset($host) && $host) {
+                                $host_id = $host;
+                            } else {
+                                $Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
+                            }
+                            if (isset($hostgroup) && $hostgroup) {
+                                $hg_id = $hostgroup;
+                            } else {
+                                $Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";
+                            }
+                            $DBRESULT2 = $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
+                            if ($Sg["host_host_id"]) {
+                                $fields["service_sgs"] .= $Sg["host_host_id"] . ",";
+                            }
+                        }
+                        $fields["service_sgs"] = trim($fields["service_sgs"], ",");
+
+
+                        /*
+                         * Trap link ducplication
+                         */
+                        $DBRESULT = $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$key."'");
+                        $fields["service_traps"] = "";
+                        while($traps = $DBRESULT->fetchRow()){
+                            $DBRESULT2 = $pearDB->query("INSERT INTO traps_service_relation VALUES ('', '".$traps["traps_id"]."', '".$maxId["MAX(service_id)"]."')");
+                            $fields["service_traps"] .= $traps["traps_id"] . ",";
+                        }
+                        $fields["service_traps"] = trim($fields["service_traps"], ",");
+
+                        /*
+                         * Extended information duplication
+                         */
+                        $DBRESULT = $pearDB->query("SELECT * FROM extended_service_information WHERE service_service_id = '".$key."'");
+                        while ($esi = $DBRESULT->fetchRow())	{
+                            $val = null;
+                            $esi["service_service_id"] = $maxId["MAX(service_id)"];
+                            $esi["esi_id"] = null;
+                            foreach ($esi as $key2=>$value2)
+                                $val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'"):", NULL") : $val .= ($value2 != null ? ("'".$pearDB->escape($value2)."'"):"NULL");
+                            $val ? $rq = "INSERT INTO extended_service_information VALUES (".$val.")" : $rq = null;
+                            $DBRESULT2 = $pearDB->query($rq);
+                            if ($key2 != "esi_id") {
+                                $fields[$key2] = $value2;
+                            }
+                        }
+
+                        /*
+                         * On demand macros
+                         */
+                        $mTpRq1 = "SELECT * FROM `on_demand_macro_service` WHERE `svc_svc_id` ='".$key."'";
+                        $DBRESULT3 = $pearDB->query($mTpRq1);
+                        while ($sv = $DBRESULT3->fetchRow()) {
+                            $macName = str_replace("\$", "", $sv["svc_macro_name"]);
+                            $macVal = $sv['svc_macro_value'];
+                            if (!isset($sv["is_password"])) {
+                                $sv["is_password"] = '0'; 
+                            }
+                            $mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`, `is_password`) VALUES " .
+                                "('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."', '".$pearDB->escape($sv["is_password"])."')";
+                            $DBRESULT4 = $pearDB->query($mTpRq2);
+                            $fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
+                        }
+
+                        /*
+                         * Service categories
+                         */
+                        $mTpRq1 = "SELECT * FROM `service_categories_relation` WHERE `service_service_id` = '".$key."'";
+                        $DBRESULT3 = $pearDB->query($mTpRq1);
+                        while ($sv = $DBRESULT3->fetchRow()) {
+                            $mTpRq2 = "INSERT INTO `service_categories_relation` (`service_service_id`, `sc_id`) VALUES " .
+                                "('".$maxId["MAX(service_id)"]."', '". $sv['sc_id'] ."')";
+                            $DBRESULT4 = $pearDB->query($mTpRq2);
+                        }
+
+                        /*
+                         *  get svc desc
+                         */
+                        $query = "SELECT service_description FROM service WHERE service_id = '".$maxId["MAX(service_id)"]."' LIMIT 1";
+                        $DBRES = $pearDB->query($query);
+                        if ($DBRES->numRows()) {
+                            $row2 = $DBRES->fetchRow();
+                            $description = $row2['service_description'];
+                            $centreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], $description, "a", $fields);
                         }
                     }
-
-				if (!count($hPars)) {
-					$hPars = getMyServiceHosts($key);
-				}
-				if (!count($hgPars)) {
-					$hgPars = getMyServiceHostGroups($key);
-				}
-
-				if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params)) ||
-				    (!$row["service_register"] && testServiceTemplateExistence($service_description))) {
-					$hPars = array();
-					$hgPars = array();
-					(isset($val) && $val != "NULL" && $val) ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = NULL;
-					if (isset($rq)) {
-						$DBRESULT = $pearDB->query($rq);
-						$DBRESULT = $pearDB->query("SELECT MAX(service_id) FROM service");
-						$maxId = $DBRESULT->fetchRow();
-						if (isset($maxId["MAX(service_id)"]))	{
-							// Host duplication case -> Duplicate the Service for the Host we create
-                            if ($host) {
-                                $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$host."', NULL, '".$maxId["MAX(service_id)"]."')");
-                                setHostChangeFlag($pearDB, $host, null);
-                            } elseif ($hostgroup) {
-								$pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$hostgroup."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
-								setHostChangeFlag($pearDB, null, $hostgroup);
-                            } else {
-                                // Service duplication case -> Duplicate the Service for each relation the base Service have
-                                $DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
-								$fields["service_hPars"] = "";
-								$fields["service_hgPars"] = "";
-								while($service = $DBRESULT->fetchRow()) {
-									if ($service["host_host_id"]) {
-										$DBRESULT2 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
-										setHostChangeFlag($pearDB, $service['host_host_id'], null);
-										$fields["service_hPars"] .= $service["host_host_id"] . ",";
-									} elseif ($service["hostgroup_hg_id"]) {
-										$DBRESULT2 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$service["hostgroup_hg_id"]."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
-										setHostChangeFlag($pearDB, null, $service["hostgroup_hg_id"]);
-										$fields["service_hgPars"] .= $service["hostgroup_hg_id"] . ",";
-									}
-								}
-								$fields["service_hPars"] = trim($fields["service_hPars"], ",");
-								$fields["service_hgPars"] = trim($fields["service_hgPars"], ",");
-							}
-
-							/*
-							 * Contact duplication
-							 */
-							$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$key."'");
-							$fields["service_cs"] = "";
-							while ($C = $DBRESULT->fetchRow()) {
-								$DBRESULT2 = $pearDB->query("INSERT INTO contact_service_relation VALUES ('', '".$maxId["MAX(service_id)"]."', '".$C["contact_id"]."')");
-								$fields["service_cs"] .= $C["contact_id"] . ",";
-							}
-							$fields["service_cs"] = trim($fields["service_cs"], ",");
-
-							/*
-							 * ContactGroup duplication
-							 */
-							$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$key."'");
-							$fields["service_cgs"] = "";
-							while($Cg = $DBRESULT->fetchRow()) {
-								$DBRESULT2 = $pearDB->query("INSERT INTO contactgroup_service_relation VALUES ('', '".$Cg["contactgroup_cg_id"]."', '".$maxId["MAX(service_id)"]."')");
-								$fields["service_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
-							}
-							$fields["service_cgs"] = trim($fields["service_cgs"], ",");
-
-							/*
-							 * Servicegroup duplication
-							 */
-							$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
-							$fields["service_sgs"] = "";
-							while($Sg = $DBRESULT->fetchRow()) {
-								if (isset($host) && $host) {
-								    $host_id = $host;
-								} else {
-								    $Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
-								}
-							    if (isset($hostgroup) && $hostgroup) {
-							        $hg_id = $hostgroup;
-							    } else {
-							        $Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";
-							    }
-								$DBRESULT2 = $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
-								if ($Sg["host_host_id"]) {
-									$fields["service_sgs"] .= $Sg["host_host_id"] . ",";
-								}
-							}
-							$fields["service_sgs"] = trim($fields["service_sgs"], ",");
-
-
-							/*
-							 * Trap link ducplication
-							 */
-							$DBRESULT = $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$key."'");
-							$fields["service_traps"] = "";
-							while($traps = $DBRESULT->fetchRow()){
-								$DBRESULT2 = $pearDB->query("INSERT INTO traps_service_relation VALUES ('', '".$traps["traps_id"]."', '".$maxId["MAX(service_id)"]."')");
-								$fields["service_traps"] .= $traps["traps_id"] . ",";
-							}
-							$fields["service_traps"] = trim($fields["service_traps"], ",");
-
-							/*
-							 * Extended information duplication
-							 */
-							$DBRESULT = $pearDB->query("SELECT * FROM extended_service_information WHERE service_service_id = '".$key."'");
-							while ($esi = $DBRESULT->fetchRow())	{
-								$val = null;
-								$esi["service_service_id"] = $maxId["MAX(service_id)"];
-								$esi["esi_id"] = null;
-								foreach ($esi as $key2=>$value2)
-									$val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'"):", NULL") : $val .= ($value2 != null ? ("'".$pearDB->escape($value2)."'"):"NULL");
-								$val ? $rq = "INSERT INTO extended_service_information VALUES (".$val.")" : $rq = null;
-								$DBRESULT2 = $pearDB->query($rq);
-								if ($key2 != "esi_id") {
-									$fields[$key2] = $value2;
-								}
-							}
-
-							/*
-							 * On demand macros
-							 */
-							$mTpRq1 = "SELECT * FROM `on_demand_macro_service` WHERE `svc_svc_id` ='".$key."'";
-						 	$DBRESULT3 = $pearDB->query($mTpRq1);
-							while ($sv = $DBRESULT3->fetchRow()) {
-								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
-							    $macVal = $sv['svc_macro_value'];
-								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
-                                    "('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."')";
-						 		$DBRESULT4 = $pearDB->query($mTpRq2);
-								$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
-							}
-
-							/*
-							 * Service categories
-							 */
-							$mTpRq1 = "SELECT * FROM `service_categories_relation` WHERE `service_service_id` = '".$key."'";
-						 	$DBRESULT3 = $pearDB->query($mTpRq1);
-							while ($sv = $DBRESULT3->fetchRow()) {
-								$mTpRq2 = "INSERT INTO `service_categories_relation` (`service_service_id`, `sc_id`) VALUES " .
-                                    "('".$maxId["MAX(service_id)"]."', '". $sv['sc_id'] ."')";
-						 		$DBRESULT4 = $pearDB->query($mTpRq2);
-							}
-
-							/*
-							 *  get svc desc
-							 */
-							$query = "SELECT service_description FROM service WHERE service_id = '".$maxId["MAX(service_id)"]."' LIMIT 1";
-							$DBRES = $pearDB->query($query);
-							if ($DBRES->numRows()) {
-								$row2 = $DBRES->fetchRow();
-								$description = $row2['service_description'];
-								$centreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], $description, "a", $fields);
-							}
-						}
-					}
-				}
-			}
+                }
+            }
+        }
     }
     return ($maxId["MAX(service_id)"]);
 }
@@ -1418,6 +1421,10 @@ function updateService_MC($service_id = null, $params = array())
     if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
         $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
         $fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
+    }
+    if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
+        $rq .= "service_inherit_contacts_from_host = '".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', ";
+        $fields["service_inherit_contacts_from_host"] = $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"];
     }
     if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL) {
         $rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";

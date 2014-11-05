@@ -56,6 +56,9 @@ $contents .= "<tr>
                 <th>"._('Status')."</th>
              </tr>";
 foreach ($requiredLib as $line) {
+    if (!$line) {
+        continue;
+    }
     $contents .= "<tr>";
     list($name, $lib) = explode(":", $line);
     $contents .= "<td>".$name."</td>";

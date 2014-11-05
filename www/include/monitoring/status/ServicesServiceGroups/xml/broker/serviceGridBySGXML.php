@@ -97,7 +97,7 @@
         $rq1_search1 .= " AND ";
     }
 	$rq1 = "";
-	$rq1 .= " h.host_id = s.host_id ";
+	$rq1 .= " h.host_id = s.host_id AND s.host_id = sgm.host_id ";
 	if ($search != ""){
 		$rq1 .= " AND h.name like '%" . $search . "%' ";
 	}

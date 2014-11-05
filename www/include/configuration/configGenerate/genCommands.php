@@ -105,7 +105,10 @@
 			if ($ret["comment"]) {
 				$str1 .= "; '" . $command["command_name"] . "' command definition " . $i1 . "\n";
 				if ($command["command_comment"] != "") {
-					$str1 .= "### ". $command["command_comment"] ." ###\n";
+                    $t = split("\n", $command["command_comment"]);
+                    foreach ($t as $comment) {
+                        $str1 .= "; ". trim($comment) ."\n";
+                    }
 				}
 			}
 
@@ -145,9 +148,12 @@
 			 */
 
 			if ($ret["comment"]) {
-				$str1 .= "; '" . $command["command_name"] . "' command definition " . $i1 . "\n";
+				$str2 .= "; '" . $command["command_name"] . "' command definition " . $i2 . "\n";
 				if ($command["command_comment"] != "") {
-					$str1 .= "### ". $command["command_comment"] ." ###\n";
+                    $t = split("\n", $command["command_comment"]);
+                    foreach ($t as $comment) {
+                        $str2 .= "; ". trim($comment) ."\n";
+                    }
 				}
 			}
 

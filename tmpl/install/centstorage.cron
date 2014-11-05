@@ -8,10 +8,10 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 CRONTAB_EXEC_USER=""
 
 # Cron for log parsor
-* * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/logAnalyser >> @CENTREON_LOG@/logAnalyser.log 2>&1
+* * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/logAnalyser --config=@CENTREON_ETC@/conf.pm >> @CENTREON_LOG@/logAnalyser.log 2>&1
 
 # Cron for tracing Nagios Poller Performances
-*/5 * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/nagiosPerfTrace >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
+*/5 * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/nagiosPerfTrace --config=@CENTREON_ETC@/conf.pm >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
 
 # Cron for databin and logs purge
-0 2 * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/centstorage_purge >> @CENTREON_LOG@/centreon-purge.log 2>&1
+0 2 * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/centstorage_purge --config=@CENTREON_ETC@/conf.pm >> @CENTREON_LOG@/centreon-purge.log 2>&1

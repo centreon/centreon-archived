@@ -182,5 +182,37 @@ class CentreonDependency
         }
         return $listServiceHost;
     }
+
+    /**
+     * Purge obsolete dependencies that are no longer used
+     *
+     * @param CentreonDB $db
+     */
+    public static function purgeObsoleteDependencies($db)
+    {
+        $sql = "DELETE FROM dependency WHERE dep_id NOT IN (
+            SELECT DISTINCT dep.dependency_dep_id from (
+                SELECT dependency_dep_id FROM dependency_hostChild_relation
+                UNION
+                SELECT dependency_dep_id FROM dependency_hostParent_relation
+                UNION
+                SELECT dependency_dep_id FROM dependency_hostgroupChild_relation
+                UNION
+                SELECT dependency_dep_id FROM dependency_hostgroupParent_relation
+                UNION
+                SELECT dependency_dep_id FROM dependency_metaserviceChild_relation
+                union
+                SELECT dependency_dep_id FROM dependency_metaserviceParent_relation
+                union
+                SELECT dependency_dep_id FROM dependency_serviceChild_relation
+                union
+                SELECT dependency_dep_id FROM dependency_serviceParent_relation
+                union
+                SELECT dependency_dep_id FROM dependency_servicegroupChild_relation
+                union
+                SELECT dependency_dep_id FROM dependency_servicegroupParent_relation
+            ) dep
+        )";
+        $db->query($sql);
+    }
 }
- ?>

@@ -57,7 +57,13 @@
 
 		$cmd = str_replace("\n", "<br>", $cmd);
 		$informations = preg_split("/\;/", $key);
-                $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
+
+		if (!mb_detect_encoding($cmd, 'UTF-8', true)) {
+			$cmd = utf8_encode($cmd);
+		}
+		setlocale(LC_CTYPE, 'en_US.UTF-8');
+
+        $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
 		return passthru($str);
 	}
 

@@ -694,8 +694,8 @@ sub submitResult {
 sub execute_preexec {
     my $self = shift;
 
-    foreach my $tpe_order (keys %{$self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
-        my $tpe_string = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}->{$tpe_order}->{tpe_string};
+    foreach my $row (@{$self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
+        my $tpe_string = $row->{tpe_string};
         $tpe_string = $self->substitute_string($tpe_string);
         $tpe_string = $self->substitute_centreon_var($tpe_string);
         
@@ -823,13 +823,13 @@ sub checkMatchingRules {
     my $matching_boolean = 0;
     
     # Check matching options 
-    foreach my $tmo_id (keys %{$self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}}) {
-        my $tmoString = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_string};
-        my $regexp = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_regexp};
-        my $tmoStatus = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_status};
-        my $severity_level = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{level};
-        my $severity_name = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_name};
-        my $severity_id = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_id};
+    foreach my $row (@{$self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}}) {
+        my $tmoString = $row->{tmo_string};
+        my $regexp = $row->{tmo_regexp};
+        my $tmoStatus = $row->{tmo_status};
+        my $severity_level = $row->{level};
+        my $severity_name = $row->{sc_name};
+        my $severity_id = $row->{sc_id};
         
         $self->{logger}->writeLogDebug("[$tmoString][$regexp] => $tmoStatus");
         

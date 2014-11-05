@@ -46,7 +46,7 @@
 	require_once "./class/centreonMsg.class.php";
 		
 	if (isset($_GET["o"]) && $_GET["o"] == "k"){
-		$pearDB->query("DELETE FROM session WHERE session_id = '".$_GET["session_id"]."'");
+		$pearDB->query("DELETE FROM session WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
 		$msg = new CentreonMsg();
 		$msg->setTextStyle("bold");
 		$msg->setText(_("User kicked"));

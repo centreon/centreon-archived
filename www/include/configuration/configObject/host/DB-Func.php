@@ -285,7 +285,7 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
             $val = null;
             foreach ($row as $key2=>$value2)	{
                 $key2 == "host_name" ? ($host_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=NULL?(", '".CentreonDB::escape($value2)."'"):", NULL") : $val .= ($value2!=NULL?("'".CentreonDB::escape($value2)."'"):"NULL");
                 if ($key2 != "host_id")
                     $fields[$key2] = $value2;
                 if (isset($host_name))
@@ -416,7 +416,7 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     while ($hst = $DBRESULT3->fetchRow()) {
                         if ($hst['host_tpl_id'] != $maxId["MAX(host_id)"]) {
                             $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) VALUES" .
-                                "('".$maxId["MAX(host_id)"]."', '".$hst['host_tpl_id']."', '". $hst['order'] ."')";
+                                "('".$maxId["MAX(host_id)"]."', '".$pearDB->escape($hst['host_tpl_id'])."', '".$pearDB->escape($hst['order'])."')";
                             $DBRESULT4 = $pearDB->query($mTpRq2);
                             $multiTP_logStr .= $hst['host_tpl_id'] . ",";
                         }
@@ -432,8 +432,11 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     while ($hst = $DBRESULT3->fetchRow()) {
                         $macName = str_replace("\$", "", $hst["host_macro_name"]);
                         $macVal = $hst['host_macro_value'];
-                        $mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
-                            "('".$maxId["MAX(host_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."')";
+                        if (!isset($hst['is_password'])) {
+                            $hst['is_password'] = '0';
+                        }
+                        $mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`, `is_password`) VALUES" .
+                            "('".$maxId["MAX(host_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."', '".$pearDB->escape($hst["is_password"])."')";
                         $DBRESULT4 = $pearDB->query($mTpRq2);
                         $fields["_".strtoupper($macName)."_"] = $macVal;
                     }
@@ -768,7 +771,7 @@ function insertHost($ret, $macro_on_demand = NULL)	{
                     $my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
                     $macName = $my_tab[$macInput];
                     $macVal = $my_tab[$macValue];
-                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id['MAX(host_id)'] .")";
+                    $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". CentreonDB::escape($macVal) ."', ". $host_id['MAX(host_id)'] .")";
                     $DBRESULT = $pearDB->query($rq);
                     $fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
                     $already_stored[strtolower($my_tab[$macInput])] = 1;

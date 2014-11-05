@@ -228,10 +228,11 @@
     		$DBRESULT = $pearDB->query($rq);
 		}
 
-        isset($ret["sg_tServices"]) ? $ret = $ret["sg_tServices"] : $ret = $form->getSubmitValue("sg_tServices");
-        for ($i = 0; $i < count($ret); $i++)    {
-            if (isset($ret[$i]) && $ret[$i]){
-                $t = preg_split("/\-/", $ret[$i]);
+		/* service templates */
+        $retTmp = isset($ret["sg_tServices"]) ? $ret["sg_tServices"] : $form->getSubmitValue("sg_tServices");
+        for ($i = 0; $i < count($retTmp); $i++)    {
+            if (isset($retTmp[$i]) && $retTmp[$i]){
+                $t = preg_split("/\-/", $retTmp[$i]);
                 $resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE host_host_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
                 if (!$resTest->numRows()) {
                     $rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
@@ -239,11 +240,12 @@
                 }
             }
         }
-        
-		$ret = isset($ret["sg_hServices"]) ? $ret["sg_hServices"] : CentreonUtils::mergeWithInitialValues($form, 'sg_hServices');
-		for ($i = 0; $i < count($ret); $i++)	{
-			if (isset($ret[$i]) && $ret[$i]){
-				$t = preg_split("/\-/", $ret[$i]);
+
+		/* regular services */
+		$retTmp = isset($ret["sg_hServices"]) ? $ret["sg_hServices"] : CentreonUtils::mergeWithInitialValues($form, 'sg_hServices');
+		for ($i = 0; $i < count($retTmp); $i++)	{
+			if (isset($retTmp[$i]) && $retTmp[$i]){
+				$t = preg_split("/\-/", $retTmp[$i]);
 				$resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE host_host_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
 				if (!$resTest->numRows()) {
 				    $rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
@@ -251,9 +253,11 @@
 				}
 			}
 		}
-		$ret = isset($ret["sg_hgServices"]) ? $ret["sg_hgServices"] : CentreonUtils::mergeWithInitialValues($form, 'sg_hgServices');
-		for ($i = 0; $i < count($ret); $i++)	{
-			$t = preg_split("/\-/", $ret[$i]);
+
+		/* hostgroup services */
+		$retTmp = isset($ret["sg_hgServices"]) ? $ret["sg_hgServices"] : CentreonUtils::mergeWithInitialValues($form, 'sg_hgServices');
+		for ($i = 0; $i < count($retTmp); $i++)	{
+			$t = preg_split("/\-/", $retTmp[$i]);
 			$resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE hostgroup_hg_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
 			if (!$resTest->numRows()) {
 			    $rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";

@@ -152,7 +152,7 @@
 	 */
 	$host_tmplt_who_use_me = array();
 	if (isset($_GET["host_id"]) && $_GET["host_id"]){
-		$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$_GET["host_id"]."'");
+		$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$pearDB->escape($_GET["host_id"])."'");
 		while($host_tmpl_father = $DBRESULT->fetchRow())
 			$host_tmplt_who_use_me[$host_tmpl_father["host_id"]] = $host_tmpl_father["host_name"];
 		$DBRESULT->free();
@@ -293,7 +293,7 @@
 		$form->addElement('text', 'host_alias', _("Alias"), $attrsText);
 	}
 	$form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
-	$form->addElement('select', 'host_snmp_version', _("Version"), array(0=>null, 1=>"1", "2c"=>"2c", 3=>"3"));
+	$form->addElement('select', 'host_snmp_version', _("Version"), array(null=>null, 1=>"1", "2c"=>"2c", 3=>"3"));
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);

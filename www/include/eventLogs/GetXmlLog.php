@@ -162,6 +162,7 @@
 
 	(isset($_GET["search_H"])) ? set_user_param($contact_id, $pearDB, "search_H", htmlentities($_GET["search_H"])) : $search_H = "VIDE";
 	(isset($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
+	(isset($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search_host = "";
 	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 	(isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
 
@@ -455,6 +456,7 @@
         */
         $str_unitH = "";
     $str_unitH_append = "";
+	$host_search_sql = "";
 
         foreach ($tab_host_name as $host_name ) {
             $str_unitH .= $str_unitH_append . "'$host_name'";
@@ -462,17 +464,21 @@
         }
     if ($str_unitH != "") {
         if ($oreon->broker->getBroker() == "ndo") {
-            $str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
+            $str_unitH = "(`host_name` IN ($str_unitH) AND service_description = '')";
         } else {
             $str_unitH = "(`host_name` IN ($str_unitH) AND service_id IS NULL)";
-        }
+		}
+		if (isset($search_host) && $search_host != "") {
+			$host_search_sql = " AND host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
+		}
     }
 
     /*
      * Add services
      */
     $flag = 0;
-    $str_unitSVC = "";
+	$str_unitSVC = "";
+	$service_search_sql = "";
     if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
         $req_append = "";
         foreach ($tab_svc as $host_name => $services) {
@@ -486,14 +492,20 @@
                 $str_unitSVC .= $req_append . " (`host_name` = '".$host_name."' AND `service_description` IN ($str)) ";
                 $req_append = " OR";
             }
-        }
+		}
+		if (isset($search_service) && $search_service != "") {
+			$service_search_sql = " AND service_description LIKE '%".$pearDBO->escape($search_service)."%' ";
+		}
         if ($str_unitH != "" && $str_unitSVC != "") {
             $str_unitSVC = " OR " . $str_unitSVC;
         }
     }
     if ($str_unitH != "" || $str_unitSVC != "") {
         $req .= " AND (".$str_unitH.$str_unitSVC.")";
-    }
+	}
+
+	$req .= $host_search_sql . $service_search_sql;
+
     if ($str_unitH  == "" && $str_unitSVC == "" && !isset($_GET['export'])) {
         $req = "";
     }

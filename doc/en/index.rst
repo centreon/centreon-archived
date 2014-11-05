@@ -6,9 +6,7 @@
 Welcome to Centreon's documentation!
 ====================================
 
-Centreon is an Open Source software package that lets you supervise
-all the infrastructures and applications comprising your information
-system. 
+Centreon is open source software which enables you to supervise all the elements comprising your information system.
 
 Contents:
 
@@ -19,19 +17,13 @@ Contents:
    installation/index
    upgrade/index
    user/index
-   exploitation/index
-   extending/index
+   guide_exploitation/index
+   architecture/index
    faq/index
+   extendcentreon/index
 
 Additional online resource:
 
 * `Demo <http://demo.centreon.com>`_
 * `Screenshots <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 

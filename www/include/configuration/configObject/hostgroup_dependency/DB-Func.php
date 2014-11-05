@@ -42,6 +42,9 @@
 	function testHostGroupDependencyExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
+
+		CentreonDependency::purgeObsoleteDependencies($pearDB);
+
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');

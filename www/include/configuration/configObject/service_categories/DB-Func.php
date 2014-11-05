@@ -134,11 +134,11 @@
 
 		if (testServiceCategorieExistence($_POST["sc_name"])){
                 $DBRESULT = $pearDB->query("INSERT INTO `service_categories` (`sc_name`, `sc_description`, `level`, `icon_id`, `sc_activate` ) 
-                    VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', ".
+                    VALUES ('".$pearDB->escape($_POST["sc_name"])."', '".$pearDB->escape($_POST["sc_description"])."', ".
                         (isset($_POST['sc_severity_level']) && $_POST['sc_type'] ? $pearDB->escape($_POST['sc_severity_level']):"NULL").", ".
                         (isset($_POST['sc_severity_icon']) && $_POST['sc_type'] ? $pearDB->escape($_POST['sc_severity_icon']) : "NULL").", ".
                         "'".$_POST["sc_activate"]["sc_activate"]."')");
-                $DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$_POST["sc_name"]."'");
+                $DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$pearDB->escape($_POST["sc_name"])."'");
                 $data = $DBRESULT->fetchRow();
         }
         updateServiceCategoriesServices($data["MAX(sc_id)"]);

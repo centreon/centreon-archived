@@ -92,6 +92,21 @@
                     }
                 }
 		$DBRESULT->free();
+
+		/*
+		 * Get acl group
+		 */
+		$sql = "SELECT acl_group_id 
+			FROM acl_group_contactgroups_relations 
+			WHERE cg_cg_id = " .$pearDB->escape($cg_id);
+		$res = $pearDB->query($sql);
+		for ($i = 0; $aclgroup = $res->fetchRow(); $i++) {
+        	if (!$oreon->user->admin && !isset($allowedAclGroups[$aclgroup['acl_group_id']])) {
+            	$initialValues['cg_acl_groups'][] = $aclgroup["acl_group_id"];
+            } else {
+                $cg["cg_acl_groups"][$i] = $aclgroup["acl_group_id"];
+            }
+		}
 	}
 
 	/*
@@ -110,6 +125,20 @@
 	}
 	unset($contact);
 	$DBRESULT->free();
+
+	$aclgroups = array();
+	$aclCondition = "";
+	if (!$oreon->user->admin) {
+		$aclCondition = " WHERE acl_group_id IN (".$acl->getAccessGroupsString().") ";
+	}
+	$sql = "SELECT acl_group_id, acl_group_name
+		FROM acl_groups
+		{$aclCondition}
+		ORDER BY acl_group_name";
+	$res = $pearDB->query($sql);
+	while ($aclg = $res->fetchRow()) {
+		$aclgroups[$aclg['acl_group_id']] = $aclg['acl_group_name'];
+	}
 
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
@@ -145,6 +174,17 @@
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
+
+	/*
+     * Acl group selection
+	 */
+	$ams1 = $form->addElement('advmultiselect', 'cg_acl_groups', array(_("Linked ACL groups"), _("Available"), _("Selected")), $aclgroups, $attrsAdvSelect, SORT_ASC);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams1->setElementTemplate($eTemplate);
+	echo $ams1->getElementJs(false);
+
+
 	/*
 	 * Further informations
 	 */
@@ -175,6 +215,11 @@
 	//$form->applyFilter('cg_name', 'myReplace');
 	$form->addRule('cg_name', _("Compulsory Name"), 'required');
 	$form->addRule('cg_alias', _("Compulsory Alias"), 'required');
+
+	if(!$oreon->user->admin) {
+		$form->addRule('cg_acl_groups', _('Compulsory field'), 'required');
+	}
+
 	$form->registerRule('exist', 'callback', 'testContactGroupExistence');
 	$form->addRule('cg_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));

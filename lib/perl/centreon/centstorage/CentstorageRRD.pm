@@ -253,8 +253,8 @@ sub add_status {
             my $interval_hb = $interval * 10;
 
             $self->create_rrd_database($self->{status_path}, $index_id, $timestamp - 200, $interval,
-                           "status", $my_len_storage_rrd, 0);
-            $self->tune_rrd_database($self->{status_path}, $index_id, "status", $interval_hb);
+                           "value", $my_len_storage_rrd, 0);
+            $self->tune_rrd_database($self->{status_path}, $index_id, "value", $interval_hb);
             $self->{status_info}->{$index_id}->{last_timestamp} = $timestamp - 200;
         }
     }
@@ -308,9 +308,9 @@ sub flush_status {
                 $self->create_rrd_database($self->{status_path}, $index_id,
                                $self->{status_info}->{$index_id}->{last_timestamp} - 200, 
                                $self->{status_info}->{$index_id}->{interval},
-                               "status", $my_len_storage_rrd,
+                               "value", $my_len_storage_rrd,
                                0);
-                $self->tune_rrd_database($self->{"status_path"}, $index_id, "status", $interval_hb);
+                $self->tune_rrd_database($self->{"status_path"}, $index_id, "value", $interval_hb);
             } else {
                 $self->{logger}->writeLogError("ERROR while updating '" . $self->{status_path} . "/" . $index_id . ".rrd' $ERR");
             }

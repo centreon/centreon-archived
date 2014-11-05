@@ -76,6 +76,7 @@
 	}
 
     $acl = $oreon->user->access;
+	$allowedAclGroups = $acl->getAccessGroups();
 
 	switch ($o)	{
 		case "li" : require_once($path."ldapImportContact.php"); break; # LDAP import form	# Wistof

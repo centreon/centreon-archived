@@ -33,9 +33,9 @@ If you are using NDO
 * Start centstorage
 
 
-**********
-What's new
-**********
+***********
+What's new?
+***********
 
 ACL on configuration objects
 ============================
@@ -48,19 +48,19 @@ UI and sound notifications
 
 It is now possible to get UI and sound notifications on Centreon, you can set your preferences in your profile page. A quick overview there: `<http://blog.centreon.com/centreon-ui-notification-system/>`_
 
-Only available if you are using Centreon Broker as of now.
+Only available if you use Centreon Broker.
 
 
 New system with SNMP traps
 ==========================
 
-Centreon has evolved with a eaysiest way to handle SNMP traps. Some advantages of the new system:
+Centreon has evolved with an easiest way to handle SNMP traps. Some advantages of the new system:
 
 * No more ‘snmptt’
 * More advanced configuration in SQL Database
 * Local database (sqlite) on Pollers
 
-You have to look on the centreon documentation in order to configure Centreon using this new system. Go in section : User guide > Advanced > SNMP TRAPS 
+You have to look on the centreon documentation in order to configure Centreon using this new system. Go in section: User guide > Advanced > SNMP TRAPS 
 
 
 ***************

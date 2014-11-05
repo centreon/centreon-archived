@@ -43,6 +43,9 @@
 	{
 		global $pearDB;
 		global $form;
+
+		CentreonDependency::purgeObsoleteDependencies($pearDB);
+
 		$id = null;
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');

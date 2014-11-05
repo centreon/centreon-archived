@@ -265,9 +265,9 @@ class CentreonGraph {
     protected function cleanupDsName($dsname, $reverse = false)
     {
         if ($reverse === true) {
-            $newDsName = str_replace(array("slash_", "bslash_", "pct_"), array("/","\\", "%"), $dsname);
+            $newDsName = str_replace(array("slash_", "bslash_", "pct_", "\\#"), array("/","\\", "%", "#"), $dsname);
         } else {
-            $newDsName = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $dsname);
+            $newDsName = str_replace(array("/","\\", "%", "#"), array("slash_", "bslash_", "pct_", "\\#"), $dsname);
         }
         $newDsName = preg_replace("/[^\w\-_]/", "-", $newDsName);
         return $newDsName;
@@ -283,9 +283,7 @@ class CentreonGraph {
     protected function cleanupDsNameForLegend($dsname, $reverse = false)
     {
         $newDsName = str_replace(array("slash_", "bslash_", "pct_",  "#", "\\"), array("/", "\\", "%", "#", "\\\\"), $dsname);
-        if (mb_detect_encoding($newDsName) != "UTF-8") {
-            $newDsName = mb_convert_encoding($newDsName, "UTF-8");
-        }
+        $newDsName = mb_convert_encoding($newDsName, "UTF-8");
         return $newDsName;
     }
 
@@ -566,7 +564,7 @@ class CentreonGraph {
                         }
 
                         # Check regular
-                        if (is_null($ds_data_regular) && preg_match('/' . preg_quote($ds_val['ds_name'], '/') . '/', $metric["metric_name"])) {
+                        if (is_null($ds_data_regular) && preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/i', $metric["metric_name"])) {
                                 $ds_data_regular = $ds_val;
                         }
                     }
@@ -631,6 +629,12 @@ class CentreonGraph {
 
                     if ($metric["unit_name"] != "") {
                         $this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].")";
+                    }
+
+                    /* Checks whether or not string must be decoded */
+                    $lgd = $this->metrics[$metric["metric_id"]]["legend"];
+                    if (preg_match('!!u', utf8_decode($lgd))) {
+                        $this->metrics[$metric["metric_id"]]["legend"] = utf8_decode($lgd);
                     }
 
                     $this->metrics[$metric["metric_id"]]["legend_len"] = mb_strlen($this->metrics[$metric["metric_id"]]["legend"], 'UTF-8') - $escaped_chars_nb;
@@ -1042,7 +1046,15 @@ class CentreonGraph {
         }
 
         if ($this->indexData["host_name"] != "_Module_Meta") {
-            $this->setRRDOption("title", $this->indexData["service_description"]." "._("graph on")." ".$this->indexData["host_name"].$metrictitle);
+            $sdesc = $this->indexData['service_description'];
+            $hname = $this->indexData['host_name'];
+            if (!mb_detect_encoding($sdesc, 'UTF-8', true)) {
+                $sdesc = utf8_encode($sdesc);
+            }
+            if (!mb_detect_encoding($hname, 'UTF-8', true)) {
+                $hname = utf8_encode($hname);
+            }
+            $this->setRRDOption("title", $sdesc." "._("graph on")." ".$hname.$metrictitle);
         } else {
             $this->setRRDOption("title", _("Graph")." ".$this->indexData["service_description"].$metrictitle);
         }

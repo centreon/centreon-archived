@@ -39,10 +39,11 @@
 	if (!isset($oreon))
 		exit();
 
-	require_once ($centreon_path . "/www/class/centreonService.class.php");
-        require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
-        $criticality = new CentreonCriticality($pearDB);
+	require_once ($centreon_path . "/www/class/centreonService.class.php");
+    require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
+
+    $criticality = new CentreonCriticality($pearDB);
 
 	/*
 	 * Build cache for CG
@@ -162,7 +163,7 @@
 	/*
 	 * Get Service List
 	 */
-        $svcMethod = new CentreonService($pearDB);
+    $svcMethod = new CentreonService($pearDB);
 	$str = "";
 	if ($oreon->CentreonGMT->used() == 1) {
 		foreach ($hostGenerated as $host_id => $host_name) {
@@ -316,8 +317,7 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' && 
-                    !isset($cgSCache[$service["service_id"]])) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
                     print_line("contact_groups", "null");
                 } else {
                     if (isset($cgSCache[$service["service_id"]])) {
@@ -341,8 +341,7 @@
 				/*
 				 * Contact Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' &&
-                    !isset($cctSCache[$service["service_id"]])) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contacts", "null");
                 } else {
                     if (isset($cctSCache[$service["service_id"]])) {
@@ -673,8 +672,7 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' &&
-                    !isset($cgSCache[$service["service_id"]])) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 1, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contact_groups", "null");
                 } else {
                     if (isset($cgSCache[$service["service_id"]])) {
@@ -698,8 +696,7 @@
 				/*
 				 * Contact Relation only for Nagios 3
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '0' &&
-                    !isset($cctSCache[$service["service_id"]])) {
+                if ($service["service_inherit_contacts_from_host"] === '0' && !$svcMethod->serviceHasContact($service, 0, $cgSCache, $cctSCache)) {
                     $strTMP .= print_line("contacts", "null");
                 } else {
                     if (isset($cctSCache[$service["service_id"]])) {

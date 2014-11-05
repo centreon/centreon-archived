@@ -65,24 +65,33 @@ Prérequis
 
 Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.0 :
 
-+------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|  Nombre de services    |  Nombre de collecteurs   | Processeur du serveur central | Mémoire vive du serveur central | Processeur du serveur satellite | Mémoire vive du serveur satellite |
-+========================+==========================+===============================+=================================+=================================+===================================+
-|        < 500           |        1 central         |          1 * 2,5 GHz          |               1 Go              |                                 |                                   |
-+------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      500 - 1000        |        1 central         |          2 * 2,5 GHz          |               2 Go              |                                 |                                   |
-+------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      1000 - 2000       |        1 central         |          4 * 2,5 GHz          |               4 Go              |                                 |                                   |
-+------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      2000 - 5000       |        1 central         |          8 * 2,5 GHz          |               8 Go              |                                 |                                   |
-+------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|      5000 - 10000      | 1 central + 1 satellite  |          4 * 2,5 GHz          |               8 Go              |           8 * 2,5 GHz           |                4 Go               |
-+------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
-|     10000 - 25000      | 1 central + 1 satellite  |          4 * 2,5 GHz          |               8 Go              |           8 * 2,5 GHz           |                4 Go               |
-+------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
++------------------------+--------------------------+-------------------------------+---------------------------------+
+|  Nombre de services    |  Architecture conseillée |  Serveur central              |  Serveur(s) de collecte         |
++========================+==========================+===============================+=================================+
+|        < 500           |        1 central         |          1 vCPU / 1 Go        |                                 | 
++------------------------+--------------------------+-------------------------------+---------------------------------+
+|      500 - 2000        |        1 central         |          2 vCPU / 2 Go        |                                 |
++------------------------+--------------------------+-------------------------------+---------------------------------+
+|      2000 - 10000      | 1 central + 1 satellite  |          4 vCPU / 4 Go        |          1 vCPU / 2 Go          |
++------------------------+--------------------------+-------------------------------+---------------------------------+
+|     10000 - 20000      | 1 central + 1 satellite  |          4 vCPU / 8 Go        |          2 vCPU / 2 Go          |
++------------------------+--------------------------+-------------------------------+---------------------------------+
+|     20000 - 50000      | 1 central + 2 satellite  |          4 vCPU / 8 Go        |          4 vCPU / 2 Go          |
++------------------------+--------------------------+-------------------------------+---------------------------------+
+|     50000 - 100000     | 1 central + 3 satellite  |          4 vCPU / 8 Go        |          4 vCPU / 2 Go          |
++------------------------+--------------------------+-------------------------------+---------------------------------+
 
 .. note:: 
-    Ces informations tiennent compte du fait que toutes les optimisations aient été réalisées pour l'ordonnanceur Centreon Engine, que les transactions aient été activées dans Centreon Broker et que les optimisations aient été réalisées pour le SGBD MariaDB.  
+  Ces informations tiennent compte du fait que toutes les optimisations aient été réalisées pour l’ordonnanceur Centreon Engine,
+  que les transactions aient été activées dans Centreon Broker et que les optimisations aient été réalisées pour le SGBD MariaDB.
+    
+  En cas d'architecture non virtualisée, une fréquence minimale de 2.5 Ghz au niveau de CPU est recommandée.
+    
+  La charge du serveur central dépend du nombre d'utilisateurs connectés simultanément, du contenu des pages consultées ainsi que 
+  de la fréquence de rafraichissement des pages. Nos études ont été faites avec 15 utilisateurs simultanées sur la page de monitoring 
+  de centreon avec 60 s de rafraîchissement.Ces informations tiennent compte du fait que toutes les optimisations aient été réalisées 
+  pour l'ordonnanceur Centreon Engine, que les transactions aient été activées dans Centreon Broker et que les optimisations aient 
+  été réalisées pour le SGBD MariaDB.  
 
 ************
 Installation
@@ -97,11 +106,13 @@ Démarrez avec l'option **Install or upgrade an existing system**
 
 .. image :: /images/guide_utilisateur/abootmenu.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Next**
 
 .. image :: /images/guide_utilisateur/adisplayicon.png
    :align: center
+   :scale: 65%
 
 Etape 2 : Choix de la langue
 ============================
@@ -110,11 +121,13 @@ Choisissez votre langue et cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/ainstalllanguage.png
    :align: center
+   :scale: 65%
 
 Sélectionnez le clavier utilisé par votre système puis cliquez sur **Suivant**.
 
 .. image :: /images/guide_utilisateur/akeyboard.png
    :align: center
+   :scale: 65%
 
 Etape 3 : Configuration générale
 ================================
@@ -123,11 +136,13 @@ En fonction du type de stockage désiré, choisissez les options nécessaires po
 
 .. image :: /images/guide_utilisateur/adatastore1.png
    :align: center
+   :scale: 65%
 
 Un message d'avertissement peut apparaître 
 
 .. image :: /images/guide_utilisateur/adatastore2.png
    :align: center
+   :scale: 65%
 
 Choisissez le nom d'hôte de votre machine et cliquez sur **Configurer le réseau** afin de pouvoir modifier les paramètres de votre carte réseau.
 
@@ -136,6 +151,7 @@ afin de configurer l'adresse IP des interfaces. Cliquez sur **Appliquer...** afi
 
 .. image :: /images/guide_utilisateur/anetworkconfig.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Fermer** puis sur **Suivant** afin de continuer.
 
@@ -143,6 +159,7 @@ Sélectionnez votre fuseau horaire puis cliquez sur **Suivant**.
 
 .. image :: /images/guide_utilisateur/afuseauhoraire.png
    :align: center
+   :scale: 65%
 
 Entrez le mot de passe désiré du compte 'root', puis cliquez sur **Suivant**.
 
@@ -150,6 +167,7 @@ Sélectionnez les options de partitionnement qui vous conviennent le mieux. Puis
 
 .. image :: /images/guide_utilisateur/apartitionning.png
    :align: center
+   :scale: 65%
 
 Etape 4 : Sélection des composants
 ==================================
@@ -161,6 +179,10 @@ Il est possible de choisir différentes options à la question **Which server ty
 
 .. image :: /images/guide_utilisateur/aservertoinstall.png
    :align: center
+   :scale: 65%
+
+|
+
 
 *	Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
 *	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
@@ -178,16 +200,19 @@ Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Brok
 
 .. image :: /images/guide_utilisateur/abrokertoinstall.png
    :align: center
+   :scale: 65%
 
 Une fois toutes ces options choisies, l'installation démarre. 
 
 .. image :: /images/guide_utilisateur/arpminstall.png
    :align: center
+   :scale: 65%
 
 Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 
 .. image :: /images/guide_utilisateur/arestartserver.png
    :align: center
+   :scale: 65%
 
 *************
 Configuration
@@ -201,42 +226,50 @@ L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/acentreonwelcome.png
    :align: center
+   :scale: 65%
 
 L'assistant de fin d'installation de Centreon contrôle la disponibilité des modules, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/acentreoncheckmodules.png
    :align: center
+   :scale: 65%
 
 Choisissez l'option **centreon-engine**. 
 
 .. image :: /images/guide_utilisateur/amonitoringengine1.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Next**. 
 
 .. image :: /images/guide_utilisateur/amonitoringengine2.png
    :align: center
+   :scale: 65%
 
 Lors du choix du broker, choisissez **centreon-broker**.
 
 .. image :: /images/guide_utilisateur/abrokerinfo1.png
    :align: center
+   :scale: 65%
 
 Cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/abrokerinfo2.png
    :align: center
+   :scale: 65%
 
 Définissez les informations concernant l'utilisateur admin, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/aadmininfo.png
    :align: center
+   :scale: 65%
 
 Par défaut, le serveur 'localhost' est défini et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
 Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur accédant aux bases de données Centreon, à savoir 'centreon', cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/adbinfo.png
    :align: center
+   :scale: 65%
 
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
@@ -267,16 +300,19 @@ L'assistant de fin d'installation configure les bases de données, cliquez sur *
 
 .. image :: /images/guide_utilisateur/adbconf.png
    :align: center
+   :scale: 65%
 
 L'installation est terminée, cliquez sur **Finish**.
 
 .. image :: /images/guide_utilisateur/aendinstall.png
    :align: center
+   :scale: 65%
 
 Vous pouvez maintenant vous connecter.
 
 .. image :: /images/guide_utilisateur/aconnection.png
    :align: center
+   :scale: 65%
 
 Configuration de base
 =====================
@@ -322,6 +358,8 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 
 .. image :: /images/guide_utilisateur/amenu.png
    :align: center
+
+|
 
 *	Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
 *	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différé au travers de la visualisation des logs

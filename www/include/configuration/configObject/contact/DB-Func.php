@@ -986,28 +986,30 @@
 	 * Update ACL groups links with this user
 	 * @param $contact_id
 	 */
-	function updateAccessGroupLinks($contact_id)	{
+	function updateAccessGroupLinks($contact_id, $ret = array()) {
 		global $form, $pearDB;
 
 		if (!$contact_id) {
 			return;
 		}
 
-		$ret = array();
-		$ret = $form->getSubmitValues();
-
 		/*
 		 * Empty all ACL Links
 		 */
-		$DBRESULT = $pearDB->query("DELETE FROM acl_group_contacts_relations WHERE contact_contact_id = '".$contact_id."'");
-		if (isset($ret["contact_acl_groups"])) {
-			foreach ($ret["contact_acl_groups"] as $key => $value) {
-				$rq = "INSERT INTO acl_group_contacts_relations ";
-				$rq .= "(contact_contact_id, acl_group_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$contact_id."', '".$value."')";
-				$DBRESULT = $pearDB->query($rq);
-			}
+		$pearDB->query("DELETE FROM acl_group_contacts_relations WHERE contact_contact_id = '".$contact_id."'");
+
+		if (isset($ret['contact_acl_groups'])) {
+			$ret = $ret['contact_acl_groups'];
+		} else {
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'contact_acl_groups');
+		}
+
+		for ($i = 0; $i < count($ret); $i++) {
+			$rq = "INSERT INTO acl_group_contacts_relations ";
+			$rq .= "(contact_contact_id, acl_group_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$contact_id."', '".$ret[$i]."')";
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 

@@ -1,12 +1,15 @@
 #! /bin/bash
-#
-# crond          Start/Stop the centreontrapd daemon.
-#
-# chkconfig: 2345 71 31
-# description: centreontrapd is a Centreon program that manage traps
-# processname: centreontrapd
-# config: @CENTREON_ETC@
-# pidfile: ${RunDir}/centreontrapd.pid
+### BEGIN INIT INFO
+# Provides:            centreontrapd
+# Required-Start:   $syslog $remote_fs
+# Should-Start:     centreontrapd
+# Required-Stop:    $syslog $remote_fs
+# Should-Stop:      centreontrapd
+# Default-Start:       2 3 5
+# Default-Stop:        0 1 6
+# Description:        centreontrapd is a Centreon program that manage traps        
+# Short-Description:  centreontrapd is a Centreon program that manage traps 
+### END INIT INFO
 
 # Source function library.
 . /lib/lsb/init-functions
@@ -17,11 +20,16 @@ user=@CENTREON_USER@
 timeout=60
 start_timeout=5
 logfile=@CENTREON_LOG@/centreontrapd.log
+config=@CENTREON_ETC@/conf.pm
 
 # Add optionnal option for centreontrapd daemon
 opt_daemon=""
 if [ -n "${logfile}" ]; then
     opt_daemon=" --logfile=${logfile}"
+fi
+
+if [ -n "${config}" ]; then
+    opt_daemon="${opt_daemon} --config=${config}"
 fi
 
 pidfile=@CENTREON_RUNDIR@/centreontrapd.pid

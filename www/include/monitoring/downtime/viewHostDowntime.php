@@ -157,7 +157,8 @@
 		$tab_downtime_host = array();
 		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 			$tab_downtime_host[$i] = $data;
-			$tab_downtime_host[$i] = htmlentities(trim($data['comment']));
+			$tab_downtime_host[$i]['comment_data'] = trim($data['comment_data']);
+			$tab_downtime_host[$i]['host_name'] = htmlentities($data['host_name']);
 			$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
 			$tab_downtime_host[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_end_time"])." ";
 			$tab_downtime_host[$i]["host_name_link"] = urlencode($tab_downtime_host[$i]["host_name"]);
@@ -190,6 +191,8 @@
 		$tab_downtime_host = array();
 		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 			$tab_downtime_host[$i] = $data;
+            $tab_downtime_host[$i]['comment_data'] = htmlentities(trim($data['comment_data']));
+			$tab_downtime_host[$i]['host_name'] = htmlentities($data['host_name']);
 			$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
 			$tab_downtime_host[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_end_time"])." ";
 			$tab_downtime_host[$i]["host_name_link"] = urlencode($tab_downtime_host[$i]["host_name"]);

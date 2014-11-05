@@ -55,7 +55,7 @@
 		exit ;
 
 	if (isset($_GET["session_id"])) {
-		$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '".$_GET["session_id"]."'");
+		$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
 		if ($DBRESULT->numRows() == 0)
 			exit();
 	}

@@ -19,5 +19,5 @@ Monitoring consoles
 ===================
 
 A new option is available, allowing you to choose the display order of the 
-monitored resources. The new option is available in `Administration` > `Options`
-, in the `Problem display properties` section.
+monitored resources. The new option is available in `Administration` > `Options`, 
+in the `Problem display properties` section.

@@ -71,6 +71,10 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
+    if (isset($_REQUEST['cmd']) && $centreon->broker->getBroker() == 'broker') {
+        $host_name = utf8_decode($host_name);
+        $svc_description = utf8_decode($svc_description);
+    }
 } else {
     foreach ($_GET["select"] as $key => $value) {
         $tab_data = preg_split("/\;/", $key);
@@ -85,12 +89,17 @@ if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["servic
 $host_id = getMyHostID($host_name);
 
 if (!is_null($host_id)) {
-    $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO));
-
-    if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
+    $can_display = 1;
+    $service_id = getMyServiceID($svc_description, $host_id);
+    if (!$is_admin) {
+        $lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO), $host_name);
+        if (!isset($lcaHost["LcaHost"][$service_id])) {
+            $can_display = 0;
+        }
+    }
+    if ($can_display == 0) {
         include_once("alt_error.php");
     } else {
-
         $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
                                    $oreon->user->access->queryBuilder("AND", "host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO))));
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
@@ -98,7 +107,6 @@ if (!is_null($host_id)) {
         }
         $DBRESULT->free();
 
-        $service_id = getMyServiceID($svc_description, $host_id);
         if (isset($service_id) && $service_id) {
             $proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
             $proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
@@ -115,7 +123,7 @@ if (!is_null($host_id)) {
         $query = "SELECT DISTINCT sg.sg_name
                 FROM servicegroup sg, servicegroup_relation sgr
                 WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
-            $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
+                $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
         $DBRESULT = $pearDB->query($query);
         while ($row = $DBRESULT->fetchRow()) {
             $serviceGroups[] = $row['sg_name'];
@@ -222,6 +230,9 @@ if (!is_null($host_id)) {
 
         $tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
         while ($ndo = $DBRESULT->fetchRow()) {
+            if (isset($ndo['performance_data'])) {
+                $ndo['performance_data'] = utf8_encode($ndo['performance_data']);
+            }
             if ($ndo["service_description"] == $svc_description) {
                 $service_status[$host_name."_".$svc_description] = $ndo;
             }
@@ -256,7 +267,10 @@ if (!is_null($host_id)) {
         $ndo2 = $DBRESULT->fetchRow();
         $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 
-        $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_name = '".$pearDB->escape($host_name)."'");
+        $DBRESULT = $pearDB->query(
+            "SELECT * FROM host 
+            WHERE host_id = ".$pearDB->escape($host_id).""
+        );
         $host = $DBRESULT->fetchrow();
         $DBRESULT->free();
         $total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
@@ -289,8 +303,8 @@ if (!is_null($host_id)) {
         } else {
             $rq2 =	" SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
-                " WHERE h.name = '".$pearDBO->escape($host_name)."' 
-                                      AND s.description = '".$pearDBO->escape($svc_description)."' 
+                " WHERE h.host_id = ".$pearDBO->escape($host_id)." 
+                                      AND s.service_id = ".$pearDBO->escape($service_id)." 
                                       AND h.host_id = cmt.host_id 
                                       AND s.service_id = cmt.service_id 
                                       AND cmt.expires = 0 
@@ -299,6 +313,9 @@ if (!is_null($host_id)) {
             $DBRESULT = $pearDBO->query($rq2);
             for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
                 $tabCommentServices[$i] = $data;
+                $tabCommentServices[$i]['host_name'] = utf8_encode($data['host_name']);
+                $tabCommentServices[$i]['service_description'] = utf8_encode($data['service_description']);
+                $tabCommentServices[$i]['comment_data'] = utf8_encode($data['comment_data']);
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
             $DBRESULT->free();
@@ -425,7 +442,9 @@ if (!is_null($host_id)) {
                 $service_status[$host_name.'_'.$svc_description]["action_url"] = str_replace("\$HOSTADDRESS\$", $hostObj->getHostAddress($host_id), $service_status[$host_name.'_'.$svc_description]["action_url"]);
             }
         }
-        !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = CentreonDuration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = centreonDuration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
+        if (isset($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])])) {
+            !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = CentreonDuration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = centreonDuration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
+        }
         !$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"]);
         $service_status[$host_name."_".$svc_description]["last_update"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
         !$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"]);
@@ -454,7 +473,7 @@ if (!is_null($host_id)) {
             $status .= "&value[".$key."]=".$value;
         }
 
-        $optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$svc_description;
+        $optionsURL = "session_id=".session_id()."&host_name=".urlencode($host_name)."&service_description=".urlencode($svc_description);
 
 
         $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");
@@ -567,8 +586,11 @@ if (!is_null($host_id)) {
         $tpl->assign("service_id", $service_id);
         $tpl->assign("host_data", $host_status[$host_name]);
         $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
-        $tpl->assign("host_name", $host_name);
-        $tpl->assign("svc_description", $svc_description);
+        $tpl->assign("host_name", utf8_encode($host_name));
+        $tpl->assign("svc_description", utf8_encode($svc_description));
+        if ($oreon->broker->getBroker() == "ndo") {
+            $tpl->assign("svc_description", $svc_description);
+        }
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 

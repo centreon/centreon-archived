@@ -97,7 +97,7 @@
 	/*
 	 * Check Session activity
 	 */
-	$session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
 	if (!$session->numRows()){
 		;
 	} else {

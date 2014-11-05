@@ -36,7 +36,7 @@
  *
  */
 	function escape_command($command) {
-		return preg_replace("/(\\\$|`)/", "", $command);
+		return preg_replace("/(\\\$|;`)/", "", $command);
 	}
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
@@ -71,7 +71,7 @@
 	 * Verify if session is active
 	 */
 
-	$session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
 	if (!$session->numRows()){
 
 		$image = imagecreate(250,100);
@@ -113,7 +113,8 @@
 		if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])){
 			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
 		} else {
-			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND `service_description` = '".$_GET["service_description"]."' LIMIT 1");
+			$pearDBO->query("SET NAMES 'utf8'");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".utf8_encode($_GET["host_name"])."' AND `service_description` = '".utf8_encode($_GET["service_description"])."' LIMIT 1");
 		}
 
 		$index_data_ODS = $DBRESULT->fetchRow();
@@ -141,8 +142,11 @@
 		/*
 		 * get all template infos
 		 */
+        if (!is_numeric($template_id)) {
+            exit();
+        }
 
-		$DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$pearDB->escape($template_id)."' LIMIT 1");
 		$GraphTemplate = $DBRESULT->fetchRow();
         if (is_null($GraphTemplate))
         {
@@ -182,7 +186,17 @@
         }
 
 		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." ";
-		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
+
+		$sdesc = $index_data_ODS['service_description'];
+		$hname = $index_data_ODS['host_name'];
+		if (!mb_detect_encoding($sdesc, 'UTF-8', true)) {
+			$sdesc = utf8_encode($sdesc);
+		}
+		if (!mb_detect_encoding($hname, 'UTF-8', true)) {
+			$hname = utf8_encode($hname);
+		}
+
+		$command_line .= "--title='".$sdesc." graph on ".$hname."' --vertical-label='Status' ";
 
 		/*
 		 * Init Graph Template Value

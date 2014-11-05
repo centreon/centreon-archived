@@ -92,7 +92,7 @@
 
 	// Get Status Globals for hosts
 	if ($is_admin) {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) AS count, state" .
 			" FROM hosts " .
 			" WHERE enabled = 1 " .
             " AND state_type = 1 " .
@@ -100,10 +100,10 @@
 			" GROUP BY state " .
 			" ORDER BY state";
     } else {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) AS count, state" .
 			" FROM hosts, centreon_acl acl " .
 			" WHERE enabled = 1 " .
-            " AND acl.host_id = hosts.host_id AND service_id IS NULL ".
+            " AND acl.host_id = hosts.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND state_type = 1 " .
 			" AND name NOT LIKE '_Module_%' " .
@@ -114,16 +114,15 @@
 
 	$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($ndo = $resNdo1->fetchRow()) {
-		$hostStatus[$ndo["state"]] = $ndo["count(state)"];
+		$hostStatus[$ndo["state"]] = $ndo["count"];
 	}
 	$resNdo1->free();
 
 	// Get Hosts Problems
 	if ($is_admin) {
         $rq1 = 	" SELECT DISTINCT h.host_id, h.name, h.notes, h.notes_url, h.action_url, h.state, h.last_check, h.output, h.icon_image, h.address, h.last_state_change AS lsc, i.name as instance_name " .
-			" FROM hosts h, instances i, hosts_hosts_parents hph " .
+			" FROM hosts h, instances i " .
 			" WHERE h.enabled = 1 " .
-            " AND hph.parent_id = h.host_id " .
             " AND h.state_type = 1" .
             " AND h.instance_id = i.instance_id" .
 			" AND h.state != 0" .
@@ -134,9 +133,8 @@
 			" ORDER by h.state LIMIT ". $hostLimit;
     } else {
         $rq1 = 	" SELECT DISTINCT h.host_id, h.name, h.notes, h.notes_url, h.action_url, h.state, h.last_check, h.output, h.icon_image, h.address, h.last_state_change AS lsc, i.name as instance_name " .
-			" FROM hosts h, instances i, hosts_hosts_parents hph, centreon_acl acl " .
+			" FROM hosts h, instances i, centreon_acl acl " .
 			" WHERE h.enabled = 1" .
-            " AND hph.parent_id = h.host_id " .
             " AND acl.host_id = h.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND h.state_type = 1" .
@@ -242,7 +240,7 @@
         $rq1 = 	" SELECT h.host_id, h.state ".
             " FROM hosts h, centreon_acl acl " .
             " WHERE h.enabled = 1 " .
-            " AND acl.host_id = h.host_id AND service_id IS NULL ".
+            " AND acl.host_id = h.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND h.state_type = 1 " .
             " AND h.name NOT LIKE '_Module_%' " .
@@ -274,7 +272,7 @@
         $rq1 = 	" SELECT name, state, acknowledged, scheduled_downtime_depth " .
             " FROM hosts, centreon_acl acl" .
             " WHERE enabled = 1 " .
-            " AND acl.host_id = hosts.host_id AND service_id IS NULL ".
+            " AND acl.host_id = hosts.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND state_type = 1 " .
 	        " AND name NOT LIKE '_Module_%' " .
@@ -300,7 +298,7 @@
 	 * Get Host inactive objects
 	 */
     if ($is_admin) {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) as count, state" .
             " FROM hosts " .
             " WHERE enabled = 1 ".
             " AND state_type = 1 ".
@@ -309,12 +307,12 @@
             " GROUP BY state " .
             " ORDER BY state";
     } else {
-        $rq1 = 	" SELECT count(state), state" .
+        $rq1 = 	" SELECT count(DISTINCT hosts.host_id) as count, state" .
             " FROM hosts, centreon_acl acl " .
             " WHERE enabled = 1 ".
             " AND state_type = 1 ".
             " AND active_checks = 0 " .
-            " AND acl.host_id = hosts.host_id AND service_id IS NULL ".
+            " AND acl.host_id = hosts.host_id AND acl.service_id IS NULL ".
             " AND acl.group_id IN (".$acl_access_group_list.") " .
             " AND name NOT LIKE '_Module_%' " .
             " GROUP BY state " .
@@ -323,7 +321,7 @@
 	$resNdo1 = $dbb->query($rq1);
 	$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
 	while ($ndo = $resNdo1->fetchRow())	{
-		$hostInactive[$ndo["state"]] = $ndo["count(state)"];
+		$hostInactive[$ndo["state"]] = $ndo["count"];
 		$hostUnhand[$ndo["state"]] -= $hostInactive[$ndo["state"]];
 	}
 	$resNdo1->free();
@@ -694,6 +692,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
+	    $xml->writeElement('encodedhostname', urlencode($val), false);
         $xml->writeElement('hostcriticality', $tab_hostcriticality[$key]);
 	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
 	    $xml->writeElement('host_notes',$tab_hostnotes[$key]);
@@ -729,10 +728,12 @@
         $xml->startElement('unhandledServices');
         $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
 	    $xml->writeElement('servicename', $val, false);
+	    $xml->writeElement('encodedservicename', urlencode($val), false);
 	    $xml->writeElement('notes_url',$tab_notes_url[$key]);
 	    $xml->writeElement('notes',$tab_notes[$key]);
 	    $xml->writeElement('action_url',$tab_action_url[$key]);
 	    $xml->writeElement('hostname', $tab_hostname[$key], false);
+	    $xml->writeElement('encodedhostname', urlencode($tab_hostname[$key]), false);
 	    $xml->writeElement('ip', $tab_ip[$key]);
 	    $xml->writeElement('duration', $tab_duration[$key]);
 	    $xml->writeElement('last', $tab_last[$key]);

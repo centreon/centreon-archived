@@ -197,8 +197,12 @@
 					}
 					break;
 				case 'hostgrp':
-					$hg = new CentreonHostgroups($pearDB);
-					$hostClass = new CentreonHost($pearDB);
+					if (!isset($hg)) {
+						$hg = new CentreonHostgroups($pearDB);
+					}
+					if (!isset($hostClass)) {
+						$hostClass = new CentreonHost($pearDB);
+					}
 					$hostlist = $hg->getHostGroupHosts($period['obj_id']);
 					foreach ($hostlist as $host) {
 						$currentHostDate = $gmt->getHostCurrentDatetime($host, 'U');
@@ -210,7 +214,7 @@
 									foreach ($ext_cmd_add['host'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $hostClass->getHostName($host), $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $host, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -222,7 +226,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $host, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}

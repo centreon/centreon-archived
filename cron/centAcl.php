@@ -58,7 +58,7 @@ function programExit($msg) {
     exit;
 }
 
-$nbProc = exec('ps -o args -p $(pidof -c -o $$ -o $PPID -o %PPID -x php || echo 1000000) | grep centAcl.php | wc -l');
+$nbProc = exec('ps -o args -p $(pidof -o $$ -o $PPID -o %PPID -x php || echo 1000000) | grep -c ' . __FILE__);
 if ((int) $nbProc > 0) {
     programExit("More than one centAcl.php process currently running. Going to exit...");
 }
@@ -585,9 +585,14 @@ try {
             if (count($tabElem)) {
                 $i = 0;
                 foreach ($tabElem as $host => $svc_list) {
-                    $hasService = false;
+                    $singleId = array_search($host, $hostCache);
+                    if ($singleId) {
+                        if ($str != "") {
+                            $str .= ", ";
+                        }
+                        $str .= " ('".$pearDBndo->escape($host)."', NULL, {$singleId}, NULL, {$acl_group_id}) ";
+                    }
                     foreach ($svc_list as $desc => $t) {
-                        $hasService = true;
                         if ($str != "") {
                             $str .= ', ';
                         }
@@ -598,12 +603,6 @@ try {
                             $DBRESULTNDO = $pearDBndo->query($strBegin . $str);
                             $str = "";
                             $i = 0;
-                        }
-                    }
-                    if ($hasService == false) {
-                        $singleId = array_search($host, $hostCache);
-                        if ($singleId) {
-                            $pearDBndo->query("INSERT INTO centreon_acl (host_id, host_name, group_id) VALUES ($singleId, '" . $pearDBndo->escape($host) . "', $acl_group_id)");
                         }
                     }
                 }

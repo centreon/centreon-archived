@@ -1,12 +1,15 @@
 #! /bin/bash
-#
-# crond          Start/Stop the centstorage daemon.
-#
-# chkconfig: 2345 71 31
-# description: centstorage is a Centreon program that manage perfs
-# processname: centstorage
-# config: @CENTREON_ETC@/conf.pm
-# pidfile: ${centstorageRunDir}/centstorage.pid
+### BEGIN INIT INFO
+# Provides:            centstorage
+# Required-Start:   $syslog $remote_fs
+# Should-Start:     centstorage
+# Required-Stop:    $syslog $remote_fs
+# Should-Stop:      centstorage
+# Default-Start:       2 3 5
+# Default-Stop:        0 1 6
+# Description:         centstorage is a Centreon program that manage perfs
+# Short-Description:   centstorage is a Centreon program that manage perfs
+### END INIT INFO
 
 # Source function library.
 . /lib/lsb/init-functions
@@ -17,11 +20,16 @@ user=@CENTREON_USER@
 timeout=60
 start_timeout=5
 logfile=@CENTREON_LOG@/centstorage.log
+config=@CENTREON_ETC@/conf.pm
 
 # Add optionnal option for centstorage daemon
 opt_daemon=""
 if [ -n "${logfile}" ]; then
     opt_daemon=" --logfile=${logfile}"
+fi
+
+if [ -n "${config}" ]; then
+    opt_daemon="${opt_daemon} --config=${config}"
 fi
 
 pidfile=@CENTREON_RUNDIR@/centstorage.pid
