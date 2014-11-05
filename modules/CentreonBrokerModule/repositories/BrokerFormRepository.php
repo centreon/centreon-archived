@@ -38,6 +38,7 @@ namespace CentreonBroker\Repository;
 use Centreon\Repository\FormRepository;
 use CentreonConfiguration\Models\Poller;
 use CentreonBroker\Repository\BrokerRepository;
+use CentreonConfiguration\Repository\PollerRepository;
 use CentreonConfiguration\Internal\Poller\Template as PollerTemplate;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
@@ -49,28 +50,16 @@ use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateMana
 class BrokerFormRepository extends FormRepository
 {
     /**
+     * Generate Form for the given poller using its template
      * 
      * @param integer $pollerId
+     * @return type
      * @throws Exception
      */
     public static function getFormForPoller($pollerId)
     {
-        /* Get poller template */
-        $paramsPoller = Poller::get($pollerId, 'tmpl_name');
-        if (!isset($paramsPoller['tmpl_name']) || is_null($paramsPoller['tmpl_name'])) {
-            throw new Exception('Not template defined');
-        }
-        $tmplName = $paramsPoller['tmpl_name'];
-
-        /* Load template information for poller */
-        $listTpl = PollerTemplateManager::buildTemplatesList();
-        if (!isset($listTpl[$tmplName])) {
-            throw new Exception('The template is not found on list of templates');
-        }
-        
-        $pollerValues = BrokerRepository::loadValues($pollerId);
-        $pollerForm = static::buildPollerTemplateForm($listTpl[$tmplName]->toFullTemplate(), $pollerId, $tmplName);
-        unset($listTpl);
+        $litePollerTemplate = PollerRepository::getTemplate($pollerId);
+        $pollerForm = static::buildPollerTemplateForm($litePollerTemplate->toFullTemplate(), $pollerId);
         return $pollerForm;
     }
     
@@ -80,7 +69,7 @@ class BrokerFormRepository extends FormRepository
      * @return type
      * @throws Exception
      */
-    public static function buildPollerTemplateForm(PollerTemplate $pollerTemplate, $pollerId, $tmplName)
+    public static function buildPollerTemplateForm(PollerTemplate $pollerTemplate, $pollerId)
     {
         $setUp = $pollerTemplate->getBrokerPart()->getSetup();
         if (count($setUp) < 1) {
@@ -147,7 +136,7 @@ class BrokerFormRepository extends FormRepository
         }
         
         $formHandler->addHidden('poller_id', $pollerId);
-        $formHandler->addHidden('poller_tmpl', $tmplName);
+        $formHandler->addHidden('poller_tmpl', $pollerTemplate->getName());
         $formHandler->addSubmit('save_form', _("Save"));
         
         static::getSavedDefaultValues($pollerId, $defaultValues);

@@ -181,4 +181,27 @@ class PollerRepository extends Repository
         $poller = Poller::get($pollerId);
         return Node::get($poller['node_id']);
     }
+    
+    /**
+     * 
+     * @param integer $pollerId
+     * @return type
+     * @throws Exception
+     */
+    public static function getTemplate($pollerId)
+    {
+        $paramsPoller = Poller::get($pollerId, 'tmpl_name');
+        if (!isset($paramsPoller['tmpl_name']) || is_null($paramsPoller['tmpl_name'])) {
+            throw new Exception('Not template defined');
+        }
+        $tmplName = $paramsPoller['tmpl_name'];
+
+        /* Load template information for poller */
+        $listTpl = TemplateManager::buildTemplatesList();
+        if (!isset($listTpl[$tmplName])) {
+            throw new Exception('The template is not found on list of templates');
+        }
+        
+        return $listTpl[$tmplName];
+    }
 }

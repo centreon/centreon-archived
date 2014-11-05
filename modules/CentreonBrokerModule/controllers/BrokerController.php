@@ -35,6 +35,8 @@
 
 namespace CentreonBroker\Controllers;
 
+use Centreon\Internal\Di;
+use Centreon\Internal\Form;
 use Centreon\Controllers\FormController;
 use CentreonBroker\Repository\BrokerFormRepository;
 
@@ -94,9 +96,28 @@ class BrokerController extends FormController
     public function updateAction()
     {
         $givenParameters = $this->getParams('post');
-        $pollerId = $givenParameters['poller_id'];
-        unset($givenParameters['poller_id']);
-        \CentreonBroker\Repository\BrokerRepository::save($pollerId, $givenParameters);
+        $updateSuccessful = true;
+        $updateErrorMessage = '';
+        
+        try {
+            Form::validateSecurity($givenParameters['token']);
+            $pollerId = $givenParameters['poller_id'];
+            unset($givenParameters['poller_id']);
+            \CentreonBroker\Repository\BrokerRepository::save($pollerId, $givenParameters);
+        } catch (Exception $e) {
+            $updateSuccessful = false;
+            $updateErrorMessage = $e->getMessage();
+            var_dump($e);
+        }
+        
+        $this->router = Di::getDefault()->get('router');
+        if ($updateSuccessful) {
+            unset($_SESSION['form_token']);
+            unset($_SESSION['form_token_time']);
+            $this->router->response()->json(array('success' => true));
+        } else {
+            $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+        }
     }
     
     /**
