@@ -56,7 +56,7 @@ class Options
         return $finalList;
     }
     
-    public static function getList($group = null)
+    public static function getList($group = null, array $options = array())
     {
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         
@@ -64,6 +64,21 @@ class Options
         if (!is_null($group)) {
             $conditions .= "WHERE `group` = '$group'";
         }
+        
+        if (count($options) > 0) {
+            $listOfOptionKeys = "";
+            foreach ($options as $optionKey) {
+                $listOfOptionKeys .= "'$optionKey',";
+            }
+            
+            if (empty($conditions)) {
+                $conditions .= "WHERE ";
+            } else {
+                $conditions .= "AND ";
+            }
+            $conditions .= '`key` IN (' . rtrim($listOfOptionKeys, ',') . ')';
+        }
+        
         $stmt = $db->query("SELECT `key`, `value` FROM `cfg_options` $conditions");
         
         $savedOptions = $stmt->fetchAll(\PDO::FETCH_ASSOC);

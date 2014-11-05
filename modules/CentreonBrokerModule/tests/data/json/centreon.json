@@ -1,6 +1,6 @@
 [
   "cfg_modules",
   "cfg_organizations",
-  "cfg_engine_servers",
+  "cfg_pollers",
   "cfg_engine"
 ]

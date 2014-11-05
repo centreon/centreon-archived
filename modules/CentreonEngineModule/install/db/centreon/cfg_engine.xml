@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_engine" phpName="Cfgengine" idMethod="native">
-        <column name="engine_id" phpName="engineId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="poller_id" phpName="PollerId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="conf_dir" phpName="ConfDir" type="VARCHAR" size="255" required="false"/>
         <column name="log_dir" phpName="LogDir" type="VARCHAR" size="255" required="false"/>
         <column name="var_lib_dir" phpName="VarLibDir" type="VARCHAR" size="255" required="false"/>
@@ -48,7 +48,6 @@
         <column name="debug_level" phpName="DebugLevel" type="INTEGER" required="false"/>
         <column name="debug_verbosity" phpName="DebugVerbosity" type="TINYINT" size="1" required="false"/>
         <column name="max_debug_file_size" phpName="MaxDebugFileSize" type="INTEGER" required="false"/>
-        <column name="poller_id" phpName="pollerId" type="INTEGER" required="true"/>
         <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_gheh" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="global_host_event_handler" foreign="command_id"/>
         </foreign-key>
@@ -61,7 +60,7 @@
         <foreign-key foreignTable="cfg_commands" name="cfg_engine_ibfk_ochpc" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="ochp_command" foreign="command_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_pollers" name="cfg_engine_ibfk_pid" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_pollers" name="cfg_engine_ibfk_poller_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="poller_id" foreign="poller_id"/>
         </foreign-key>
         <index name="cmd1_index">

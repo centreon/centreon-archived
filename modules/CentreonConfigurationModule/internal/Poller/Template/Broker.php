@@ -92,4 +92,13 @@ class Broker
             $singleSetUp->genForm($steps);
         }
     }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getSetup()
+    {
+        return $this->setUp;
+    }
 }

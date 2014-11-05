@@ -49,6 +49,6 @@ use Centreon\Models\CentreonBaseModel;
 class Engine extends CentreonBaseModel
 {
     protected static $table = "cfg_engine";
-    protected static $primaryKey = "engine_id";
+    protected static $primaryKey = "poller_id";
     protected static $uniqueLabelField = "";
 }

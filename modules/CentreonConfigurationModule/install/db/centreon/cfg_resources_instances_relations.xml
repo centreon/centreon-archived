@@ -3,16 +3,16 @@
     <table name="cfg_resources_instances_relations" phpName="CfgResourceInstanceRelations" idMethod="native">
         <column name="resource_id" phpName="ResourceId" type="INTEGER" required="true"/>
         <column name="instance_id" phpName="InstanceId" type="INTEGER" required="true"/>
-        <foreign-key foreignTable="cfg_resources" name="fk_crir_res_id" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_resources" name="cfg_resources_instances_relations_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="resource_id" foreign="resource_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_engine_servers" name="fk_crir_ins_id" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="instance_id" foreign="id"/>
+        <foreign-key foreignTable="cfg_pollers" name="cfg_resources_instances_relations_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="instance_id" foreign="poller_id"/>
         </foreign-key>
-        <index name="fk_crir_res_id">
+        <index name="resource_id">
             <index-column name="resource_id"/>
         </index>
-        <index name="fk_crir_ins_id">
+        <index name="instance_id">
             <index-column name="instance_id"/>
         </index>
         <vendor type="mysql">
