@@ -242,8 +242,8 @@ try {
                 require $path."genContacts.php";
                 require $path."genContactTemplates.php";
                 require $path."genContactGroups.php";
-                require $path."genHosts.php";
                 require $path."genHostTemplates.php";
+                require $path."genHosts.php";
                 require $path."genHostGroups.php";
                 require $path."genServiceTemplates.php";
                 require $path."genServices.php";

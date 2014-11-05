@@ -46,6 +46,7 @@ class CentreonCriticality {
      * @var CentreonDB
      */
     protected $db;
+    protected $tree;
     
     public function __construct($db) {
         $this->db = $db;
@@ -272,4 +273,54 @@ class CentreonCriticality {
         }
         return $elements;
     }
+
+    /**
+     * Create a buffer with all criticality informations
+     *
+     * @param type service_id
+     * return array
+     */
+    public function criticitiesConfigOnSTpl($service_id) {
+        global $pearDB, $critCache;
+        
+        if (!count($this->tree)) {
+            $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' ORDER BY service_template_model_stm_id ASC";
+            $RES = $pearDB->query($request);
+            while ($data = $RES->fetchRow()) {
+                $this->tree[$data['service_id']] = $this->getServiceCriticality($data["service_id"]);
+            }
+        }        
+        if (isset($this->tree[$service_id])) {
+            return $this->tree[$service_id];
+        } 
+        return array();
+    }
+    
+    /**
+     * Get service criticality
+     *
+     * @param type service_id
+     * return array
+     */
+    protected function getServiceCriticality($service_id) {
+        global $pearDB, $critCache;
+        
+        if (!isset($service_id) || $service_id == 0) {
+            return 0;
+        }
+
+        if (isset($critCache[$data['service_id']])) {
+            return $critCache[$data['service_id']];
+        } else {
+            $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' AND service_id = $service_id ORDER BY service_template_model_stm_id ASC";
+            $RES = $pearDB->query($request);
+            if (isset($RES) && $RES->numRows()) {
+                while ($data = $RES->fetchRow()) {
+                    return $this->getServiceCriticality($data["service_template_model_stm_id"]);
+                }
+            }
+        }
+        return 0;
+    }
+
 }
