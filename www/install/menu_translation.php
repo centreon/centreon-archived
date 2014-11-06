@@ -237,6 +237,8 @@ echo _("Rebuild check interval in seconds");
 echo _("Store performance data in data_bin");
 echo _("Insert in index data");
 echo _("File for Centeron Broker statistics");
+echo _("Cleanup check interval");
+echo _("Instance timeout");
 
 echo _("Centreon Broker information");
 echo _("Centreon-Broker Correlation");
