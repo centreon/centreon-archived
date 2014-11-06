@@ -86,10 +86,10 @@ class Custommacro extends Customobject
                             <hr style="margin:2;"/>
                             <div class="row clone-cell">
                                 <div class="col-sm-1"><label class="label-controller">'._("Name").'</label></div>
-                                <div class="col-sm-3"><input class="form-control" name="macro_name[]" /></div>
+                                <div class="col-sm-3"><input class="form-control input-sm" name="macro_name[]" /></div>
                                 <div class="col-sm-1"><label class="label-controller">'._("Value").'</label></div>
                                 <div class="col-sm-3">
-                                    <input class="hidden-value form-control" name="macro_value[]" />
+                                    <input class="hidden-value form-control input-sm" name="macro_value[]" />
                                 </div>
                                 <div class="col-sm-1"><label class="label-controller">'._("Hidden").'</label></div>
                                 <div class="col-sm-1">

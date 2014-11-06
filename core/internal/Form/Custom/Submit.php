@@ -62,7 +62,7 @@ class Submit extends Customobject
                     'type="sbumit" '.
                     'name="'.$element['name'].'" '.
                     $value.
-                    'class="btn btn-default" '.
+                    'class="btn btn-default btn-sm" '.
                     '/>';
         return $inputHtml;
     }

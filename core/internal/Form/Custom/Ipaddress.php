@@ -60,7 +60,7 @@ class Ipaddress extends Customobject
         
         $myJs = "";
         
-        $myHtml = '<div id="'.$element['name'].'_ipaddress" class="input-group">';
+        $myHtml = '<div id="'.$element['name'].'_ipaddress" class="input-group input-group-sm">';
         
         $myHtml .= '<input '.
                 'id="'.$element['id'].'" '.

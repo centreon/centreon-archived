@@ -69,7 +69,7 @@ class Email extends Customobject
         
         $myJs = "";
         
-        $myHtml = '<div id="'.$element['name'].'_email" class="input-group">
+        $myHtml = '<div id="'.$element['name'].'_email" class="input-group input-group-sm">
                 <span class="input-group-addon">@</span>';
         
         $myHtml .= '<input '.

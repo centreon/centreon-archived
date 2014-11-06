@@ -270,6 +270,8 @@ class Generator
 
         
         $htmlRendering = '<div class="row">';
+
+        $htmlRendering = '<div class="col-sm-offset-1 col-sm-10">';
         
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
@@ -289,7 +291,8 @@ class Generator
         $formRendering = '';
 
         $tabRendering = '<div class="form-tabs-header">'
-            . '<div class="inline-block">'
+            . '<div class="row">'
+            . '<div class="col-xs-12 col-md-10">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
@@ -301,7 +304,9 @@ class Generator
                 .'</a>'
                 . '</li>';
         }
-        $formRendering .= '</ul></div></div>';
+        $formRendering .= '</ul></div>'
+            . '<div class="clearfix visible-xs-block visible-sm-block"></div>'
+            . '</div></div>';
 
         $formRendering .= '<div class="tab-content">';
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
@@ -311,7 +316,13 @@ class Generator
                 $formRendering .= '<div class="panel-body">';
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
+                        $formRendering .= '<div class="col-xs-12 col-md-8">';
                         $formRendering .= $formElements[$component['name']]['html'];
+                        $formRendering .= '</div>'
+                            . '<div class="clearfix visible-xs-block visible-sm-block"></div>'
+                            . '<div class="col-xs-12 col-md-4>'
+                            . '<span class="heritage" id=""></span>'
+                            . '</div>';
                     }
                 }
                 $formRendering .= '</div>';
@@ -323,7 +334,7 @@ class Generator
         $formRendering .= '<div>'.$formElements['save_form']['html'].'</div>';
         
         $formRendering .= $formElements['hidden'];
-        $htmlRendering .= $tabRendering.$formRendering.'</form></div>';
+        $htmlRendering .= $tabRendering.$formRendering.'</form></div></div>';
         
         return $htmlRendering;
     }
