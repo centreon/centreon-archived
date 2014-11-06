@@ -313,7 +313,7 @@ class Form
         
         if (isset($inputElement['label_help'])) {
             $helpButton = '<div class="col-sm-1"><button id="'
-                . $inputElement['name'] . '_help" type="button" class="btn btn-info">?</button>'
+                . $inputElement['name'] . '_help" type="button" class="btn btn-sm btn-info">?</button>'
                 . '</div>';
             $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
                                 content: {
