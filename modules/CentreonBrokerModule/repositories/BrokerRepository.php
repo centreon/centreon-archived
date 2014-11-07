@@ -367,7 +367,7 @@ class BrokerRepository
     public static function getPathsFromPollerId($pollerId)
     {
         $db = Di::getDefault()->get('db_centreon');
-        $sql = "SELECT directory_modules, directory_config, directory_logs, directory_data
+        $sql = "SELECT directory_modules, directory_config, directory_logs, directory_data, init_script
             FROM cfg_centreonbroker_paths
             WHERE poller_id = :poller_id";
         $stmt = $db->prepare($sql);

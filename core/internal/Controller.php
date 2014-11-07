@@ -54,7 +54,7 @@ abstract class Controller
     
     /**
      *
-     * @var type 
+     * @var \Centreon\Internal\Router 
      */
     protected $router;
     

@@ -98,6 +98,12 @@ class Host extends \Centreon\Models\CentreonBaseModel
                 $type = \PDO::PARAM_NULL;
             }
             $sqlParams[] = array('value' => trim($value), 'type' => $type);
+            
+            
+            // Custom macros
+            
+            
+            
         }
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";

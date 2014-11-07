@@ -210,6 +210,7 @@ abstract class FormRepository
             unset($givenParameters[$k]);
         }
         static::postSave($id, 'add', $givenParameters);
+        return $id;
     }
 
     /**

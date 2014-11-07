@@ -121,7 +121,7 @@ class Ipaddress extends Customobject
                 });
             });';
         
-        $validations['eventValidation'] = '$("#'.$element['name'].'").on("blur", function() {
+        $validations['eventValidation'] .= '$("#'.$element['name'].'").on("blur", function() {
                     $.ajax({
                         url: "'.$ipAddressValidationUrl.'",
                         type: "POST",

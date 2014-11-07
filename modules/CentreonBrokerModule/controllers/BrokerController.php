@@ -154,6 +154,8 @@ class BrokerController extends FormController
         $this->tpl->assign('pageTitle', $this->objectDisplayName);
         $this->tpl->assign('form', BrokerFormRepository::getFormForPoller($requestParam['id']));
         $this->tpl->assign('advanced', $requestParam['advanced']);
+        $this->tpl->assign('formRedirect', true);
+        $this->tpl->assign('formRedirectRoute', '/configuration/poller/' . $requestParam['id']);
         $this->tpl->assign('formModeUrl', $formModeUrl);
         $this->tpl->assign('formName', 'broker_full_form');
         $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
@@ -197,7 +199,7 @@ class BrokerController extends FormController
     /**
      * Duplicate a hosts
      *
-     * @method POST
+     * @method post
      * @route /centreon-broker/broker/duplicate
      */
     public function duplicateAction()
@@ -208,7 +210,7 @@ class BrokerController extends FormController
     /**
      * Apply massive change
      *
-     * @method POST
+     * @method post
      * @route /centreon-broker/broker/massive_change
      */
     public function massiveChangeAction()

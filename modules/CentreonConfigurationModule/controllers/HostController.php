@@ -35,17 +35,18 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Internal\Di;
-use \CentreonConfiguration\Models\Host;
-use \CentreonConfiguration\Models\Relation\Host\Contact;
-use \CentreonConfiguration\Models\Relation\Host\Contactgroup;
-use \CentreonConfiguration\Models\Relation\Host\Hostchildren;
-use \CentreonConfiguration\Models\Relation\Host\Hostparents;
-use \CentreonConfiguration\Models\Relation\Host\Poller;
-use \CentreonConfiguration\Models\Timeperiod;
-use \CentreonConfiguration\Models\Command;
-use \CentreonConfiguration\Internal\HostDatatable;
-use \CentreonConfiguration\Repository\HostRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Host;
+use CentreonConfiguration\Models\Relation\Host\Contact;
+use CentreonConfiguration\Models\Relation\Host\Contactgroup;
+use CentreonConfiguration\Models\Relation\Host\Hostchildren;
+use CentreonConfiguration\Models\Relation\Host\Hostparents;
+use CentreonConfiguration\Models\Relation\Host\Poller;
+use CentreonConfiguration\Models\Timeperiod;
+use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Internal\HostDatatable;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 class HostController extends \CentreonConfiguration\Controllers\BasicController
 {
@@ -129,16 +130,38 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function createAction()
     {
+        $macroList = array();
+        
         $givenParameters = $this->getParams('post');
+        
         $givenParameters['host_register'] = 1;
+        
+        if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
+            
+            $macroName = $givenParameters['macro_name'];
+            $macroValue = $givenParameters['macro_value'];
+            //$macroHidden = $givenParameters['macro_hidden'];
+            
+            $nbMacro = count($macroName);
+            for($i=0; $i<$nbMacro; $i++) {
+                if (!empty($macroName[$i])) {
+                $macroList[$macroName[$i]] = array('value' => $macroValue[$i]);
+                }
+            }
+        }
+        
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
-        $id = parent::createAction();
-        if (isset($givenParameters['host_create_services_from_template']) &&
-            $givenParameters['host_create_services_from_template']) {
-            \CentreonConfiguration\Models\Host::deployServices($id);
+        $id = parent::createAction(false);
+        
+        if (count($macroList) > 0) {
+            CustomMacroRepository::saveHostCustomMacro($id, $macroList);
         }
+        
+        \CentreonConfiguration\Models\Host::deployServices($id);
+        
+        $this->router->response()->json(array('success' => true));
     }
 
     /**

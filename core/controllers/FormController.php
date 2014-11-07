@@ -172,41 +172,37 @@ abstract class FormController extends \Centreon\Internal\Controller
     
     /**
      * Generic create action
-     *
-     * @todo handle token
+     * 
+     * @param boolean $sendResponse
+     * @return array
      */
-    public function createAction()
+    public function createAction($sendResponse = true)
     {
         $givenParameters = clone $this->getParams('post');
-        $createSuccessful = true;
-        $createErrorMessage = '';
         
         $validationResult = Form::validate("wizard", $this->getUri(), static::$moduleName, $givenParameters);
         if ($validationResult['success']) {
-            $requestParams = $this->getParams('get');
             $repository = $this->repository;
             try {
-                $repository::create($givenParameters);
+                $id = $repository::create($givenParameters);
             } catch (Exception $e) {
-                $createSuccessful = false;
-                $createErrorMessage = $e->getMessage();
+                $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
             }
         } else {
-            $createSuccessful = false;
-            $createErrorMessage = $validationResult['error'];
+            $this->router->response()->json(array('success' => false, 'error' => $validationResult['error']));
         }
         
-        if ($createSuccessful) {
+        if ($sendResponse) {
             $this->router->response()->json(array('success' => true));
         } else {
-            $this->router->response()->json(array('success' => false, 'error' => $createErrorMessage));
+            return $id;
         }
     }
     
     /**
      * 
      */
-    public function editAction()
+    public function editAction($additionnalParamsForSmarty = array())
     {
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
@@ -234,6 +230,11 @@ abstract class FormController extends \Centreon\Internal\Controller
         $this->tpl->assign('formModeUrl', $formModeUrl);
         $this->tpl->assign('formName', $myForm->getName());
         $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
+        
+        foreach ($additionnalParamsForSmarty as $smartyVarName => $smartyVarValue) {
+            $this->tpl->assign($smartyVarName, $smartyVarValue);
+        }
+        
         $this->tpl->display('file:[CentreonConfigurationModule]edit.tpl');
     }
     
