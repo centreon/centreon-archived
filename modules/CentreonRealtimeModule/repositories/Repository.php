@@ -140,12 +140,17 @@ abstract class Repository
     {
         $columns = static::$datatableColumn;
         $headers = static::$datatableHeader;
-        if (isset(static::$hook) && static::$hook) {
-            $hookData = Hook::execute(static::$hook, array());
-            foreach ($hookData as $data) {
-                $columnName = $data['columnName'];
-                $columns[$columnName]= true;
-                $headers[] = 'none';
+        $hookArr = static::getHookArray();
+
+        /* Let's fetch the hook column names */
+        foreach ($hookArr as $hook) {
+            if ($hook) {
+                $hookData = Hook::execute($hook, array());
+                foreach ($hookData as $data) {
+                    $columnName = $data['columnName'];
+                    $columns[$columnName]= true;
+                    $headers[] = 'none';
+                }
             }
         }
 
@@ -304,8 +309,11 @@ abstract class Repository
                 $arr[] = $set[static::$objectId];
             }
         }
-        if (isset(static::$hook) && static::$hook) {
-            $hookData = Hook::execute(static::$hook, $arr);
+
+        $hookArr = static::getHookArray();
+
+        foreach ($hookArr as $hook) {
+            $hookData = Hook::execute($hook, $arr);
             foreach ($hookData as $data) {
                 $columnName = $data['columnName'];
                 foreach ($data['values'] as $k => $value) {
@@ -421,5 +429,27 @@ abstract class Repository
     public static function getTotalRecords($params)
     {
         
+    }
+
+    /**
+     * Return the hook array
+     *
+     * @return array
+     */
+    protected static function getHookArray()
+    {
+        $hookArr = array();
+
+        /* If hook is string, we put it in an array */
+        if (!isset(static::$hook) || static::$hook == '') {
+            return $hookArr;
+        }
+
+        if (!is_array(static::$hook)) {
+            $hookArr = array(static::$hook);
+        } else {
+            $hookArr = static::$hook;
+        }
+        return $hookArr;
     }
 }

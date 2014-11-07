@@ -36,16 +36,17 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Utils\Datetime,
-    \Centreon\Internal\Di,
-    \CentreonConfiguration\Repository\PollerRepository;
+use Centreon\Internal\Utils\Datetime,
+    Centreon\Internal\Di,
+    Centreon\Internal\Datatable,
+    CentreonConfiguration\Repository\PollerRepository;
 
 /**
  * Description of PollerDatatable
  *
  * @author lionel
  */
-class PollerDatatable extends \Centreon\Internal\Datatable
+class PollerDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -240,7 +241,12 @@ class PollerDatatable extends \Centreon\Internal\Datatable
             )
         ),*/
     );
-    
+
+    /**
+     * @var mixed
+     */
+    protected static $hook = array('displayPollerColumn');
+
     /**
      * 
      * @param array $params
