@@ -295,8 +295,14 @@ class Generator
             . '<div class="col-xs-12 col-sm-10">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
+        $first = true;
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
-            $tabRendering .= '<li>'
+            $tabRendering .= '<li';
+            if ($first) {
+                $first = false;
+                $tabRendering .= ' class="active"';
+            }
+            $tabRendering .= '>'
                 . '<a '
                 . 'href="#'.str_replace(' ', '', $sectionLabel).'" '
                 . 'data-toggle="tab">'
@@ -309,8 +315,14 @@ class Generator
             . '</div></div>';
 
         $formRendering .= '<div class="tab-content">';
+        $first = true;
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
-            $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
+            $formRendering .= '<div class="tab-pane';
+            if ($first) {
+                $first = false;
+                $formRendering .= ' active';
+            }
+            $formRendering .= '" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel => $blockComponents) {
                 $formRendering .= '<h4 class="page-header" style="padding-top:0px;">'.$blockLabel.'</h4>';
                 $formRendering .= '<div class="panel-body">';

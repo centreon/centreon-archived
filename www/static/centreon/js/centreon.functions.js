@@ -35,7 +35,7 @@ function resizeContent()
 
 function resizeContentLeftPanel()
 {
-  var sizeContent,
+  var sizeContent, mainContainerName,
       navbarHeight = $('.topbar').height(),
       displayHeight = $(window).height() - navbarHeight,
       innerMenu = $('#left-panel').find('nav').height(),
@@ -43,13 +43,19 @@ function resizeContentLeftPanel()
       contentHeight = 0,
       marginContent = 0;
 
-  $('#main').children(':visible').each(function(idx, el) {
-    contentHeight += $(el).height();
-    contentHeight += +$(el).css('margin-top').replace('px', '');
-    contentHeight += +$(el).css('margin-bottom').replace('px', '');
-    marginContent += +$(el).css('margin-top').replace('px', '');
-    marginContent += +$(el).css('margin-bottom').replace('px', '');
-  });
+  if ($('#main > .content-container').length > 0) {
+    /* Form */
+    contentHeight = $('#main > .content-container > .col-sm-offset-1.col-sm-10').height();
+    console.log(contentHeight);
+  } else {
+    $('#main').children(':visible').each(function(idx, el) {
+      contentHeight += $(el).height();
+      contentHeight += +$(el).css('margin-top').replace('px', '');
+      contentHeight += +$(el).css('margin-bottom').replace('px', '');
+      marginContent += +$(el).css('margin-top').replace('px', '');
+      marginContent += +$(el).css('margin-bottom').replace('px', '');
+    });
+  }
 
   if (innerMenu + footerHeight + 10 > contentHeight) {
     sizeMenu = innerMenu + footerHeight + 10;
@@ -70,8 +76,8 @@ function resizeContentLeftPanel()
   $('#main').css('min-height', sizeContent + 'px');
   $('#left-panel').css('min-height', sizeMenu + 'px');
 
-  $('#main').on('resize', function() { console.log('Main'); resizeContentLeftPanel(); });
-  $(window).on('resize', function() { console.log('Resize'); resizeContentLeftPanel(); });
+  $('#main').on('resize', function() { resizeContentLeftPanel(); });
+  $(window).on('resize', function() { resizeContentLeftPanel(); });
 }
 
 /**
