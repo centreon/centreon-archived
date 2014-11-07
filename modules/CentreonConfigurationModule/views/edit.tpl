@@ -97,7 +97,7 @@
         $(function () {
             $('#formHeader a:first').tab('show');
             $("#formHeader").parent().parent().append(
-                $('<div class="col-xs-12 col-md-2"></div>').append($("#advanced_mode_switcher"))
+                $('<div class="col-xs-12 col-sm-2"></div>').append($("#advanced_mode_switcher"))
             );
         });
     </script>

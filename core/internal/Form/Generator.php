@@ -292,7 +292,7 @@ class Generator
 
         $tabRendering = '<div class="form-tabs-header">'
             . '<div class="row">'
-            . '<div class="col-xs-12 col-md-10">'
+            . '<div class="col-xs-12 col-sm-10">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
@@ -305,7 +305,7 @@ class Generator
                 . '</li>';
         }
         $formRendering .= '</ul></div>'
-            . '<div class="clearfix visible-xs-block visible-sm-block"></div>'
+            . '<div class="clearfix visible-xs-block"></div>'
             . '</div></div>';
 
         $formRendering .= '<div class="tab-content">';
@@ -316,12 +316,12 @@ class Generator
                 $formRendering .= '<div class="panel-body">';
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
-                        $formRendering .= '<div class="col-xs-12 col-md-8">';
+                        $formRendering .= '<div class="col-xs-12 col-sm-8">';
                         $formRendering .= $formElements[$component['name']]['html'];
                         $formRendering .= '</div>'
-                            . '<div class="clearfix visible-xs-block visible-sm-block"></div>'
-                            . '<div class="col-xs-12 col-md-4>'
-                            . '<span class="heritage" id=""></span>'
+                            . '<div class="clearfix visible-xs-block"></div>'
+                            . '<div class="col-xs-12 col-sm4">'
+                            . '<span class="inheritance" id="' . $component['name'] . '_inheritance"></span>'
                             . '</div>';
                     }
                 }

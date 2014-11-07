@@ -60,7 +60,6 @@ function resizeContentLeftPanel()
   }
 
   if (sizeMenu < displayHeight) {
-    console.log("Test 2");
     sizeMenu = displayHeight;
     sizeContent = displayHeight - 10 - footerHeight;
   }
