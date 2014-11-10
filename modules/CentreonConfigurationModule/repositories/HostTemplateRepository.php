@@ -227,12 +227,16 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
      * Get the value from template
      *
      * @param int $hostId The host template Id
+     * @param bool $isBase If the host template id is the base for get values
      * @return array
      */
-    public static function getInheritanceValues($hostId)
+    public static function getInheritanceValues($hostId, $isBase=false)
     {
         $values = array();
         $templates = static::getTemplateList($hostId);
+        if ($isBase) {
+            array_unshift($templates, $hostId);
+        }
         foreach ($templates as $template) {
             $inheritanceValues = static::getInheritanceValues($template['id']);
             $tmplValues = Hosttemplate::getParameters($template['id'], self::$inheritanceColumns);

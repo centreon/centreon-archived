@@ -116,6 +116,28 @@
                 }
               }
             });
+
+            /* Function for reload template when adding one */
+            $("{$tmplField}").on('change', function(e) {
+              $.ajax({
+                url: "{$inheritanceTmplUrl}",
+                dataType: 'json',
+                type: 'post',
+                data: { tmpl: e.val },
+                success: function(data, textStatus, jqXHR) {
+                  if (data.success) {
+                    $('span[id$="_inheritance"]').text('');
+                    $.each(data.values, function(key, value) {
+                       if (value != null) {
+                          $('#' + key + '_inheritance').text(value);
+                          $('#' + key).removeClass('mandatory-field');
+                          $('label[for="' + key + '"]').parent().find('span').remove();
+                       }
+                    });
+                  }
+                }
+              });
+            });
             {/if}
         });
     </script>

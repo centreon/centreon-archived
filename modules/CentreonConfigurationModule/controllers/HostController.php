@@ -57,6 +57,8 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     protected $repository = '\CentreonConfiguration\Repository\HostRepository';
 
     protected $inheritanceUrl = '/configuration/host/[i:id]/inheritance';
+    protected $inheritanceTmplUrl = '/configuration/hosttemplate/inheritance';
+    protected $tmplField = '#host_hosttemplates';
     
     public static $relationMap = array(
         'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
