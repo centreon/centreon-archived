@@ -236,17 +236,22 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         foreach ($templates as $template) {
             $inheritanceValues = static::getInheritanceValues($template['id']);
             $tmplValues = Hosttemplate::getParameters($template['id'], self::$inheritanceColumns);
+            $tmplValues = array_filter($tmplValues, function($value) {
+                return !is_null($value);
+            });
             $tmplValues = array_merge($inheritanceValues, $tmplValues);
             $values = array_merge($tmplValues, $values);
         }
-        array_walk($values, function(&$item, $key) {
-            if (false === is_null($item)) {
-                $item = HostTemplateRepository::getTextValue($key, $item);
-            }
-        });
         return $values;
     }
 
+    /**
+     * Get the full text of a numeric value
+     *
+     * @param string $name The key name
+     * @param int $value The numeric value
+     * @return string
+     */
     public static function getTextValue($name, $value)
     {
         switch ($name) {

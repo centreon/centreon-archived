@@ -55,6 +55,8 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     protected $objectBaseUrl = '/configuration/host';
     protected $objectClass = '\CentreonConfiguration\Models\Host';
     protected $repository = '\CentreonConfiguration\Repository\HostRepository';
+
+    protected $inheritanceUrl = '/configuration/host/[i:id]/inheritance';
     
     public static $relationMap = array(
         'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
@@ -536,5 +538,27 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->assign('notifdata', $notifdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+    }
+
+    /**
+     * Get inheritance value
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/inheritance
+     */
+    public function getInheritanceAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $requestParam = $this->getParams('named');
+
+        $inheritanceValues = HostRepository::getInheritanceValues($requestParam['id']);
+        array_walk($inheritanceValues, function(&$item, $key) {
+            if (false === is_null($item)) {
+                $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+            }
+        });
+        $router->response()->json(array(
+            'success' => true,
+            'values' => $inheritanceValues));
     }
 }

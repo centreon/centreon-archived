@@ -56,6 +56,8 @@ abstract class FormController extends \Centreon\Internal\Controller
 
     protected $repository = null;
 
+    protected $inheritanceUrl = null;
+
     public function __construct($request)
     {
         parent::__construct($request);
@@ -212,8 +214,11 @@ abstract class FormController extends \Centreon\Internal\Controller
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
         $inheritanceUrl = null;
-        if (isset($this->inheritanceUrl)) {
-            $inheritanceUrl = $this->inheritanceUrl;
+        if (false === is_null($this->inheritanceUrl)) {
+            $inheritanceUrl = $router->getPathFor(
+                $this->inheritanceUrl,
+                array('id' => $requestParam['id'])
+            );
         }
         
         $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
@@ -239,9 +244,7 @@ abstract class FormController extends \Centreon\Internal\Controller
         $this->tpl->assign('formModeUrl', $formModeUrl);
         $this->tpl->assign('formName', $myForm->getName());
         $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $this->tpl->assign('inheritanceUrl',
-            $router->getPathFor($inheritanceUrl, array('id' => $requestParam['id']))
-        );
+        $this->tpl->assign('inheritanceUrl', $inheritanceUrl);
         $this->tpl->display('file:[CentreonConfigurationModule]edit.tpl');
     }
     
