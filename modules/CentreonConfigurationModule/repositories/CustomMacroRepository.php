@@ -115,15 +115,15 @@ class CustomMacroRepository
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
-        $checkRequest = "SELECT svc_macro_id FROM cfg_customvariables_svcs WHERE svc_svc_id = :svc "
+        $checkRequest = "SELECT svc_macro_id FROM cfg_customvariables_services WHERE svc_svc_id = :svc "
             . "AND svc_macro_name = :macro_name";
         $stmtCheck = $dbconn->prepare($checkRequest);
         
-        $insertRequest = "INSERT INTO cfg_customvariables_svcs(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
+        $insertRequest = "INSERT INTO cfg_customvariables_services(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :svc)";
         $stmtInsert = $dbconn->prepare($insertRequest);
         
-        $updateRequest = "UPDATE cfg_customvariables_svcs SET svc_macro_name = :macro_name, "
+        $updateRequest = "UPDATE cfg_customvariables_services SET svc_macro_name = :macro_name, "
             . "svc_macro_value = :macro_value, "
             . "is_password = :is_password, "
             . "svc_svc_id = :svc";
