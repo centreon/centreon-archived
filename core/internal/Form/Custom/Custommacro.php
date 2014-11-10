@@ -34,6 +34,8 @@
  */
 namespace Centreon\Internal\Form\Custom;
 
+use CentreonConfiguration\Repository\CustomMacroRepository;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -48,14 +50,8 @@ class Custommacro extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
-        
         if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
             $element['label'] = $element['name'];
-        }
-        
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
         }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
@@ -108,9 +104,51 @@ class Custommacro extends Customobject
                                 name="clone_order_'.$element['name'].'_#index#" 
                                 id="clone_order_#index#" 
                             />
-                        </li>
-                    </ul>
-                    <input id="cloned_element_index" name="cloned_element_index" type="hidden" value="0" />';
+                        </li>';
+        // DefaultValue
+        $functionCall = 'load' . ucfirst($element['label_object']) .'CustomMacro';
+        $currentCustommacro = CustomMacroRepository::$functionCall($element['label_extra']['id']);
+        if (count($currentCustommacro) > 0) {
+            $i = 0;
+            foreach ($currentCustommacro as $cm) {
+                if ((int)$cm['macro_hidden'] > 0) {
+                    $cm['macro_hidden'] = 'checked=checked';
+                } else {
+                    $cm['macro_hidden'] = '';
+                }
+                $myHtml .= '
+                        <li id="'.$element['name'].'_clone_template" class="cloned_element" style="display:block;">
+                            <hr style="margin:2;"/>
+                            <div class="row clone-cell">
+                                <div class="col-sm-1"><label class="label-controller">'._("Name").'</label></div>
+                                <div class="col-sm-3"><input class="form-control" name="macro_name[' . $i . ']" value="'.$cm['macro_name'].'"/></div>
+                                <div class="col-sm-1"><label class="label-controller">'._("Value").'</label></div>
+                                <div class="col-sm-3">
+                                    <input class="hidden-value form-control" name="macro_value[' . $i . ']" value="'.$cm['macro_value'].'"/>
+                                </div>
+                                <div class="col-sm-1"><label class="label-controller">'._("Hidden").'</label></div>
+                                <div class="col-sm-1">
+                                    <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[' . $i . ']" '.$cm['macro_hidden'].' />
+                                </div>
+                                <div class="col-sm-2">
+                                    <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i><span>
+                                    &nbsp;
+                                    <span class="remove-trigger" style="cursor:pointer;">
+                                        <i class="fa fa-times-circle"></i>
+                                    <span>
+                                </div>
+                            </div>
+                            <input 
+                                type="hidden" 
+                                name="clone_order_'.$element['name'].'_' . $i . '" 
+                                id="clone_order_' . $i . '" 
+                            />
+                        </li>';
+                $i++;
+            }
+            
+            $myHtml .= '</ul><input id="cloned_element_index" name="cloned_element_index" type="hidden" value="0" />';
+        }
         
         return array(
             'html' => $myHtml,

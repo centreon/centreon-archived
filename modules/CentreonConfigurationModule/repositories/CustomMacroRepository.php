@@ -53,13 +53,13 @@ class CustomMacroRepository
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
-        $getRequest = "SELECT host_macro_name, host_macro_value, is_password "
+        $getRequest = "SELECT host_macro_name AS macro_name, host_macro_value AS macro_value, is_password AS macro_hidden "
             . "FROM cfg_customvariables_hosts WHERE host_host_id = :host ";
         $stmtGet = $dbconn->prepare($getRequest);
         $stmtGet->bindParam(':host', $objectId, \PDO::PARAM_INT);
         $stmtGet->execute();
         $rowMacro = $stmtGet->fetchAll(\PDO::FETCH_ASSOC);
-        
+        return $rowMacro;
     }
     
     /**
@@ -104,6 +104,23 @@ class CustomMacroRepository
                 $stmtUpdate->execute();
             }
         }
+    }
+    
+    /**
+     * 
+     * @param type $objectId
+     */
+    public static function loadServiceCustomMacro($objectId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        $getRequest = "SELECT svc_macro_name AS macro_name, svc_macro_value AS macro_value, is_password AS macro_hidden "
+            . "FROM cfg_customvariables_services WHERE svc_svc_id = :svc ";
+        $stmtGet = $dbconn->prepare($getRequest);
+        $stmtGet->bindParam(':svc', $objectId, \PDO::PARAM_INT);
+        $stmtGet->execute();
+        $rowMacro = $stmtGet->fetchAll(\PDO::FETCH_ASSOC);
+        return $rowMacro;
     }
     
     /**
