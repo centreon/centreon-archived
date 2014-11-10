@@ -140,12 +140,22 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
             
             $macroName = $givenParameters['macro_name'];
             $macroValue = $givenParameters['macro_value'];
-            //$macroHidden = $givenParameters['macro_hidden'];
+            
+            $macroHidden = $givenParameters['macro_hidden'];
             
             $nbMacro = count($macroName);
             for($i=0; $i<$nbMacro; $i++) {
                 if (!empty($macroName[$i])) {
-                $macroList[$macroName[$i]] = array('value' => $macroValue[$i]);
+                    if (isset($macroHidden[$i])) {
+                        $isPassword = '1';
+                    } else {
+                        $isPassword = '0';
+                    }
+                    
+                    $macroList[$macroName[$i]] = array(
+                        'value' => $macroValue[$i],
+                        'ispassword' => $isPassword
+                    );
                 }
             }
         }

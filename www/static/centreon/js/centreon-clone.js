@@ -1,9 +1,19 @@
-$("body").on("click", ".clone-trigger", function() {
+("body").on("click", ".clone-trigger", function() {
     
     $('.clone_template').clone()
             .css("display", "block").removeClass('clone_template').addClass('cloned_element')
             .appendTo('.clonable');
-   
+    
+    $(".cloned_element").each(function(idx, el) {
+        var id = $('#cloned_element_index').val();
+        $(el).find("input").each(function(idy, el2) {
+            var elementName = $(el2).attr('name');
+            $(el2).attr('name', elementName.replace("#index#", id));
+        });
+        $('#cloned_element_index').val(parseInt(id) + 1);
+   });
+   $('#cloned_element_index').val("0");
+    
     $(".clonable").sortable({
         handle: ".clonehandle",
         axis: "y",

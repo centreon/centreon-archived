@@ -86,14 +86,14 @@ class Custommacro extends Customobject
                             <hr style="margin:2;"/>
                             <div class="row clone-cell">
                                 <div class="col-sm-1"><label class="label-controller">'._("Name").'</label></div>
-                                <div class="col-sm-3"><input class="form-control" name="macro_name[]" /></div>
+                                <div class="col-sm-3"><input class="form-control" name="macro_name[#index#]" /></div>
                                 <div class="col-sm-1"><label class="label-controller">'._("Value").'</label></div>
                                 <div class="col-sm-3">
-                                    <input class="hidden-value form-control" name="macro_value[]" />
+                                    <input class="hidden-value form-control" name="macro_value[#index#]" />
                                 </div>
                                 <div class="col-sm-1"><label class="label-controller">'._("Hidden").'</label></div>
                                 <div class="col-sm-1">
-                                    <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[]" />
+                                    <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[#index#]" />
                                 </div>
                                 <div class="col-sm-2">
                                     <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i><span>
@@ -109,7 +109,8 @@ class Custommacro extends Customobject
                                 id="clone_order_#index#" 
                             />
                         </li>
-                    </ul>';
+                    </ul>
+                    <input id="cloned_element_index" name="cloned_element_index" type="hidden" value="0" />';
         
         return array(
             'html' => $myHtml,

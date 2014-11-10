@@ -45,11 +45,28 @@ use Centreon\Internal\Di;
  */
 class CustomMacroRepository
 {
+    /**
+     * 
+     * @param type $objectId
+     */
     public static function loadHostCustomMacro($objectId)
     {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        $getRequest = "SELECT host_macro_name, host_macro_value, is_password "
+            . "FROM cfg_customvariables_hosts WHERE host_host_id = :host ";
+        $stmtGet = $dbconn->prepare($getRequest);
+        $stmtGet->bindParam(':host', $objectId, \PDO::PARAM_INT);
+        $stmtGet->execute();
+        $rowMacro = $stmtGet->fetchAll(\PDO::FETCH_ASSOC);
         
     }
     
+    /**
+     * 
+     * @param type $objectId
+     * @param type $submittedValues
+     */
     public static function saveHostCustomMacro($objectId, $submittedValues)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
@@ -76,19 +93,24 @@ class CustomMacroRepository
             if (count($rowMacro) == 0) {
                 $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
                 $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtInsert->bindParam(':is_password', $customMacro['value'], \PDO::PARAM_STR);
+                $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
                 $stmtInsert->bindParam(':host', $objectId, \PDO::PARAM_INT);
                 $stmtInsert->execute();
             } elseif (count($rowMacro) == 0) {
                 $stmtUpdate->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
                 $stmtUpdate->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtUpdate->bindParam(':is_password', $customMacro['value'], \PDO::PARAM_STR);
+                $stmtUpdate->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
                 $stmtUpdate->bindParam(':host', $objectId, \PDO::PARAM_INT);
                 $stmtUpdate->execute();
             }
         }
     }
     
+    /**
+     * 
+     * @param type $objectId
+     * @param type $submittedValues
+     */
     public static function saveServiceCustomMacro($objectId, $submittedValues)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
@@ -115,13 +137,13 @@ class CustomMacroRepository
             if (count($rowMacro) == 0) {
                 $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
                 $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtInsert->bindParam(':is_password', $customMacro['value'], \PDO::PARAM_STR);
+                $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
                 $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);
                 $stmtInsert->execute();
             } elseif (count($rowMacro) == 0) {
                 $stmtUpdate->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
                 $stmtUpdate->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtUpdate->bindParam(':is_password', $customMacro['value'], \PDO::PARAM_STR);
+                $stmtUpdate->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
                 $stmtUpdate->bindParam(':svc', $objectId, \PDO::PARAM_INT);
                 $stmtUpdate->execute();
             }
