@@ -332,7 +332,11 @@ class Generator
                         $formRendering .= $formElements[$component['name']]['html'];
                         $formRendering .= '</div>'
                             . '<div class="clearfix visible-xs-block"></div>'
-                            . '<div class="col-xs-12 col-sm4">'
+                            . '<div class="col-xs-12 col-sm-4';
+                        if ($component['advanced'] == '1') {
+                            $formRendering .= ' advanced';
+                        }
+                        $formRendering .= '">'
                             . '<span class="inheritance" id="' . $component['name'] . '_inheritance"></span>'
                             . '</div>';
                     }

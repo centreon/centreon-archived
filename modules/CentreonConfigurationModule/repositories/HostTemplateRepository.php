@@ -35,6 +35,8 @@
 
 namespace CentreonConfiguration\Repository;
 
+use CentreonConfiguration\Models\Hosttemplate;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -42,6 +44,45 @@ namespace CentreonConfiguration\Repository;
  */
 class HostTemplateRepository extends \CentreonConfiguration\Repository\Repository
 {
+    /**
+     * List of column for inheritance
+     * @var array
+     */
+    protected static $inheritanceColumns = array(
+        'command_command_id',
+        'command_command_id_arg1',
+        'timeperiod_tp_id',
+        'timeperiod_tp_id2',
+        'command_command_id2',
+        'command_command_id_arg2',
+        'host_max_check_attempts',
+        'host_check_interval',
+        'host_retry_check_interval',
+        'host_active_checks_enabled',
+        'host_passive_checks_enabled',
+        'host_checks_enabled',
+        'initial_state',
+        'host_obsess_over_host',
+        'host_check_freshness',
+        'host_event_handler_enabled',
+        'host_low_flap_threshold',
+        'host_high_flap_threshold',
+        'host_flap_detection_enabled',
+        'flap_detection_options',
+        'host_process_perf_data',
+        'host_retain_status_information',
+        'host_retain_nonstatus_information',
+        'host_notification_interval',
+        'host_notification_options',
+        'host_notifications_enabled',
+        'contact_additive_inheritance',
+        'cg_additive_inheritance',
+        'host_first_notification_delay',
+        'host_stalking_options',
+        'host_snmp_community',
+        'host_snmp_version'
+    );
+
     /**
      *
      * @var string
@@ -180,5 +221,62 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
             $contactgroupList .= $row["cg_name"];
         }
         return $contactgroupList;
+    }
+
+    /**
+     * Get the value from template
+     *
+     * @param int $hostId The host template Id
+     * @return array
+     */
+    public static function getInheritanceValues($hostId)
+    {
+        $values = array();
+        $templates = static::getTemplateList($hostId);
+        foreach ($templates as $template) {
+            $inheritanceValues = static::getInheritanceValues($template['id']);
+            $tmplValues = Hosttemplate::getParameters($template['id'], self::$inheritanceColumns);
+            $tmplValues = array_merge($inheritanceValues, $tmplValues);
+            $values = array_merge($tmplValues, $values);
+        }
+        array_walk($values, function(&$item, $key) {
+            if (false === is_null($item)) {
+                $item = HostTemplateRepository::getTextValue($key, $item);
+            }
+        });
+        return $values;
+    }
+
+    public static function getTextValue($name, $value)
+    {
+        switch ($name) {
+            case 'command_command_id':
+            case 'command_command_id2':
+                $command = \CentreonConfiguration\Models\Command::get($value);
+                return $command['command_name'];
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+                $timeperiod = \CentreonConfiguration\Models\Timeperiod::get($value);
+                return $timeperiod['tp_name'];
+            case 'host_active_checks_enabled':
+            case 'host_passive_checks_enabled':
+            case 'host_obsess_over_host':
+            case 'host_check_freshness':
+            case 'flap_detection_options':
+            case 'host_process_perf_data':
+            case 'host_retain_status_information':
+            case 'host_retain_nonstatus_information':
+            case 'host_event_handler_enabled':
+            case 'host_notifications_enabled':
+                if ($value == 0) {
+                    return _('No');
+                } else if ($value == 1) {
+                    return _('Yes');
+                } else {
+                    return _('Default');
+                }
+            default:
+                return $value;
+        }
     }
 }

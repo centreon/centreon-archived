@@ -98,6 +98,25 @@
             $("#formHeader").parent().parent().append(
                 $('<div class="col-xs-12 col-sm-2"></div>').append($("#advanced_mode_switcher"))
             );
+
+            {if $inheritanceUrl}
+            $.ajax({
+              url: "{$inheritanceUrl}",
+              dataType: 'json',
+              type: 'get',
+              success: function(data, textStatus, jqXHR) {
+                if (data.success) {
+                  $.each(data.values, function(key, value) {
+                     if (value != null) {
+                        $('#' + key + '_inheritance').text(value);
+                        $('#' + key).removeClass('mandatory-field');
+                        $('label[for="' + key + '"]').parent().find('span').remove();
+                     }
+                  });
+                }
+              }
+            });
+            {/if}
         });
     </script>
 {/block}
