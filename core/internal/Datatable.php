@@ -138,8 +138,14 @@ class Datatable
         'cast',
         'searchParam',
         'source',
-        'searchvalues'
+        'searchvalues',
+        'DT_RowData'
     );
+    
+    /**
+     * 
+     */
+    protected static $rowIdColumn = array();
 
     /**
      * Extra parameters for datatable
@@ -175,6 +181,16 @@ class Datatable
             static::$additionnalDatasource
         );
         
+        // Add RowId
+        if (count(static::$rowIdColumn) > 0) {
+            foreach ($datasFromDb['datas'] as &$datas) {
+                $datas['DT_RowData'] = array(
+                    'id' => $datas[static::$rowIdColumn['id']],
+                    'name' => $datas[static::$rowIdColumn['name']]
+                );
+            }
+        }
+        
         static::addAdditionnalDatas($datasFromDb['datas']);
         static::processHooks($datasFromDb['datas']);
         $this->formatDatas($datasFromDb['datas']);
@@ -199,6 +215,7 @@ class Datatable
      */
     protected function prepareDatasForSending($datasToSend)
     {
+        // Cast result
         $datasToSend['datas'] = $this->castResult($datasToSend['datas']);
         
         // format the data before returning
@@ -423,6 +440,10 @@ class Datatable
      */
     public static function addUrl($field, $values, $cast)
     {
+        if (isset($values['DT_RowData'])) {
+            unset($values['DT_RowData']);
+        }
+        
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
