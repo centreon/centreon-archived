@@ -53,7 +53,38 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
      * @var string
      */
     public static $objectName = 'User';
-    
+
+
+    /**
+     * Create user
+     *
+     * @param array $givenParameters
+     */
+    public static function create($givenParameters)
+    {
+        if (isset($givenParameters['contact_passwd']) && $givenParameters['contact_passwd']) {
+            $givenParameters['contact_passwd'] = md5($givenParameters['contact_passwd']);
+        }
+        parent::create($givenParameters);
+    }
+
+    /**
+     * Update user
+     *
+     * @param array $givenParameters
+     */
+    public static function update($givenParameters)
+    {
+        /* Do not perform update if password is empty */
+        if (isset($givenParameters['contact_passwd']) && $givenParameters['contact_passwd'] == '') {
+            unset($givenParameters['contact_passwd']);
+        } elseif (isset($givenParameters['contact_passwd'])) { /* Let's md5() the password */
+            $givenParameters['contact_passwd'] = md5($givenParameters['contact_passwd']);
+        }
+        parent::update($givenParameters);
+    }
+
+
     /**
      * 
      * @param integer $contactId
