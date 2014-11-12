@@ -275,8 +275,8 @@ class CustomviewController extends \Centreon\Internal\Controller
                 $("div#widget-auth").append("<div class=\"col-sm-3\" style=\"text-align: right\"><label>Author</label></div>");
                 $("div#widget-auth").append("<div class=\"col-sm-8\">" + widgets[$(this).val()].author + "</div>");
                 
-                $("div#widget_info").append($("<div>", { id: "widget-image", class: "form-group" }));
-                $("div#widget-image").append("<div class=\"col-sm-11\" style=\"text-align: center\"><img src=\"" + widgets[$(this).val()].thumbnail  + "\"></div>");
+                //$("div#widget_info").append($("<div>", { id: "widget-image", class: "form-group" }));
+                //$("div#widget-image").append("<div class=\"col-sm-11\" style=\"text-align: center\"><img src=\"" + widgets[$(this).val()].thumbnail  + "\"></div>");
             });
         ');
         echo str_replace(
