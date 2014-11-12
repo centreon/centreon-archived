@@ -2,6 +2,22 @@
     var oTable;
 
     $(document).ready(function() {
+        
+        $(document).keydown(function(event){
+            if (event.which=="17") {
+                cntrlIsPressed = true;
+            } else if (event.which=="16") {
+                shiftIsPressed = true;
+            }
+        });
+
+        $(document).keyup(function(){
+            cntrlIsPressed = false;
+            shiftIsPressed = false;
+        });
+
+        var cntrlIsPressed = false;
+        var shiftIsPressed = false;
 
         /* Remove the label next to pagination dropdown */
         var labelToRemove = 'label[for=datatable{$object}_length_select]';
@@ -46,6 +62,11 @@
         })
         
         $('#datatable{$object} tbody').on('click', 'tr', function (){
+            if (!cntrlIsPressed) {
+                $("tr.selected").each(function() {
+                    $(this).toggleClass('selected');
+                });
+            }
             $(this).toggleClass('selected');
             toggleSelectedAction();
         });
