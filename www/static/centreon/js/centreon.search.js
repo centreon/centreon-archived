@@ -72,6 +72,15 @@
       $( e.currentTarget ).removeClass( "active" );
     });
     $( window ).resize( $.proxy( self.resize, self ) );
+
+    /* Load url data */
+    searchUri = getUriParametersByName("search");
+    if (searchUri !== null) {
+      $elem.val(searchUri);
+      if ( typeof self.options.fnRunSearch == 'function') {
+        self.options.fnRunSearch(self);
+      }
+    }
   };
 
   $.CentreonSearch.prototype.switchAction = function( e ) {

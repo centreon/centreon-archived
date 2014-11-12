@@ -256,3 +256,13 @@ function select2_formatSelection(item) {
     return select2_formatResult(item);
 }
 
+
+/**
+ * Get a uri parameters
+ */
+function getUriParametersByName(name) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
