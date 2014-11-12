@@ -61,7 +61,7 @@ class LoginController extends \Centreon\Internal\Controller
         $router = $di->get('router');
         $redirectUrl = $router->request()->param(
             'redirect',
-            str_replace('/login', '/home', $router->request()->uri())
+            str_replace('/login', '/', $router->request()->uri())
         );
         $tmpl = $di->get('template');
         
