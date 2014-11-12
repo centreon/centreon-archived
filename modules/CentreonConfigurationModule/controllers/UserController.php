@@ -36,6 +36,7 @@
 namespace CentreonConfiguration\Controllers;
 
 use \CentreonConfiguration\Models\Contact;
+use \CentreonAdministration\Internal\User;
 
 class UserController extends \CentreonConfiguration\Controllers\BasicController
 {
@@ -95,6 +96,17 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
     public function updateAction()
     {
         parent::updateAction();
+
+        /* Let's see if we need to refresh the user object that is stored in session */
+        if (isset($_SESSION['user'])) {
+            $user = $_SESSION['user'];
+            $userId = $user->getId();
+            $givenParameters = $this->getParams('post');
+            /* Modified account matches the current user */
+            if (isset($givenParameters['object_id']) && $givenParameters['object_id'] == $userId) {
+                $_SESSION['user'] = new User($userId); 
+            }
+        }
     }
     
     /**
