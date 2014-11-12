@@ -36,6 +36,7 @@
 namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 class ServiceController extends \CentreonConfiguration\Controllers\BasicController
 {
@@ -182,6 +183,37 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
      */
     public function updateAction()
     {
+        $macroList = array();
+        
+        $givenParameters = $this->getParams('post');
+        
+        if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
+            
+            $macroName = $givenParameters['macro_name'];
+            $macroValue = $givenParameters['macro_value'];
+            
+            $macroHidden = $givenParameters['macro_hidden'];
+            
+            $nbMacro = count($macroName);
+            for($i=0; $i<$nbMacro; $i++) {
+                if (!empty($macroName[$i])) {
+                    if (isset($macroHidden[$i])) {
+                        $isPassword = '1';
+                    } else {
+                        $isPassword = '0';
+                    }
+                    
+                    $macroList[$macroName[$i]] = array(
+                        'value' => $macroValue[$i],
+                        'ispassword' => $isPassword
+                    );
+                }
+            }
+        }
+        
+        if (count($macroList) > 0) {
+            CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
+        }
         parent::updateAction();
     }
     
@@ -205,7 +237,41 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
      */
     public function createAction()
     {
-        parent::createAction();
+        $macroList = array();
+        
+        $givenParameters = $this->getParams('post');
+        
+        if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
+            
+            $macroName = $givenParameters['macro_name'];
+            $macroValue = $givenParameters['macro_value'];
+            
+            $macroHidden = $givenParameters['macro_hidden'];
+            
+            $nbMacro = count($macroName);
+            for($i=0; $i<$nbMacro; $i++) {
+                if (!empty($macroName[$i])) {
+                    if (isset($macroHidden[$i])) {
+                        $isPassword = '1';
+                    } else {
+                        $isPassword = '0';
+                    }
+                    
+                    $macroList[$macroName[$i]] = array(
+                        'value' => $macroValue[$i],
+                        'ispassword' => $isPassword
+                    );
+                }
+            }
+        }
+        
+        $id = parent::createAction(false);
+        
+        if (count($macroList) > 0) {
+            CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
+        }
+
+        $this->router->response()->json(array('success' => true));
     }
     
     /**

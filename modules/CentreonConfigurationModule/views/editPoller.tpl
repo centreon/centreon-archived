@@ -4,6 +4,16 @@
 
 {block name="content"}
 <div class="content-container">
+    <div class="pull-right inline-block">
+        <div class="input-group">
+            <a id="engine_advanced_form" href="{$engineFormUrl}" class="btn btn-primary">
+                <i class="fa fa-gear"></i> {t}Engine{/t}
+            </a>
+            <a id="broker_advanced_form" href="{$brokerFormUrl}" class="btn btn-primary">
+                <i class="fa fa-database"></i> {t}Broker{/t}
+            </a>
+        </div>
+    </div>
   <div class="row">
     <form class="form-horizontal" role="form" method="post" id="edit_poller" action="/index.php">
     <div class="form-tabs-header">

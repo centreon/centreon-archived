@@ -43,6 +43,7 @@ class Installer extends \Centreon\Internal\Module\Installer
 {
     /**
      * 
+     * @param type $moduleDirectory
      * @param type $moduleInfo
      */
     public function __construct($moduleDirectory, $moduleInfo)

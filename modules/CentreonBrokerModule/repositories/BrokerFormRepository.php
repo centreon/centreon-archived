@@ -232,7 +232,7 @@ class BrokerFormRepository extends FormRepository
                     'name' => $pOpt,
                     'type' => 'text',
                     'label' => $componentLabel,
-                    'mandatory' => '0'
+                    'mandatory' => '1'
                 )
             );
         }

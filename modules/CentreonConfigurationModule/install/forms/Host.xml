@@ -53,7 +53,11 @@
 				</field>
 			</block>
             <block name="Macros">
-                <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0"></field>
+                <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
+                    <attributes>
+						<object>host</object>
+                    </attributes>
+                </field>
             </block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">

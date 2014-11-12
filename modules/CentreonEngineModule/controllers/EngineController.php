@@ -53,6 +53,7 @@ class EngineController extends FormController
     protected $objectClass = '\CentreonEngine\Models\Engine';
     protected $datatableObject = '\CentreonEngine\Internal\EngineDatatable';
     protected $repository = '\CentreonEngine\Repository\EngineRepository';
+    public static $moduleName = 'CentreonEngine';
     public static $relationMap = array();
     
     /**
@@ -99,7 +100,7 @@ class EngineController extends FormController
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = Form::validate("form", $this->getUri(), $givenParameters);
+        $validationResult = Form::validate("form", $this->getUri(), static::$moduleName, $givenParameters);
         if ($validationResult['success']) {
             $repository = $this->repository;
             try {
@@ -144,7 +145,12 @@ class EngineController extends FormController
      */
     public function editAction()
     {
-        parent::editAction();
+        $requestParam = $this->getParams('named');
+        $additionnalParams = array(
+            'formRedirect'=> true,
+            'formRedirectRoute' => '/configuration/poller/' . $requestParam['id']
+        );
+        parent::editAction($additionnalParams);
     }
     
     /**

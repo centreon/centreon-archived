@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Controllers;
 use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact;
 use \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
 use \CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\BasicController
 {
@@ -134,12 +135,46 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function createAction()
     {
+        $macroList = array();
+        
         $givenParameters = $this->getParams('post');
+        
         $givenParameters['host_register'] = 0;
+        
+        if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
+            
+            $macroName = $givenParameters['macro_name'];
+            $macroValue = $givenParameters['macro_value'];
+            
+            $macroHidden = $givenParameters['macro_hidden'];
+            
+            $nbMacro = count($macroName);
+            for($i=0; $i<$nbMacro; $i++) {
+                if (!empty($macroName[$i])) {
+                    if (isset($macroHidden[$i])) {
+                        $isPassword = '1';
+                    } else {
+                        $isPassword = '0';
+                    }
+                    
+                    $macroList[$macroName[$i]] = array(
+                        'value' => $macroValue[$i],
+                        'ispassword' => $isPassword
+                    );
+                }
+            }
+        }
+        
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
-        parent::createAction();
+        $id = parent::createAction(false);
+        
+        if (count($macroList) > 0) {
+            CustomMacroRepository::saveHostCustomMacro($id, $macroList);
+        }
+        
+        $this->router->response()->json(array('success' => true));
     }
 
     /**
