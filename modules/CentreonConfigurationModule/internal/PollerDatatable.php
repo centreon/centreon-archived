@@ -36,16 +36,17 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Utils\Datetime,
-    \Centreon\Internal\Di,
-    \CentreonConfiguration\Repository\PollerRepository;
+use Centreon\Internal\Utils\Datetime,
+    Centreon\Internal\Di,
+    Centreon\Internal\Datatable,
+    CentreonConfiguration\Repository\PollerRepository;
 
 /**
  * Description of PollerDatatable
  *
  * @author lionel
  */
-class PollerDatatable extends \Centreon\Internal\Datatable
+class PollerDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -109,7 +110,7 @@ class PollerDatatable extends \Centreon\Internal\Datatable
                 )
             )
         ),
-        /*array (
+        array (
             'title' => 'IP Address',
             'name' => 'ip_address',
             'data' => 'ip_address',
@@ -117,8 +118,9 @@ class PollerDatatable extends \Centreon\Internal\Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'source' => 'other'
         ),
-        array (
+        /*array (
             'title' => 'Localhost',
             'name' => 'localhost',
             'data' => 'localhost',
@@ -133,11 +135,11 @@ class PollerDatatable extends \Centreon\Internal\Datatable
                     '1' => 'Yes'
                 )
             ),
-        ),
+        ),*/
         array (
             'title' => 'Is Running',
-            'name' => 'is_currently_running',
-            'data' => 'is_currently_running',
+            'name' => 'running',
+            'data' => 'running',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -163,15 +165,15 @@ class PollerDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
-                    '0' => 'No',
+                    '0' => '<span class="label label-success">No</span>',
                     '1' => '<span class="label label-warning">Yes</span>'
                 )
             ),
         ),
         array (
             'title' => 'Start time',
-            'name' => 'program_start_time',
-            'data' => 'program_start_time',
+            'name' => 'start_time',
+            'data' => 'start_time',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -179,18 +181,9 @@ class PollerDatatable extends \Centreon\Internal\Datatable
             'source' => 'other'
         ),
         array (
-            'title' => 'Last Restart',
-            'name' => 'last_restart',
-            'data' => 'last_restart',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false,
-        ),
-        array (
             'title' => 'Version',
-            'name' => 'program_version',
-            'data' => 'program_version',
+            'name' => 'version',
+            'data' => 'version',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -208,39 +201,28 @@ class PollerDatatable extends \Centreon\Internal\Datatable
             'source' => 'other'
         ),
         array (
-            'title' => 'Default',
-            'name' => 'is_default',
-            'data' => 'is_default',
+            'title' => 'Status',
+            'name' => 'enable',
+            'data' => 'enable',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
             'cast' => array(
                 'type' => 'select',
-                'parameters' => array(
-                    '0' => 'No',
-                    '1' => 'Yes'
-                )
-            ),
-        ),
-        array (
-            'title' => 'Status',
-            'name' => 'activate',
-            'data' => 'activate',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-            'type' => 'select',
                 'parameters' =>array(
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
                 )
             )
-        ),*/
+        ),
     );
-    
+
+    /**
+     * @var mixed
+     */
+    protected static $hook = array('displayPollerColumn');
+
     /**
      * 
      * @param array $params
@@ -259,30 +241,46 @@ class PollerDatatable extends \Centreon\Internal\Datatable
         // Get datatabases connections
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
-        
-        $sqlBroker = "SELECT start_time AS program_start_time, running AS is_currently_running, 
-            instance_id, name AS instance_name , last_alive, version AS program_version,  
+
+        /* Get data from cfg_nodes */
+        $sqlNode = "SELECT poller_id, ip_address 
+            FROM cfg_nodes n, cfg_pollers p
+            WHERE p.node_id = n.node_id";
+        $stmtNode = $dbconn->prepare($sqlNode);
+        $stmtNode->execute();
+        $resNode = $stmtNode->fetchAll(\PDO::FETCH_ASSOC);
+        $nodeData = array();
+        foreach ($resNode as $row) {
+            $nodeData[$row['poller_id']] = $row;
+        }
+
+        /* Get data from rt_instances */
+        $sqlBroker = "SELECT start_time, running, 
+            instance_id, name AS instance_name , last_alive, version,
             engine AS program_name
             FROM rt_instances";
         $stmtBroker = $dbconn->query($sqlBroker);
         $resultBroker = $stmtBroker->fetchAll(\PDO::FETCH_ASSOC);
         
-        // Build Up the line
+        // Build up the table row
         foreach ($resultSet as &$engineServer) {
-            $engineServer['program_start_time'] = '';
-            $engineServer['is_currently_running'] = 0;
+            $engineServer['start_time'] = '';
+            $engineServer['running'] = 0;
             $engineServer['last_alive'] = '';
-            $engineServer['program_version'] = '';
+            $engineServer['version'] = '';
             $engineServer['program_name'] = '';
             foreach ($resultBroker as $broker) {
                 if ($broker['instance_name'] == $engineServer['name']) {
                     $engineServer = array_merge($engineServer, $broker);
                 }
             }
-            /*$engineServer['hasChanged'] = PollerRepository::checkChangeState(
+            if (isset($nodeData[$engineServer['poller_id']])) {
+                $engineServer['ip_address'] = $nodeData[$engineServer['poller_id']]['ip_address'];
+            }
+            $engineServer['hasChanged'] = PollerRepository::checkChangeState(
                 $engineServer['poller_id'],
-                $engineServer['last_restart']
-            );*/
+                $engineServer['start_time']
+            );
         }
     }
     
@@ -293,32 +291,16 @@ class PollerDatatable extends \Centreon\Internal\Datatable
     protected function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myPollerSet) {
-            if (isset($myPollerSet['program_version'])) {
-                $myPollerSet['program_version'] = $myPollerSet['program_name'] . ' ' . $myPollerSet['program_version'];
-            }
-
-            if (isset($myPollerSet['last_restart'])) {
-                $myPollerSet['last_restart'] = Datetime::humanReadable(
-                    $myPollerSet['last_restart'],
-                    Datetime::PRECISION_FORMAT,
-                    2
-                );
+            if (isset($myPollerSet['version'])) {
+                $myPollerSet['version'] = $myPollerSet['program_name'] . ' ' . $myPollerSet['version'];
             }
 
             if (isset($myPollerSet['last_alive'])) {
-                $myPollerSet['last_alive'] = Datetime::humanReadable(
-                    $myPollerSet['last_alive'],
-                    Datetime::PRECISION_FORMAT,
-                    2
-                );
+                $myPollerSet['last_alive'] = Datetime::format($myPollerSet['last_alive']);
             }
 
-            if (isset($myPollerSet['program_start_time'])) {
-                $myPollerSet['program_start_time'] = Datetime::humanReadable(
-                    $myPollerSet['program_start_time'],
-                    Datetime::PRECISION_FORMAT,
-                    2
-                );
+            if (isset($myPollerSet['start_time'])) {
+                $myPollerSet['start_time'] = Datetime::format($myPollerSet['start_time']);
             }
         }
     }
