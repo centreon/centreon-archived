@@ -139,10 +139,8 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         resizeContent();
     });
-    /* Timer */
-    topClock();
-    {hook name='displayJsStatus' container='[hook]'}
-    statusInterval = setInterval(function() {
+
+    function loadStatusData() {
       $.ajax({
         url: "{url_for url='/status'}",
         type: 'GET',
@@ -151,7 +149,17 @@ $(document).ready(function() {
           $(document).trigger(eStatus);
         }
       });
+    }
+
+    /* Timer */
+    topClock();
+
+    {hook name='displayJsStatus' container='[hook]'}
+
+    statusInterval = setInterval(function() {
+        loadStatusData();
     }, 5000);
+    loadStatusData();
 });
 </script>
 {block name="javascript-bottom"}
