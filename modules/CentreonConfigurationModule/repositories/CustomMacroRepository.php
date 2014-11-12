@@ -71,38 +71,20 @@ class CustomMacroRepository
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
-        $checkRequest = "SELECT host_macro_id FROM cfg_customvariables_hosts WHERE host_host_id = :host "
-            . "AND host_macro_name = :macro_name";
-        $stmtCheck = $dbconn->prepare($checkRequest);
+        $deleteRequest = "DELETE FROM cfg_customvariables_hosts WHERE host_host_id = :host";
+        $stmtDelete = $dbconn->prepare($deleteRequest);
+        $stmtDelete->bindParam(':host', $objectId, \PDO::PARAM_INT);
+        $stmtDelete->execute();
         
         $insertRequest = "INSERT INTO cfg_customvariables_hosts(host_macro_name, host_macro_value, is_password, host_host_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :host)";
         $stmtInsert = $dbconn->prepare($insertRequest);
-        
-        $updateRequest = "UPDATE cfg_customvariables_hosts SET host_macro_name = :macro_name, "
-            . "host_macro_value = :macro_value, "
-            . "is_password = :is_password, "
-            . "host_host_id = :host";
-        $stmtUpdate = $dbconn->prepare($updateRequest);
-        
         foreach ($submittedValues as $customMacroName => $customMacro) {
-            $stmtCheck->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
-            $stmtCheck->bindParam(':host', $objectId, \PDO::PARAM_INT);
-            $stmtCheck->execute();
-            $rowMacro = $stmtCheck->fetchAll(\PDO::FETCH_ASSOC);
-            if (count($rowMacro) == 0) {
-                $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
-                $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
-                $stmtInsert->bindParam(':host', $objectId, \PDO::PARAM_INT);
-                $stmtInsert->execute();
-            } elseif (count($rowMacro) == 0) {
-                $stmtUpdate->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
-                $stmtUpdate->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtUpdate->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
-                $stmtUpdate->bindParam(':host', $objectId, \PDO::PARAM_INT);
-                $stmtUpdate->execute();
-            }
+            $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
+            $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
+            $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
+            $stmtInsert->bindParam(':host', $objectId, \PDO::PARAM_INT);
+            $stmtInsert->execute();
         }
     }
     
@@ -132,38 +114,21 @@ class CustomMacroRepository
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         
-        $checkRequest = "SELECT svc_macro_id FROM cfg_customvariables_services WHERE svc_svc_id = :svc "
-            . "AND svc_macro_name = :macro_name";
-        $stmtCheck = $dbconn->prepare($checkRequest);
+        $deleteRequest = "DELETE FROM cfg_customvariables_services WHERE svc_svc_id = :svc";
+        $stmtDelete = $dbconn->prepare($deleteRequest);
+        $stmtDelete->bindParam(':svc', $objectId, \PDO::PARAM_INT);
+        $stmtDelete->execute();
         
         $insertRequest = "INSERT INTO cfg_customvariables_services(svc_macro_name, svc_macro_value, is_password, svc_svc_id)"
             . " VALUES(:macro_name, :macro_value, :is_password, :svc)";
         $stmtInsert = $dbconn->prepare($insertRequest);
         
-        $updateRequest = "UPDATE cfg_customvariables_services SET svc_macro_name = :macro_name, "
-            . "svc_macro_value = :macro_value, "
-            . "is_password = :is_password, "
-            . "svc_svc_id = :svc";
-        $stmtUpdate = $dbconn->prepare($updateRequest);
-        
         foreach ($submittedValues as $customMacroName => $customMacro) {
-            $stmtCheck->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
-            $stmtCheck->bindParam(':svc', $objectId, \PDO::PARAM_INT);
-            $stmtCheck->execute();
-            $rowMacro = $stmtCheck->fetchAll(\PDO::FETCH_ASSOC);
-            if (count($rowMacro) == 0) {
-                $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
-                $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
-                $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);
-                $stmtInsert->execute();
-            } elseif (count($rowMacro) == 0) {
-                $stmtUpdate->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
-                $stmtUpdate->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
-                $stmtUpdate->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
-                $stmtUpdate->bindParam(':svc', $objectId, \PDO::PARAM_INT);
-                $stmtUpdate->execute();
-            }
+            $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
+            $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
+            $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
+            $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);
+            $stmtInsert->execute();
         }
     }
 }
