@@ -1,3 +1,5 @@
+var clockTimestamp = moment().unix();
+
 var ie = (function(){
     var undef,
         v = 3,
@@ -171,13 +173,12 @@ function stringTwoDigit(val) {
 
 /* Clock top */
 function topClock() {
-    var now = new Date();
-    var h = stringTwoDigit(now.getHours());
-    var m = stringTwoDigit(now.getMinutes());
-    var s = stringTwoDigit(now.getSeconds());
+    var clock;
+    clockTimestamp++;
+    clock = moment.unix(clockTimestamp);
 
-    $('.time .clock').text(h + ':' + m + ':' + s);
-    setTimeout(function() { topClock(); }, 500);
+    $('.time .clock').text(clock.format("HH:mm:ss"));
+    setTimeout(function() { topClock(); }, 1000);
 }
 
 function alertMessage(msg, cls, timeClose) {

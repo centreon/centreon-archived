@@ -32,47 +32,38 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonMain\Controllers;
 
-use Centreon\Internal\Di;
+namespace CentreonMain\Events;
 
 /**
- * Home controller
- * @authors Sylvestre Ho
+ * Parameters for events centreon-main.status
+ *
+ * @author Maximilien Bersoult <mbersoult@merehtis.com>
+ * @version 3.0.0
  * @package Centreon
- * @subpackage Controllers
+ * @subpackage CentreonMain
  */
-class MainController extends \Centreon\Internal\Controller
+class Status
 {
-    public static $moduleName = 'CentreonMain';
-    
     /**
-     * Action for home page
-     *
-     * @method GET
-     * @route /home
+     * The list of status
+     * @var array
      */
-    public function homeAction()
+    private $status;
+
+    public function __construct(&$status)
     {
-        $this->display('home.tpl');
+        $this->status = &$status;
     }
 
     /**
-     * Route for getting refresh information
+     * Add a status to the list of status
      *
-     * @method GET
-     * @route /status
+     * @param string $statusName The status name
+     * @param mixed $statusValue The value a the status
      */
-    public function statusAction()
+    public function addStatus($statusName, $statusValue)
     {
-        $router = Di::getDefault()->get('router');
-        $events = Di::getDefault()->get('events');
-        $status = array();
-
-        $statusEvent = new \CentreonMain\Events\Status($status);
-
-        $events->emit('centreon-main.status', array($statusEvent));
-
-        $router->response()->json($status);
+        $this->status[$statusName] = $statusValue;
     }
 }

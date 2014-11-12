@@ -1,0 +1,7 @@
+[
+  {
+    "name": "displayJsStatus",
+    "moduleHook": "displayJsStatusTimer",
+    "moduleHookDescription": "Add synchornize the clock with the server"
+  }
+]

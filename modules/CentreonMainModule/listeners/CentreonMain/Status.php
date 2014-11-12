@@ -32,47 +32,32 @@
  * For more information : contact@centreon.com
  *
  */
-namespace CentreonMain\Controllers;
 
-use Centreon\Internal\Di;
+namespace CentreonMain\Listeners\CentreonMain;
+
+use CentreonMain\Events\Status as StatusEvent;
 
 /**
- * Home controller
- * @authors Sylvestre Ho
+ * Event to add sync clock to status
+ *
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @version 3.0.0
  * @package Centreon
- * @subpackage Controllers
+ * @subpackage CentreonMain
  */
-class MainController extends \Centreon\Internal\Controller
+class Status
 {
-    public static $moduleName = 'CentreonMain';
-    
     /**
-     * Action for home page
+     * Execute the event
      *
-     * @method GET
-     * @route /home
+     * @param \CentreonMain\Events\Status $event The event object
      */
-    public function homeAction()
+    public static function execute(StatusEvent $event)
     {
-        $this->display('home.tpl');
-    }
-
-    /**
-     * Route for getting refresh information
-     *
-     * @method GET
-     * @route /status
-     */
-    public function statusAction()
-    {
-        $router = Di::getDefault()->get('router');
-        $events = Di::getDefault()->get('events');
-        $status = array();
-
-        $statusEvent = new \CentreonMain\Events\Status($status);
-
-        $events->emit('centreon-main.status', array($statusEvent));
-
-        $router->response()->json($status);
+        /* Add server time */
+        $event->addStatus('time', array(
+            'server' => time(),
+            'timezone' => date_default_timezone_get()
+        ));
     }
 }

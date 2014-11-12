@@ -95,6 +95,8 @@
 {/foreach}
 <script>
 $(document).ready(function() {
+    var statusInterval, statusData,
+        eStatus = new $.Event('centreon.refresh_status');
     resizeContent();
     $('.btn-light').on('click', function() {
         switchTheme('light');
@@ -102,11 +104,7 @@ $(document).ready(function() {
     $('.btn-dark').on('click', function() {
         switchTheme('dark');
     });
-    /*$('#footer-button').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleFooter();
-    });*/
+
     $('#logout').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -125,6 +123,17 @@ $(document).ready(function() {
     });
     /* Timer */
     topClock();
+    {hook name='displayJsStatus'}
+    statusInterval = setInterval(function() {
+      $.ajax({
+        url: "{url_for url='/status'}",
+        type: 'GET',
+        success: function(data, textStatus, jqXHR) {
+          statusData = data;
+          $(document).trigger(eStatus);
+        }
+      });
+    }, 5000);
 });
 </script>
 {block name="javascript-bottom"}
