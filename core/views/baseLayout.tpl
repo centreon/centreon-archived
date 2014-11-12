@@ -24,7 +24,7 @@
             <i class="fa fa-desktop"></i>
           </a>
           <span class="label label-danger hide"></span>
-          <span class="label label-warningi hide"></span>
+          <span class="label label-warning hide"></span>
           <ul class="dropdown-menu">
           </ul>
         </li>
@@ -33,7 +33,7 @@
             <i class="fa fa-rss"></i>
           </a>
           <span class="label label-danger hide"></span>
-          <span class="label label-warningi hide"></span>
+          <span class="label label-warning hide"></span>
           <ul class="dropdown-menu">
           </ul>
         </li>
