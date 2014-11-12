@@ -1,7 +1,9 @@
 <script>
-    var oTable;
+    var oTable,
+        lastSelectedRow = null;
 
     $(document).ready(function() {
+    	document.onselectstart = function() { return false; };
 
         /* Remove the label next to pagination dropdown */
         var labelToRemove = 'label[for=datatable{$object}_length_select]';
@@ -45,8 +47,25 @@
             }
         })
         
-        $('#datatable{$object} tbody').on('click', 'tr', function (){
-            $(this).toggleClass('selected');
+        $('#datatable{$object} tbody').on('click', 'tr', function (e){
+            if (!e.ctrlKey && !e.shiftKey) {
+                $(this).parent().find('tr').removeClass('selected');
+            	$(this).addClass('selected');
+            } else if (e.ctrlKey) {
+            	$(this).toggleClass('selected');
+            } else if (e.shiftKey) {
+                if (lastSelectedRow === null) {
+                    $(this).addClass('selected');
+                } else {
+                    var sort = [$(lastSelectedRow)[0].rowIndex, $(this)[0].rowIndex],
+                        rows = $(this).parent().find('tr'); 
+                    sort.sort(function(a, b) { return a - b; });
+                    for (var i = sort[0]; i <= sort[1]; i++) {
+                        $(rows[i]).addClass('selected');
+                    }
+                }
+            }
+            lastSelectedRow = this;
             toggleSelectedAction();
         });
     
