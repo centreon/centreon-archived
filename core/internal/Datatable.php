@@ -188,6 +188,7 @@ class Datatable
                     'id' => $datas[static::$rowIdColumn['id']],
                     'name' => $datas[static::$rowIdColumn['name']]
                 );
+                $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
             }
         }
         

@@ -61,7 +61,7 @@ class Hook
      */
     public static function getHookId($hookName)
     {
-        $hooks = self::getHookCache();
+        $hooks = self::getHookCache(true);
         if (isset($hooks['name'][$hookName]) && isset($hooks['name'][$hookName]['hook_id'])) {
             return $hooks['name'][$hookName]['hook_id'];
         } else {
@@ -280,10 +280,10 @@ class Hook
      *
      * @return array
      */
-    private static function getHookCache()
+    private static function getHookCache($force = false)
     {
         $db = Di::getDefault()->get('db_centreon');
-        if (!isset(self::$hookCache)) {
+        if (!isset(self::$hookCache) || $force) {
             self::$hookCache = array('id' => array(), 'name' => array());
             $sql = "SELECT hook_id, hook_name, hook_description FROM cfg_hooks";
             $stmt = $db->prepare($sql);
