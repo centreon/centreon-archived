@@ -60,38 +60,40 @@ class PollerRepository extends Repository
      *
      * Check if a service or an host has been
      * changed for a specific poller.
-     * @param unknown_type $poller_id
-     * @param unknown_type $last_restart
-     * @return number
+     *
+     * @param int $pollerId
+     * @param int $lastRestart
+     * @return int
      */
-    public static function checkChangeState($poller_id, $last_restart)
+    public static function checkChangeState($pollerId, $lastRestart)
     {
-        if (!isset($last_restart) || $last_restart == "") {
+        if (!isset($lastRestart) || !$lastRestart) {
             return 0;
         }
 
         // Get centreon DB and centreon storage DB connection
         $di = Di::getDefault();
-        $dbconnStorage = $di->get('db_storage');
+        $db = $di->get('db_centreon');
 
         $request = "SELECT *
             FROM log_action
             WHERE
-                action_log_date > $last_restart AND
+                action_log_date > ? AND
                 ((object_type = 'host' AND
                 object_id IN (
                     SELECT host_host_id
-                        FROM centreon.cfg_engine_hosts_relations
-                        WHERE engine_server_id = '$poller_id'
+                        FROM cfg_engine_hosts_relations
+                        WHERE engine_server_id = ?
                 )) OR
                     (object_type = 'service') AND
                         object_id IN (
                     SELECT service_service_id
-                    FROM centreon.cfg_engine_hosts_relations nhr, centreon.cfg_hosts_services_relations hsr
-                    WHERE engine_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id
+                    FROM cfg_engine_hosts_relations nhr, cfg_hosts_services_relations hsr
+                    WHERE engine_server_id = ? AND hsr.host_host_id = nhr.host_host_id
         ))";
-        $DBRESULT = $dbconnStorage->query($request);
-        if ($DBRESULT->rowCount()) {
+        $stmt = $db->prepare($request);
+        $stmt->execute(array($lastRestart, $pollerId, $pollerId));
+        if ($stmt->rowCount()) {
             return 1;
         }
         return 0;

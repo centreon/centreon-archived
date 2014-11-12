@@ -230,9 +230,11 @@ class Datatable
         $columnHeader = "";
         $columnSearchIndex = array();
         $nbFixedTr = count(static::$columns);
+        
+        $hookArr = static::getHookArray();
 
-        if (isset(static::$hook) && static::$hook) {
-            $hookData = Hook::execute(static::$hook, array());
+        foreach ($hookArr as $hook) {
+            $hookData = Hook::execute($hook, array());
             foreach ($hookData as $data) {
                 $columnName = $data['columnName'];
                 static::$columns[] = array(
@@ -527,8 +529,11 @@ class Datatable
                 $params['_ids'][] = $set[static::$objectId];
             }
         }
-        if (isset(static::$hook) && static::$hook) {
-            $hookData = Hook::execute(static::$hook, $params);
+        
+        $hookArr = static::getHookArray();
+
+        foreach ($hookArr as $hook) {
+            $hookData = Hook::execute($hook, $params);
             foreach ($hookData as $data) {
                 $columnName = $data['columnName'];
                 foreach ($data['values'] as $k => $value) {
@@ -540,5 +545,27 @@ class Datatable
                 }
             }
         }
+    }
+
+    /**
+     * Return the hook array
+     *
+     * @return array
+     */
+    protected static function getHookArray()
+    {
+        $hookArr = array();
+
+        /* If hook is string, we put it in an array */
+        if (!isset(static::$hook) || static::$hook == '') {
+            return $hookArr;
+        }
+
+        if (!is_array(static::$hook)) {
+            $hookArr = array(static::$hook);
+        } else {
+            $hookArr = static::$hook;
+        }
+        return $hookArr;
     }
 }

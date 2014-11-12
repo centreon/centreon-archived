@@ -92,3 +92,17 @@ Paramètres
 ##########
 
 pollerId: l'identifiant du poller lorsque le formulaire est en mode Edition.
+
+
+displayPollerColumn
+~~~~~~~~~~~~~~~~~~~
+
+Description
+###########
+
+Permet d'ajouter des colonnes supplémentaires dans le listing de poller.
+
+Paramètres
+##########
+
+_ids: l'identifiant du poller
