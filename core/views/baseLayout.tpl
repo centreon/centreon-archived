@@ -19,6 +19,24 @@
     {environment}
     <div class="navbar-right">
       <ul class="nav navbar-nav navbar-left">
+        <li class="top-counter top-counter-host">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-desktop"></i>
+          </a>
+          <span class="label label-danger hide"></span>
+          <span class="label label-warningi hide"></span>
+          <ul class="dropdown-menu">
+          </ul>
+        </li>
+        <li class="top-counter top-counter-service">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-rss"></i>
+          </a>
+          <span class="label label-danger hide"></span>
+          <span class="label label-warningi hide"></span>
+          <ul class="dropdown-menu">
+          </ul>
+        </li>
         <li class="infraInfo">
           <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
             <i class="fa fa-gears"></i>
@@ -123,7 +141,7 @@ $(document).ready(function() {
     });
     /* Timer */
     topClock();
-    {hook name='displayJsStatus'}
+    {hook name='displayJsStatus' container='[hook]'}
     statusInterval = setInterval(function() {
       $.ajax({
         url: "{url_for url='/status'}",

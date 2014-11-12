@@ -31,40 +31,30 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-/*
- * Smarty plugin
- * -------------------------------------------------------------
- * File:     function.hook.php
- * Type:     function
- * Name:     hook
- * Purpose:  returns contents of registered hooks
- * -------------------------------------------------------------
+namespace CentreonRealtime\Hooks;
+
+/**
+ * Hook for add information in top counter
+ *
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage CentreonMain
  */
-function smarty_function_hook($params, $template) {
-    $contents = "";
-    if (isset($params['name'])) {
-        $core_params_to_hook = array();
-        if (isset($params['params'])) {
-            $core_params_to_hook = $params['params'];
-        }
-        if (!isset($params['container'])) {
-            $params['container'] = "<div>[hook]</div>";
-        }
-        $hookData = \Centreon\Internal\Hook::execute($params['name'], $core_params_to_hook);
-        foreach ($hookData as $hook) {
-            if (isset($hook['template'])) {
-                $tpl = $template->createTemplate($hook['template']);
-                if (isset($hook['variables'])) {
-                    $tpl->assign('variables', $hook['variables']);
-                }
-                if (isset($params['container'])) {
-                    $contents .= str_replace("[hook]", $template->fetch($tpl), $params['container']);
-                }
-            }
-        }
-    }
-    return $contents;
+class DisplayJsStatusTopCounter
+{
+   /**
+    * Execute the hook
+    *
+    * @param array $params
+    */
+    public static function execute($params)
+    {
+        return array(
+            'template' => 'jsStatusTopCounter.tpl'
+        );
+    } 
 }
+

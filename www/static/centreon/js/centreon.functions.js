@@ -1,4 +1,4 @@
-var clockTimestamp = moment().unix();
+var clockTimestamp = moment().utc().unix();
 
 var ie = (function(){
     var undef,
@@ -177,7 +177,7 @@ function topClock() {
     clockTimestamp++;
     clock = moment.unix(clockTimestamp);
 
-    $('.time .clock').text(clock.format("HH:mm:ss"));
+    $('.time .clock').text(clock.local().format("HH:mm:ss"));
     setTimeout(function() { topClock(); }, 1000);
 }
 
