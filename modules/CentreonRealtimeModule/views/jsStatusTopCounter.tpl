@@ -8,6 +8,8 @@ $(document).on('centreon.refresh_status', function(e) {
       $('<li></li>').append(
         $('<a></a>').attr('href', "{url_for url='/realtime/service'}?search=status:2").text(
           statusData.service.critical + " unhandled critical problem"
+        ).prepend(
+          $('<i></i>').addClass('fa fa-times-circle info')
         )
       )
     );
@@ -18,6 +20,8 @@ $(document).on('centreon.refresh_status', function(e) {
       $('<li></li>').append(
         $('<a></a>').attr('href', "{url_for url='/realtime/service'}?search=status:1").text(
           statusData.service.warning + " unhandled warning alerts"
+        ).prepend(
+          $('<i></i>').addClass('fa fa-warning info')
         )
       )
     );
@@ -27,7 +31,9 @@ $(document).on('centreon.refresh_status', function(e) {
     $('.top-counter-host ul').append(
       $('<li></li>').append(
         $('<a></a>').attr('href', "{url_for url='/realtime/host'}?search=state:2").text(
-          statusData.host.critical + " unhandled critical problem"
+          statusData.host.critical + " host down"
+        ).prepend(
+          $('<i></i>').addClass('fa fa-times-circle info')
         )
       )
     );
@@ -38,6 +44,8 @@ $(document).on('centreon.refresh_status', function(e) {
       $('<li></li>').append(
         $('<a></a>').attr('href', "{url_for url='/realtime/host'}?search=state:1").text(
           statusData.host.warning + " unhandled warning alerts"
+        ).prepend(
+          $('<i></i>').addClass('fa fa-warning info')
         )
       )
     );

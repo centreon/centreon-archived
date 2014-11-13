@@ -179,6 +179,27 @@ hr {
         }
     }
 
+    .fa.info {
+        margin-right: 5px;
+	color: @navbar-default-color;
+    }
+
+    ul {
+        padding-right: 10px;
+	padding-left: 10px;
+        &>li {
+	    border-bottom: 1px solid @navbar-default-border;
+
+            &>a {
+                line-height: 24px;
+            }
+
+            &:last-child {
+                border:0;
+            }
+        }
+    }
+
     &.top-counter-poller > ul {
         width: 300px;
         
