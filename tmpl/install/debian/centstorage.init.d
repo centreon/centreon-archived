@@ -15,6 +15,10 @@ PKGNAME=centstorage
 DESC="CentStorage"
 DAEMON=@CENTSTORAGE_BINDIR@/centstorage
 PIDFILE=@CENTREON_RUNDIR@/centstorage.pid
+FOLDER=/var/run/centreon/
+if [ ! -d "$FOLDER" ]; then # Control will enter here if $DIRECTORY doesn't exist.
+    mkdir $FOLDER
+fi
 
 if [ ! -x "${DAEMON}" ]; then
   echo "The program ${DAEMON} does not exists or is not executable"
