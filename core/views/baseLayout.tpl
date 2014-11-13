@@ -37,10 +37,13 @@
           <ul class="dropdown-menu">
           </ul>
         </li>
-        <li class="infraInfo">
+        <li class="top-counter top-counter-poller">
           <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
             <i class="fa fa-gears"></i>
           </a>
+          <span class="label label-danger hide"></span>
+          <span class="label label-warning hide"></span>
+          <ul class="dropdown-menu"></ul>
         </li>
         <li class="notif">
           <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">

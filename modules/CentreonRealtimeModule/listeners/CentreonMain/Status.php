@@ -65,6 +65,11 @@ class Status
                 'unknown' => 0,
                 'warning' => 0,
                 'critical' => 0
+            ),
+            'pollers' => array(
+                'activity' => 0,
+                'stopped' => 0,
+                'latency' => 0
             )
         );
         $db = Di::getDefault()->get('db_centreon');
@@ -104,5 +109,19 @@ class Status
             }
         }
         $event->addStatus('host', $values['hosts']);
+        /* Get poller information */
+        $query = "SELECT last_alive, running
+            FROM rt_instances
+            WHERE deleted != 1";
+        $stmt = $db->query($query);
+        $now = time();
+        while ($row = $stmt->fetch()) {
+            if ($row['running'] == 0) {
+                $values['pollers']['stopped']++;
+            } elseif ($row['last_alive'] - $now > 60) {
+                $values['pollers']['activity']++;
+            }
+        }
+        $event->addStatus('poller', $values['pollers']);
     }
 }
