@@ -65,6 +65,7 @@ class PollerController extends \Centreon\Internal\Controller
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':org_id', $orgId, \PDO::PARAM_INT);
         $stmt->execute();
+        $now = time();
         $pollers = array();
         while ($row = $stmt->fetch()) {
             $row['latency'] = 0;
