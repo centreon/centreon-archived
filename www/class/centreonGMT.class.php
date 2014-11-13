@@ -194,15 +194,24 @@ class CentreonGMT{
 	function getHostCurrentDatetime($host_id, $date_format = 'c')
 	{
 		global $pearDB;
-		$date = time();
+		static $locations = null;
+		static $date = null;
+
+		if (is_null($date)) {
+			$date = time();
+		}
 		if ($this->use) {
-			$query = "SELECT host_location FROM host WHERE host_id = " . $host_id;
-			$res = $pearDB->query($query);
-			if (!PEAR::isError($res)) {
-				$row = $res->fetchRow();
-				if (!is_null($row['host_location']))  {
-					$date = $date + $row['host_location'] * 3600;
+			if (is_null($locations)) {
+				$locations = array();
+
+				$query = "SELECT host_id, host_location FROM host WHERE host_id";
+				$res = $pearDB->query($query);
+				while ($row = $res->fetchRow()) {
+					$locations[$row['host_id']] = $row['host_location'];
 				}
+			}
+			if (isset($locations[$host_id]))  {
+				$date = $date + $locations[$host_id] * 3600;
 			}
 		}
 		return date($date_format, $date);

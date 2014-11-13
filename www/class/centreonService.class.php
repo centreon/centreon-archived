@@ -63,16 +63,16 @@
  	 */
  	public function getServiceDesc($svc_id)
  	{
- 		static $svcTab = array();
+ 		static $svcTab = null;
 
- 	    if (!isset($svcTab[$svc_id])) {
-     		$rq = "SELECT service_description
-     			   FROM service
-     			   WHERE service_id = ".$this->db->escape($svc_id)." LIMIT 1";
+        if (is_null($svcTab)) {
+             $svcTab = array();
+
+     		$rq = "SELECT service_id, service_description
+     			   FROM service";
      		$res = $this->db->query($rq);
-     		if ($res->numRows()) {
-     		    $row = $res->fetchRow();
-     		    $svcTab[$svc_id] = $row['service_description'];
+            while ($row = $res->fetchRow()) {
+               $svcTab[$row['service_id']] = $row['service_description'];
      		}
  	    }
  	    if (isset($svcTab[$svc_id])) {
