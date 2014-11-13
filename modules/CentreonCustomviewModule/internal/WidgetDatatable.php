@@ -53,13 +53,18 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'widget_model_id', 'name' => 'name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('name', 'asc'),
-            array('widget_model_id', 'asc')
+            array('name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -71,19 +76,13 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allWidgetid' class='allWidgetid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'widget_model_id',
             'data' => 'widget_model_id',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::name::'
-                )
-            )
+            'visible' => false
         ),
         array (
             'title' => 'Name',

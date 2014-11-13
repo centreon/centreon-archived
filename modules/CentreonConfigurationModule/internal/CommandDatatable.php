@@ -55,13 +55,18 @@ class CommandDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'command_id', 'name' => 'command_name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
             array('command_name', 'asc'),
-            array('command_id', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -73,20 +78,14 @@ class CommandDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allCommandid' class='allCommandid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'command_id',
             'data' => 'command_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '5%',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::command_name::'
-                )
-            ),
             "className" => 'cell_center',
             "width" => "20px"
         ),

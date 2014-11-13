@@ -57,13 +57,18 @@ class PollerDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'poller_id', 'name' => 'name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('name', 'asc'),
-            array('poller_id', 'asc')
+            array('name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -75,19 +80,13 @@ class PollerDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => '<input id="allPoller" class="allPoller" type="checkbox">',
+            'title' => 'Id',
             'name' => 'poller_id',
             'data' => 'poller_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',

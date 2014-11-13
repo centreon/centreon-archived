@@ -70,23 +70,23 @@ class HostDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'name');
+    
+    /**
+     *
      * @var array 
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allHost' class='allHost' type='checkbox'>",
+            'title' => "Id",
             'name' => 'host_id',
             'data' => 'host_id',
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                    'type' => 'checkbox',
-                    'parameters' => array(
-                    'displayName' => '::name::'
-                )
-            ),
+            'visible' => false,
             'className' => 'cell_center',
             'width' => "20px"
         ),

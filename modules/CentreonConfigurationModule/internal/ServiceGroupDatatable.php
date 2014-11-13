@@ -69,23 +69,23 @@ class ServiceGroupDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'sg_id', 'name' => 'sg_name');
+    
+    /**
+     *
      * @var array 
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allServiceGroup' class='allServiceGroup' type='checkbox'>",
+            'title' => "Id",
             'name' => 'sg_id',
             'data' => 'sg_id',
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-            'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::sg_name::'
-                )
-            ),
+            'visible' => false,
             'className' => 'datatable-align-center'
         ),
         array (

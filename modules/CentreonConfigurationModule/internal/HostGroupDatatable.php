@@ -52,6 +52,12 @@ class HostGroupDatatable extends \Centreon\Internal\Datatable
      *
      * @var type 
      */
+    protected static $rowIdColumn = array('id' => 'hg_id', 'name' => 'hg_name');
+    
+    /**
+     *
+     * @var type 
+     */
     protected static $datasource = '\CentreonConfiguration\Models\Hostgroup';
     
     /**
@@ -61,8 +67,7 @@ class HostGroupDatatable extends \Centreon\Internal\Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('hg_name', 'asc'),
-            array('hg_id', 'asc')
+            array('hg_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -74,20 +79,14 @@ class HostGroupDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allHostid' class='allHostid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'hg_id',
             'data' => 'hg_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '5%',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::hg_name::'
-                )
-                            ),
             'width' => "20px",
             'className' => 'cell_center'
         ),
