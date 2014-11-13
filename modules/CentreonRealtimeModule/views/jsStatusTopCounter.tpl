@@ -64,10 +64,10 @@ $(function() {
           $.each(data.values, function(idx, poller) {
             var $pollerLi = $('<li></li>'),
                 $pollerLine = $('<div></div>').addClass('row'),
-                $pollerStatus = $('<div></div>').addClass('col-xs-2'),
+                $pollerStatus = $('<div></div>').addClass('col-xs-1'),
                 $pollerLatency = $('<div></div>').addClass('col-xs-4');
             /* Add name */
-            $('<div></div>').addClass('col-xs-6').text(poller.name).appendTo($pollerLine);
+            $('<div></div>').addClass('col-xs-7').text(poller.name).appendTo($pollerLine);
             /* Add status */
             if (poller.running == null || poller.running == 0) {
               $pollerStatus.addClass('mini danger').append(
