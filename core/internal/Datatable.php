@@ -613,6 +613,13 @@ class Datatable
         return $hookArr;
     }
     
+    /**
+     * 
+     * @param type $datas
+     * @param type $castedElement
+     * @param type $values
+     * @return string
+     */
     public static function setData($datas, $castedElement, $values)
     {
         $dataStr = '';

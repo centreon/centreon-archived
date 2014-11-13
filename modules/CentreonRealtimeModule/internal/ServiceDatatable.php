@@ -59,7 +59,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'service_id', 'name' => 's.description');
+    protected static $rowIdColumn = array('id' => 'service_id', 'name' => 'description');
 
     /**
      *
