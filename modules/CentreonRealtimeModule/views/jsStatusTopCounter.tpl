@@ -71,7 +71,7 @@ $(function() {
             /* Add status */
             if (poller.running == null || poller.running == 0) {
               $pollerStatus.addClass('mini danger').append(
-                $('<i></i>').addClass('fa fa-ban')
+                $('<i></i>').addClass('fa fa-power-off')
               );
             } else if (poller.disconnect == 1) {
               $pollerStatus.addClass('mini warning').append(
