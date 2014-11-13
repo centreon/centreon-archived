@@ -44,22 +44,20 @@
  * -------------------------------------------------------------
  */
 function smarty_function_environment($params, $template) {
-    $html = "<div id=\"environment-menu\" style=\"display: none;\">";
-    $html .= "<ul class=\"list-inline\">";
+    $html = '<div class="navbar-left">';
+    $html .= '<ul class="nav navbar-nav navbar-left">';
     $m = \Centreon\Internal\Di::getDefault()->get('menu');
-    $envmenu = $m->getMenu();
+    $envmenu = $m->getMenu(null, null, 'top');
     foreach ($envmenu as $menu) {
-        $html .= "<li class=\"envmenu\" ".($menu['bgcolor'] ? "style=\"background-color: {$menu['bgcolor']};\"" : ""). "data-menu=\"{$menu['menu_id']}\">";
-        $html .= "<div class=\"icon\">";
+        $html .= '<li>';
+        $html .= '<a href="#" class="envmenu" data-menu="' . $menu['menu_id'] . '">';
         if (isset($menu['icon_class']) && $menu['icon_class']) {
             $html .= "<i class=\"{$menu['icon_class']}\"></i>";
         } elseif (isset($menu['icon']) && $menu['icon']) {
             $html .= "<img src=\"{$menu['icon']}\" class=\"\">";
         }
-        $html .= "</div>";
-        $html .= "<div class=\"name\">";
-        $html .= $menu['name'];
-        $html .= "</div>";
+        $html .= " " . $menu['name'];
+        $html .= "</a>";
         $html .= "</li>";
     }
     $html .= "</ul>";

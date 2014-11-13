@@ -92,7 +92,7 @@ class Menu
         $db = Di::getDefault()->get('db_centreon');
         $this->tree = array();
         $stmt = $db->prepare(
-            "SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order
+            "SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order, menu_block
             FROM cfg_menus
             WHERE module_id IN (SELECT id FROM cfg_modules WHERE isactivated = '1' OR isactivated = '2')
             ORDER BY menu_order ASC, module_id ASC"
@@ -110,22 +110,35 @@ class Menu
      *
      * @param int $menuId
      * @param array $tree
+     * @param string $block The block where the menu is displayed
      * @return array
      */
-    public function getMenu($menuId = null, $tree = null)
+    public function getMenu($menuId = null, $tree = null, $menuBlock = null)
     {
+        $menu = array();
         if (is_null($menuId)) {
-            return $this->tree;
-        }
-        if (is_null($tree)) {
-            $tree = $this->tree;
-        }
-        foreach ($tree as $v) {
-            if ($v['menu_id'] == $menuId) {
-                return $v;
+            $menu = $this->tree;
+        } else {
+            if (is_null($tree)) {
+                $tree = $this->tree;
+            }
+            foreach ($tree as $v) {
+                if ($v['menu_id'] == $menuId) {
+                    $menu = $v;
+                    break;
+                }
             }
         }
-        return array();
+        if (is_null($menuBlock)) {
+            return $menu;
+        }
+        $menu2 = array();
+        foreach ($menu as $item) {
+            if ($item['menu_block'] == $menuBlock) {
+                $menu2[] = $item;
+            }
+        }
+        return $menu2;
     }
 
     /**

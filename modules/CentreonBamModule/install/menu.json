@@ -6,6 +6,7 @@
             {
                 "name": "BAM",
                 "short_name": "conf_business_activity",
+                "icon_class": "fa fa-suitcase",
                 "menus": [
                     {
                         "name": "Business Activity",

@@ -85,7 +85,7 @@
                     {if isset($formRedirect) && $formRedirect}
                         window.location="{url_for url=$formRedirectRoute}";
                     {else}
-                        alertMessage("The object has been successfully saved", "alert-success");
+                        alertMessage("{t}The object has been successfully saved{/t}", "alert-success", 3);
                     {/if}
                 } else {
                     alertMessage(data.error, "alert-danger");
@@ -95,10 +95,50 @@
         });
         
         $(function () {
-            $('#formHeader a:first').tab('show');
-            $("#formHeader").parent().after(
-                $('<div class="pull-right inline-block"></div>').append($("#advanced_mode_switcher"))
+            $("#formHeader").parent().parent().append(
+                $('<div class="col-xs-12 col-sm-2"></div>').append($("#advanced_mode_switcher"))
             );
+
+            {if $inheritanceUrl}
+            $.ajax({
+              url: "{$inheritanceUrl}",
+              dataType: 'json',
+              type: 'get',
+              success: function(data, textStatus, jqXHR) {
+                if (data.success) {
+                  $.each(data.values, function(key, value) {
+                     if (value != null) {
+                        $('#' + key + '_inheritance').text(value);
+                        $('#' + key).removeClass('mandatory-field');
+                        $('label[for="' + key + '"]').parent().find('span').remove();
+                     }
+                  });
+                }
+              }
+            });
+
+            /* Function for reload template when adding one */
+            $("{$tmplField}").on('change', function(e) {
+              $.ajax({
+                url: "{$inheritanceTmplUrl}",
+                dataType: 'json',
+                type: 'post',
+                data: { tmpl: e.val },
+                success: function(data, textStatus, jqXHR) {
+                  if (data.success) {
+                    $('span[id$="_inheritance"]').text('');
+                    $.each(data.values, function(key, value) {
+                       if (value != null) {
+                          $('#' + key + '_inheritance').text(value);
+                          $('#' + key).removeClass('mandatory-field');
+                          $('label[for="' + key + '"]').parent().find('span').remove();
+                       }
+                    });
+                  }
+                }
+              });
+            });
+            {/if}
         });
     </script>
 {/block}

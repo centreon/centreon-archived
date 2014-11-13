@@ -61,6 +61,10 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
     
     public static $isDisableable = true;
 
+    protected $inheritanceUrl = '/configuration/servicetemplate/[i:id]/inheritance';
+    protected $inheritanceTmplUrl = '/configuration/servicetemplate/inheritance';
+    protected $tmplField = '#service_template_model_stm_id';
+
     /**
      * List services
      *

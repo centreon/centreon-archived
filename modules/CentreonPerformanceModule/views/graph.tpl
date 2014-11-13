@@ -133,10 +133,9 @@ function saveView(viewId, graphs, viewName, viewPrivacy) {
     dataType: "json",
     success: function(data, textStatus, jqXHR) {
       if (data.success) {
-        alertMessage("Graph view saved", "alert-success");
-        setTimeout(alertClose, 5000);
+        alertMessage("{t}Graph view saved{/t}", "alert-success", 3);
       } else {
-        alertMessage("Error when trying to save graph view", "alert-critical");
+        alertMessage("{t}Error when trying to save graph view{/t}", "alert-critical");
       }
     }
   });
@@ -177,11 +176,10 @@ $(function() {
       method: "DELETE",
       success: function(data, textStatus, jqXHR) {
         if (data.success) {
-          alertMessage("The graph view is deleted", "alert-success");
-          setTimeout(alertClose, 5000);
+          alertMessage("{t}The graph view is deleted{/t}", "alert-success", 3);
           // @todo reset select2 field
         } else {
-          alertMessage("Error during delete graph view", "alert-critical");
+          alertMessage("{t}Error during delete graph view{/t}", "alert-critical");
         }
       }
     });

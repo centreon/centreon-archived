@@ -55,9 +55,11 @@ function smarty_function_hook($params, $template) {
         }
         $hookData = \Centreon\Internal\Hook::execute($params['name'], $core_params_to_hook);
         foreach ($hookData as $hook) {
-            if (isset($hook['template']) && isset($hook['variables'])) {
+            if (isset($hook['template'])) {
                 $tpl = $template->createTemplate($hook['template']);
-                $tpl->assign('variables', $hook['variables']);
+                if (isset($hook['variables'])) {
+                    $tpl->assign('variables', $hook['variables']);
+                }
                 if (isset($params['container'])) {
                     $contents .= str_replace("[hook]", $template->fetch($tpl), $params['container']);
                 }

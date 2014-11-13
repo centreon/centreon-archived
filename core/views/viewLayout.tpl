@@ -1,31 +1,30 @@
 {extends file="baseLayout.tpl"}
 {block name="full-content"}
 <aside id="left-panel">
-  <div class="environment">
-    <span>
-      <a href="#"><i class="fa fa-dashboard"></i></a>
-      <a href="#" class="env-menu">{t}Environment{/t} <i class="fa fa-chevron-right"></i></a>
-    </span>
-  </div>
   <nav>
     <ul class="nav" id="menu1">
     </ul>
   </nav>
   {hook name='displayLeftMenu' container='<nav><ul class="nav" id="hook-menu">[hook]</ul></nav>'}
+  <div class="toggle-button">
+    <a href="#"><i class="fa fa-angle-double-left"></i></a>
+  </div>
 </aside>
 <div class="content" id="main">
-<div class="breadcrumb-bar">
-  <ol class="breadcrumb">
-    {get_breadcrumb}
-  </ol>
-</div>
 <div class="flash alert fade in" id="flash-message" style="display: none;">
   <button type="button" class="close" aria-hidden="true">&times;</button>
 </div>
 {block name="content"}
 {/block}
 </div>
-{environment}
+<div class="bottombar">
+  <div class="text-center">
+    <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
+    <a href="https://github.com/centreon/centreon" data-toggle="tooltip" data-placement="top" title="{t}Source{/t}"><i class="fa fa-github"></i></a>
+    <a href="https://twitter.com/Centreon" data-toggle="tooltip" data-placement="top" title="{t}Twitter{/t}"><i class="fa fa-twitter"></i></a>
+    <a href="https://www.facebook.com/pages/Centreon/157748944280967" data-toggle="tooltip" data-placement="top" title="{t}Facebook{/t}"><i class="fa fa-facebook"></i></a>
+  </div>
+</div>
 {/block}
 
 {block name="javascript-bottom" append}
@@ -36,23 +35,21 @@ var jsUrl = {$jsUrl|json_encode};
 var jsUrl = {};
 {/if}
 $(document).ready(function() {
-    leftPanelHeight();
-    $('#main').on('resize', function() {
-        leftPanelHeight();
-    });
+    resizeContentLeftPanel();
+    $(window).off('resize');
     $(window).on('resize', function() {
-        leftPanelHeight();
+        resizeContentLeftPanel();
+    });
+    $('#main').on('resize', function() {
+        resizeContentLeftPanel();
     });
     var mdata = {get_environment_id};
     loadMenu('{url_for url="/menu/getmenu/"}', mdata.envid, mdata.subid, mdata.childid);
-    $('li.envmenu').on('click', function(e) {
+    $('a.envmenu').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         $("#hook-menu").html("");
         loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'), 0, 0);
-    });
-    $('.env-menu').on('click', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        displayEnvironmentMenu();
     });
     $('#flash-message').on('click', 'button.close', function() {
         alertClose();
@@ -61,23 +58,55 @@ $(document).ready(function() {
         e.preventDefault();
         e.stopPropagation();
         var target = e.currentTarget;
-        $(target).find('ul').collapse('toggle');
-        if ($(target).find('i.toggle').hasClass('fa-plus-square-o')) {
-            $(target).find('i.toggle').removeClass('fa-plus-square-o');
-            $(target).find('i.toggle').addClass('fa-minus-square-o');
+        /* Test if extand */
+        if ($(target).parents("#left-panel").hasClass('mini')) {
+            var $a = $(target).find('a');
+            var menuId = $a.data('menuid');
+            if ($a.hasClass('accordion-toggle')) {
+                var $submenu = $("#submenu_" + menuId);
+                if ($submenu.length == 0) {
+                    return;
+                }
+                /* Get pos */
+                var pos = $a.offset();
+                $submenu.css({
+                    top: pos.top,
+                    left: pos.left + $(target).width()
+                }).toggleClass("show");
+            }
+            $('body').one('click', function() {
+                $submenu.toggleClass("show");
+            });
         } else {
-            $(target).find('i.toggle').removeClass('fa-minus-square-o');
-            $(target).find('i.toggle').addClass('fa-plus-square-o');
+            $(target).find('ul').collapse('toggle');
+            $(target).find('i.toggle').toggleClass('fa-plus-square-o').toggleClass('fa-minus-square-o');
         }
-        
+
         var targetUrl = $(target).find('a').attr('href');
         if (targetUrl !== undefined) {
             document.location.href = targetUrl;
         }
     });
 
-    // init qTip
-    initTooltips();
+    $( "#left-panel .toggle-button a" ).on( "click", function( e ) {
+      e.preventDefault();
+      e.stopPropagation();
+      $( this ).find( "i.fa" ).toggleClass( "fa-angle-double-left" ).toggleClass( "fa-angle-double-right" );
+      /* Reduce submenu if go to mini */
+      if ( ! $( "aside" ).hasClass( "mini" )) {
+          var $listToggle = $( "#left-panel a.accordion-toggle" );
+          $listToggle.parent( "li" ).find( "ul" ).collapse( "hide" );
+          $listToggle.find( "i.toggle" ).removeClass( "fa-minus-square-o" ).addClass( "fa-plus-square-o" );
+      }
+      $( "aside" ).toggleClass( "mini" );
+      $( ".content" ).toggleClass( "mini" );
+      $( ".bottombar" ).toggleClass( "mini" );
+      $( "#menu1" ).find( "li span" ).toggle();
+      $( "#menu1" ).find( ".toggle" ).toggle();
+    });
+
+  /* Init tooltips */
+  $( ".bottombar a" ).tooltip();
 });
 </script>
 {/block}

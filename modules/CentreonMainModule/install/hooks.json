@@ -6,5 +6,9 @@
     {
         "name": "displayAppendAddTo",
         "description": "Append an action to the button Add To, in datatable view."
+    },
+    {
+      "name": "displayJsStatus",
+      "description": "Add an event to refresh status polling"
     }
 ]

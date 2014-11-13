@@ -23,7 +23,8 @@
   $.fn.centreonsearch.defaults = {
     minChars: 3,
     tags: {},
-    associateFields: {}
+    associateFields: {},
+    fnRunSearch: function() {}
   };
 
   $.CentreonSearch = function( $elem, options ) {
@@ -71,6 +72,15 @@
       $( e.currentTarget ).removeClass( "active" );
     });
     $( window ).resize( $.proxy( self.resize, self ) );
+
+    /* Load url data */
+    searchUri = getUriParametersByName("search");
+    if (searchUri !== null) {
+      $elem.val(searchUri);
+      if ( typeof self.options.fnRunSearch == 'function') {
+        self.options.fnRunSearch(self);
+      }
+    }
   };
 
   $.CentreonSearch.prototype.switchAction = function( e ) {
@@ -101,6 +111,9 @@
 
       case 13: // enter
         this.valid();
+        if ( typeof self.options.fnRunSearch == 'function') {
+          self.options.fnRunSearch(self);
+        }
         break;
 
       case 27: // escape

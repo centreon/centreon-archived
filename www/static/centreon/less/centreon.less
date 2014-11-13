@@ -1,4 +1,5 @@
 @import "variables.less";
+@import "centreon.variables.less";
 
 /* Variables for login panel */
 @login-panel-radius: 0;
@@ -6,6 +7,7 @@
 
 /* Left bar */
 @left-bar-width: 220px;
+@left-bar-width-mini: 50px;
 @left-cursor-width: 4px;
 
 
@@ -35,11 +37,22 @@ hr {
   margin-top: 20px;
 }
 
+.inheritance {
+    font-size: 80%;
+    color: @navbar-default-link-color;
+}
+
+.content-container {
+    .label-controller {
+        font-size: 80%;
+    }
+}
+
 /* Login panel */
 .login-wrap:before {
     position: absolute;
     content: '';
-    background: url('./img/login.jpg');
+    background: url('../img/login.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     -webkit-filter: blur(10px) grayscale(70%);
@@ -93,17 +106,47 @@ hr {
     }
 
     .btn-login {
-        background-color: #3fb11e;
-        border-color: #3d9623;
+        background-color: @topbar-bg-color;
+        border-color: darken(@topbar-bg-color, 10%);
         color: #fff;
     }
 }
 
 /* Topbar */
 .topbar {
-    margin-bottom: 0;
-    position: relative;
-    background-color: darken(@navbar-default-bg, 20%);
+   margin-bottom: 0;
+   position: relative;
+   background-color: @topbar-bg-color;
+   color: @topbar-color;
+   border-bottom: 1px @topbar-border-color solid;
+
+   a.navbar-brand {
+     color: @topbar-color;
+     
+     &:hover {
+       color: @topbar-color;
+       background-color: lighten(@topbar-bg-color, 5%);
+     }
+   }
+}
+
+.topbar .navbar-nav> li > a {
+  color: @topbar-color;
+  
+  &:hover,&:focus {
+    color: @topbar-color;
+    background-color:  lighten(@topbar-bg-color, 5%);
+  }
+}
+
+.topbar .navbar-nav> li.open > a {
+  color: @topbar-color;
+  background-color:  lighten(@topbar-bg-color, 5%);
+  
+  &:hover,&:focus {
+    color: @topbar-color;
+    background-color:  lighten(@topbar-bg-color, 5%);
+  }
 }
 
 /* Clock */
@@ -112,7 +155,7 @@ hr {
     padding-bottom: 15px;
     line-height: 20px;
     display: block;
-    color: @navbar-default-color;
+    color: @topbar-color;
     font-weight: bold;
 }
 
@@ -121,21 +164,20 @@ hr {
     padding-right: 0;
 }
 
-/* Buttons for theme */
-.btn-light {
-    color: #777;
-    background-color: #f8f8f8;
-    border-color: #e7e7e7;
-}
+.top-counter {
+    .label {
+        position: absolute;
+        font-size: 60%;
+        top: 10px;
 
-.btn-dark {
-    color: #999;
-    background-color: #222;
-    border-color: #080808;
-}
+        &.label-danger {
+            left: 2px;
+        }
 
-.btn-dark:hover {
-    color: #000;
+        &.label-warning {
+            right: 2px;
+        }
+    }
 }
 
 /* Side left bar */
@@ -145,6 +187,12 @@ aside {
     overflow: hidden;
     background-color: @navbar-default-bg;
     border-color: @navbar-default-border;
+
+    transition: width 1s;
+
+    &.mini {
+      width: @left-bar-width-mini;
+    }
 }
 
 #left-panel {
@@ -177,6 +225,26 @@ aside {
                 margin-left: 5px - @left-cursor-width;
             }
         }
+    }
+
+    .toggle-button {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0; 
+      border-top: 1px solid @navbar-default-border;
+      
+      a {
+        display: block;
+        padding: 10px 15px;
+        text-align: right;
+        color: @navbar-default-link-color;
+	
+        &:hover {
+          color: @navbar-default-link-hover-color;
+          background-color: darken(@navbar-default-bg, 5%);
+        }
+      }
     }
 }
 
@@ -216,6 +284,22 @@ aside {
     }
 }
 
+.dropdown-submenu {
+    position: absolute;
+    display: none;
+    z-index: 1000;
+
+    border: 1px solid @navbar-default-border;
+    background-color: @navbar-default-bg;
+
+    &.show {
+      display: block;
+    }
+
+    ul {
+    }
+}
+
 .submenu-active a {
      border-left: @left-cursor-width solid #428bca;
      font-weight: bold;
@@ -230,86 +314,18 @@ aside {
      background-color: #000;
 }*/
 
-/* Menu environment */
-.environment {
-    font-size: 16px;
-    height: 39px;
-    line-height: 39px;
-    background-color: darken(@navbar-default-bg, 10%);
-
-    span {
-        display: block;
-        height: 38px;
-        padding: 0 10px;
-        border-bottom: 1px solid @navbar-default-border;
-    }
-
-    .fa-dashboard {
-        font-size: 20px;
-    }
-
-    .fa-chevron-right {
-        font-size: 12px;
-    }
-
-    .env-menu {
-        padding-left: 10px;
-        width: 100%;
-    }
-}
-
-#environment-menu {
-    width: 100%;
-    height: 150px;
-    background-color: @navbar-default-bg;
-    background-color: fadeout(@navbar-default-bg, 20%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-
-    li {
-        color: #fff;
-        width: 110px;
-        height: 110px;
-        margin: 20px 10px;
-        border: 1px solid @gray-darker;
-        cursor: pointer;
-
-        &.active {
-            border: 1px solid @brand-primary;
-        }
-
-        &:first-child {
-            margin-left: 20px;
-        }
-
-        .icon {
-            height: 80px;
-            padding-left: 2px;
-            margin-top: 10px;
-            text-align: center;
-
-            i {
-                font-size: 76px;
-            }
-
-            .name {
-                font-size: 14px;
-                line-height: 18px;
-                height: 18px;
-                padding-left: 5px;
-            }
-        }
-    }
-}
-
 /* Content */
 .content {
     display: block;
     margin: 0;
     margin-left: @left-bar-width;
     padding: 0;
+
+    transition: margin-left 1s;
+
+    &.mini {
+      margin-left: @left-bar-width-mini;
+    }
 
     /* Alert box */
     .flash {
@@ -321,78 +337,24 @@ aside {
 
 /* Bottombar */
 .bottombar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin-bottom: 0;
-    width: 100%;
-    min-height: 20px;
-    height: 20px;
-    overflow: hidden;
-    transition: height 1s;
-    z-index: 10;
+  display: block;
+  background-color: @navbar-default-bg;
+  border-top: 1px solid @navbar-default-border;
+  margin-left: 220px;
 
-    .label-button {
-        height: 20px;
-        background-color: fade(@navbar-default-bg, 20%);
-        color: @text-color;
-        font-size: 12px;
-        line-height: 20px;
-        padding: 0 3px;
-        border-top: 1px solid @navbar-default-border;
-        border-left: 1px solid @navbar-default-border;
-        border-right: 1px solid @navbar-default-border;
-        border-top-left-radius: 2px;
-        border-top-right-radius: 2px;
+  &.mini {
+    margin-left: @left-bar-width-mini;
+  }
+
+  a {
+    padding: 10px 5px;
+    display: inline-block;
+    color: @navbar-default-link-color;
+    
+    &:hover {
+      color: @navbar-default-link-hover-color;
     }
-
-    .label-button-active {
-        background-color: @navbar-default-bg;
-    }
-
-    a {
-        color: @text-color;
-        font-size: 10px;
-    }
-
-    .footer-extended {
-        margin-top: 20px;
-        background-color: @navbar-default-bg;
-        border-top: 1px solid @navbar-default-border;
-
-        div:last-child {
-            padding-bottom: 5px;
-        }
-
-        ul {
-            width: auto;
-            min-width: 0;
-            display: table;
-
-            li + li:before {
-                color: @text-color;
-                font-size: 12px;
-                content: "-";
-                padding-right: 10px;
-            }
-        }
-
-        .fa {
-            font-size: 24px;
-        }
-
-        .fa-twitter-square {
-            color: #9ae4e8;
-        }
-
-        .fa-google-plus-square {
-            color: #d34836;
-        }
-        
-        .fa-facebook-square {
-            color: #3b5998;
-        }
-    }
+  }
 }
 
 .content .first-content {
@@ -414,14 +376,38 @@ aside {
 
 /* Datatable */
 .centreon_table {
-    margin: 0 20px;
+    margin: 0 10px;
     padding-top: 20px;
     padding-bottom: 60px; /* For floating pagination */
 
+    .DTTT {
+        margin-right: 5px;
+    }
+
+    .dataTables_length {
+        display: block;
+	width: 100%;
+    }
+
     table {
-        td {
+        thead>tr>th {
+            border-bottom-color: lighten(@topbar-bg-color, 20%);
+	    border-bottom-width: 2px;
+	}
+        tbody>tr>td {
+            padding: 4px 10px;
             font-size: 12px;
+	    white-space: nowrap;
         }
+
+        &.dataTable.no-footer {
+            border-bottom-color: lighten(@topbar-bg-color, 20%);
+	    border-bottom-width: 2px;
+        }
+    }
+
+    .dataTables_info {
+      font-size: 75%;
     }
 }
 
@@ -582,7 +568,7 @@ td.incident-extended-info {
 
 /* Configuration listing */
 .configuration-actions {
-  margin-left: 40px;
+ // margin-left: 40px;
   display: none;
 }
 
@@ -600,8 +586,18 @@ td.incident-extended-info {
 
 /* Search block */
 .search-body {
+   background-color: @panel-default-heading-bg;
+
   .row > div {
     margin-bottom: 10px;
+  }
+}
+
+.centreon-search-block {
+  margin: 10px;
+
+  .search-expand {
+    line-height: 36px;
   }
 }
 

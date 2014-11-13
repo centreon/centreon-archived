@@ -54,6 +54,12 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
 
     protected static $objectId = 'service_id';
     protected static $objectName = 'Service';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'service_id', 'name' => 's.description');
 
     /**
      *
@@ -65,7 +71,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             array('h.name', 'asc'),
             array('s.description', 'asc')
         ),
-        'searchCols' => array('h.enabled' => '1', "s.enabled" => '1'),
+        'searchCols' => array(),
         'stateSave' => true,
         'paging' => true,
     );
@@ -84,19 +90,13 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allService' class='allService' type='checkbox'>",
+            'title' => "Id",
             'name' => 'service_id',
             'data' => 'service_id',
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-            'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::description::'
-                )
-            ),
+            'visible' => false,
             'className' => 'datatable-align-center',
             'width' => '15px',
             'className' => 'cell_center'

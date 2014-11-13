@@ -35,10 +35,11 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Relation\Hosttemplate\Contact;
-use \CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
-use \CentreonConfiguration\Repository\HostRepository;
-use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonConfiguration\Models\Relation\Hosttemplate\Contact;
+use CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\HostTemplateRepository;
+use Centreon\Internal\Di;
 
 class HostTemplateController extends \CentreonConfiguration\Controllers\BasicController
 {
@@ -80,6 +81,10 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
 
 
     protected $repository = '\CentreonConfiguration\Repository\HostTemplateRepository';
+
+    protected $inheritanceUrl = '/configuration/hosttemplate/[i:id]/inheritance';
+    protected $inheritanceTmplUrl = '/configuration/hosttemplate/inheritance';
+    protected $tmplField = '#host_hosttemplates';
 
     /**
      *
@@ -215,6 +220,60 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
     {
         parent::editAction();
     }
+
+    /**
+     * Get inheritance value
+     *
+     * @method get
+     * @route /configuration/hosttemplate/[i:id]/inheritance
+     */
+    public function getInheritanceAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $requestParam = $this->getParams('named');
+
+        $inheritanceValues = HostTemplateRepository::getInheritanceValues($requestParam['id']);
+        array_walk($inheritanceValues, function(&$item, $key) {
+            if (false === is_null($item)) {
+                $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+            }
+        });
+        $router->response()->json(array(
+            'success' => true,
+            'values' => $inheritanceValues));
+    }
+
+    /**
+     * Get inheritance value from a list of template
+     *
+     * @method post
+     * @route /configuration/hosttemplate/inheritance
+     */
+    public function getInheritanceTmplAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams('post');
+
+        $tmpls = $params['tmpl'];
+        if (false === is_array($tmpls)) {
+            $tmpls = array($tmpls);
+        }
+        $values = array();
+        foreach ($tmpls as $tmpl) {
+            if ($tmpl != "") {
+                $inheritanceValues = HostTemplateRepository::getInheritanceValues($tmpl, true);
+                $values = array_merge($inheritanceValues, $values);
+            }
+        }
+        array_walk($values, function(&$item, $key) {
+            if (false === is_null($item)) {
+                $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+            }
+        });
+        $router->response()->json(array(
+            'success' => true,
+            'values' => $values));
+    }
     
     /**
      * Get list of contacts for a specific host template
@@ -225,7 +284,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function contactForHostTemplateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -322,7 +381,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function parentForHostTemplateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -359,7 +418,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function childForHostTemplateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -445,7 +504,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function iconForHostTemplaeAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');

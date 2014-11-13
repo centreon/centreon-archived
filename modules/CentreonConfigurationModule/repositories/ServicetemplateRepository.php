@@ -35,6 +35,9 @@
 
 namespace CentreonConfiguration\Repository;
 
+use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Servicetemplate;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -53,6 +56,45 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
      * @var string
      */
     public static $objectName = 'Servicetemplate';
+
+    /**
+     * List of information for inheritance
+     * @var array
+     */
+    protected static $inheritanceColumns = array(
+        'command_command_id',
+        'timeperiod_tp_id',
+        'timeperiod_tp_id2',
+        'command_command_id2',
+        'service_is_volatile',
+        'service_max_check_attempts',
+        'service_normal_check_interval',
+        'service_retry_check_interval',
+        'service_active_checks_enabled',
+        'service_passive_checks_enabled',
+        'initial_state',
+        'service_parallelize_check',
+        'service_obsess_over_service',
+        'service_check_freshness',
+        'service_freshness_threshold',
+        'service_event_handler_enabled',
+        'service_low_flap_threshold',
+        'service_high_flap_threshold',
+        'service_flap_detection_enabled',
+        'service_process_perf_data',
+        'service_retain_status_information',
+        'service_retain_nonstatus_information',
+        'service_notification_interval',
+        'service_notification_options',
+        'service_notifications_enabled',
+        'contact_additive_inheritance',
+        'cg_additive_inheritance',
+        'service_inherit_contacts_from_host',
+        'service_first_notification_delay',
+        'service_stalking_options',
+        'command_command_id_arg',
+        'command_command_id_arg2'
+    );
     
     /**
      * 
@@ -165,5 +207,80 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             return $tplArr;
         }
         return array('id' => $service_template_id);
+    }
+
+    /**
+     * Get values for templates
+     *
+     * @param integer $svcId The service id
+     * @param bool $isBase If the service template id is the base for get values
+     * @return array
+     */
+    public static function getInheritanceValues($svcId, $isBase=false)
+    {
+        $values = array();
+        $tmpl = Service::getParameters($svcId, array('service_template_model_stm_id'));
+        $tmpl = $tmpl['service_template_model_stm_id'];
+        if ($isBase) {
+            $tmpl = $svcId;
+        }
+
+        if (is_null($tmpl)) {
+            return $values;
+        }
+        /* Get template values */
+        $values = Servicetemplate::getParameters($tmpl, self::$inheritanceColumns);
+        $values = array_filter($values, function($value) {
+            return !is_null($value);
+        });
+        $tmplNext = Servicetemplate::getParameters($tmpl, array('service_template_model_stm_id'));
+        if (is_null($tmplNext['service_template_model_stm_id'])) {
+            return $values;
+        }
+        $values = array_merge(static::getInheritanceValues($tmplNext['service_template_model_stm_id'], true), $values);
+
+        return $values;
+    }
+
+    /**
+     * Get the full text of a numeric value
+     *
+     * @param string $name The key name
+     * @param int $value The numeric value
+     * @return string
+     */
+    public static function getTextValue($name, $value)
+    {
+        switch ($name) {
+            case 'command_command_id':
+            case 'command_command_id2':
+                $command = \CentreonConfiguration\Models\Command::get($value);
+                return $command['command_name'];
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+                $timeperiod = \CentreonConfiguration\Models\Timeperiod::get($value);
+                return $timeperiod['tp_name'];
+            case 'service_is_volatile':
+            case 'service_active_checks_enabled':
+            case 'service_passive_checks_enabled':
+            case 'service_parallelize_check':
+            case 'service_obsess_over_service':
+            case 'service_check_freshness':
+            case 'service_event_handler_enabled':
+            case 'service_flap_detection_enabled':
+            case 'service_process_perf_data':
+            case 'service_retain_status_information':
+            case 'service_retain_nonstatus_information':
+            case 'service_notifications_enabled':
+                if ($value == 0) {
+                    return _('No');
+                } else if ($value == 1) {
+                    return _('Yes');
+                } else {
+                    return _('Default');
+                }
+            default:
+                return $value;
+        }
     }
 }

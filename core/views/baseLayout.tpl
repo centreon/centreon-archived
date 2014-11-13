@@ -10,13 +10,33 @@
     {block name="style-head"}{/block}
 </head>
 <body>
+<!-- Wrapper -->
 <div id="wrapper">
   <nav class="navbar navbar-default navbar-static-top topbar" role="navigation">
     <div class="navbar-header">
       <a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}Centreon{/block}</a>
     </div>
+    {environment}
     <div class="navbar-right">
       <ul class="nav navbar-nav navbar-left">
+        <li class="top-counter top-counter-host">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-desktop"></i>
+          </a>
+          <span class="label label-danger hide"></span>
+          <span class="label label-warning hide"></span>
+          <ul class="dropdown-menu">
+          </ul>
+        </li>
+        <li class="top-counter top-counter-service">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-rss"></i>
+          </a>
+          <span class="label label-danger hide"></span>
+          <span class="label label-warning hide"></span>
+          <ul class="dropdown-menu">
+          </ul>
+        </li>
         <li class="infraInfo">
           <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
             <i class="fa fa-gears"></i>
@@ -37,6 +57,8 @@
             </div>
           </a>
           <ul class="dropdown-menu">
+            {environment_user}
+            <li class="divider"></li>
             <li><a href="#"><i class="fa fa-user"></i> {t}Profile{/t}</a></li>
             <li><a href="#"><i class="fa fa-cog"></i> {t}Settings{/t}</a></li>
             <li><a href="#"><i class="fa fa-envelope"></i> {t}Messages{/t}</a></li>
@@ -58,7 +80,7 @@
   <div id="main">
   </div>
   {/block}
-  <div class="bottombar">
+  <!-- <div class="bottombar">
       <div class="label-button pull-right">
         Centreon &copy; 2005-2014 <a href="#" id="footer-button"><i class="fa fa-chevron-circle-up"></i></a>
       </div>
@@ -84,13 +106,15 @@
             </ul>
         </div>
      </div>
-  </div>
+  </div> -->
 </div>
 {foreach from=$jsBottomFileList item='jsFile'}
 {$jsFile|js}
 {/foreach}
 <script>
 $(document).ready(function() {
+    var statusInterval, statusData,
+        eStatus = new $.Event('centreon.refresh_status');
     resizeContent();
     $('.btn-light').on('click', function() {
         switchTheme('light');
@@ -98,11 +122,7 @@ $(document).ready(function() {
     $('.btn-dark').on('click', function() {
         switchTheme('dark');
     });
-    $('#footer-button').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleFooter();
-    });
+
     $('#logout').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -119,8 +139,27 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         resizeContent();
     });
+
+    function loadStatusData() {
+      $.ajax({
+        url: "{url_for url='/status'}",
+        type: 'GET',
+        success: function(data, textStatus, jqXHR) {
+          statusData = data;
+          $(document).trigger(eStatus);
+        }
+      });
+    }
+
     /* Timer */
     topClock();
+
+    {hook name='displayJsStatus' container='[hook]'}
+
+    statusInterval = setInterval(function() {
+        loadStatusData();
+    }, 5000);
+    loadStatusData();
 });
 </script>
 {block name="javascript-bottom"}

@@ -4,9 +4,12 @@
       "short_name": "administration",
       "icon_class": "fa fa-folder-open",
       "bgcolor": "#FA5858",
+      "block": "user",
+      "order": 1,
       "menus" : [{
                 "name": "ACL",
                 "short_name": "acl",
+                "icon_class": "fa fa-filter",
                 "menus" : [
                     {
                         "name" : "ACL action",
@@ -33,6 +36,7 @@
             {
                 "name": "Extensions",
                 "short_name": "extensions",
+                "icon_class": "fa fa-cubes",
                 "menus" : [
                     {
                         "name" : "Modules",
@@ -44,11 +48,13 @@
             {
                 "name": "Domains",
                 "short_name": "domains",
+                "icon_class": "fa fa-building-o",
                 "route" : "/administration/domain"
             },
             {
                 "name": "Options",
                 "short_name": "options",
+                "icon_class": "fa fa-sliders",
                 "menus" : [
                     {
                         "name" : "Centreon",

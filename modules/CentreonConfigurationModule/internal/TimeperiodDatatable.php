@@ -55,13 +55,18 @@ class TimeperiodDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'tp_id', 'name' => 'tp_name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('tp_name', 'asc'),
-            array('tp_id', 'asc')
+            array('tp_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -73,19 +78,13 @@ class TimeperiodDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allTimeperiodid' class='allTimeperiodid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'tp_id',
             'data' => 'tp_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::tp_name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',

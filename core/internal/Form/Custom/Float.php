@@ -71,7 +71,7 @@ class Float extends Customobject
                         'type="text" '.
                         'name="'.$element['name'].'" '.
                         $value.
-                        'class="form-control '.$addClass.'" '.
+                        'class="form-control input-sm '.$addClass.'" '.
                         $placeholder.
                         '/><span>';
         

@@ -74,26 +74,26 @@ class File extends Customobject
                 <div class="row fileupload-buttonbar">
                     <div class="col-sm-3">
                         <!-- The fileinput-button span is used to style the file input field as button -->
-                        <span class="btn btn-success fileinput-button">
+                        <span class="btn btn-success btn-sm fileinput-button">
                             <i class="glyphicon glyphicon-plus"></i>
                             <span>Add files...</span>
                             <input type="file" name="centreonUploadedFile" multiple>
                         </span>
                     </div>
                     <div class="col-sm-3">
-                        <button type="button" class="btn btn-primary start">
+                        <button type="button" class="btn btn-primary btn-sm start">
                             <i class="glyphicon glyphicon-upload"></i>
                             <span>Start upload</span>
                         </button>
                     </div>
                     <div class="col-sm-3">
-                        <button type="reset" class="btn btn-warning cancel">
+                        <button type="reset" class="btn btn-warning btn-sm cancel">
                             <i class="glyphicon glyphicon-ban-circle"></i>
                             <span>Cancel upload</span>
                         </button>
                     </div>
                     <div class="col-sm-3">
-                        <button type="button" class="btn btn-danger delete">
+                        <button type="button" class="btn btn-danger btn-sm delete">
                             <i class="glyphicon glyphicon-trash"></i>
                             <span>Delete</span>
                         </button>
@@ -153,13 +153,13 @@ class File extends Customobject
                     </td>
                     <td>
                         {% if (!i && !o.options.autoUpload) { %}
-                            <button class="btn btn-primary start" disabled>
+                            <button class="btn btn-primary btn-sm start" disabled>
                                 <i class="glyphicon glyphicon-upload"></i>
                                 <span>Start</span>
                             </button>
                         {% } %}
                         {% if (!i) { %}
-                            <button class="btn btn-warning cancel">
+                            <button class="btn btn-warning btn-sm cancel">
                                 <i class="glyphicon glyphicon-ban-circle"></i>
                                 <span>Cancel</span>
                             </button>
@@ -212,7 +212,7 @@ class File extends Customobject
                     <td>
                         {% if (file.deleteUrl) { %}
                             <button 
-                                class="btn btn-danger delete" 
+                                class="btn btn-danger btn-sm delete" 
                                 data-type="{%=file.deleteType%}" 
                                 data-url="{%=file.deleteUrl%}"
                                 {% if (file.deleteWithCredentials) {
@@ -224,7 +224,7 @@ class File extends Customobject
                             </button>
                             <input type="checkbox" name="delete" value="1" class="toggle">
                         {% } else { %}
-                            <button class="btn btn-warning cancel">
+                            <button class="btn btn-warning btn-sm cancel">
                                 <i class="glyphicon glyphicon-ban-circle"></i>
                                 <span>Cancel</span>
                             </button>

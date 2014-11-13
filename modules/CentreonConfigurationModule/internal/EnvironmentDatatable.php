@@ -55,13 +55,18 @@ class EnvironmentDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'environment_id', 'name' => 'name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('name', 'asc'),
-            array('environment_id', 'asc')
+            array('name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -73,19 +78,13 @@ class EnvironmentDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allEnvironmentid' class='allEnvironmentid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'environment_id',
             'data' => 'environment_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',

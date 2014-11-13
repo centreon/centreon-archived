@@ -93,7 +93,7 @@ class Select extends Customobject
         }
 
         $myHtml = '<input '
-            . 'class="form-control '
+            . 'class="form-control input-sm '
             . $addClass
             . '" id="'.$element['name']
             . '" name="' . $element['name']

@@ -138,8 +138,14 @@ class Datatable
         'cast',
         'searchParam',
         'source',
-        'searchvalues'
+        'searchvalues',
+        'DT_RowData'
     );
+    
+    /**
+     * 
+     */
+    protected static $rowIdColumn = array();
 
     /**
      * Extra parameters for datatable
@@ -175,6 +181,17 @@ class Datatable
             static::$additionnalDatasource
         );
         
+        // Add RowId
+        if (count(static::$rowIdColumn) > 0) {
+            foreach ($datasFromDb['datas'] as &$datas) {
+                $datas['DT_RowData'] = array(
+                    'id' => $datas[static::$rowIdColumn['id']],
+                    'name' => $datas[static::$rowIdColumn['name']]
+                );
+                $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
+            }
+        }
+        
         static::addAdditionnalDatas($datasFromDb['datas']);
         static::processHooks($datasFromDb['datas']);
         $this->formatDatas($datasFromDb['datas']);
@@ -199,6 +216,7 @@ class Datatable
      */
     protected function prepareDatasForSending($datasToSend)
     {
+        // Cast result
         $datasToSend['datas'] = $this->castResult($datasToSend['datas']);
         
         // format the data before returning
@@ -425,6 +443,10 @@ class Datatable
      */
     public static function addUrl($field, $values, $cast)
     {
+        if (isset($values['DT_RowData'])) {
+            unset($values['DT_RowData']);
+        }
+        
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
@@ -432,21 +454,10 @@ class Datatable
             array_keys($values)
         );
         
-        $routeParams = array();
-        if (isset($cast['routeParams']) && is_array($cast['routeParams'])) {
-            $routeParams = str_replace($castedElement, $values, $cast['routeParams']);
-        }
-        
-        $finalRoute = str_replace(
-            "//",
-            "/",
-            \Centreon\Internal\Di::getDefault()
-                ->get('router')
-                ->getPathFor($cast['route'], $routeParams)
-        );
+        $finalRoute = self::parseUrl($cast, $castedElement, $values);
         
         $linkName =  str_replace($castedElement, $values, $cast['linkName']);
-        
+
         $class = '';
         if (isset($cast['styleClass'])) {
             $class .=$cast['styleClass'];
@@ -464,22 +475,29 @@ class Datatable
      */
     public static function addCheckbox($field, $values, $cast)
     {
-        $datasource = static::$datasource;
-        $uniqueField = $datasource::getUniqueLabelField();
-        $object = ucwords(str_replace('_', '', $field));
-        $input = '<input class="all'. static::$objectName .'Box" '
-            . 'id="'. static::$objectName .'::'. $field .'::" '
-            . 'name="'. static::$objectName .'[]" '
-            . 'type="checkbox" '
-            . 'value="::'. $field .'::" '
-            . 'data-name="' . htmlentities($values[$uniqueField]) . '"'
-            . '/>';
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
             },
             array_keys($values)
         );
+        $datasource = static::$datasource;
+        $uniqueField = $datasource::getUniqueLabelField();
+        $object = ucwords(str_replace('_', '', $field));
+        $className = 'all' . static::$objectName . 'Box';
+        if (isset($cast['styleClass'])) {
+            $className = $cast['styleClass'];
+        }
+        $input = '<input class="' . $className . '" '
+            . 'id="'. static::$objectName .'::'. $field .'::" '
+            . 'name="'. static::$objectName .'[]" '
+            . 'type="checkbox" '
+            . 'value="::'. $field .'::" '
+            . 'data-name="' . htmlentities($values[$uniqueField]) . '"';
+        if (isset($cast['data'])) {
+            $input .= self::setData($cast['data'], $castedElement, $values);
+        }
+        $input .= '>';
         
         return str_replace($castedElement, $values, $input);
     }
@@ -513,7 +531,33 @@ class Datatable
      */
     public static function addDate($field, $values, $cast)
     {
+
         return date($cast['date'], $values[$field]);
+    }
+
+    /**
+     * 
+     * @param type $field
+     * @param type $values
+     * @param type $cast
+     * @return type
+     */
+    public static function addTemplate($field, $values, $cast)
+    {
+        $castedElement = \array_map(
+            function ($n) {
+                return "::$n::";
+            },
+            array_keys($values)
+        );
+
+        $returnString = $cast['tmpl'];
+        if (isset($cast['route'])) {
+            $finalRoute = self::parseUrl($cast, $castedElement, $values);
+            $returnString = str_replace("::link::", $finalRoute, $returnString);
+        }
+        
+        return str_replace($castedElement, $values, $returnString);
     }
 
     /**
@@ -567,5 +611,43 @@ class Datatable
             $hookArr = static::$hook;
         }
         return $hookArr;
+    public static function setData($datas, $castedElement, $values)
+    {
+        $dataStr = '';
+        foreach ($datas as $key => $info) {
+            if (is_array($info)) {
+                if ($info['type'] == 'url') {
+                    $info = self::parseUrl($info, $castedElement, $values);
+                }
+            }
+            $dataStr .= ' data-' . $key . '="' . $info . '"';
+        }
+        return $dataStr;
+    }
+
+    /**
+     * Parse a array for generate the url
+     *
+     * @param array $params The url parameters
+     * @param array $castedElement The element converted
+     * @param array $values The values of row
+     * @return string
+     */
+    protected static function parseUrl($params, $castedElement, $values)
+    {
+        $routeParams = array();
+        if (isset($params['routeParams']) && is_array($params['routeParams'])) {
+            $routeParams = str_replace($castedElement, $values, $params['routeParams']);
+        }
+
+        $finalRoute = str_replace(
+            "//",
+            "/",
+            \Centreon\Internal\Di::getDefault()
+                ->get('router')
+                ->getPathFor($params['route'], $routeParams)
+        );
+
+        return $finalRoute;
     }
 }

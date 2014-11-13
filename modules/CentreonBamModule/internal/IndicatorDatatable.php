@@ -55,6 +55,12 @@ class IndicatorDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'kpièid', 'name' => 'kpi_type');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
@@ -68,19 +74,13 @@ class IndicatorDatatable extends \Centreon\Internal\Datatable
     
     public static $columns = array(
         array (
-            'title' => "<input id='allIndicatorid' class='allIndicatorid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'kpi_id',
             'data' => 'kpi_id',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::ba_group_name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Type',

@@ -65,7 +65,7 @@ class Selectimage extends Customobject
                 . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
                 . '<div class="col-sm-2">'
                     . '<button '
-                        . 'class="btn btn-default" '
+                        . 'class="btn btn-default btn-sm" '
                         . 'id="modalAdd_'.$element['name'].'" '
                         . 'type="button">'
                         . 'Add Files...'

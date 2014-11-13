@@ -1,7 +1,9 @@
 <script>
-    var oTable;
+    var oTable,
+        lastSelectedRow = null;
 
     $(document).ready(function() {
+    	document.onselectstart = function() { return false; };
 
         /* Remove the label next to pagination dropdown */
         var labelToRemove = 'label[for=datatable{$object}_length_select]';
@@ -24,7 +26,7 @@
             },
             {$datatableParameters.configuration}
             "bSortCellsTop": true,
-            'sDom': "R<'row'r<'clear'><'col-sm-4'l><'col-sm-1 pull-right'C><'col-sm-1 pull-right'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            'sDom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             "columns": [
                 {$datatableParameters.header.columnHeader}
             ],
@@ -40,10 +42,32 @@
             },
             "fnDrawCallback": function() {
                 for (var ct = 0; ct < selectedCb.length; ct++) {
-                    $("input[type=checkbox][id=" + selectedCb[ct] + "]").attr('checked', 'checked');
+                    $('table[id^="datatable"] tbody tr[id=' + selectedCb[ct] + ']').toggleClass('selected');
                 }
             }
         })
+        
+        $('#datatable{$object} tbody').on('click', 'tr', function (e){
+            if (!e.ctrlKey && !e.shiftKey) {
+                $(this).parent().find('tr').removeClass('selected');
+            	$(this).addClass('selected');
+            } else if (e.ctrlKey) {
+            	$(this).toggleClass('selected');
+            } else if (e.shiftKey) {
+                if (lastSelectedRow === null) {
+                    $(this).addClass('selected');
+                } else {
+                    var sort = [$(lastSelectedRow)[0].rowIndex, $(this)[0].rowIndex],
+                        rows = $(this).parent().find('tr'); 
+                    sort.sort(function(a, b) { return a - b; });
+                    for (var i = sort[0]; i <= sort[1]; i++) {
+                        $(rows[i]).addClass('selected');
+                    }
+                }
+            }
+            lastSelectedRow = this;
+            toggleSelectedAction();
+        });
     
         $.extend($.fn.dataTableExt.oStdClasses, {
             "sSortAsc": "header headerSortDown",
@@ -61,44 +85,26 @@
 
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
-        setInterval(function () { 
-            $( ".overlay" ).qtip( "destroy", true );
+        setInterval(function () {
+            $(".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
         }, 60000);
 
         function toggleSelectedAction() {
-            var countElem = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]').length;
-            var countChecked = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').length;
-            if (countElem === countChecked) {
-                $('table[id^="datatable"] thead input[id^="all"]').prop("checked", true);
-            } else {
-                $('table[id^="datatable"] thead input[id^="all"]').prop("checked", false);
-            }
+            var countElem = $('table[id^="datatable"] tbody tr').length;
+            var countChecked = $('table[id^="datatable"] tbody tr[class*="selected"]').length;
             if (countChecked > 0) {
                 $('#selected_option').show();
             } else {
                 $('#selected_option').hide();
             }
-
+            
             selectedCb = [];
-            $("input.allBox:checked").each(function() {
-                selectedCb.push($(this).attr('id'));
+            $("tr.selected").each(function() {
+                selectedCb.push($(this).data('id'));
             });
         }
         
-        $('table[id^="datatable"] thead input[id^="all"]').on('click', function(e) {
-            var $checkbox = $(e.currentTarget);
-            $checkbox.parents('table').find('tbody input[type="checkbox"][class^="all"]').each(function() {
-                $(this).prop("checked", $checkbox.is(':checked'));
-            });
-            toggleSelectedAction();
-        });
-
-        $('table[id^="datatable"] tbody').on('click', 'input[type="checkbox"][class^="all"]', function(e) {
-            toggleSelectedAction();
-        });
-
-
         /* Add modal */
         {if isset($objectAddUrl)}
         $('#modalAdd').on('click', function(e) {
@@ -136,7 +142,7 @@
             var $deleteBody = $('<div></div>').addClass('modal-body');
             $('<span></span>').text('{t}Are you sure to delete ?{/t}').appendTo($deleteBody);
             var $listElement = $('<ul></ul>').addClass('list-unstyled');
-            $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').each(function(k, v) {
+            $('table[id^="datatable"] tbody tr[class*="selected"]').each(function(k, v) {
                 $('<li></li>').html($(v).data('name')).appendTo($listElement);
             });
             $listElement.appendTo($deleteBody);
@@ -158,8 +164,8 @@
             $deleteFooter.appendTo('#modal .modal-content');
             $deleteBtn.on('click', function(e) {
                 var ids = [];
-                $.each($('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked'), function(k, v) {
-                    ids.push($(v).val());
+                $.each($('table[id^="datatable"] tbody tr[class*="selected"]'), function(k, v) {
+                    ids.push($(v).data('id'));
                 });
                 $.ajax({
                     url: '{url_for url=$objectDeleteUrl}',
@@ -173,7 +179,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -210,18 +216,19 @@
             var $duplicateBody = $('<div></div>').addClass('modal-body');
             $('<span></span>').text('{t}Choose number of duplicate{/t}').appendTo($duplicateBody);
             var $form = $('<form></form>').attr('role', 'form').addClass('form-horizontal');
-            $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').each(function(k, v) {
+            $('table[id^="datatable"] tbody tr[class*="selected"]').each(function(k, v) {
                 var $group = $('<div></div>').addClass('form-group');
                 $('<label></label>')
                     .addClass('col-sm-4')
                     .addClass('control-label')
-                    .attr('for', 'duplicate_' + $(v).val())
+                    .attr('for', 'duplicate_' + $(v).data('id'))
                     .html($(v).data('name'))
                     .appendTo($group);
+            console.log(v);
                 $('<div></div>').addClass('col-sm-1').append(
                     $('<input></input>')
-                        .attr('id', 'duplicate_' + $(v).val())
-                        .attr('name',  $(v).val())
+                        .attr('id', 'duplicate_' + $(v).val('id'))
+                        .attr('name',  $(v).data('id'))
                         .attr('type', 'text')
                         .val(1)
                         .addClass('form-control')
@@ -261,7 +268,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully duplicated{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully duplicated{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -342,8 +349,8 @@
                         mcValues[v['name']] = v['value'];
                     }
                 });
-                $.each($('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked'), function(k, v) {
-                    ids.push($(v).val());
+                $.each($('table[id^="datatable"] tbody tr[class*="selected"]'), function(k, v) {
+                    ids.push($(v).data('id'));
                 });
                 $.ajax({
                     url: '{url_for url=$objectMcUrl}',
@@ -358,7 +365,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The changes have been applied{/t}', 'alert-success');
+                            alertMessage('{t}The changes have been applied{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -420,7 +427,7 @@
             var $EnableBody = $('<div></div>').addClass('modal-body');
             $('<span></span>').text('{t}Are you sure to Enable ?{/t}').appendTo($EnableBody);
             var $listElement = $('<ul></ul>').addClass('list-unstyled');
-            $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').each(function(k, v) {
+            $('table[id^="datatable"] tbody tr[class*="selected"]').each(function(k, v) {
                 $('<li></li>').html($(v).data('name')).appendTo($listElement);
             });
             $listElement.appendTo($EnableBody);
@@ -442,8 +449,8 @@
             $EnableFooter.appendTo('#modal .modal-content');
             $EnableBtn.on('click', function(e) {
                 var ids = [];
-                $.each($('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked'), function(k, v) {
-                    ids.push($(v).val());
+                $.each($('table[id^="datatable"] tbody tr[class*="selected"]'), function(k, v) {
+                    ids.push($(v).data('id'));
                 });
                 $.ajax({
                     url: '{url_for url=$objectEnableUrl}',
@@ -457,7 +464,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully Enabled{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully Enabled{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -493,7 +500,7 @@
             var $DisableBody = $('<div></div>').addClass('modal-body');
             $('<span></span>').text('{t}Are you sure to Disable ?{/t}').appendTo($DisableBody);
             var $listElement = $('<ul></ul>').addClass('list-unstyled');
-            $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').each(function(k, v) {
+            $('table[id^="datatable"] tbody tr[class*="selected"]').each(function(k, v) {
                 $('<li></li>').html($(v).data('name')).appendTo($listElement);
             });
             $listElement.appendTo($DisableBody);
@@ -515,8 +522,8 @@
             $DisableFooter.appendTo('#modal .modal-content');
             $DisableBtn.on('click', function(e) {
                 var ids = [];
-                $.each($('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked'), function(k, v) {
-                    ids.push($(v).val());
+                $.each($('table[id^="datatable"] tbody tr[class*="selected"]'), function(k, v) {
+                    ids.push($(v).data('id'));
                 });
                 $.ajax({
                     url: '{url_for url=$objectDisableUrl}',
@@ -530,7 +537,7 @@
                         alertClose();
                         if (data.success) {
                             oTable.fnDraw();
-                            alertMessage('{t}The objects have been successfully Disabled{/t}', 'alert-success');
+                            alertMessage('{t}The objects have been successfully Disabled{/t}', 'alert-success', 3);
                         } else {
                             alertMessage(data.errorMessage, 'alert-danger');
                         }
@@ -582,6 +589,14 @@
 
         $("input[name='advsearch']").centreonsearch({
             minChars: 2,
+            fnRunSearch: function(obj) {
+              obj.fillAssociateFields();
+              $('.centreon-search').each(function(idx, element) {
+                  oTable.api().column($(element).data('column-index'))
+                      .search($(element).val());
+              });
+              oTable.api().draw();
+            },
             tags: {
             {foreach $datatableParameters.header.columnSearch as $colName=>$colSearch}
                 {if $colSearch['type'] == 'select'}
@@ -634,10 +649,10 @@
         $( "#saveView" ).on( "click", function( e ) {
           alertClose();
           if ( $( "input[name='filters']" ).val().trim() === "" ) {
-            alertMessage( "The filters name must be set.", "alert-danger" );
+            alertMessage( "{t}The filters name must be set.{/t}", "alert-danger" );
             return;
           } else if ( $( "input[name='advsearch']" ).val().trim() === "" ) {
-            alertMessage( "The search must be set.", "alert-danger" );
+            alertMessage( "{t}The search must be set.{/t}", "alert-danger" );
             return;
           }
           $.ajax({
@@ -651,7 +666,7 @@
             },
             success: function( data, textStatus, jqXHR ) {
               if ( data.success ) {
-                alertMessage( "Your search is saved.", "alert-success" );
+                alertMessage( "{t}Your search is saved.{/t}", "alert-success", 3 );
               } else {
                 alertMessage( data.error, "alert-danger" );
               }
@@ -663,7 +678,7 @@
         $( "#deleteView" ).on( "click", function( e ) {
           alertClose();
           if ( $( "input[name='filters']" ).val().trim() === "" ) {
-            alertMessage( "The filters name must be set.", "alert-danger" );
+            alertMessage( "{t}The filters name must be set.{/t}", "alert-danger" );
             return;
           }
           $.ajax({
@@ -676,7 +691,7 @@
             },
             success: function( data, textStatus, jqXHR ) {
               if ( data.success ) {
-                alertMessage( "Your search is deleted.", "alert-success" );
+                alertMessage( "{t}Your search is deleted.{/t}", "alert-success", 3 );
               } else {
                 alertMessage( data.error, "alert-danger" );
               }

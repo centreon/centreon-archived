@@ -12,7 +12,7 @@ $.extend( true, $.fn.dataTable.defaults, {
 
 /* Default class modification */
 $.extend( $.fn.dataTableExt.oStdClasses, {
-	"sWrapper": "dataTables_wrapper form-inline",
+	"sWrapper": "dataTables_wrapper centreon_table form-inline",
 	"sFilterInput": "form-control input-sm",
 	"sLengthSelect": "form-control input-sm"
 } );

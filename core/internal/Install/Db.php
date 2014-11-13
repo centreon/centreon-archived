@@ -165,7 +165,11 @@ class Db
         
         // Copy to destination
         if (!file_exists($currentFolder)) {
-            mkdir($currentFolder, 0700, true);
+            mkdir($currentFolder, 0775, true);
+            if (posix_getuid() == 0) {
+                chown($currentFolder, 'centreon');
+                chgrp($currentFolder, 'centreon');
+            }
         }
         
         $fileList = glob($targetFolder . '/*.xml');
@@ -173,6 +177,11 @@ class Db
         for ($i=0; $i<$nbOfFiles; $i++) {
             $targetFile = $currentFolder . basename($fileList[$i]);
             copy($fileList[$i], $targetFile);
+            if (posix_getuid() == 0) {
+                chmod($targetFile, 0664);
+                chown($targetFile, 'centreon');
+                chgrp($targetFile, 'centreon');
+            }
             unlink($fileList[$i]);
         }
         
@@ -238,13 +247,22 @@ class Db
         
         // Copy to destination
         if (!file_exists($targetFolder)) {
-            mkdir($targetFolder, 0700, true);
+            mkdir($targetFolder, 0775, true);
+            if (posix_getuid() == 0) {
+                chown($targetFolder, 'centreon');
+                chgrp($targetFolder, 'centreon');
+            }
         }
         
         $nbOfFiles = count($fileList);
         for ($i=0; $i<$nbOfFiles; $i++) {
             $targetFile = $targetFolder . basename($fileList[$i]);
             copy($fileList[$i], $targetFile);
+            if (posix_getuid() == 0) {
+                chmod($targetFile, 0664);
+                chown($targetFile, 'centreon');
+                chgrp($targetFile, 'centreon');
+            }
         }
         
         // send back the computed db

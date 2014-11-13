@@ -71,14 +71,14 @@ class Duration extends Customobject
             . 'type="number" '
             . 'name="'.$element['name'].'" '
             . $value
-            . 'class="form-control '.$addClass.'" '
+            . 'class="form-control input-sm '.$addClass.'" '
             . $placeholder
             . '/>';
             
         $durationScaleSelector = '<button '
             . 'id="'.$element['id'].'_scale_selector" '
             . 'type="button" '
-            . 'class="btn btn-default dropdown-toggle" '
+            . 'class="btn btn-default btn-sm dropdown-toggle" '
             . 'data-toggle="dropdown">'
             . 'Seconds '
             . '<span class="caret"></span></button>'

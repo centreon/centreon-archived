@@ -48,6 +48,45 @@ use \Centreon\Internal\Utils\YesNoDefault;
 class HostRepository extends \CentreonConfiguration\Repository\Repository
 {
     /**
+     * List of column for inheritance
+     * @var array
+     */
+    protected static $inheritanceColumns = array(
+        'command_command_id',
+        'command_command_id_arg1',
+        'timeperiod_tp_id',
+        'timeperiod_tp_id2',
+        'command_command_id2',
+        'command_command_id_arg2',
+        'host_max_check_attempts',
+        'host_check_interval',
+        'host_retry_check_interval',
+        'host_active_checks_enabled',
+        'host_passive_checks_enabled',
+        'host_checks_enabled',
+        'initial_state',
+        'host_obsess_over_host',
+        'host_check_freshness',
+        'host_event_handler_enabled',
+        'host_low_flap_threshold',
+        'host_high_flap_threshold',
+        'host_flap_detection_enabled',
+        'flap_detection_options',
+        'host_process_perf_data',
+        'host_retain_status_information',
+        'host_retain_nonstatus_information',
+        'host_notification_interval',
+        'host_notification_options',
+        'host_notifications_enabled',
+        'contact_additive_inheritance',
+        'cg_additive_inheritance',
+        'host_first_notification_delay',
+        'host_stalking_options',
+        'host_snmp_community',
+        'host_snmp_version'
+    );
+
+    /**
      * 
      * @param string $host_name
      * @return string
@@ -263,5 +302,30 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
             'value' => ''
         );
         return array($checkdata, $notifdata);
+    }
+
+    /**
+     * Get the value from template
+     *
+     * @param int $hostId The host template Id
+     * @return array
+     */
+    public static function getInheritanceValues($hostId)
+    {
+        $values = array();
+        $templates = static::getRelations(
+            '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
+            $hostId
+        );
+        foreach ($templates as $template) {
+            $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
+            $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
+            $tmplValues = array_filter($tmplValues, function($value) {
+                return !is_null($value);
+            });
+            $tmplValues = array_merge($inheritanceValues, $tmplValues);
+            $values = array_merge($tmplValues, $values);
+        }
+        return $values;
     }
 }

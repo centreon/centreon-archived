@@ -61,6 +61,11 @@ class ExtensionsController extends Controller
     public function widgetAction()
     {
         $this->init();
+
+        $this->tpl->addJs('bootstrap-switch.min.js')
+            ->addJs('centreon.search.js')
+            ->addJs('bootstrap3-typeahead.js');
+        $this->tpl->addCss('bootstrap-switch.min.css');
         
         /* Display variable */
         $this->tpl->assign('objectName', self::$objectDisplayName);

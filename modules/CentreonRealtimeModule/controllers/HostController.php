@@ -93,7 +93,14 @@ class HostController extends \Centreon\Internal\Controller
         $this->tpl->assign('objectName', 'Host');
         $this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/realtime/host/list');
-
+        
+        $actions = array();
+        $actions[] = array(
+            'group' => _('Hosts'),
+            'actions' => HostdetailRepository::getMonitoringActions()
+        );
+        $this->tpl->assign('actions', $actions);
+        
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/administration/tag/add'),

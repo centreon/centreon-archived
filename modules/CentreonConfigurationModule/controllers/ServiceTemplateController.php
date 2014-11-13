@@ -36,6 +36,8 @@
 namespace CentreonConfiguration\Controllers;
 
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\ServicetemplateRepository;
 
 /**
  * 
@@ -58,6 +60,11 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
         'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate',
         'service_icon' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Icon'
     );
+
+
+    protected $inheritanceUrl = '/configuration/servicetemplate/[i:id]/inheritance';
+    protected $inheritanceTmplUrl = '/configuration/servicetemplate/inheritance';
+    protected $tmplField = '#service_template_model_stm_id';
     
     /**
      *
@@ -465,5 +472,56 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
         $params = $this->getParams();
         $this->tpl->assign('id', $params['id']);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
+    }
+
+    /**
+     * Get inheritance values
+     *
+     * @method get
+     * @route /configuration/servicetemplate/[i:id]/inheritance
+     */
+    public function getInheritanceAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $requestParam = $this->getParams('named');
+
+        $inheritanceValues = ServicetemplateRepository::getInheritanceValues($requestParam['id']);
+        array_walk($inheritanceValues, function(&$item, $key) {
+            if (false === is_null($item)) {
+                $item = \CentreonConfiguration\Repository\ServicetemplateRepository::getTextValue($key, $item);
+            }
+        });
+        $router->response()->json(array(
+            'success' => true,
+            'values' => $inheritanceValues));
+    }
+
+    /**
+     * Get inheritance value from a list of template
+     *
+     * @method post
+     * @route /configuration/servicetemplate/inheritance
+     */
+    public function getInheritanceTmplAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $params = $this->getParams('post');
+
+        $tmpl = $params['tmpl'];
+        if ($tmpl == ""){
+            $router->response()->json(array(
+                'success' => true,
+                'values' => array()));
+        } else {
+            $values = ServicetemplateRepository::getInheritanceValues($tmpl, true);
+            array_walk($values, function(&$item, $key) {
+                if (false === is_null($item)) {
+                    $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+                }
+            });
+            $router->response()->json(array(
+                'success' => true,
+                'values' => $values));
+        }
     }
 }

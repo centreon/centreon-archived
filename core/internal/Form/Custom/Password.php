@@ -67,7 +67,7 @@ class Password extends Customobject
                         'type="password" '.
                         'name="'.$element['name'].'" '.
                         $value.
-                        'class="form-control" '.
+                        'class="form-control input-sm" '.
                         $placeholder.
                         '/>';
         

@@ -34,6 +34,8 @@
  */
 namespace CentreonMain\Controllers;
 
+use Centreon\Internal\Di;
+
 /**
  * Home controller
  * @authors Sylvestre Ho
@@ -53,5 +55,24 @@ class MainController extends \Centreon\Internal\Controller
     public function homeAction()
     {
         $this->display('home.tpl');
+    }
+
+    /**
+     * Route for getting refresh information
+     *
+     * @method GET
+     * @route /status
+     */
+    public function statusAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $events = Di::getDefault()->get('events');
+        $status = array();
+
+        $statusEvent = new \CentreonMain\Events\Status($status);
+
+        $events->emit('centreon-main.status', array($statusEvent));
+
+        $router->response()->json($status);
     }
 }

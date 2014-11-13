@@ -55,13 +55,18 @@ class DomainDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'domain_id', 'name' => 'name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('name', 'asc'),
-            array('domain_id', 'asc')
+            array('name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -73,20 +78,14 @@ class DomainDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allDomainid' class='allDomainid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'domain_id',
             'data' => 'domain_id',
             'orderable' => true,
             'searchable' => false,
             'searchLabel' => 'domain',
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',

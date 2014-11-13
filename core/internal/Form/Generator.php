@@ -270,6 +270,8 @@ class Generator
 
         
         $htmlRendering = '<div class="row">';
+
+        $htmlRendering = '<div class="col-sm-offset-1 col-sm-10">';
         
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
@@ -289,11 +291,18 @@ class Generator
         $formRendering = '';
 
         $tabRendering = '<div class="form-tabs-header">'
-            . '<div class="inline-block">'
+            . '<div class="row">'
+            . '<div class="col-xs-12 col-sm-10">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
+        $first = true;
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
-            $tabRendering .= '<li>'
+            $tabRendering .= '<li';
+            if ($first) {
+                $first = false;
+                $tabRendering .= ' class="active"';
+            }
+            $tabRendering .= '>'
                 . '<a '
                 . 'href="#'.str_replace(' ', '', $sectionLabel).'" '
                 . 'data-toggle="tab">'
@@ -301,17 +310,35 @@ class Generator
                 .'</a>'
                 . '</li>';
         }
-        $formRendering .= '</ul></div></div>';
+        $formRendering .= '</ul></div>'
+            . '<div class="clearfix visible-xs-block"></div>'
+            . '</div></div>';
 
         $formRendering .= '<div class="tab-content">';
+        $first = true;
         foreach ($this->formComponents as $sectionLabel => $sectionComponents) {
-            $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
+            $formRendering .= '<div class="tab-pane';
+            if ($first) {
+                $first = false;
+                $formRendering .= ' active';
+            }
+            $formRendering .= '" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel => $blockComponents) {
                 $formRendering .= '<h4 class="page-header" style="padding-top:0px;">'.$blockLabel.'</h4>';
                 $formRendering .= '<div class="panel-body">';
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
+                        $formRendering .= '<div class="col-xs-12 col-sm-8">';
                         $formRendering .= $formElements[$component['name']]['html'];
+                        $formRendering .= '</div>'
+                            . '<div class="clearfix visible-xs-block"></div>'
+                            . '<div class="col-xs-12 col-sm-4';
+                        if ($component['advanced'] == '1') {
+                            $formRendering .= ' advanced';
+                        }
+                        $formRendering .= '">'
+                            . '<span class="inheritance" id="' . $component['name'] . '_inheritance"></span>'
+                            . '</div>';
                     }
                 }
                 $formRendering .= '</div>';
@@ -323,7 +350,7 @@ class Generator
         $formRendering .= '<div>'.$formElements['save_form']['html'].'</div>';
         
         $formRendering .= $formElements['hidden'];
-        $htmlRendering .= $tabRendering.$formRendering.'</form></div>';
+        $htmlRendering .= $tabRendering.$formRendering.'</form></div></div>';
         
         return $htmlRendering;
     }

@@ -56,6 +56,8 @@ abstract class FormController extends \Centreon\Internal\Controller
 
     protected $repository = null;
 
+    protected $inheritanceUrl = null;
+
     public function __construct($request)
     {
         parent::__construct($request);
@@ -204,8 +206,16 @@ abstract class FormController extends \Centreon\Internal\Controller
      */
     public function editAction($additionnalParamsForSmarty = array())
     {
+        $router = Di::getDefault()->get('router');
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
+        $inheritanceUrl = null;
+        if (false === is_null($this->inheritanceUrl)) {
+            $inheritanceUrl = $router->getPathFor(
+                $this->inheritanceUrl,
+                array('id' => $requestParam['id'])
+            );
+        }
         
         $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
@@ -235,6 +245,14 @@ abstract class FormController extends \Centreon\Internal\Controller
             $this->tpl->assign($smartyVarName, $smartyVarValue);
         }
         
+        $this->tpl->assign('inheritanceUrl', $inheritanceUrl);
+        $this->tpl->assign(
+            'inheritanceTmplUrl',
+            $router->getPathFor(
+                $this->inheritanceTmplUrl
+            )
+        );
+        $this->tpl->assign('tmplField', $this->tmplField);
         $this->tpl->display('file:[CentreonConfigurationModule]edit.tpl');
     }
     

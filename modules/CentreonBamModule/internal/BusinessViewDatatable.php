@@ -55,13 +55,18 @@ class BusinessViewDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'id_ba_group', 'name' => 'ba_group_name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
-            array('ba_group_name', 'asc'),
-            array('id_ba_group', 'asc')
+            array('ba_group_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -69,19 +74,13 @@ class BusinessViewDatatable extends \Centreon\Internal\Datatable
     
     public static $columns = array(
         array (
-            'title' => "<input id='allBusinessViewid' class='allBusinessViewid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'id_ba_group',
             'data' => 'id_ba_group',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::ba_group_name::'
-                )
-            )
+            'visible' => false
         ),
         array (
             'title' => 'Name',

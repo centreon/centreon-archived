@@ -89,6 +89,11 @@ class ExtensionsController extends \Centreon\Internal\Controller
     public function moduleAction()
     {
         $this->init();
+
+        $this->tpl->addJs('bootstrap-switch.min.js')
+            ->addJs('centreon.search.js')
+            ->addJs('bootstrap3-typeahead.js');
+        $this->tpl->addCss('bootstrap-switch.min.css');
         
         /* Display variable */
         $this->tpl->assign('objectName', self::$objectDisplayName);
@@ -200,9 +205,13 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \Centreon\Models\Module::update($params['id'], array('isactivated' => '1'));
-        $backUrl = $router->getPathFor('/administration/extensions/module');
-        $router->response()->redirect($backUrl, 200);
+        try {
+            \Centreon\Models\Module::update($params['id'], array('isactivated' => '1'));
+        } catch (\Exception $e) {
+            $router->response()->json(array('success' => false));
+            return;
+        }
+        $router->response()->json(array('success' => true));
     }
     
     /**
@@ -215,9 +224,13 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $router = $this->di->get('router');
         
         $params = $this->getParams();
-        \Centreon\Models\Module::update($params['id'], array('isactivated' => '0'));
-        $backUrl = $router->getPathFor('/administration/extensions/module');
-        $router->response()->redirect($backUrl, 200);
+        try {
+            \Centreon\Models\Module::update($params['id'], array('isactivated' => '0'));
+        } catch (\Exception $e) {
+            $router->response()->json(array('success' => false));
+            return;
+        }
+        $router->response()->json(array('success' => true));
     }
     
     /**

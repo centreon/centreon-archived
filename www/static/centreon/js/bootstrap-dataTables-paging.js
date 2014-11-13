@@ -21,7 +21,7 @@ $.extend(true, $.fn.dataTable.defaults, {
       thisLength.addClass('form-group');
       thisLengthLabel.addClass('control-label col-xs-12 col-sm-8 col-md-10').attr('for', currentId + '_length_select').css('text-align', 'left').css('padding-left', '20%');
       thisLengthSelect.addClass('form-control input-sm').attr('id', currentId + '_length_select');
-      thisLengthSelect.prependTo(thisLength).wrap('<div class="col-xs-12 col-sm-4 col-md-2" />');
+      thisLengthSelect.prependTo(thisLength).wrap('<div class="col-xs-12 col-sm-4 col-md-1" />');
       // Re-arrange the search input for a form-horizontal layout
       thisFilter.addClass('form-group');
       thisFilterLabel.addClass('control-label col-xs-4 col-sm-3 col-md-3').attr('for', currentId + '_filter_input');

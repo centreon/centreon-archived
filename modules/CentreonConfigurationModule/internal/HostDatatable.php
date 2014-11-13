@@ -47,8 +47,16 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb,
  */
 class HostDatatable extends \Centreon\Internal\Datatable
 {
+    /**
+     *
+     * @var type 
+     */
     protected static $objectId = 'host_id';
 
+    /**
+     *
+     * @var type 
+     */
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
@@ -56,6 +64,12 @@ class HostDatatable extends \Centreon\Internal\Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonConfiguration\Models\Host';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'host_name');
 
     /**
      *
@@ -64,8 +78,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
-            array('host_name', 'asc'),
-            array('host_id', 'asc')
+            array('host_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -77,20 +90,14 @@ class HostDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allHostid' class='allHostid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'host_id',
             'data' => 'host_id',
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '20px',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::host_name::'
-                )
-            ),
             'className' => "cell_center"
         ),
         array (
