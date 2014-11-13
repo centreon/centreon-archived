@@ -55,13 +55,18 @@ class HostCategoryDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'hc_id', 'name' => 'hc_name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('hc_name', 'asc'),
-            array('hc_id', 'asc')
+            array('hc_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -79,14 +84,8 @@ class HostCategoryDatatable extends \Centreon\Internal\Datatable
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '5%',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::hc_name::'
-                )
-            )
+            'visible' => false,
+            'width' => '5%'
         ),
         array (
             'title' => 'Name',

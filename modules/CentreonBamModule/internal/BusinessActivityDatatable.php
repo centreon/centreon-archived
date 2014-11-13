@@ -45,7 +45,16 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  */
 class BusinessActivityDatatable extends \Centreon\Internal\Datatable
 {
+    /**
+     *
+     * @var type 
+     */
     protected static $objectId = 'ba_id';
+    
+    /**
+     *
+     * @var type 
+     */
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
@@ -56,13 +65,18 @@ class BusinessActivityDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'ba_id', 'name' => 'name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
-            array('name', 'asc'),
-            array('ba_id', 'asc')
+            array('name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -70,19 +84,13 @@ class BusinessActivityDatatable extends \Centreon\Internal\Datatable
     
     public static $columns = array(
         array (
-            'title' => "<input id='allBusinessActivityid' class='allBusinessActivityid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'ba_id',
             'data' => 'ba_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',

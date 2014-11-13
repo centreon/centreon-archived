@@ -55,13 +55,18 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'cg_id', 'name' => 'cg_name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('cg_name', 'asc'),
-            array('cg_id', 'asc')
+            array('cg_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -73,19 +78,13 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allUserGroupid' class='allUserGroupid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'cg_id',
             'data' => 'cg_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::cg_name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',

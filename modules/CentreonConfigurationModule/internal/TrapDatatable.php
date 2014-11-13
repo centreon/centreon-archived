@@ -55,13 +55,18 @@ class TrapDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'traps_id', 'name' => 'traps_name');
+    
+    /**
+     *
      * @var array 
      */
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('traps_name', 'asc'),
-            array('traps_id', 'asc')
+            array('traps_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -73,19 +78,13 @@ class TrapDatatable extends \Centreon\Internal\Datatable
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allTrapid' class='allTrapid' type='checkbox'>",
+            'title' => "Id",
             'name' => 'traps_id',
             'data' => 'traps_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::traps_name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',

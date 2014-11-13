@@ -68,23 +68,23 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'service_id', 'name' => 'service_description');
+    
+    /**
+     *
      * @var array 
      */
     public static $columns = array(
         array (
-            'title' => "<input id='allService' class='allService' type='checkbox'>",
+            'title' => "Id",
             'name' => 'service_id',
             'data' => 'service_id',
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-            'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::service_description::'
-                )
-            ),
+            'visible' => false,
             'className' => 'cell_center',
             'width' => "20px"
         ),
