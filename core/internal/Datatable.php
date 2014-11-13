@@ -611,6 +611,8 @@ class Datatable
             $hookArr = static::$hook;
         }
         return $hookArr;
+    }
+    
     public static function setData($datas, $castedElement, $values)
     {
         $dataStr = '';
