@@ -95,7 +95,7 @@ class HostdetailRepository extends ObjectdetailRepository
         if (count($hostIds)) {
             $list = implode(',', $hostIds);
             $sql = "SELECT h.name
-                FROM hosts h 
+                FROM rt_hosts h 
                 WHERE h.host_id IN ($list)";
             self::doCommand($cmdId, $sql, $additionalParams);
         }

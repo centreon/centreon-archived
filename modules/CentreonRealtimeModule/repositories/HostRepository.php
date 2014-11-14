@@ -261,16 +261,10 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
                 $status = "label-success";
                 break;
             case 1:
-                $status = "label-warning";
-                break;
-            case 2:
                 $status = "label-danger";
                 break;
-            case 3:
+            case 2:
                 $status = "label-default";
-                break;
-            case 4:
-                $status = "label-info";
                 break;
             default:
                 $status = "";
