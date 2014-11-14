@@ -41,10 +41,10 @@
 
 			$('#console-action').change(function() {
 				var selectedItems = [];
-
-				$('.all{$objectName}Box:checked').each(function(index) {
-					selectedItems[index] = $(this).val();
-				});
+                
+                $("tr.selected").each(function(index) {
+                    selectedItems[index] = $(this).data('id');
+                });
 
 				$.ajax({
 					type: 'POST',
