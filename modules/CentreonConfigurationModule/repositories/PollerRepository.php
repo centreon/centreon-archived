@@ -81,15 +81,15 @@ class PollerRepository extends Repository
                 action_log_date > ? AND
                 ((object_type = 'host' AND
                 object_id IN (
-                    SELECT host_host_id
-                        FROM cfg_engine_hosts_relations
-                        WHERE engine_server_id = ?
+                    SELECT host_id
+                        FROM cfg_pollers_hosts_relations
+                        WHERE poller_id = ?
                 )) OR
                     (object_type = 'service') AND
                         object_id IN (
                     SELECT service_service_id
-                    FROM cfg_engine_hosts_relations nhr, cfg_hosts_services_relations hsr
-                    WHERE engine_server_id = ? AND hsr.host_host_id = nhr.host_host_id
+                    FROM cfg_pollers_hosts_relations nhr, cfg_hosts_services_relations hsr
+                    WHERE nhr.poller_id = ? AND hsr.host_host_id = nhr.host_id
         ))";
         $stmt = $db->prepare($request);
         $stmt->execute(array($lastRestart, $pollerId, $pollerId));

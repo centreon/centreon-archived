@@ -84,29 +84,29 @@ class ConfigCorrelationRepository
         $xml->startElement('conf');
 
         /* Declare Host */
-        $query = "SELECT host_id, engine_server_id "
-            . "FROM cfg_hosts, cfg_engine_hosts_relations "
-            . "WHERE host_host_id = host_id ORDER BY host_id";
+        $query = "SELECT h.host_id, p.poller_id "
+            . "FROM cfg_hosts h, cfg_pollers_hosts_relations p "
+            . "WHERE h.host_id = p.host_id ORDER BY h.host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('host');
             $xml->writeAttribute('id', $row["host_id"]);
-            $xml->writeAttribute('instance_id', $row["engine_server_id"]);
+            $xml->writeAttribute('instance_id', $row["poller_id"]);
             $xml->endElement();
         }
         
         /* Declare Service */
-        $query = "SELECT service_id, host_id, engine_server_id "
-            . "FROM cfg_hosts, cfg_services, cfg_hosts_services_relations ns, cfg_engine_hosts_relations hp "
+        $query = "SELECT s.service_id, h.host_id, hp.poller_id "
+            . "FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations ns, cfg_poller_hosts_relations hp "
             . "WHERE host_id = ns.host_host_id "
             . "AND service_id = ns.service_service_id "
-            . "AND hp.host_host_id = host_id";
+            . "AND hp.host_id = host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('service');
             $xml->writeAttribute('id', $row["service_id"]);
             $xml->writeAttribute('host', $row["host_id"]);
-            $xml->writeAttribute('instance_id', $row["engine_server_id"]);
+            $xml->writeAttribute('instance_id', $row["poller_id"]);
             $xml->endElement();
         }
         
