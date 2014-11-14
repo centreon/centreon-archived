@@ -140,21 +140,17 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' =>array(
-                    '0' => '<span class="label label-success">OK</span>',
-                    '1' => '<span class="label label-warning">Warning</span>',
-                    '2' => '<span class="label label-danger">Critical</span>',
-                    '3' => '<span class="label label-default">Unknown</span>',
-                    '4' => '<span class="label label-info">Pending</span>',
+                    '0' => '<span class="label label-success">Up</span>',
+                    '1' => '<span class="label label-danger">Down</span>',
+                    '2' => '<span class="label label-default">Unreachable</span>'
                 )
             ),
             'searchtype' => 'select',
             'searchvalues' => array(
-                'OK' => 0,
-                'Warning' => 1,
-                'Critical' => 2,
-                'Unknown' => 3,
-                'Pending' => 4
-                                    ),
+                'Up' => 0,
+                'Down' => 1,
+                'Unreachable' => 2
+            ),
             'width' => "50px",
             'className' => 'cell_center'
         ),
