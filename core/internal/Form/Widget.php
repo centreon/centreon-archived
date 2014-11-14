@@ -182,8 +182,8 @@ class Widget extends Generator
         $query = "SELECT w.title as wizard_name, header_title, parameter_name as label, wp.is_filter,
             parameter_code_name as name, default_value, ft_typename as type, is_connector,
             wp.parameter_id, wr.preference_value, wr.comparator
-            FROM widgets w, widget_models wm, widget_parameters_field_type ft, widget_parameters wp
-            LEFT JOIN widget_preferences wr ON (wr.parameter_id = wp.parameter_id AND wr.widget_id = :widget_id)
+            FROM cfg_widgets w, cfg_widgets_models wm, cfg_widgets_parameters_fields_types ft, cfg_widgets_parameters wp
+            LEFT JOIN cfg_widgets_preferences wr ON (wr.parameter_id = wp.parameter_id AND wr.widget_id = :widget_id)
             WHERE w.widget_id = :widget_id
             AND w.widget_model_id = wm.widget_model_id
             AND wm.widget_model_id = wp.widget_model_id

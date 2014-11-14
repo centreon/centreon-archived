@@ -246,13 +246,19 @@ abstract class FormController extends \Centreon\Internal\Controller
         }
         
         $this->tpl->assign('inheritanceUrl', $inheritanceUrl);
-        $this->tpl->assign(
-            'inheritanceTmplUrl',
-            $router->getPathFor(
-                $this->inheritanceTmplUrl
-            )
-        );
-        $this->tpl->assign('tmplField', $this->tmplField);
+        
+        if (isset($this->inheritanceTmplUrl)) {
+            $this->tpl->assign(
+                'inheritanceTmplUrl',
+                $router->getPathFor(
+                    $this->inheritanceTmplUrl
+                )
+            );
+        }
+        if (isset($this->tmplField)) {
+            $this->tpl->assign('tmplField', $this->tmplField);
+        }
+        
         $this->tpl->display('file:[CentreonConfigurationModule]edit.tpl');
     }
     

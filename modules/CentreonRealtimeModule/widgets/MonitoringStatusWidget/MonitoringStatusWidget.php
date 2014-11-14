@@ -37,7 +37,7 @@
 $dbstorage = $this->getMonitoringDb();
 
 /* Get host percent OK */
-$query = "SELECT count(host_id) as nb_host, state FROM hosts GROUP BY state";
+$query = "SELECT count(host_id) as nb_host, state FROM rt_hosts GROUP BY state";
 $stmt = $dbstorage->query($query);
 $nbHostOk = 0;
 $nbHostTotal = 0;
@@ -50,7 +50,7 @@ while ($row = $stmt->fetch()) {
 $hostPercent = $nbHostOk / $nbHostTotal;
 
 /* Get service percent OK */
-$query = "SELECT count(service_id) as nb_service, state FROM services GROUP BY state";
+$query = "SELECT count(service_id) as nb_service, state FROM rt_services GROUP BY state";
 $stmt = $dbstorage->query($query);
 $nbServiceOk = 0;
 $nbServiceTotal = 0;
