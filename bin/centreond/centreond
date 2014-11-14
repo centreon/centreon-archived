@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+
+use warnings;
+use centreon::script::centreondcore;
+use FindBin;
+use lib "$FindBin::Bin";
+
+centreon::script::centreondcore->new()->run();
+
+__END__
+
+=head1 NAME
+
+centreond - a daemon to handle so many things.
+
+=head1 SYNOPSIS
+
+centreond [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--config-extra>
+
+Specify the path to the centreonesxd configuration file (default: /etc/centreon/centreon_esxd.pm).
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<centreond> will 
+
+=cut

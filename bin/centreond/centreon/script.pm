@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 2005-2014 MERETHIS
+# Copyright 2005-2013 MERETHIS
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 

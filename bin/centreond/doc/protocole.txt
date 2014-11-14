@@ -1,0 +1,144 @@
+
+==============================
+Le protocole de communication
+==============================
+
+Le "router" (main process) possède deux interfaces de dialogues:
+- 'internal': mode ipc. Le dialogue est non chiffré.
+- 'external': mode tcp. Les dialogues sont chiffrées.
+
+---------------------
+Handshake 'external'
+---------------------
+
+En mode 'external', les clients (interface web, pollers) se connectent et le dialogue suivant démarre:
+- client -> 'router' : chiffrement de la trame ([HELO] [HOSTNAME]) avec la clé publique du 'router' ;
+- router -> client : déchiffrement avec sa clé privée de la trame. 
+Si le déchiffrement ne donne pas HELO, le 'router' refuse la connexion
+Si le déchiffrement donne HELO, le 'router' accepte la connexion et chiffre une clé symétrique avec sa clé privée (en md5) ([KEY] [HOSTNAME] [xxxxx])
+Le serveur associe donc la clé avec l'identité du client (Le client doit donc avoir une identité unique!!!).
+Le client déchiffre la clé symétrique avec la clé publique et les deux points possédent le secret.
+- Les flux sont complètement chiffrés symétriquement ensuite pour l'ensemble des dialogues.
+
+Si un client n'a pas discuté avec lui depuis plus de X heures, le serveur purge l'association identité, sessions.
+Si un client avec la même identité ouvre une nouvelle connexion, le serveur purge l'ancienne association si présente (si il veut réouvrir une nouvelle connexion).
+
+-------------------------------
+Comment se passe un dialogue ?
+-------------------------------
+
+Le protocole est toujours architecturé de la façon suivante: 
+[ACTION] [JETON] [TARGET] DATA
+
+Les "ACTION": sont dynamiques selon les données enregistrées.
+Si le "JETON" est vide, le 'router' crée un jeton unique (sauf pour l'action spéciale [GETLOG]). Suite à cela, il y'a toujours un "jeton".
+Le "TARGET": correspond à l'entité devant réaliser l'action. Si la valeur est vide, cela est réalisée, sur le 'router'. 
+  Le 'target' correspond à l'ID du poller.
+Le "DATA" correspondent toujours à un flux JSON.
+
+Suite à une requête cliente ("interface", "centreond-cron",...), le 'router' répond directement sur la bonne acceptation ou non:
+[ACK] [jeton] DATA
+
+Dans DATA, il y'a le code et des données:
+* si CODE = 0 : OK
+* si CODE = 1 : Erreur (dans ce cas la il faut voir le 'data'->{message}.
+
+---------------------
+Les requêtes de base
+---------------------
+
+La gestion des jetons
+-----------------------
+
+Les jetons et les données pour les jetons sont stockées dans une base de données sqlite avec les attributs suivants:
+- jeton ;
+- time: temps en seconde de l'action ;
+- type: type d'action ;
+- code: un code numérique ;
+- data: un flux json.
+
+Un client peut récupérer ses informations:
+[GETLOG] [JETON] [TARGET] [CODE] [TIME] [JETON2] [ID]
+
+Une des 3 valeurs (JETON2, CODE, TIME, ID) doit être définie. On est sur du AND ('>' pour TIME, ID. '=' pour JETON2).
+
+Un client peut stocker une valeur:
+[PUTLOG] [JETON] [TARGET] [CODE] [TIME] [JETON2] DATA
+
+La suppression d'une instance module
+---------------------------------------
+
+Il est possible de "killer" un module. Cela peut être utile si par exemple un noeud des ACLs se bloquent.
+
+[KILL] [JETON] [TARGET] [TYPE] [ID]
+
+Le type correspond à l'identification du module.
+L'ID correspond à ce qu'il le définit (pour le module "centreond-acl", cela va être l'organisation ID).
+
+---------------------------------
+Les requêtes de "centreond-acl"
+---------------------------------
+
+---------------------------------
+Les requêtes d'actions
+---------------------------------
+
+On peut envoyer des fichiers/répertoires:
+[SENDFILES] [JETON] [TARGET] DATA
+
+Dans 'DATA', il y'a la liste des répertoires et/ou fichiers (la source et la destionation voulue).
+
+On peut lancer une commande:
+[COMMAND] [JETON] [TARGET] DATA
+
+Dans 'DATA', il y'a la 'commande'.
+
+=========================================
+Le schéma
+=========================================
+
+CREATE TABLE IF NOT EXISTS `centreond_identity` (
+    `id` INTEGER PRIMARY KEY,
+    `ctime` int(11) DEFAULT NULL,
+    `identity` varchar(2048) DEFAULT NULL,
+    `key` varchar(4096) DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_centreond_identity_identity ON centreond_identity (identity);
+
+CREATE TABLE IF NOT EXISTS `centreond_history` (
+    `id` INTEGER PRIMARY KEY,
+    `token` varchar(255) DEFAULT NULL,
+    `code` int(11) DEFAULT NULL,
+    `ctime` int(11) DEFAULT NULL,
+    `data` varchar(255) DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_centreond_history_id ON centreond_history (id);
+CREATE INDEX IF NOT EXISTS idx_centreond_history_token ON centreond_history (token);
+CREATE INDEX IF NOT EXISTS idx_centreond_history_ctime ON centreond_history (ctime);
+CREATE INDEX IF NOT EXISTS idx_centreond_history_code ON centreond_history (code);
+
+=========================================
+Les codes
+=========================================
+
+0 => les messages internes de réussite
+1 => les messages internes d'echecs
+Après il y'a des codes pour les modules.
+
+=====================
+Pele mele
+=====================
+
+Il y'a un module 'centreond-pull' (il est que sur le poller logiquement). Mais il ne fork pas et il n'a pas de dealer.
+Il a un event: REGISTERNODE
+
+Un poller a logiquement: 
+- centreondcore, centreondaction, centreondpull (ou non)
+
+Questions:
+- niveau du fichier 'ini', c'est déjà décidé ?
+- le poller_name peut ne pas être unique ?
+- travailler sur la base pour le mode du poller: mode SSH (IP, port, login, mdp) ou ZMQ (config: path, type)
+
