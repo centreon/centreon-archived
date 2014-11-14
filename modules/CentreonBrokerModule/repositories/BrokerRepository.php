@@ -460,7 +460,9 @@ class BrokerRepository
             }
             $optValue = 'global_' . $optValue;
         }
-        $globalOptions = array_combine($defaultOptionsValuesKeys, array_values($defaultOptionsValues));
+        if (count($defaultOptionsValues)) {
+            $globalOptions = array_combine($defaultOptionsValuesKeys, array_values($defaultOptionsValues));
+        }
         
         return $globalOptions;
     }

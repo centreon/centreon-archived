@@ -148,7 +148,7 @@ class ConfigGenerateMainRepository
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array($poller_id));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (!count($row)) {
+        if (false === $row) {
             throw new Exception(sprintf('Could not find parameters for poller %s.', $poller_id));
         }
         $userValues = array();
@@ -166,7 +166,7 @@ class ConfigGenerateMainRepository
         $objectDirectives = static::getConfigFiles($poller_id);
 
         $finalConf = array_merge($finalConf, $objectDirectives);
-file_put_contents("/tmp/mytest.txt", print_r($finalConf,true));
+        
         /* Set real etc path of the poller */
         static::$finalPath = $finalConf['conf_dir'];
 
@@ -183,7 +183,11 @@ file_put_contents("/tmp/mytest.txt", print_r($finalConf,true));
                     $macro = $matches[1];
                     if (isset($finalConf[$macro])) {
                         $finalConf[$macro] = rtrim($finalConf[$macro], '/');
-                        $finalConf[$k][$key] = str_replace("%{$macro}%", $finalConf[$macro], $val);
+                        if (is_array($finalConf[$k])) {
+                            $finalConf[$k][$key] = str_replace("%{$macro}%", $finalConf[$macro], $val);
+                        } else {
+                            $finalConf[$k] = str_replace("%{$macro}%", $finalConf[$macro], $val);
+                        }
                     }
                     if ($macro == 'conf_dir' && $testing) {
                         $finalConf[$k][$key] = str_replace('%conf_dir%', static::$path . "/" . $poller_id, $val);
