@@ -294,11 +294,11 @@ class PollerDatatable extends Datatable
                 $myPollerSet['version'] = $myPollerSet['program_name'] . ' ' . $myPollerSet['version'];
             }
 
-            if (isset($myPollerSet['last_alive'])) {
+            if (isset($myPollerSet['last_alive']) && !empty($myPollerSet['last_alive'])) {
                 $myPollerSet['last_alive'] = Datetime::format($myPollerSet['last_alive']);
             }
 
-            if (isset($myPollerSet['start_time'])) {
+            if (isset($myPollerSet['start_time']) && !empty($myPollerSet['start_time'])) {
                 $myPollerSet['start_time'] = Datetime::format($myPollerSet['start_time']);
             }
         }
