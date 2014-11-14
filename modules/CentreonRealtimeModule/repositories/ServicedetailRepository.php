@@ -116,7 +116,7 @@ class ServicedetailRepository extends ObjectdetailRepository
         if (count($serviceIds)) {
             $list = implode(',', $serviceIds);
             $sql = "SELECT h.name, s.description 
-                FROM services s, hosts h 
+                FROM rt_services s, rt_hosts h 
                 WHERE h.host_id = s.host_id 
                 AND s.service_id IN ($list)";
             self::doCommand($cmdId, $sql, $additionalParams);
