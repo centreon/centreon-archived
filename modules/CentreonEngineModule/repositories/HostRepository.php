@@ -35,11 +35,12 @@
 
 namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Di;
-use \CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
-use \CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigurationRepository;
-use \CentreonConfiguration\Repository\HostTemplateRepository as HostTemplateConfigurationRepository;
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
+use CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigurationRepository;
+use CentreonConfiguration\Repository\HostTemplateRepository as HostTemplateConfigurationRepository;
+use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -140,6 +141,17 @@ class HostRepository extends HostTemplateRepository
                     $tmpData['use'] = $templates;
                 }
             }
+
+            /* Generate macro */
+            $macros = CustomMacroRepository::loadHostCustomMacro($host_id);
+            if (is_array($macros) && count($macros)) {
+                foreach ($macros as $macro) {
+                    $name = trim($macro['macro_name'], '$');
+                    $tmpData[$name] = $macro['macro_value'];
+                }
+            }
+
+            $tmpData['register'] = 1;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
            

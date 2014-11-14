@@ -35,11 +35,12 @@
 
 namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Di;
-use \CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
-use \CentreonConfiguration\Repository\TimePeriodRepository as TimeperiodConfigurationRepository;
-use \CentreonConfiguration\Repository\HostTemplateRepository as HostTemplateConfigurationRepository;
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
+use CentreonConfiguration\Repository\TimePeriodRepository as TimeperiodConfigurationRepository;
+use CentreonConfiguration\Repository\HostTemplateRepository as HostTemplateConfigurationRepository;
+use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -90,10 +91,10 @@ class HostTemplateRepository
 
         /* Get disfield */
         $disableFields = static::getTripleChoice();
-        
+
         /* Init Content Array */
         $content = array();
-        
+
         /* Get information into the database. */
         $query = static::getQuery();
         $stmt = $dbconn->prepare($query);
@@ -157,10 +158,20 @@ class HostTemplateRepository
                     $tmpData['use'] = $templates;
                 }
             }
+
+            /* Generate macro */
+            $macros = CustomMacroRepository::loadHostCustomMacro($host_id);
+            if (is_array($macros) && count($macros)) {
+                foreach ($macros as $macro) {
+                    $name = trim($macro['macro_name'], '$');
+                    $tmpData[$name] = $macro['macro_value'];
+                }
+            }
+
+            $tmpData['register'] = 0;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
         }
-
         /* Write Check-Command configuration file */
         WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, "API");
         unset($content);
@@ -183,7 +194,7 @@ class HostTemplateRepository
             . "host_notification_interval, host_notification_options, cg_additive_inheritance, "
             . "contact_additive_inheritance, timeperiod_tp_id2 AS notification_period, "
             . "host_stalking_options, host_register ";
-        
+
         /* Get information into the database. */
         $query = "SELECT $field FROM cfg_hosts WHERE host_activate = '1' AND host_register = ? ORDER BY host_name";
         return $query;

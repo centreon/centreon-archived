@@ -35,11 +35,12 @@
 
 namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Di;
-use \CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
-use \CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigurationRepository;
-use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
-use \CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\CommandRepository as CommandConfigurationRepository;
+use CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigurationRepository;
+use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -152,6 +153,16 @@ class ServiceRepository extends ServicetemplateRepository
                     }
                 }
             }
+             /* Generate macro */
+            $macros = CustomMacroRepository::loadServiceCustomMacro($service_id);
+            if (is_array($macros) && count($macros)) {
+                foreach ($macros as $macro) {
+                    $name = trim($macro['macro_name'], '$');
+                    $tmpData[$name] = $macro['macro_value'];
+                }
+            }
+
+            $tmpData["register"] = 1;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
         }
