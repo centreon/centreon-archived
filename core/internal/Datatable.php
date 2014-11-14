@@ -139,7 +139,8 @@ class Datatable
         'searchParam',
         'source',
         'searchvalues',
-        'DT_RowData'
+        'DT_RowData',
+        'DT_RowId'
     );
     
     /**
@@ -445,6 +446,7 @@ class Datatable
     {
         if (isset($values['DT_RowData'])) {
             unset($values['DT_RowData']);
+            unset($values['DT_RowId']);
         }
         
         $castedElement = \array_map(
@@ -475,6 +477,11 @@ class Datatable
      */
     public static function addCheckbox($field, $values, $cast)
     {
+        if (isset($values['DT_RowData'])) {
+            unset($values['DT_RowData']);
+            unset($values['DT_RowId']);
+        }
+        
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
@@ -544,6 +551,11 @@ class Datatable
      */
     public static function addTemplate($field, $values, $cast)
     {
+        if (isset($values['DT_RowData'])) {
+            unset($values['DT_RowData']);
+            unset($values['DT_RowId']);
+        }
+        
         $castedElement = \array_map(
             function ($n) {
                 return "::$n::";
@@ -644,6 +656,11 @@ class Datatable
      */
     protected static function parseUrl($params, $castedElement, $values)
     {
+        if (isset($values['DT_RowData'])) {
+            unset($values['DT_RowData']);
+            unset($values['DT_RowId']);
+        }
+        
         $routeParams = array();
         if (isset($params['routeParams']) && is_array($params['routeParams'])) {
             $routeParams = str_replace($castedElement, $values, $params['routeParams']);
