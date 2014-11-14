@@ -60,7 +60,7 @@
                     var sort = [$(lastSelectedRow)[0].rowIndex, $(this)[0].rowIndex],
                         rows = $(this).parent().find('tr'); 
                     sort.sort(function(a, b) { return a - b; });
-                    for (var i = sort[0]; i <= sort[1]; i++) {
+                    for (var i = (sort[0] - 1); i < sort[1]; i++) {
                         $(rows[i]).addClass('selected');
                     }
                 }
