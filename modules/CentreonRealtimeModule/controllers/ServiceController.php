@@ -66,7 +66,8 @@ class ServiceController extends \Centreon\Internal\Controller
         $router = \Centreon\Internal\Di::getDefault()->get('router');
 
         /* Load css */
-        $tpl->addCss('dataTables.tableTools.min.css')
+        $tpl->addCss('jquery.dataTables.min.css')
+            ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('dataTables.fixedHeader.min.css')
@@ -144,15 +145,6 @@ class ServiceController extends \Centreon\Internal\Controller
         $myDataForDatatable = $myDatatable->getDatas();
         
         $router->response()->json($myDataForDatatable);
-        
-        /*$router = \Centreon\Internal\Di::getDefault()->get('router');
-        $router->response()->json(
-            \Centreon\Internal\Datatable::getDatas(
-                'CentreonRealtime',
-                'service',
-                $this->getParams('get')
-            )
-        );*/
     }
 
     /**
