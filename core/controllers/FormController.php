@@ -443,7 +443,12 @@ abstract class FormController extends \Centreon\Internal\Controller
 
             $repository = $this->repository;
             foreach ($params['ids'] as $id) {
-                $repository::update($id, array($field => '1'));
+                $repository::update(
+                    array(
+                        'object_id' => $id,
+                        $field => '1'
+                    )
+                );
             }
 
             /* Set Cookie */
@@ -478,7 +483,12 @@ abstract class FormController extends \Centreon\Internal\Controller
 
             $repository = $this->repository;
             foreach ($params['ids'] as $id) {
-                $repository::update($id, array($field => '0'));
+                $repository::update(
+                    array(
+                        'object_id' => $id,
+                        $field => '0'
+                    )
+                );
             }
 
             /* Set Cookie */

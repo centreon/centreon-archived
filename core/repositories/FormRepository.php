@@ -225,7 +225,7 @@ abstract class FormRepository
         $pk = $class::getPrimaryKey();
         $givenParameters[$pk] = $givenParameters['object_id'];
         if (!isset($givenParameters[$pk])) {
-            throw Exception('Primary key of object is not defined');
+            throw new \Exception('Primary key of object is not defined');
         }
         $db = Di::getDefault()->get('db_centreon');
         $id = $givenParameters[$pk];
