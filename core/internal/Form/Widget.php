@@ -183,7 +183,7 @@ class Widget extends Generator
             parameter_code_name as name, default_value, ft_typename as type, is_connector,
             wp.parameter_id, wr.preference_value, wr.comparator
             FROM cfg_widgets w, cfg_widgets_models wm, cfg_widgets_parameters_fields_types ft, cfg_widgets_parameters wp
-            LEFT JOIN widget_preferences wr ON (wr.parameter_id = wp.parameter_id AND wr.widget_id = :widget_id)
+            LEFT JOIN cfg_widgets_preferences wr ON (wr.parameter_id = wp.parameter_id AND wr.widget_id = :widget_id)
             WHERE w.widget_id = :widget_id
             AND w.widget_model_id = wm.widget_model_id
             AND wm.widget_model_id = wp.widget_model_id
