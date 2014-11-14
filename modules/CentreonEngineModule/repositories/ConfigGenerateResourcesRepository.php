@@ -45,10 +45,13 @@ class ConfigGenerateResourcesRepository
 {
     /** 
      * Generate Resources.cfg
-     * @param  
+     * @param array $filesList
+     * @param int $pollerId
+     * @param string $path
+     * @param string $filename
      * @return value
      */
-    public function generate(& $filesList, $poller_id, $path, $filename)
+    public function generate(& $filesList, $pollerId, $path, $filename)
     {
         $di = Di::getDefault();
 
@@ -60,13 +63,13 @@ class ConfigGenerateResourcesRepository
         
         /* Get information into the database. */
         $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resources r, cfg_resources_instances_relations rr 
-                        WHERE r.resource_id = rr.resource_id 
-                                AND r.resource_activate = '1' 
-                                AND rr.instance_id = $poller_id 
+                  FROM cfg_resources r, cfg_resources_instances_relations rr 
+                  WHERE r.resource_id = rr.resource_id 
+                  AND r.resource_activate = '1' 
+                  AND rr.instance_id = ? 
                   ORDER BY resource_name";
         $stmt = $dbconn->prepare($query);
-        $stmt->execute();
+        $stmt->execute(array($pollerId));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $content[$row["resource_name"]] = $row["resource_line"];
         }
