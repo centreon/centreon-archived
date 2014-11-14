@@ -92,7 +92,7 @@ class BrokerRepository
         $stmt->bindParam(':broker_module_directory', $arr['broker_module_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_logs_directory', $arr['broker_logs_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_data_directory', $arr['broker_data_directory'], \PDO::PARAM_STR);
-        $stmt->bindParam(':init_script', $arr['init_script'], \PDO::PARAM_STR);
+        $stmt->bindParam(':init_script', $arr['broker_init_script'], \PDO::PARAM_STR);
         $stmt->execute();
         
         /* Save extract params */
