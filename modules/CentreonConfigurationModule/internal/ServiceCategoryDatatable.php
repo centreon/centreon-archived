@@ -70,7 +70,7 @@ class ServiceCategoryDatatable extends \Centreon\Internal\Datatable
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'host_name');
+    protected static $rowIdColumn = array('id' => 'sc_id', 'name' => 'sc_name');
     
     /**
      *
