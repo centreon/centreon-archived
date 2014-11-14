@@ -182,8 +182,10 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
             $macros = CustomMacroRepository::loadServiceCustomMacro($service_id);
             if (is_array($macros) && count($macros)) {
                 foreach ($macros as $macro) {
-                    $name = trim($macro['macro_name'], '$');
-                    $tmpData[$name] = $macro['macro_value'];
+                    if (preg_match('/^\$_SERVICE(.+)\$$/', $macro['macro_name'], $m)) {
+                        $name = "_{$m[1]}";
+                        $tmpData[$name] = $macro['macro_value'];
+                    }
                 }
             }
 
