@@ -183,7 +183,11 @@ class ConfigGenerateMainRepository
                     $macro = $matches[1];
                     if (isset($finalConf[$macro])) {
                         $finalConf[$macro] = rtrim($finalConf[$macro], '/');
-                        $finalConf[$k][$key] = str_replace("%{$macro}%", $finalConf[$macro], $val);
+                        if (is_array($finalConf[$k])) {
+                            $finalConf[$k][$key] = str_replace("%{$macro}%", $finalConf[$macro], $val);
+                        } else {
+                            $finalConf[$k] = str_replace("%{$macro}%", $finalConf[$macro], $val);
+                        }
                     }
                     if ($macro == 'conf_dir' && $testing) {
                         $finalConf[$k][$key] = str_replace('%conf_dir%', static::$path . "/" . $poller_id, $val);
