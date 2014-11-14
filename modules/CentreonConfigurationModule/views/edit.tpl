@@ -99,7 +99,7 @@
                 $('<div class="col-xs-12 col-sm-2"></div>').append($("#advanced_mode_switcher"))
             );
 
-            {if $inheritanceUrl}
+            {if isset($inheritanceUrl)}
             $.ajax({
               url: "{$inheritanceUrl}",
               dataType: 'json',
@@ -116,7 +116,7 @@
                 }
               }
             });
-
+            
             /* Function for reload template when adding one */
             $("{$tmplField}").on('change', function(e) {
               $.ajax({
