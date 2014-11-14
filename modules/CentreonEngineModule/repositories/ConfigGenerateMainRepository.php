@@ -148,7 +148,7 @@ class ConfigGenerateMainRepository
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array($poller_id));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (!count($row)) {
+        if (false === $row) {
             throw new Exception(sprintf('Could not find parameters for poller %s.', $poller_id));
         }
         $userValues = array();
@@ -166,7 +166,7 @@ class ConfigGenerateMainRepository
         $objectDirectives = static::getConfigFiles($poller_id);
 
         $finalConf = array_merge($finalConf, $objectDirectives);
-file_put_contents("/tmp/mytest.txt", print_r($finalConf,true));
+        
         /* Set real etc path of the poller */
         static::$finalPath = $finalConf['conf_dir'];
 

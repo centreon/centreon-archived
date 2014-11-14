@@ -98,9 +98,9 @@ class ConfigCorrelationRepository
         /* Declare Service */
         $query = "SELECT s.service_id, h.host_id, hp.poller_id "
             . "FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations ns, cfg_poller_hosts_relations hp "
-            . "WHERE host_id = ns.host_host_id "
-            . "AND service_id = ns.service_service_id "
-            . "AND hp.host_id = host_id";
+            . "WHERE h.host_id = ns.host_host_id "
+            . "AND s.service_id = ns.service_service_id "
+            . "AND hp.host_id = h.host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('service');

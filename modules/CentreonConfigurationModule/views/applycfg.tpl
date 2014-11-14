@@ -60,8 +60,8 @@ $(function() {
       $csl.removeClass('hide');
       $csl.html("");
 
-      $("input[type=checkbox][class=allBox]:checked").each(function() {
-        var pollerId = $(this).val();
+      $('tbody tr[class*="selected"]').each(function() {
+        var pollerId = $(this).attr('id');
 
         $.ajax({
           url: '{'/api/configuration/1/generatecfg/'|url}' + pollerId,
@@ -99,8 +99,8 @@ $(function() {
       $csl.removeClass('hide');
       $csl.html("");
 
-      $("input[type=checkbox][class=allBox]:checked").each(function() {
-        var pollerId = $(this).val();
+      $('tbody tr[class*="selected"]').each(function() {
+        var pollerId = $(this).attr('id');
 
         $.ajax({
           url: '{'/api/configuration/1/movecfg/'|url}' + pollerId,
@@ -125,8 +125,8 @@ $(function() {
       $csl.removeClass('hide');
       $csl.html("");
 
-      $("input[type=checkbox][class=allBox]:checked").each(function() {
-        var pollerId = $(this).val();
+      $('tbody tr[class*="selected"]').each(function() {
+        var pollerId = $(this).attr('id');
         
         $.ajax({
           url: '{'/api/configuration/1/'|url}' + action + '/' + pollerId,
