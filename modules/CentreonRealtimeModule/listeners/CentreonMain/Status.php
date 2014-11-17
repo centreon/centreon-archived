@@ -118,7 +118,7 @@ class Status
         while ($row = $stmt->fetch()) {
             if ($row['running'] == 0) {
                 $values['pollers']['stopped']++;
-            } elseif ($now - $row['last_alive'] < 60) {
+            } elseif ($row['last_alive'] - $now > 60) {
                 $values['pollers']['activity']++;
             }
         }
