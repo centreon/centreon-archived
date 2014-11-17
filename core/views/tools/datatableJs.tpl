@@ -68,6 +68,8 @@
             lastSelectedRow = this;
             toggleSelectedAction();
         });
+        
+        $.fn.dataTableExt.sErrMode = 'throw';
     
         $.extend($.fn.dataTableExt.oStdClasses, {
             "sSortAsc": "header headerSortDown",

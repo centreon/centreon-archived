@@ -351,7 +351,7 @@ abstract class FormController extends \Centreon\Internal\Controller
 
         $stmt = $this->db->prepare(
             "SELECT f.field_id, f.label
-            FROM form_field f, form_massive_change_field_relation mcfr, form_massive_change mc
+            FROM cfg_forms_fields f, cfg_forms_massive_change_fields_relations mcfr, cfg_forms_massive_change mc
             WHERE mc.route = :route
                 AND mc.massive_change_id = mcfr.massive_change_id
                 AND f.field_id = mcfr.field_id"
@@ -380,7 +380,7 @@ abstract class FormController extends \Centreon\Internal\Controller
 
         $stmt = $this->routeprepare(
             "SELECT name, label, default_value, attributes, type, help
-            FROM form_field
+            FROM cfg_forms_fields
             WHERE field_id = :id"
         );
         $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
