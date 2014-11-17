@@ -36,7 +36,8 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use CentreonConfiguration\Repository\HostRepository; 
 
 /**
  * Description of HostDatatable
@@ -200,20 +201,23 @@ class HostTemplateDatatable extends \Centreon\Internal\Datatable
         $router = \Centreon\Internal\Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
-                $myHostSet['host_name']
-            )
-            . '&nbsp;'.$myHostSet['host_name'];
+            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
+                '&nbsp;<span data-overlay-url="'.$router->getPathFor('/configuration/hosttemplate/snapshot/').
+                $myHostSet['host_id'].
+                '"><span class="overlay">'.
+                $myHostSet['host_name'].
+                '</span></span>';
             
             /* Templates */
             $myHostSet['host_template']  = "";
             $templates = \CentreonConfiguration\Repository\HostTemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= "<span class='badge alert-success'><a href='".$router->getPathFor(
-                    "/configuration/hosttemplate/[i:id]",
-                    array('id' => $template['id'])
-                )
-                . "'><i class='fa ".$template['ico']."'></i></a></span>";
+                 $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/configuration/hosttemplate/viewconf/').
+                    $template['id'].'"><a class="overlay" href="'.
+                    $router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
+                    '"><i class="fa '.
+                    $template['ico'].
+                    '"></i></a></span>';
             }
 
         }

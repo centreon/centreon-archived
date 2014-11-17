@@ -35,10 +35,11 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb,
-    \CentreonRealtime\Repository\HostRepository as RealTimeHostRepository,
-    \CentreonConfiguration\Repository\HostRepository,
-    \CentreonConfiguration\Repository\HostTemplateRepository;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Di;
+use CentreonRealtime\Repository\HostRepository as RealTimeHostRepository;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\HostTemplateRepository;
 
 /**
  * Description of HostDatatable
@@ -240,7 +241,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
      */
     protected function formatDatas(&$resultSet)
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
             
         foreach ($resultSet as &$myHostSet) {
             $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).

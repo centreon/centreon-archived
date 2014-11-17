@@ -109,6 +109,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function listAction()
     {
+        $this->tpl->addJs('centreon.overlay.js');
         parent::listAction();
     }
     
@@ -623,6 +624,22 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
         list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->assign('notifdata', $notifdata);
+        $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
+    }
+
+    /**
+     * Display the configuration snapshot of a host template
+     * with template inheritance
+     *
+     * @method get
+     * @route /configuration/hosttemplate/snapshot/[i:id]
+     */
+    public function snapshotAction()
+    {
+        $params = $this->getParams();
+        $data = HostRepository::getConfigurationData($params['id']);
+        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 }
