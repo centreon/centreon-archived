@@ -140,5 +140,11 @@ $(function() {
         }); 
       });
     });
+
+
+    $( document ).unbind( "finished" );
+    $( document ).on( "finished", function( event ) {
+      $('#modal').modal('hide');       
+    });
 });
 </script>
