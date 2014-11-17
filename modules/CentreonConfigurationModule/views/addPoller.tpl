@@ -140,7 +140,10 @@ $(function() {
       success: function( data, textStatus, jqXHR ) {
         alertModalClose();
         if ( data.success ) {
-          // @todo
+          $('#modal').modal('hide');
+          if (typeof oTable != 'undefined') {
+            oTable.fnDraw();
+          }
         } else {
           alertModalMessage( data.error, "alert-danger" );
         }
