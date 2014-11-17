@@ -72,7 +72,7 @@ $(function() {
   $('#eventlogs').centreonTableInfiniteScroll({
     ajaxUrlGetScroll: "{url_for url="/realtime/eventlogs"}",
     ajaxUrlGetNew: "{url_for url="/realtime/eventlogs/refresh"}",
-    formFilter: "#filters",
+    formFilter: "#filters",{literal}
     templateRows: "<tr class='<%border_color%>'> \
       <td class='span-2'><%datetime%></td> \
       <td class='span-2'><%host_logo%> <%host%></td> \
@@ -80,7 +80,7 @@ $(function() {
       <td class='span-2'><%instance%></td> \
       <td class='span-1 centreon-status-<%status%>'><%status_text%></td> \
       <td class='span-3'><%output%></td> \
-    </tr>"
+    </tr>"{/literal}
   });
 
   $("input[name='period']").daterangepicker({
