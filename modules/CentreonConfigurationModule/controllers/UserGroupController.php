@@ -126,7 +126,18 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     {
         parent::editAction();
     }
-    
+
+    /**
+     * Duplicate contact
+     *
+     * @method POST
+     * @route /configuration/usergroup/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
     /**
      * Enable action for contact
      * 
