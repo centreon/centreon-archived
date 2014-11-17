@@ -58,7 +58,7 @@ class GraphView
         $dbconn = $di->get('db_centreon');
         $ownerId = $_SESSION['user']->getId();
 
-        $stmt = $dbconn->prepare("INSERT INTO graph_views
+        $stmt = $dbconn->prepare("INSERT INTO cfg_graph_views
             (name, privacy, owner_id)
             VALUES (:name, :privacy, :owner_id)");
         $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
@@ -91,7 +91,7 @@ class GraphView
         $dbconn = $di->get('db_centreon');
 
         /* Test if the contact can modify the view */
-        $stmt = $dbconn->prepare("SELECT owner_id FROM graph_views WHERE graph_view_id = :view_id");
+        $stmt = $dbconn->prepare("SELECT owner_id FROM cfg_graph_views WHERE graph_view_id = :view_id");
         $stmt->bindParam(':view_id', $viewId, \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
@@ -101,7 +101,7 @@ class GraphView
         }
 
         /* Delete graph view for services */
-        $stmt = $dbconn->prepare("DELETE FROM graph_views_services WHERE graph_view_id = :view_id");
+        $stmt = $dbconn->prepare("DELETE FROM cfg_graph_views_services WHERE graph_view_id = :view_id");
         $stmt->bindParam(':view_id', $viewId, \PDO::PARAM_INT);
         $stmt->execute();
 
@@ -109,7 +109,7 @@ class GraphView
         foreach ($graphs as $graph) {
             switch ($graph['type']) {
                 case 'service':
-                    $query = "INSERT INTO graph_views_services
+                    $query = "INSERT INTO cfg_graph_views_services
                         (graph_view_id, service_id, `order`)
                         VALUES (:view_id, :obj_id, :order)";
                     break;
@@ -140,7 +140,7 @@ class GraphView
         $dbconn = $di->get('db_centreon');
 
         $query = "SELECT graph_view_id, name
-            FROM graph_views
+            FROM cfg_graph_views
             WHERE privacy = 1";
         if (false === $onlyPublic) {
             $query .= " OR (privacy = 0 AND owner_id = :owner_id)";
@@ -172,7 +172,7 @@ class GraphView
         $dbconn = $di->get('db_centreon');
 
         $queryService = "SELECT service_id as id, 'service' as type
-            FROM graph_views_services
+            FROM cfg_graph_views_services
             WHERE graph_view_id = :view_id
             ORDER BY `order`";
         $stmt = $dbconn->prepare($queryService);
@@ -195,7 +195,7 @@ class GraphView
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
-        $stmt = $dbconn->prepare("DELETE FROM graph_views WHERE graph_view_id = :view_id");
+        $stmt = $dbconn->prepare("DELETE FROM cfg_graph_views WHERE graph_view_id = :view_id");
         $stmt->bindParam(':view_id', $viewId, \PDO::PARAM_INT);
         $stmt->execute();
     }
