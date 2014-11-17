@@ -114,7 +114,7 @@ class CentreonStorageDb implements \Centreon\Internal\Datatable\Dataprovider\Dat
                 explode(',', $otherFields),
                 $params['iDisplayLength'],
                 $params['iDisplayStart'],
-                $columns[$params['iSortCol_0']]['name'],
+                $columns[$params['iSortCol_0']]['data'],
                 $params['sSortDir_0'],
                 $conditions,
                 "AND"
@@ -137,7 +137,7 @@ class CentreonStorageDb implements \Centreon\Internal\Datatable\Dataprovider\Dat
                 explode(',', $otherTables),
                 $params['iDisplayLength'],
                 $params['iDisplayStart'],
-                $columns[$params['iSortCol_0']]['name'],
+                $columns[$params['iSortCol_0']]['data'],
                 $params['sSortDir_0'],
                 $conditions,
                 "AND",
