@@ -173,6 +173,23 @@ class PollerRepository extends Repository
         $di->get('events')->emit('centreon-configuration.broker.form.save', array($brokerEvent));
     }
 
+
+    /**
+     * Delete a poller
+     *
+     * @param array $ids | array of ids to delete
+     */
+    public static function delete($ids)
+    {
+        foreach ($ids as $id) {
+            if ($id) {
+                $node = static::getNode($id);
+                Node::delete($node['node_id']);
+            }
+        }
+        /* Poller will also get deleted due to delete cascade */
+    }
+
     /**
      * Get the node information
      *

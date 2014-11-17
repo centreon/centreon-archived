@@ -283,7 +283,7 @@ abstract class FormRepository
     }
 
     /**
-     * Delete a object
+     * Delete an object
      *
      * @param array $ids | array of ids to delete
      */
