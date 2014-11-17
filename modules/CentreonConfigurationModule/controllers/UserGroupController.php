@@ -126,9 +126,20 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     {
         parent::editAction();
     }
-    
+
     /**
-     * Enable action for contact
+     * Duplicate contact group
+     *
+     * @method POST
+     * @route /configuration/usergroup/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Enable action for contact group
      * 
      * @method post
      * @route /configuration/usergroup/enable
@@ -139,7 +150,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     }
     
     /**
-     * Disable action for contact
+     * Disable action for contact group
      * 
      * @method post
      * @route /configuration/usergroup/disable
@@ -147,6 +158,17 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     public function disableAction()
     {
         parent::disableAction('cg_activate');
+    }
+
+    /**
+     * Delete action for contact group
+     *
+     * @method post
+     * @route /configuration/usergroup/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 
     /**
