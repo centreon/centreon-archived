@@ -81,6 +81,10 @@ $(function() {
     });
     return false;
   });
+  {else}
+  $(document).on('finished', function (event) {
+    $('#modal').modal('hide');
+  });
   {/if}
   {get_custom_js}
 });
