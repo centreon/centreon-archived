@@ -46,6 +46,7 @@ use CentreonConfiguration\Models\Timeperiod;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Internal\HostDatatable;
 use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 
 class HostController extends \CentreonConfiguration\Controllers\BasicController
@@ -307,7 +308,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function iconForHostAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -354,7 +355,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function parentForHostAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -391,7 +392,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function childForHostAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -511,7 +512,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function pollerForHostAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -604,7 +605,6 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
         $data = HostRepository::getConfigurationData($params['id']);
         list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
-        $this->tpl->assign('notifdata', $notifdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 
@@ -622,7 +622,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
         $inheritanceValues = HostRepository::getInheritanceValues($requestParam['id']);
         array_walk($inheritanceValues, function(&$item, $key) {
             if (false === is_null($item)) {
-                $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+                $item = HostTemplateRepository::getTextValue($key, $item);
             }
         });
         $router->response()->json(array(
