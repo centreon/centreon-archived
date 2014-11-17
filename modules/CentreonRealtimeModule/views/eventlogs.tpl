@@ -73,13 +73,13 @@ $(function() {
     ajaxUrlGetScroll: "{url_for url="/realtime/eventlogs"}",
     ajaxUrlGetNew: "{url_for url="/realtime/eventlogs/refresh"}",
     formFilter: "#filters",{literal}
-    templateRows: "<tr class='<%border_color%>'> \
-      <td class='span-2'><%datetime%></td> \
-      <td class='span-2'><%host_logo%> <%host%></td> \
-      <td class='span-2'><%service_logo%> <%service%></td> \
-      <td class='span-2'><%instance%></td> \
-      <td class='span-1 centreon-status-<%status%>'><%status_text%></td> \
-      <td class='span-3'><%output%></td> \
+    templateRows: "<tr class='{{{border_color}}}'> \
+      <td class='span-2'>{{{datetime}}}</td> \
+      <td class='span-2'>{{{host_logo}}} {{{host}}}</td> \
+      <td class='span-2'>{{{service_logo}}} {{{service}}}</td> \
+      <td class='span-2'>{{{instance}}}</td> \
+      <td class='span-1 centreon-status-{{{status}}}'>{{{status_text}}}</td> \
+      <td class='span-3'>{{{output}}}</td> \
     </tr>"{/literal}
   });
 
