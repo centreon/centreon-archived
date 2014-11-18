@@ -24,10 +24,10 @@
         {
             $(".panel-body").each(function(i, v) {
                 
-                var $myFormGroupLength = $(v).children(".form-group").length;
+                var $myFormGroupLength = $(v).children("div").children(".form-group").length;
                 var $hidden = 0;
 
-                $(v).children(".form-group").each(function(j, w) {
+                $(v).children("div").children(".form-group").each(function(j, w) {
                     if ($(w).css("display") === "none") {
                         $hidden += 1;
                     }
