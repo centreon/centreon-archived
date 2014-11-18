@@ -1,22 +1,61 @@
 [
     {
+        "domain_id" : 1,
         "name": "Network",
         "description": "Network domain",
         "isroot": 1
     },
     {
+        "domain_id" : 2,
         "name": "Hardware",
         "description": "Hardware domain",
         "isroot": 1
     },
     {
+        "domain_id" : 3,
         "name": "System",
         "description": "System domain",
         "isroot": 1
     },
     {
+        "domain_id" : 4,
         "name": "Application",
         "description": "Application domain",
         "isroot": 1
+    },
+    {
+        "domain_id" : 5,
+        "name": "CPU",
+        "description": "Cpu domain",
+        "isroot": 0,
+        "parent_id": 3
+    },
+    {
+        "domain_id" : 6,
+        "name": "Memory",
+        "description": "Memory domain",
+        "isroot": 0,
+        "parent_id": 3
+    },
+    {
+        "domain_id" : 7,
+        "name": "Swap",
+        "description": "Swap domain",
+        "isroot": 0,
+        "parent_id": 3
+    },
+    {
+        "domain_id" : 8,
+        "name": "FileSystem",
+        "description": "File System domain",
+        "isroot": 0,
+        "parent_id": 3
+    },
+    {
+        "domain_id" : 9,
+        "name": "Traffic",
+        "description": "Traffic domain",
+        "isroot": 0,
+        "parent_id": 2
     }
 ]
