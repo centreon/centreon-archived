@@ -77,9 +77,20 @@ class HostRepository extends HostTemplateRepository
         $content = array();
         
         /* Get information into the database. */
-        $query = static::getQuery();
+        $fields = static::getFields();
+
+        $query = "SELECT $fields 
+            FROM cfg_hosts 
+            WHERE host_activate = '1' 
+            AND host_register = ? 
+            AND poller_id = ?
+            ORDER BY host_name";
+
         $stmt = $dbconn->prepare($query);
-        $stmt->execute(array(static::$register));
+        $stmt->execute(array(
+            static::$register,
+            $poller_id
+        ));
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $content = array();
