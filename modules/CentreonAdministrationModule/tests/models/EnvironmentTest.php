@@ -33,15 +33,15 @@
  *
  */
 
-namespace Test\CentreonConfiguration\Models;
+namespace Test\CentreonAdministration\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Models\Environment;
+use \CentreonAdministration\Models\Environment;
 
 class EnvironmentTest extends DbTestCase
 {
     protected $errMsg = 'Object not in database.';
-    protected $dataPath = '/modules/CentreonConfigurationModule/tests/data/json/';
+    protected $dataPath = '/modules/CentreonAdministrationModule/tests/data/json/';
 
     public function testInsert()
     {

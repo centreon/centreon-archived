@@ -31,20 +31,26 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-
-namespace CentreonConfiguration\Models;
+namespace CentreonAdministration\Repository;
 
 /**
- * Used for interacting with Environments
- *
- * @author lionel
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Repository
  */
-class Environment extends \Centreon\Models\CentreonBaseModel
+class EnvironmentRepository extends \CentreonAdministration\Repository\Repository
 {
-    protected static $table = "cfg_environments";
-    protected static $primaryKey = "environment_id";
-    protected static $uniqueLabelField = "name";
+    /**
+     *
+     * @var string
+     */
+    public static $tableName = 'cfg_environments';
+    
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = 'Environment';
 }

@@ -33,26 +33,26 @@
  *
  */
 
-namespace CentreonConfiguration\Controllers;
+namespace CentreonAdministration\Controllers;
 
-class EnvironmentController extends \CentreonConfiguration\Controllers\BasicController
+class EnvironmentController extends \CentreonAdministration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Environment';
     protected $objectName = 'environment';
-    protected $objectBaseUrl = '/configuration/environment';
-    protected $objectClass = '\CentreonConfiguration\Models\Environment';
-    protected $repository = '\CentreonConfiguration\Repository\EnvironmentRepository';
+    protected $objectBaseUrl = '/administration/environment';
+    protected $objectClass = '\CentreonAdministration\Models\Environment';
+    protected $repository = '\CentreonAdministration\Repository\EnvironmentRepository';
     
     public static $relationMap = array();
     
-    protected $datatableObject = '\CentreonConfiguration\Internal\EnvironmentDatatable';
+    protected $datatableObject = '\CentreonAdministration\Internal\EnvironmentDatatable';
     public static $isDisableable = true;
 
     /**
      * List hostcategories
      *
      * @method get
-     * @route /configuration/environment
+     * @route /administration/environment
      */
     public function listAction()
     {
@@ -62,7 +62,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
     /**
      * 
      * @method get
-     * @route /configuration/environment/formlist
+     * @route /administration/environment/formlist
      */
     public function formListAction()
     {
@@ -72,7 +72,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
     /**
      * 
      * @method get
-     * @route /configuration/environment/list
+     * @route /administration/environment/list
      */
     public function datatableAction()
     {
@@ -84,7 +84,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      *
      *
      * @method post
-     * @route /configuration/environment/update
+     * @route /administration/environment/update
      */
     public function updateAction()
     {
@@ -96,11 +96,11 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      *
      *
      * @method get
-     * @route /configuration/environment/add
+     * @route /administration/environment/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/environment/add');
+        $this->tpl->assign('validateUrl', '/administration/environment/add');
         parent::addAction();
     }
 
@@ -109,7 +109,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      *
      *
      * @method post
-     * @route /configuration/environment/add
+     * @route /administration/environment/add
      */
     public function createAction()
     {
@@ -121,7 +121,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      *
      *
      * @method get
-     * @route /configuration/environment/[i:id]
+     * @route /administration/environment/[i:id]
      */
     public function editAction()
     {
@@ -132,7 +132,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/environment/mc_fields
+     * @route /administration/environment/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -143,7 +143,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/environment/mc_fields/[i:id]
+     * @route /administration/environment/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -154,7 +154,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/environment/duplicate
+     * @route /administration/environment/duplicate
      */
     public function duplicateAction()
     {
@@ -165,7 +165,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/environment/massive_change
+     * @route /administration/environment/massive_change
      */
     public function massiveChangeAction()
     {
@@ -176,7 +176,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      * Delete action for environment
      *
      * @method post
-     * @route /configuration/environment/delete
+     * @route /administration/environment/delete
      */
     public function deleteAction()
     {
@@ -188,7 +188,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
      *
      *
      * @method get
-     * @route /configuration/environment/[i:id]/icon
+     * @route /administration/environment/[i:id]/icon
      */
     public function iconForEnvironmentAction()
     {
@@ -198,7 +198,7 @@ class EnvironmentController extends \CentreonConfiguration\Controllers\BasicCont
         $requestParam = $this->getParams('named');
         
         $finalIconList = array();
-        $iconId = \CentreonConfiguration\Models\Environment::get($requestParam['id'], "icon_id");
+        $iconId = \CentreonAdministration\Models\Environment::get($requestParam['id'], "icon_id");
         
         if (is_array($iconId) && (count($iconId) > 0)) {
         

@@ -40,12 +40,6 @@
         "bgcolor": "#CCC",
         "menus": [
             {
-                "name" : "Environments",
-                "short_name": "conf_environments_list",
-                "icon_class": "fa fa-tree",
-                "route": "/configuration/environment"
-            },
-            {
                 "name": "Hosts",
                 "short_name": "conf_hosts",
                 "icon_class": "fa fa-desktop",

@@ -1,11 +1,5 @@
 [
     {
-      "name": "Dashboard",
-      "short_name": "dashboard",
-      "icon_class": "fa fa-dashboard",
-      "bgcolor": "lightgreen"
-    },
-    {
       "name": "Performance",
       "short_name": "performance",
       "icon_class": "fa fa-bar-chart-o",

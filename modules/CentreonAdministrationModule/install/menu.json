@@ -46,6 +46,12 @@
                 ]
             },
             {
+                "name" : "Environments",
+                "short_name": "conf_environments_list",
+                "icon_class": "fa fa-tree",
+                "route": "/administration/environment"
+            },
+            {
                 "name": "Domains",
                 "short_name": "domains",
                 "icon_class": "fa fa-building-o",

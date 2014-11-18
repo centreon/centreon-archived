@@ -34,7 +34,7 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal;
+namespace CentreonAdministration\Internal;
 
 use \Centreon\Internal\Datatable\Datasource\CentreonDb;
 
@@ -51,7 +51,7 @@ class EnvironmentDatatable extends \Centreon\Internal\Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonConfiguration\Models\Environment';
+    protected static $datasource = '\CentreonAdministration\Models\Environment';
     
     /**
      *
@@ -98,7 +98,7 @@ class EnvironmentDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/environment/[i:id]',
+                    'route' => '/administration/environment/[i:id]',
                     'routeParams' => array(
                         'id' => '::environment_id::'
                     ),
