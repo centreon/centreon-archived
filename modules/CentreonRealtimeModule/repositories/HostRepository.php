@@ -35,7 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
-use     \Centreon\Internal\Utils\Datetime;
+use \Centreon\Internal\Utils\Datetime;
+use \Centreon\Internal\Utils\Status as UtilStatus;
 
 /**
  * @author Julien Mathis <jmathis@merethis.com>
@@ -107,7 +108,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         
         $infos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if (count($infos) > 0) {
-            $finalInfo['status'] = $infos[0]['state'];
+            $finalInfo['status'] = UtilStatus::numToString($infos[0]['state'], UtilStatus::TYPE_HOST);
             $explodedOutput = split("\n", $infos[0]['output']);
             unset($explodedOutput[0]);
             $finalInfo['output'] = implode("\n", $explodedOutput);
