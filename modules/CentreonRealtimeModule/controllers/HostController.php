@@ -170,7 +170,7 @@ class HostController extends \Centreon\Internal\Controller
         
         // Get Host Infos
         $datas = HostRepository::getHostShortInfo($params['id']);
-        $datas['output'] = nl2br($datas['output']);
+        $datas['output'] = nl2br(trim($datas['output']));
 
         /*$hostDetailDataEvent = new HostDetailData($params['id'], $datas);
 
