@@ -98,7 +98,9 @@
 {block name="javascript-bottom" append}
 <script>
 $(function() {
-  var hostReporting = new CalHeatMap();
+  var hostData,
+      eData = new $.Event('centreon.host_detail'),
+      hostReporting = new CalHeatMap();
   hostReporting.init({
     itemSelector: '#month_reporting',
     dataType: 'json',
@@ -109,6 +111,22 @@ $(function() {
     highlight: "now",
     loadOnInit: false
   });
+
+  function loadData() {
+    $.ajax({
+      url: "{url_for url='/realtime/host/[i:id]/data' params=$routeParams}",
+      type: 'get',
+      dataType: 'json',
+      success: function(data, textStatus, jqXHR) {
+        if (data.success) {
+          hostData = data.values;
+          $(document).trigger(eData);
+        }
+      }
+    });
+  }
+
+  loadData();
 });
 </script>
 {/block}
