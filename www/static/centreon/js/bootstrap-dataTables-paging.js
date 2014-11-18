@@ -62,7 +62,7 @@ $.extend($.fn.dataTableExt.oPagination, {
       };
  
       $(nPaging).append(
-       '<ul class="pagination">' +
+       '<ul class="pagination pagination-sm">' +
         '<li class="first disabled"><a href="#" title="' + oLang.sFirst + '"><span class="glyphicon glyphicon-fast-backward"></span></a></li>' +
         '<li class="prev disabled"><a href="#" title="' + oLang.sPrevious + '"><span class="glyphicon glyphicon-chevron-left"></span></a></li>' +
         '<li class="next disabled"><a href="#" title="' + oLang.sNext + '"><span class="glyphicon glyphicon-chevron-right"></span></a></li>' +
