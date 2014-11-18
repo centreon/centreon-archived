@@ -20,12 +20,12 @@
     /* Prepare templates */
     this.templateRows = null;
     if ( this.settings.templateRows !== "" ) {
-      this.templateRows = Hogan.compile( this.settings.templateRows, { delimiters: "<% %>" } );
+      this.templateRows = Hogan.compile( this.settings.templateRows );
     }
     this.templateCols = {};
     if ( this.templateRows === null ) {
       $.each( this.settings.templateCols, function( idx, tpl ) {
-        $this.templateCols[ idx ] = Hogan.compile( tpl , { delimiters: "<% %>" } );
+        $this.templateCols[ idx ] = Hogan.compile( tpl );
       });
     }
     

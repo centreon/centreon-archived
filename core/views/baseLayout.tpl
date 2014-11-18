@@ -13,70 +13,72 @@
 <!-- Wrapper -->
 <div id="wrapper">
   <nav class="navbar navbar-default navbar-static-top topbar" role="navigation">
-    <div class="navbar-header">
-      <a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}Centreon{/block}</a>
-    </div>
-    {environment}
-    <div class="navbar-right">
-      <ul class="nav navbar-nav navbar-left">
-        <li class="top-counter top-counter-host">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-desktop"></i>
-          </a>
-          <span class="label label-danger hide"></span>
-          <span class="label label-warning hide"></span>
-          <ul class="dropdown-menu">
-          </ul>
-        </li>
-        <li class="top-counter top-counter-service">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-rss"></i>
-          </a>
-          <span class="label label-danger hide"></span>
-          <span class="label label-warning hide"></span>
-          <ul class="dropdown-menu">
-          </ul>
-        </li>
-        <li class="top-counter top-counter-poller">
-          <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
-            <i class="fa fa-gears"></i>
-          </a>
-          <span class="label label-danger hide"></span>
-          <span class="label label-warning hide"></span>
-          <ul class="dropdown-menu"></ul>
-        </li>
-        <li class="notif">
-          <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
-            <i class="fa fa-envelope"></i>
-          </a>
-        </li>
-        <li class="time">
-          <span class="clock"></span>
-        </li>
-        <li class="user">
-          <a class="account dropdown-toggle" data-toggle="dropdown" href="#">
-            <div class="avatar">
-              <img src="http://www.gravatar.com/avatar/{$md5Email}/?rating=PG&size=18&default=" alt="Avatar" class="img-circle">
-            </div>
-          </a>
-          <ul class="dropdown-menu">
-            {environment_user}
-            <li class="divider"></li>
-            <li><a href="#"><i class="fa fa-user"></i> {t}Profile{/t}</a></li>
-            <li><a href="#"><i class="fa fa-cog"></i> {t}Settings{/t}</a></li>
-            <li><a href="#"><i class="fa fa-envelope"></i> {t}Messages{/t}</a></li>
-            <li class='divider'></li>
-            <!-- <li>
-              <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-light">Light</button>
-                <button type="button" class="btn btn-dark">Dark</button>
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}Centreon{/block}</a>
+      </div>
+      {environment}
+      <div class="navbar-right">
+        <ul class="nav navbar-nav navbar-left">
+          <li class="top-counter top-counter-host">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-desktop"></i>
+            </a>
+            <span class="label label-danger hide"></span>
+            <span class="label label-warning hide"></span>
+            <ul class="dropdown-menu">
+            </ul>
+          </li>
+          <li class="top-counter top-counter-service">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-rss"></i>
+            </a>
+            <span class="label label-danger hide"></span>
+            <span class="label label-warning hide"></span>
+            <ul class="dropdown-menu">
+            </ul>
+          </li>
+          <li class="top-counter top-counter-poller">
+            <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
+              <i class="fa fa-gears"></i>
+            </a>
+            <span class="label label-danger hide"></span>
+            <span class="label label-warning hide"></span>
+            <ul class="dropdown-menu"></ul>
+          </li>
+          <li class="notif">
+            <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
+              <i class="fa fa-envelope"></i>
+            </a>
+          </li>
+          <li class="time">
+            <span class="clock"></span>
+          </li>
+          <li class="user">
+            <a class="account dropdown-toggle" data-toggle="dropdown" href="#">
+              <div class="avatar">
+                <img src="http://www.gravatar.com/avatar/{$md5Email}/?rating=PG&size=18&default=" alt="Avatar" class="img-circle">
               </div>
-            </li>
-            <li class='divider'></li> -->
-            <li><a href="#" id="logout"><i class="glyphicon glyphicon-off"></i> {t}Logout{/t}</a></li>
-          </ul>
-        </li>
-      </ul>
+            </a>
+            <ul class="dropdown-menu">
+              {environment_user}
+              <li class="divider"></li>
+              <li><a href="#"><i class="fa fa-user"></i> {t}Profile{/t}</a></li>
+              <li><a href="#"><i class="fa fa-cog"></i> {t}Settings{/t}</a></li>
+              <li><a href="#"><i class="fa fa-envelope"></i> {t}Messages{/t}</a></li>
+              <li class='divider'></li>
+              <!-- <li>
+                <div class="btn-group btn-group-sm">
+                  <button type="button" class="btn btn-light">Light</button>
+                  <button type="button" class="btn btn-dark">Dark</button>
+                </div>
+              </li>
+              <li class='divider'></li> -->
+              <li><a href="#" id="logout"><i class="glyphicon glyphicon-off"></i> {t}Logout{/t}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
   {block name="full-content"}
