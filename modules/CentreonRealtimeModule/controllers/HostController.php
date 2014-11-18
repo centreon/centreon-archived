@@ -34,9 +34,12 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\HostdetailRepository;
-use \Centreon\Internal\Utils\Status;
-use \Centreon\Internal\Utils\Datetime;
+use CentreonRealtime\Repository\HostdetailRepository;
+use Centreon\Internal\Utils\Status;
+use Centreon\Internal\Utils\Datetime;
+use CentreonRealtime\Events\HostDetailData;
+use CentreonRealtime\Repository\HostRepository;
+use Centreon\Internal\Di;
 
 /**
  * Display service monitoring states
@@ -116,7 +119,7 @@ class HostController extends \Centreon\Internal\Controller
     /**
      * The page structure for display
      *
-      * @method get
+     * @method get
      * @route /realtime/host/list
      */
     public function listAction()
@@ -143,6 +146,28 @@ class HostController extends \Centreon\Internal\Controller
         $this->tpl->assign('objectName', 'Host');
 
         $this->tpl->display('file:[CentreonRealtimeModule]host_detail.tpl');
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /realtime/host/[i:id]/data
+     */
+    public function hostDetailDataAction()
+    {
+        $params = $this->getParams('named');
+        $events = Di::getDefault()->get('events');
+        $datas = array();
+        
+        // Get Host Infos
+        $datas = HostRepository::getHostShortInfo($params['id']);
+        $datas['output'] = nl2br($datas['output']);
+
+        /*$hostDetailDataEvent = new HostDetailData($params['id'], $datas);
+
+        $events->emit('centreon-realtime.host.detail.data', array($hostDetailDataEvent));*/
+
+        $this->router->response()->json($datas);
     }
 
     /**

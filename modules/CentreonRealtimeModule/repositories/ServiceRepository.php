@@ -35,10 +35,11 @@
 
 namespace CentreonRealtime\Repository;
 
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
-use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
-use \Centreon\Internal\Utils\Datetime;
-use \Centreon\Internal\Di;
+use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use CentreonRealtime\Models\Service as ServiceRealtime;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -70,177 +71,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      * @var string
      */
     public static $hook = 'displayServiceRtColumn';
-
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allService" class="allService" type="checkbox">' => 'service_id',
-        'Host Name' => 'name',
-        'Service Name' => 'description',
-        'Ico' => "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
-        'Status' => 'services.state',
-        'Last Check' => 'services.last_check',
-        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state_change) AS duration',
-        'Retry' => "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
-        'Output' => 'services.output'
-    );
     
-    /**
-     *
-     * @var type 
-     */
-    public static $additionalColumn = array('h.host_id');
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'service_id',
-        'name',
-        'description',
-        "'<i class=\'fa fa-bar-chart-o\'></i>' as ico",
-        'services.last_check',
-        'services.state',
-        '[SPECFIELD](unix_timestamp(NOW())-services.last_hard_state_change) AS duration',
-        "CONCAT(services.check_attempt, ' / ', services.max_check_attempts) as retry",
-        'services.output'
-    );
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = "h.host_id = services.host_id AND services.enabled = 1 AND h.enabled = 1 ";
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $linkedTables = "hosts h";
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'text',
-        'text',
-        'none',
-        array('select' => array(
-                'OK' => 0,
-                'Warning' => 1,
-                'Critical' => 2,
-                'Unknown' => 3,
-                'Pending' => 4
-            )
-        ),
-        'text',
-        'text',
-        'text',
-        'text'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array(
-        'state' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => '<span class="label label-success">OK</span>',
-                '1' => '<span class="label label-warning">Warning</span>',
-                '2' => '<span class="label label-danger">Critical</span>',
-                '3' => '<span class="label label-default">Unknown</span>',
-                '4' => '<span class="label label-info">Pending</span>',
-            )
-        ),
-        'service_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::service_description::'
-            )
-        ),
-        'description' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/realtime/service/[i:id]',
-                'routeParams' => array(
-                    'id' => '::service_id::'
-                ),
-                'linkName' => '::description::'
-            )
-        ),
-        'name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/realtime/host/[i:id]',
-                'routeParams' => array(
-                    'id' => '::host_id::'
-                ),
-                'linkName' => '::name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'text',
-        'text',
-        'text',
-        array('select' => array(
-                'OK' => 0,
-                'Warning' => 1,
-                'Critical' => 2,
-                'Unknown' => 3,
-                'Pending' => 4
-            )
-        ),
-        'text',
-        'text',
-        'text',
-        'text'
-    );
-    
-    /**
-     * Format data for datatable
-     * 
-     * @param array $resultSet
-     */
-    public static function formatDatas(&$resultSet)
-    {
-        $previousHost = '';
-        foreach ($resultSet as &$myServiceSet) {
-            // Set host_name
-            if ($myServiceSet['name'] === $previousHost) {
-                $myServiceSet['name'] = '';
-            } else {
-                $previousHost = $myServiceSet['name'];
-                $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span class="rt-tooltip">'.
-                    $icon.
-                    '&nbsp;'.$myServiceSet['name'].'</span>';
-            }
-            $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
-            $myServiceSet['description'] = '<span class="rt-tooltip">'.
-                $icon.
-                '&nbsp;'.$myServiceSet['description'].'</span>';
-            $myServiceSet['duration'] = Datetime::humanReadable(
-                $myServiceSet['duration'],
-                Datetime::PRECISION_FORMAT,
-                2
-            );
-        }
-    }
-
     /**
      * Get service status
      *
@@ -298,5 +129,35 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 break;
         }
         return "<span class='label $status pull-right overlay'>&nbsp;</span>";
+    }
+    
+    /**
+     * 
+     * @param int $host
+     * @param string $domain
+     * @return array
+     */
+    public static function getServicesByDomainForHost($host, $domain)
+    {
+        $servicesList = array();
+        
+        $db = Di::getDefault()->get('db_centreon');
+        $query = "SELECT service_id "
+            . "FROM rt_customvariables "
+            . "WHERE name = 'CENTREON_DOMAIN' "
+            . "AND value = :domain "
+            . "AND host_id = :host";
+        
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':host', $host, \PDO::PARAM_INT);
+        $stmt->bindParam(':domain', $domain, \PDO::PARAM_STR);
+        $stmt->execute();
+        $servicesIdList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        foreach ($servicesIdList as $serviceId) {
+            $servicesList[] = ServiceRealtime::get($serviceId);
+        }
+        
+        return $servicesList;
     }
 }
