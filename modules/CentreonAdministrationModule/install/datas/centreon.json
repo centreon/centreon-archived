@@ -1,6 +1,7 @@
 [
     "cfg_options",
     "cfg_organizations",
+    "cfg_environments",
     "cfg_contacts",
     "cfg_contactgroups",
     "cfg_contactgroups_contacts_relations",
