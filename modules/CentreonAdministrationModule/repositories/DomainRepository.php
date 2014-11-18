@@ -35,6 +35,8 @@
 
 namespace CentreonAdministration\Repository;
 
+use CentreonAdministration\Models\Domain;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -62,8 +64,27 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function create($givenParameters)
     {
-        $givenParameters['parent_id'] = \CentreonAdministration\Models\Domain::getIdByParameter('name', array('Application'));
+        $givenParameters['parent_id'] = Domain::getIdByParameter('name', array('Application'));
         $givenParameters['isroot'] = 0;
         parent::create($givenParameters);
+    }
+    
+    /**
+     * 
+     * @param string $domain
+     * @param boolean $withChildren
+     * @return array
+     */
+    public static function getDomain($domain, $withChildren = false)
+    {
+        $domainList = array();
+        $mainDomainId = Domain::getIdByParameter('name', array($domain));
+        if (count($mainDomainId) > 0) {
+            $domainList[] = Domain::get($mainDomainId[0]);
+            if ($withChildren) {
+                array_merge($domainList, Domain::getList('*', -1, 0, null, 'ASC', array('parent_id' => $mainDomainId[0]))); 
+            }
+        }
+        return $domainList;
     }
 }

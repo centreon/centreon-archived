@@ -67,167 +67,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
      * @var string
      */
     public static $hook = 'displayHostRtColumn';
-
-    /**
-     *
-     * @var array Default column for datatable
-     */
-    public static $datatableColumn = array(
-        '<input id="allService" class="allService" type="checkbox">' => 'host_id',
-        'Host Name' => 'name',
-        'Address' => 'address',
-        'Status' => 'state',
-        'Last Update' => 'last_check',
-        'Duration' => '[SPECFIELD](unix_timestamp(NOW())-last_hard_state_change) AS duration',
-        'Retry' => "CONCAT(check_attempt, ' / ', max_check_attempts) AS retry",
-        'Output' => 'output'
-    );
     
-    /**
-     *
-     * @var type 
-     */
-    public static $additionalColumn = array();
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $researchIndex = array(
-        'host_id',
-        'name',
-        'address',
-        'state',
-        'last_check',
-        '[SPECFIELD](unix_timestamp(NOW())-last_hard_state_change) AS duration',
-        "CONCAT(check_attempt, ' / ', max_check_attempts) AS retry",
-        'output'
-    );
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $specificConditions = " enabled = 1 ";
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $linkedTables = "";
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableHeader = array(
-        'none',
-        'text',
-        'text',
-        array('select' => array(
-                'OK' => 0,
-                'Warning' => 1,
-                'Critical' => 2,
-                'Unknown' => 3,
-                'Pending' => 4
-            )
-        ),
-        'text',
-        'text',
-        'text',
-        'text'
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $columnCast = array(
-        'host_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array(
-                'displayName' => '::name::'
-            )
-        ),
-        'state' => array(
-            'type' => 'select',
-            'parameters' => array(
-                '0' => '<span class="label label-success">OK</span>',
-                '1' => '<span class="label label-warning">Warning</span>',
-                '2' => '<span class="label label-danger">Critical</span>',
-                '3' => '<span class="label label-default">Unknown</span>',
-                '4' => '<span class="label label-info">Pending</span>',
-            )
-        ),
-        'address' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/realtime/host/[i:id]',
-                'routeParams' => array(
-                    'id' => '::host_id::'
-                ),
-                'linkName' => '::address::'
-            )
-        ),
-        'name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/realtime/host/[i:id]',
-                'routeParams' => array(
-                    'id' => '::host_id::'
-                ),
-                'linkName' => '::name::'
-            )
-        )
-    );
-    
-    /**
-     *
-     * @var array 
-     */
-    public static $datatableFooter = array(
-        'none',
-        'text',
-        'text',
-        array('select' => array(
-                'OK' => 0,
-                'Warning' => 1,
-                'Critical' => 2,
-                'Unknown' => 3,
-                'Pending' => 4
-            )
-        ),
-    );
-    
-    /**
-     * Format data for datatable
-     * 
-     * @param array $resultSet
-     */
-    public static function formatDatas(&$resultSet)
-    {
-        
-        $previousHost = '';
-        foreach ($resultSet as &$myHostSet) {
-            // Set host_name
-            if ($myHostSet['name'] === $previousHost) {
-                $myHostSet['name'] = '';
-            } else {
-                $previousHost = $myHostSet['name'];
-                $myHostSet['name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
-                    $myHostSet['name']
-                ).'&nbsp;&nbsp;'.$myHostSet['name'];
-            }
-            $myHostSet['duration'] = Datetime::humanReadable(
-                $myHostSet['duration'],
-                Datetime::PRECISION_FORMAT,
-                2
-            );
-            
-        }
-        
-    }
-
     /**
      * Get service status
      *
@@ -247,6 +87,37 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
             return $row['state'];
         }
         return -1;
+    }
+    
+    /**
+     * 
+     * @param type $hostId
+     * @return type
+     */
+    public static function getHostShortInfo($hostId)
+    {
+        $finalInfo = array();
+        
+        // Initializing connection
+        $di = \Centreon\Internal\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $stmt = $dbconn->prepare('SELECT state as state, output as output FROM rt_hosts WHERE host_id = ? LIMIT 1');
+        $stmt->execute(array($hostId));
+        
+        $infos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if (count($infos) > 0) {
+            $finalInfo['status'] = $infos[0]['state'];
+            $explodedOutput = split("\n", $infos[0]['output']);
+            unset($explodedOutput[0]);
+            $finalInfo['output'] = implode("\n", $explodedOutput);
+        } else {
+            $finalInfo['status'] = -1;
+            $finalInfo['output'] = '';
+        }
+        
+        
+        return $finalInfo;
     }
 
     /**
