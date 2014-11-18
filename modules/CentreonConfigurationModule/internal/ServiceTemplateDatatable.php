@@ -36,7 +36,10 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Di;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\ServicetemplateRepository;
 
 /**
  * Description of ServiceTemplateDatatable
@@ -212,11 +215,24 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $router = Di::getDefault()->get('router');
+
         foreach ($resultSet as &$myServiceSet) {
+            $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
+                '/configuration/service/snapshot/'
+            ).
+            $myServiceSet['service_id'].
+            '"><span class="overlay">'.
+            ServiceRepository::getIconImage($myServiceSet['service_id']).
+            '&nbsp;'.
+            $myServiceSet['service_description'].
+            '</span></span>';
+
+
             // Set Tpl Chain
             $tplStr = null;
             if (isset($myServiceSet["service_template_model_stm_id"])) {
-                $tplArr = \CentreonConfiguration\Repository\ServicetemplateRepository::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
+                $tplArr = ServicetemplateRepository::getMyServiceTemplateModels($myServiceSet["service_template_model_stm_id"]);
                 $tplRoute = str_replace(
                                         "//",
                                         "/",
@@ -228,11 +244,16 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
                                                      )
                                         );
                 if (isset($tplArr['description'])) {
-                    $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";
+                    $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/configuration/servicetemplate/viewconf/').
+                        $myServiceSet['service_template_model_stm_id'].
+                        '"><a href="'.
+                        $tplRoute.
+                        '" class="overlay">'.
+                        $tplArr['description'].
+                        '</a></span>';
                 }
             }
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
-
         }
     }
 }

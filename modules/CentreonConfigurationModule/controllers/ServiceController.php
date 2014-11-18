@@ -37,6 +37,10 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Host;
+use CentreonConfiguration\Models\Relation\Host\Service as HostService;
 
 class ServiceController extends \CentreonConfiguration\Controllers\BasicController
 {
@@ -98,19 +102,19 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
      */
     public function formListAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParams = $this->getParams('get');
-        $serviceId = \CentreonConfiguration\Models\Service::getPrimaryKey();
-        $serviceDescription = \CentreonConfiguration\Models\Service::getUniqueLabelField();
-        $hostId = \CentreonConfiguration\Models\Host::getPrimaryKey();
-        $hostName = \CentreonConfiguration\Models\Host::getUniqueLabelField();
+        $serviceId = Service::getPrimaryKey();
+        $serviceDescription = Service::getUniqueLabelField();
+        $hostId = Host::getPrimaryKey();
+        $hostName = Host::getUniqueLabelField();
         $filters = array(
             $serviceDescription => '%'.$requestParams['q'].'%',
             $hostName => '%'.$requestParams['q'].'%',
         );
-        $list = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
+        $list = HostService::getMergedParameters(
             array($hostId, $hostName),
             array($serviceId, $serviceDescription),
             -1,
@@ -137,19 +141,19 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
      */
     public function formListCompleteAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParams = $this->getParams('get');
-        $serviceId = \CentreonConfiguration\Models\Service::getPrimaryKey();
-        $serviceDescription = \CentreonConfiguration\Models\Service::getUniqueLabelField();
-        $hostId = \CentreonConfiguration\Models\Host::getPrimaryKey();
-        $hostName = \CentreonConfiguration\Models\Host::getUniqueLabelField();
+        $serviceId = Service::getPrimaryKey();
+        $serviceDescription = Service::getUniqueLabelField();
+        $hostId = Host::getPrimaryKey();
+        $hostName = Host::getUniqueLabelField();
         $filters = array(
             $serviceDescription => '%'.$requestParams['q'].'%',
             $hostName => '%'.$requestParams['q'].'%',
         );
-        $list = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
+        $list = HostService::getMergedParameters(
             array($hostId, $hostName),
             array($serviceId, $serviceDescription),
             -1,
@@ -520,7 +524,7 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
      */
     public function iconForServiceAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -558,7 +562,9 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
     public function snapshotAction()
     {
         $params = $this->getParams();
-        $this->tpl->assign('id', $params['id']);
+        $data = ServiceRepository::getConfigurationData($params['id']);
+        list($checkdata, $notifdata) = ServiceRepository::formatDataForTooltip($data);
+        $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
     }
 }

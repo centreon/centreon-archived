@@ -623,7 +623,6 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
         $data = HostRepository::getConfigurationData($params['id']);
         list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
-        $this->tpl->assign('notifdata', $notifdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
 

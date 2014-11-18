@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Controllers;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
 
 /**
  * 
@@ -80,6 +81,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      */
     public function listAction()
     {
+        $this->tpl->addJs('centreon.overlay.js');
         parent::listAction();
     }
 
@@ -470,7 +472,9 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
     public function displayConfAction()
     {
         $params = $this->getParams();
-        $this->tpl->assign('id', $params['id']);
+        $data = ServiceRepository::getConfigurationData($params['id']);
+        list($checkdata, $notifdata) = ServiceRepository::formatDataForTooltip($data);
+        $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
     }
 

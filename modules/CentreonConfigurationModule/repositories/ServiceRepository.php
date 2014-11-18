@@ -35,6 +35,10 @@
 
 namespace CentreonConfiguration\Repository;
 
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Service;
+use Centreon\Internal\Utils\YesNoDefault;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -87,7 +91,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     {
         
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         $tab = array();
@@ -123,7 +127,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     public function getNotificicationsStatus($service_id)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         while (1) {
@@ -154,7 +158,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     public static function getMyServiceTemplateModels($service_template_id)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $tplArr = null;
         
@@ -194,7 +198,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     public static function getMyServiceAlias($service_id)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         $tab = array();
@@ -229,7 +233,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     public static function getIconImage($service_id)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         
@@ -274,7 +278,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getContacts($service_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -304,7 +308,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getContactGroups($service_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -325,5 +329,88 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
             $contactgroupList .= $row["cg_name"];
         }
         return $contactgroupList;
+    }
+
+    /**
+     * Get configuration data of a service
+     * 
+     * @param int $serviceId
+     * @return array
+     */
+    public static function getConfigurationData($serviceId)
+    {
+        return Service::getParameters($serviceId, "*");
+    }
+
+    /**
+     * Format data so that it can be displayed in tooltip
+     *
+     * @param array $data
+     * @return array array($checkdata, $notifdata)
+     */
+    public static function formatDataForTooltip($data)
+    {
+        /* Check data */
+        $checkdata = array();
+        $checkdata[] = array(
+            'label' => _('Command'),
+            'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id'])
+        );
+        $checkdata[] = array(
+            'label' => _('Time period'),
+            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id'])
+        );
+        $checkdata[] = array(
+            'label' => _('Max check attempts'),
+            'value' => $data['service_max_check_attempts']
+        );
+        $checkdata[] = array(
+            'label' => _('Check interval'),
+            'value' => $data['service_normal_check_interval']
+        );
+        $checkdata[] = array(
+            'label' => _('Retry check interval'),
+            'value' => $data['service_retry_check_interval']
+        );
+        $checkdata[] = array(
+            'label' => _('Active checks enabled'),
+            'value' => YesNoDefault::toString($data['service_active_checks_enabled'])
+        );
+        $checkdata[] = array(
+            'label' => _('Passive checks enabled'),
+            'value' => $data['service_passive_checks_enabled']
+        );
+
+        /* Notification data */
+        $notifdata = array();
+        $notifdata[] = array(
+            'label' => _('Notification enabled'),
+            'value' => YesNoDefault::toString($data['service_notifications_enabled'])
+        );
+        $notifdata[] = array(
+            'label' => _('Notification interval'),
+            'value' => $data['service_notification_interval']
+        );
+        $notifdata[] = array(
+            'label' => _('Time period'),
+            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
+        );
+        $notifdata[] = array(
+            'label' => _('Options'),
+            'value' => $data['service_notification_options']
+        );
+        $notifdata[] = array(
+            'label' => _('First notification delay'),
+            'value' => $data['service_first_notification_delay']
+        );
+        $notifdata[] = array(
+            'label' => _('Contacts'),
+            'value' => ''
+        );
+        $notifdata[] = array(
+            'label' => _('Contact groups'),
+            'value' => ''
+        );
+        return array($checkdata, $notifdata);
     }
 }
