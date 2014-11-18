@@ -25,7 +25,7 @@
     },
     {
         "domain_id" : 5,
-        "name": "Cpu",
+        "name": "CPU",
         "description": "Cpu domain",
         "isroot": 0,
         "parent_id": 3
@@ -50,5 +50,12 @@
         "description": "File System domain",
         "isroot": 0,
         "parent_id": 3
+    },
+    {
+        "domain_id" : 9,
+        "name": "Traffic",
+        "description": "Traffic domain",
+        "isroot": 0,
+        "parent_id": 2
     }
 ]
