@@ -84,9 +84,9 @@ class ConfigCorrelationRepository
         $xml->startElement('conf');
 
         /* Declare Host */
-        $query = "SELECT h.host_id, p.poller_id "
-            . "FROM cfg_hosts h, cfg_pollers_hosts_relations p "
-            . "WHERE h.host_id = p.host_id ORDER BY h.host_id";
+        $query = "SELECT h.host_id, h.poller_id 
+            FROM cfg_hosts h 
+            ORDER BY h.host_id";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('host');
@@ -96,11 +96,10 @@ class ConfigCorrelationRepository
         }
         
         /* Declare Service */
-        $query = "SELECT s.service_id, h.host_id, hp.poller_id "
-            . "FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations ns, cfg_pollers_hosts_relations hp "
-            . "WHERE h.host_id = ns.host_host_id "
-            . "AND s.service_id = ns.service_service_id "
-            . "AND hp.host_id = h.host_id";
+        $query = "SELECT s.service_id, h.host_id, h.poller_id
+            FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations ns
+            WHERE h.host_id = ns.host_host_id
+            AND s.service_id = ns.service_service_id ";
         $stmt = $dbconn->query($query);
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('service');

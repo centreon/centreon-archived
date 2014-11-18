@@ -512,29 +512,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function pollerForHostAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $pollerList = Poller::getMergedParameters(
-            array('id', 'name'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('cfg_hosts.host_id' => $requestParam['id']),
-            "AND"
-        );
-        
-        $finalPollerList = array();
-        if (count($pollerList) > 0) {
-            $finalPollerList["id"] = $pollerList[0]['id'];
-            $finalPollerList["text"] = $pollerList[0]['name'];
-        }
-        
-        $router->response()->json($finalPollerList);
+        parent::getSimpleRelation('poller_id', '\CentreonConfiguration\Models\Poller');
     }
     
     /**

@@ -60,6 +60,15 @@
                 </field>
             </block>
 			<block name="Host check properties">
+				<field name="poller_id" label="Poller" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<help>Define the poller that will monitor the host</help>
+                    <attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/configuration/poller/formlist</defaultValuesRoute>
+						<listValuesRoute>/configuration/host/[i:id]/poller</listValuesRoute>
+						<multiple>false</multiple>
+					</attributes>
+				</field>
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help>This directive is used to specify the time period during which active checks of this host can be executed.</help>
 					<attributes>

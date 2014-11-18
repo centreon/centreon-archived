@@ -454,10 +454,10 @@ class ServiceRepository extends Repository
         $db = Di::getDefault()->get('db_centreon');
 
         $sql = "SELECT s.service_id, s.service_description
-            FROM cfg_services s, cfg_hosts_services_relations hsr, cfg_pollers_hosts_relations phr
+            FROM cfg_services s, cfg_hosts_services_relations hsr, cfg_hosts h
             WHERE s.service_id = hsr.service_service_id 
-            AND hsr.host_host_id = phr.host_id
-            AND phr.poller_id = ?";
+            AND hsr.host_host_id = h.host_id
+            AND h.poller_id = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($pollerId));
         $arr = array();
