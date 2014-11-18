@@ -46,7 +46,7 @@
     },
     {
         "domain_id" : 8,
-        "name": "FS",
+        "name": "FileSystem",
         "description": "File System domain",
         "isroot": 0,
         "parent_id": 3
