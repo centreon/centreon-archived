@@ -143,6 +143,9 @@ class HostController extends \Centreon\Internal\Controller
         $this->tpl->assign('hostname', $host[0]['host_name']);
         $this->tpl->assign('ipaddress', $host[0]['host_address']);
         $this->tpl->assign('applications', array());
+        $this->tpl->assign('routeParams', array(
+            'id' => $params['id']
+        ));
 
         $this->tpl->addCss('cal-heatmap.css');
         $this->tpl->addJs('d3.min.js')
