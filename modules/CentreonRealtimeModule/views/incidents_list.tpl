@@ -27,40 +27,40 @@
 <script>
 var incidentExtInfoTmpl = "<div class='span-8'> \
 <table class='table table-condensed span-12'> \
-  <tbody> \
-  <%#children%> \
+  <tbody> \{literal}
+  {{{#children}}} \
   <tr> \
-    <td class='centreon-status-<%status%> span-2'><%name%></td> \
-    <td class='span-10'><%output%></td> \
+    <td class='centreon-status-{{{status}}} span-2'>{{{name}}}</td> \
+    <td class='span-10'>{{{output}}}</td> \
   </tr> \
-  <%/children%> \
+  {{{/children}}} \
   </tbody> \
 </table> \
-</div>";
+</div>";{/literal}
 
 
 $(function() {
-  var incidentExtInfoCompiled = Hogan.compile( incidentExtInfoTmpl, { delimiters: "<% %>" } );
+  var incidentExtInfoCompiled = Hogan.compile( incidentExtInfoTmpl );
 
   $("#incidents").centreonTableInfiniteScroll({
     "ajaxUrlGetScroll": "{url_for url="/realtime/incident"}",
     "templateRows": "<tr> \
-      <td class='span-1'> \
-        <a href='#' class='ext_infos' data-id='<%issue_id%>'><i class='fa fa-plus-square-o'></i></a> \
-        <a href='<%id%>'><i class='fa fa-list-alt'></i></a> \
-        <a href='<%url_graph%>'><i class='fa fa-sitemap'></i></a> \
+      <td class='span-1'> \{literal}
+        <a href='#' class='ext_infos' data-id='{{{issue_id}}}'><i class='fa fa-plus-square-o'></i></a> \
+        <a href='{{{id}}}'><i class='fa fa-list-alt'></i></a> \
+        <a href='{{{url_graph}}}'><i class='fa fa-sitemap'></i></a> \
         <a href='#'><i class='fa fa-ticket'></i></a> \
       </tb> \
-      <td class='span-2'><%host_name%></td> \
-      <td class='span-2'><%service_desc%></td> \
-      <td class='span-1 centreon-status-<%state%>'><%status%></td> \
-      <td class='span-2'><%start_time%></td> \
-      <td class='span-2'><%duration%></td> \
-      <td class='span-2'><%output%></td> \
+      <td class='span-2'>{{{host_name}}}</td> \
+      <td class='span-2'>{{{service_desc}}}</td> \
+      <td class='span-1 centreon-status-{{{state}}}'>{{{status}}}</td> \
+      <td class='span-2'>{{{start_time}}}</td> \
+      <td class='span-2'>{{{duration}}}</td> \
+      <td class='span-2'>{{{output}}}</td> \
     </tr> \
-    <tr style='display: none;' id='ext_infos_<%issue_id%>'> \
+    <tr style='display: none;' id='ext_infos_{{{issue_id}}}'> \
       <td class='span-12 incident-extended-info'>&nbsp;</td> \
-    </tr>"
+    </tr>"{/literal}
   });
 
   $("#incidents > tbody").on("click", "a.ext_infos", function(e) {
