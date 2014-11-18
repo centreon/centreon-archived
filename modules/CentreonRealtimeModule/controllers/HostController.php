@@ -141,9 +141,18 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function hostDetailAction()
     {
-        /* Datatable */
-        $this->tpl->assign('moduleName', 'CentreonRealtime');
-        $this->tpl->assign('objectName', 'Host');
+        $params = $this->getParams();
+        $host = HostdetailRepository::getRealtimeData($params['id']);
+        $this->tpl->assign('hostname', $host[0]['host_name']);
+        $this->tpl->assign('ipaddress', $host[0]['host_address']);
+        $this->tpl->assign('applications', array());
+        $this->tpl->assign('routeParams', array(
+            'id' => $params['id']
+        ));
+
+        $this->tpl->addCss('cal-heatmap.css');
+        $this->tpl->addJs('d3.min.js')
+             ->addJs('cal-heatmap.min.js');
 
         $this->tpl->display('file:[CentreonRealtimeModule]host_detail.tpl');
     }

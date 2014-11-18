@@ -82,14 +82,14 @@ class PollerRepository extends Repository
                 ((object_type = 'host' AND
                 object_id IN (
                     SELECT host_id
-                        FROM cfg_pollers_hosts_relations
+                        FROM cfg_hosts
                         WHERE poller_id = ?
                 )) OR
                     (object_type = 'service') AND
                         object_id IN (
                     SELECT service_service_id
-                    FROM cfg_pollers_hosts_relations nhr, cfg_hosts_services_relations hsr
-                    WHERE nhr.poller_id = ? AND hsr.host_host_id = nhr.host_id
+                    FROM cfg_hosts_services_relations hsr, cfg_hosts h
+                    WHERE h.poller_id = ? AND hsr.host_host_id = h.host_id
         ))";
         $stmt = $db->prepare($request);
         $stmt->execute(array($lastRestart, $pollerId, $pollerId));

@@ -31,19 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
+namespace CentreonEngine\Events;
 
-namespace CentreonConfiguration\Models\Relation\Host;
-
-use \Centreon\Models\CentreonRelationModel;
-
-class Poller extends CentreonRelationModel
-{
-    protected static $relationTable = "cfg_pollers_hosts_relations";
-    protected static $firstKey = "poller_id";
-    protected static $secondKey = "host_id";
-    public static $firstObject = "\CentreonConfiguration\Models\Poller";
-    public static $secondObject = "\CentreonConfiguration\Models\Host";
-}
+/**
+ * This event allows modules to generate extra custom macros for services
+ */
+class GetMacroService extends GetMacro {}

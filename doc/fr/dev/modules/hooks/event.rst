@@ -159,3 +159,87 @@ Exemple
           testConfig($tmpDir);
         }
    }
+
+centreon-engine.get.macro.host
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Description
+###########
+
+Permet de générer des custom macro supplémentaires pour les hôtes, dans les fichiers de 
+configuration.
+
+Paramètres
+##########
+
+Nom de la classe: \CentreonEngine\Events\GetMacroHost
+
+pollerId::
+  L'identifiant du collecteur.
+
+.. highlight:: php
+
+   <?php
+
+   $event = new GetMacroHost($pollerId);
+
+Exemple
+#######
+
+.. highlight:: php
+
+   <?php
+
+   namespace \Module\Listeners\CentreonEngine;
+
+   class GetMacroHost {
+        static public function execute($event) {
+          $hostId = 14;
+          $macroName = 'TEST';
+          $macroValue = 42;
+
+          $event->setMacro($hostId, $macroName, $macroValue);
+        }
+   }
+
+centreon-engine.get.macro.service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Description
+###########
+
+Permet de générer des custom macro supplémentaires pour les services, dans les fichiers de 
+configuration.
+
+Paramètres
+##########
+
+Nom de la classe: \CentreonEngine\Events\GetMacroService
+
+pollerId::
+  L'identifiant du collecteur.
+
+.. highlight:: php
+
+   <?php
+
+   $event = new GetMacroHost($pollerId);
+
+Exemple
+#######
+
+.. highlight:: php
+
+   <?php
+
+   namespace \Module\Listeners\CentreonEngine;
+
+   class GetMacroService {
+        static public function execute($event) {
+          $serviceId = 28;
+          $macroName = 'TEST';
+          $macroValue = 42;
+
+          $event->setMacro($hostId, $macroName, $macroValue);
+        }
+   }

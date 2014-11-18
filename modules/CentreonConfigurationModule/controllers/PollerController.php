@@ -84,24 +84,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      */
     public function formListAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParams = $this->getParams('get');
-        
-        $pollerObj = new PollerModel();
-        $filters = array('name' => $requestParams['q'].'%');
-        $pollerList = $pollerObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
-        
-        $finalPollerList = array();
-        foreach ($pollerList as $poller) {
-            $finalPollerList[] = array(
-                "id" => $poller['id'],
-                "text" => $poller['name']
-            );
-        }
-        
-        $router->response()->json($finalPollerList);
+        parent::formListAction();
     }
     
     /**

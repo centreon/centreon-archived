@@ -81,8 +81,9 @@ class HostTemplateRepository
      * @param int $poller_id
      * @param string $path
      * @param string $filename
+     * @param CentreonEngine\Events\GetMacroHost $hostMacroEvent
      */
-    public static function generate(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename, $hostMacroEvent)
     {
         $di = Di::getDefault();
 
@@ -96,7 +97,14 @@ class HostTemplateRepository
         $content = array();
 
         /* Get information into the database. */
-        $query = static::getQuery();
+        $fields = static::getFields();
+
+        $query = "SELECT $fields
+            FROM cfg_hosts 
+            WHERE host_activate = '1' 
+            AND host_register = ? 
+            ORDER BY host_name"; 
+
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array(static::$register));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -170,6 +178,13 @@ class HostTemplateRepository
                 }
             }
 
+            /* Macros that can be generated from other modules */
+            $extraMacros = $hostMacroEvent->getMacro($host_id);
+            foreach ($extraMacros as $macroName => $macroValue) {
+                $macroName = "_{$macroName}";
+                $tmpData[$macroName] = $macroValue;
+            }
+
             $tmpData['register'] = 0;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
@@ -184,9 +199,9 @@ class HostTemplateRepository
      *
      * @return string
      */
-    protected static function getQuery()
+    protected static function getFields()
     {
-        $field = "host_id, host_name, host_alias, host_address, display_name, "
+        $fields = "host_id, host_name, host_alias, host_address, display_name, "
             . "host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, "
             . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
             . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
@@ -197,8 +212,6 @@ class HostTemplateRepository
             . "contact_additive_inheritance, timeperiod_tp_id2 AS notification_period, "
             . "host_stalking_options, host_register ";
 
-        /* Get information into the database. */
-        $query = "SELECT $field FROM cfg_hosts WHERE host_activate = '1' AND host_register = ? ORDER BY host_name";
-        return $query;
+        return $fields;
     }
 }

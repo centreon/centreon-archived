@@ -52,9 +52,10 @@ class ServiceRepository extends ServicetemplateRepository
     /**
      * 
      * @param int $host_id
+     * @param CentreonEngine\Events\GetMacroService $serviceMacroEvent
      * @return int
      */
-    public static function generate($host_id)
+    public static function generate($host_id, $serviceMacroEvent)
     {
         $di = Di::getDefault();
 
@@ -163,6 +164,13 @@ class ServiceRepository extends ServicetemplateRepository
                     }
                 }
             }
+
+            /* Macros that can be generated from other modules */
+            $extraMacros = $serviceMacroEvent->getMacro($service_id);
+            foreach ($extraMacros as $macroName => $macroValue) {
+                $macroName = "_{$macroName}";
+                $tmpData[$macroName] = $macroValue;
+            } 
 
             $tmpData["register"] = 1;
             $tmp["content"] = $tmpData;
