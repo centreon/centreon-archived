@@ -118,4 +118,23 @@ abstract class Repository extends FormRepository
             );
         }
     }
+
+    /**
+     * Get object name
+     *
+     * @param string $objectType
+     * @param int $objectId
+     * @return string
+     */
+    protected static function getObjectName($objectType, $objectId)
+    {
+        if ($objectId) {
+            $field = $objectType::getUniqueLabelField();
+            $object = $objectType::getParameters($objectId, $field);
+            if (isset($object[$field])) {
+                return $object[$field];
+            }
+        }
+        return "";
+    }
 }

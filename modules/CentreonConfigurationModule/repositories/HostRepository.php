@@ -35,10 +35,11 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \CentreonConfiguration\Models\Host;
-use \CentreonConfiguration\Models\Command;
-use \CentreonConfiguration\Models\Timeperiod;
-use \Centreon\Internal\Utils\YesNoDefault;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Host;
+use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Models\Timeperiod;
+use Centreon\Internal\Utils\YesNoDefault;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -94,7 +95,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
     public static function getIconImage($host_name)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         
@@ -149,7 +150,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getContacts($host_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -179,7 +180,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getContactGroups($host_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -214,25 +215,6 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
     }
 
     /**
-     * Get object name
-     *
-     * @param string $objectType
-     * @param int $objectId
-     * @return string
-     */
-    protected static function getObjectName($objectType, $objectId)
-    {
-        if ($objectId) {
-            $field = $objectType::getUniqueLabelField();
-            $object = $objectType::getParameters($objectId, $field);
-            if (isset($object[$field])) {
-                return $object[$field];
-            }
-        }
-        return "";
-    }
-
-    /**
      * Format data so that it can be displayed in tooltip
      *
      * @param array $data
@@ -244,11 +226,11 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         $checkdata = array();
         $checkdata[] = array(
             'label' => _('Command'),
-            'value' => self::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id'])
+            'value' => static::getObjectName('\CentreonConfiguration\Models\Command', $data['command_command_id'])
         );
         $checkdata[] = array(
             'label' => _('Time period'),
-            'value' => self::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id'])
+            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id'])
         );
         $checkdata[] = array(
             'label' => _('Max check attempts'),
@@ -283,7 +265,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
         );
         $notifdata[] = array(
             'label' => _('Time period'),
-            'value' => self::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
+            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
         );
         $notifdata[] = array(
             'label' => _('Options'),

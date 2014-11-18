@@ -36,11 +36,11 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
-use \CentreonConfiguration\Repository\ServiceRepository;
-use \CentreonConfiguration\Repository\HostRepository;
-use \CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
-use \Centreon\Internal\Di;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
+use Centreon\Internal\Di;
 
 /**
  * Description of ServiceDatatable
