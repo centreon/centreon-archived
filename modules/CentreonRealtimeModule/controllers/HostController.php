@@ -166,17 +166,24 @@ class HostController extends \Centreon\Internal\Controller
     {
         $params = $this->getParams('named');
         $events = Di::getDefault()->get('events');
+        
+        $success = true;
         $datas = array();
         
         // Get Host Infos
         $datas = HostRepository::getHostShortInfo($params['id']);
         $datas['output'] = nl2br(trim($datas['output']));
 
-        /*$hostDetailDataEvent = new HostDetailData($params['id'], $datas);
+        $hostDetailDataEvent = new HostDetailData($params['id'], $datas);
 
-        $events->emit('centreon-realtime.host.detail.data', array($hostDetailDataEvent));*/
+        $events->emit('centreon-realtime.host.detail.data', array($hostDetailDataEvent));
 
-        $this->router->response()->json($datas);
+        $this->router->response()->json(
+            array(
+                'success' => $success,
+                'values' => $datas
+            )
+        );
     }
 
     /**
