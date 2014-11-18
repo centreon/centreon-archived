@@ -79,8 +79,9 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
      * @param int $poller_id
      * @param string $path
      * @param string $filename
+     * @param CentreonEngine\Events\GetMacroService $serviceMacroEvent
      */
-    public static function generate(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename, $serviceMacroEvent)
     {
         $di = Di::getDefault();
 
@@ -187,6 +188,13 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                         $tmpData[$name] = $macro['macro_value'];
                     }
                 }
+            }
+
+            /* Macros that can be generated from other modules */
+            $extraMacros = $serviceMacroEvent->getMacro($service_id);
+            foreach ($extraMacros as $macroName => $macroValue) {
+                $macroName = "_{$macroName}";
+                $tmpData[$macroName] = $macroValue;
             }
 
             $tmpData['register'] = 0;

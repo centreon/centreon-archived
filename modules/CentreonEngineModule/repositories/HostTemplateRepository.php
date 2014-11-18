@@ -81,8 +81,9 @@ class HostTemplateRepository
      * @param int $poller_id
      * @param string $path
      * @param string $filename
+     * @param CentreonEngine\Events\GetMacroHost $hostMacroEvent
      */
-    public static function generate(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename, $hostMacroEvent)
     {
         $di = Di::getDefault();
 
@@ -168,6 +169,13 @@ class HostTemplateRepository
                         $tmpData[$name] = $macro['macro_value'];
                     }
                 }
+            }
+
+            /* Macros that can be generated from other modules */
+            $extraMacros = $hostMacroEvent->getMacro($host_id);
+            foreach ($extraMacros as $macroName => $macroValue) {
+                $macroName = "_{$macroName}";
+                $tmpData[$macroName] = $macroValue;
             }
 
             $tmpData['register'] = 0;

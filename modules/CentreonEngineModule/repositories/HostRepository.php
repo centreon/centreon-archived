@@ -60,8 +60,10 @@ class HostRepository extends HostTemplateRepository
      * @param int $poller_id
      * @param string $path
      * @param string $filename
+     * @param CentreonEngine\Events\GetMacroHost $hostMacroEvent
+     * @param CentreonEngine\Events\GetMacroService $serviceMacroEvent
      */
-    public static function generate(& $filesList, $poller_id, $path, $filename)
+    public static function generate(& $filesList, $poller_id, $path, $filename, $hostMacroEvent, $serviceMacroEvent)
     {
         $di = Di::getDefault();
 
@@ -153,12 +155,19 @@ class HostRepository extends HostTemplateRepository
                 }
             }
 
+           /* Macros that can be generated from other modules */
+            $extraMacros = $hostMacroEvent->getMacro($host_id);
+            foreach ($extraMacros as $macroName => $macroValue) {
+                $macroName = "_{$macroName}";
+                $tmpData[$macroName] = $macroValue;
+            } 
+
             $tmpData['register'] = 1;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
            
             /* Write Service Properties */
-            $services = ServiceRepository::generate($host_id);
+            $services = ServiceRepository::generate($host_id, $serviceMacroEvent);
             foreach ($services as $contentService) {
                 $content[] = $contentService;
             }

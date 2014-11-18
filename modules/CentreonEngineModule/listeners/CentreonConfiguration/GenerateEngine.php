@@ -49,6 +49,8 @@ use CentreonEngine\Repository\UserRepository;
 use CentreonEngine\Repository\UsergroupRepository;
 use CentreonEngine\Repository\ConfigGenerateResourcesRepository;
 use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
+use CentreonEngine\Events\GetMacroHost as HostMacroEvent;
+use CentreonEngine\Events\GetMacroService as ServiceMacroEvent;
 
 class GenerateEngine
 {
@@ -169,12 +171,21 @@ class GenerateEngine
         );
         $event->setOutput('servicegroups.cfg');
 
+        /* Retrieve all extra macros by emitting event */
+        $events = Di::getDefault()->get('events');
+        $hostMacroEvent = new HostMacroEvent($event->getPollerId());
+        $events->emit('centreon-engine.get.macro.host', array($hostMacroEvent));
+
+        $serviceMacroEvent = new ServiceMacroEvent($event->getPollerId());
+        $events->emit('centreon-engine.get.macro.service', array($serviceMacroEvent));
+
         /* Templates config files */
         HostTemplateRepository::generate(
             static::$fileList,
             $event->getPollerId(),
             static::$path,
-            "objects/hostTemplates.cfg"
+            "objects/hostTemplates.cfg",
+            $hostMacroEvent
         );
         $event->setOutput('hostTemplates.cfg');
 
@@ -182,12 +193,20 @@ class GenerateEngine
             static::$fileList,
             $event->getPollerId(),
             static::$path,
-            "objects/serviceTemplates.cfg"
+            "objects/serviceTemplates.cfg",
+            $hostMacroEvent
         );
         $event->setOutput('serviceTemplate.cfg');
 
         /* Monitoring Resources files */
-        HostRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "resources/");
+        HostRepository::generate(
+            static::$fileList, 
+            $event->getPollerId(), 
+            static::$path, 
+            "resources/",
+            $hostMacroEvent,
+            $serviceMacroEvent
+        );
         $event->setOutput('host configuration files');
     } 
 }

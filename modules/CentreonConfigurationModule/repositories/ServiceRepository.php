@@ -38,13 +38,14 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Service;
 use Centreon\Internal\Utils\YesNoDefault;
+use CentreonConfiguration\Repository\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class ServiceRepository extends \CentreonConfiguration\Repository\Repository
+class ServiceRepository extends Repository
 {
     /**
      *
@@ -66,7 +67,7 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
     public static function formatNotificationOptions($interval)
     {
         // Initializing connection
-        $intervalLength = \Centreon\Internal\Di::getDefault()->get('config')->get('default', 'interval_length');
+        $intervalLength = Di::getDefault()->get('config')->get('default', 'interval_length');
         $interval *= $intervalLength;
         
         if ($interval % 60 == 0) {
@@ -412,5 +413,61 @@ class ServiceRepository extends \CentreonConfiguration\Repository\Repository
             'value' => ''
         );
         return array($checkdata, $notifdata);
+    }
+
+    /**
+     * Get domain
+     *
+     * @return array | array(domain_id => name)
+     */
+    public static function getDomain($serviceId)
+    {
+        static $domains = null;
+
+        if (is_null($domains)) {
+            $domains = array();
+            $db = Di::getDefault()->get('db_centreon');
+            $sql = "SELECT d.domain_id, d.name, s.service_id
+                FROM cfg_domains d, cfg_services s
+                WHERE s.domain_id = d.domain_id";
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $domains[$row['service_id']] = array($row['domain_id'] => $row['name']);
+            }
+        }
+        if (isset($domains[$serviceId])) {
+            return $domains[$serviceId];
+        }
+        return array();
+    }
+
+    /**
+     * Returns array of services that are linked to a poller
+     *
+     * @param int $pollerId
+     * @return array
+     */
+    public static function getServicesByPollerId($pollerId)
+    {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT s.service_id, s.service_description
+            FROM cfg_services s, cfg_hosts_services_relations hsr, cfg_pollers_hosts_relations phr
+            WHERE s.service_id = hsr.service_service_id 
+            AND hsr.host_host_id = phr.host_id
+            AND phr.poller_id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($pollerId));
+        $arr = array();
+        if ($stmt->rowCount()) {
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $arr[$row['service_id']] = $row['service_description'];
+            }
+        }
+
+        return $arr;
     }
 }
