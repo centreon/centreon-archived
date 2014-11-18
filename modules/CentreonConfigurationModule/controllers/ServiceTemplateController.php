@@ -528,4 +528,15 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
                 'values' => $values));
         }
     }
+
+    /**
+     * Get list of Environment for a specific service template
+     * 
+     * @method get
+     * @route /configuration/servicetemplate/[i:id]/domain
+     */
+    public function domainForServiceTemplateAction()
+    {
+        parent::getSimpleRelation('domain_id', '\CentreonAdministration\Models\Domain');
+    }
 }
