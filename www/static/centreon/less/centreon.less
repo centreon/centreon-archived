@@ -673,4 +673,30 @@ td.incident-extended-info {
   .reporting {
     margin-bottom: 5px;
   }
+
+  .longoutput {
+    margin-bottom: 10px;
+  }
+}
+
+.host-status {
+  position: absolute;
+  top: 5px;
+  right: 20px;
+  height: 30px;
+  width: 30px;
+  line-height: 28px;
+  border-radius: 30px;
+
+  &.host-status-up {
+    background-color: @brand-success;
+  }
+
+  &.host-status-down {
+    background-color: @brand-danger;
+  }
+
+  &.host-status-unknown {
+    background-color: @gray-light;
+  }
 }
