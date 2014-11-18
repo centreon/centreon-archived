@@ -108,7 +108,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         
         $infos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if (count($infos) > 0) {
-            $finalInfo['status'] = UtilStatus::numToString($infos[0]['state'], UtilStatus::TYPE_HOST);
+            $finalInfo['status'] = strtolower(UtilStatus::numToString($infos[0]['state'], UtilStatus::TYPE_HOST));
             $explodedOutput = split("\n", $infos[0]['output']);
             unset($explodedOutput[0]);
             $finalInfo['output'] = implode("\n", $explodedOutput);
