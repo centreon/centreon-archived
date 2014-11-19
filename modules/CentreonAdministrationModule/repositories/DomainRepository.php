@@ -98,6 +98,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function getServicesForDomain($hostId, $domain, $withChildren = false)
     {
         $domainList = self::getDomain($domain, $withChildren);
+        $allServices = array();
         foreach($domainList as $domain) {
             $allServices = array_merge(
                 $allServices,
