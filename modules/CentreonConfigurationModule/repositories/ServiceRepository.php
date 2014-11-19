@@ -259,7 +259,7 @@ class ServiceRepository extends Repository
                     'format' => '.'.$fileFormat
                 );
                 $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
-                $finalRoute .= '<img src="'.$imgSrc.'" style="width:20px;height:20px;">';
+                $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
                 break;
             } elseif (is_null($esiResult['filename']) && is_null($esiResult['service_template_model_stm_id'])) {
                 $finalRoute .= "<i class='fa fa-gear'></i>";

@@ -130,7 +130,7 @@ class HostRepository extends \CentreonConfiguration\Repository\Repository
                     'format' => '.'.$fileFormat
                 );
                 $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
-                $finalRoute .= '<img src="'.$imgSrc.'" style="width:20px;height:20px;">';
+                $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
                 break;
             } elseif (is_null($ehiResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
                 $finalRoute .= "<i class='fa fa-hdd-o'></i>";
