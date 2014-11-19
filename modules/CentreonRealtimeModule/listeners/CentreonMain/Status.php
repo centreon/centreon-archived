@@ -73,6 +73,7 @@ class Status
             )
         );
         $db = Di::getDefault()->get('db_centreon');
+
         /* Get service critical and warning */
         $query = "SELECT COUNT(service_id) as nb, state
             FROM rt_services
@@ -91,6 +92,7 @@ class Status
             }
         }
         $event->addStatus('service', $values['services']);
+
         /* Get host critical and warning */
         $query = "SELECT COUNT(host_id) as nb, state
             FROM rt_hosts
@@ -109,6 +111,7 @@ class Status
             }
         }
         $event->addStatus('host', $values['hosts']);
+
         /* Get poller information */
         $query = "SELECT last_alive, running
             FROM rt_instances
