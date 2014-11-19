@@ -125,19 +125,25 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     {
         $normalizeMetricSet = array();
         $rrdHandler = new \CentreonPerformance\Repository\Graph\Storage\Rrd();
-        $currentTime = time();
-        $rrdHandler->setPeriod($currentTime, $currentTime - 60);
+        //$currentTime = time();
+        //$rrdHandler->setPeriod($currentTime, $currentTime - 60);
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            $normalizeMetricSet['in'] = $rrdHandler->getSpecificValues($in['metric_id']);
+            $normalizeMetricSet['in'] = array_values($rrdHandler->getValues($in['metric_id']));
+            if (is_null($in['max'])) {
+                $in['max'] = $in['current_value'];
+            }
             $normalizeMetricSet['in_max'] = $in['max'];
             $normalizeMetricSet['unit'] = $in['unit_name'];
         }
 
         if (isset($metricList['traffic_out'])) {
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = $rrdHandler->getSpecificValues($in['metric_id']);
+            $normalizeMetricSet['out'] = array_values($rrdHandler->getValues($in['metric_id']));
+            if (is_null($out['max'])) {
+                $out['max'] = $out['current_value'];
+            }
             $normalizeMetricSet['out_max'] = $out['max'];
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
