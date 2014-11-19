@@ -60,61 +60,25 @@ class HostDetailData
      */
     public static function execute(HostDetailDataEvent $event)
     {
-        //self::getSystemDomainDatas($event);
-        //self::getHardwareDomainDatas($event);
-        self::getNetworkDomainDatas($event);
-        //self::getApplicationDomainDatas($event);
+        //self::getDomainDatas($event, self::DOMAIN_SYSTEM);
+        //self::getDomainDatas($event, self::DOMAIN_HARDWARE);
+        self::getDomainDatas($event, self::DOMAIN_NETWORK);
+        //self::getDomainDatas($event, self::DOMAIN_APPLICATION);
     }
     
     /**
      * 
      * @param HostDetailDataEvent $event
      */
-    private static function getSystemDomainDatas(HostDetailDataEvent $event)
+    private static function getDomainDatas(HostDetailDataEvent $event, $domainType)
     {
         $hostId = $event->getHostId();
         $allServices = array();
         
         // Get
-        $domainList = DomainRepository::getDomain(self::DOMAIN_SYSTEM, true);
+        $domainList = DomainRepository::getDomain($domainType, true);
         foreach($domainList as $domain) {
             $allServices = array_merge($allServices, ServiceRepository::getServicesByDomainForHost($hostId, $domain['name']));
         }
-    }
-    
-    /**
-     * 
-     * @param HostDetailDataEvent $event
-     */
-    private static function getHardwareDomainDatas(HostDetailDataEvent $event)
-    {
-        $hostId = $event->getHostId();
-        $domainList = DomainRepository::getDomain(self::DOMAIN_HARDWARE, true);
-        foreach($domainList as $domain) {
-            $allServices = array_merge($allServices, ServiceRepository::getServicesByDomainForHost($hostId, $domain['name']));
-        }
-    }
-    
-    /**
-     * 
-     * @param HostDetailDataEvent $event
-     */
-    private static function getNetworkDomainDatas(HostDetailDataEvent $event)
-    {
-        $hostId = $event->getHostId();
-        $allServices = DomainRepository::getServicesForDomain($hostId, self::DOMAIN_NETWORK);
-        
-        foreach ($allServices as $service) {
-            $serviceMetrics = MetricRepository::getMetricsFromService($service['service_id']);
-        }
-    }
-    
-    /**
-     * 
-     * @param HostDetailDataEvent $event
-     */
-    private static function getApplicationDomainDatas(HostDetailDataEvent $event)
-    {
-        $domainList = DomainRepository::getDomain(self::DOMAIN_APPLICATION, true);
     }
 }
