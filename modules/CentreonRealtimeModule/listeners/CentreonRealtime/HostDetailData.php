@@ -89,7 +89,7 @@ class HostDetailData
     private static function getHardwareDomainDatas(HostDetailDataEvent $event)
     {
         $hostId = $event->getHostId();
-        $domainList = DomainRepository::getDomain('Hardware', true);
+        $domainList = DomainRepository::getDomain(self::DOMAIN_HARDWARE, true);
         foreach($domainList as $domain) {
             $allServices = array_merge($allServices, ServiceRepository::getServicesByDomainForHost($hostId, $domain['name']));
         }
@@ -102,7 +102,7 @@ class HostDetailData
     private static function getNetworkDomainDatas(HostDetailDataEvent $event)
     {
         $hostId = $event->getHostId();
-        $allServices = DomainRepository::getServicesForDomain($hostId, 'Network');
+        $allServices = DomainRepository::getServicesForDomain($hostId, self::DOMAIN_NETWORK);
         
         foreach ($allServices as $service) {
             $serviceMetrics = MetricRepository::getMetricsFromService($service['service_id']);
