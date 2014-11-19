@@ -33,6 +33,7 @@
         <column name="start_time" phpName="StartTime" type="INTEGER" required="false"/>
         <column name="version" phpName="Version" type="VARCHAR" size="16" required="false"/>
         <column name="deleted" phpName="Deleted" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
+        <column name="outdated" phpName="Outdated" type="BOOLEAN" size="1" required="true" defaultValue="false"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

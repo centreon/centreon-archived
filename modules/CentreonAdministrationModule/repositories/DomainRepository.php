@@ -125,20 +125,46 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     {
         $normalizeMetricSet = array();
         $rrdHandler = new \CentreonPerformance\Repository\Graph\Storage\Rrd();
-        $currentTime = time();
-        $rrdHandler->setPeriod($currentTime, $currentTime - 60);
+        //$currentTime = time();
+        //$rrdHandler->setPeriod($currentTime, $currentTime - 60);
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            $normalizeMetricSet['in'] = $rrdHandler->getValues($in['metric_id']);
-            $normalizeMetricSet['in_max'] = $in['max'] . ' ' . $in['unit_name'];
+            
+            $datas = array_map(
+                function($data) {
+                    if (strval($data) == "NAN") {
+                        return null;
+                    }
+                    return $data;
+                },
+                array_values($rrdHandler->getValues($in['metric_id']))
+            );
+            $normalizeMetricSet['in'] = $datas;
+            if (is_null($in['max'])) {
+                $in['max'] = $in['current_value'];
+            }
+            $normalizeMetricSet['in_max'] = $in['max'];
             $normalizeMetricSet['unit'] = $in['unit_name'];
         }
 
         if (isset($metricList['traffic_out'])) {
+            $datas = array_map(
+                function($data) {
+                    if (strval($data) == "NAN") {
+                        return null;
+                    }
+                    return $data;
+                },
+                array_values($rrdHandler->getValues($in['metric_id']))
+            );
+                
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = $rrdHandler->getValues($in['metric_id']);
-            $normalizeMetricSet['out_max'] = $out['max'] . ' ' . $out['unit_name'];
+            $normalizeMetricSet['out'] = $datas;
+            if (is_null($out['max'])) {
+                $out['max'] = $out['current_value'];
+            }
+            $normalizeMetricSet['out_max'] = $out['max'];
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
