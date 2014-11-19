@@ -97,18 +97,9 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetrics($domain, $metricList)
     {
         $normalizeMetricSet = array();
-        switch ($domain) {
-            default:
-                break;
-            case self::DOMAIN_APPLICATION:
-                break;
-            case self::DOMAIN_HARDWARE:
-                break;
-            case self::DOMAIN_NETWORK:
-                self::normalizeMetricsForNetwork($metricList);
-                break;
-            case self::DOMAIN_SYSTEM:
-                break;
+        $normalizeFunction = 'self::normalizeMetricsFor' . $domain;
+        if (function_exists($normalizeFunction)) {
+            $normalizeMetricSet = $normalizeFunction($metricList);
         }
         return $normalizeMetricSet;
     }
@@ -118,7 +109,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    private static function normalizeMetricsForNetwork($metricList)
+    public static function normalizeMetricsForNetwork($metricList)
     {
         $normalizeMetricSet = array();
 
