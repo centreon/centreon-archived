@@ -39,6 +39,7 @@ use Centreon\Internal\Utils\Status;
 use Centreon\Internal\Utils\Datetime;
 use CentreonRealtime\Events\HostDetailData;
 use CentreonRealtime\Repository\HostRepository;
+use CentreonConfiguration\Repository\HostRepository as HostConfRepository;
 use Centreon\Internal\Di;
 
 /**
@@ -144,7 +145,8 @@ class HostController extends \Centreon\Internal\Controller
         $params = $this->getParams();
         $host = HostdetailRepository::getRealtimeData($params['id']);
         $this->tpl->assign('hostname', $host[0]['host_name']);
-        $this->tpl->assign('ipaddress', $host[0]['host_address']);
+        $this->tpl->assign('address', $host[0]['host_address']);
+        $this->tpl->assign('host_icon', HostConfRepository::getIconImage($host[0]['host_name']));
         $this->tpl->assign('applications', array());
         $this->tpl->assign('routeParams', array(
             'id' => $params['id']

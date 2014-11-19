@@ -666,7 +666,7 @@ td.incident-extended-info {
 }
 
 .detail-info {
-  .row {
+  .container-fluid >.row {
     border: 2px solid #A9A9A9;
   }
 
@@ -677,26 +677,23 @@ td.incident-extended-info {
   .longoutput {
     margin-bottom: 10px;
   }
+
+  .title {
+    font-weight: bold;
+  }
 }
 
-.host-status {
-  position: absolute;
-  top: 5px;
-  right: 20px;
-  height: 30px;
-  width: 30px;
-  line-height: 28px;
-  border-radius: 30px;
+.label-up {
+  text-transform: capitalize;
+  background-color: @brand-success;
+}
 
-  &.host-status-up {
-    background-color: @brand-success;
-  }
+.label-down {
+  text-transform: capitalize;
+  background-color: @brand-danger;
+}
 
-  &.host-status-down {
-    background-color: @brand-danger;
-  }
-
-  &.host-status-unknown {
-    background-color: @gray-light;
-  }
+.label-unknown {
+  text-transform: capitalize;
+  background-color: @gray-light;
 }
