@@ -48,6 +48,11 @@ use Centreon\Internal\Di;
  */
 class HostDetailData
 {
+    const DOMAIN_SYSTEM = 'System';
+    const DOMAIN_HARDWARE = 'Hardware';
+    const DOMAIN_NETWORK = 'Network';
+    const DOMAIN_APPLICATION = 'Application';
+
     /**
      * 
      * @param HostDetailDataEvent $event
@@ -66,7 +71,7 @@ class HostDetailData
         $allServices = array();
         
         // Get
-        $domainList = DomainRepository::getDomain('System', true);
+        $domainList = DomainRepository::getDomain(self::DOMAIN_SYSTEM, true);
         foreach($domainList as $domain) {
             $allServices = array_merge($allServices, ServiceRepository::getServicesByDomainForHost($hostId, $domain['name']));
         }
@@ -74,16 +79,16 @@ class HostDetailData
     
     private static function getHardwareDomainDatas(HostDetailDataEvent $event)
     {
-        $domainList = DomainRepository::getDomain('Hardware', true);
+        $domainList = DomainRepository::getDomain(self::DOMAIN_HARDWARE, true);
     }
     
     private static function getNetworkDomainDatas(HostDetailDataEvent $event)
     {
-        $domainList = DomainRepository::getDomain('Network', true);
+        $domainList = DomainRepository::getDomain(self::DOMAIN_NETWORK, true);
     }
     
     private static function getApplicationDomainDatas(HostDetailDataEvent $event)
     {
-        $domainList = DomainRepository::getDomain('Application', true);
+        $domainList = DomainRepository::getDomain(self::DOMAIN_APPLICATION, true);
     }
 }
