@@ -15,7 +15,7 @@
   <nav class="navbar navbar-default navbar-static-top topbar" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}Centreon{/block}</a>
+        <a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}<i class="fa fa-cube"></i> Centreon{/block}</a>
       </div>
       {environment}
       <div class="navbar-right">
