@@ -57,6 +57,11 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      */
     public static $objectName = 'Domain';
     
+    const DOMAIN_SYSTEM = 'System';
+    const DOMAIN_HARDWARE = 'Hardware';
+    const DOMAIN_NETWORK = 'Network';
+    const DOMAIN_APPLICATION = 'Application';
+    
     /**
      * Generic create action
      *
@@ -89,24 +94,23 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $domainList;
     }
     
-    /**
-     * 
-     * @param type $hostId
-     * @param type $domain
-     * @param type $withChildren
-     * @return type
-     */
-    public static function getServicesForDomain($hostId, $domain, $withChildren = false)
+    public static function normalizeMetrics($domain, $metricList)
     {
-        $domainList = self::getDomain($domain, $withChildren);
-        $allServices = array();
-        foreach($domainList as $domain) {
-            $allServices = array_merge(
-                $allServices,
-                ServiceRepository::getServicesByDomainForHost($hostId, $domain['name'])
-            );
+        $normalizeMetricSet = array();
+        switch ($domain) {
+            default:
+                break;
+            case self::DOMAIN_APPLICATION:
+                break;
+            case self::DOMAIN_HARDWARE:
+                break;
+            case self::DOMAIN_NETWORK:
+                self::normalizeMetricsForNetwork($metricList);
+                break;
+            case self::DOMAIN_SYSTEM:
+                break;
         }
-        return $allServices;
+        return $normalizeMetricSet;
     }
     
     /**
@@ -114,17 +118,24 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForNetwork($metricList)
+    private static function normalizeMetricsForNetwork($metricList)
     {
         $normalizeMetricSet = array();
+
+        if (isset($metricList['traffic_in'])) {
+            $in = $metricList['traffic_in'];
+            $normalizeMetricSet['in'] = $in['current_value'] . ' ' . $in['unit_name'];
+            $normalizeMetricSet['in_max'] = $in['current_value'] . ' ' . $in['unit_name'];
+        }
+
+        if (isset($metricList['traffic_out'])) {
+            $out = $metricList['traffic_out'];
+            $normalizeMetricSet['out'] = $out['current_value'] . ' ' . $out['unit_name'];
+            $normalizeMetricSet['out_max'] = $out['current_value'] . ' ' . $out['unit_name'];
+        }
         
-        $in = $metricList['traffic_in'];
-        $out = $metricList['traffic_out'];
-        
-        $normalizeMetricSet['in'] = $in['current_value'] . ' ' . $in['unit_name'];
-        $normalizeMetricSet['out'] = $out['current_value'] . ' ' . $out['unit_name'];
         $normalizeMetricSet['status'] = '';
-        
+
         return $normalizeMetricSet;
     }
 }
