@@ -97,9 +97,9 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetrics($domain, $metricList)
     {
         $normalizeMetricSet = array();
-        $normalizeFunction = 'self::normalizeMetricsFor' . $domain;
-        if (function_exists($normalizeFunction)) {
-            $normalizeMetricSet = $normalizeFunction($metricList);
+        $normalizeFunction = 'normalizeMetricsFor' . $domain;
+        if (method_exists(__CLASS__, $normalizeFunction)) {
+            $normalizeMetricSet = self::$normalizeFunction($metricList);
         }
         return $normalizeMetricSet;
     }
@@ -124,17 +124,22 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForTraffic($metricList)
     {
         $normalizeMetricSet = array();
+        $rrdHandler = new \CentreonPerformance\Repository\Graph\Storage\Rrd();
+        $currentTime = time();
+        $rrdHandler->setPeriod($currentTime, $currentTime - 60);
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            $normalizeMetricSet['in'] = $in['current_value'] . ' ' . $in['unit_name'];
-            $normalizeMetricSet['in_max'] = $in['current_value'] . ' ' . $in['unit_name'];
+            $normalizeMetricSet['in'] = $rrdHandler->getValues($in['metric_id']);
+            $normalizeMetricSet['in_max'] = $in['max'] . ' ' . $in['unit_name'];
+            $normalizeMetricSet['unit'] = $in['unit_name'];
         }
 
         if (isset($metricList['traffic_out'])) {
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = $out['current_value'] . ' ' . $out['unit_name'];
-            $normalizeMetricSet['out_max'] = $out['current_value'] . ' ' . $out['unit_name'];
+            $normalizeMetricSet['out'] = $rrdHandler->getValues($in['metric_id']);
+            $normalizeMetricSet['out_max'] = $out['max'] . ' ' . $out['unit_name'];
+            $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
         $normalizeMetricSet['status'] = '';
