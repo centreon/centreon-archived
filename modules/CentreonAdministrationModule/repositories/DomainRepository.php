@@ -113,6 +113,18 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     {
         $normalizeMetricSet = array();
 
+        return $normalizeMetricSet;
+    }
+    
+    /**
+     * 
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForTraffic($metricList)
+    {
+        $normalizeMetricSet = array();
+
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
             $normalizeMetricSet['in'] = $in['current_value'] . ' ' . $in['unit_name'];
