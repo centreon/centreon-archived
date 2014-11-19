@@ -130,15 +130,15 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            $normalizeMetricSet['in'] = $rrdHandler->getValues($in['metric_id']);
-            $normalizeMetricSet['in_max'] = $in['max'] . ' ' . $in['unit_name'];
+            $normalizeMetricSet['in'] = $rrdHandler->getSpecificValues($in['metric_id']);
+            $normalizeMetricSet['in_max'] = $in['max'];
             $normalizeMetricSet['unit'] = $in['unit_name'];
         }
 
         if (isset($metricList['traffic_out'])) {
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = $rrdHandler->getValues($in['metric_id']);
-            $normalizeMetricSet['out_max'] = $out['max'] . ' ' . $out['unit_name'];
+            $normalizeMetricSet['out'] = $rrdHandler->getSpecificValues($in['metric_id']);
+            $normalizeMetricSet['out_max'] = $out['max'];
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
