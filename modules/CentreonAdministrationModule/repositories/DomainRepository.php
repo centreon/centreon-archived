@@ -138,4 +138,77 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
 
         return $normalizeMetricSet;
     }
+
+    /**
+     * 
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForMemory($metricList)
+    {
+        $normalizeMetricSet = array();
+
+        $metric = $metricList['used'];
+
+        $normalizeMetricSet['current'] = $metric['current_value'];
+        $normalizeMetricSet['max'] = $metric['max'];
+        $normalizeMetricSet['unit'] = $metric['unit_name'];
+
+        return $normalizeMetricSet;
+    }
+
+    /**
+     * 
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForFileSystem($metricList)
+    {
+        $normalizeMetricSet = array();
+
+        $metric = $metricList['used'];
+
+        $normalizeMetricSet['current'] = $metric['current_value'];
+        $normalizeMetricSet['max'] = $metric['max'];
+        $normalizeMetricSet['unit'] = $metric['unit_name'];
+
+        return $normalizeMetricSet;
+    }
+
+    /**
+     *
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForCpu($metricList)
+    {
+        $normalizeMetricSet = array();
+
+        foreach ($metricList as $metricName => $metricData) {
+            if (preg_match('/^cpu(\d+)/', $metricName)) {
+                $normalizeMetricSet[$metricName] = $metricData['current_value'];
+            }
+
+        }
+        return $normalizeMetricSet;
+    }
+
+    /**
+     *
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForIO($metricList)
+    {
+        $normalizeMetricSet = array();
+        
+        $read = $metricList['read'];
+        $write = $metricList['write'];
+        
+        $normalizeMetricSet['read'] = $read['current_value'];
+        $normalizeMetricSet['write'] = $write['current_value'];
+        $normalizeMetricSet['unit'] = $read['unit_name'];
+        
+        return $normalizeMetricSet;
+    }
 }
