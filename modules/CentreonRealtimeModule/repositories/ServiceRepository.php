@@ -133,31 +133,39 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
     
     /**
      * 
-     * @param int $host
+     * @param int $hostId
      * @param string $domain
      * @return array
      */
-    public static function getServicesByDomainForHost($host, $domain)
+    public static function getServicesByDomainForHost($hostId, $domain)
     {
-        $servicesList = array();
-        
-        $db = Di::getDefault()->get('db_centreon');
-        $query = "SELECT service_id "
-            . "FROM rt_customvariables "
-            . "WHERE name = 'CENTREON_DOMAIN' "
-            . "AND value = :domain "
-            . "AND host_id = :host";
-        
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':host', $host, \PDO::PARAM_INT);
-        $stmt->bindParam(':domain', $domain, \PDO::PARAM_STR);
-        $stmt->execute();
-        $servicesIdList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
-        foreach ($servicesIdList as $serviceId) {
-            $servicesList[] = ServiceRealtime::get($serviceId);
+        static $servicesList = array();
+
+        if (!isset($serviceList[$hostId])) {
+            $serviceList[$hostId] = array();
+
+            $db = Di::getDefault()->get('db_centreon');
+            $query = "SELECT service_id, value as domain 
+                FROM rt_customvariables 
+                WHERE name = 'CENTREON_DOMAIN'
+                AND host_id = :host";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':host', $hostId, \PDO::PARAM_INT);
+            $stmt->execute();
+            $servicesIdList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            foreach ($servicesIdList as $service) {
+                $domain = $service['domain'];
+                if (!isset($serviceList[$hostId][$domain])) {
+                    $serviceList[$hostId][$domain] = array();
+                }
+                $serviceList[$hostId][$domain][] = ServiceRealtime::get($service['service_id']);
+            }
         }
-        
-        return $servicesList;
+
+        if (isset($serviceList[$hostId][$domain])) {
+            return $serviceList[$hostId][$domain];
+        }
+        return array();
     }
 }

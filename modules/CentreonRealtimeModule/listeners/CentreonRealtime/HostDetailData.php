@@ -69,6 +69,7 @@ class HostDetailData
     /**
      * 
      * @param HostDetailDataEvent $event
+     * @param string $domainType
      */
     private static function getDomainDatas(HostDetailDataEvent $event, $domainType)
     {

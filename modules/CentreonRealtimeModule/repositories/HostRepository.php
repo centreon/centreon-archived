@@ -103,16 +103,18 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $stmt = $dbconn->prepare('SELECT state as state, output as output FROM rt_hosts WHERE host_id = ? LIMIT 1');
+        $stmt = $dbconn->prepare('SELECT state as state, output as output, last_state_change as lastChange FROM rt_hosts WHERE host_id = ? LIMIT 1');
         $stmt->execute(array($hostId));
         
         $infos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if (count($infos) > 0) {
             $finalInfo['status'] = strtolower(UtilStatus::numToString($infos[0]['state'], UtilStatus::TYPE_HOST));
             $finalInfo['output'] = $infos[0]['output'];
+            $finalInfo['lastChange'] = $infos[0]['lastChange'];
         } else {
             $finalInfo['status'] = -1;
             $finalInfo['output'] = '';
+            $finalInfo['lastChange'] = '';
         }
         
         
