@@ -159,7 +159,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 if (!isset($serviceList[$hostId][$domain])) {
                     $serviceList[$hostId][$domain] = array();
                 }
-                $servicesList[$hostId][$domain][] = ServiceRealtime::get($service['service_id']);
+                $serviceList[$hostId][$domain][] = ServiceRealtime::get($service['service_id']);
             }
         }
 
