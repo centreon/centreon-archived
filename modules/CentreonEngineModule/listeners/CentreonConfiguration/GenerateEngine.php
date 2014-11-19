@@ -194,7 +194,7 @@ class GenerateEngine
             $event->getPollerId(),
             static::$path,
             "objects/serviceTemplates.cfg",
-            $hostMacroEvent
+            $serviceMacroEvent
         );
         $event->setOutput('serviceTemplate.cfg');
 
