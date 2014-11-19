@@ -41,7 +41,7 @@ namespace CentreonRealtime\Models;
  *
  * @author sylvestre
  */
-class Service extends \Centreon\Models\CentreonStorageBaseModel
+class Metric extends \Centreon\Models\CentreonStorageBaseModel
 {
     protected static $table = "rt_metrics m";
     protected static $primaryKey = "metric_id";

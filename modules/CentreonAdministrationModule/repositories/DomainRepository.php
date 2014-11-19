@@ -36,6 +36,7 @@
 namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
+use CentreonRealtime\Repository\ServiceRepository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
