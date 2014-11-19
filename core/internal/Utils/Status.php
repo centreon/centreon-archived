@@ -52,6 +52,7 @@ class Status
     const HOST_UP = 0;
     const HOST_DOWN = 1;
     const HOST_UNREACHABLE = 2;
+    const HOST_PENDING = 4;
 
     const EVENT_OK = 0;
     const EVENT_WARNING = 1;
@@ -75,7 +76,8 @@ class Status
         self::TYPE_HOST => array(
             self::HOST_UP => 'Up',
             self::HOST_DOWN => 'Down',
-            self::HOST_UNREACHABLE => 'Unreachable'
+            self::HOST_UNREACHABLE => 'Unreachable',
+            self::HOST_PENDING => 'Pending'
         ),
         self::TYPE_EVENT => array(
             self::EVENT_OK => 'Ok',
