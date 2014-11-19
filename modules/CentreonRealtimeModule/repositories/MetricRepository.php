@@ -33,77 +33,69 @@
  *
  */
 
-namespace CentreonAdministration\Repository;
+namespace CentreonRealtime\Repository;
 
-use CentreonAdministration\Models\Domain;
+use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use CentreonRealtime\Models\Service as ServiceRealtime;
+use CentreonRealtime\Models\IndexData as IndexData;
+use CentreonRealtime\Models\Metric as Metrics;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
- * @package Centreon
+ * @package CentreonRealtime
  * @subpackage Repository
  */
-class DomainRepository extends \CentreonAdministration\Repository\Repository
+class MetricRepository
 {
     /**
-     *
-     * @var string
-     */
-    public static $tableName = 'cfg_domains';
-    
-    /**
-     *
-     * @var string
-     */
-    public static $objectName = 'Domain';
-    
-    /**
-     * Generic create action
-     *
-     * @param array $givenParameters
-     * @return int id of created object
-     */
-    public static function create($givenParameters)
-    {
-        $givenParameters['parent_id'] = Domain::getIdByParameter('name', array('Application'));
-        $givenParameters['isroot'] = 0;
-        parent::create($givenParameters);
-    }
-    
-    /**
      * 
-     * @param string $domain
-     * @param boolean $withChildren
-     * @return array
-     */
-    public static function getDomain($domain, $withChildren = false)
-    {
-        $domainList = array();
-        $mainDomainId = Domain::getIdByParameter('name', array($domain));
-        if (count($mainDomainId) > 0) {
-            $domainList[] = Domain::get($mainDomainId[0]);
-            if ($withChildren) {
-                array_merge($domainList, Domain::getList('*', -1, 0, null, 'ASC', array('parent_id' => $mainDomainId[0]))); 
-            }
-        }
-        return $domainList;
-    }
-    
-    /**
-     * 
-     * @param type $hostId
-     * @param type $domain
-     * @param type $withChildren
+     * @param type $serviceId
      * @return type
      */
-    public static function getServicesForDomain($hostId, $domain, $withChildren = false)
+    public static function getMetricsFromService($serviceId)
     {
-        $domainList = self::getDomain($domain, $withChildren);
-        foreach($domainList as $domain) {
-            $allServices = array_merge(
-                $allServices,
-                ServiceRepository::getServicesByDomainForHost($hostId, $domain['name'])
-            );
+        $finalMetricList = array();
+        
+        // Get Index Data
+        $listOfIndexData = IndexData::getList(
+            '*',
+            '',
+            -1,
+            0,
+            null,
+            'ASC',
+            array('service_id' => $serviceId),
+            "AND"
+        );
+        
+        foreach ($listOfIndexData as $indexData) {
+            $finalMetricList[] = self::getMetricsFromIndexData($indexData['index_id']);
         }
-        return $allServices;
+        
+        return $finalMetricList;
+    }
+    
+    /**
+     * 
+     * @param type $indexId
+     * @return type
+     */
+    public static function getMetricsFromIndexData($indexId)
+    {
+        $listOfMetrics = Metrics::getList(
+            '*',
+            '',
+            -1,
+            0,
+            null,
+            'ASC',
+            array('index_id' => $indexId),
+            "AND"
+        );
+        
+        return $listOfMetrics;
     }
 }

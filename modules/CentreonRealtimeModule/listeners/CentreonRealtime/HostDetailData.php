@@ -39,6 +39,7 @@ namespace CentreonRealtime\Listeners\CentreonRealtime;
 use CentreonRealtime\Events\HostDetailData as HostDetailDataEvent;
 use CentreonAdministration\Repository\DomainRepository;
 use CentreonRealtime\Repository\ServiceRepository;
+use CentreonRealtime\Repository\MetricRepository;
 use Centreon\Internal\Di;
 
 /**
@@ -48,42 +49,37 @@ use Centreon\Internal\Di;
  */
 class HostDetailData
 {
+    const DOMAIN_SYSTEM = 'System';
+    const DOMAIN_HARDWARE = 'Hardware';
+    const DOMAIN_NETWORK = 'Network';
+    const DOMAIN_APPLICATION = 'Application';
+
     /**
      * 
      * @param HostDetailDataEvent $event
      */
     public static function execute(HostDetailDataEvent $event)
     {
-        self::getSystemDomainDatas($event);
-        self::getHardwareDomainDatas($event);
-        self::getNetworkDomainDatas($event);
-        self::getApplicationDomainDatas($event);
+        //self::getDomainDatas($event, self::DOMAIN_SYSTEM);
+        //self::getDomainDatas($event, self::DOMAIN_HARDWARE);
+        self::getDomainDatas($event, self::DOMAIN_NETWORK);
+        //self::getDomainDatas($event, self::DOMAIN_APPLICATION);
     }
     
-    private static function getSystemDomainDatas(HostDetailDataEvent $event)
+    /**
+     * 
+     * @param HostDetailDataEvent $event
+     * @param string $domainType
+     */
+    private static function getDomainDatas(HostDetailDataEvent $event, $domainType)
     {
         $hostId = $event->getHostId();
         $allServices = array();
         
         // Get
-        $domainList = DomainRepository::getDomain('System', true);
+        $domainList = DomainRepository::getDomain($domainType, true);
         foreach($domainList as $domain) {
             $allServices = array_merge($allServices, ServiceRepository::getServicesByDomainForHost($hostId, $domain['name']));
         }
-    }
-    
-    private static function getHardwareDomainDatas(HostDetailDataEvent $event)
-    {
-        $domainList = DomainRepository::getDomain('Hardware', true);
-    }
-    
-    private static function getNetworkDomainDatas(HostDetailDataEvent $event)
-    {
-        $domainList = DomainRepository::getDomain('Network', true);
-    }
-    
-    private static function getApplicationDomainDatas(HostDetailDataEvent $event)
-    {
-        $domainList = DomainRepository::getDomain('Application', true);
     }
 }
