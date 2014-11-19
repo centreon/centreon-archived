@@ -4,14 +4,14 @@
 
 {block name="content"}
 <div class="content-container">
-  <table class="table table-striped table-condensed" id="incidents">
+  <table class="table table-striped table-condensed table-bordered dataTable" id="incidents">
   <thead>
     <tr>
       <th class="span-1">&nbsp;</th>
       <th class="span-2">{t}Host{/t}</th>
       <th class="span-2">{t}Service{/t}</th>
       <th class="span-1">{t}Status{/t}</th>
-      <th class="span-2">{t}Start time{/t}</th>
+      <!--<th class="span-2">{t}Start time{/t}</th>-->
       <th class="span-2">{t}Duration{/t}</th>
       <th class="span-2">{t}Output{/t}</th>
       <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
@@ -26,7 +26,7 @@
 {block name="javascript-bottom" append}
 <script>
 var incidentExtInfoTmpl = "<div class='span-8'> \
-<table class='table table-condensed span-12'> \
+<table class='table table-condensed table-bordered table-hover table-striped span-12'> \
   <tbody> \{literal}
   {{{#children}}} \
   <tr> \
@@ -37,7 +37,6 @@ var incidentExtInfoTmpl = "<div class='span-8'> \
   </tbody> \
 </table> \
 </div>";{/literal}
-
 
 $(function() {
   var incidentExtInfoCompiled = Hogan.compile( incidentExtInfoTmpl );
@@ -51,12 +50,12 @@ $(function() {
         <a href='{{{url_graph}}}'><i class='fa fa-sitemap'></i></a> \
         <a href='#'><i class='fa fa-ticket'></i></a> \
       </tb> \
-      <td class='span-2'>{{{host_name}}}</td> \
-      <td class='span-2'>{{{service_desc}}}</td> \
-      <td class='span-1 centreon-status-{{{state}}}'>{{{status}}}</td> \
-      <td class='span-2'>{{{start_time}}}</td> \
-      <td class='span-2'>{{{duration}}}</td> \
-      <td class='span-2'>{{{output}}}</td> \
+      <td class='span-2'><a href='./realtime/host/{{{host_id}}}'>{{{host_name}}}</a></td> \
+      <td class='span-2'><a href='./realtime/service/{{{service_id}}}'>{{{service_desc}}}</a></td> \
+      <td class='span-1 centreon-status-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
+      <!--<td class='span-2'>{{{start_time}}}</td>--> \
+      <td class='span-1' style='text-align:right;'>{{{duration}}}</td> \
+      <td class='span-5'>{{{output}}}</td> \
     </tr> \
     <tr style='display: none;' id='ext_infos_{{{issue_id}}}'> \
       <td class='span-12 incident-extended-info'>&nbsp;</td> \
@@ -69,9 +68,9 @@ $(function() {
     $elem = $( e.currentTarget );
     incidentId = $elem.data( "id" );
     $icon = $elem.find( "i" );
-    if ( $icon.hasClass( "fa-minus-square-o" ) ) {
-      $( "#ext_infos_" + incidentId ).toggle();
-      $icon.removeClass( "fa-minus-square-o" ).addClass( "fa-plus-square-o" );
+    if ($icon.hasClass("fa-minus-square-o")) {
+      $("#ext_infos_" + incidentId).toggle();
+      $icon.removeClass("fa-minus-square-o").addClass("fa-plus-square-o");
     } else {
       $.ajax({
         url: "{url_for  url="/realtime/incident/extented_info"}",
