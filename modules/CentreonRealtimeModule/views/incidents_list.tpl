@@ -6,7 +6,7 @@
 <div class="content-container">
   <table class="table table-striped table-condensed table-bordered dataTable" id="incidents">
   <thead>
-    <tr>
+    <tr role='row'>
       <th class="span-1">&nbsp;</th>
       <th class="span-2">{t}Host{/t}</th>
       <th class="span-2">{t}Service{/t}</th>
@@ -25,7 +25,7 @@
 {block name="javascript-bottom" append}
 <script>
 var incidentExtInfoTmpl = "<div class='span-8'> \
-<table class='table table-condensed table-bordered table-hover table-striped span-12'> \
+<table class='table table-condensed table-bordered table-hover table-striped span-12' width='100%' > \
   <tbody> \{literal}
   {{{#children}}} \
   <tr> \
@@ -49,8 +49,8 @@ $(function() {
         <a href='{{{url_graph}}}'><i class='fa fa-sitemap'></i></a> \
         <a href='#'><i class='fa fa-ticket'></i></a> \
       </td> \
-      <td class='span-2'><a href='./realtime/host/{{{host_id}}}'>{{{host_name}}}</a></td> \
-      <td class='span-2'><a href='./realtime/service/{{{service_id}}}'>{{{service_desc}}}</a></td> \
+      <td class='span-2'><a href='./realtime/host/{{{host_id}}}'><i class='fa fa-hdd-o'></i> {{{host_name}}}</a></td> \
+      <td class='span-2'><a href='./realtime/service/{{{service_id}}}'><i class='fa fa-gear'></i> {{{service_desc}}}</a></td> \
       <td class='span-1 centreon-status-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
       <td class='span-1' style='text-align:right;'>{{{duration}}}</td> \
       <td class='span-5'>{{{output}}}</td> \
