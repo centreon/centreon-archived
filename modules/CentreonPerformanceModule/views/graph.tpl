@@ -12,30 +12,34 @@
 
 {block name="content"}
 <div class="content-container">
-  <div class="row search">
-    <form role="form">
-      <div class="form-group col-md-4">
-        <input type="text" name="period" class="form-control" placeholder="Period" >
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="row search">
+        <form role="form">
+          <div class="form-group col-md-3">
+            <input type="text" name="period" class="form-control" placeholder="Period" >
+          </div>
+          <div class="form-group col-md-5">
+            <div class="input-group">
+              <input type="text" id="service" name="service" class="form-control" >
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="addGraph">{t}Add{/t}</button>
+              </span>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Load{/t}" id="loadView"><i class="fa fa-upload"></i></button>
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Save{/t}" id="saveView"><i class="fa fa-floppy-o"></i></button>
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Delete{/t}" id="deleteView"><i class="fa fa-trash-o"></i></button>
+              </span>
+              <input type="text" id="view" name="view" class="form-control">
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="form-group col-md-4">
-        <div class="input-group">
-          <input type="text" id="service" name="service" class="form-control" >
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button" id="addGraph">{t}Add{/t}</button>
-          </span>
-        </div>
-      </div>
-      <div class="form-group col-md-4">
-        <div class="input-group">
-          <span class="input-group-btn">
-            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Load{/t}" id="loadView"><i class="fa fa-upload"></i></button>
-            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Save{/t}" id="saveView"><i class="fa fa-floppy-o"></i></button>
-            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Delete{/t}" id="deleteView"><i class="fa fa-trash-o"></i></button>
-          </span>
-          <input type="text" id="view" name="view" class="form-control">
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
   <div id="graphs"></div>
 </div>
