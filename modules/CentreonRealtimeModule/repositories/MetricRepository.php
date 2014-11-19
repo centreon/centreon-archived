@@ -73,7 +73,7 @@ class MetricRepository
         );
         
         foreach ($listOfIndexData as $indexData) {
-            $rawMetricList[] = self::getMetricsFromIndexData($indexData['index_id']);
+            $rawMetricList = array_merge($rawMetricList, self::getMetricsFromIndexData($indexData['id']));
         }
         
         foreach ($rawMetricList as $metric) {
