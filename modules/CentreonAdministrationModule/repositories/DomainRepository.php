@@ -116,6 +116,50 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $normalizeMetricSet;
     }
     
+    public static function prepareRrdData($serviceData)
+    {
+        $data = array();
+        $data['times'] = array_keys($serviceData[0]['data']);
+        $data['times'] = array_map(function($time) {
+            return $time * 1000;
+        }, $data['times']);
+        $data['metrics'] = array();
+        /* Check unit for human readable */
+        $units = array();
+        foreach ($serviceData as $metric) {
+            if (false === isset($units[$metric['unit']])) {
+                $units[$metric['unit']] = 0;
+            }
+            $values = array_map(function($value) {
+                if (strval($value) == "NAN") {
+                    return 0;
+                }
+                return $value;
+            }, $metric['data']);
+            $factor = HumanReadable::getFactor($values);
+            if ($units[$metric['unit']] < $factor) {
+                $units[$metric['unit']] = $factor;
+            }
+        }
+
+        /* Convert data for c3js */
+        foreach ($serviceData as $metric) {
+            $metric['data'] = array_values($metric['data']);
+            $metric['data'] = array_map(function($data) {
+                if (strval($data) == "NAN") {
+                    return null;
+                }
+                return $data;
+            }, $metric['data']);
+            $metric['data'] = HumanReadable::convertArrayWithFactor($metric['data'], $metric['unit'], $units[$metric['unit']], 3);
+            if (in_array($metric['unit'], array_keys(HumanReadable::$units))) {
+                $metric['unit'] = HumanReadable::$units[$metric['unit']]['units'][$units[$metric['unit']]];
+            }
+            $data['metrics'][] = $metric;
+        }
+        return $data;
+    }
+    
     /**
      * 
      * @param array $metricList
@@ -130,7 +174,8 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            $normalizeMetricSet['in'] = array_values($rrdHandler->getValues($in['metric_id']));
+            //$normalizeMetricSet['in'] = array_values($rrdHandler->getValues($in['metric_id']));
+            $normalizeMetricSet['in'] = self::prepareRrdData($rrdHandler->getValues($in['metric_id']));
             if (is_null($in['max'])) {
                 $in['max'] = $in['current_value'];
             }
