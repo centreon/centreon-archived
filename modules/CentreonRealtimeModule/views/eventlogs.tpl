@@ -60,7 +60,8 @@
       <th class="span-2">{t}Service{/t}</th>
 <!--  <th class="span-2">{t}Instance{/t}</th>-->
       <th class="span-1">{t}Status{/t}</th>
-      <th class="span-6">{t}Message{/t}</th>
+      <th class="span-1">{t}Type{/t}</th>
+      <th class="span-5">{t}Message{/t}</th>
       <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
     </tr>
   </thead>
@@ -83,6 +84,7 @@ $(function() {
       <td class='span-2'>{{{service_logo}}} {{{service}}}</td> \
 <!--  <td class='span-2'>{{{instance}}}</td>--> \
       <td class='span-1 centreon-status-{{{status}}}' style='text-align:center;'>{{{status_text}}}</td> \
+      <td class='span-1' style='text-align:center;'>{{{type}}}</td> \
       <td class='span-6'>{{{output}}}</td> \
     </tr>"{/literal}
   });
