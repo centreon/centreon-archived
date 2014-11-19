@@ -168,17 +168,18 @@ class EventlogsController extends \Centreon\Internal\Controller
             } else {
                 $log['service_logo'] = '';
             }
+
             /* Translate the status id */
-            if (false === is_null($log['service_id']) && false === is_null($log['host_id'])) {
-                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
-                    $log['status'],
-                    \Centreon\Internal\Utils\Status::TYPE_HOST,
-                    true
-                );
-            } elseif (false === is_null($log['service_id'])) {
+            if (isset($log['service_id']) && isset($log['host_id'])) {
                 $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
                     $log['status'],
                     \Centreon\Internal\Utils\Status::TYPE_SERVICE,
+                    true
+                );
+            } elseif (!isset($log['service_id'])) {
+                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                    $log['status'],
+                    \Centreon\Internal\Utils\Status::TYPE_HOST,
                     true
                 );
             } else {

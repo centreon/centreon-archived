@@ -75,12 +75,12 @@ class Rrd extends AbstractStorage
      * @param int $metricId The metric id
      * @return array
      */
-    public function getValues($metricId)
+    public function getValues($metricId, $rows = 100)
     {
         $options = array(
             '--start', $this->startTime,
             '--end', $this->endTime,
-            '--maxrows', 100,
+            '--maxrows', $rows,
             'DEF:metric=' . $this->rrdPath . '/' . $metricId . '.rrd:value:AVERAGE',
             'XPORT:metric:"Values"'
         );
@@ -89,5 +89,15 @@ class Rrd extends AbstractStorage
             throw new \Exception("Error when getting metric values");
         }
         return $values['data'][0]['data'];
+    }
+    
+    public function getSpecificValues($metricId)
+    {
+        $values = rrd_fetch(
+            $this->rrdPath . '/' . $metricId . '.rrd',
+            array("AVERAGE", "--resolution", "300", "--start", "now", "--end", "start-1h" )
+        );
+        
+        return $values;
     }
 }

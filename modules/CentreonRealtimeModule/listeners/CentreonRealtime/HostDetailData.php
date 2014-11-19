@@ -53,17 +53,19 @@ class HostDetailData
     const DOMAIN_HARDWARE = 'Hardware';
     const DOMAIN_NETWORK = 'Network';
     const DOMAIN_APPLICATION = 'Application';
-
+    
     /**
      * 
      * @param HostDetailDataEvent $event
      */
     public static function execute(HostDetailDataEvent $event)
     {
-        //self::getDomainDatas($event, self::DOMAIN_SYSTEM);
-        //self::getDomainDatas($event, self::DOMAIN_HARDWARE);
-        self::getDomainDatas($event, self::DOMAIN_NETWORK);
-        //self::getDomainDatas($event, self::DOMAIN_APPLICATION);
+        $hostId = $event->getHostId();
+        $hostServicesByDomain = ServiceRepository::getServicesByDomainForHost($hostId);
+        $domainList = array_keys($hostServicesByDomain[$hostId]);
+        foreach ($domainList as $domain) {
+            self::getDomainDatas($event, ucfirst($domain), $hostServicesByDomain[$hostId][$domain]);
+        }
     }
     
     /**
@@ -71,17 +73,13 @@ class HostDetailData
      * @param HostDetailDataEvent $event
      * @param string $domainType
      */
-    private static function getDomainDatas(HostDetailDataEvent $event, $domainType)
+    private static function getDomainDatas(HostDetailDataEvent $event, $domainType, $serviceList)
     {
-        $hostId = $event->getHostId();
-        
-        // Get
-        $allServices = DomainRepository::getServicesForDomain($hostId, $domainType, true);
-        
         $normalizeServiceSet = array();
-        foreach ($allServices as $service) {
+        foreach ($serviceList as $service) {
             $serviceMetricList = MetricRepository::getMetricsFromService($service['service_id']);
-            $normalizeServiceSet[$service['service_description']] = DomainRepository::normalizeMetricsForNetwork(
+            $normalizeServiceSet[$service['description']] = DomainRepository::normalizeMetrics(
+                $domainType,
                 $serviceMetricList
             );
         }

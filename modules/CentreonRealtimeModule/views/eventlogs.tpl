@@ -4,59 +4,63 @@
 
 {block name="content"}
 <div class="content-container">
-  <div class="row search">
-    <form role="form" id="filters">
-      <div class="form-group col-md-4">
-        <input type="text" name="period" class="form-control" placeholder="{t}Period{/t}">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="row search">
+        <form role="form" id="filters">
+          <div class="form-group col-md-4">
+            <input type="text" name="period" class="form-control" placeholder="{t}Period{/t}">
+          </div>
+          <div class="form-group col-md-4">
+            <select name="status" multiple style="width: 100%">
+              <option value="0">{t}OK / Up{/t}</option>
+              <option value="1">{t}Warning / Down{/t}</option>
+              <option value="2">{t}Critical / Unreachable{/t}</option>
+              <option value="3">{t}Unknown{/t}</option>
+              <option value="4">{t}Pending{/t}</option>
+              <option value="5">{t}Information{/t}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <select name="msg_type" multiple style="width: 100%">
+              <option value="0">{t}Service alert{/t}</option>
+              <option value="1">{t}Host Alert{/t}</option>
+              <option value="2">{t}Service Notification{/t}</option>
+              <option value="3">{t}Host Notification{/t}</option>
+              <option value="4">{t}Warning{/t}</option>
+              <option value="5">{t}External command{/t}</option>
+              <option value="6">{t}Current service state{/t}</option>
+              <option value="7">{t}Current host state{/t}</option>
+              <option value="8">{t}Initial service state{/t}</option>
+              <option value="9">{t}Initial host state{/t}</option>
+              <option value="10">{t}Aclknownledge service{/t}</option>
+              <option value="11">{t}Aclknownledge host{/t}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- @TODO dynamic load -->
+            <select name="instance_name" multiple style="width: 100%">
+              <option>Central</option>
+            </select>
+          </div>
+          <div class="form-group col-md-8">
+            <input type="text" name="output" class="form-control" placeholder="{t}Filter message{/t}">
+          </div>
+        </form>
       </div>
-      <div class="form-group col-md-4">
-        <select name="status" multiple style="width: 100%">
-          <option value="0">{t}OK/Up{/t}</option>
-          <option value="1">{t}Warning/Down{/t}</option>
-          <option value="2">{t}Critical/Unreachable{/t}</option>
-          <option value="3">{t}Unknown{/t}</option>
-          <option value="4">{t}Pending{/t}</option>
-          <option value="5">{t}Information{/t}</option>
-        </select>
-      </div>
-      <div class="form-group col-md-4">
-        <select name="msg_type" multiple style="width: 100%">
-          <option value="0">{t}Service alert{/t}</option>
-          <option value="1">{t}Host Alert{/t}</option>
-          <option value="2">{t}Service Notification{/t}</option>
-          <option value="3">{t}Host Notification{/t}</option>
-          <option value="4">{t}Warning{/t}</option>
-          <option value="5">{t}External command{/t}</option>
-          <option value="6">{t}Current service state{/t}</option>
-          <option value="7">{t}Current host state{/t}</option>
-          <option value="8">{t}Initial service state{/t}</option>
-          <option value="9">{t}Initial host state{/t}</option>
-          <option value="10">{t}Aclknownledge service{/t}</option>
-          <option value="11">{t}Aclknownledge host{/t}</option>
-        </select>
-      </div>
-      <div class="form-group col-md-4">
-        <!-- @TODO dynamic load -->
-        <select name="instance_name" multiple style="width: 100%">
-          <option>Central</option>
-        </select>
-      </div>
-      <div class="form-group col-md-8">
-        <input type="text" name="output" class="form-control" placeholder="{t}Filter message{/t}">
-      </div>
-    </form>
+    </div>
   </div>
   <div class="row facets" style="display: none">
   </div>
   <table class="table table-striped table-condensed" id="eventlogs">
   <thead>
     <tr>
-      <th class="span-2">{t}Date{/t}</th>
+      <th class="span-1">{t}Date{/t}</th>
       <th class="span-2">{t}Host{/t}</th>
       <th class="span-2">{t}Service{/t}</th>
-      <th class="span-2">{t}Instance{/t}</th>
+<!--  <th class="span-2">{t}Instance{/t}</th>-->
       <th class="span-1">{t}Status{/t}</th>
-      <th class="span-3">{t}Message{/t}</th>
+      <th class="span-6">{t}Message{/t}</th>
       <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
     </tr>
   </thead>
@@ -74,12 +78,12 @@ $(function() {
     ajaxUrlGetNew: "{url_for url="/realtime/eventlogs/refresh"}",
     formFilter: "#filters",{literal}
     templateRows: "<tr class='{{{border_color}}}'> \
-      <td class='span-2'>{{{datetime}}}</td> \
+      <td class='span-1'>{{{datetime}}}</td> \
       <td class='span-2'>{{{host_logo}}} {{{host}}}</td> \
       <td class='span-2'>{{{service_logo}}} {{{service}}}</td> \
-      <td class='span-2'>{{{instance}}}</td> \
-      <td class='span-1 centreon-status-{{{status}}}'>{{{status_text}}}</td> \
-      <td class='span-3'>{{{output}}}</td> \
+<!--  <td class='span-2'>{{{instance}}}</td>--> \
+      <td class='span-1 centreon-status-{{{status}}}' style='text-align:center;'>{{{status_text}}}</td> \
+      <td class='span-6'>{{{output}}}</td> \
     </tr>"{/literal}
   });
 

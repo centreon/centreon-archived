@@ -57,6 +57,11 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      */
     public static $objectName = 'Domain';
     
+    const DOMAIN_SYSTEM = 'System';
+    const DOMAIN_HARDWARE = 'Hardware';
+    const DOMAIN_NETWORK = 'Network';
+    const DOMAIN_APPLICATION = 'Application';
+    
     /**
      * Generic create action
      *
@@ -89,24 +94,14 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $domainList;
     }
     
-    /**
-     * 
-     * @param type $hostId
-     * @param type $domain
-     * @param type $withChildren
-     * @return type
-     */
-    public static function getServicesForDomain($hostId, $domain, $withChildren = false)
+    public static function normalizeMetrics($domain, $metricList)
     {
-        $domainList = self::getDomain($domain, $withChildren);
-        $allServices = array();
-        foreach($domainList as $domain) {
-            $allServices = array_merge(
-                $allServices,
-                ServiceRepository::getServicesByDomainForHost($hostId, $domain['name'])
-            );
+        $normalizeMetricSet = array();
+        $normalizeFunction = 'normalizeMetricsFor' . $domain;
+        if (method_exists(__CLASS__, $normalizeFunction)) {
+            $normalizeMetricSet = self::$normalizeFunction($metricList);
         }
-        return $allServices;
+        return $normalizeMetricSet;
     }
     
     /**
@@ -117,14 +112,44 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForNetwork($metricList)
     {
         $normalizeMetricSet = array();
+
+        return $normalizeMetricSet;
+    }
+    
+    /**
+     * 
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForTraffic($metricList)
+    {
+        $normalizeMetricSet = array();
+        $rrdHandler = new \CentreonPerformance\Repository\Graph\Storage\Rrd();
+        //$currentTime = time();
+        //$rrdHandler->setPeriod($currentTime, $currentTime - 60);
+
+        if (isset($metricList['traffic_in'])) {
+            $in = $metricList['traffic_in'];
+            $normalizeMetricSet['in'] = array_values($rrdHandler->getValues($in['metric_id']));
+            if (is_null($in['max'])) {
+                $in['max'] = $in['current_value'];
+            }
+            $normalizeMetricSet['in_max'] = $in['max'];
+            $normalizeMetricSet['unit'] = $in['unit_name'];
+        }
+
+        if (isset($metricList['traffic_out'])) {
+            $out = $metricList['traffic_out'];
+            $normalizeMetricSet['out'] = array_values($rrdHandler->getValues($in['metric_id']));
+            if (is_null($out['max'])) {
+                $out['max'] = $out['current_value'];
+            }
+            $normalizeMetricSet['out_max'] = $out['max'];
+            $normalizeMetricSet['unit'] = $out['unit_name'];
+        }
         
-        $in = $metricList['traffic_in'];
-        $out = $metricList['traffic_out'];
-        
-        $normalizeMetricSet['in'] = $in['current_value'] . ' ' . $in['unit_name'];
-        $normalizeMetricSet['out'] = $out['current_value'] . ' ' . $out['unit_name'];
         $normalizeMetricSet['status'] = '';
-        
+
         return $normalizeMetricSet;
     }
 
