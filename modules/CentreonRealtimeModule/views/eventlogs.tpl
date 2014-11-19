@@ -5,7 +5,7 @@
 {block name="content"}
 <div class="content-container">
   <div class="panel panel-default">
-    <div class="panel-header">
+    <div class="panel-heading">
       <div class="row search">
         <form role="form" id="filters">
           <div class="form-group col-md-4">
