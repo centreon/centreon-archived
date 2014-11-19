@@ -12,7 +12,7 @@
       <th class="span-2">{t}Service{/t}</th>
       <th class="span-1">{t}Status{/t}</th>
       <!--<th class="span-2">{t}Start time{/t}</th>-->
-      <th class="span-2">{t}Duration{/t}</th>
+      <th class="span-1">{t}Duration{/t}</th>
       <th class="span-5">{t}Output{/t}</th>
       <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
     </tr>
