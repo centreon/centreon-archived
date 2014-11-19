@@ -184,7 +184,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 'Disabled' => '0',
                                     ),
             'width' => '50px',
-            'className' => 'cell_center'
+            'className' => 'datatable-align-center'
         ),
         array (
             'title' => 'Last Check',

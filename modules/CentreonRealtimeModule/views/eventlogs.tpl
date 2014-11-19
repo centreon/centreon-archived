@@ -52,7 +52,7 @@
   </div>
   <div class="row facets" style="display: none">
   </div>
-  <table class="table table-striped table-condensed" id="eventlogs">
+  <table class="table table-striped table-condensed table-bordered" id="eventlogs">
   <thead>
     <tr>
       <th class="span-1">{t}Date{/t}</th>
