@@ -11,7 +11,6 @@
       <th class="span-2">{t}Host{/t}</th>
       <th class="span-2">{t}Service{/t}</th>
       <th class="span-1">{t}Status{/t}</th>
-      <!--<th class="span-2">{t}Start time{/t}</th>-->
       <th class="span-1">{t}Duration{/t}</th>
       <th class="span-5">{t}Output{/t}</th>
       <th class="badge-new-events" style="display: none;"><a href="#"><i class="fa fa-caret-up"></i> <span></span></a></th>
@@ -49,11 +48,10 @@ $(function() {
         <a href='{{{id}}}'><i class='fa fa-list-alt'></i></a> \
         <a href='{{{url_graph}}}'><i class='fa fa-sitemap'></i></a> \
         <a href='#'><i class='fa fa-ticket'></i></a> \
-      </tb> \
+      </td> \
       <td class='span-2'><a href='./realtime/host/{{{host_id}}}'>{{{host_name}}}</a></td> \
       <td class='span-2'><a href='./realtime/service/{{{service_id}}}'>{{{service_desc}}}</a></td> \
       <td class='span-1 centreon-status-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
-      <!--<td class='span-2'>{{{start_time}}}</td>--> \
       <td class='span-1' style='text-align:right;'>{{{duration}}}</td> \
       <td class='span-5'>{{{output}}}</td> \
     </tr> \
