@@ -137,9 +137,9 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
      * @param string $domain
      * @return array
      */
-    public static function getServicesByDomainForHost($hostId, $domain)
+    public static function getServicesByDomainForHost($hostId)
     {
-        static $servicesList = array();
+        static $serviceList = array();
 
         if (!isset($serviceList[$hostId])) {
             $serviceList[$hostId] = array();
@@ -162,10 +162,7 @@ class ServiceRepository extends \CentreonRealtime\Repository\Repository
                 $serviceList[$hostId][$domain][] = ServiceRealtime::get($service['service_id']);
             }
         }
-
-        if (isset($serviceList[$hostId][$domain])) {
-            return $serviceList[$hostId][$domain];
-        }
-        return array();
+        
+        return $serviceList;
     }
 }

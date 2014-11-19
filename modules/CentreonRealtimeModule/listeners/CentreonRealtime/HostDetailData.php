@@ -53,7 +53,7 @@ class HostDetailData
     const DOMAIN_HARDWARE = 'Hardware';
     const DOMAIN_NETWORK = 'Network';
     const DOMAIN_APPLICATION = 'Application';
-
+    
     /**
      * 
      * @param HostDetailDataEvent $event
@@ -62,8 +62,9 @@ class HostDetailData
     {
         $hostId = $event->getHostId();
         $hostServicesByDomain = ServiceRepository::getServicesByDomainForHost($hostId);
-        foreach ($hostServicesByDomain as $domain => $services) {
-            self::getDomainDatas($event, ucfirst($domain), $services);
+        $domainList = array_keys($hostServicesByDomain[$hostId]);
+        foreach ($domainList as $domain) {
+            self::getDomainDatas($event, ucfirst($domain), $hostServicesByDomain[$hostId][$domain]);
         }
     }
     
