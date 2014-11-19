@@ -57,6 +57,7 @@ class MetricRepository
      */
     public static function getMetricsFromService($serviceId)
     {
+        $rawMetricList = array();
         $finalMetricList = array();
         
         // Get Index Data
@@ -72,7 +73,11 @@ class MetricRepository
         );
         
         foreach ($listOfIndexData as $indexData) {
-            $finalMetricList[] = self::getMetricsFromIndexData($indexData['index_id']);
+            $rawMetricList[] = self::getMetricsFromIndexData($indexData['index_id']);
+        }
+        
+        foreach ($rawMetricList as $metric) {
+            $finalMetricList[$metric['metric_name']] = $metric;
         }
         
         return $finalMetricList;

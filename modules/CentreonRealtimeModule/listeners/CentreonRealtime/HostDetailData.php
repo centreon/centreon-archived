@@ -80,5 +80,15 @@ class HostDetailData
         foreach($domainList as $domain) {
             $allServices = array_merge($allServices, ServiceRepository::getServicesByDomainForHost($hostId, $domain['name']));
         }
+        
+        $normalizeServiceSet = array();
+        foreach ($allServices as $service) {
+            $serviceMetricList = MetricRepository::getMetricsFromService($service['service_id']);
+            $normalizeServiceSet[$service['service_description']] = DomainRepository::normalizeMetricsForNetwork(
+                $serviceMetricList
+            );
+        }
+        
+        $event->addHostDetailData(strtolower($domainType), $normalizeServiceSet);
     }
 }

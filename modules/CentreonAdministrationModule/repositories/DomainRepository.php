@@ -106,4 +106,23 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         }
         return $allServices;
     }
+    
+    /**
+     * 
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForNetwork($metricList)
+    {
+        $normalizeMetricSet = array();
+        
+        $in = $metricList['traffic_in'];
+        $out = $metricList['traffic_out'];
+        
+        $normalizeMetricSet['in'] = $in['current_value'] . ' ' . $in['unit_name'];
+        $normalizeMetricSet['out'] = $out['current_value'] . ' ' . $out['unit_name'];
+        $normalizeMetricSet['status'] = '';
+        
+        return $normalizeMetricSet;
+    }
 }
