@@ -147,7 +147,7 @@ $(function() {
       startTime = moment(endTime).subtract('hours', 2);
 
   /* Load tooltip */
-  $("[data-toggle='tooltip'").tooltip();
+  $("[data-toggle='tooltip']").tooltip();
 
   /* Action on save */
   $("#saveViewButton").on("click", function(e) {
