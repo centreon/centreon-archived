@@ -89,6 +89,8 @@ class HostDetailData
             );
         }
         
-        $event->addHostDetailData(strtolower($domainType), $normalizeServiceSet);
+        if (count($normalizeServiceSet) > 0) {
+            $event->addHostDetailData(strtolower($domainType), $normalizeServiceSet);
+        }
     }
 }
