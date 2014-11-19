@@ -74,13 +74,9 @@ class HostDetailData
     private static function getDomainDatas(HostDetailDataEvent $event, $domainType)
     {
         $hostId = $event->getHostId();
-        $allServices = array();
         
         // Get
-        $domainList = DomainRepository::getDomain($domainType, true);
-        foreach($domainList as $domain) {
-            $allServices = array_merge($allServices, ServiceRepository::getServicesByDomainForHost($hostId, $domain['name']));
-        }
+        $allServices = DomainRepository::getServicesForDomain($hostId, $domainType, true);
         
         $normalizeServiceSet = array();
         foreach ($allServices as $service) {
