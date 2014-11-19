@@ -13,12 +13,14 @@
             <h4>{$hostname} :  {$ipaddress}</h4>
           </div>
           <div class="col-xs-8">
-            <span class="longoutput"></span>
+            <div class="longoutput"></div>
           </div>
           <div class="col-xs-12 reporting">
             <div id="month_reporting"></div>
           </div>
         </div>
+      </div>
+      <div class="host-status">
       </div>
     </div>
     <div class="col-xs-12 col-sm-5 detail-info" id="network">
@@ -125,6 +127,14 @@ $(function() {
       }
     });
   }
+
+  $(document).on('centreon.host_detail', function(e) {
+    $('.longoutput').html(hostData.output);
+    $('.host-status').removeClass(function(index, css) {
+      return (css.match(/(^|\s)host-status-\S+/g) || []).join(' ');
+    });
+    $('.host-status').addClass('host-status-' + hostData.status);
+  });
 
   loadData();
 });
