@@ -143,15 +143,29 @@
 
 {block name="javascript-bottom" append}
 <script>
-/* Init gauge */
-size = parseInt($("#cpu").width() * 0.7);
-$('.dial').attr('data-width', size).attr('data-height', size);
-$('.dial').knob();
+
+function resizeCell(list) {
+  var maxsize = 0;
+  $.each(list, function(idx, el) {
+    if ($(el).height() > maxsize) {
+      maxsize = $(el).height();
+    }
+  });
+  $.each(list, function(idx, el) {
+    $(el).find('.row:first').css('min-height', maxsize + 'px');
+  });
+}
 
 $(function() {
   var hostData,
       eData = new $.Event('centreon.host_detail'),
       hostReporting = new CalHeatMap();
+
+  /* Init gauge */
+  size = parseInt($("#cpu").width() * 0.7);
+  $('.dial').attr('data-width', size).attr('data-height', size);
+  $('.dial').knob();
+
   hostReporting.init({
     itemSelector: '#month_reporting',
     dataType: 'json',
@@ -225,6 +239,8 @@ $(function() {
       });
     }
 
+    resizeCell(["#general", "#network"]);
+
     /* Update block system */
     if (hostData.system !== undefined) {
       if (hostData.system.memory !== undefined) {
@@ -263,6 +279,8 @@ $(function() {
         ).appendTo('#filesystem > .container-fluid > .row');
       });
     }
+
+    resizeCell(["#system", "#filesystem"]);
   });
 
   loadData();
