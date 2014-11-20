@@ -84,7 +84,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function getParent($domain)
     {
         if (is_string($domain)) {
-            $domainId = Domain::getIdByParameter($domain);
+            $domainId = Domain::getIdByParameter('name', array($domain));
             $domain = $domainId[0];
         }
         
