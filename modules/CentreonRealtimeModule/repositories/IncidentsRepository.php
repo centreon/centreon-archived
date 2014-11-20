@@ -162,8 +162,8 @@ class IncidentsRepository
         $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, he.state as state, 
             h.instance_id, h.output, h.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM rt_rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM rt_rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
             FROM rt_issues i, rt_hosts h, rt_hoststateevents he";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
@@ -180,8 +180,8 @@ class IncidentsRepository
         $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
             se.state as state, h.instance_id, s.output, s.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM rt_rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM rt_rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
             FROM rt_issues i, rt_hosts h, rt_services s, rt_servicestateevents se";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
@@ -207,7 +207,7 @@ class IncidentsRepository
 
         /* Get Parents */
         $query = "SELECT i.issue_id, h.name, NULL as description
-            FROM rt_issues i, rt_rt_issues_issues_parents iip, rt_hosts h
+            FROM rt_issues i, rt_issues_issues_parents iip, rt_hosts h
             WHERE i.issue_id = iip.parent_id
                 AND i.service_id IS NULL
                 AND i.host_id = h.host_id
@@ -215,7 +215,7 @@ class IncidentsRepository
                 AND iip.child_id = :issue_id
             UNION
             SELECT i.issue_id, h.name, s.description
-            FROM rt_issues i, rt_rt_issues_issues_parents iip, rt_hosts h, rt_services s
+            FROM rt_issues i, rt_issues_issues_parents iip, rt_hosts h, rt_services s
             WHERE i.issue_id = iip.parent_id
                 AND i.service_id IS NOT NULL
                 AND i.host_id = h.host_id
@@ -250,9 +250,9 @@ class IncidentsRepository
         $queryHosts = "SELECT i.issue_id, i.host_id, h.name, i.service_id, NULL as description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, h.instance_id, 
             he.state, h.output, h.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM rt_rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM rt_rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
-            FROM rt_rt_issues_issues_parents iip, rt_issues i, rt_hosts h, rt_hoststateevents he";
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM rt_issues_issues_parents iip, rt_issues i, rt_hosts h, rt_hoststateevents he";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "i.service_id IS NULL";
@@ -268,9 +268,9 @@ class IncidentsRepository
         $queryServices = "SELECT i.issue_id, i.host_id, h.name, i.service_id, s.description, 
             FROM_UNIXTIME(i.start_time) as start_time, FROM_UNIXTIME(i.end_time) as end_time, 
             h.instance_id, se.state, s.output, s.last_state_change,
-            (SELECT COUNT(iip.child_id) FROM rt_rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
-            (SELECT COUNT(iip.parent_id) FROM rt_rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
-            FROM rt_rt_issues_issues_parents iip, rt_issues i, rt_hosts h, rt_services s, rt_servicestateevents se";
+            (SELECT COUNT(iip.child_id) FROM rt_issues_issues_parents iip WHERE iip.parent_id = i.issue_id) as nb_children,
+            (SELECT COUNT(iip.parent_id) FROM rt_issues_issues_parents iip WHERE iip.child_id = i.issue_id) as nb_parents
+            FROM rt_issues_issues_parents iip, rt_issues i, rt_hosts h, rt_services s, rt_servicestateevents se";
         $wheres = array();
         $wheres[] = "i.host_id = h.host_id";
         $wheres[] = "s.host_id = i.host_id";
