@@ -125,10 +125,16 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForTraffic($metricList)
     {
         $normalizeMetricSet = array();
+        $endTime = time();
+        $startTime = $endTime - 60;
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            $normalizeMetricSet['in'] = MetricRepository::getMetricsValuesFromRrd($in['metric_id']);
+            $normalizeMetricSet['in'] = MetricRepository::getMetricsValuesFromRrd(
+                $in['metric_id'],
+                $startTime,
+                $endTime
+            );
             if (is_null($in['max'])) {
                 $in['max'] = $in['current_value'];
             }
@@ -138,7 +144,11 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
 
         if (isset($metricList['traffic_out'])) {
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = MetricRepository::getMetricsValuesFromRrd($out['metric_id']);
+            $normalizeMetricSet['out'] = MetricRepository::getMetricsValuesFromRrd(
+                $out['metric_id'],
+                $startTime,
+                $endTime
+            );
             if (is_null($out['max'])) {
                 $out['max'] = $out['current_value'];
             }

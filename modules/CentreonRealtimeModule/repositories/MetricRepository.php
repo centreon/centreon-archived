@@ -105,11 +105,12 @@ class MetricRepository
         return $listOfMetrics;
     }
     
-    public static function getMetricsValuesFromRrd($metricId)
+    public static function getMetricsValuesFromRrd($metricId, $startTime = null, $endTime = null)
     {
         $rrdHandler = new Rrd();
-        //$currentTime = time();
-        //$rrdHandler->setPeriod($currentTime, $currentTime - 60);
+        if (!is_null($startTime) && !is_null($endTime)) {
+            $rrdHandler->setPeriod($startTime, $endTime);
+        }
         $datas = array_map(
             function($data) {
                 $data = floatval($data);
