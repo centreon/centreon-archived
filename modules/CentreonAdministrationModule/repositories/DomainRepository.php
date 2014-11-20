@@ -40,6 +40,7 @@ use CentreonRealtime\Repository\ServiceRepository;
 use CentreonRealtime\Repository\MetricRepository;
 use Centreon\Internal\Utils\Status as StatusUtils;
 use Centreon\Internal\Utils\Tree as TreeUtils;
+use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Internal\Di;
 
 /**
