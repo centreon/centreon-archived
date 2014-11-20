@@ -131,7 +131,7 @@ class EventlogsController extends \Centreon\Internal\Controller
         $eventLogs = EventlogsRepository::getEventLogs(
             null,
             'DESC',
-            $lastNb
+            $lastNb,
             array(
                 'host_id' => $hostId
             )
