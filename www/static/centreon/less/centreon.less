@@ -667,7 +667,10 @@ td.incident-extended-info {
 
 .detail-info {
   .container-fluid >.row {
-    border: 2px solid #A9A9A9;
+    /*border: 2px solid @topbar-border-color;
+    border-radius: 5px;*/
+    border-top: 3px solid lighten(@topbar-bg-color, 20%);
+    background-color: @navbar-default-bg;
   }
 
   .reporting {
@@ -680,6 +683,11 @@ td.incident-extended-info {
 
   .title {
     font-weight: bold;
+
+    .output {
+      margin-top: 5px;
+      border-top: 1px solid @gray-light;
+    }
   }
 }
 
@@ -696,4 +704,34 @@ td.incident-extended-info {
 .label-unknown {
   text-transform: capitalize;
   background-color: @gray-light;
+}
+
+#network ul {
+  li {
+    list-style: none;
+    border-top: 1px solid @gray-light;
+    padding: 3px 0;
+
+    &:first-child {
+      border-top: 0;
+    }
+
+    &.info {
+      padding-left: 10px;
+      color: @gray-light;
+    }
+  }
+}
+
+#filesystem .fs {
+  margin-bottom: 3px;
+  margin-top: 3px;
+
+  &:last-child {
+    margin-bottom: 6px;
+  }
+
+  .progress {
+    background-color: @gray-lighter;
+  }
 }
