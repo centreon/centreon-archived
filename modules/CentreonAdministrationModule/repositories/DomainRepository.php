@@ -194,7 +194,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         $explodedOutput = explode("\n", $service['output']);
         
         $normalizeMetricSet['id'] = $service['service_id'];
-        $normalizeMetricSet['name'] = $service['service_description'];
+        $normalizeMetricSet['name'] = $service['description'];
         $normalizeMetricSet['output'] = $explodedOutput[0];
         $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
         
