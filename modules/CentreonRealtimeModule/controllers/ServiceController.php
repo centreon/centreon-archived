@@ -198,6 +198,8 @@ class ServiceController extends \Centreon\Internal\Controller
         if (isset($rawdata[0])) {
             $data = $this->transformRawData($rawdata[0]);
             $this->tpl->assign('title', $rawdata[0]['host_name'] . ' - ' . $rawdata[0]['service_description']);
+	    $this->tpl->assign('host', $rawdata[0]['host_name']);
+	    $this->tpl->assign('svc', $rawdata[0]['service_description']);
             $this->tpl->assign('state', $rawdata[0]['state']);
             $this->tpl->assign('data', $data);
         } else {
