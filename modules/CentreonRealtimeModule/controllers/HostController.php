@@ -154,7 +154,9 @@ class HostController extends \Centreon\Internal\Controller
 
         $this->tpl->addCss('cal-heatmap.css');
         $this->tpl->addJs('d3.min.js')
-             ->addJs('cal-heatmap.min.js');
+             ->addJs('jquery.sparkline.min.js')
+             ->addJs('cal-heatmap.min.js')
+             ->addJs('jquery.knob.min.js');
 
         $this->tpl->display('file:[CentreonRealtimeModule]host_detail.tpl');
     }

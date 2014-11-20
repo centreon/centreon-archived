@@ -37,8 +37,10 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
-use \Centreon\Internal\Utils\Status as UtilStatus;
 use CentreonRealtime\Repository\MetricRepository;
+use Centreon\Internal\Utils\Status as StatusUtils;
+use Centreon\Internal\Utils\Tree as TreeUtils;
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -100,6 +102,46 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         
         return $parent;
     }
+
+    /**
+     * Get list of objects
+     *
+     * @param string $searchStr
+     * @return array
+     */
+    public static function getFormList($searchStr = "")
+    {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT root.domain_id as root_id, root.name as root_name, 
+            child.name as child_name, child.domain_id as child_id 
+            FROM cfg_domains root LEFT OUTER JOIN cfg_domains child ON child.parent_id = root.domain_id 
+            WHERE root.parent_id IS NULL
+            ORDER BY root_name, child_name";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $finalList = array();
+        $previous = 0;
+        foreach ($rows as $row) {
+            if ($row['root_id'] != $previous) {
+                $finalList[] = array(
+                    'id' => $row['root_id'],
+                    'text' => $row['root_name']
+                );
+            }
+            if (!is_null($row['child_name'])) {
+                $finalList[] = array(
+                    'id' => $row['child_id'],
+                    'text' => TreeUtils::formatChild($row['child_name'])
+                );
+            }
+            $previous = $row['root_id'];
+        }
+
+        return $finalList;
+    }
     
     /**
      * 
@@ -153,7 +195,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         $normalizeMetricSet['id'] = $service['service_id'];
         $normalizeMetricSet['name'] = $service['service_description'];
         $normalizeMetricSet['output'] = $explodedOutput[0];
-        $normalizeMetricSet['status'] = strtolower(UtilStatus::numToString($service['state'], UtilStatus::TYPE_SERVICE));
+        $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
         
         return $normalizeMetricSet;
     }
@@ -237,7 +279,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
-        $normalizeMetricSet['status'] = strtolower(UtilStatus::numToString($service['state'], UtilStatus::TYPE_SERVICE));
+        $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
 
         return $normalizeMetricSet;
     }
@@ -269,15 +311,25 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function normalizeMetricsForCPU($domain, $service, $metricList)
     {
-        $normalizeMetricSet = array();
+        /* avg is already in metric*/
+        if (isset($metricList['total_cpu_avg'])) {
+            return array($metricList['total_cpu_avg']['current_value']);
+        }
 
+        /* avg is not in metric table, we have to calculate it */
+        $count = 0;
+        $total = 0;
         foreach ($metricList as $metricName => $metricData) {
             if (preg_match('/^cpu(\d+)/', $metricName)) {
-                $normalizeMetricSet[$metricName] = $metricData['current_value'];
+                $total += $metricData['current_value'];
+                $count++;
             }
 
         }
-        return $normalizeMetricSet;
+        if ($count) {
+            return array(round(($total / $count), 2));
+        }
+        return array();
     }
 
     /**
@@ -288,7 +340,11 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForIO($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
-        
+
+        if (!isset($metricList['write']) || !isset($metricList['read'])) {
+            return array();
+        }  
+
         $read = $metricList['read'];
         $write = $metricList['write'];
         
