@@ -35,6 +35,9 @@
 
 namespace CentreonRealtime\Repository;
 
+use Centreon\Internal\Di;
+use CentreonRealtime\Repository\EventlogsRepository\Database as EventLogDatabase;
+
 /**
  * Factory for Eventlogs
  *
@@ -54,11 +57,17 @@ class EventlogsRepository
      */
     public static function getEventLogs($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
+
+        /* If time is a timestamp, convert it */
+        if (!is_null($fromTime) && is_numeric($fromTime)) {
+            $fromTime = date('Y-m-d H:i:s', $fromTime);
+        }
+
         /* Get configuration */
         $storageType = 'db';
         if ($storageType == 'db') {
-            return \CentreonRealtime\Repository\EventlogsRepository\Database::getEventLogs(
+            return EventLogDatabase::getEventLogs(
                 $fromTime,
                 $order,
                 $limit,

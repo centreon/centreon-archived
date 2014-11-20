@@ -32,7 +32,14 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonRealtime\Controllers;
+
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Status;
+use CentreonRealtime\Repository\EventlogsRepository;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
 
 /**
  * Display the logs of engine
@@ -51,7 +58,7 @@ class EventlogsController extends \Centreon\Internal\Controller
      */
     public function displayAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         $tmpl = $di->get('template');
         $tmpl->addJs('hogan-3.0.0.min.js');
@@ -74,7 +81,7 @@ class EventlogsController extends \Centreon\Internal\Controller
      */
     public function getListEventAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
         $filters = $params->all();
 
@@ -85,7 +92,7 @@ class EventlogsController extends \Centreon\Internal\Controller
         if (isset($params['startTime'])) {
             unset($filters['startTime']);
         }
-        $listEvents = \CentreonRealtime\Repository\EventlogsRepository::getEventLogs(
+        $listEvents = EventlogsRepository::getEventLogs(
             $fromTime,
             'DESC',
             20,
@@ -110,6 +117,29 @@ class EventlogsController extends \Centreon\Internal\Controller
     }
 
     /**
+     * Return list of event logs of a host
+     * That includes the services too
+     *
+     * @method GET
+     * @route /realtime/eventlogs/lasthostevents/[i:host_id]/[i:last_nb]
+     */
+    public function getLastNbEventsOfHostAction()
+    {
+        $requestParams = $this->getParams('named');
+        $hostId = $requestParams['host_id'];
+        $lastNb = $requestParams['last_nb'];
+        $eventLogs = EventlogsRepository::getEventLogs(
+            null,
+            'DESC',
+            $lastNb
+            array(
+                'host_id' => $hostId
+            )
+        );
+        $router->response()->json($eventLogs);
+    }
+
+    /**
      * Get new events
      *
      * @method POST
@@ -117,13 +147,13 @@ class EventlogsController extends \Centreon\Internal\Controller
      */
     public function refreshNewEventLogsAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
         $filters = $params->all();
         if (isset($params['startTime'])) {
             unset($filters['startTime']);
         }
-        $listEvents = \CentreonRealtime\Repository\EventlogsRepository::getEventLogs(
+        $listEvents = EventlogsRepository::getEventLogs(
             $params['startTime'],
             'ASC',
             null,
@@ -157,12 +187,12 @@ class EventlogsController extends \Centreon\Internal\Controller
             }
             $lastDateCount++;
             if (false === is_null($log['host_id'])) {
-                $log['host_logo'] = \CentreonConfiguration\Repository\HostRepository::getIconImage($log['host']);
+                $log['host_logo'] = HostRepository::getIconImage($log['host']);
             } else {
                 $log['host_logo'] = '';
             }
             if (false === is_null($log['service_id'])) {
-                $log['service_logo'] = \CentreonConfiguration\Repository\ServiceRepository::getIconImage(
+                $log['service_logo'] = ServiceRepository::getIconImage(
                     $log['service']
                 );
             } else {
@@ -181,21 +211,21 @@ class EventlogsController extends \Centreon\Internal\Controller
             
             /* Translate the status id */
             if (isset($log['service_id']) && isset($log['host_id'])) {
-                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                $log['status_text'] = Status::numToString(
                     $log['status'],
-                    \Centreon\Internal\Utils\Status::TYPE_SERVICE,
+                    Status::TYPE_SERVICE,
                     true
                 );
             } elseif (!isset($log['service_id'])) {
-                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                $log['status_text'] = Status::numToString(
                     $log['status'],
-                    \Centreon\Internal\Utils\Status::TYPE_HOST,
+                    Status::TYPE_HOST,
                     true
                 );
             } else {
-                $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(
+                $log['status_text'] = Status::numToString(
                     $log['status'],
-                    \Centreon\Internal\Utils\Status::TYPE_EVENT,
+                    Status::TYPE_EVENT,
                     true
                 );
             }

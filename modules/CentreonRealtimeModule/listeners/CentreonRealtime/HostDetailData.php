@@ -80,12 +80,19 @@ class HostDetailData
             $serviceMetricList = MetricRepository::getMetricsFromService($service['service_id']);
             $normalizeServiceSet[$service['description']] = DomainRepository::normalizeMetrics(
                 $domainType,
+                $service,
                 $serviceMetricList
             );
         }
         
         if (count($normalizeServiceSet) > 0) {
-            $event->addHostDetailData(strtolower($domainType), $normalizeServiceSet);
+            $parentDomain['name'] = $domainType;
+            
+            if ($domainType !== 'FileSytem') {
+                $parentDomain = DomainRepository::getParent($domainType);
+            }
+            
+            $event->addHostDetailData(strtolower($parentDomain['name']), $normalizeServiceSet);
         }
     }
 }

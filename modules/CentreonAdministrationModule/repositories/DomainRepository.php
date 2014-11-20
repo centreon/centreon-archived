@@ -37,6 +37,8 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
+use \Centreon\Internal\Utils\Status as UtilStatus;
+use CentreonRealtime\Repository\MetricRepository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -77,6 +79,30 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     
     /**
      * 
+     * @param type $domain
+     */
+    public static function getParent($domain)
+    {
+        if (is_string($domain)) {
+            $domainId = Domain::getIdByParameter($domain);
+            $domain = $domainId[0];
+        }
+        
+        $currentDomain = Domain::get($domain);
+        
+        $parentDomainId = Domain::getIdByParameter('domain_id', $currentDomain['parent_id']);
+        
+        if (count($parentDomainId) > 0) {
+            $parent = Domain::get($parentDomainId[0]);
+        } else {
+            $parent = $currentDomain;
+        }
+        
+        return $parent;
+    }
+    
+    /**
+     * 
      * @param string $domain
      * @param boolean $withChildren
      * @return array
@@ -94,14 +120,33 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $domainList;
     }
     
-    public static function normalizeMetrics($domain, $metricList)
+    /**
+     * 
+     * @param type $domain
+     * @param type $service
+     * @param type $metricList
+     * @return type
+     */
+    public static function normalizeMetrics($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
         $normalizeFunction = 'normalizeMetricsFor' . $domain;
         if (method_exists(__CLASS__, $normalizeFunction)) {
-            $normalizeMetricSet = self::$normalizeFunction($metricList);
+            $normalizeMetricSet = self::$normalizeFunction($service, $metricList);
+        } else {
+            self::genericNormalizeMetrics($metricList);
         }
         return $normalizeMetricSet;
+    }
+    
+    /**
+     * 
+     * @param type $service
+     * @param type $metricList
+     */
+    public static function genericNormalizeMetrics($service, $metricList)
+    {
+        
     }
     
     /**
@@ -109,7 +154,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForNetwork($metricList)
+    public static function normalizeMetricsForNetwork($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -121,54 +166,69 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForTraffic($metricList)
+    public static function normalizeMetricsForTraffic($service, $metricList)
     {
         $normalizeMetricSet = array();
-        $rrdHandler = new \CentreonPerformance\Repository\Graph\Storage\Rrd();
-        //$currentTime = time();
-        //$rrdHandler->setPeriod($currentTime, $currentTime - 60);
+        $endTime = time();
+        $startTime = $endTime - 3600;
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
             
-            $datas = array_map(
-                function($data) {
-                    if (strval($data) == "NAN") {
-                        return null;
-                    }
-                    return $data;
-                },
-                array_values($rrdHandler->getValues($in['metric_id']))
+            // unit
+            $currentUnitExploded = explode('/', $in['unit_name']);
+            
+            // Get values
+            $metricValuesForIn = MetricRepository::getMetricsValuesFromRrd(
+                $in['metric_id'],
+                $startTime,
+                $endTime,
+                $currentUnitExploded[0]
             );
-            $normalizeMetricSet['in'] = $datas;
+            $normalizeMetricSet['in'] = $metricValuesForIn['datas'];
+            
+            // Max
             if (is_null($in['max'])) {
                 $in['max'] = $in['current_value'];
             }
             $normalizeMetricSet['in_max'] = $in['max'];
+            
+            // Set Unit
+            if (!empty($metricValuesForIn['unit'])) {
+                $in['unit_name'] = $metricValuesForIn['unit'] . '/' . $currentUnitExploded[1];
+            }
             $normalizeMetricSet['unit'] = $in['unit_name'];
         }
 
         if (isset($metricList['traffic_out'])) {
-            $datas = array_map(
-                function($data) {
-                    if (strval($data) == "NAN") {
-                        return null;
-                    }
-                    return $data;
-                },
-                array_values($rrdHandler->getValues($in['metric_id']))
-            );
-                
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = $datas;
+            
+            // unit
+            $currentUnitExploded = explode('/', $out['unit_name']);
+            
+            // Get values
+            $metricValuesForout = MetricRepository::getMetricsValuesFromRrd(
+                $out['metric_id'],
+                $startTime,
+                $endTime,
+                $currentUnitExploded[0]
+            );
+            $normalizeMetricSet['out'] = $metricValuesForout['datas'];
+            
+            // Max
             if (is_null($out['max'])) {
                 $out['max'] = $out['current_value'];
             }
             $normalizeMetricSet['out_max'] = $out['max'];
+            
+            // Set Unit
+            if (!empty($metricValuesForout['unit'])) {
+                $out['unit_name'] = $metricValuesForout['unit'] . '/' . $currentUnitExploded[1];
+            }
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
-        $normalizeMetricSet['status'] = '';
+        $normalizeMetricSet['status'] = strtolower(UtilStatus::numToString($service['state'], UtilStatus::TYPE_SERVICE));
 
         return $normalizeMetricSet;
     }
@@ -178,7 +238,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForMemory($metricList)
+    public static function normalizeMetricsForMemory($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -196,7 +256,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForFileSystem($metricList)
+    public static function normalizeMetricsForFileSystem($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -214,7 +274,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForCpu($metricList)
+    public static function normalizeMetricsForCpu($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -232,7 +292,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForIO($metricList)
+    public static function normalizeMetricsForIO($service, $metricList)
     {
         $normalizeMetricSet = array();
         
