@@ -132,7 +132,7 @@ class MetricRepository
         
         $newUnit = "";
         if (!is_null($unit)) {
-            $datas = HumanReadable::convertArray($datas, $unit, &$newUnit);
+            $datas = HumanReadable::convertArray($datas, $unit, &$newUnit, 2);
         }
         return array('datas' => $datas, 'unit' => $newUnit);
     }
