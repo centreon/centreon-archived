@@ -14,8 +14,8 @@
           </div>
           <div class="col-xs-6">
             <div class="row">
-              <div class="col-xs-4 title">{t}Address{/t}</div>
-              <div class="col-xs-8">{$address}</div>
+              <div class="col-xs-2 title">{t}Address{/t}</div>
+              <div class="col-xs-10">{$address}</div>
               <div class="col-xs-2 title">{t}Status{/t}</div>
               <div class="col-xs-2">
                 <span class="label" id="status"></span>
@@ -25,7 +25,9 @@
               </div>
             </div>
           </div>
-          <div class="col-xs-12 title">{t}Output{/t}</div>
+          <div class="col-xs-12 title">
+            <div class="output">{t}Output{/t}</div>
+          </div>
           <div class="col-xs-12">
             <div class="longoutput"></div>
           </div>
@@ -40,10 +42,11 @@
           <div class="col-xs-12">
             <h4>{t}Network{/t}</h4>
           </div>
-          <div class="col-xs-12 listing">
-            <table>
-            </table>
+          <div class="col-xs-6 listing">
+            <ul>
+            </ul>
           </div>
+          <div class="col-xs-6 display-tooltip"></div>
         </div>
       </div>
     </div>
@@ -56,16 +59,29 @@
           <div class="col-xs-12">
             <h4>{t}System{/t}</h4>
           </div>
-          <div class="col-xs-4" id="cpu">
+          <div class="col-xs-4">
+            <h4>CPU</h4>
+            <input name="cpu" id="cpu" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
           <div class="col-xs-4" id="memory">
+            <h4>Memory</h4>
+            <input name="memory" id="memory" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
           <div class="col-xs-4" id="swap">
+            <h4>Swap</h4>
+            <input name="swap" id="swap" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
         </div>
       </div>
     </div>
     <div class="col-xs-12 col-sm-6 detail-info" id="filesystem">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4>{t}Filesystem{/t}</h4>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   
@@ -127,6 +143,8 @@
 
 {block name="javascript-bottom" append}
 <script>
+$('.dial').knob();
+
 $(function() {
   var hostData,
       eData = new $.Event('centreon.host_detail'),
@@ -157,6 +175,7 @@ $(function() {
   }
 
   $(document).on('centreon.host_detail', function(e) {
+    /* Update blick general */
     var diffDate = moment().unix() - hostData.lastChange;
     $('.longoutput').html(hostData.output);
     $('#status').removeClass(function(index, css) {
@@ -166,6 +185,78 @@ $(function() {
     $('#since_status').text(
       moment.duration(diffDate, 'seconds').humanize()
     );
+
+    /* Update block network */
+    if (hostData.network !== undefined) {
+      var $in, $out, $networkList = $("#network ul");
+      $networkList.children().remove();
+      $.each(hostData.network, function(name, value) {
+        $('<li></li>').addClass('title').text(name).appendTo($networkList);
+        $in = $('<li></li>').addClass('info').appendTo($networkList);
+        $in.html(
+          '<div class="row">' +
+          '<div class="col-xs-8">In</div>' +
+          '<div class="col-xs-4"><span class="network-line" data-name="' + name + ' - In :" data-unit="' + value.unit + '">' + value.in.join(',') + '</span></div>' +
+          '</div>'
+        );
+        $out = $('<li></li>').addClass('info').appendTo($networkList);
+        $out.html(
+          '<div class="row">' +
+          '<div class="col-xs-8">Out</div>' +
+          '<div class="col-xs-4"><span class="network-line" data-name="' + name + ' - Out :" data-unit="' + value.unit + '">' + value.out.join(',') + '</span></div>' +
+          '</div>'
+        );
+      });
+      $('.network-line').sparkline('html', {
+        disableTooltips: true
+      });
+      $('.network-line').on('sparklineRegionChange', function(e) {
+        var sparkline = e.sparklines[0],
+            textInfo = $(e.currentTarget).data('name') + " " +
+                       sparkline.getCurrentRegionFields().y + " " +
+                       $(e.currentTarget).data('unit');
+        $("#network .display-tooltip").text(textInfo);
+      });
+    }
+
+    /* Update block system */
+    if (hostData.system !== undefined) {
+      if (hostData.system.memory !== undefined) {
+        var percent = hostData.system.memory.current * 100 / hostData.system.memory.max;
+        $('#memory').val(percent).trigger('change');
+      }
+      if (hostData.system.cpu !== undefined) {
+        $('#cpu').val(hostData.system.cpu).trigger('change');
+      }
+      if (hostData.system.swap !== undefined) {
+        var percent = hostData.system.swap.current * 100 / hostData.system.swap.max;
+        $('#swap').val(percent).trigger('change');
+      }
+    }
+
+    /* Update filesystems block */
+    if (hostData.filesystem !== undefined) {
+    $('#filesystem .fs').remove();
+      $.each(hostData.filesystem, function(name, value) {
+        $('<div></div>').addClass('col-xs-12').addClass('col-sm-6').addClass('fs').append(
+          $('<div></div>').addClass('row').append(
+            $('<div></div>').addClass('col-xs-4').text(name)
+          ).append(
+            $('<div></div>').addClass('col-xs-8').append(
+              $('<div></div>').addClass('progress').append(
+                $('<div></div>').addClass('progress-bar')
+                  .attr('role', 'progressbar')
+                  .attr('aria-valuenow', value.current)
+                  .attr('aria-valuemin', value.min)
+                  .attr('aria-valuemax', value.max)
+                  .css('width', (value.current * 100 / value.max) + '%')
+                  .text(value.current + ' / '  + value.max + ' ' + value.unit)
+              )
+            )
+          )
+        ).appendTo('#filesystem > .container-fluid > .row');
+      });
+    }
   });
 
   loadData();
