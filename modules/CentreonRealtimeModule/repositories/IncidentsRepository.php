@@ -114,15 +114,14 @@ class IncidentsRepository
 
         $query = $queryHosts . " UNION " . $queryServices;
         $query .= ' ORDER BY start_time DESC';
-        if (false === is_null($limit)) {
+        if (isset($limit)) {
             $query .= ' LIMIT ' . $limit;
         }
 
         $stmt = $dbconn->prepare($query);
-        if (false === is_null($fromTime)) {
+        if (isset($fromTime)) {
             $stmt->bindValue(':start_time', $fromTime, \PDO::PARAM_INT);
         }
-
         $stmt->execute();
 
         /* Data */
