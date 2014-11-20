@@ -40,6 +40,7 @@ use ZMQ::LibZMQ3;
 use ZMQ::Constants qw(:all);
 
 my $connectors = {};
+my $callbacks = {};
 my $sockets = {};
 my $polls = {};
 
@@ -68,6 +69,7 @@ sub init {
                                                                              logger => $self->{logger},
                                                                              type => $self->{target_type},
                                                                              path => $self->{target_path});
+    $callbacks->{$self->{identity}} = $options{callback};
 }
 
 sub get_poll {
@@ -111,7 +113,7 @@ sub event {
                 return ;
             }
             
-            print "===== data = " . Data::Dumper::Dumper($data) . "===\n";
+            $callbacks->{$options{identity}}->(data => $data);
         }
         
         last unless (centreon::centreond::common::zmq_still_read(socket => $sockets->{$options{identity}}));
@@ -143,8 +145,7 @@ sub send_message {
     
     centreon::centreond::common::zmq_send_message(socket => $sockets->{$self->{identity}},
         cipher => $self->{cipher}, symkey => $self->{symkey}, vector => $self->{vector},
-        action => $options{action}, data => $options{data}, target => $options{target},
-        json_encode => $options{json_encode});
+        %options);
     return 0;
 }
 

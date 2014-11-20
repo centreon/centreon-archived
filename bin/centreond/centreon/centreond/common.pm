@@ -307,7 +307,7 @@ sub getlog {
         return (1, { mesage => 'database issue' });
     }
     
-    return (0, { result => $sth->fetchall_hashref('id') });
+    return (0, { action => 'getlog', result => $sth->fetchall_hashref('id') });
 }
 
 sub kill {
@@ -433,13 +433,13 @@ sub create_com {
     return $socket;
 }
 
-sub zmq_send_message {
+sub build_protocol {
     my (%options) = @_;
     my $data = $options{data};
     my $token = defined($options{token}) ? $options{token} : '';
     my $action = defined($options{action}) ? $options{action} : '';
     my $target = defined($options{target}) ? $options{target} : '';
-    
+
     if (defined($data)) {
         if (defined($options{json_encode})) {
             $data = json_encode(data => $data, logger => $options{logger});
@@ -448,11 +448,19 @@ sub zmq_send_message {
         $data = json_encode(data => {}, logger => $options{logger});
     }
     
+    return '[' . $action . '] [' . $token . '] [' . $target . '] ' . $data;
+}
+
+sub zmq_send_message {
+    my (%options) = @_;
+    my $message = $options{message};
+    
+    if (!defined($message)) {
+        $message = build_protocol(%options);
+    }
     if (defined($options{identity})) {
         zmq_sendmsg($options{socket}, $options{identity}, ZMQ_NOBLOCK | ZMQ_SNDMORE);
-    }
-    
-    my $msg = '[' . $action . '] [' . $token . '] [' . $target . '] ' . $data;
+    }    
     if (defined($options{cipher})) {
         my $cipher = Crypt::CBC->new(-key    => $options{symkey},
                                      -keysize => length($options{symkey}),
@@ -461,9 +469,9 @@ sub zmq_send_message {
                                      -header => 'none',
                                      -literal_key => 1
                                      );
-        $msg = $cipher->encrypt($msg);
+        $message = $cipher->encrypt($message);
     }
-    zmq_sendmsg($options{socket}, $msg, ZMQ_NOBLOCK);
+    zmq_sendmsg($options{socket}, $message, ZMQ_NOBLOCK);
 }
 
 sub zmq_dealer_read_message {
@@ -492,6 +500,16 @@ sub zmq_still_read {
     my (%options) = @_;
     
     return zmq_getsockopt($options{socket}, ZMQ_RCVMORE);        
+}
+
+sub add_zmq_pollin {
+    my (%options) = @_;
+
+    push @{$options{poll}}, {
+            socket  => $options{socket},
+            events  => ZMQ_POLLIN,
+            callback => $options{callback},
+    };
 }
         
 1;
