@@ -126,7 +126,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     {
         $normalizeMetricSet = array();
         $endTime = time();
-        $startTime = $endTime - 60;
+        $startTime = $endTime - 3600;
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
