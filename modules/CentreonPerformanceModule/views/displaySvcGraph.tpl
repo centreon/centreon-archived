@@ -5,7 +5,7 @@
 <script>
 $(function() {
   var endTime = moment().format( "X" ),
-      startTime = endTime - 3600;
+      startTime = endTime - (3600*24);
   addChart("graph-{$variables.svc_id}", {$variables.svc_id}, startTime, endTime);
 });
 </script>

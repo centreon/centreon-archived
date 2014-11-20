@@ -184,7 +184,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 'Disabled' => '0',
                                     ),
             'width' => '50px',
-            'className' => 'cell_center'
+            'className' => 'datatable-align-center'
         ),
         array (
             'title' => 'Last Check',
@@ -301,10 +301,14 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                 '/tooltip"><span class="overlay">'.
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span></span>';
-            $myServiceSet['ico'] = '<span data-overlay-url="/realtime/service/'
-                . $myServiceSet['host_id']
-                . '/' . $myServiceSet['service_id']
-                . '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';
+            if ($myServiceSet['perfdata'] != '') {
+                $myServiceSet['ico'] = '<span data-overlay-url="/realtime/service/'
+                    . $myServiceSet['host_id']
+                    . '/' . $myServiceSet['service_id']
+                    . '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';
+            } else {
+                $myServiceSet['ico'] = ''; 
+            }
             $myServiceSet['duration'] = Datetime::humanReadable(
                 $myServiceSet['duration'],
                 Datetime::PRECISION_FORMAT,

@@ -168,7 +168,17 @@ class EventlogsController extends \Centreon\Internal\Controller
             } else {
                 $log['service_logo'] = '';
             }
-
+            
+            if ($log['type'] != '') {
+                if ($log['type'] == 1) {
+                    $log['type'] = 'HARD';
+                } else {
+                    $log['type'] = 'SOFT';
+                }
+            } else {
+                $log['type'] = "&nbsp;";
+            }
+            
             /* Translate the status id */
             if (isset($log['service_id']) && isset($log['host_id'])) {
                 $log['status_text'] = \Centreon\Internal\Utils\Status::numToString(

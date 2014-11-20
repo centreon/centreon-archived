@@ -63,7 +63,7 @@ class Database
         $dbconn = $di->get('db_centreon');
         
         $query = "SELECT ctime, host_id, host_name, instance_name, output, "
-            . "service_description, service_id, status, msg_type "
+            . "service_description, service_id, status, msg_type, `type` "
             . "FROM log_logs";
         $wheres = array();
         if (false === is_null($fromTime)) {
@@ -131,6 +131,7 @@ class Database
                 'instance' => $row['instance_name'],
                 'output' => $row['output'],
                 'status' => $row['status'],
+                'type' => $row['type'],
                 'msg_type' => $row['msg_type']
             );
         }
