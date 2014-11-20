@@ -44,7 +44,7 @@ my ($connector, $socket);
 
 sub new {
     my ($class, %options) = @_;
-    my $connector  = {};
+    $connector  = {};
     $connector->{logger} = $options{logger};
     $connector->{config} = $options{config};
     $connector->{config_core} = $options{config_core};

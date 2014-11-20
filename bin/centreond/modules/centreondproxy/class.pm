@@ -44,7 +44,7 @@ my ($connector, $socket);
 
 sub new {
     my ($class, %options) = @_;
-    my $connector  = {};
+    $connector  = {};
     $connector->{logger} = $options{logger};
     $connector->{pool_id} = $options{pool_id};
     $connector->{config} = $options{config};
