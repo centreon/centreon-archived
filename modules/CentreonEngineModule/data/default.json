@@ -21,7 +21,7 @@
     "log_service_retries": "1",
     "object_cache_file": "%var_lib_dir%/centreon-engine.cache",
     "resource_file": "%conf_dir%/resources.cfg",
-    "retain_state_information": "0",
+    "retain_state_information": "1",
     "service_inter_check_delay_method": "s",
     "service_interleave_factor": "s",
     "sleep_time": "0.2",

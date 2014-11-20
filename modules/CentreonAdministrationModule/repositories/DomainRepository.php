@@ -360,6 +360,10 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     {
         $normalizeMetricSet = array();
 
+        if (!isset($metricList['used'])) {
+            return array();
+        }
+
         $metric = $metricList['used'];
 
         $newUnit = "";
