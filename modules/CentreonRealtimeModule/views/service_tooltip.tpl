@@ -1,13 +1,11 @@
 {if isset($error)}
 	{$error}
 {else}
-<div class='centreon-table'>
-    <h3 class="text-center">
-		<span class="label label-{$state|service_color}">
-			{$title}
-		</span>
-	</h3>
-	<table class="table table-striped table-condensed">
+<div class='centreon_table' style='padding:0;margin:0;'>
+	<h4 class="text-center">	
+	    <span class="label label-{$state|service_color}"><i class='fa fa-hdd-o'></i> {$host} / <i class='fa fa-gear'> {$svc}</i></span>
+	</h4>
+	<table class="table table-striped table-condensed ">
 	{foreach from=$data item=d}
 		<tr>
 			<td>{$d.label}</td>
