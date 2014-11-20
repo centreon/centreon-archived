@@ -31,7 +31,7 @@
 #
 ####################################################################################
 
-package modules::centreondacl::class;
+package modules::centreondaction::class;
 
 use strict;
 use warnings;
@@ -46,7 +46,6 @@ sub new {
     my ($class, %options) = @_;
     $connector  = {};
     $connector->{logger} = $options{logger};
-    $connector->{organization_id} = $options{organization_id};
     $connector->{config} = $options{config};
     $connector->{config_core} = $options{config_core};
     $connector->{stop} = 0;
@@ -72,7 +71,7 @@ sub handle_HUP {
 
 sub handle_TERM {
     my $self = shift;
-    $self->{logger}->writeLogInfo("centreond-acl $$ Receiving order to stop...");
+    $self->{logger}->writeLogInfo("centreond-action $$ Receiving order to stop...");
     $self->{stop} = 1;
 }
 
@@ -92,7 +91,7 @@ sub event {
     while (1) {
         my $message = centreon::centreond::common::zmq_dealer_read_message(socket => $socket);
         
-        print "===== ACL class = $message ==== yeah!!!!\n";
+        print "===== ACTION class = $message ==== yeah!!!!\n";
         
         last unless (centreon::centreond::common::zmq_still_read(socket => $socket));
     }
@@ -100,16 +99,14 @@ sub event {
 
 sub run {
     my ($self, %options) = @_;
-    my $on_demand = (defined($options{on_demand}) && $options{on_demand} == 1) ? 1 : 0;
-    my $on_demand_time = time();
 
     # Connect internal
-    $socket = centreon::centreond::common::connect_com(zmq_type => 'ZMQ_DEALER', name => 'centreondacl-' . $self->{organization_id},
+    $socket = centreon::centreond::common::connect_com(zmq_type => 'ZMQ_DEALER', name => 'centreondaction',
                                                        logger => $self->{logger},
                                                        type => $self->{config_core}{internal_com_type},
                                                        path => $self->{config_core}{internal_com_path});
     centreon::centreond::common::zmq_send_message(socket => $socket,
-                                                  action => 'ACLREADY', data => { organization_id => $self->{organization_id} },
+                                                  action => 'ACTIONREADY', data => { },
                                                   json_encode => 1);
     $self->{poll} = [
             {
@@ -122,22 +119,9 @@ sub run {
         # we try to do all we can
         my $rev = zmq_poll($self->{poll}, 5000);
         if ($rev == 0 && $self->{stop} == 1) {
-            $self->{logger}->writeLogInfo("centreond-acl $$ has quit");
+            $self->{logger}->writeLogInfo("centreond-action $$ has quit");
             zmq_close($socket);
             exit(0);
-        }
-
-        # Check if we need to quit
-        if ($on_demand == 1) {
-            if ($rev == 0) {
-                if (time() - $on_demand_time > $self->{config}{on_demand_time}) {
-                    $self->{logger}->writeLogInfo("centreond-acl $$ has quit");
-                    zmq_close($socket);
-                    exit(0);
-                }
-            } else {
-                $on_demand_time = time();
-            }
         }
     }
 }

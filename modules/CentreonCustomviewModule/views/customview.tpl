@@ -32,6 +32,7 @@
         <button type="button" class="btn btn-default btn-sm" id="view_save">
             <span class="fa fa-save"> {t}Save{/t}</span>
         </button>
+        <!--
         <span class="custom-tag-label">
             <button type="button" class="btn btn-primary btn-sm">
                 Tags
@@ -39,6 +40,7 @@
             </button>
         </span>
         <span class="label label-primary custom-owner-label">{t}This view was created by admin{/t}</span>
+        -->
     </div>
 </div>
 <div class="filter_zone" style="display:none;">

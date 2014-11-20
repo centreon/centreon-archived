@@ -25,7 +25,7 @@ sub register {
     my (%options) = @_;
     
     $config = $options{config};
-    $config_core = $options{config_core}; 
+    $config_core = $options{config_core};
     $config_check_organizations_time = defined($config->{check_organizations_time}) ? $config->{check_organizations_time} : 3600;
     $on_demand = defined($config->{on_demand}) && $config->{on_demand} == 1 ? 1 : 0;
     return ($events, $module_id);

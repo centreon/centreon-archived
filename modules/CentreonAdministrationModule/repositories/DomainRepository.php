@@ -37,8 +37,11 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
-use \Centreon\Internal\Utils\Status as UtilStatus;
 use CentreonRealtime\Repository\MetricRepository;
+use Centreon\Internal\Utils\Status as StatusUtils;
+use Centreon\Internal\Utils\Tree as TreeUtils;
+use Centreon\Internal\Utils\HumanReadable;
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -84,7 +87,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function getParent($domain)
     {
         if (is_string($domain)) {
-            $domainId = Domain::getIdByParameter($domain);
+            $domainId = Domain::getIdByParameter('name', array($domain));
             $domain = $domainId[0];
         }
         
@@ -99,6 +102,46 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         }
         
         return $parent;
+    }
+
+    /**
+     * Get list of objects
+     *
+     * @param string $searchStr
+     * @return array
+     */
+    public static function getFormList($searchStr = "")
+    {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT root.domain_id as root_id, root.name as root_name, 
+            child.name as child_name, child.domain_id as child_id 
+            FROM cfg_domains root LEFT OUTER JOIN cfg_domains child ON child.parent_id = root.domain_id 
+            WHERE root.parent_id IS NULL
+            ORDER BY root_name, child_name";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $finalList = array();
+        $previous = 0;
+        foreach ($rows as $row) {
+            if ($row['root_id'] != $previous) {
+                $finalList[] = array(
+                    'id' => $row['root_id'],
+                    'text' => $row['root_name']
+                );
+            }
+            if (!is_null($row['child_name'])) {
+                $finalList[] = array(
+                    'id' => $row['child_id'],
+                    'text' => TreeUtils::formatChild($row['child_name'])
+                );
+            }
+            $previous = $row['root_id'];
+        }
+
+        return $finalList;
     }
     
     /**
@@ -132,9 +175,9 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         $normalizeMetricSet = array();
         $normalizeFunction = 'normalizeMetricsFor' . $domain;
         if (method_exists(__CLASS__, $normalizeFunction)) {
-            $normalizeMetricSet = self::$normalizeFunction($service, $metricList);
+            $normalizeMetricSet = self::$normalizeFunction($domain, $service, $metricList);
         } else {
-            self::genericNormalizeMetrics($metricList);
+            self::genericNormalizeMetrics($domain, $service, $metricList);
         }
         return $normalizeMetricSet;
     }
@@ -144,9 +187,18 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param type $service
      * @param type $metricList
      */
-    public static function genericNormalizeMetrics($service, $metricList)
+    public static function genericNormalizeMetrics($domain, $service, $metricList)
     {
+        $normalizeMetricSet = array();
         
+        $explodedOutput = explode("\n", $service['output']);
+        
+        $normalizeMetricSet['id'] = $service['service_id'];
+        $normalizeMetricSet['name'] = $service['description'];
+        $normalizeMetricSet['output'] = $explodedOutput[0];
+        $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
+        
+        return $normalizeMetricSet;
     }
     
     /**
@@ -154,7 +206,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForNetwork($service, $metricList)
+    public static function normalizeMetricsForNetwork($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -166,7 +218,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForTraffic($service, $metricList)
+    public static function normalizeMetricsForTraffic($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
         $endTime = time();
@@ -228,7 +280,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
-        $normalizeMetricSet['status'] = strtolower(UtilStatus::numToString($service['state'], UtilStatus::TYPE_SERVICE));
+        $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
 
         return $normalizeMetricSet;
     }
@@ -238,17 +290,9 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForMemory($service, $metricList)
+    public static function normalizeMetricsForMemory($domain, $service, $metricList)
     {
-        $normalizeMetricSet = array();
-
-        $metric = $metricList['used'];
-
-        $normalizeMetricSet['current'] = $metric['current_value'];
-        $normalizeMetricSet['max'] = $metric['max'];
-        $normalizeMetricSet['unit'] = $metric['unit_name'];
-
-        return $normalizeMetricSet;
+        return self::normalizeMetricsForStorage($domain, $service, $metricList);
     }
 
     /**
@@ -256,17 +300,9 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForFileSystem($service, $metricList)
+    public static function normalizeMetricsForFileSystem($domain, $service, $metricList)
     {
-        $normalizeMetricSet = array();
-
-        $metric = $metricList['used'];
-
-        $normalizeMetricSet['current'] = $metric['current_value'];
-        $normalizeMetricSet['max'] = $metric['max'];
-        $normalizeMetricSet['unit'] = $metric['unit_name'];
-
-        return $normalizeMetricSet;
+        return self::normalizeMetricsForStorage($domain, $service, $metricList);
     }
 
     /**
@@ -274,17 +310,27 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForCpu($service, $metricList)
+    public static function normalizeMetricsForCPU($domain, $service, $metricList)
     {
-        $normalizeMetricSet = array();
+        /* avg is already in metric*/
+        if (isset($metricList['total_cpu_avg'])) {
+            return array($metricList['total_cpu_avg']['current_value']);
+        }
 
+        /* avg is not in metric table, we have to calculate it */
+        $count = 0;
+        $total = 0;
         foreach ($metricList as $metricName => $metricData) {
             if (preg_match('/^cpu(\d+)/', $metricName)) {
-                $normalizeMetricSet[$metricName] = $metricData['current_value'];
+                $total += $metricData['current_value'];
+                $count++;
             }
 
         }
-        return $normalizeMetricSet;
+        if ($count) {
+            return array(round(($total / $count), 2));
+        }
+        return array();
     }
 
     /**
@@ -292,10 +338,14 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForIO($service, $metricList)
+    public static function normalizeMetricsForIO($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
-        
+
+        if (!isset($metricList['write']) || !isset($metricList['read'])) {
+            return array();
+        }  
+
         $read = $metricList['read'];
         $write = $metricList['write'];
         
@@ -303,6 +353,34 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         $normalizeMetricSet['write'] = $write['current_value'];
         $normalizeMetricSet['unit'] = $read['unit_name'];
         
+        return $normalizeMetricSet;
+    }
+    
+    public static function normalizeMetricsForStorage($domain, $service, $metricList)
+    {
+        $normalizeMetricSet = array();
+
+        if (!isset($metricList['used'])) {
+            return array();
+        }
+
+        $metric = $metricList['used'];
+
+        $newUnit = "";
+        $memoryValue = HumanReadable::convertArray(
+            array($metric['current_value'], $metric['max']),
+            $metric['unit_name'],
+            &$newUnit,
+            2
+        );
+        $normalizeMetricSet['current'] = $memoryValue[0];
+        $normalizeMetricSet['max'] = $memoryValue[1];
+            
+        if (!empty($newUnit)) {
+            $metric['unit_name'] = $newUnit;
+        }
+        $normalizeMetricSet['unit'] = $metric['unit_name'];
+
         return $normalizeMetricSet;
     }
 }
