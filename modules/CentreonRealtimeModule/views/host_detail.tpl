@@ -219,6 +219,9 @@ $(function() {
                        sparkline.getCurrentRegionFields().y + " " +
                        $(e.currentTarget).data('unit');
         $("#network .display-tooltip").text(textInfo);
+      })
+      .on('mouseleave', function(e) {
+        $("#network .display-tooltip").text('');
       });
     }
 
