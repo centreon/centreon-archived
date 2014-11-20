@@ -88,7 +88,7 @@ class HostDetailData
         if (count($normalizeServiceSet) > 0) {
             $parentDomain['name'] = $domainType;
             
-            if ($domainType !== 'FileSytem') {
+            if ($domainType !== 'FileSystem') {
                 $parentDomain = DomainRepository::getParent($domainType);
             } elseif ($parentDomain['name'] !== 'Application') {
                 $normalizeServiceSet = array('name' => $domainType, 'service' => $normalizeServiceSet);
