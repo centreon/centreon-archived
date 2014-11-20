@@ -1,6 +1,7 @@
 {if isset($error)}
 	{$error}
 {else}
+<div class='centreon-table'>
     <h3 class="text-center">
 		<span class="label label-{$state|service_color}">
 			{$title}
@@ -14,5 +15,6 @@
 		</tr>
 	{/foreach}
 	</table>
+</div>
 {/if}
 {hook name="displaySvcTooltipDetail" container="" params=$params}
