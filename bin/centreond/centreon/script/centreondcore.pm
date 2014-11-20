@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 
 package centreon::script::centreondcore;
 
@@ -194,6 +193,10 @@ sub message_run {
     }
     my ($action, $token, $target, $data) = ($1, $2, $3, $4);
     if ($action !~ /^(PUTLOG|GETLOG|KILL)$/ && !defined($self->{modules_events}->{$action})) {
+        centreon::centreond::common::add_history(dbh => $self->{db_centreond},
+                                                 ctime => time(), code => 1, token => $token,
+                                                 data => { msg => "action '$action' is not known" },
+                                                 json_encode => 1);
         return (undef, 1, { message => "action '$action' is not known" });
     }
     if (!defined($token) || $token eq '') {
@@ -390,31 +393,40 @@ sub run {
                                             path => $centreond_config->{centreondcore}{internal_com_path},
                                             zmq_type => 'ZMQ_ROUTER', name => 'router-internal',
                                             logger => $centreond->{logger});
-    $centreond->{external_socket} = centreon::centreond::common::create_com(type => $centreond_config->{centreondcore}{external_com_type},
-                                            path => $centreond_config->{centreondcore}{external_com_path},
-                                            zmq_type => 'ZMQ_ROUTER', name => 'router-external',
-                                            logger => $centreond->{logger});
-    # init all modules
-    foreach my $name (keys %{$centreond->{modules_register}}) {
-        $centreond->{logger}->writeLogInfo("Call init function from module '$name'");
-        $centreond->{modules_register}->{$name}->{init}->(logger => $centreond->{logger});
+    if (defined($centreond_config->{centreondcore}{external_com_type}) && $centreond_config->{centreondcore}{external_com_type} ne '') {
+        $centreond->{external_socket} = centreon::centreond::common::create_com(type => $centreond_config->{centreondcore}{external_com_type},
+                                                path => $centreond_config->{centreondcore}{external_com_path},
+                                                zmq_type => 'ZMQ_ROUTER', name => 'router-external',
+                                                logger => $centreond->{logger});
     }
-    
-    $centreond->{logger}->writeLogInfo("[Server accepting clients]");
-    
+
     # Initialize poll set
     $centreond->{poll} = [
         {
             socket  => $centreond->{internal_socket},
             events  => ZMQ_POLLIN,
             callback => \&router_internal_event,
-        },
-        {
+        }
+    ];
+    
+    if (defined($centreond->{external_socket})) {
+        push @{$centreond->{poll}}, {
             socket  => $centreond->{external_socket},
             events  => ZMQ_POLLIN,
             callback => \&router_external_event,
-        },
-    ];
+        };
+    }
+    
+    # init all modules
+    foreach my $name (keys %{$centreond->{modules_register}}) {
+        $centreond->{logger}->writeLogInfo("Call init function from module '$name'");
+        $centreond->{modules_register}->{$name}->{init}->(logger => $centreond->{logger},
+                                                          poll => $centreond->{poll},
+                                                          external_socket => $centreond->{external_socket},
+                                                          internal_socket => $centreond->{internal_socket});
+    }
+    
+    $centreond->{logger}->writeLogInfo("[Server accepting clients]");
 
     while (1) {
         my $count = 0;

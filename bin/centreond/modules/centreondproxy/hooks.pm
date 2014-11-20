@@ -4,21 +4,25 @@ package modules::centreondproxy::hooks;
 use warnings;
 use strict;
 use centreon::script::centreondcore;
+use centreon::centreond::common;
 use modules::centreondproxy::class;
 
 my $config_core;
 my $config;
 my $module_id = 'centreondproxy';
 my $events = [
-    'PROXYREADY', 'ADDPOLLER'
+    'PROXYREADY', 'SETLOGS', 'REGISTERNODE', # internal. Shouldn't be used by third party clients
+    'ADDPOLLER',  'SYNCLOGS', 
 ];
 
+my $register_pollers = {};
 my $last_pollers = {}; # Last values from centreon database
 my $pools = {};
 my $pools_pid = {};
 my $poller_pool = {};
 my $rr_current = 0;
 my $stop = 0;
+my $external_socket;
 
 sub register {
     my (%options) = @_;
@@ -31,6 +35,7 @@ sub register {
 sub init {
     my (%options) = @_;
 
+    $external_socket = $options{external_socket};
     $last_pollers = get_pollers();
     for my $pool_id (1..$config->{pool}) {
         create_child(pool_id => $pool_id, logger => $options{logger});
@@ -53,16 +58,29 @@ sub routing {
         return undef;
     }
     
+    if ($options{action} eq 'REGISTERNODE') {
+        $options{logger}->writeLogInfo("centreond-proxy: poller  '" . $data->{id} . "' is registered");
+        $register_pollers->{$data->{id}} = 1;
+        return undef;
+    }
+    
     if ($options{action} eq 'PROXYREADY') {
         $pools->{$data->{pool_id}}->{ready} = 1;
         return undef;
     }
     
-    if (!defined($options{target}) || !defined($last_pollers->{$options{target}})) {
+    if (!defined($options{target}) || 
+        (!defined($last_pollers->{$options{target}}) && !defined($register_pollers->{$options{target}}))) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
                                                  ctime => time(), code => 20, token => $options{token},
                                                  data => { msg => 'centreondproxy: need a valid poller id' },
                                                  json_encode => 1);
+        return undef;
+    }
+    
+    # Mode zmq pull
+    if (defined($register_pollers->{$options{target}})) {
+        pull_request(%options, data_decoded => $data);
         return undef;
     }
     
@@ -177,6 +195,34 @@ sub create_child {
     $options{logger}->writeLogInfo("PID $child_pid centreondproxy for pool id '" . $options{pool_id} . "'");
     $pools->{$options{pool_id}} = { pid => $child_pid, ready => 0, running => 1 };
     $pools_pid->{$child_pid} = $options{pool_id};
+}
+
+sub pull_request {
+    my (%options) = @_;
+
+    # No target anymore. We remove it.
+    my $message = centreon::centreond::common::build_protocol(action => $options{action}, data => $options{data}, token => $options{token},
+                                                              target => ''
+                                                              );
+    my ($status, $key) = centreon::centreond::common::is_handshake_done(dbh => $options{dbh}, identity => unpack('H*', $options{target}));
+    if ($status == 0) {
+        centreon::centreond::common::add_history(dbh => $options{dbh},
+                                                 ctime => time(), code => 20, token => $options{token},
+                                                 data => { msg => "centreondproxy: node '" . $options{target} . "' had never been connected" },
+                                                 json_encode => 1);
+        return undef;
+    }
+    
+    # Should call here the function to transform data and do some put logs. A loop (because it will also be used in sub proxy process)
+    # Catch some actions call and do some transformation (on file copy)
+    # TODO
+    
+    centreon::centreond::common::zmq_send_message(socket => $external_socket,
+                                                  cipher => $config_core->{cipher},
+                                                  vector => $config_core->{vector},
+                                                  symkey => $key,
+                                                  identity => $options{target},
+                                                  message => $message);
 }
 
 1;

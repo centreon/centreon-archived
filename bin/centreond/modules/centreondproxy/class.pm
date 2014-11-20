@@ -88,12 +88,17 @@ sub class_handle_HUP {
     }
 }
 
+sub proxy {
+    my (%options) = @_;
+    
+    print "===== PROXY class = $options{message} ==== yeah!!!!\n";
+}
+
 sub event {
     while (1) {
         my $message = centreon::centreond::common::zmq_dealer_read_message(socket => $socket);
         
-        print "===== PROXY class = $message ==== yeah!!!!\n";
-        
+        proxy(message => $message);        
         last unless (centreon::centreond::common::zmq_still_read(socket => $socket));
     }
 }
