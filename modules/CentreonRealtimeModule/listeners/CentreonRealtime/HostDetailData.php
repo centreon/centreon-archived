@@ -90,6 +90,8 @@ class HostDetailData
             
             if ($domainType !== 'FileSytem') {
                 $parentDomain = DomainRepository::getParent($domainType);
+            } elseif ($parentDomain['name'] !== 'Application') {
+                $normalizeServiceSet = array('name' => $domainType, 'service' => $normalizeServiceSet);
             }
             
             $event->addHostDetailData(strtolower($parentDomain['name']), $normalizeServiceSet);
