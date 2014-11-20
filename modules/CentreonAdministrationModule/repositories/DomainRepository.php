@@ -37,6 +37,7 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
+use CentreonRealtime\Repository\MetricRepository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -124,23 +125,10 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForTraffic($metricList)
     {
         $normalizeMetricSet = array();
-        $rrdHandler = new \CentreonPerformance\Repository\Graph\Storage\Rrd();
-        //$currentTime = time();
-        //$rrdHandler->setPeriod($currentTime, $currentTime - 60);
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            
-            $datas = array_map(
-                function($data) {
-                    if (strval($data) == "NAN") {
-                        return null;
-                    }
-                    return $data;
-                },
-                array_values($rrdHandler->getValues($in['metric_id']))
-            );
-            $normalizeMetricSet['in'] = $datas;
+            $normalizeMetricSet['in'] = MetricRepository::getMetricsValuesFromRrd($in['metric_id']);
             if (is_null($in['max'])) {
                 $in['max'] = $in['current_value'];
             }
@@ -149,18 +137,8 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         }
 
         if (isset($metricList['traffic_out'])) {
-            $datas = array_map(
-                function($data) {
-                    if (strval($data) == "NAN") {
-                        return null;
-                    }
-                    return $data;
-                },
-                array_values($rrdHandler->getValues($in['metric_id']))
-            );
-                
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = $datas;
+            $normalizeMetricSet['out'] = MetricRepository::getMetricsValuesFromRrd($out['metric_id']);
             if (is_null($out['max'])) {
                 $out['max'] = $out['current_value'];
             }
