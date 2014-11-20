@@ -125,6 +125,8 @@ class EventlogsController extends \Centreon\Internal\Controller
      */
     public function getLastNbEventsOfHostAction()
     {
+        $router = Di::getDefault()->get('router');
+
         $requestParams = $this->getParams('named');
         $hostId = $requestParams['host_id'];
         $lastNb = $requestParams['last_nb'];
