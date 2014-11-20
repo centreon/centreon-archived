@@ -303,7 +303,7 @@
   };
 
   $.CentreonSearch.prototype.fillAssociateFields = function() {
-    var regexSplit = new RegExp( "[^ ]\\w+:(\\w+|\"[^\"]+\"|'[^']+')", "g" ),
+    var regexSplit = new RegExp( "[^ ]\\w+:([\\w_-]+|\"[^\"]+\"|'[^']+')", "g" ),
         listUsedTags = {},
         self = this,
         input = this.dom.$elem;
