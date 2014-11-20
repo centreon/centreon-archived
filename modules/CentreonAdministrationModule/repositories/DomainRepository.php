@@ -130,29 +130,57 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
 
         if (isset($metricList['traffic_in'])) {
             $in = $metricList['traffic_in'];
-            $normalizeMetricSet['in'] = MetricRepository::getMetricsValuesFromRrd(
+            
+            // unit
+            $currentUnitExploded = explode('/', $in['unit_name']);
+            
+            // Get values
+            $metricValuesForIn = MetricRepository::getMetricsValuesFromRrd(
                 $in['metric_id'],
                 $startTime,
-                $endTime
+                $endTime,
+                $currentUnitExploded[0]
             );
+            $normalizeMetricSet['in'] = $metricValuesForIn['datas'];
+            
+            // Max
             if (is_null($in['max'])) {
                 $in['max'] = $in['current_value'];
             }
             $normalizeMetricSet['in_max'] = $in['max'];
+            
+            // Set Unit
+            if (!empty($metricValuesForIn['unit'])) {
+                $in['unit_name'] = $metricValuesForIn['unit'] . '/' . $currentUnitExploded[1];
+            }
             $normalizeMetricSet['unit'] = $in['unit_name'];
         }
 
         if (isset($metricList['traffic_out'])) {
             $out = $metricList['traffic_out'];
-            $normalizeMetricSet['out'] = MetricRepository::getMetricsValuesFromRrd(
+            
+            // unit
+            $currentUnitExploded = explode('/', $out['unit_name']);
+            
+            // Get values
+            $metricValuesForout = MetricRepository::getMetricsValuesFromRrd(
                 $out['metric_id'],
                 $startTime,
-                $endTime
+                $endTime,
+                $currentUnitExploded[0]
             );
+            $normalizeMetricSet['out'] = $metricValuesForout['datas'];
+            
+            // Max
             if (is_null($out['max'])) {
                 $out['max'] = $out['current_value'];
             }
             $normalizeMetricSet['out_max'] = $out['max'];
+            
+            // Set Unit
+            if (!empty($metricValuesForout['unit'])) {
+                $out['unit_name'] = $metricValuesForout['unit'] . '/' . $currentUnitExploded[1];
+            }
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         

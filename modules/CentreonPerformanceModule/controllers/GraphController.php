@@ -36,8 +36,8 @@
 
 namespace CentreonPerformance\Controllers;
 
-use \Centreon\Internal\Utils\HumanReadable,
-    \CentreonPerformance\Repository\GraphView;
+use Centreon\Internal\Utils\HumanReadable;
+use CentreonPerformance\Repository\GraphView;
 
 /**
  * Controller for display graphs

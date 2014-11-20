@@ -41,6 +41,7 @@ use CentreonRealtime\Models\Service as ServiceRealtime;
 use CentreonRealtime\Models\IndexData as IndexData;
 use CentreonRealtime\Models\Metric as Metrics;
 use \CentreonPerformance\Repository\Graph\Storage\Rrd;
+use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Di;
 
@@ -105,7 +106,14 @@ class MetricRepository
         return $listOfMetrics;
     }
     
-    public static function getMetricsValuesFromRrd($metricId, $startTime = null, $endTime = null)
+    /**
+     * 
+     * @param type $metricId
+     * @param type $startTime
+     * @param type $endTime
+     * @return type
+     */
+    public static function getMetricsValuesFromRrd($metricId, $startTime = null, $endTime = null, $unit = null)
     {
         $rrdHandler = new Rrd();
         if (!is_null($startTime) && !is_null($endTime)) {
@@ -121,6 +129,11 @@ class MetricRepository
             },
             array_values($rrdHandler->getValues($metricId))
         );
-        return $datas;
+        
+        $newUnit = "";
+        if (!is_null($unit)) {
+            $datas = HumanReadable::convertArray($datas, $unit, &$newUnit);
+        }
+        return array('datas' => $datas, 'unit' => $newUnit);
     }
 }
