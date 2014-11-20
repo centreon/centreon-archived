@@ -37,8 +37,9 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
-use \Centreon\Internal\Utils\Status as UtilStatus;
 use CentreonRealtime\Repository\MetricRepository;
+use Centreon\Internal\Utils\Status as UtilStatus;
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -99,6 +100,46 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         }
         
         return $parent;
+    }
+
+    /**
+     * Get list of objects
+     *
+     * @param string $searchStr
+     * @return array
+     */
+    public static function getFormList($searchStr = "")
+    {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT root.domain_id as root_id, root.name as root_name, 
+            child.name as child_name, child.domain_id as child_id 
+            FROM cfg_domains root LEFT OUTER JOIN cfg_domains child ON child.parent_id = root.domain_id 
+            WHERE root.parent_id IS NULL
+            ORDER BY root_name, child_name";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $finalList = array();
+        $previous = 0;
+        foreach ($rows as $row) {
+            if ($row['root_id'] != $previous) {
+                $finalList[] = array(
+                    'id' => $row['root_id'],
+                    'text' => $row['root_name']
+                );
+            }
+            if (!is_null($row['child_name'])) {
+                $finalList[] = array(
+                    'id' => $row['child_id'],
+                    'text' => "&nbsp;&nbsp;|&nbsp;&nbsp;" . $row['child_name']
+                );
+            }
+            $previous = $row['root_id'];
+        }
+
+        return $finalList;
     }
     
     /**
