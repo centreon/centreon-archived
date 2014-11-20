@@ -3,7 +3,7 @@
 {block name="title"}{t}Graphs{/t}{/block}
 
 {block name="content"}
-<div class="container">
+<div class="container" style='padding-top:20px;'>
   <div class="c3" id="graph">
   </div>
 </div>
@@ -86,8 +86,7 @@ $(function() {
   var serviceId = {$serviceId},
       endTime = new Date(),
       startTime = new Date();
-  startTime.setHours(endTime.getHours() - 2);
-
+  startTime.setHours(endTime.getHours() - 24);
   updateChart(serviceId, Math.floor(startTime.getTime() / 1000), Math.floor(endTime.getTime() / 1000));
 });
 </script>
