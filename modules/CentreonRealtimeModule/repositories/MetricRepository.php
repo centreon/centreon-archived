@@ -40,7 +40,7 @@ use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRe
 use CentreonRealtime\Models\Service as ServiceRealtime;
 use CentreonRealtime\Models\IndexData as IndexData;
 use CentreonRealtime\Models\Metric as Metrics;
-use \CentreonPerformance\Repository\Graph\Storage\Rrd;
+use CentreonPerformance\Repository\Graph\Storage\Rrd;
 use Centreon\Internal\Utils\HumanReadable;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Di;
@@ -132,7 +132,7 @@ class MetricRepository
         
         $newUnit = "";
         if (!is_null($unit)) {
-            $datas = HumanReadable::convertArray($datas, $unit, &$newUnit);
+            $datas = HumanReadable::convertArray($datas, $unit, &$newUnit, 2);
         }
         return array('datas' => $datas, 'unit' => $newUnit);
     }

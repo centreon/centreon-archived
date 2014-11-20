@@ -102,7 +102,7 @@ sub check {
         }
     }
     
-    $count++  if ($action->{running} == 1);
+    $count++  if (defined($action->{running}) && $action->{running} == 1);
     
     return $count;
 }

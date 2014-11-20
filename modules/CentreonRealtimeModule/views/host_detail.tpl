@@ -61,15 +61,15 @@
           </div>
           <div class="col-xs-4">
             <h4>CPU</h4>
-            <input name="cpu" id="cpu" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
+            <input name="cpu" id="gauge_cpu" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
           <div class="col-xs-4" id="memory">
             <h4>Memory</h4>
-            <input name="memory" id="memory" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
+            <input name="memory" id="gauge_memory" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
           <div class="col-xs-4" id="swap">
             <h4>Swap</h4>
-            <input name="swap" id="swap" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
+            <input name="swap" id="gauge_swap" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
         </div>
       </div>
@@ -223,14 +223,14 @@ $(function() {
     if (hostData.system !== undefined) {
       if (hostData.system.memory !== undefined) {
         var percent = hostData.system.memory.current * 100 / hostData.system.memory.max;
-        $('#memory').val(percent).trigger('change');
+        $('#gauge_memory').val(percent).trigger('change');
       }
       if (hostData.system.cpu !== undefined) {
-        $('#cpu').val(hostData.system.cpu).trigger('change');
+        $('#gauge_cpu').val(hostData.system.cpu).trigger('change');
       }
       if (hostData.system.swap !== undefined) {
         var percent = hostData.system.swap.current * 100 / hostData.system.swap.max;
-        $('#swap').val(percent).trigger('change');
+        $('#gauge_swap').val(percent).trigger('change');
       }
     }
 

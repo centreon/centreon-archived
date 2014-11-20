@@ -66,7 +66,11 @@ class HostDetailData
      */
     public function addHostDetailData($datasName, $datasValue)
     {
-        $this->datas[$datasName] = $datasValue;
+        if (isset($this->datas[$datasName])) {
+        $this->datas[$datasName] = array_merge($this->datas[$datasName], $datasValue);
+        } else {
+            $this->datas[$datasName] = $datasValue;
+        }
     }
     
     /**
