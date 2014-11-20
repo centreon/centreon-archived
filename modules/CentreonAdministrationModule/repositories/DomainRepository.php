@@ -279,7 +279,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
-        $normalizeMetricSet['status'] = strtolower(UtilStatus::numToString($service['state'], UtilStatus::TYPE_SERVICE));
+        $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
 
         return $normalizeMetricSet;
     }
