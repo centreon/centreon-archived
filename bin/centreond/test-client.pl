@@ -54,6 +54,8 @@ $client->send_message(action => 'ACLADDHOST', data => { organization_id => 10 },
                       json_encode => 1);
 $client2->send_message(action => 'ACLADDHOST', data => { organization_id => 14 }, 
                        json_encode => 1);
+$client2->send_message(action => 'RELOADCRON', data => { }, 
+                       json_encode => 1);
 
 # We send a request to a poller
 $client2->send_message(action => 'COMMAND', data => { cmd => 'ls' }, target => 120, 

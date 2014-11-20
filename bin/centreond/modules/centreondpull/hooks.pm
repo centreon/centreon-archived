@@ -29,7 +29,7 @@ sub init {
                                                                    logger => $options{logger},
                                                                    type => $config_core->{internal_com_type},
                                                                    path => $config_core->{internal_com_path});
-    $client = centreon::centreond::clientzmq->new(identity => $config->{register_id}, 
+    $client = centreon::centreond::clientzmq->new(identity => $config_core->{id}, 
                                                   cipher => $config->{cipher}, 
                                                   vector => $config->{vector},
                                                   pubkey => $config->{pubkey},
@@ -39,7 +39,7 @@ sub init {
                                                   );
     $client->init(callback => \&read_message);
     
-    $client->send_message(action => 'REGISTERNODE', data => { id => $config->{register_id} }, 
+    $client->send_message(action => 'REGISTERNODE', data => { id => $config_core->{id} }, 
                           json_encode => 1);
     my $poll_client = $client->get_poll();
     push @{$options{poll}}, $poll_client;

@@ -31,13 +31,14 @@
 #
 ####################################################################################
 
-package modules::centreondacl::class;
+package modules::centreondcron::class;
 
 use strict;
 use warnings;
 use centreon::centreond::common;
 use ZMQ::LibZMQ3;
 use ZMQ::Constants qw(:all);
+use Schedule::Cron;
 
 my %handlers = (TERM => {}, HUP => {});
 my ($connector, $socket);
@@ -46,7 +47,6 @@ sub new {
     my ($class, %options) = @_;
     $connector  = {};
     $connector->{logger} = $options{logger};
-    $connector->{organization_id} = $options{organization_id};
     $connector->{config} = $options{config};
     $connector->{config_core} = $options{config_core};
     $connector->{stop} = 0;
@@ -72,7 +72,7 @@ sub handle_HUP {
 
 sub handle_TERM {
     my $self = shift;
-    $self->{logger}->writeLogInfo("centreond-acl $$ Receiving order to stop...");
+    $self->{logger}->writeLogInfo("centreond-action $$ Receiving order to stop...");
     $self->{stop} = 1;
 }
 
@@ -92,24 +92,37 @@ sub event {
     while (1) {
         my $message = centreon::centreond::common::zmq_dealer_read_message(socket => $socket);
         
-        print "===== ACL class = $message ==== yeah!!!!\n";
+        print "===== CRON class = $message ==== yeah!!!!\n";
         
         last unless (centreon::centreond::common::zmq_still_read(socket => $socket));
     }
 }
 
+sub cron_sleep {
+    my $rev = zmq_poll($connector->{poll}, 1000);
+    if ($rev == 0 && $connector->{stop} == 1) {
+        $connector->{logger}->writeLogInfo("centreond-cron $$ has quit");
+        zmq_close($socket);
+        exit(0);
+    }
+}
+
+sub dispatcher {
+    my ($options) = @_;
+
+    $options->{logger}->writeLogInfo("Job is starting");    
+}
+
 sub run {
     my ($self, %options) = @_;
-    my $on_demand = (defined($options{on_demand}) && $options{on_demand} == 1) ? 1 : 0;
-    my $on_demand_time = time();
 
     # Connect internal
-    $socket = centreon::centreond::common::connect_com(zmq_type => 'ZMQ_DEALER', name => 'centreondacl-' . $self->{organization_id},
+    $socket = centreon::centreond::common::connect_com(zmq_type => 'ZMQ_DEALER', name => 'centreondcron',
                                                        logger => $self->{logger},
                                                        type => $self->{config_core}{internal_com_type},
                                                        path => $self->{config_core}{internal_com_path});
     centreon::centreond::common::zmq_send_message(socket => $socket,
-                                                  action => 'ACLREADY', data => { organization_id => $self->{organization_id} },
+                                                  action => 'CRONREADY', data => { },
                                                   json_encode => 1);
     $self->{poll} = [
             {
@@ -118,28 +131,15 @@ sub run {
             callback => \&event,
             }
     ];
-    while (1) {
-        # we try to do all we can
-        my $rev = zmq_poll($self->{poll}, 5000);
-        if ($rev == 0 && $self->{stop} == 1) {
-            $self->{logger}->writeLogInfo("centreond-acl $$ has quit");
-            zmq_close($socket);
-            exit(0);
-        }
-
-        # Check if we need to quit
-        if ($on_demand == 1) {
-            if ($rev == 0) {
-                if (time() - $on_demand_time > $self->{config}{on_demand_time}) {
-                    $self->{logger}->writeLogInfo("centreond-acl $$ has quit");
-                    zmq_close($socket);
-                    exit(0);
-                }
-            } else {
-                $on_demand_time = time();
-            }
-        }
-    }
+    my $cron = new Schedule::Cron(\&dispatcher, nostatus => 1, nofork => 1);
+    $cron->add_entry('* * * * *', \&dispatcher, { logger => $self->{logger}, plop => 1 });
+    
+    # Each cron should have an ID in centreon DB. And like that, you can delete some not here.
+    #print Data::Dumper::Dumper($cron->list_entries());
+    
+    $cron->run(sleep => \&cron_sleep);
+    zmq_close($socket);
+    exit(0);
 }
 
 1;
