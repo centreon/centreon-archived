@@ -293,6 +293,10 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     {
         $normalizeMetricSet = array();
 
+        if (!isset($metricList['used'])) {
+            return array();
+        }
+
         $metric = $metricList['used'];
 
         $normalizeMetricSet['current'] = $metric['current_value'];
@@ -311,6 +315,10 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     {
         $normalizeMetricSet = array();
 
+        if (!isset($metricList['used'])) {
+            return array();
+        }
+
         $metric = $metricList['used'];
 
         $normalizeMetricSet['current'] = $metric['current_value'];
@@ -327,15 +335,25 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function normalizeMetricsForCpu($domain, $service, $metricList)
     {
-        $normalizeMetricSet = array();
+        /* avg is already in metric*/
+        if (isset($metricList['total_cpu_avg'])) {
+            return array($metricList['total_cpu_avg']['current_value']);
+        }
 
+        /* avg is not in metric table, we have to calculate it */
+        $count = 0;
+        $total = 0;
         foreach ($metricList as $metricName => $metricData) {
             if (preg_match('/^cpu(\d+)/', $metricName)) {
-                $normalizeMetricSet[$metricName] = $metricData['current_value'];
+                $total += $metricData['current_value'];
+                $count++;
             }
 
         }
-        return $normalizeMetricSet;
+        if ($count) {
+            return array(round(($total / $count), 2));
+        }
+        return array();
     }
 
     /**
@@ -346,7 +364,11 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForIO($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
-        
+
+        if (!isset($metricList['write']) || !isset($metricList['read'])) {
+            return array();
+        }  
+
         $read = $metricList['read'];
         $write = $metricList['write'];
         
