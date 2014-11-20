@@ -148,7 +148,7 @@ function saveView(viewId, graphs, viewName, viewPrivacy) {
 $(function() {
   /* Iniialiaze period */
   var endTime = moment(),
-      startTime = moment(endTime).subtract('hours', 2);
+      startTime = moment(endTime).subtract(24, 'hours');
 
   /* Load tooltip */
   $("[data-toggle='tooltip']").tooltip();
@@ -230,10 +230,10 @@ $(function() {
     startDate: startTime,
     endDate: endTime,
     ranges: {
-      "8 hours": [moment().subtract('hours', 8), moment()],
-      "24 hours": [moment().subtract('hours', 24), moment()],
-      "1 week": [moment().subtract('days', 7), moment()],
-      "1 month": [moment().subtract('months', 1), moment()]
+      "8 hours": [moment().subtract(8, 'hours'), moment()],
+      "24 hours": [moment().subtract(24, 'hours'), moment()],
+      "1 week": [moment().subtract(7, 'days'), moment()],
+      "1 month": [moment().subtract(1, 'months'), moment()]
     }
   });
   $("input[name='period']").val(startTime.format('YYYY-MM-DD HH:mm') + " - " + endTime.format('YYYY-MM-DD HH:mm'));

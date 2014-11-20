@@ -66,15 +66,16 @@ abstract class Graph
     /**
      * Get the list of values
      *
+     * @param int $nbPoints The number of points to get
      * @return array
      */
-    public function getValues()
+    public function getValues($nbPoints = 100)
     {
         $storage = Graph\Storage::getStorage();
         $storage->setPeriod($this->startTime, $this->endTime);
         $values = array();
         foreach ($this->metrics as $metric) {
-            $metric['data'] = $storage->getValues($metric['id']);
+            $metric['data'] = $storage->getValues($metric['id'], $nbPoints);
             $values[] = $metric;
         }
         return $values;

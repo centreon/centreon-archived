@@ -92,7 +92,7 @@ class GraphController extends \Centreon\Internal\Controller
         $service = new \CentreonPerformance\Repository\Graph\Service($serviceId, $start, $end);
 
         $data = array();
-        $serviceData = $service->getValues();
+        $serviceData = $service->getValues(200);
         /* Get times and convert for javascript */
         $data['times'] = array_keys($serviceData[0]['data']);
         $data['times'] = array_map(function($time) {

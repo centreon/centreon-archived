@@ -70,7 +70,10 @@ function addChart( graphId, serviceId, startTime, endTime ) {
           columns: columns,
           axes: axes
         },
-        axis: axis
+        axis: axis,
+        point: {
+          show: false
+        }
       }));
     }
   });
