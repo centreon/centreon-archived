@@ -37,6 +37,7 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
+use Centreon\Internal\Utils\Status;
 use CentreonRealtime\Repository\MetricRepository;
 
 /**
@@ -95,14 +96,21 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $domainList;
     }
     
-    public static function normalizeMetrics($domain, $metricList)
+    public static function normalizeMetrics($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
         $normalizeFunction = 'normalizeMetricsFor' . $domain;
         if (method_exists(__CLASS__, $normalizeFunction)) {
-            $normalizeMetricSet = self::$normalizeFunction($metricList);
+            $normalizeMetricSet = self::$normalizeFunction($service, $metricList);
+        } else {
+            self::genericNormalizeMetrics($metricList);
         }
         return $normalizeMetricSet;
+    }
+    
+    public static function genericNormalizeMetrics($service, $metricList)
+    {
+        
     }
     
     /**
@@ -110,7 +118,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForNetwork($metricList)
+    public static function normalizeMetricsForNetwork($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -122,7 +130,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForTraffic($metricList)
+    public static function normalizeMetricsForTraffic($service, $metricList)
     {
         $normalizeMetricSet = array();
         $endTime = time();
@@ -184,7 +192,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             $normalizeMetricSet['unit'] = $out['unit_name'];
         }
         
-        $normalizeMetricSet['status'] = '';
+        $normalizeMetricSet['status'] = strtolower(UtilStatus::numToString($service['state'], UtilStatus::TYPE_SERVICE));
 
         return $normalizeMetricSet;
     }
@@ -194,7 +202,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForMemory($metricList)
+    public static function normalizeMetricsForMemory($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -212,7 +220,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForFileSystem($metricList)
+    public static function normalizeMetricsForFileSystem($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -230,7 +238,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForCpu($metricList)
+    public static function normalizeMetricsForCpu($service, $metricList)
     {
         $normalizeMetricSet = array();
 
@@ -248,7 +256,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
      * @param array $metricList
      * @return array
      */
-    public static function normalizeMetricsForIO($metricList)
+    public static function normalizeMetricsForIO($service, $metricList)
     {
         $normalizeMetricSet = array();
         

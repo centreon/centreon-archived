@@ -80,6 +80,7 @@ class HostDetailData
             $serviceMetricList = MetricRepository::getMetricsFromService($service['service_id']);
             $normalizeServiceSet[$service['description']] = DomainRepository::normalizeMetrics(
                 $domainType,
+                $service,
                 $serviceMetricList
             );
         }
