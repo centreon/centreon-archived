@@ -37,7 +37,7 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
-use Centreon\Internal\Utils\Status;
+use \Centreon\Internal\Utils\Status as UtilStatus;
 use CentreonRealtime\Repository\MetricRepository;
 
 /**
