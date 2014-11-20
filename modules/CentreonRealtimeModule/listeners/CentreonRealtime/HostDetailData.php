@@ -86,7 +86,13 @@ class HostDetailData
         }
         
         if (count($normalizeServiceSet) > 0) {
-            $event->addHostDetailData(strtolower($domainType), $normalizeServiceSet);
+            $parentDomain['name'] = $domainType;
+            
+            if ($domainType !== 'FileSytem') {
+                $parentDomain = DomainRepository::getParent($domainType);
+            }
+            
+            $event->addHostDetailData(strtolower($parentDomain['name']), $normalizeServiceSet);
         }
     }
 }

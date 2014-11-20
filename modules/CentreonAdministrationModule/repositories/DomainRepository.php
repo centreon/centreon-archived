@@ -79,6 +79,30 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     
     /**
      * 
+     * @param type $domain
+     */
+    public static function getParent($domain)
+    {
+        if (is_string($domain)) {
+            $domainId = Domain::getIdByParameter($domain);
+            $domain = $domainId[0];
+        }
+        
+        $currentDomain = Domain::get($domain);
+        
+        $parentDomainId = Domain::getIdByParameter('domain_id', $currentDomain['parent_id']);
+        
+        if (count($parentDomainId) > 0) {
+            $parent = Domain::get($parentDomainId[0]);
+        } else {
+            $parent = $currentDomain;
+        }
+        
+        return $parent;
+    }
+    
+    /**
+     * 
      * @param string $domain
      * @param boolean $withChildren
      * @return array
@@ -96,6 +120,13 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $domainList;
     }
     
+    /**
+     * 
+     * @param type $domain
+     * @param type $service
+     * @param type $metricList
+     * @return type
+     */
     public static function normalizeMetrics($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
@@ -108,6 +139,11 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $normalizeMetricSet;
     }
     
+    /**
+     * 
+     * @param type $service
+     * @param type $metricList
+     */
     public static function genericNormalizeMetrics($service, $metricList)
     {
         
