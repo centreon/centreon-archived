@@ -38,7 +38,8 @@ namespace CentreonAdministration\Repository;
 use CentreonAdministration\Models\Domain;
 use CentreonRealtime\Repository\ServiceRepository;
 use CentreonRealtime\Repository\MetricRepository;
-use Centreon\Internal\Utils\Status as UtilStatus;
+use Centreon\Internal\Utils\Status as StatusUtils;
+use Centreon\Internal\Utils\Tree as TreeUtils;
 use Centreon\Internal\Di;
 
 /**
@@ -133,7 +134,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             if (!is_null($row['child_name'])) {
                 $finalList[] = array(
                     'id' => $row['child_id'],
-                    'text' => "&nbsp;&nbsp;|&nbsp;&nbsp;" . $row['child_name']
+                    'text' => TreeUtils::formatChild($row['child_name'])
                 );
             }
             $previous = $row['root_id'];
@@ -194,7 +195,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         $normalizeMetricSet['id'] = $service['service_id'];
         $normalizeMetricSet['name'] = $service['service_description'];
         $normalizeMetricSet['output'] = $explodedOutput[0];
-        $normalizeMetricSet['status'] = strtolower(UtilStatus::numToString($service['state'], UtilStatus::TYPE_SERVICE));
+        $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
         
         return $normalizeMetricSet;
     }
