@@ -344,7 +344,6 @@
 			<field name="host_hosttemplates" mandatory="0"></field>
 			<field name="host_custommacros" mandatory="0"></field>
 			<field name="environment_id" mandatory="0"></field>
-			<field name="host_icon" mandatory="0"></field>
 		</step>
 		<step name="Relations">
 			<field name="host_hostgroups" mandatory="0"></field>
