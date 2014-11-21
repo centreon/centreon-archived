@@ -10,7 +10,7 @@
         <foreign-key foreignTable="cfg_domains" name="domains_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="parent_id" foreign="domain_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_binaries" name="domains_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_binaries" name="domains_ibfk_2" onDelete="SETNULL" onUpdate="RESTRICT">
             <reference local="icon_id" foreign="binary_id"/>
         </foreign-key>
         <unique name="name_index">
