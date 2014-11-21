@@ -93,7 +93,7 @@ class HostDetailData
             }
             
             if ($parentDomain['name'] === 'Application') {
-                $normalizeServiceSet = array('name' => $domainType, 'service' => $normalizeServiceSet);
+                $normalizeServiceSet = array($domainType => $normalizeServiceSet);
             }
             
             $event->addHostDetailData(strtolower($parentDomain['name']), $normalizeServiceSet);
