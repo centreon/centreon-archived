@@ -85,9 +85,8 @@ $(function() {
               $pollerStatus.addClass('mini warning').append(
                 $('<i></i>').addClass('fa fa-unlink')
               );
-            } else {
-              $pollerStatus.addClass('mini success').append(
-                $('<i></i>').addClass('fa fa-check')
+              } else {
+                $pollerStatus.addClass('mini success').append($('<i></i>').addClass('fa fa-check')
               );
             }
             $pollerStatus.appendTo($pollerLine);
