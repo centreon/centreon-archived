@@ -152,7 +152,8 @@ class HostController extends \Centreon\Internal\Controller
             'id' => $params['id']
         ));
 
-        $this->tpl->addCss('cal-heatmap.css');
+        $this->tpl->addCss('cal-heatmap.css')
+             ->addCss('centreon.status.css');
         $this->tpl->addJs('d3.min.js')
              ->addJs('jquery.sparkline.min.js')
              ->addJs('cal-heatmap.min.js')
