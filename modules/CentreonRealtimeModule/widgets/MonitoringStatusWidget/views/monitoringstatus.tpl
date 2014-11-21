@@ -11,11 +11,29 @@
     <div class="col-xs-6 text-center">
       <strong>{t}Services{/t}</strong>
     </div>
-    <div class="col-xs-6">
-      <div class="gauge-simple" id="hostStatus"></div>
+    <div class="col-xs-6 text-center">
+      <input type="text"
+             id="hostStatus"
+             data-angleOffset="-125"
+             data-angleArc="250"
+             data-fgColor="#dff0d8"
+             data-inputColor="#3c763d"
+             data-readOnly="true"
+             data-max="{$nbHostTotal}"
+             value="{$nbHostOk}"
+             class="dial">
     </div>
-    <div class="col-xs-6">
-      <div class="gauge-simple" id="serviceStatus"></div>
+    <div class="col-xs-6 text-center">
+      <input type="text"
+             id="serviceStatus"
+             data-angleOffset="-125"
+             data-angleArc="250"
+             data-fgColor="#dff0d8"
+             data-inputColor="#3c763d"
+             data-readOnly="true"
+             data-max="{$nbServiceTotal}"
+             value="{$nbServiceOk}"
+             class="dial">
     </div>
     <div class="col-xs-6 text-center">
       {$nbHostOk} / {$nbHostTotal}
@@ -29,15 +47,10 @@
 
 {block name="javascript-bottom" append}
 <script>
-centreonGaugeSimple.generate({
-  sections: [ "#FF795F", "#FEFF5F", "#B2FF5F" ],
-  percent: {$hostPercent},
-  element: "#hostStatus"
-});
-centreonGaugeSimple.generate({
-  sections: [ "#FF795F", "#FEFF5F", "#B2FF5F" ],
-  percent: {$servicePercent},
-  element: "#serviceStatus"
-});
+var size = 200;
+
+size = parseInt($('.dial').parent().width() * 0.6);
+$('.dial').attr('data-width', size).attr('data-height', size);
+$('.dial').knob();
 </script>
 {/block}

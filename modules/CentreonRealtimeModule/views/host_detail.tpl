@@ -89,19 +89,6 @@
     <div class="col-xs-12">
      <h4>{t}Applications{/t}</h4>
     </div>
-    <!-- <div class="col-xs-6 col-sm-4" id="app_{$application.id}">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12">
-            <h4>{$application.name}</h4>
-          </div>
-          <div class="col-xs-12 listing">
-            <table>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 
   <div class="row row-detail">
@@ -293,10 +280,10 @@ $(function() {
 
     /* Add applications */
     if (hostData.application !== undefined) {
-      var applications = $('#application .app').attr('id');
-      $.each(hostData.application, function(idx, app) {
+      var applications = $('#application .app');
+      $.each(hostData.application, function(appName, app) {
         var found = false,
-            appId = 'app_' + app.name.toLowerCase().replace(' ', '_');
+            appId = 'app_' + appName.toLowerCase().replace(' ', '_');
         $.each(applications, function(idx, application) {
           if ($(application).attr('id') == appId) {
             found = idx;
@@ -305,22 +292,22 @@ $(function() {
         if (found === false) {
           /* Create application block */
           $('<div></div>')
-             .addClass('col-xs-12 col-sm-4 app')
+             .addClass('col-xs-12 col-sm-4 detail-info app')
              .attr('id', appId)
              .append(
                $('<div><div>').addClass('container-fluid').append(
                  $('<div></div>').addClass('row').append(
                    $('<div></div>').addClass('col-xs-12').html(
-                     '<h4>' + app.name + '</h4>'
+                     '<h4>' + appName + '</h4>'
                    )
                  ).append(
                    $('<div></div>').addClass('col-xs-12 centreon_table').append(
-                     $('<table></table>').addClass('table table-stripped table-condensed').append(
+                     $('<table></table>').addClass('table table-bordered table-condensed').append(
                        $('<thead></thead>').html(
                          '<tr>' +
-                         '<td>Service</td>' +
-                         '<td>Status</td>' +
-                         '<td>Output</td>' +
+                         '<th>Service</th>' +
+                         '<th>Status</th>' +
+                         '<th>Output</th>' +
                          '</tr>'
                        )
                      ).append(
@@ -337,16 +324,17 @@ $(function() {
         /* Add service to listing */
         $tbody = $('#' + appId).find('tbody');
         $tbody.children().remove();
-        $.each(app.service, function(idx, service) {
+        $.each(app, function(idx, service) {
           $('<tr></tr>').append(
             $('<td></td>').text(service.name)
           ).append(
             $('<td></td>').append(
-              $('<span></span>').addClass('label').addClass('label-' + serivce.status).text(service.status)
+              $('<span></span>').addClass('label').addClass('label-' + service.status).text(service.status)
             )
           ).append(
             $('<td></td>').text(service.output)
-          );
+          )
+          .appendTo($tbody);
         });
       });
       /* Remove old application */
@@ -362,7 +350,13 @@ $(function() {
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
         $.each(data, function(idx, values) {
-          var type, state;
+          var type, state, colorCss, borderCss;
+          var isService = false;
+
+          if (values.service != "") {
+            isService = true;
+          }
+
           if (values.type == 0) {
             type = "SOFT";
           } else {
@@ -370,13 +364,22 @@ $(function() {
           }
           switch (values.status) {
             case '0':
-              state = 'Ok';
+              state = "UP";
+              if (isService) {
+                  state = 'Ok';
+              }
               break;
             case '1':
-              state = 'Warning';
+              state = "DOWN";
+              if (isService) {
+                state = 'Warning';
+              }
               break;
             case '2':
-              state = 'Critical';
+              state = 'Unreachable';
+              if (isService) {
+                state = 'Critical';
+              }
               break;
             case '3':
               state = 'Unknown';
@@ -387,9 +390,17 @@ $(function() {
             case '5':
               state = 'Information';
               break;
-          } 
+          }
+          
+          colorCss = 'centreon-status-h-';
+          borderCss = 'centreon-border-status-h-';
+          if (isService) {
+            colorCss = 'centreon-status-s-';
+            borderCss = 'centreon-border-status-s-';
+          }
+
           $('<tr></tr>')
-            .addClass('centreon-border-status-' + values.status)
+            .addClass(borderCss + values.status)
             .append(
               $('<td></td>').text(values.datetime)
             )
@@ -397,7 +408,7 @@ $(function() {
               $('<td></td>').html(values.service)
             )
             .append(
-              $('<td></td>').addClass('centreon-status-' + values.status).text(state)
+              $('<td></td>').addClass(colorCss + values.status).text(state)
             )
             .append(
               $('<td></td>').text(type)

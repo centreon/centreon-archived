@@ -45,18 +45,18 @@
  */
 function smarty_modifier_host_color($state) {
     switch ($state) {
-        case 0:
-            $class = "success";
-            break;
-        case 1:
-            $class = "danger";
-            break;
-        case 2:
-            $class = "primary";
-            break;
-        default:
-            $class = "default";
-            break;
-    }
+    case 0:
+        $class = "success";
+        break;
+    case 1:
+        $class = "danger";
+        break;
+    case 2:
+        $class = "primary";
+        break;
+    default:
+        $class = "default";
+        break;
+    }    
     return $class;
 }
