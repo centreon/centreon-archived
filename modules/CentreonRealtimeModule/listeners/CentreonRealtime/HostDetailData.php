@@ -89,10 +89,12 @@ class HostDetailData
                     $service,
                     $serviceMetricList
                 );
-            if ($parentDomain['name'] === 'Application') {
-                $normalizeServiceSet[] = $normalizedMetrics;
-            } else {
-                $normalizeServiceSet[$service['description']] = $normalizedMetrics;
+            if (count($serviceMetricList) > 0) {
+                if ($parentDomain['name'] === 'Application') {
+                    $normalizeServiceSet[] = $normalizedMetrics;
+                } else {
+                    $normalizeServiceSet[$service['description']] = $normalizedMetrics;
+                }
             }
         }
 
@@ -100,7 +102,6 @@ class HostDetailData
             if ($parentDomain['name'] === 'Application') {
                 $normalizeServiceSet = array($domainType => $normalizeServiceSet);
             }
-
             $event->addHostDetailData(strtolower($parentDomain['name']), $normalizeServiceSet);
         }
     }
