@@ -55,7 +55,7 @@ hr {
     background: url('../img/login.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    -webkit-filter: blur(10px) grayscale(70%);
+    filter: blur(10px) grayscale(70%);
     top: 0;
     left: 0;
     height: 100%;
@@ -667,8 +667,6 @@ td.incident-extended-info {
 
 .detail-info {
   .container-fluid >.row {
-    /*border: 2px solid @topbar-border-color;
-    border-radius: 5px;*/
     border-top: 3px solid lighten(@topbar-bg-color, 20%);
     background-color: @navbar-default-bg;
   }
@@ -681,6 +679,20 @@ td.incident-extended-info {
     margin-bottom: 10px;
   }
 
+  .centreon_table {
+    padding: 0;
+    margin: 0;
+    
+    td {
+      white-space: wrap;
+    }
+
+    tbody {
+      height: 180px;
+      overflow-y: auto;
+    }
+  }
+
   .title {
     font-weight: bold;
 
@@ -691,12 +703,17 @@ td.incident-extended-info {
   }
 }
 
-.label-up {
+.label-up,.label-ok {
   text-transform: capitalize;
   background-color: @brand-success;
 }
 
-.label-down {
+.label-warning {
+  text-transform: capitalize;
+  background-color: @brand-warning;
+}
+
+.label-down,.label-critical {
   text-transform: capitalize;
   background-color: @brand-danger;
 }
