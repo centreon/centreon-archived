@@ -263,7 +263,7 @@
             $.each( data.status, function( idx, status ) {
               var $rowStatus = $( "<tr></tr>" )
                 .append(
-                  $( "<td></td>" ).addClass( "centreon-status-" + status.id ).text( status.text )
+                  $( "<td></td>" ).addClass( "centreon-status-s-" + status.id ).text( status.text )
                 )
                 .append(
                   $( "<td></td>" ).text( status.datetime )

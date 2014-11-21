@@ -234,8 +234,10 @@ class EventlogsController extends \Centreon\Internal\Controller
 
             if ($log['msg_type'] != 1 && $log['msg_type'] != 0) {
                 $log['border_color'] = 'centreon-border-info';
+            } elseif ($log['msg_type'] == 1) {
+                $log['border_color'] = 'centreon-border-status-h-' . $log['status'];
             } else {
-                $log['border_color'] = 'centreon-border-status-' . $log['status'];
+                $log['border_color'] = 'centreon-border-status-s-' . $log['status'];
             }
             $data[] = $log;
         }
