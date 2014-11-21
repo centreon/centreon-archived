@@ -35,7 +35,8 @@
 
 namespace CentreonRealtime\Repository\EventlogsRepository;
 
-use \Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Di;
 
 /**
  * Factory for Eventlogs
@@ -59,7 +60,7 @@ class Database
         $listFullsearch = array('output');
         $timeField = array('period');
 
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         $query = "SELECT ctime, host_id, host_name, instance_name, output, "
@@ -86,9 +87,17 @@ class Database
                 $clause = 'ctime >= :timeStart AND ctime <= :timeEnd';
                 $values['timeStart'] = strtotime($timeStart);
                 $values['timeEnd'] = strtotime($timeEnd);
+            } elseif ($key == 'status') {
+                $concatClause = "CONCAT(IF(ISNULL(service_id), 'h_', 's_'), status)";
+                if (is_array($value)) {
+                    $clause = "{$concatClause} IN ('" . implode("','", $value) . "')";
+                } else {
+                    $clause = "{$concatClause} = :status";
+                    $values['status'] = $value;
+                }
             } else {
                 if (is_array($value)) {
-                    $clause = $key . ' IN (' . join(', ', $value) . ')';
+                    $clause = $key . ' IN (' . join(',', $value) . ')';
                 } else {
                     $clause = $key . ' = :' . $key;
                     $values[$key] = $value;
