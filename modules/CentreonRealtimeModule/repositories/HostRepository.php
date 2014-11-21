@@ -111,10 +111,14 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
             $finalInfo['status'] = strtolower(UtilStatus::numToString($infos[0]['state'], UtilStatus::TYPE_HOST));
             $finalInfo['output'] = $infos[0]['output'];
             $finalInfo['lastChange'] = $infos[0]['lastChange'];
+            $finalInfo['lastCheck'] = $infos[0]['last_check'];
+            $finalInfo['nextCheck'] = $infos[0]['next_check'];
         } else {
             $finalInfo['status'] = -1;
             $finalInfo['output'] = '';
             $finalInfo['lastChange'] = '';
+            $finalInfo['lastCheck'] = '';
+            $finalInfo['nextCheck'] = '';
         }
         
         
