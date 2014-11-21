@@ -18,9 +18,11 @@
     <div class="step-pane active" id="applycfg_1">
       <p>
         {t}Configuration files will be generated and put in a temporary directory.{/t}
-        {t}Validity checks will be made against the generated files.{/t}
+        {t}Validity checks can be run on the generated files.{/t}
       </p>
-      <button id="btn-generate" class="btn btn-success btn-lg">{t}Generate{/t}</button>
+      <button id="btn-generate-check" class="btn btn-generate btn-success btn-lg">{t}Generate and check{/t}</button>
+      <button id="btn-generate-only" class="btn btn-generate btn-primary btn-lg">{t}Generate only{/t}</button>
+      <button id="btn-check-only" class="btn btn-generate btn-danger btn-lg">{t}Check only{/t}</button>
       <pre id="console-generate" class="hide margin-top-10">
       </pre>
     </div>
@@ -52,9 +54,9 @@
 <script>
 $(function() {
     /* File generation */
-    $("#btn-generate").click(function() {
+    $("#btn-generate-check").click(function() {
       var $csl = $("#console-generate");
-      var $thisBtn = $(this);
+      var $thisBtn = $(".btn-generate");
 
       $thisBtn.attr('disabled', 'disabled');
       $csl.removeClass('hide');
@@ -87,6 +89,55 @@ $(function() {
           $csl.append(errorThrown);
           $thisBtn.removeAttr('disabled');
         });
+      });
+    });
+
+    $("#btn-generate-only").click(function() {
+      var $csl = $("#console-generate");
+      var $thisBtn = $(".btn-generate");
+
+      $thisBtn.attr('disabled', 'disabled');
+      $csl.removeClass('hide');
+      $csl.html("");
+
+      $('tbody tr[class*="selected"]').each(function() {
+        var pollerId = $(this).attr('id');
+
+        $.ajax({
+          url: '{'/api/configuration/1/generatecfg/'|url}' + pollerId,
+          dataType: 'json'
+        }).success(function(data, textStatus, jqXHR) {
+          $csl.append(data.output);
+          $thisBtn.removeAttr('disabled');
+        }).error(function(jqXHR, textStatus, errorThrown) {
+          $csl.append(errorThrown);
+          $thisBtn.removeAttr('disabled');
+        });
+      });
+    });
+    
+    $("#btn-check-only").click(function() {
+      var $csl = $("#console-generate");
+      var $thisBtn = $(".btn-generate");
+
+      $thisBtn.attr('disabled', 'disabled');
+      $csl.removeClass('hide');
+      $csl.html("");
+
+      $('tbody tr[class*="selected"]').each(function() {
+        var pollerId = $(this).attr('id');
+
+        $.ajax({
+          url: '{'/api/configuration/1/testcfg/'|url}' + pollerId,
+          dataType: 'json'
+        }).success(function(data2, textStatus2, jqXHR2) {
+          $csl.append(data2.output);
+          $thisBtn.removeAttr('disabled');
+        }).error(function(jqXHR2, textStatus2, errorThrown2) {
+          $csl.append(errorThrown2);
+          $thisBtn.removeAttr('disabled');
+        });
+
       });
     });
 

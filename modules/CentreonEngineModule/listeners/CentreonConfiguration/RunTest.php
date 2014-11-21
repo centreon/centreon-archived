@@ -55,6 +55,16 @@ class RunTest
         $path = "{$tmpdir}/engine/{$pollerId}/centengine-testing.cfg";
         $command = "sudo {$enginePath} -v $path 2>&1";
         $output = shell_exec($command);
-        $event->setOutput($output);
+        $debugOut = explode("\n", $output);
+        foreach ($debugOut as $out) {
+            if (preg_match("/warning|error/i", $out)) {
+                $out = preg_replace("/\[\d+\] /", "", $out);
+                $out = str_replace("Warning:", '<span class="label label-warning">Warning</span>', $out);
+                $out = str_replace("Error:", '<span class="label label-danger">Error</span>', $out);
+                $out = str_replace("Total Warnings:", '<span class="label label-warning">Total Warnings</span>', $out);
+                $out = str_replace("Total Errors:", '<span class="label label-danger">Total Errors</span>', $out);
+                $event->setOutput($out);
+            }
+        }
     }
 }
