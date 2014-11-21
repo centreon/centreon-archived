@@ -693,13 +693,24 @@ td.incident-extended-info {
     }
   }
 
+  &.header .container-fluid >.row {
+    border-top: 0;
+  }
+
+  &.status-up .container-fluid >.row { 
+    border-left: 3px solid @brand-success;
+  }
+
+  &.status-down .container-fluid >.row { 
+    border-left: 3px solid @brand-danger;
+  }
+
+  &.status-unknown .container-fluid >.row { 
+    border-left: 3px solid @gray-light;
+  }
+
   .title {
     font-weight: bold;
-
-    .output {
-      margin-top: 5px;
-      border-top: 1px solid @gray-light;
-    }
   }
 }
 

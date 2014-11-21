@@ -6,47 +6,71 @@
 {block name="content"}
 <div class="container-fluid">
   <div class="row row-detail">
-    <div class="col-xs-12 col-sm-7 detail-info" id="general">
+    <div class="col-xs-12 detail-info header" id="name">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-xs-12">
-            <h4>{$host_icon} {$hostname}</h4>
+          <div class="col-xs-1">
+            <h2>{$host_icon}</h2>
           </div>
-          <div class="col-xs-12">
+          <div class="col-xs-9">
             <div class="row">
-              <div class="col-xs-2 title">{t}Address{/t}</div>
-              <div class="col-xs-10">{$address}</div>
-              <div class="col-xs-2 title">{t}Status{/t}</div>
-              <div class="col-xs-2">
-                <span class="label" id="status"></span>
+              <div class="col-xs-12">
+                <h3>{$hostname} ({$host_alias})</h3>
               </div>
-              <div class="col-xs-8">
+              <div class="col-xs-12">
+                {$address}
+              </div>
+            </div>
+          </div> 
+          <div class="col-xs-2">
+            <div class="row">
+              <div class="col-xs-12">
+                <h2><span class="label" id="status"></span></h2>
+              </div>
+              <div class="col-xs-12">
                 {t}since{/t} <span id="since_status"></span>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-detail">
+    <div class="col-xs-12 col-sm-6 detail-info" id="general">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4>{t}Status information{/t}</h4>
+          </div>
           <div class="col-xs-12 title">
-            <div class="output">{t}Output{/t}</div>
+            {t}Output{/t}
           </div>
           <div class="col-xs-12">
             <div class="longoutput"></div>
+          </div>
+          <div class="col-xs-12">
+            {t}Last check{/t} : <span id="last_check"></span>
+          </div>
+          <div class="col-xs-12">
+            {t}Next check{/t} : <span id="last_check"></span>
           </div>
         </div>
       </div>
       <div class="host-status">
       </div>
     </div>
-    <div class="col-xs-12 col-sm-5 detail-info" id="network">
+    <div class="col-xs-12 col-sm-6 detail-info" id="network">
       <div class="container-fluid">
         <div class="row">
           <div class="col-xs-12">
-            <h4>{t}Network{/t}</h4>
+            <h4>{t}Network Information{/t}</h4>
           </div>
-          <div class="col-xs-6 listing">
+          <div class="col-xs-12 listing">
             <ul>
             </ul>
           </div>
-          <div class="col-xs-6 display-tooltip"></div>
         </div>
       </div>
     </div>
@@ -57,17 +81,17 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-xs-12">
-            <h4>{t}System{/t}</h4>
+            <h4>{t}System Information{/t}</h4>
           </div>
-          <div class="col-xs-4" id="cpu">
+          <div class="col-xs-4 text-center" id="cpu">
             <h4>CPU</h4>
             <input name="cpu" id="gauge_cpu" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
-          <div class="col-xs-4" id="memory">
+          <div class="col-xs-4 text-center" id="memory">
             <h4>Memory</h4>
             <input name="memory" id="gauge_memory" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
-          <div class="col-xs-4" id="swap">
+          <div class="col-xs-4 text-center" id="swap">
             <h4>Swap</h4>
             <input name="swap" id="gauge_swap" class="dial" data-readOnly="true" data-angleOffset="-125" data-angleArc="250" value="0">
           </div>
@@ -78,7 +102,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-xs-12">
-            <h4>{t}Filesystem{/t}</h4>
+            <h4>{t}Filesystem Information{/t}</h4>
           </div>
         </div>
       </div>
@@ -88,23 +112,6 @@
   <div class="row row-detail" id="application">
     <div class="col-xs-12">
      <h4>{t}Applications{/t}</h4>
-    </div>
-  </div>
-
-  <div class="row row-detail">
-    <div class="col-xs-12 detail-info" id="reporting">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12">
-            <h4>{t}Reporting{/t}</h4>
-          </div>
-          <div class="col-xs-6 reporting">
-            <div id="month_reporting"></div>
-          </div>
-          <div class="col-xs-6">
-          </div>
-        </div>
-      </div>
     </div>
   </div>
   
@@ -129,6 +136,23 @@
               <tbody>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-detail">
+    <div class="col-xs-12 detail-info" id="reporting">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4>{t}Reporting{/t}</h4>
+          </div>
+          <div class="col-xs-6 reporting">
+            <div id="month_reporting"></div>
+          </div>
+          <div class="col-xs-6">
           </div>
         </div>
       </div>
@@ -162,6 +186,17 @@ $(function() {
   $('.dial').attr('data-width', size).attr('data-height', size);
   $('.dial').knob();
 
+  /* Resize icon if image */
+  var $img = $('#name img');
+  if ($img.length > 0) {
+    var size = $img.parent().parent().width() - 5,
+        sizeHeight = $img.parent().parent().height() - 5;
+    if (sizeHeight < size) {
+      size = sizeHeight;
+    }
+    $img.css('width', size + 'px').css('height', size + 'px');
+  }
+
   hostReporting.init({
     itemSelector: '#month_reporting',
     dataType: 'json',
@@ -188,7 +223,12 @@ $(function() {
   }
 
   $(document).on('centreon.host_detail', function(e) {
-    /* Update blick general */
+    /* Update block name */
+    $('#name').removeClass(function(index, css) {
+      return (css.match(/(^|\s)status-\S+/g) || []).join(' ');
+    });
+    $('#name').addClass('status-' + hostData.status);
+    /* Update block general */
     var diffDate = moment().unix() - hostData.lastChange;
     $('.longoutput').html(hostData.output);
     $('#status').removeClass(function(index, css) {
@@ -204,26 +244,29 @@ $(function() {
       var $in, $out, $networkList = $("#network ul");
       $networkList.children().remove();
       $.each(hostData.network, function(name, value) {
-        $('<li></li>').addClass('title').text(name).appendTo($networkList);
+        $('<li></li>')
+          .addClass('title')
+          .append(
+            $('<span><span>')
+              .addClass('label')
+              .addClass('label-' + value.status)
+              .html("&nbsp;")
+          )
+          .append(
+            $('<span style="margin-left: 10px"></span>').text(name)
+          ).appendTo($networkList);
         $in = $('<li></li>').addClass('info').appendTo($networkList);
         $in.html(
           '<div class="row">' +
-          '<div class="col-xs-8">In</div>' +
-          '<div class="col-xs-4"><span class="network-line" data-name="' + name + ' - In :" data-unit="' + value.unit + '">' + value.in.join(',') + '</span></div>' +
-          '</div>'
-        );
-        $out = $('<li></li>').addClass('info').appendTo($networkList);
-        $out.html(
-          '<div class="row">' +
-          '<div class="col-xs-8">Out</div>' +
-          '<div class="col-xs-4"><span class="network-line" data-name="' + name + ' - Out :" data-unit="' + value.unit + '">' + value.out.join(',') + '</span></div>' +
+          '<div class="col-xs-6">In <span class="network-line" data-name="' + name + ' - In :" data-unit="' + value.unit + '">' + value.in.join(',') + '</span></div>' +
+          '<div class="col-xs-6">Out <span class="network-line" data-name="' + name + ' - Out :" data-unit="' + value.unit + '">' + value.out.join(',') + '</span></div>' +
           '</div>'
         );
       });
       $('.network-line').sparkline('html', {
         disableTooltips: true
       });
-      $('.network-line').on('sparklineRegionChange', function(e) {
+      /*$('.network-line').on('sparklineRegionChange', function(e) {
         var sparkline = e.sparklines[0],
             textInfo = $(e.currentTarget).data('name') + " " +
                        sparkline.getCurrentRegionFields().y + " " +
@@ -232,7 +275,7 @@ $(function() {
       })
       .on('mouseleave', function(e) {
         $("#network .display-tooltip").text('');
-      });
+      });*/
     }
 
     resizeCell(["#general", "#network"]);
@@ -256,11 +299,20 @@ $(function() {
     if (hostData.filesystem !== undefined) {
       $('#filesystem .fs').remove();
       $.each(hostData.filesystem, function(name, value) {
-        $('<div></div>').addClass('col-xs-12').addClass('col-sm-6').addClass('fs').append(
+        $('<div></div>').addClass('col-xs-12').addClass('fs').append(
           $('<div></div>').addClass('row').append(
-            $('<div></div>').addClass('col-xs-4').text(name)
+            $('<div></div>').addClass('col-xs-4')
+              .append(
+                 $('<span><span>')
+                   .addClass('label')
+                   .addClass('label-' + value.status)
+                   .html("&nbsp;")
+              )
+              .append(
+                $('<span style="margin-left: 5px"></span>').text(name)
+              )
           ).append(
-            $('<div></div>').addClass('col-xs-8').append(
+            $('<div></div>').addClass('col-xs-4').append(
               $('<div></div>').addClass('progress').append(
                 $('<div></div>').addClass('progress-bar')
                   .attr('role', 'progressbar')
@@ -270,6 +322,10 @@ $(function() {
                   .css('width', (value.current * 100 / value.max) + '%')
                   .text(value.current + ' / '  + value.max + ' ' + value.unit)
               )
+            )
+          ).append(
+            $('<div></div>').addClass('col-xs-4').text(
+              parseInt(value.current * 100 / value.max) + '% (' + value.current + ' ' + value.unit + ')'
             )
           )
         ).appendTo('#filesystem > .container-fluid > .row');
@@ -292,7 +348,7 @@ $(function() {
         if (found === false) {
           /* Create application block */
           $('<div></div>')
-             .addClass('col-xs-12 col-sm-4 detail-info app')
+             .addClass('col-xs-12 col-sm-6 detail-info app')
              .attr('id', appId)
              .append(
                $('<div><div>').addClass('container-fluid').append(
@@ -328,7 +384,7 @@ $(function() {
           $('<tr></tr>').append(
             $('<td></td>').text(service.name)
           ).append(
-            $('<td></td>').append(
+            $('<td></td>').addClass('text-center').append(
               $('<span></span>').addClass('label').addClass('label-' + service.status).text(service.status)
             )
           ).append(
