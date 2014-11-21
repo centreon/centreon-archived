@@ -13,28 +13,33 @@
           </div>
           <div class="form-group col-md-4">
             <select name="status" multiple style="width: 100%">
-              <option value="0">{t}OK / Up{/t}</option>
-              <option value="1">{t}Warning / Down{/t}</option>
-              <option value="2">{t}Critical / Unreachable{/t}</option>
-              <option value="3">{t}Unknown{/t}</option>
-              <option value="4">{t}Pending{/t}</option>
-              <option value="5">{t}Information{/t}</option>
+              <option value="h_0">{t}Host Up{/t}</option>
+              <option value="h_1">{t}Host Down{/t}</option>
+              <option value="h_2">{t}Host Unreachable{/t}</option>
+              <option value="h_4">{t}Host Pending{/t}</option>
+              <option value="h_5">{t}Host Information{/t}</option>
+              <option value="s_0">{t}Service OK{/t}</option>
+              <option value="s_1">{t}Service Warning{/t}</option>
+              <option value="s_2">{t}Service Critical{/t}</option>
+              <option value="s_3">{t}Service Unknown{/t}</option>
+              <option value="s_4">{t}Service Pending{/t}</option>
+              <option value="s_5">{t}Service Information{/t}</option>
             </select>
           </div>
           <div class="form-group col-md-4">
             <select name="msg_type" multiple style="width: 100%">
               <option value="0">{t}Service alert{/t}</option>
-              <option value="1">{t}Host Alert{/t}</option>
-              <option value="2">{t}Service Notification{/t}</option>
-              <option value="3">{t}Host Notification{/t}</option>
+              <option value="1">{t}Host alert{/t}</option>
+              <option value="2">{t}Service notification{/t}</option>
+              <option value="3">{t}Host notification{/t}</option>
               <option value="4">{t}Warning{/t}</option>
               <option value="5">{t}External command{/t}</option>
               <option value="6">{t}Current service state{/t}</option>
               <option value="7">{t}Current host state{/t}</option>
               <option value="8">{t}Initial service state{/t}</option>
               <option value="9">{t}Initial host state{/t}</option>
-              <option value="10">{t}Aclknownledge service{/t}</option>
-              <option value="11">{t}Aclknownledge host{/t}</option>
+              <option value="10">{t}Service acknowledgement{/t}</option>
+              <option value="11">{t}Host acknowledgement{/t}</option>
             </select>
           </div>
           <div class="form-group col-md-4">
