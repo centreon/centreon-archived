@@ -12,16 +12,26 @@
           <div class="col-xs-1">
             <h2>{$host_icon}</h2>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9">
             <div class="row">
               <div class="col-xs-12">
-                <h3>{$hostname}</h3>
+                <h3>{$hostname} ({$host_alias})</h3>
               </div>
               <div class="col-xs-12">
-                <h4>{$address} <span class="label" id="status"></span> {t}since{/t} <span id="since_status"></span></h4>
+                {$address}
               </div>
             </div>
           </div> 
+          <div class="col-xs-1">
+            <div class="row">
+              <div class="col-xs-12">
+                <h2><span class="label" id="status"></span></h2>
+              </div>
+              <div class="col-xs-12">
+                {t}since{/t} <span id="since_status"></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -167,6 +177,17 @@ $(function() {
   size = parseInt($("#cpu").width() * 0.7);
   $('.dial').attr('data-width', size).attr('data-height', size);
   $('.dial').knob();
+
+  /* Resize icon if image */
+  var $img = $('#name img');
+  if ($img.length > 0) {
+    var size = $img.parent().parent().width() - 5,
+        sizeHeight = $img.parent().parent().height() - 5;
+    if (sizeHeight < size) {
+      size = sizeHeight;
+    }
+    $img.css('width', size + 'px').css('height', size + 'px');
+  }
 
   hostReporting.init({
     itemSelector: '#month_reporting',

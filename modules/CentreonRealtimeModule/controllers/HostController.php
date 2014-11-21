@@ -146,6 +146,7 @@ class HostController extends \Centreon\Internal\Controller
         $host = HostdetailRepository::getRealtimeData($params['id']);
         $this->tpl->assign('hostname', $host[0]['host_name']);
         $this->tpl->assign('address', $host[0]['host_address']);
+        $this->tpl->assign('host_alias', $host[0]['host_alias']);
         $this->tpl->assign('host_icon', HostConfRepository::getIconImage($host[0]['host_name']));
         $this->tpl->assign('applications', array());
         $this->tpl->assign('routeParams', array(

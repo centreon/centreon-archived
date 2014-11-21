@@ -71,7 +71,7 @@ class HostdetailRepository extends ObjectdetailRepository
     public static function getRealtimeData($hostId)
     {
         $db = Di::getDefault()->get('db_centreon');
-        $sql = 'SELECT h.name as host_name, acknowledged, scheduled_downtime_depth, output, latency, command_line,
+        $sql = 'SELECT h.name as host_name, acknowledged, scheduled_downtime_depth, output, latency, command_line, h.alias as host_alias
             last_check, next_check, check_period, i.name as instance_name, state, h.address as host_address,
             h.state_type
             FROM rt_hosts h, rt_instances i
