@@ -693,13 +693,22 @@ td.incident-extended-info {
     }
   }
 
+  &.header {
+    border-top: 0;
+  }
+
+  &.status-up {
+    border-left: 3px solid @brand-success;
+  }
+  &.status-down {
+    border-left: 3px solid @brand-danger;
+  }
+  &.status-unknown {
+    border-left: 3px solid @grey-light;
+  }
+
   .title {
     font-weight: bold;
-
-    .output {
-      margin-top: 5px;
-      border-top: 1px solid @gray-light;
-    }
   }
 }
 
