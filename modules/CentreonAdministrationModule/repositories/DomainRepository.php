@@ -394,6 +394,12 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             $metric['unit_name'] = $newUnit;
         }
         $normalizeMetricSet['unit'] = $metric['unit_name'];
+        $normalizeMetricSet['status'] = strtolower(
+            StatusUtils::numToString(
+                $service['state'], 
+                StatusUtils::TYPE_SERVICE
+            )
+        );
 
         return $normalizeMetricSet;
     }
