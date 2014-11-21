@@ -89,12 +89,10 @@ class HostDetailData
                     $service,
                     $serviceMetricList
                 );
-            if (count($serviceMetricList) > 0) {
-                if ($parentDomain['name'] === 'Application') {
-                    $normalizeServiceSet[] = $normalizedMetrics;
-                } else {
-                    $normalizeServiceSet[$service['description']] = $normalizedMetrics;
-                }
+            if ($parentDomain['name'] === 'Application') {
+                $normalizeServiceSet[] = $normalizedMetrics;
+            } else {
+                $normalizeServiceSet[$service['description']] = $normalizedMetrics;
             }
         }
 
