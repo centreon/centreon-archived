@@ -96,23 +96,6 @@
      <h4>{t}Applications{/t}</h4>
     </div>
   </div>
-
-  <div class="row row-detail">
-    <div class="col-xs-12 detail-info" id="reporting">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12">
-            <h4>{t}Reporting{/t}</h4>
-          </div>
-          <div class="col-xs-6 reporting">
-            <div id="month_reporting"></div>
-          </div>
-          <div class="col-xs-6">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   
   <div class="row row-detail">
     <div class="col-xs-12 detail-info" id="eventlogs">
@@ -135,6 +118,23 @@
               <tbody>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-detail">
+    <div class="col-xs-12 detail-info" id="reporting">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4>{t}Reporting{/t}</h4>
+          </div>
+          <div class="col-xs-6 reporting">
+            <div id="month_reporting"></div>
+          </div>
+          <div class="col-xs-6">
           </div>
         </div>
       </div>
