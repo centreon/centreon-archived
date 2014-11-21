@@ -54,7 +54,7 @@
             {t}Last check{/t} : <span id="last_check"></span>
           </div>
           <div class="col-xs-12">
-            {t}Next check{/t} : <span id="last_check"></span>
+            {t}Next check{/t} : <span id="next_check"></span>
           </div>
         </div>
       </div>
@@ -238,6 +238,9 @@ $(function() {
     $('#since_status').text(
       moment.duration(diffDate, 'seconds').humanize()
     );
+
+    $('#last_check').text(moment.unix(hostData.lastCheck).format('llll'));
+    $('#next_check').text(moment.unix(hostData.nextCheck).format('llll'));
 
     /* Update block network */
     if (hostData.network !== undefined) {
