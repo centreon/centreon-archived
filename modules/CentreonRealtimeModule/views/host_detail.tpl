@@ -305,9 +305,9 @@ $(function() {
                      $('<table></table>').addClass('table table-bordered table-condensed').append(
                        $('<thead></thead>').html(
                          '<tr>' +
-                         '<td>Service</td>' +
-                         '<td>Status</td>' +
-                         '<td>Output</td>' +
+                         '<th>Service</th>' +
+                         '<th>Status</th>' +
+                         '<th>Output</th>' +
                          '</tr>'
                        )
                      ).append(
