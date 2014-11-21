@@ -92,7 +92,7 @@ class ToolsController extends \Centreon\Internal\Controller
             WHERE filename = :filename
                 AND filetype = 1';
         $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
+        $stmt->bindParam(':filename', urldecode($filename), \PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch();
         if (false === $row) {
