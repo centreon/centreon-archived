@@ -31,7 +31,6 @@
 		<step name="General">
 			<field name="name" mandatory="1"></field>
 			<field name="description" mandatory="0"></field>
-			<field name="icon_id" mandatory="0"></field>
 		</step>
     </wizard>
 </forms>
