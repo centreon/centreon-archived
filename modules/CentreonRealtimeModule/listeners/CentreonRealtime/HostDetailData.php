@@ -74,15 +74,30 @@ class HostDetailData
      * @param string $domainType
      */
     private static function getDomainDatas(HostDetailDataEvent $event, $domainType, $serviceList)
-    {  
+    {
+        $parentDomain['name'] = $domainType;
+            
+        if ($domainType !== 'FileSystem') {
+            $parentDomain = DomainRepository::getParent($domainType);
+        }
+
+        if ($parentDomain['name'] === 'Application') {
+            $normalizeServiceSet = array($domainType => $normalizeServiceSet);
+        }
+            
         $normalizeServiceSet = array();
         foreach ($serviceList as $service) {
             $serviceMetricList = MetricRepository::getMetricsFromService($service['service_id']);
-            $normalizeServiceSet[$service['description']] = DomainRepository::normalizeMetrics(
-                $domainType,
-                $service,
-                $serviceMetricList
-            );
+            $normalizedMetrics = DomainRepository::normalizeMetrics(
+                    $domainType,
+                    $service,
+                    $serviceMetricList
+                );
+            if ($parentDomain['name'] === 'Application') {
+                $normalizeServiceSet[] = $normalizedMetrics;
+            } else {
+                $normalizeServiceSet[$service['description']] = $normalizedMetrics;
+            }
         }
         
         if (count($normalizeServiceSet) > 0) {
@@ -93,7 +108,7 @@ class HostDetailData
             }
             
             if ($parentDomain['name'] === 'Application') {
-                $normalizeServiceSet = array($domainType => array_combine(array_keys($normalizeServiceSet), array_values($normalizeServiceSet)));
+                $normalizeServiceSet = array($domainType => $normalizeServiceSet);
             }
             
             $event->addHostDetailData(strtolower($parentDomain['name']), $normalizeServiceSet);
