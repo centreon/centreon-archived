@@ -209,7 +209,6 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForNetwork($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
-
         return $normalizeMetricSet;
     }
     
@@ -356,6 +355,13 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         return $normalizeMetricSet;
     }
     
+    /**
+     * 
+     * @param type $domain
+     * @param type $service
+     * @param type $metricList
+     * @return string
+     */
     public static function normalizeMetricsForStorage($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
