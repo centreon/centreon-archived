@@ -100,7 +100,6 @@ class Database
             $query .= ' WHERE ' . join(' AND ', $wheres);
         }
         $query .= ' ORDER BY ctime DESC';
-        file_put_contents("/tmp/request.sql", $query);
 
         if (false === is_null($limit)) {
             $query .= ' LIMIT ' . $limit;
@@ -114,8 +113,6 @@ class Database
                 $value = '%' . $value . '%';
             }
             $stmt->bindValue(':' . $key, $value); // @TODO Better param type
-            file_put_contents("/tmp/request.sql", "$key => $value");
-                                          
         }
         $stmt->execute();
 

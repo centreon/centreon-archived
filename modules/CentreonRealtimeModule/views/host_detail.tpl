@@ -350,7 +350,13 @@ $(function() {
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
         $.each(data, function(idx, values) {
-          var type, state;
+          var type, state, colorCss, borderCss;
+          var isService = false;
+
+          if (values.service != "") {
+            isService = true;
+          }
+
           if (values.type == 0) {
             type = "SOFT";
           } else {
@@ -358,13 +364,22 @@ $(function() {
           }
           switch (values.status) {
             case '0':
-              state = 'Ok';
+              state = "UP";
+              if (isService) {
+                  state = 'Ok';
+              }
               break;
             case '1':
-              state = 'Warning';
+              state = "DOWN";
+              if (isService) {
+                state = 'Warning';
+              }
               break;
             case '2':
-              state = 'Critical';
+              state = 'Unreachable';
+              if (isService) {
+                state = 'Critical';
+              }
               break;
             case '3':
               state = 'Unknown';
@@ -375,9 +390,17 @@ $(function() {
             case '5':
               state = 'Information';
               break;
-          } 
+          }
+          
+          colorCss = 'centreon-status-h-';
+          borderCss = 'centreon-border-status-h-';
+          if (isService) {
+            colorCss = 'centreon-status-s-';
+            borderCss = 'centreon-border-status-s-';
+          }
+
           $('<tr></tr>')
-            .addClass('centreon-border-status-' + values.status)
+            .addClass(borderCss + values.status)
             .append(
               $('<td></td>').text(values.datetime)
             )
@@ -385,7 +408,7 @@ $(function() {
               $('<td></td>').html(values.service)
             )
             .append(
-              $('<td></td>').addClass('centreon-status-' + values.status).text(state)
+              $('<td></td>').addClass(colorCss + values.status).text(state)
             )
             .append(
               $('<td></td>').text(type)

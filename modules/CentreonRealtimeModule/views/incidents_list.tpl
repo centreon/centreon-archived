@@ -29,7 +29,7 @@ var incidentExtInfoTmpl = "<div class='span-8'> \
   <tbody> \{literal}
   {{{#children}}} \
   <tr> \
-    <td class='centreon-status-{{{status}}} span-2'>{{{name}}}</td> \
+    <td class='centreon-status-s-{{{status}}} span-2'>{{{name}}}</td> \
     <td class='span-10'>{{{output}}}</td> \
   </tr> \
   {{{/children}}} \
@@ -51,7 +51,7 @@ $(function() {
       </td> \
       <td class='span-2'><a href='./realtime/host/{{{host_id}}}'><i class='fa fa-hdd-o'></i> {{{host_name}}}</a></td> \
       <td class='span-2'><a href='./realtime/service/{{{service_id}}}'><i class='fa fa-gear'></i> {{{service_desc}}}</a></td> \
-      <td class='span-1 centreon-status-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
+      <td class='span-1 centreon-status-s-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
       <td class='span-1' style='text-align:right;'>{{{duration}}}</td> \
       <td class='span-5'>{{{output}}}</td> \
     </tr> \

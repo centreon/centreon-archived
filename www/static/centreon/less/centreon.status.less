@@ -1,24 +1,30 @@
 @import "variables.less";
 
-td.centreon-status-0,
-.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-0,
-div.centreon-status-0
+td.centreon-status-h-0,
+td.centreon-status-s-0,
+.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-h-0,
+.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-s-0,
+div.centreon-status-h-0,
+div.centreon-status-s-0
 {
     background-color: @state-success-bg;
     color: @state-success-text;
 }
 
-td.centreon-status-1,
-.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-1,
-div.centreon-status-1
+td.centreon-status-s-1,
+.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-s-1,
+div.centreon-status-s-1
 {
     background-color: @state-warning-bg;
     color: @state-warning-text;
 }
 
-td.centreon-status-2,
-.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-2,
-div.centreon-status-2
+td.centreon-status-h-1,
+td.centreon-status-s-2,
+.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-h-1,
+.table-striped>tbody>tr:nth-child(odd)>td.centreon-status-s-2,
+div.centreon-status-h-1,
+div.centreon-status-s-2
 {
     background-color: @state-danger-bg;
     color: @state-danger-text;
@@ -52,15 +58,18 @@ tr.centreon-border-info {
     border-left: 4px solid @brand-info;
 }
 
-tr.centreon-border-status-0 {
+tr.centreon-border-status-h-0,
+tr.centreon-border-status-s-0 {
     border-left: 4px solid @brand-success;
 }
 
-tr.centreon-border-status-1 {
+tr.centreon-border-status-s-1 {
     border-left: 4px solid @brand-warning;
 }
 
-tr.centreon-border-status-2 {
+
+tr.centreon-border-status-h-1,
+tr.centreon-border-status-s-2 {
     border-left: 4px solid @brand-danger;
 }
 
