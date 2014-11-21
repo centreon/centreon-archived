@@ -48,7 +48,14 @@
               <option>Central</option>
             </select>
           </div>
-          <div class="form-group col-md-8">
+          <div class="form-group col-md-4">
+            <select name="type" style="width: 100%">
+              <option></option>
+              <option value="0">{t}Soft{/t}</option>
+              <option value="1">{t}Hard{/t}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
             <input type="text" name="output" class="form-control" placeholder="{t}Filter message{/t}">
           </div>
         </form>
@@ -114,6 +121,11 @@ $(function() {
 
   $("select[name='instance_name']").select2({
     placeholder: "{t}Instance{/t}"
+  });
+
+  $("select[name='type']").select2({
+    placeholder: "{t}State type{/t}",
+    allowClear: true
   });
 });
 </script>
