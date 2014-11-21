@@ -74,7 +74,7 @@ class HostDetailData
      * @param string $domainType
      */
     private static function getDomainDatas(HostDetailDataEvent $event, $domainType, $serviceList)
-    {
+    {  
         $normalizeServiceSet = array();
         foreach ($serviceList as $service) {
             $serviceMetricList = MetricRepository::getMetricsFromService($service['service_id']);
@@ -93,7 +93,7 @@ class HostDetailData
             }
             
             if ($parentDomain['name'] === 'Application') {
-                $normalizeServiceSet = array($domainType => $normalizeServiceSet);
+                $normalizeServiceSet = array($domainType => array_combine(array_keys($normalizeServiceSet), array_values($normalizeServiceSet)));
             }
             
             $event->addHostDetailData(strtolower($parentDomain['name']), $normalizeServiceSet);
