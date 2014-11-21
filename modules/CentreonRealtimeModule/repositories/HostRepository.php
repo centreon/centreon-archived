@@ -103,7 +103,10 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $stmt = $dbconn->prepare('SELECT state as state, output as output, last_state_change as lastChange FROM rt_hosts WHERE host_id = ? LIMIT 1');
+        $stmt = $dbconn->prepare('SELECT '
+            . 'state as state, output as output, last_state_change as lastChange, '
+            . 'last_check as lastCheck, next_check as nextCheck '
+            . 'FROM rt_hosts WHERE host_id = ? LIMIT 1');
         $stmt->execute(array($hostId));
         
         $infos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -111,8 +114,8 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
             $finalInfo['status'] = strtolower(UtilStatus::numToString($infos[0]['state'], UtilStatus::TYPE_HOST));
             $finalInfo['output'] = $infos[0]['output'];
             $finalInfo['lastChange'] = $infos[0]['lastChange'];
-            $finalInfo['lastCheck'] = $infos[0]['last_check'];
-            $finalInfo['nextCheck'] = $infos[0]['next_check'];
+            $finalInfo['lastCheck'] = $infos[0]['lastCheck'];
+            $finalInfo['nextCheck'] = $infos[0]['nextCheck'];
         } else {
             $finalInfo['status'] = -1;
             $finalInfo['output'] = '';
