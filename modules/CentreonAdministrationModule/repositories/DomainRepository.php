@@ -177,7 +177,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         if (method_exists(__CLASS__, $normalizeFunction)) {
             $normalizeMetricSet = self::$normalizeFunction($domain, $service, $metricList);
         } else {
-            self::genericNormalizeMetrics($domain, $service, $metricList);
+            $normalizeMetricSet = self::genericNormalizeMetrics($domain, $service, $metricList);
         }
         return $normalizeMetricSet;
     }
