@@ -40,7 +40,7 @@
             <help>Define the environment of the Services</help>
             <attributes>
                 <object_type>object</object_type>
-                <defaultValuesRoute>/configuration/environment/formlist</defaultValuesRoute>
+                <defaultValuesRoute>/administration/environment/formlist</defaultValuesRoute>
                 <listValuesRoute>/configuration/service/[i:id]/environment</listValuesRoute>
                 <multiple>false</multiple>
             </attributes>

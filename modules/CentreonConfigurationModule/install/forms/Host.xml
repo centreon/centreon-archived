@@ -46,7 +46,7 @@
 					<help>Define the environment of the host</help>
                     <attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/environment/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/administration/environment/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/environment</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
