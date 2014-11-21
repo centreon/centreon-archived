@@ -6,27 +6,33 @@
 {block name="content"}
 <div class="container-fluid">
   <div class="row row-detail">
-    <div class="col-xs-12 col-sm-7 detail-info" id="general">
+    <div class="col-xs-12 detail-info header" id="name">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-xs-12">
-            <h4>{$host_icon} {$hostname}</h4>
+          <div class="col-xs-1">
+            <h2>{$host_icon}</h2>
           </div>
-          <div class="col-xs-12">
+          <div class="col-xs-10">
             <div class="row">
-              <div class="col-xs-2 title">{t}Address{/t}</div>
-              <div class="col-xs-10">{$address}</div>
-              <div class="col-xs-2 title">{t}Status{/t}</div>
-              <div class="col-xs-2">
-                <span class="label" id="status"></span>
+              <div class="col-xs-12">
+                <h3>{$hostname}</h3>
               </div>
-              <div class="col-xs-8">
-                {t}since{/t} <span id="since_status"></span>
+              <div class="col-xs-12">
+                <h4>{$address} <span class="label" id="status"></span> {t}since{/t} <span id="since_status"></span></h4>
               </div>
             </div>
-          </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-detail">
+    <div class="col-xs-12 col-sm-6 detail-info" id="general">
+      <div class="container-fluid">
+        <div class="row">
           <div class="col-xs-12 title">
-            <div class="output">{t}Output{/t}</div>
+            <h4>{t}Output{/t}</h4>
           </div>
           <div class="col-xs-12">
             <div class="longoutput"></div>
@@ -36,7 +42,7 @@
       <div class="host-status">
       </div>
     </div>
-    <div class="col-xs-12 col-sm-5 detail-info" id="network">
+    <div class="col-xs-12 col-sm-6 detail-info" id="network">
       <div class="container-fluid">
         <div class="row">
           <div class="col-xs-12">
@@ -90,23 +96,6 @@
      <h4>{t}Applications{/t}</h4>
     </div>
   </div>
-
-  <div class="row row-detail">
-    <div class="col-xs-12 detail-info" id="reporting">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12">
-            <h4>{t}Reporting{/t}</h4>
-          </div>
-          <div class="col-xs-6 reporting">
-            <div id="month_reporting"></div>
-          </div>
-          <div class="col-xs-6">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   
   <div class="row row-detail">
     <div class="col-xs-12 detail-info" id="eventlogs">
@@ -129,6 +118,23 @@
               <tbody>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-detail">
+    <div class="col-xs-12 detail-info" id="reporting">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4>{t}Reporting{/t}</h4>
+          </div>
+          <div class="col-xs-6 reporting">
+            <div id="month_reporting"></div>
+          </div>
+          <div class="col-xs-6">
           </div>
         </div>
       </div>
@@ -188,7 +194,12 @@ $(function() {
   }
 
   $(document).on('centreon.host_detail', function(e) {
-    /* Update blick general */
+    /* Update block name */
+    $('#name').removeClass(function(index, css) {
+      return (css.match(/(^|\s)status-\S+/g) || []).join(' ');
+    });
+    $('#name').addClass('status-' + hostData.status);
+    /* Update block general */
     var diffDate = moment().unix() - hostData.lastChange;
     $('.longoutput').html(hostData.output);
     $('#status').removeClass(function(index, css) {
