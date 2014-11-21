@@ -209,17 +209,6 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
     public static function normalizeMetricsForNetwork($domain, $service, $metricList)
     {
         $normalizeMetricSet = array();
-        return $normalizeMetricSet;
-    }
-    
-    /**
-     * 
-     * @param array $metricList
-     * @return array
-     */
-    public static function normalizeMetricsForTraffic($domain, $service, $metricList)
-    {
-        $normalizeMetricSet = array();
         $endTime = time();
         $startTime = $endTime - 3600;
 
@@ -248,7 +237,9 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             if (!empty($metricValuesForIn['unit'])) {
                 $in['unit_name'] = $metricValuesForIn['unit'] . '/' . $currentUnitExploded[1];
             }
-            $normalizeMetricSet['unit'] = $in['unit_name'];
+        } else {
+            $normalizeMetricSet['in'] = "";
+            $normalizeMetricSet['in_max'] = "";
         }
 
         if (isset($metricList['traffic_out'])) {
@@ -277,11 +268,28 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
                 $out['unit_name'] = $metricValuesForout['unit'] . '/' . $currentUnitExploded[1];
             }
             $normalizeMetricSet['unit'] = $out['unit_name'];
+        } else {
+            $normalizeMetricSet['out'] = "";
+            $normalizeMetricSet['out_max'] = "";
+        }
+        
+        if (!isset($normalizeMetricSet['unit'])) {
+            $normalizeMetricSet['unit'] = "";
         }
         
         $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
 
         return $normalizeMetricSet;
+    }
+    
+    /**
+     * 
+     * @param array $metricList
+     * @return array
+     */
+    public static function normalizeMetricsForTraffic($domain, $service, $metricList)
+    {
+        return self::normalizeMetricsForNetwork($domain, $service, $metricList);
     }
 
     /**
