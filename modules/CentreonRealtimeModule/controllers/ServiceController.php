@@ -151,7 +151,7 @@ class ServiceController extends \Centreon\Internal\Controller
      * Service detail page
      *
      * @method get
-     * @route /realtime/service/[i:id]
+     * @route /realtime/service/[i:hid]/[i:id]
      */
     public function serviceDetailAction()
     {
