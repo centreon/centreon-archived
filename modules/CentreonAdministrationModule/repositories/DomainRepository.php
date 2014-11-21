@@ -238,7 +238,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
                 $in['unit_name'] = $metricValuesForIn['unit'] . '/' . $currentUnitExploded[1];
             }
         } else {
-            $normalizeMetricSet['in'] = 0;
+            $normalizeMetricSet['in'] = array();
             $normalizeMetricSet['in_max'] = 0;
         }
 
@@ -269,7 +269,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             }
             $normalizeMetricSet['unit'] = $out['unit_name'];
         } else {
-            $normalizeMetricSet['out'] = 0;
+            $normalizeMetricSet['out'] = array();
             $normalizeMetricSet['out_max'] = 0;
         }
         
