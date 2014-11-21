@@ -85,12 +85,11 @@
     </div>
   </div>
   
-  <div class="row row-detail">
+  <div class="row row-detail" id="application">
     <div class="col-xs-12">
      <h4>{t}Applications{/t}</h4>
     </div>
-    {foreach $applications as $application}
-    <div class="col-xs-6 col-sm-4" id="app_{$application.id}">
+    <!-- <div class="col-xs-6 col-sm-4" id="app_{$application.id}">
       <div class="container-fluid">
         <div class="row">
           <div class="col-xs-12">
@@ -102,8 +101,7 @@
           </div>
         </div>
       </div>
-    </div>
-    {/foreach}
+    </div> -->
   </div>
 
   <div class="row row-detail">
@@ -130,8 +128,19 @@
           <div class="col-xs-12">
             <h4>{t}Eventlogs{/t}</h4>
           </div>
-          <div class="col-xs-12">
-            <table>
+          <div class="col-xs-12 centreon_table">
+            <table class="table table-bordered table-condensed">
+              <thead>
+                <tr>
+                  <th>{t}Date{/t}</th>
+                  <th>{t}Service{/t}</th>
+                  <th>{t}Status{/t}</th>
+                  <th>{t}Type{/t}</th>
+                  <th>{t}Message{/t}</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
             </table>
           </div>
         </div>
@@ -258,7 +267,7 @@ $(function() {
 
     /* Update filesystems block */
     if (hostData.filesystem !== undefined) {
-    $('#filesystem .fs').remove();
+      $('#filesystem .fs').remove();
       $.each(hostData.filesystem, function(name, value) {
         $('<div></div>').addClass('col-xs-12').addClass('col-sm-6').addClass('fs').append(
           $('<div></div>').addClass('row').append(
@@ -281,6 +290,125 @@ $(function() {
     }
 
     resizeCell(["#system", "#filesystem"]);
+
+    /* Add applications */
+    if (hostData.application !== undefined) {
+      var applications = $('#application .app').attr('id');
+      $.each(hostData.application, function(idx, app) {
+        var found = false,
+            appId = 'app_' + app.name.toLowerCase().replace(' ', '_');
+        $.each(applications, function(idx, application) {
+          if ($(application).attr('id') == appId) {
+            found = idx;
+          }
+        });
+        if (found === false) {
+          /* Create application block */
+          $('<div></div>')
+             .addClass('col-xs-12 col-sm-4 app')
+             .attr('id', appId)
+             .append(
+               $('<div><div>').addClass('container-fluid').append(
+                 $('<div></div>').addClass('row').append(
+                   $('<div></div>').addClass('col-xs-12').html(
+                     '<h4>' + app.name + '</h4>'
+                   )
+                 ).append(
+                   $('<div></div>').addClass('col-xs-12 centreon_table').append(
+                     $('<table></table>').addClass('table table-stripped table-condensed').append(
+                       $('<thead></thead>').html(
+                         '<tr>' +
+                         '<td>Service</td>' +
+                         '<td>Status</td>' +
+                         '<td>Output</td>' +
+                         '</tr>'
+                       )
+                     ).append(
+                       $('<tbody></tbody>')
+                     )
+                   )
+                 )
+               )
+             )
+             .appendTo('#application');
+        } else {
+          applications.splice(found, 1);
+        }
+        /* Add service to listing */
+        $tbody = $('#' + appId).find('tbody');
+        $tbody.children().remove();
+        $.each(app.service, function(idx, service) {
+          $('<tr></tr>').append(
+            $('<td></td>').text(service.name)
+          ).append(
+            $('<td></td>').append(
+              $('<span></span>').addClass('label').addClass('label-' + serivce.status).text(service.status)
+            )
+          ).append(
+            $('<td></td>').text(service.output)
+          );
+        });
+      });
+      /* Remove old application */
+      $.each(applications, function(idx, application) {
+        $(application).remove();
+      });
+    }
+
+    /* Get eventlogs */
+    $.ajax({
+      url: "{url_for url='/realtime/eventlogs/lasthostevents/[i:id]/10' params=$routeParams}",
+      method: 'get',
+      dataType: 'json',
+      success: function(data, textStatus, jqXHR) {
+        $.each(data, function(idx, values) {
+          var type, state;
+          if (values.type == 0) {
+            type = "SOFT";
+          } else {
+            type = "HARD";
+          }
+          switch (values.status) {
+            case '0':
+              state = 'Ok';
+              break;
+            case '1':
+              state = 'Warning';
+              break;
+            case '2':
+              state = 'Critical';
+              break;
+            case '3':
+              state = 'Unknown';
+              break;
+            case '4':
+              state = 'Pending';
+              break;
+            case '5':
+              state = 'Information';
+              break;
+          } 
+          $('<tr></tr>')
+            .addClass('centreon-border-status-' + values.status)
+            .append(
+              $('<td></td>').text(values.datetime)
+            )
+            .append(
+              $('<td></td>').html(values.service)
+            )
+            .append(
+              $('<td></td>').addClass('centreon-status-' + values.status).text(state)
+            )
+            .append(
+              $('<td></td>').text(type)
+            )
+            .append(
+              $('<td></td>').html(values.output)
+            )
+            .appendTo('#eventlogs tbody')
+        });
+      }
+    });
   });
 
   loadData();
