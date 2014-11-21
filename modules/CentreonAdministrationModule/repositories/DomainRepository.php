@@ -238,8 +238,8 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
                 $in['unit_name'] = $metricValuesForIn['unit'] . '/' . $currentUnitExploded[1];
             }
         } else {
-            $normalizeMetricSet['in'] = "";
-            $normalizeMetricSet['in_max'] = "";
+            $normalizeMetricSet['in'] = 0;
+            $normalizeMetricSet['in_max'] = 0;
         }
 
         if (isset($metricList['traffic_out'])) {
@@ -269,12 +269,12 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
             }
             $normalizeMetricSet['unit'] = $out['unit_name'];
         } else {
-            $normalizeMetricSet['out'] = "";
-            $normalizeMetricSet['out_max'] = "";
+            $normalizeMetricSet['out'] = 0;
+            $normalizeMetricSet['out_max'] = 0;
         }
         
         if (!isset($normalizeMetricSet['unit'])) {
-            $normalizeMetricSet['unit'] = "";
+            $normalizeMetricSet['unit'] = "b/s";
         }
         
         $normalizeMetricSet['status'] = strtolower(StatusUtils::numToString($service['state'], StatusUtils::TYPE_SERVICE));
