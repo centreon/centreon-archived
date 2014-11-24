@@ -266,13 +266,14 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .ListColRight 						    {padding:1px 3px;}
 
 * html #ListTable td,#ListTableMedium td,#ListTableSmall td,.ListTable td,.ListTableMedium td,.ListTableSmall td {margin:0;padding:0 4px;}
-.ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a {color:#666;z-index:5;}
+.ListTableSmall a,.ListTable a,.ListTableMedium a,.ListTableSmall a, .ListTableSmallArg a {color:#666;z-index:5;}
 .ListTableMedium 		{width:60%;}
 .ListTableSmall 		{width:40%;}
+.ListTableSmallArg 		{width:60%;}
 .ListTableMultiTp 		{border-width:0;width:100%;}
-.ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
-.ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
-.ListTable td,.ListTableMedium td,.ListTableSmall td {padding-bottom:2px;padding-top:2px;}
+.ListTable,.ListTableMedium,.ListTableSmall,.ListTableSmallArg,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
+.ListTable,.ListTableMedium,.ListTableSmall,.ListTableSmallArg {border-width:1px;}
+.ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
 
 .tab .ListTable,.tab .ListTableMedium{margin-top:21px;}
 

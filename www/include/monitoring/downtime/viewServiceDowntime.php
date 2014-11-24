@@ -181,9 +181,9 @@
                     d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time,
                     d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields .
                     "FROM downtimes d, services s, hosts h " .
-                    "WHERE d.host_id  = h.host_id " .
-                    "AND d.service_id = s.service_id " .
-                    "AND s.enabled = 1 ";
+                    "WHERE d.host_id = s.host_id AND
+                        d.service_id = s.service_id AND
+                        s.host_id = h.host_id ";
         if (!$view_all) {
             $request .= " AND d.cancelled = 0 ";
         }

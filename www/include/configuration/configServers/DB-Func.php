@@ -75,9 +75,11 @@
 	}
 
 	function deleteServerInDB ($server = array())	{
-		global $pearDB;
+		global $pearDB, $pearDBO;
+
 		foreach($server as $key => $value)	{
-			$DBRESULT = $pearDB->query("DELETE FROM `nagios_server` WHERE id = '".$key."'");
+			$pearDB->query("DELETE FROM `nagios_server` WHERE id = '".$key."'");
+            $pearDBO->query("UPDATE `instances` SET deleted = '1' WHERE instance_id = '".$key."'");
 		}
 	}
 

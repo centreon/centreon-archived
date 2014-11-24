@@ -550,7 +550,7 @@ class CentreonGraph {
 
                 if (!isset($metric["need"]) || $metric["need"] != 1) {
                     if (is_null($components_ds_cache)) {
-                        $components_ds_cache = $this->DB->getAll("SELECT * FROM giv_components_template");
+                        $components_ds_cache = $this->DB->getAll("SELECT * FROM giv_components_template ORDER BY host_id DESC");
                     }
                     $ds_data_associated = null;
                     $ds_data_regular = null;

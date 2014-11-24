@@ -507,11 +507,12 @@
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
 		$DBRESULT = $pearDB->query($rq);
 
-
-                if (isset($_REQUEST['in_broker'])) {
-                    $mainCfg = new CentreonConfigEngine($pearDB);
-                    $mainCfg->insertBrokerDirectives($nagios_id, $_REQUEST['in_broker']);
-                }
+        $mainCfg = new CentreonConfigEngine($pearDB);
+        if (isset($_REQUEST['in_broker'])) {
+            $mainCfg->insertBrokerDirectives($nagios_id, $_REQUEST['in_broker']);
+        } else {
+            $mainCfg->insertBrokerDirectives($nagios_id);
+        }
 
 		if ($ret["nagios_activate"]["nagios_activate"]) {
 			enableNagiosInDB($nagios_id);

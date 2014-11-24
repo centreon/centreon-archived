@@ -115,7 +115,7 @@
 
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
-	$form->addElement('select', 'plugin_dir', "Directory", $plugin_dir, array("onChange" => "this.form.submit('')"));
+$form->addElement('select', 'plugin_dir', _("Directory"), $plugin_dir, array("onChange" => "this.form.submit('')"));
     $form->setDefaults(array('plugin_dir' => $dir));
 
 	# Form2
