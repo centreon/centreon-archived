@@ -36,6 +36,23 @@ Perform the following command from a user with sufficient rights:
 
 The repository is now installed.
 
+Any operating system
+--------------------
+
+SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
+
+ ::
+ 
+ SELINUX=disabled
+
+PHP timezone should be set; go to the ";date.timezone" line into the file "/etc/php.ini". Comment out this line and add your timezone:
+
+ ::
+ 
+ date.timezone = Europe/Paris
+
+The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
+
 *********************
 Centreon installation
 *********************
