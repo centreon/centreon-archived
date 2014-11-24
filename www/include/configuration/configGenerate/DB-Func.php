@@ -53,7 +53,7 @@ function getMyHostTemplateCriticality($host_id) {
         if (isset($critHTpl[$row['host_tpl_id']]) && $critHTpl[$row['host_tpl_id']]) {
             return $critHTpl[$row['host_tpl_id']];
         } else {
-            if ($result_field = getMyHostFieldFromMultiTemplates($row['host_tpl_id'])) {
+            if ($result_field = getMyHostTemplateCriticality($row['host_tpl_id'])) {
                 return $result_field;
             }
         }
