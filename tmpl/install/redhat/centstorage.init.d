@@ -19,6 +19,11 @@ start_timeout=5
 
 pidfile=@CENTREON_RUNDIR@/centstorage.pid
 
+FOLDER=/var/run/centreon/
+if [ ! -d "$FOLDER" ]; then # Control will enter here if $DIRECTORY doesn't exist.
+    mkdir $FOLDER
+fi
+
 [ -e /etc/sysconfig/$servicename ] && . /etc/sysconfig/$servicename
 
 # Check if we can find the binary.

@@ -50,10 +50,12 @@ class CentreonDowntimeNdo extends CentreonDowntime
 	 * Constructor
 	 * 
 	 * @param CentreonDb $pearDB
+	 * @param string $varlib
 	 */
-	public function __construct($pearDB)
+	public function __construct($pearDB, $varlib = null)
 	{
-		$this->db = $pearDB;
+		parent::__construct($pearDB, $varlib);
+
 		$this->dbndo = new CentreonDB('ndo');
 		$res = $this->db->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1;");
 		$row = $res->fetchRow();
