@@ -15,22 +15,20 @@
         var selectedCb = [];
 
         oTable = $('#datatable{$object}').dataTable({
-            "bProcessing": true,
-            "sAjaxSource": "{url_for url=$objectUrl}",
-            "bStateSave": false,
-            "bServerSide": true,
-            "iDisplayLength": 25,
-            "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
-            "oLanguage": {
-                "sLengthMenu": "_MENU_"
+            "processing": true,
+            "ajax": "{url_for url=$objectUrl}",
+            "serverSide": true,
+            "length": 25,
+            "lengthMenu": [[10, 25, 50], [10, 25, 50]],
+            "language": {
+                "lengthMenu": "_MENU_"
             },
             {$datatableParameters.configuration}
-            "bSortCellsTop": true,
-            'sDom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            'dom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             "columns": [
                 {$datatableParameters.header.columnHeader}
             ],
-            "oTableTools": {
+            "tableTools": {
                 "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}",
                 "aButtons": [
                     {
@@ -87,10 +85,10 @@
 
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
-        setInterval(function () {
+        /*setInterval(function () {
             $(".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
-        }, 60000);
+        }, 60000);*/
 
         function toggleSelectedAction() {
             var countElem = $('table[id^="datatable"] tbody tr').length;

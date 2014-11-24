@@ -75,7 +75,7 @@
 
     /* Load url data */
     searchUri = getUriParametersByName("search");
-    if (searchUri !== null) {
+    if (searchUri !== null && searchUri !== '') {
       $elem.val(searchUri);
       if ( typeof self.options.fnRunSearch == 'function') {
         self.options.fnRunSearch(self);

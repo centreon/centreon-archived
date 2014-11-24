@@ -54,7 +54,6 @@ class CentreonStorageDb implements \Centreon\Internal\Datatable\Dataprovider\Dat
         $fields = "";
         $otherFields = "";
         $otherTables = "";
-        $conditions = array();
         $conditionsForTable = array();
         
         $specialFieldsKeys = array_keys($specialFields);
@@ -83,27 +82,11 @@ class CentreonStorageDb implements \Centreon\Internal\Datatable\Dataprovider\Dat
         $otherFields = rtrim($otherFields, ',');
         $otherTables = rtrim($otherTables, ',');
         
-        $a = array();
-        
-        // Get
-        $fieldList = array();
-        foreach ($datatableClass::$columns as $column) {
-            $fieldList[] = $column['name'];
-        }
-
-        // Get the field label for the search
-        foreach ($params as $key => $value) {
-            if (substr($key, 0, 7) == 'sSearch') {
-                if (!empty($value)) {
-                    if ($key === 'host_enabled') {
-                        $conditions['h.enabled'] = $value;
-                    } elseif ($key === 'service_enabled') {
-                        $conditions['s.enabled'] = $value;
-                    } else {
-                        $b = explode('_', $key);
-                        $conditions[$fieldList[$b[1]]] = $value;
-                    }
-                }
+        // get fields for search
+        $conditions = array();
+        foreach ($params['columns'] as $columnSearch) {
+            if ($columnSearch['searchable'] === "true" && !empty($columnSearch['search']['value'])) {
+                $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
             }
         }
         
@@ -112,10 +95,10 @@ class CentreonStorageDb implements \Centreon\Internal\Datatable\Dataprovider\Dat
             $result = $additionnalClass::getMergedParameters(
                 explode(',', $fields),
                 explode(',', $otherFields),
-                $params['iDisplayLength'],
-                $params['iDisplayStart'],
-                $columns[$params['iSortCol_0']]['data'],
-                $params['sSortDir_0'],
+                $params['length'],
+                $params['start'],
+                $columns[$params['order'][0]['column']]['name'],
+                $params['order'][0]['dir'],
                 $conditions,
                 "AND"
             );
@@ -135,10 +118,10 @@ class CentreonStorageDb implements \Centreon\Internal\Datatable\Dataprovider\Dat
             $result = $modelClass::getList(
                 $fields,
                 explode(',', $otherTables),
-                $params['iDisplayLength'],
-                $params['iDisplayStart'],
-                $columns[$params['iSortCol_0']]['data'],
-                $params['sSortDir_0'],
+                $params['length'],
+                $params['start'],
+                $columns[$params['order'][0]['column']]['name'],
+                $params['order'][0]['dir'],
                 $conditions,
                 "AND",
                 $conditionsForTable

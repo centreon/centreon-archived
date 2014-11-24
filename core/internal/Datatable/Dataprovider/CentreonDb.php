@@ -68,36 +68,12 @@ class CentreonDb implements DataProviderInterface
         $fields = rtrim($fields, ',');
         $otherFields = rtrim($otherFields, ',');
         
+        
+        // get fields for search
         $conditions = array();
-        
-        $a = array();
-        
-        // Get
-        $fieldList = array();
-        foreach ($datatableClass::$columns as $column) {
-            $fieldList[] = $column['name'];
-        }
-        
-        // Get the field label for the search
-        foreach ($params as $key => $value) {
-            $value = trim($value);
-            if (substr($key, 0, 7) == 'sSearch') {
-                if (!empty($value) || is_numeric($value)) {
-                    $b = explode('_', $key);
-                    
-                    if (is_string($value)) {
-                        $possibleValues = array();
-                        preg_match_all('/(^| )([\w-_]+|"[^"]+"|\'[^\']+\')/i', $value, $possibleValues);
-                        if (count($possibleValues) > 0) {
-                            $value = array();
-                            foreach ($possibleValues[0] as $pVal) {
-                                $value[] = str_replace('"', '', trim($pVal));
-                            }
-                        }
-                    }
-                    
-                    $conditions[$fieldList[$b[1]]] = $value;
-                }
+        foreach ($params['columns'] as $columnSearch) {
+            if ($columnSearch['searchable'] === "true" && !empty($columnSearch['search']['value'])) {
+                $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
             }
         }
         
@@ -106,10 +82,10 @@ class CentreonDb implements DataProviderInterface
             $result = $additionnalClass::getMergedParametersBySearch(
                 explode(',', $fields),
                 explode(',', $otherFields),
-                $params['iDisplayLength'],
-                $params['iDisplayStart'],
-                $columns[$params['iSortCol_0']]['name'],
-                $params['sSortDir_0'],
+                $params['length'],
+                $params['start'],
+                $columns[$params['order'][0]['column']]['name'],
+                $params['order'][0]['dir'],
                 $conditions,
                 "AND"
             );
@@ -128,10 +104,10 @@ class CentreonDb implements DataProviderInterface
         } else {
             $result = $modelClass::getListBySearch(
                 $fields,
-                $params['iDisplayLength'],
-                $params['iDisplayStart'],
-                $columns[$params['iSortCol_0']]['name'],
-                $params['sSortDir_0'],
+                $params['length'],
+                $params['start'],
+                $columns[$params['order'][0]['column']]['name'],
+                $params['order'][0]['dir'],
                 $conditions,
                 "AND"
             );

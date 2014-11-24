@@ -222,10 +222,10 @@ class Datatable
         
         // format the data before returning
         $finalDatas = array(
-            "sEcho" => intval($this->params['sEcho']),
-            "iTotalRecords" => count($datasToSend['datas']),
-            "iTotalDisplayRecords" => $datasToSend['nbOfTotalDatas'],
-            "aaData" => $datasToSend['datas']
+            "draw" => intval($this->params['draw']),
+            "recordsTotal" => count($datasToSend['datas']),
+            "recordsFiltered" => $datasToSend['nbOfTotalDatas'],
+            "data" => $datasToSend['datas']
         );
         
         return $finalDatas;
