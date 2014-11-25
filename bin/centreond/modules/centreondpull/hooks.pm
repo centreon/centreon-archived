@@ -44,7 +44,8 @@ sub init {
     my $poll_client = $client->get_poll();
     push @{$options{poll}}, $poll_client;
     centreon::centreond::common::add_zmq_pollin(socket => $socket_to_internal,
-                                                callback => \&router_internal_event);
+                                                callback => \&from_router,
+                                                poll => $options{poll});
 }
 
 sub routing {
@@ -78,11 +79,34 @@ sub check {
 
 ####### specific
 
-sub from_router {    
-    while (1) {
-        my $message = centreon::centreond::common::zmq_dealer_read_message(socket => $socket_to_internal);
-        # Should check if it's ack from getlog request to send it back. With an action: SETLOGS
-        $client->send_message(message => $message);
+sub setlogs_check {
+    my (%options) = @_;
+
+    if ($options{message} =~ /^\[ACK\]\s+\[(.*?)\]\s+(.*)/m) {
+        my $data;
+        eval {
+            $data = JSON->new->utf8->decode($2);
+        };
+        if ($@) {
+            return $options{message};
+        }
+        
+        if (defined($data->{data}->{action}) && $data->{data}->{action} eq 'getlog') {
+            return '[SETLOGS] [' . $1 . '] [] ' . $2;
+        }
+        return undef;
+    }
+    return undef;
+}
+
+sub from_router {
+    while (1) {        
+        my $message = setlogs_check(message => centreon::centreond::common::zmq_dealer_read_message(socket => $socket_to_internal));
+        # Only send back SETLOGS
+        if (defined($message)) {
+            print "===== READ MESSAGE FROM ROUTER " . Data::Dumper::Dumper($message) . " ====\n";
+            $client->send_message(message => $message);
+        }
         last unless (centreon::centreond::common::zmq_still_read(socket => $socket_to_internal));
     }
 }

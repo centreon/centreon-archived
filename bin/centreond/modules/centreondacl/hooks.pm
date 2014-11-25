@@ -52,7 +52,7 @@ sub routing {
     if ($@) {
         $options{logger}->writeLogError("Cannot decode json data: $@");
         centreon::centreond::common::add_history(dbh => $options{dbh},
-                                                 ctime => time(), code => 10, token => $options{token},
+                                                 code => 10, token => $options{token},
                                                  data => { msg => 'centreondacl: cannot decode json' },
                                                  json_encode => 1);
         return undef;
@@ -65,7 +65,7 @@ sub routing {
     
     if (!defined($data->{organization_id}) || !defined($last_organizations->{$data->{organization_id}})) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
-                                                 ctime => time(), code => 10, token => $options{token},
+                                                 code => 10, token => $options{token},
                                                  data => { msg => 'centreondacl: need a valid organization id' },
                                                  json_encode => 1);
         return undef;
@@ -79,7 +79,7 @@ sub routing {
     
     if (centreon::script::centreondcore::waiting_ready(ready => \$organizations->{$data->{organization_id}}->{ready}) == 0) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
-                                                 ctime => time(), code => 10, token => $options{token},
+                                                 code => 10, token => $options{token},
                                                  data => { msg => 'centreondacl: still no ready' },
                                                  json_encode => 1);
         return undef;

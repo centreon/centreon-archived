@@ -57,13 +57,18 @@ Les jetons et les données pour les jetons sont stockées dans une base de donn�
 - code: un code numérique ;
 - data: un flux json.
 
-Un client peut récupérer ses informations:
-[GETLOG] [JETON] [TARGET] [CODE] [TIME] [JETON2] [ID]
+Un client peut récupérer ses informations (il aura le contenu en mode direct. Pas à distance. A distance fera un sync en réalité):
+[GETLOG] [JETON] [TARGET] DATA 
 
-Une des 3 valeurs (JETON2, CODE, TIME, ID) doit être définie. On est sur du AND ('>' pour TIME, ID. '=' pour JETON2).
+DATA contient: { code => , ctime => , etime => , token => , id => }
+
+Une des 4 valeurs (token, CODE, CTIME, ETIME, ID) doit être définie. On est sur du AND ('>' pour ETIME/CTIME, ID. '=' pour JETON2).
+Si il y'a une target, cela correspond à une synchronization en réalité.
 
 Un client peut stocker une valeur:
-[PUTLOG] [JETON] [TARGET] [CODE] [TIME] [JETON2] DATA
+[PUTLOG] [JETON] [TARGET] DATA
+
+DATA contient: { CODE => , etime => , token => , data => {} }
 
 La suppression d'une instance module
 ---------------------------------------
@@ -110,14 +115,24 @@ CREATE TABLE IF NOT EXISTS `centreond_history` (
     `id` INTEGER PRIMARY KEY,
     `token` varchar(255) DEFAULT NULL,
     `code` int(11) DEFAULT NULL,
+    `etime` int(11) DEFAULT NULL,
     `ctime` int(11) DEFAULT NULL,
-    `data` varchar(255) DEFAULT NULL
+    `data` varchar(2048) DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_centreond_history_id ON centreond_history (id);
 CREATE INDEX IF NOT EXISTS idx_centreond_history_token ON centreond_history (token);
-CREATE INDEX IF NOT EXISTS idx_centreond_history_ctime ON centreond_history (ctime);
+CREATE INDEX IF NOT EXISTS idx_centreond_history_etime ON centreond_history (etime);
 CREATE INDEX IF NOT EXISTS idx_centreond_history_code ON centreond_history (code);
+CREATE INDEX IF NOT EXISTS idx_centreond_history_ctime ON centreond_history (ctime);
+
+CREATE TABLE IF NOT EXISTS `centreond_synchistory` (
+    `id` int(11) DEFAULT NULL,
+    `ctime` int(11) DEFAULT NULL,
+    `last_id` int(11) DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_centreond_synchistory_id ON centreond_synchistory (id);
 
 =========================================
 Les codes
@@ -142,3 +157,10 @@ Questions:
 - le poller_name peut ne pas être unique ?
 - travailler sur la base pour le mode du poller: mode SSH (IP, port, login, mdp) ou ZMQ (config: path, type)
 
+==========================
+Recuperation des logs
+==========================
+
+"centreond-proxy" posséde une table pour savoir où on se situe au niveau des logs.
+Il fait un getlog par rapport au ctime (create time) puis des putlog. On "lock" le système si y'a une récupération en cours. Au delà de 1 minutes, on timeout)
+On va recevoir au final un "setlogs" (par le pull ou le proxy d'ailleurs) et à ce moment on écrit le résultat.

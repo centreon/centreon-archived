@@ -194,7 +194,7 @@ sub message_run {
     my ($action, $token, $target, $data) = ($1, $2, $3, $4);
     if ($action !~ /^(PUTLOG|GETLOG|KILL)$/ && !defined($self->{modules_events}->{$action})) {
         centreon::centreond::common::add_history(dbh => $self->{db_centreond},
-                                                 ctime => time(), code => 1, token => $token,
+                                                 code => 1, token => $token,
                                                  data => { msg => "action '$action' is not known" },
                                                  json_encode => 1);
         return (undef, 1, { message => "action '$action' is not known" });
@@ -205,7 +205,7 @@ sub message_run {
 
     if ($self->{stop} == 1) {
         centreon::centreond::common::add_history(dbh => $self->{db_centreond},
-                                                 ctime => time(), code => 1, token => $token,
+                                                 code => 1, token => $token,
                                                  data => { msg => 'centreond is stopping/restarting. Not proceed request.' },
                                                  json_encode => 1);
         return ($token, 1, { message => "centreond is stopping/restarting. Not proceed request." });
@@ -224,7 +224,8 @@ sub message_run {
     
     if ($action =~ /^(PUTLOG|GETLOG|KILL)$/) {
         my ($code, $response) = $self->{internal_register}->{lc($action)}->(centreond => $self,
-                                                                            data => $data);
+                                                                            data => $data,
+                                                                            logger => $self->{logger});
         return ($token, $code, $response);
     } else {
         $self->{modules_register}->{$self->{modules_events}->{$action}}->{routing}->(socket => $self->{internal_socket}, dbh => $self->{db_centreond}, logger => $self->{logger}, 
@@ -382,7 +383,7 @@ sub run {
     $centreond->{logger}->writeLogDebug("PID: $$");
 
     if (centreon::centreond::common::add_history(dbh => $centreond->{db_centreond},
-                                                 ctime => time(), code => 0,
+                                                 code => 0,
                                                  data => { msg => 'centreond is starting...' },
                                                  json_encode => 1) == -1) {
         $centreond->{logger}->writeLogInfo("Cannot write in history. We quit!!");
@@ -423,7 +424,8 @@ sub run {
         $centreond->{modules_register}->{$name}->{init}->(logger => $centreond->{logger},
                                                           poll => $centreond->{poll},
                                                           external_socket => $centreond->{external_socket},
-                                                          internal_socket => $centreond->{internal_socket});
+                                                          internal_socket => $centreond->{internal_socket},
+                                                          dbh => $centreond->{db_centreond});
     }
     
     $centreond->{logger}->writeLogInfo("[Server accepting clients]");
@@ -434,7 +436,8 @@ sub run {
         foreach my $name (keys %{$centreond->{modules_register}}) {
             $count += $centreond->{modules_register}->{$name}->{check}->(logger => $centreond->{logger},
                                                                          dead_childs => $centreond->{return_child},
-                                                                         internal_socket => $centreond->{internal_socket});
+                                                                         internal_socket => $centreond->{internal_socket},
+                                                                         dbh => $centreond->{db_centreond});
         }
         
         if ($centreond->{stop} == 1) {

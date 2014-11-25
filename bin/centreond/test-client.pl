@@ -49,7 +49,8 @@ push @$poll, $poll_client;
 
 $client->send_message(action => 'ACLADDHOST', data => { organization_id => 10 }, 
                       json_encode => 1);
-$client->send_message(action => 'PUTLOG', data => '[120] [' . time() . '] ' . ' [plopplop] ' . centreon::centreond::common::json_encode(data => { 'nawak' => 'nawak2' }));
+$client->send_message(action => 'PUTLOG', data => { code => 120, etime => time(), token => 'plopplop', data => { 'nawak' => 'nawak2' } },
+                      json_encode => 1);
 $client->send_message(action => 'ACLADDHOST', data => { organization_id => 10 }, target => 10,
                       json_encode => 1);
 $client2->send_message(action => 'ACLADDHOST', data => { organization_id => 14 }, 
@@ -60,7 +61,11 @@ $client2->send_message(action => 'RELOADCRON', data => { },
 # We send a request to a poller
 $client2->send_message(action => 'COMMAND', data => { cmd => 'ls' }, target => 120, 
                        json_encode => 1);
-           
+
+# It will transform
+$client2->send_message(action => 'GETLOG', data => { cmd => 'ls' }, target => 120, 
+                       json_encode => 1);
+                       
 while (1) {
     zmq_poll($poll, 5000);
 }

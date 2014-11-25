@@ -151,10 +151,8 @@ sub transaction_mode {
 
     if ($status) {
         $self->{instance}->begin_work;
-        $self->{instance}->{RaiseError} = 1;
     } else {
         $self->{instance}->{AutoCommit} = 1;
-        $self->{instance}->{RaiseError} = 0;
     }
 }
 

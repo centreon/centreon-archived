@@ -268,12 +268,16 @@ sub is_handshake_done {
 sub putlog {
     my (%options) = @_;
 
-    if ($options{data} !~ /\s*\[(.+)]\s+\[(.+)\]\s+\[(.+)\]\s+(.*)/msi) {
+    my $data;
+    eval {
+        $data = JSON->new->utf8->decode($options{data});
+    };
+    if ($@) {
         return (1, { mesage => 'request not well formatted' });
     }
     
     my $status = add_history(dbh => $options{centreond}->{db_centreond}, 
-                             ctime => $2, token => $3, data => $4, code => $1);
+                             etime => $data->{etime}, token => $data->{token}, data => json_encode(data => $data->{data}, logger => $options{logger}), code => $data->{code});
     if ($status == -1) {
         return (1, { mesage => 'database issue' });
     }
@@ -283,17 +287,20 @@ sub putlog {
 sub getlog {
     my (%options) = @_;
 
-    if ($options{data} !~ /\s*\[(.*?)]\s+\[(.*?)\]\s+\[(.*?)\]\s+\[(.*?)\]/msi) {
+    my $data;
+    eval {
+        $data = JSON->new->utf8->decode($options{data});
+    };
+    if ($@) {
         return (1, { mesage => 'request not well formatted' });
     }
     
     my %filters = ();
-    ($filters{code}, $filters{ctime}, $filters{token}, $filters{id}) = ($1, $2, $3, $4);
     my ($filter, $filter_append) = ('', '');
     
-    foreach ((['id', '>'], ['token', '='], ['ctime', '>'], ['code', '='])) {
-        if (defined($filters{${$_}[0]}) && $filters{${$_}[0]} ne '') {
-            $filter .= $filter_append . ${$_}[0] . ' ' . ${$_}[1] . ' ' . $options{centreond}->{db_centreond}->quote($filters{${$_}[0]});
+    foreach ((['id', '>'], ['token', '='], ['ctime', '>='], ['etime', '>'], ['code', '='])) {
+        if (defined($data->{${$_}[0]}) && $data->{${$_}[0]} ne '') {
+            $filter .= $filter_append . ${$_}[0] . ' ' . ${$_}[1] . ' ' . $options{centreond}->{db_centreond}->quote($data->{${$_}[0]});
             $filter_append = ' AND ';
         }
     }
@@ -307,7 +314,7 @@ sub getlog {
         return (1, { mesage => 'database issue' });
     }
     
-    return (0, { action => 'getlog', result => $sth->fetchall_hashref('id') });
+    return (0, { action => 'getlog', result => $sth->fetchall_hashref('id'), id => $options{centreond}->{id} });
 }
 
 sub kill {
@@ -340,10 +347,16 @@ sub add_history {
     if (defined($options{data}) && defined($options{json_encode})) {
         return -1 if (!($options{data} = json_encode(data => $options{data}, logger => $options{logger})));
     }
+    if (!defined($options{ctime})) {
+        $options{ctime} = time();
+    }
+    if (!defined($options{etime})) {
+        $options{etime} = time();
+    }
     
     my @names = ();
     my @values = ();
-    foreach (('data', 'token', 'ctime', 'code')) {
+    foreach (('data', 'token', 'ctime', 'etime', 'code')) {
         if (defined($options{$_})) {
             push @names, $_;
             push @values, $options{dbh}->quote($options{$_});
