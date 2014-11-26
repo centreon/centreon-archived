@@ -15,6 +15,7 @@ CHANGELOG
 
 Bug fixes
 =========
+
 #5458: Display problem with host groups
 #5924: Generation of service configuration files does not work when "service_inherit_contacts_from_host" is not enabled
 #5926: Centreon-Broker-2.7.x compatibility
@@ -25,5 +26,6 @@ Bug fixes
 
 Features
 ========
+
 #5433: Argument column larger in service configuration
 #5944: Services inherit criticality from hosts
