@@ -1299,12 +1299,6 @@ function prepare_sudo_config() {
 	# Monitoring engine force-reload
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* force-reload
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT force-reload
-	# Monitoring engine test config
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY* -v *
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -v *
-	# Monitoring engine test for optim config
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY* -s *
-	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -s *
 	# Snmptrapd Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
 	# Centreontrapd restart
