@@ -129,7 +129,7 @@ class ExternalcommandController extends \Centreon\Internal\Controller
         $router = Di::getDefault()->get('router');
         try {
             if ($cmdId == ServicedetailRepository::DOWNTIME || $cmdId == HostdetailRepository::DOWNTIME) {
-                list($start, $end) = split(' - ', $params['period']);
+                list($start, $end) = explode(' - ', $params['period']);
                 $params['start_time'] = strtotime($start);
                 $params['end_time'] = strtotime($end);
             }

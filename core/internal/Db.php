@@ -154,7 +154,7 @@ class Db extends \PDO
             throw new Exception("Bad DSN format");
         }
         $values['db_type'] = $type;
-        $information = split(';', $uri);
+        $information = explode(';', $uri);
         foreach ($information as $info) {
             list($infoType, $infoValue) = explode('=', $info, 2);
             $values[$convertKeys[$infoType]] = $infoValue;

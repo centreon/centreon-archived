@@ -71,7 +71,7 @@ class CommandRepositoryTest extends DbTestCase
         );
         $content = file_get_contents($this->tmpDir . '/1/command.cfg');
         /* Remove line with the generate date */
-        $lines = split("\n", $content);
+        $lines = explode("\n", $content);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $content = join("\n", $lines);
         $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/command1.cfg');
@@ -85,7 +85,7 @@ class CommandRepositoryTest extends DbTestCase
         );
         $content = file_get_contents($this->tmpDir . '/1/command.cfg');
         /* Remove line with the generate date */
-        $lines = split("\n", $content);
+        $lines = explode("\n", $content);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $content = join("\n", $lines);
         $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/command2.cfg');

@@ -71,7 +71,7 @@ class HostRepositoryTest extends DbTestCase
         );
         $content = file_get_contents($this->tmpDir . '/1/hosts_host1-2.cfg');
         /* Remove line with the generate date */
-        $lines = split("\n", $content);
+        $lines = explode("\n", $content);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $content = join("\n", $lines);
         $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/host1.cfg');
@@ -79,7 +79,7 @@ class HostRepositoryTest extends DbTestCase
 
         $content = file_get_contents($this->tmpDir . '/1/hosts_host2-3.cfg');
         /* Remove line with the generate date */
-        $lines = split("\n", $content);
+        $lines = explode("\n", $content);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $content = join("\n", $lines);
         $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/host2.cfg');

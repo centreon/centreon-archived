@@ -71,7 +71,7 @@ class ConnectorRepositoryTest extends DbTestCase
         );
         $content = file_get_contents($this->tmpDir . '/1/connectors.cfg');
         /* Remove line with the generate date */
-        $lines = split("\n", $content);
+        $lines = explode("\n", $content);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $content = join("\n", $lines);
         $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/connector1.cfg');

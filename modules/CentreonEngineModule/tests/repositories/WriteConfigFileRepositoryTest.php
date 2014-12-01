@@ -106,7 +106,7 @@ class WriteConfigFileRepositoryTest extends \PHPUnit_Framework_TestCase
         $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/generate1.cfg');
         $contentFile = file_get_contents($filename);
         /* Remove line with the generate date */
-        $lines = split("\n", $contentFile);
+        $lines = explode("\n", $contentFile);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $contentFile = join("\n", $lines);
         $this->assertEquals($resultContent, $contentFile);
@@ -127,7 +127,7 @@ class WriteConfigFileRepositoryTest extends \PHPUnit_Framework_TestCase
         $resultContent = file_get_contents(dirname(__DIR__) . '/data/configfiles/generate2.cfg');
         $contentFile = file_get_contents($filename);
         /* Remove line with the generate date */
-        $lines = split("\n", $contentFile);
+        $lines = explode("\n", $contentFile);
         $lines = preg_grep('/^#\s+Last.*#$/', $lines, PREG_GREP_INVERT);
         $contentFile = join("\n", $lines);
         $this->assertEquals($resultContent, $contentFile);
