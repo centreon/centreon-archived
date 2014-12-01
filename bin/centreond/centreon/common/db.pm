@@ -176,8 +176,7 @@ sub kill {
 # Connection initializer
 sub connect() {
     my $self = shift;
-    my $logger = $self->{logger};
-    my $status = 0;
+    my ($status, $count) = (0, 0);
 
     while (1) {
         $self->{port} = 3306 if (!defined($self->{port}) && $self->{type} eq 'mysql');
@@ -187,7 +186,7 @@ sub connect() {
                     .":".$self->{db},
                 $self->{user},
                 $self->{password},
-                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
+                { RaiseError => 0, PrintError => 0, AutoCommit => 1 }
             );
         } else {
             $self->{instance} = DBI->connect(
@@ -197,7 +196,7 @@ sub connect() {
                     .":".$self->{port},
                 $self->{user},
                 $self->{password},
-                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
+                { RaiseError => 0, PrintError => 0, AutoCommit => 1 }
             );
         }
         if (defined($self->{instance})) {
@@ -205,12 +204,13 @@ sub connect() {
         }
 
         my ($package, $filename, $line) = caller;
-        $logger->writeLogError("MySQL error : cannot connect to database " . $self->{db} . ": " . $DBI::errstr . " (caller: $package:$filename:$line)");
-        if ($self->{force} == 0) {
+        $self->{logger}->writeLogError("MySQL error : cannot connect to database " . $self->{db} . ": " . $DBI::errstr . " (caller: $package:$filename:$line) (try: $count)");
+        if ($self->{force} == 0 || ($self->{force} == 2 && $count == 1)) {
             $status = -1;
             last;
         }
-        sleep(5);
+        sleep(1);
+        $count++;
     }
     return $status;
 }
@@ -255,8 +255,7 @@ EOE
 sub query {
     my $self = shift;
     my $query = shift;
-    my $logger = $self->{logger};
-    my $status = 0;
+    my ($status, $count) = (0, -1);
     my $statement_handle;
 
     while (1) {
@@ -269,17 +268,18 @@ sub query {
                 }
                 $self->{args} = [];
             }
-            if ($status == -1 && $self->{force} == 0) {
+            if ($status == -1 && $self->{force} != 1) {
                 $self->{args} = [];
                 last;
             }
         }
 
+        $count++;
         $statement_handle = $self->{instance}->prepare($query);
         if (!defined $statement_handle) {
             $self->error($self->{instance}->errstr, $query);
             $status = -1;
-            last if $self->{force} == 0;
+            last if ($self->{force} == 0 || ($self->{force} == 2 && $count == 1));
             next;
         }
 
@@ -287,7 +287,7 @@ sub query {
         if (!$rv) {
             $self->error($statement_handle->errstr, $query);
             $status = -1;
-            last if $self->{force} == 0;
+            last if ($self->{force} == 0 || ($self->{force} == 2 && $count == 1));
             next;
         }
         last;

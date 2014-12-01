@@ -67,7 +67,7 @@ sub init {
                                                            port => $centreond_config->{centreondcore}{centreond_db_port},
                                                            user => $centreond_config->{centreondcore}{centreond_db_user},
                                                            password => $centreond_config->{centreondcore}{centreond_db_password},
-                                                           force => 0,
+                                                           force => 2,
                                                            logger => $centreond->{logger});
     $centreond->{db_centreond}->set_inactive_destroy();
     if ($centreond->{db_centreond}->connect() == -1) {
