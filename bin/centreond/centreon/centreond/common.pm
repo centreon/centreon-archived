@@ -265,6 +265,14 @@ sub is_handshake_done {
 # internal functions
 #######################
 
+sub ping {
+    my (%options) = @_;
+
+    my $status = add_history(dbh => $options{centreond}->{db_centreond}, 
+                             token => $options{token}, logger => $options{logger}, code => 0);
+    return (0, { action => 'ping', mesage => 'ping ok' });
+}
+    
 sub putlog {
     my (%options) = @_;
 
@@ -403,7 +411,7 @@ sub connect_com {
     }
 
     zmq_setsockopt($socket, ZMQ_IDENTITY, $options{name});
-    zmq_setsockopt($socket, ZMQ_LINGER, 0); # we discard
+    zmq_setsockopt($socket, ZMQ_LINGER, defined($options{linger}) ? $options{linger} : 0); # 0 we discard
     zmq_connect($socket, $options{type} . '://' . $options{path});
     return $socket;
 }

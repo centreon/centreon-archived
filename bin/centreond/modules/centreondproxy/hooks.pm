@@ -11,7 +11,7 @@ my $config_core;
 my $config;
 my $module_id = 'centreondproxy';
 my $events = [
-    'PROXYREADY', 'SETLOGS', 'REGISTERNODE', # internal. Shouldn't be used by third party clients
+    'PROXYREADY', 'SETLOGS', 'REGISTERNODE', 'UNREGISTERNODE', # internal. Shouldn't be used by third party clients
     'ADDPOLLER', 
 ];
 
@@ -28,7 +28,7 @@ my $pools_pid = {};
 my $poller_pool = {};
 my $rr_current = 0;
 my $stop = 0;
-my $external_socket;
+my ($external_socket, $internal_socket);
 
 sub register {
     my (%options) = @_;
@@ -46,6 +46,7 @@ sub init {
     $synctimeout_option = defined($config->{synchistory_timeout}) ? $config->{synchistory_timeout} : 120;
     
     $external_socket = $options{external_socket};
+    $internal_socket = $options{internal_socket};
     $last_pollers = get_pollers(dbh => $options{dbh});
     for my $pool_id (1..$config->{pool}) {
         create_child(pool_id => $pool_id, logger => $options{logger});
@@ -68,10 +69,20 @@ sub routing {
         return undef;
     }
     
+    if ($options{action} eq 'UNREGISTERNODE') {
+        $options{logger}->writeLogInfo("centreond-proxy: poller '" . $data->{id} . "' is unregistered");
+        if (defined($register_pollers->{$data->{id}})) {
+            delete $register_pollers->{$data->{id}};
+            delete $synctime_pollers->{$data->{id}};
+        }
+        return undef;
+    }
+    
     if ($options{action} eq 'REGISTERNODE') {
         $options{logger}->writeLogInfo("centreond-proxy: poller '" . $data->{id} . "' is registered");
         $register_pollers->{$data->{id}} = 1;
-        if ($synctime_error == 0 && !defined($synctime_pollers->{$options{target}})) {
+        if ($synctime_error == 0 && !defined($synctime_pollers->{$options{target}}) &&
+            !defined($synctime_pollers->{$data->{id}})) {
             $synctime_pollers->{$data->{id}} = { ctime => 0, in_progress => 0, in_progress_time => -1, last_id => 0 }; 
         }
         return undef;
@@ -222,6 +233,7 @@ sub check {
     if ($stop == 0 && 
         ($synctime_error == 0 || get_sync_time(dbh => $options{dbh}) == 0) &&
         time() - $synctime_lasttime > $synctime_option) {
+        $synctime_lasttime = time();
         full_sync_history(dbh => $options{dbh});
     }
     
@@ -279,13 +291,13 @@ sub full_sync_history {
     
     foreach my $id (keys %{$last_pollers}) {
         if ($last_pollers->{$id}->{type} == 1) {
-            routing(action => 'GETLOG', target => $id, data => '{}', dbh => $options{dbh});
+            routing(socket => $internal_socket, action => 'GETLOG', target => $id, data => '{}', dbh => $options{dbh});
         }
     }
     
     foreach my $id (keys %{$register_pollers}) {
         routing(action => 'GETLOG', target => $id, data => '{}', dbh => $options{dbh});
-    }
+    }    
 }
 
 sub update_sync_time {

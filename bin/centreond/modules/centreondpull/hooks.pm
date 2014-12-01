@@ -10,6 +10,7 @@ my $config;
 my $module_id = 'centreondpull';
 my $events = [
 ];
+my $stop = 0;
 my $client;
 my $socket_to_internal;
 
@@ -28,21 +29,23 @@ sub init {
     $socket_to_internal = centreon::centreond::common::connect_com(zmq_type => 'ZMQ_DEALER', name => 'centreondpull',
                                                                    logger => $options{logger},
                                                                    type => $config_core->{internal_com_type},
-                                                                   path => $config_core->{internal_com_path});
+                                                                   path => $config_core->{internal_com_path},
+                                                                   linger => $config->{linger}
+                                                                   );
     $client = centreon::centreond::clientzmq->new(identity => $config_core->{id}, 
                                                   cipher => $config->{cipher}, 
                                                   vector => $config->{vector},
                                                   pubkey => $config->{pubkey},
                                                   target_type => $config->{target_type},
                                                   target_path => $config->{target_path},
-                                                  logger => $options{logger}
+                                                  logger => $options{logger},
+                                                  ping => $config->{ping},
+                                                  ping_timeout => $config->{ping_timeout}
                                                   );
     $client->init(callback => \&read_message);
     
     $client->send_message(action => 'REGISTERNODE', data => { id => $config_core->{id} }, 
                           json_encode => 1);
-    my $poll_client = $client->get_poll();
-    push @{$options{poll}}, $poll_client;
     centreon::centreond::common::add_zmq_pollin(socket => $socket_to_internal,
                                                 callback => \&from_router,
                                                 poll => $options{poll});
@@ -56,6 +59,10 @@ sub routing {
 sub gently {
     my (%options) = @_;
 
+    $stop = 1;
+    $client->send_message(action => 'UNREGISTERNODE', data => { id => $config_core->{id} }, 
+                          json_encode => 1);
+    $client->close();
     return 0;
 }
 
@@ -74,6 +81,11 @@ sub kill_internal {
 sub check {
     my (%options) = @_;
 
+    if ($stop == 0) {
+        # If distant server restart, it's a not problem. It save the key. 
+        # But i don't have the registernode anymore. The ping is the 'registernode' for pull mode.
+        $client->ping(poll => $options{poll}, action => 'REGISTERNODE', data => { id => $config_core->{id} }, json_encode => 1);
+    }
     return 0;
 }
 

@@ -55,6 +55,11 @@ sub new {
     $connector->{pubkey} = centreon::centreond::common::loadpubkey(pubkey => $options{pubkey});
     $connector->{target_type} = $options{target_type};
     $connector->{target_path} = $options{target_path};
+    $connector->{ping} = defined($options{ping}) ? $options{ping} : -1;
+    $connector->{ping_timeout} = defined($options{ping_timeout}) ? $options{ping_timeout} : 30;
+    $connector->{ping_progress} = 0; 
+    $connector->{ping_time} = time();
+    $connector->{ping_timeout_time} = time();
     
     $connectors->{$options{identity}} = $connector;
     bless $connector, $class;
@@ -69,14 +74,56 @@ sub init {
                                                                              logger => $self->{logger},
                                                                              type => $self->{target_type},
                                                                              path => $self->{target_path});
-    $callbacks->{$self->{identity}} = $options{callback};
+    $callbacks->{$self->{identity}} = $options{callback} if (defined($options{callback}));
+}
+
+sub close {
+    my ($self, %options) = @_;
+    
+    zmq_close($sockets->{$self->{identity}});
+}
+
+sub is_connected {
+    my ($self, %options) = @_;
+    
+    # Should be connected (not 100% sure)
+    if ($self->{handshake} == 2) {
+        return (0, $self->{ping_time});
+    }
+    return -1;
+}
+
+sub ping {
+    my ($self, %options) = @_;
+    my $status = 0;
+    
+    if ($self->{ping} > 0 && $self->{ping_progress} == 0 && 
+        time() - $self->{ping_time} > $self->{ping}) {
+        $self->{ping_progress} = 1;
+        $self->{ping_timeout_time} = time();
+        my $action = defined($options{action}) ? $options{action} : 'PING';
+        $self->send_message(action => $action, data => $options{data}, json_encode => $options{json_encode});
+        $status = 1;
+    }
+    if ($self->{ping_progress} == 1 && 
+        time() - $self->{ping_timeout_time} > $self->{ping_timeout}) {
+        $self->{logger}->writeLogError("no ping response") if (defined($self->{logger}));
+        $self->{ping_progress} = 0;
+        zmq_close($sockets->{$self->{identity}});
+        $self->init();
+        push @{$options{poll}}, $self->get_poll();
+        $status = 1;
+    }
+    
+    push @{$options{poll}}, $self->get_poll();
+    return $status;
 }
 
 sub get_poll {
     my ($self, %options) = @_;
     
     $polls->{$sockets->{$self->{identity}}} = {
-        socket  => $sockets->{$self->{identity}},
+            socket  => $sockets->{$self->{identity}},
             events  => ZMQ_POLLIN,
             callback => sub {
                 event(identity => $self->{identity});
@@ -87,7 +134,12 @@ sub get_poll {
 
 sub event {
     my (%options) = @_;
-    
+        
+    # We have a response. So it's ok :)
+    if ($connectors->{$options{identity}}->{ping_progress} == 1) {
+        $connectors->{$options{identity}}->{ping_progress} = 0;
+    }
+    $connectors->{$options{identity}}->{ping_time} = time();
     while (1) {
         my $message = centreon::centreond::common::zmq_dealer_read_message(socket => $sockets->{$options{identity}});
         
@@ -107,8 +159,8 @@ sub event {
         } else {
             my ($status, $data) = centreon::centreond::common::uncrypt_message(message => $message, 
                                                                                cipher => $connectors->{$options{identity}}->{cipher}, 
-                                                                               vector => $connectors->{$options{identity}}->{vector}, symkey => $connectors->{$options{identity}}->{symkey});
-            if ($status == -1 || $data !~ /^\[.*?\]/) {
+                                                                               vector => $connectors->{$options{identity}}->{vector}, symkey => $connectors->{$options{identity}}->{symkey});            
+            if ($status == -1 || $data !~ /^\[(.+?)\]\s+\[(.*?)\]\s+(?:\[(.*?)\]\s*(.*)|(.*))$/) {
                 $connectors->{$options{identity}}->{handshake} = 0;
                 return ;
             }
@@ -131,6 +183,7 @@ sub send_message {
             return (-1, 'crypt handshake issue'); 
         }
         $self->{handshake} = 1;
+
         zmq_sendmsg($sockets->{$self->{identity}}, $ciphertext);
         zmq_poll([$self->get_poll()], 10000);
     }
