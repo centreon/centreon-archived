@@ -43,6 +43,8 @@ Dans DATA, il y'a le code et des données:
 * si CODE = 0 : OK
 * si CODE = 1 : Erreur (dans ce cas la il faut voir le 'data'->{message}.
 
+Il y'a une exception: quand on demande un 'PING', on reçoit un 'PONG' (et non un 'ACK'). Mais c'est du protocole interne logiquement.
+
 ---------------------
 Les requêtes de base
 ---------------------

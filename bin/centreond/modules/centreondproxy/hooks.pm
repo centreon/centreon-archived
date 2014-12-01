@@ -11,7 +11,7 @@ my $config_core;
 my $config;
 my $module_id = 'centreondproxy';
 my $events = [
-    'PROXYREADY', 'SETLOGS', 'REGISTERNODE', 'UNREGISTERNODE', # internal. Shouldn't be used by third party clients
+    'PROXYREADY', 'SETLOGS', 'PONG', 'REGISTERNODE', 'UNREGISTERNODE', # internal. Shouldn't be used by third party clients
     'ADDPOLLER', 
 ];
 

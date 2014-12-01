@@ -224,11 +224,12 @@ sub message_run {
     }
     
     if ($action =~ /^(PUTLOG|GETLOG|KILL|PING)$/) {
-        my ($code, $response) = $self->{internal_register}->{lc($action)}->(centreond => $self,
+        my ($code, $response, $response_type) = $self->{internal_register}->{lc($action)}->(centreond => $self,
+                                                                            id => $self->{id},
                                                                             data => $data,
                                                                             token => $token,
                                                                             logger => $self->{logger});
-        return ($token, $code, $response);
+        return ($token, $code, $response, $response_type);
     } else {
         foreach (@{$self->{modules_events}->{$action}}) {
             $self->{modules_register}->{$_}->{routing}->(socket => $self->{internal_socket}, dbh => $self->{db_centreond}, logger => $self->{logger}, 
@@ -242,9 +243,9 @@ sub message_run {
 sub router_internal_event {
     while (1) {
         my ($identity, $message) = centreon::centreond::common::zmq_read_message(socket => $centreond->{internal_socket});
-        my ($token, $code, $response) = $centreond->message_run(message => $message);
+        my ($token, $code, $response, $response_type) = $centreond->message_run(message => $message);
         centreon::centreond::common::zmq_core_response(socket => $centreond->{internal_socket},
-                                                       identity => $identity,
+                                                       identity => $identity, response_type => $response_type,
                                                        data => $response, code => $code,
                                                        token => $token);
         last unless (centreon::centreond::common::zmq_still_read(socket => $centreond->{internal_socket}));
@@ -308,9 +309,9 @@ sub router_external_event {
     while (1) {
         my ($identity, $key, $message) = $centreond->handshake();
         if (defined($message)) {
-            my ($token, $code, $response) = $centreond->message_run(message => $message);
+            my ($token, $code, $response, $response_type) = $centreond->message_run(message => $message);
             centreon::centreond::common::zmq_core_response(socket => $centreond->{external_socket},
-                                                           identity => $identity,
+                                                           identity => $identity, response_type => $response_type,
                                                            cipher => $centreond_config->{centreondcore}{cipher},
                                                            vector => $centreond_config->{centreondcore}{vector},
                                                            symkey => $key,
