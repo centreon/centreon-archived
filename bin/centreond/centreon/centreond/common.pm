@@ -270,8 +270,8 @@ sub is_handshake_done {
 sub ping {
     my (%options) = @_;
 
-    my $status = add_history(dbh => $options{centreond}->{db_centreond}, 
-                             token => $options{token}, logger => $options{logger}, code => 0);
+    #my $status = add_history(dbh => $options{centreond}->{db_centreond}, 
+    #                         token => $options{token}, logger => $options{logger}, code => 0);
     return (0, { action => 'ping', mesage => 'ping ok', id => $options{id} }, 'PONG');
 }
     

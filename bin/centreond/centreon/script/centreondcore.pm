@@ -57,7 +57,9 @@ sub init {
     }
     $centreond_config = centreon::centreond::common::read_config(config_file => $self->{opt_extra},
                                                                  logger => $self->{logger});
-    centreon::centreond::common::loadprivkey(logger => $self->{logger}, privkey => $centreond_config->{centreondcore}{privkey},);
+    if (defined($centreond_config->{centreondcore}{external_com_type}) && $centreond_config->{centreondcore}{external_com_type} ne '') {
+        centreon::centreond::common::loadprivkey(logger => $self->{logger}, privkey => $centreond_config->{centreondcore}{privkey});
+    }
     
     # Database connections:
     #    We add in centreond database
@@ -232,7 +234,8 @@ sub message_run {
         return ($token, $code, $response, $response_type);
     } else {
         foreach (@{$self->{modules_events}->{$action}}) {
-            $self->{modules_register}->{$_}->{routing}->(socket => $self->{internal_socket}, dbh => $self->{db_centreond}, logger => $self->{logger}, 
+            $self->{modules_register}->{$_}->{routing}->(socket => $self->{internal_socket}, 
+                                                         dbh => $self->{db_centreond}, logger => $self->{logger},
                                                          action => $1, token => $token, target => $target, data => $data,
                                                          hostname => $self->{hostname});
         }
@@ -428,7 +431,7 @@ sub run {
     # init all modules
     foreach my $name (keys %{$centreond->{modules_register}}) {
         $centreond->{logger}->writeLogInfo("Call init function from module '$name'");
-        $centreond->{modules_register}->{$name}->{init}->(logger => $centreond->{logger},
+        $centreond->{modules_register}->{$name}->{init}->(logger => $centreond->{logger}, id => $centreond->{id},
                                                           poll => $centreond->{poll},
                                                           external_socket => $centreond->{external_socket},
                                                           internal_socket => $centreond->{internal_socket},

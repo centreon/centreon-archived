@@ -91,8 +91,7 @@ sub event {
     while (1) {
         my $message = centreon::centreond::common::zmq_dealer_read_message(socket => $socket);
         
-        print "===== ACTION class = $message ==== yeah!!!!\n";
-        
+        $connector->{logger}->writeLogDebug("centreondaction: class: $message");        
         last unless (centreon::centreond::common::zmq_still_read(socket => $socket));
     }
 }
