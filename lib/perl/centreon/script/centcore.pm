@@ -819,7 +819,7 @@ sub testConfig($) {
     my $data = $self->getServerConfig($id);
     my $port = checkSSHPort($data->{ssh_port});
     my $distantconnexion = $data->{ns_ip_address};
-    $cmd = "$self->{ssh} -p ".$port." $distantconnexion $self->{sudo} ".$data->{nagios_bin}." -v $cfg_dir/nagios.cfg";
+    $cmd = "$self->{ssh} -p ".$port." $distantconnexion ".$data->{nagios_bin}." -v $cfg_dir/nagios.cfg";
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                           logger => $self->{logger},
                                                           timeout => 60
