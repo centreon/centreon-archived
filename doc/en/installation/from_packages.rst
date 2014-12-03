@@ -14,7 +14,7 @@ Prerequisites
 
 To install Centreon software from the CES repository, you should first install the file linked to the repository.
 
-CES 3.0 (CentOS 6.x)
+CES 3.1 (CentOS 6.6)
 --------------------
 
 Perform the following command from a user with sufficient rights:
