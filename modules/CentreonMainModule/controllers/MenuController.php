@@ -31,23 +31,33 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace Centreon\Controllers;
 
-class MainController extends \Centreon\Internal\Controller
+namespace CentreonMain\Controllers;
+
+class MenuController extends \Centreon\Internal\Controller
 {
     /**
-     * Action for home page
+     * Get menu
      *
-     * @method GET
-     * @route /
+     * @method get
+     * @route /menu/getmenu/
      */
-    public function indexAction()
+    public function getmenuAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-        $backUrl = $router->getPathFor('/customview');
-        $router->response()->redirect($backUrl, 200);
+        $params = $this->getParams("get");
+        $menu = \Centreon\Internal\Di::getDefault()->get('menu');
+        $menu_id = null;
+        if (isset($params->menu_id)) {
+            $menu_id = $params->menu_id;
+        }
+        $menudata = $menu->getMenu($menu_id);
+        $result = array(
+            'success' => 1,
+            'menu' => isset($menudata['children']) ? $menudata['children'] : array()
+        );
+        echo json_encode($result);
     }
 }

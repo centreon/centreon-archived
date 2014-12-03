@@ -35,6 +35,12 @@
 
 namespace Centreon\Internal;
 
+use Desarrolla2\Cache\Cache as DesarrollaCache;
+use Desarrolla2\Cache\Adapter\Apc as ApcCache;
+use Desarrolla2\Cache\Adapter\MemCache;
+use Desarrolla2\Cache\Adapter\Memcached;
+use Desarrolla2\Cache\Adapter\NotCache;
+
 /**
  * Class for loading cache informations
  *
@@ -57,12 +63,21 @@ class Cache
         if ($config->get('cache', 'enabled')) {
             $cacheType = $config->get('cache', 'type');
         }
+        
+        
         switch ($cacheType) {
             case 'apc':
-                $driver = new \Desarrolla2\Cache\Adapter\Apc();
+                $driver = new ApcCache();
                 break;
             case 'memcache':
-                $driver = new \Desarrolla2\Cache\Adapter\MemCache();
+                $driver = new MemCache();
+                foreach ($config->get('cache', 'servers') as $server) {
+                    list($serverHost, $serverPort) = explode(':', $server);
+                    $driver->addServer($serverHost, $serverPort);
+                }
+                break;
+            case 'memcached':
+                $driver = new Memcached();
                 foreach ($config->get('cache', 'servers') as $server) {
                     list($serverHost, $serverPort) = explode(':', $server);
                     $driver->addServer($serverHost, $serverPort);
@@ -70,11 +85,13 @@ class Cache
                 break;
             case null:
             default:
-                $driver = new \Desarrolla2\Cache\Adapter\NotCache();
+                $driver = new NotCache();
                 break;
         }
+        
         $ttl = $config->get('cache', 'ttl', 3600);
         $driver->setOption('ttl', $ttl);
-        return new \Desarrolla2\Cache\Cache($driver);
+        
+        return new DesarrollaCache($driver);
     }
 }

@@ -190,12 +190,8 @@ class Bootstrap
         $this->di->set(
             'router',
             function () {
-                $modulesToParse = array();
-                foreach (glob(__DIR__."/../../modules/*Module") as $moduleTemplateDir) {
-                    $modulesToParse[] = basename($moduleTemplateDir);
-                }
                 $router = new \Centreon\Internal\Router();
-                $router->parseRoutes($modulesToParse);
+                $router->parseRoutes();
                 return $router;
             }
         );
