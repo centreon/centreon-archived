@@ -32,7 +32,9 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Controllers;
+namespace CentreonMain\Controllers;
+
+use Centreon\Internal\Di;
 
 /**
  * Tools controller
@@ -44,6 +46,18 @@ namespace Centreon\Controllers;
 class ToolsController extends \Centreon\Internal\Controller
 {
     /**
+     *
+     * @var type 
+     */
+    private $centreonPath = "";
+    
+    public function __construct($request)
+    {
+        $di = Di::getDefault();
+        $this->centreonPath = $di->get('config')->get('global', 'centreon_path');
+        parent::__construct($request);
+    }
+    /**
      * Action for compile LESS
      *
      * @method GET
@@ -51,27 +65,43 @@ class ToolsController extends \Centreon\Internal\Controller
      */
     public function lessAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $route = $router->request()->pathname();
         $response = $router->response();
+        
         /* Get path to  */
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $route = preg_replace('!' . $baseUrl . '!', '/', $route, 1);
         $route = str_replace('css', 'less', $route);
+        
         /* Remove min */
         $route = str_replace('.min.', '.', $route);
-        $centreonPath = realpath(__DIR__ . '/../../www/');
+        $centreonPath = realpath($this->centreonPath . '/www/');
         if (false === file_exists($centreonPath . $route)) {
             $this->notFoundAction();
             return;
         }
         
+        // Set Options
+        $tempDir = $di->get('config')->get('global', 'centreon_generate_tmp_dir');
+        $options = array(
+            'cache_dir' => $tempDir,
+            'use_cache' => false,
+            'compress' => false
+        );
+        if ("dev" !== $di->get('config')->get('global', 'env')) {
+            $options['use_cache'] = true;
+            $options['compress'] = true;
+        }
+        
         /* Response compiled CSS */
         $response->header('Content-Type', 'text/css');
-        $less = new \Less_Parser();
-        $less->parseFile($centreonPath . $route);
-        $response->body($less->getCss());
+        $variables = array('login-background-image' => 'url("' . $baseUrl . '/static/centreon/img/login.jpg")');
+        $less_file = array($centreonPath . $route => $route);
+        $css_file_name = \Less_Cache::Get($less_file, $options, $variables);
+        $compiled = file_get_contents($tempDir . $css_file_name );
+        $response->body($compiled);
     }
 
     /**
@@ -82,7 +112,7 @@ class ToolsController extends \Centreon\Internal\Controller
      */
     public function imageAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         $params = $router->request()->paramsNamed();
@@ -101,8 +131,7 @@ class ToolsController extends \Centreon\Internal\Controller
         }
 
         /* Write file in filesystem for serve file by http server */
-        $centreonPath = realpath(__DIR__ . '/../../www/');
-        $filefs = $centreonPath . '/uploads/images/' . $filename;
+        $filefs = $this->centreonPath . '/www/uploads/images/' . $filename;
         if (false === file_exists($filename)) {
             file_put_contents($filefs, $row['binary_content']);
         }
@@ -119,7 +148,7 @@ class ToolsController extends \Centreon\Internal\Controller
      */
     public function notFoundAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $response = $di->get('router')->response();
         $response->code(404);
         $tpl = $di->get('template');
@@ -134,7 +163,7 @@ class ToolsController extends \Centreon\Internal\Controller
      */
     public function fileUploadAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         
@@ -164,7 +193,7 @@ class ToolsController extends \Centreon\Internal\Controller
         $row = $stmt->fetch();
         
         if (false === $row) {
-            $di = \Centreon\Internal\Di::getDefault();
+            $di = Di::getDefault();
             $config = $di->get('config');
             $baseUrl = rtrim($config->get('global', 'base_url'), '/').'/uploads/'.$fileType.'/';
             $fileDestination = realpath(__DIR__.'/../../www/uploads/'.$fileType.'/').'/'.$uploadedFile['name'];

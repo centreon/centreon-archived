@@ -36,8 +36,8 @@
 
 namespace Centreon\Internal;
 
-use \Centreon\Internal\Module\Informations;
-use \CentreonSecurity\Controllers\LoginController;
+use Centreon\Internal\Module\Informations;
+use CentreonSecurity\Controllers\LoginController;
 
 class Router extends \Klein\Klein
 {
@@ -71,87 +71,21 @@ class Router extends \Klein\Klein
 
     /**
      * 
-     * @param type $modules
      */
-    public function parseRoutes($modules)
+    public function parseRoutes()
     {
-        $controllersList = array();
+        $cacheHandler = Di::getDefault()->get('cache');
+        $routesFullList = $cacheHandler->get('routes');
         
-        // First get the Core one
-        $coreControllersFiles = glob(__DIR__."/../controllers/*Controller.php");
-        foreach ($coreControllersFiles as $coreController) {
-            $controllersList[] = '\\Centreon\\Controllers\\'.basename($coreController, '.php');
+        if (is_null($routesFullList) || !$routesFullList) {
+            $routesFullList = $this->getRoutesList();
+            $cacheHandler->set('routes', $routesFullList);
         }
         
-        $coreApiFiles = glob(__DIR__."/../api/rest/*Api.php");
-        foreach ($coreApiFiles as $coreApi) {
-            $controllersList[] = '\\Centreon\\Api\\Rest\\'.basename($coreApi, '.php');
+        foreach ($routesFullList as $controllerName => $routes) {
+            $this->parseRouteData($controllerName, $routes);
         }
         
-        // Now lets see the modules
-        foreach ($modules as $module) {
-            $moduleName = str_replace('Module', '', $module);
-            preg_match_all('/[A-Z]?[a-z]+/', $moduleName, $myMatches);
-            $moduleShortName = strtolower(implode('-', $myMatches[0]));
-            if (Informations::isModuleReachable($moduleShortName)) {
-                $myModuleControllersFiles = glob(__DIR__."/../../modules/$module/controllers/*Controller.php");
-                foreach ($myModuleControllersFiles as $moduleController) {
-                    $controllersList[] = '\\'.$moduleName.'\\Controllers\\'.basename($moduleController, '.php');
-                }
-                $myModuleApiFiles = glob(__DIR__."/../../modules/$module/api/rest/*Api.php");
-                foreach ($myModuleApiFiles as $moduleApi) {
-                    $controllersList[] = '\\'.$moduleName.'\\Api\\Rest\\'.basename($moduleApi, '.php');
-                }
-            }
-        }
-        
-        // getting route
-        $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
-        foreach ($controllersList as $controllerName) {
-            $routesData = $controllerName::getRoutes();
-            foreach ($routesData as $action => $data) {
-                if (!isset($data['acl'])) {
-                    $data['acl'] = "";
-                }
-                $this->routesData[] = $data;
-                if (substr($data['route'], 0, 1) === '@' || $data['route'] === '405') {
-                    $routeName = $data['route'];
-                } elseif ($data['route'] === '404') {
-                    $this->notFoundRoute = array(
-                        'controllerName' => $controllerName,
-                        'action' => $action,
-                        'method' => $data['method_type']
-                    );
-                } else {
-                    $routeName = $baseUrl.$data['route'];
-                }
-                if (isset($_SESSION['acl']) &&
-                    false === $_SESSION['acl']->routeAllowed($data['route'])) {
-                    $this->respond(
-                        $routeName,
-                        function ($request, $response) {
-                            $response->code(403);
-                        }
-                    );
-                } else {
-                    $this->respond(
-                        $data['method_type'],
-                        $routeName,
-                        function ($request, $response) use ($controllerName, $action, $routeName) {
-                            if (!isset($_SESSION['user']) && !strstr($routeName, ".css") &&
-                                !strstr($controllerName, "LoginController")) {
-                                $obj = new LoginController($request);
-                                $obj->loginAction();
-                            } else {
-                                $obj = new $controllerName($request);
-                                $obj->$action();
-                            }
-                        }
-                    );
-                }
-            }
-            
-        }
         $this->respond(
             '404',
             function ($request, $response) {
@@ -159,6 +93,107 @@ class Router extends \Klein\Klein
                 $response->body($tmpl->fetch('404.tpl'));
             }
         );
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    private function getRoutesList()
+    {
+        // getting controllers list using current activate module list
+        $modulesList = Informations::getModuleList(true);
+        foreach ($modulesList as $currentModule) {
+            $moduleName = Informations::getModuleCommonName($currentModule);
+            $modules[$moduleName] = Informations::getModulePath($currentModule);
+        }
+        $controllersList = $this->getControllersList($modules);
+
+        // getting route
+        $routesFullList = array();
+        foreach ($controllersList as $controllerName) {
+            $routes = $controllerName::getRoutes();
+            if (count($routes) > 0) {
+                $routesFullList[$controllerName] = $routes;
+            }
+        }
+        
+        return $routesFullList;
+    }
+    
+    /**
+     * 
+     * @param type $modules
+     * @return string
+     */
+    private function getControllersList($modules)
+    {
+        $controllersList = array();
+        
+        // Now lets see the modules
+        foreach ($modules as $moduleName => $module) {
+            $myModuleControllersFiles = glob("$module/controllers/*Controller.php");
+            $myModuleApiFiles = glob("$module/api/rest/*Api.php");
+            foreach ($myModuleControllersFiles as $moduleController) {
+                $controllersList[] = '\\'.$moduleName.'\\Controllers\\'.basename($moduleController, '.php');
+            }
+            foreach ($myModuleApiFiles as $moduleApi) {
+                $controllersList[] = '\\'.$moduleName.'\\Api\\Rest\\'.basename($moduleApi, '.php');
+            }
+        }
+        
+        return $controllersList;
+    }
+    
+    /**
+     * 
+     * @param string $controllerName
+     * @param array $routesData
+     */
+    private function parseRouteData($controllerName, $routesData)
+    {
+        $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
+        foreach ($routesData as $action => $data) {
+            if (!isset($data['acl'])) {
+                $data['acl'] = "";
+            }
+            $this->routesData[] = $data;
+            if (substr($data['route'], 0, 1) === '@' || $data['route'] === '405') {
+                $routeName = $data['route'];
+            } elseif ($data['route'] === '404') {
+                $this->notFoundRoute = array(
+                    'controllerName' => $controllerName,
+                    'action' => $action,
+                    'method' => $data['method_type']
+                );
+            } else {
+                $routeName = $baseUrl.$data['route'];
+            }
+            if (isset($_SESSION['acl']) &&
+                false === $_SESSION['acl']->routeAllowed($data['route'])) {
+                $this->respond(
+                    $routeName,
+                    function ($request, $response) {
+                        $response->code(403);
+                    }
+                );
+            } else {
+                $this->respond(
+                    $data['method_type'],
+                    $routeName,
+                    function ($request, $response) use ($controllerName, $action, $routeName) {
+                        if (!isset($_SESSION['user']) && !strstr($routeName, ".css") &&
+                            !strstr($controllerName, "LoginController")) {
+                            $obj = new LoginController($request);
+                            $obj->loginAction();
+                        } else {
+                            $obj = new $controllerName($request);
+                            $obj->$action();
+                        }
+                    }
+                );
+            }
+        }
     }
 
     /**

@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Controllers;
+namespace CentreonMain\Controllers;
 
 /**
  * Validators controller

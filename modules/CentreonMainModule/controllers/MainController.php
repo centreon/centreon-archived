@@ -50,6 +50,20 @@ class MainController extends \Centreon\Internal\Controller
      * Action for home page
      *
      * @method GET
+     * @route /
+     */
+    public function indexAction()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        $backUrl = $router->getPathFor('/customview');
+        $router->response()->redirect($backUrl, 200);
+    }
+    
+    /**
+     * Action for home page
+     *
+     * @method GET
      * @route /home
      */
     public function homeAction()
