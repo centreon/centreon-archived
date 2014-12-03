@@ -135,13 +135,15 @@ sub zmq_core_key_response {
 sub zmq_core_response {
     my (%options) = @_;
     my $msg;
+    my $response_type = defined($options{response_type}) ? 'PONG' : 'ACK';
     
     if (defined($options{identity})) {
         zmq_sendmsg($options{socket}, pack('H*', $options{identity}), ZMQ_NOBLOCK | ZMQ_SNDMORE);
     }
 
     my $data = json_encode(data => { code => $options{code}, data => $options{data} });
-    $msg = '[ACK] [' . (defined($options{token}) ? $options{token} : '') . '] ' . $data;
+    # We add 'target' for 'PONG'. Like that 'centreond-proxy can get it
+    $msg = '[' . $response_type . '] [' . (defined($options{token}) ? $options{token} : '') . '] ' . ($response_type eq 'PONG' ? '[] ' : '') . $data;
     
     if (defined($options{cipher})) {
         my $cipher = Crypt::CBC->new(-key    => $options{symkey},
@@ -265,6 +267,14 @@ sub is_handshake_done {
 # internal functions
 #######################
 
+sub ping {
+    my (%options) = @_;
+
+    my $status = add_history(dbh => $options{centreond}->{db_centreond}, 
+                             token => $options{token}, logger => $options{logger}, code => 0);
+    return (0, { action => 'ping', mesage => 'ping ok', id => $options{id} }, 'PONG');
+}
+    
 sub putlog {
     my (%options) = @_;
 
@@ -403,7 +413,7 @@ sub connect_com {
     }
 
     zmq_setsockopt($socket, ZMQ_IDENTITY, $options{name});
-    zmq_setsockopt($socket, ZMQ_LINGER, 0); # we discard
+    zmq_setsockopt($socket, ZMQ_LINGER, defined($options{linger}) ? $options{linger} : 0); # 0 we discard
     zmq_connect($socket, $options{type} . '://' . $options{path});
     return $socket;
 }

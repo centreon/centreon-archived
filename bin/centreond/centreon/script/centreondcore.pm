@@ -170,14 +170,15 @@ sub load_modules {
                                                                              config_core => $centreond_config->{centreondcore});
         $self->{modules_id}->{$id} = $name;
         foreach my $event (@{$events}) {
-            $self->{modules_events}->{$event} = $name;
+            $self->{modules_events}->{$event} = [] if (!defined($self->{modules_events}->{$event}));
+            push @{$self->{modules_events}->{$event}}, $name;
         }
                 
         $self->{logger}->writeLogInfo("Module '$section' is loaded");
     }    
     
     # Load internal functions
-    foreach my $method_name (('putlog', 'getlog', 'kill')) {
+    foreach my $method_name (('putlog', 'getlog', 'kill', 'ping')) {
         unless ($self->{internal_register}->{$method_name} = centreon::centreond::common->can($method_name)) {
             $self->{logger}->writeLogError("No function '$method_name'");
             exit(1);
@@ -192,7 +193,7 @@ sub message_run {
         return (undef, 1, { mesage => 'request not well formatted' });
     }
     my ($action, $token, $target, $data) = ($1, $2, $3, $4);
-    if ($action !~ /^(PUTLOG|GETLOG|KILL)$/ && !defined($self->{modules_events}->{$action})) {
+    if ($action !~ /^(PUTLOG|GETLOG|KILL|PING)$/ && !defined($self->{modules_events}->{$action})) {
         centreon::centreond::common::add_history(dbh => $self->{db_centreond},
                                                  code => 1, token => $token,
                                                  data => { msg => "action '$action' is not known" },
@@ -222,15 +223,19 @@ sub message_run {
         }
     }
     
-    if ($action =~ /^(PUTLOG|GETLOG|KILL)$/) {
-        my ($code, $response) = $self->{internal_register}->{lc($action)}->(centreond => $self,
+    if ($action =~ /^(PUTLOG|GETLOG|KILL|PING)$/) {
+        my ($code, $response, $response_type) = $self->{internal_register}->{lc($action)}->(centreond => $self,
+                                                                            id => $self->{id},
                                                                             data => $data,
+                                                                            token => $token,
                                                                             logger => $self->{logger});
-        return ($token, $code, $response);
+        return ($token, $code, $response, $response_type);
     } else {
-        $self->{modules_register}->{$self->{modules_events}->{$action}}->{routing}->(socket => $self->{internal_socket}, dbh => $self->{db_centreond}, logger => $self->{logger}, 
-                                                                                     action => $1, token => $token, target => $target, data => $data,
-                                                                                     hostname => $self->{hostname});
+        foreach (@{$self->{modules_events}->{$action}}) {
+            $self->{modules_register}->{$_}->{routing}->(socket => $self->{internal_socket}, dbh => $self->{db_centreond}, logger => $self->{logger}, 
+                                                         action => $1, token => $token, target => $target, data => $data,
+                                                         hostname => $self->{hostname});
+        }
     }
     return ($token, 0);
 }
@@ -238,9 +243,9 @@ sub message_run {
 sub router_internal_event {
     while (1) {
         my ($identity, $message) = centreon::centreond::common::zmq_read_message(socket => $centreond->{internal_socket});
-        my ($token, $code, $response) = $centreond->message_run(message => $message);
+        my ($token, $code, $response, $response_type) = $centreond->message_run(message => $message);
         centreon::centreond::common::zmq_core_response(socket => $centreond->{internal_socket},
-                                                       identity => $identity,
+                                                       identity => $identity, response_type => $response_type,
                                                        data => $response, code => $code,
                                                        token => $token);
         last unless (centreon::centreond::common::zmq_still_read(socket => $centreond->{internal_socket}));
@@ -304,9 +309,9 @@ sub router_external_event {
     while (1) {
         my ($identity, $key, $message) = $centreond->handshake();
         if (defined($message)) {
-            my ($token, $code, $response) = $centreond->message_run(message => $message);
+            my ($token, $code, $response, $response_type) = $centreond->message_run(message => $message);
             centreon::centreond::common::zmq_core_response(socket => $centreond->{external_socket},
-                                                           identity => $identity,
+                                                           identity => $identity, response_type => $response_type,
                                                            cipher => $centreond_config->{centreondcore}{cipher},
                                                            vector => $centreond_config->{centreondcore}{vector},
                                                            symkey => $key,
@@ -369,7 +374,9 @@ sub quit {
     
     $self->{logger}->writeLogInfo("Quit main process");
     zmq_close($self->{internal_socket});
-    zmq_close($self->{external_socket});
+    if (defined($centreond_config->{centreondcore}{external_com_type}) && $centreond_config->{centreondcore}{external_com_type} ne '') {
+        zmq_close($self->{external_socket});
+    }
     exit(0);
 }
 
@@ -432,12 +439,14 @@ sub run {
 
     while (1) {
         my $count = 0;
+        my $poll = [@{$centreond->{poll}}];
         
         foreach my $name (keys %{$centreond->{modules_register}}) {
             $count += $centreond->{modules_register}->{$name}->{check}->(logger => $centreond->{logger},
                                                                          dead_childs => $centreond->{return_child},
                                                                          internal_socket => $centreond->{internal_socket},
-                                                                         dbh => $centreond->{db_centreond});
+                                                                         dbh => $centreond->{db_centreond},
+                                                                         poll => $poll);
         }
         
         if ($centreond->{stop} == 1) {
@@ -455,7 +464,7 @@ sub run {
             }
         }
     
-        zmq_poll($centreond->{poll}, 5000);
+        zmq_poll($poll, 5000);
         
         $centreond->clean_sessions();
     }

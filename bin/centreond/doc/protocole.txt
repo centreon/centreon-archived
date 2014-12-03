@@ -43,12 +43,15 @@ Dans DATA, il y'a le code et des données:
 * si CODE = 0 : OK
 * si CODE = 1 : Erreur (dans ce cas la il faut voir le 'data'->{message}.
 
+Il y'a une exception: quand on demande un 'PING', on reçoit un 'PONG' (et non un 'ACK'). Mais c'est du protocole interne logiquement.
+
 ---------------------
 Les requêtes de base
 ---------------------
 
+---
 La gestion des jetons
------------------------
+---
 
 Les jetons et les données pour les jetons sont stockées dans une base de données sqlite avec les attributs suivants:
 - jeton ;
@@ -70,8 +73,9 @@ Un client peut stocker une valeur:
 
 DATA contient: { CODE => , etime => , token => , data => {} }
 
+-----
 La suppression d'une instance module
----------------------------------------
+-----
 
 Il est possible de "killer" un module. Cela peut être utile si par exemple un noeud des ACLs se bloquent.
 
@@ -79,6 +83,17 @@ Il est possible de "killer" un module. Cela peut être utile si par exemple un n
 
 Le type correspond à l'identification du module.
 L'ID correspond à ce qu'il le définit (pour le module "centreond-acl", cela va être l'organisation ID).
+
+-----
+Le Ping
+-----
+
+Il est possible de "pinger" l'élément:
+
+[PING] [JETON] [TARGET]
+
+Le "ping" est stocké dans l'historique (si on "target") et une réponse direct est réalisée aussi.
+Au niveau du module 'centreond-pull', il utilise 'REGISTERNODE' comme 'ping'.
 
 ---------------------------------
 Les requêtes de "centreond-acl"
