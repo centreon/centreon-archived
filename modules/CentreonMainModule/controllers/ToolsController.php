@@ -196,7 +196,7 @@ class ToolsController extends \Centreon\Internal\Controller
             $di = Di::getDefault();
             $config = $di->get('config');
             $baseUrl = rtrim($config->get('global', 'base_url'), '/').'/uploads/'.$fileType.'/';
-            $fileDestination = realpath(__DIR__.'/../../www/uploads/'.$fileType.'/').'/'.$uploadedFile['name'];
+            $fileDestination = realpath($this->centreonPath . '/www/uploads/'.$fileType.'/').'/'.$uploadedFile['name'];
 
             if (move_uploaded_file($uploadedFile['tmp_name'], $fileDestination)) {
                 $fileParam = array(
@@ -236,7 +236,7 @@ class ToolsController extends \Centreon\Internal\Controller
                             break;
                     }
                     
-                    $thumbDestination = realpath(__DIR__.'/../../www/uploads/imagesthumb/').'/'.$uploadedFile['name'];
+                    $thumbDestination = realpath($this->centreonPath . '/www/uploads/imagesthumb/').'/'.$uploadedFile['name'];
                     $thumbBaseUrl = rtrim($config->get('global', 'base_url'), '/').'/uploads/imagesthumb/';
                     
                     // Calcul des nouvelles dimensions
