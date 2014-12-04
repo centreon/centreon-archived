@@ -21,7 +21,7 @@ my $synctime_lasttime;
 my $synctime_option;
 my $synctimeout_option;
 my $ping_option;
-my $ping_time = time();
+my $ping_time = 0;
 
 my $last_pong = {}; 
 my $register_pollers = {};
@@ -93,6 +93,7 @@ sub routing {
     if ($options{action} eq 'REGISTERNODE') {
         $options{logger}->writeLogInfo("centreond-proxy: poller '" . $data->{id} . "' is registered");
         $register_pollers->{$data->{id}} = 1;
+        $last_pong->{$data->{id}} = 0 if (!defined($last_pong->{$data->{id}}));
         if ($synctime_error == 0 && !defined($synctime_pollers->{$options{target}}) &&
             !defined($synctime_pollers->{$data->{id}})) {
             $synctime_pollers->{$data->{id}} = { ctime => 0, in_progress => 0, in_progress_time => -1, last_id => 0 }; 
@@ -375,6 +376,7 @@ sub get_pollers {
     foreach (([1, 1], [2, 1], [10, 1], [166, 2], [140, 1])) {
         $pollers->{${$_}[0]} = { type => ${$_}[1] };
         $synctime_pollers->{${$_}[0]} = { ctime => 0, in_progress => 0, in_progress_time => -1, last_id => 0 }; 
+        $last_pong->{${$_}[0]} = 0 if (!defined($last_pong->{${$_}[0]}));
     }
     
     get_sync_time(dbh => $options{dbh});
@@ -441,6 +443,13 @@ sub pull_request {
                                                   symkey => $key,
                                                   identity => $options{target},
                                                   message => $message);
+}
+
+sub get_constatus_result {
+    my (%options) = @_;
+
+    my $result = { last_ping => $ping_time, entries => $last_pong };
+    return $result;
 }
 
 1;

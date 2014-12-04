@@ -52,16 +52,19 @@ $client2->init(callback => \&read_response);
 #                       json_encode => 1);
 
 # We send a request to a poller
-#$client2->send_message(action => 'COMMAND', data => { cmd => 'ls' }, target => 120, 
-#                       json_encode => 1);
+$client2->send_message(action => 'ENGINECOMMAND', data => { command => '[1417705150] ENABLE_HOST_CHECK;host1', engine_pipe => '/var/lib/centreon-engine/rw/centengine.cmd' }, target => 120, 
+                       json_encode => 1);
+$client2->send_message(action => 'COMMAND', data => { command => 'ls /' }, target => 120, 
+                       json_encode => 1);
 #$client2->send_message(action => 'COMMAND', data => { cmd => 'ls' }, target => 140, 
 #                       json_encode => 1);
+$client2->send_message(action => 'CONSTATUS');
 
 # It will transform
 #$client2->send_message(action => 'GETLOG', data => { cmd => 'ls' }, target => 120, 
 #                       json_encode => 1);
-$client2->send_message(action => 'GETLOG', data => { cmd => 'ls' }, target => 140, 
-                       json_encode => 1);
+#$client2->send_message(action => 'GETLOG', data => { cmd => 'ls' }, target => 140, 
+#                       json_encode => 1);
                      
 while (1) {
     my $poll = [];

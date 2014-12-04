@@ -180,7 +180,7 @@ sub load_modules {
     }    
     
     # Load internal functions
-    foreach my $method_name (('putlog', 'getlog', 'kill', 'ping')) {
+    foreach my $method_name (('putlog', 'getlog', 'kill', 'ping', 'constatus')) {
         unless ($self->{internal_register}->{$method_name} = centreon::centreond::common->can($method_name)) {
             $self->{logger}->writeLogError("No function '$method_name'");
             exit(1);
@@ -195,7 +195,7 @@ sub message_run {
         return (undef, 1, { mesage => 'request not well formatted' });
     }
     my ($action, $token, $target, $data) = ($1, $2, $3, $4);
-    if ($action !~ /^(PUTLOG|GETLOG|KILL|PING)$/ && !defined($self->{modules_events}->{$action})) {
+    if ($action !~ /^(PUTLOG|GETLOG|KILL|PING|CONSTATUS)$/ && !defined($self->{modules_events}->{$action})) {
         centreon::centreond::common::add_history(dbh => $self->{db_centreond},
                                                  code => 1, token => $token,
                                                  data => { msg => "action '$action' is not known" },
@@ -225,8 +225,9 @@ sub message_run {
         }
     }
     
-    if ($action =~ /^(PUTLOG|GETLOG|KILL|PING)$/) {
+    if ($action =~ /^(PUTLOG|GETLOG|KILL|PING|CONSTATUS)$/) {
         my ($code, $response, $response_type) = $self->{internal_register}->{lc($action)}->(centreond => $self,
+                                                                            centreond_config => $centreond_config,
                                                                             id => $self->{id},
                                                                             data => $data,
                                                                             token => $token,

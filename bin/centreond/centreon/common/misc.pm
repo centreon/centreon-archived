@@ -205,9 +205,10 @@ sub get_line_pipe {
 sub backtick {
     my %arg = (
         command => undef,
-        logger => undef,
+        arguments => [],
         timeout => 30,
         wait_exit => 0,
+        redirect_stderr => 0,
         @_,
     );
     my @output;
@@ -222,14 +223,15 @@ sub backtick {
         $sig_do = 'DEFAULT';
     }
     local $SIG{CHLD} = $sig_do;
+    $SIG{TTOU} = 'IGNORE';
+    $| = 1;
+
     if (!defined($pid = open( KID, "-|" ))) {
         $arg{logger}->writeLogError("Cant fork: $!");
-        return -1;
+        return (-1000, "cant fork: $!");
     }
     
-    if ($pid) {
-        
-       
+    if ($pid) {  
         eval {
            local $SIG{ALRM} = sub { die "Timeout by signal ALARM\n"; };
            alarm( $arg{timeout} );
@@ -241,22 +243,17 @@ sub backtick {
            alarm(0);
         };
         if ($@) {
-            $arg{logger}->writeLogInfo($@);
-
-            $arg{logger}->writeLogInfo("Killing child process [$pid] ...");
             if ($pid != -1) {
                 kill -9, $pid;
             }
-            $arg{logger}->writeLogInfo("Killed");
 
             alarm(0);
-            close KID;
-            return (-1, join("\n", @output), -1);
+            return (-1000, "Command too long to execute (timeout)...", -1);
         } else {
             if ($arg{wait_exit} == 1) {
                 # We're waiting the exit code                
                 waitpid($pid, 0);
-                $return_code = $?;
+                $return_code = ($? >> 8);
             }
             close KID;
         }
@@ -264,10 +261,19 @@ sub backtick {
         # child
         # set the child process to be a group leader, so that
         # kill -9 will kill it and all its descendents
-        setpgrp( 0, 0 );
+        # We have ignore SIGTTOU to let write background processes
+        setpgrp(0, 0);
 
-        exec($arg{command});
-        exit(0);
+        if ($arg{redirect_stderr} == 1) {
+            open STDERR, ">&STDOUT";
+        }
+        if (scalar(@{$arg{arguments}}) <= 0) {
+            exec($arg{command});
+        } else {
+            exec($arg{command}, @{$arg{arguments}});
+        }
+        # Exec is in error. No such command maybe.
+        exit(127);
     }
 
     return (0, join("\n", @output), $return_code);
