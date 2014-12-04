@@ -84,6 +84,13 @@
     </div>
   </div>
 </div>
+<div class="hide">
+<form name="forDownload" action="{url_for url='/graph/download'}" method="post">
+<input type="hidden" name="svg">
+<input type="hidden" name="graph_type" value="svc">
+<input type="hidden" name="graph_id">
+</form>
+</div>
 {/block}
 
 {block name="javascript-bottom" append}
@@ -110,6 +117,13 @@ function createGraph(serviceId) {
             .addClass("close")
             .attr("type", "button")
             .html("&times;")
+        )
+        .append(
+          $("<button></button>")
+            .addClass("download-graph")
+            .addClass("close")
+            .attr("type", "button")
+            .html('<i class="fa fa-save"></i>')
         )
     )
     .append(
@@ -195,6 +209,50 @@ $(function() {
     id = $element.parents(".graph").find(".c3").attr("id").replace("graph-", "");
     charts[id - 1] = null;
     $element.parents(".graph").remove();
+  });
+
+  function makeStyleObject(rule) {
+    var output = {};
+    for (var i = 0; i < rule.length; i++) {
+      output[rule[i]] = rule[rule[i]];
+    }
+    return output;
+  }
+
+  /* Download graph */
+  $('#graphs').on('click', '.download-graph', function(e) {
+    var $element = $(e.currentTarget);
+    id = $element.parents(".graph").find(".c3").attr("id").replace("graph-", "");
+    form = $('form[name="forDownload"]');
+    form.find('input[name="graph_id"]').val(id);
+    //svg = $($element.parents('.graph').find('.c3').find('svg')[0]).clone();
+    svg = $element.parents('.graph').find('.c3').find('svg')[0];
+    /* Replace style */
+    /*chartStyle = null;
+    for (var i = 0; i < document.styleSheets.length; i++) {
+      if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('c3.css') !== -1) {
+        if (document.styleSheets[i].rules !== undefined) {
+          chartStyle = document.styleSheets[i].rules;
+        } else {
+          chartStyle = document.styleSheets[i].cssRules;
+        }
+      }
+    }
+    if (chartStyle !== null) {
+      for (var i = 0; i < chartStyle.length; i++) {
+        if (chartStyle[i].type === 1) {
+          var styles = makeStyleObject(chartStyle[i].style);
+          var elements = svg.find(chartStyle[i].selectorText);
+          if (elements.length > 0) {
+            elements.css(styles);
+          }
+        }
+      }
+    }*/
+
+    /**/
+    form.find('input[name="svg"]').val(svg.outerHTML);
+    form.submit();
   });
 
   /* Initialize service selection */

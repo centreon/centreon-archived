@@ -134,7 +134,7 @@ sub get_poll {
 
 sub event {
     my (%options) = @_;
-        
+    
     # We have a response. So it's ok :)
     if ($connectors->{$options{identity}}->{ping_progress} == 1) {
         $connectors->{$options{identity}}->{ping_progress} = 0;
@@ -160,12 +160,15 @@ sub event {
             my ($status, $data) = centreon::centreond::common::uncrypt_message(message => $message, 
                                                                                cipher => $connectors->{$options{identity}}->{cipher}, 
                                                                                vector => $connectors->{$options{identity}}->{vector}, symkey => $connectors->{$options{identity}}->{symkey});            
-            if ($status == -1 || $data !~ /^\[(.+?)\]\s+\[(.*?)\]\s+(?:\[(.*?)\]\s*(.*)|(.*))$/) {
+            
+            if ($status == -1 || $data !~ /^\[(.+?)\]\s+\[(.*?)\]\s+(?:\[(.*?)\]\s*(.*)|(.*))$/m) {
                 $connectors->{$options{identity}}->{handshake} = 0;
                 return ;
             }
             
-            $callbacks->{$options{identity}}->(data => $data);
+            if (defined($callbacks->{$options{identity}})) {
+                $callbacks->{$options{identity}}->(identity => $options{identity}, data => $data);
+            }
         }
         
         last unless (centreon::centreond::common::zmq_still_read(socket => $sockets->{$options{identity}}));

@@ -135,14 +135,14 @@ sub zmq_core_key_response {
 sub zmq_core_response {
     my (%options) = @_;
     my $msg;
-    my $response_type = defined($options{response_type}) ? 'PONG' : 'ACK';
+    my $response_type = defined($options{response_type}) ? $options{response_type} : 'ACK';
     
     if (defined($options{identity})) {
         zmq_sendmsg($options{socket}, pack('H*', $options{identity}), ZMQ_NOBLOCK | ZMQ_SNDMORE);
     }
 
     my $data = json_encode(data => { code => $options{code}, data => $options{data} });
-    # We add 'target' for 'PONG'. Like that 'centreond-proxy can get it
+    # We add 'target' for 'PONG', 'CONSTATUS'. Like that 'centreond-proxy can get it
     $msg = '[' . $response_type . '] [' . (defined($options{token}) ? $options{token} : '') . '] ' . ($response_type eq 'PONG' ? '[] ' : '') . $data;
     
     if (defined($options{cipher})) {
@@ -267,11 +267,25 @@ sub is_handshake_done {
 # internal functions
 #######################
 
+sub constatus {
+    my (%options) = @_;
+    
+    if (defined($options{centreond}->{modules_register}->{ $options{centreond}->{modules_id}->{$options{centreond_config}->{centreondcore}{proxy_name}} })) {
+        my $name = $options{centreond_config}->{$options{centreond_config}->{centreondcore}{proxy_name}}{module};
+        my $method;
+        if (defined($name) && ($method = $name->can('get_constatus_result'))) {
+            return (0, { action => 'constatus', mesage => 'ok', data => $method->() }, 'CONSTATUS');
+        }
+    }
+    
+    return (1, { action => 'constatus', mesage => 'cannot get value' }, 'CONSTATUS');
+}
+
 sub ping {
     my (%options) = @_;
 
-    my $status = add_history(dbh => $options{centreond}->{db_centreond}, 
-                             token => $options{token}, logger => $options{logger}, code => 0);
+    #my $status = add_history(dbh => $options{centreond}->{db_centreond}, 
+    #                         token => $options{token}, logger => $options{logger}, code => 0);
     return (0, { action => 'ping', mesage => 'ping ok', id => $options{id} }, 'PONG');
 }
     

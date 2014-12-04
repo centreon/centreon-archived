@@ -57,7 +57,9 @@ sub init {
     }
     $centreond_config = centreon::centreond::common::read_config(config_file => $self->{opt_extra},
                                                                  logger => $self->{logger});
-    centreon::centreond::common::loadprivkey(logger => $self->{logger}, privkey => $centreond_config->{centreondcore}{privkey},);
+    if (defined($centreond_config->{centreondcore}{external_com_type}) && $centreond_config->{centreondcore}{external_com_type} ne '') {
+        centreon::centreond::common::loadprivkey(logger => $self->{logger}, privkey => $centreond_config->{centreondcore}{privkey});
+    }
     
     # Database connections:
     #    We add in centreond database
@@ -178,7 +180,7 @@ sub load_modules {
     }    
     
     # Load internal functions
-    foreach my $method_name (('putlog', 'getlog', 'kill', 'ping')) {
+    foreach my $method_name (('putlog', 'getlog', 'kill', 'ping', 'constatus')) {
         unless ($self->{internal_register}->{$method_name} = centreon::centreond::common->can($method_name)) {
             $self->{logger}->writeLogError("No function '$method_name'");
             exit(1);
@@ -193,7 +195,7 @@ sub message_run {
         return (undef, 1, { mesage => 'request not well formatted' });
     }
     my ($action, $token, $target, $data) = ($1, $2, $3, $4);
-    if ($action !~ /^(PUTLOG|GETLOG|KILL|PING)$/ && !defined($self->{modules_events}->{$action})) {
+    if ($action !~ /^(PUTLOG|GETLOG|KILL|PING|CONSTATUS)$/ && !defined($self->{modules_events}->{$action})) {
         centreon::centreond::common::add_history(dbh => $self->{db_centreond},
                                                  code => 1, token => $token,
                                                  data => { msg => "action '$action' is not known" },
@@ -223,8 +225,9 @@ sub message_run {
         }
     }
     
-    if ($action =~ /^(PUTLOG|GETLOG|KILL|PING)$/) {
+    if ($action =~ /^(PUTLOG|GETLOG|KILL|PING|CONSTATUS)$/) {
         my ($code, $response, $response_type) = $self->{internal_register}->{lc($action)}->(centreond => $self,
+                                                                            centreond_config => $centreond_config,
                                                                             id => $self->{id},
                                                                             data => $data,
                                                                             token => $token,
@@ -232,7 +235,8 @@ sub message_run {
         return ($token, $code, $response, $response_type);
     } else {
         foreach (@{$self->{modules_events}->{$action}}) {
-            $self->{modules_register}->{$_}->{routing}->(socket => $self->{internal_socket}, dbh => $self->{db_centreond}, logger => $self->{logger}, 
+            $self->{modules_register}->{$_}->{routing}->(socket => $self->{internal_socket}, 
+                                                         dbh => $self->{db_centreond}, logger => $self->{logger},
                                                          action => $1, token => $token, target => $target, data => $data,
                                                          hostname => $self->{hostname});
         }
@@ -428,7 +432,7 @@ sub run {
     # init all modules
     foreach my $name (keys %{$centreond->{modules_register}}) {
         $centreond->{logger}->writeLogInfo("Call init function from module '$name'");
-        $centreond->{modules_register}->{$name}->{init}->(logger => $centreond->{logger},
+        $centreond->{modules_register}->{$name}->{init}->(logger => $centreond->{logger}, id => $centreond->{id},
                                                           poll => $centreond->{poll},
                                                           external_socket => $centreond->{external_socket},
                                                           internal_socket => $centreond->{internal_socket},

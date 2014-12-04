@@ -36,6 +36,7 @@
 
 namespace CentreonPerformance\Controllers;
 
+use Centreon\Internal\Di;
 use Centreon\Internal\Utils\HumanReadable;
 use CentreonPerformance\Repository\GraphView;
 
@@ -57,7 +58,7 @@ class GraphController extends \Centreon\Internal\Controller
      */
     public function graphAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tmpl = $di->get('template');
         $tmpl->addJs('d3.min.js');
         $tmpl->addJs('c3.min.js');
@@ -80,7 +81,7 @@ class GraphController extends \Centreon\Internal\Controller
      */
     public function graphDataAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         /* Get post information */
         $end = $router->request()->param('end_time', time());
         $start = $router->request()->param('start_time', $end - (3600 * 72));
@@ -145,7 +146,7 @@ class GraphController extends \Centreon\Internal\Controller
     public function saveViewAction()
     {
         /* Get params */
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
 
         $listGraph = $router->request()->param('graphs');
@@ -183,7 +184,7 @@ class GraphController extends \Centreon\Internal\Controller
      */
     public function getListViewAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
 
         $list = GraphView::getList();
         $response = array();
@@ -204,7 +205,7 @@ class GraphController extends \Centreon\Internal\Controller
      */
     public function getListGraphAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $viewId = $router->request()->param('id');
 
         $router->response()->json(array(
@@ -220,7 +221,7 @@ class GraphController extends \Centreon\Internal\Controller
      */
     public function deleteGraphViewAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $viewId = $router->request()->param('id');
 
         try {
@@ -234,5 +235,80 @@ class GraphController extends \Centreon\Internal\Controller
         $router->response()->json(array(
             'success' => true
         ));
+    }
+
+    /**
+     * Save a image to filesystem
+     *
+     * @route /graph/save
+     * @method POST
+     */
+    public function saveAsImageAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $config = Di::getDefault()->get('config');
+        $svgString = $router->request()->param('svg');
+        $graphId = $router->request()->param('graph_id');
+        $graphType = $router->request()->param('graph_type');
+        $imageName = date('Ymd-his', time()) . '_' . $graphType . '_' . $graphId . '.png';
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+
+        $im = $this->graphToImage($svgString);
+        if (!file_exists($centreonPath . '/www/uploads/graphs')) {
+            mkdir($centreonPath . '/www/uploads/graphs');
+        }
+        $im->writeImage($centreonPath . '/www/uploads/graphs/' . $imageName);
+
+        $im->clear();
+        $im->destroy();
+
+        $router->response()->json(array(
+            'success' => true,
+            'imagename' => $imageName
+        ));
+    }
+
+    /**
+     * Propose to download the graph in image
+     *
+     * @route /graph/download
+     * @method POST
+     */
+    public function downloadAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $svgString = $router->request()->param('svg');
+        $graphId = $router->request()->param('graph_id');
+        $graphType = $router->request()->param('graph_type');
+        $imageName = date('Ymd-his', time()) . '_' . $graphType . '_' . $graphId . '.png';
+
+        $im = $this->graphToImage($svgString);
+
+        $router->response()->header('Content-Type', 'image/png');
+        $router->response()->header('Content-Disposition', 'attachment; filename=' . $imageName);
+        $router->response()->body($im->getImageBlob());
+    }
+
+    /**
+     * Convert a SVG to png binaries
+     *
+     * @param $svgString string The svg string
+     * @return Imagick The image of graph
+     */
+    private function graphToImage($svgString)
+    {
+        $config = Di::getDefault()->get('config');
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
+        /* Construct the new string */
+        $svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
+        /*$svg .= '<style type="text/css"><![CDATA[' . "\n";
+        $svg .= file_get_contents($centreonPath . '/www/static/centreon/css/c3.css');
+        $svg .= "\n]]>\n</style>\n"; */
+        $svg .= $svgString;
+
+        $im = new \Imagick();
+        $im->readImageBlob($svg);
+        $im->setImageFormat('png24');
+        return $im;
     }
 }

@@ -20,7 +20,10 @@ my $synctime_pollers = {}; # get last time retrieved
 my $synctime_lasttime;
 my $synctime_option;
 my $synctimeout_option;
+my $ping_option;
+my $ping_time = 0;
 
+my $last_pong = {}; 
 my $register_pollers = {};
 my $last_pollers = {}; # Last values from centreon database and the type
 my $pools = {};
@@ -28,7 +31,7 @@ my $pools_pid = {};
 my $poller_pool = {};
 my $rr_current = 0;
 my $stop = 0;
-my ($external_socket, $internal_socket);
+my ($external_socket, $internal_socket, $core_id);
 
 sub register {
     my (%options) = @_;
@@ -44,7 +47,9 @@ sub init {
     $synctime_lasttime = time();
     $synctime_option = defined($config->{synchistory_time}) ? $config->{synchistory_time} : 300;
     $synctimeout_option = defined($config->{synchistory_timeout}) ? $config->{synchistory_timeout} : 120;
+    $ping_option = defined($config->{ping}) ? $config->{ping} : 60;
     
+    $core_id = $options{id};
     $external_socket = $options{external_socket};
     $internal_socket = $options{internal_socket};
     $last_pollers = get_pollers(dbh => $options{dbh});
@@ -69,6 +74,13 @@ sub routing {
         return undef;
     }
     
+    if ($options{action} eq 'PONG') {
+        return undef if (!defined($data->{data}->{id}) || $data->{data}->{id} eq '');
+        $last_pong->{$data->{data}->{id}} = time();
+        $options{logger}->writeLogInfo("centreond-proxy: pong received from '" . $data->{data}->{id} . "'");
+        return undef;
+    }
+    
     if ($options{action} eq 'UNREGISTERNODE') {
         $options{logger}->writeLogInfo("centreond-proxy: poller '" . $data->{id} . "' is unregistered");
         if (defined($register_pollers->{$data->{id}})) {
@@ -81,6 +93,7 @@ sub routing {
     if ($options{action} eq 'REGISTERNODE') {
         $options{logger}->writeLogInfo("centreond-proxy: poller '" . $data->{id} . "' is registered");
         $register_pollers->{$data->{id}} = 1;
+        $last_pong->{$data->{id}} = 0 if (!defined($last_pong->{$data->{id}}));
         if ($synctime_error == 0 && !defined($synctime_pollers->{$options{target}}) &&
             !defined($synctime_pollers->{$data->{id}})) {
             $synctime_pollers->{$data->{id}} = { ctime => 0, in_progress => 0, in_progress_time => -1, last_id => 0 }; 
@@ -94,7 +107,7 @@ sub routing {
     }
     
     if ($options{action} eq 'SETLOGS') {
-        setlogs(dbh => $options{dbh}, data => $data, token => $options{token});
+        setlogs(dbh => $options{dbh}, data => $data, token => $options{token}, logger => $options{logger});
         return undef;
     }
     
@@ -153,15 +166,15 @@ sub routing {
         return undef;
     }
     
-    my $identity = 'centreondproxy-';
+    my $identity;
     if (defined($poller_pool->{$options{target}})) {
-        $identity .= $poller_pool->{$options{target}};
+        $identity = $poller_pool->{$options{target}};
     } else {
-        $identity .= rr_pool();
+        $identity = rr_pool();
         $poller_pool->{$options{target}} = $identity;
     }
     
-    centreon::centreond::common::zmq_send_message(socket => $options{socket}, identity => $identity,
+    centreon::centreond::common::zmq_send_message(socket => $options{socket}, identity => 'centreondproxy-' . $identity,
                                                   action => $options{action}, data => $options{data}, token => $options{token},
                                                   target => $options{target}
                                                   );
@@ -237,6 +250,13 @@ sub check {
         full_sync_history(dbh => $options{dbh});
     }
     
+    if ($stop == 0 &&
+        time() - $ping_time > $ping_option) {
+        $options{logger}->writeLogInfo("centreond-proxy: send pings");
+        $ping_time = time();
+        ping_send(dbh => $options{dbh});
+    }
+    
     return $count;
 }
 
@@ -258,6 +278,8 @@ sub setlogs {
                                                  json_encode => 1);
         return undef;
     }
+    
+    $options{logger}->writeLogInfo("centreondproxy: hooks: received setlogs for '$options{data}->{data}->{id}'");
     
     $synctime_pollers->{$options{data}->{data}->{id}}->{in_progress} = 0;
     
@@ -286,6 +308,20 @@ sub setlogs {
     $options{dbh}->transaction_mode(0);    
 }
 
+sub ping_send {
+    my (%options) = @_;
+    
+    foreach my $id (keys %{$last_pollers}) {
+        if ($last_pollers->{$id}->{type} == 1) {
+            routing(socket => $internal_socket, action => 'PING', target => $id, data => '{}', dbh => $options{dbh});
+        }
+    }
+    
+    foreach my $id (keys %{$register_pollers}) {
+        routing(action => 'PING', target => $id, data => '{}', dbh => $options{dbh});
+    }
+}
+
 sub full_sync_history {
     my (%options) = @_;
     
@@ -297,7 +333,7 @@ sub full_sync_history {
     
     foreach my $id (keys %{$register_pollers}) {
         routing(action => 'GETLOG', target => $id, data => '{}', dbh => $options{dbh});
-    }    
+    }
 }
 
 sub update_sync_time {
@@ -337,9 +373,10 @@ sub get_pollers {
     # TODO: 1 for 'zmq', 2 for 'ssh'
     
     my $pollers = {};
-    foreach (([1, 1], [2, 1], [10, 1], [166, 2])) {
+    foreach (([1, 1], [2, 1], [10, 1], [166, 2], [140, 1])) {
         $pollers->{${$_}[0]} = { type => ${$_}[1] };
         $synctime_pollers->{${$_}[0]} = { ctime => 0, in_progress => 0, in_progress_time => -1, last_id => 0 }; 
+        $last_pong->{${$_}[0]} = 0 if (!defined($last_pong->{${$_}[0]}));
     }
     
     get_sync_time(dbh => $options{dbh});
@@ -353,8 +390,10 @@ sub rr_pool {
     while (1) {
         $rr_current = $rr_current % $config->{pool};
         if ($pools->{$rr_current + 1}->{ready} == 1) {
-            return $rr_current + 1;
+            $rr_current++;
+            return $rr_current;
         }
+        $rr_current++;
     }
 }
 
@@ -367,7 +406,8 @@ sub create_child {
         my $module = modules::centreondproxy::class->new(logger => $options{logger},
                                                          config_core => $config_core,
                                                          config => $config,
-                                                         pool_id => $options{pool_id}
+                                                         pool_id => $options{pool_id},
+                                                         core_id => $core_id
                                                         );
         $module->run();
         exit(0);
@@ -403,6 +443,13 @@ sub pull_request {
                                                   symkey => $key,
                                                   identity => $options{target},
                                                   message => $message);
+}
+
+sub get_constatus_result {
+    my (%options) = @_;
+
+    my $result = { last_ping => $ping_time, entries => $last_pong };
+    return $result;
 }
 
 1;

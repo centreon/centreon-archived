@@ -13,6 +13,7 @@ my $events = [
 my $stop = 0;
 my $client;
 my $socket_to_internal;
+my $logger;
 
 sub register {
     my (%options) = @_;
@@ -25,6 +26,7 @@ sub register {
 sub init {
     my (%options) = @_;
 
+    $logger = $options{logger};
     # Connect internal
     $socket_to_internal = centreon::centreond::common::connect_com(zmq_type => 'ZMQ_DEALER', name => 'centreondpull',
                                                                    logger => $options{logger},
@@ -91,7 +93,7 @@ sub check {
 
 ####### specific
 
-sub setlogs_check {
+sub transmit_back {
     my (%options) = @_;
 
     if ($options{message} =~ /^\[ACK\]\s+\[(.*?)\]\s+(.*)/m) {
@@ -107,16 +109,18 @@ sub setlogs_check {
             return '[SETLOGS] [' . $1 . '] [] ' . $2;
         }
         return undef;
+    } elsif ($options{message} =~ /^\[PONG\]/) {
+        return $options{message};
     }
     return undef;
 }
 
 sub from_router {
     while (1) {        
-        my $message = setlogs_check(message => centreon::centreond::common::zmq_dealer_read_message(socket => $socket_to_internal));
-        # Only send back SETLOGS
+        my $message = transmit_back(message => centreon::centreond::common::zmq_dealer_read_message(socket => $socket_to_internal));
+        # Only send back SETLOGS and PONG
         if (defined($message)) {
-            print "===== READ MESSAGE FROM ROUTER " . Data::Dumper::Dumper($message) . " ====\n";
+            $logger->writeLogDebug("centreond-pull: hook: read message from internal: $message");
             $client->send_message(message => $message);
         }
         last unless (centreon::centreond::common::zmq_still_read(socket => $socket_to_internal));
@@ -131,7 +135,7 @@ sub read_message {
         return undef;
     }
     
-    print "===== READ MESSAGE " . Data::Dumper::Dumper($options{data}) . " ====\n";
+    $logger->writeLogDebug("centreond-pull: hook: read message from external: $options{data}");
     centreon::centreond::common::zmq_send_message(socket => $socket_to_internal,
                                                   message => $options{data});
 }

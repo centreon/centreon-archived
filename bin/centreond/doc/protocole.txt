@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `centreond_history` (
     `code` int(11) DEFAULT NULL,
     `etime` int(11) DEFAULT NULL,
     `ctime` int(11) DEFAULT NULL,
-    `data` varchar(2048) DEFAULT NULL
+    `data` TEXT DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_centreond_history_id ON centreond_history (id);
@@ -177,5 +177,10 @@ Recuperation des logs
 ==========================
 
 "centreond-proxy" posséde une table pour savoir où on se situe au niveau des logs.
-Il fait un getlog par rapport au ctime (create time) puis des putlog. On "lock" le système si y'a une récupération en cours. Au delà de 1 minutes, on timeout)
+Il fait un getlog par rapport au ctime (create time) puis des putlog. On "lock" le système si y'a une récupération en cours. Au delà de 1 minutes, on timeout.
 On va recevoir au final un "setlogs" (par le pull ou le proxy d'ailleurs) et à ce moment on écrit le résultat.
+
+=========================================
+Comment réaliser un client ?
+=========================================
+

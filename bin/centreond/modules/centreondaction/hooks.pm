@@ -10,7 +10,7 @@ my $config_core;
 my $config;
 my $module_id = 'centreondaction';
 my $events = [
-    'ACTIONREADY', 'COMMAND',
+    'ACTIONREADY',
 ];
 my $action = {};
 my $stop = 0;
@@ -20,6 +20,12 @@ sub register {
     
     $config = $options{config};
     $config_core = $options{config_core};
+    if (!defined($config->{disable_command_event}) || $config->{disable_command_event} != 1) {
+        push @{$events}, 'COMMAND';
+    }
+    if (!defined($config->{disable_enginecommand_event}) || $config->{disable_enginecommand_event} != 1) {
+        push @{$events}, 'ENGINECOMMAND';
+    }
     return ($events, $module_id);
 }
 
