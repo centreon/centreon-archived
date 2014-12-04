@@ -40,7 +40,7 @@ class IndicatorController extends BasicController
 {
     protected $objectDisplayName = 'Indicator';
     protected $objectName = 'indicator';
-    protected $objectBaseUrl = '/bam/indicator';
+    protected $objectBaseUrl = '/centreon-bam/indicator';
     protected $objectClass = '\CentreonBam\Models\Indicator';
     protected $datatableObject = '\CentreonBam\Internal\IndicatorDatatable';
     protected $repository = '\CentreonBam\Repository\IndicatorRepository';     
@@ -49,7 +49,7 @@ class IndicatorController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/indicator
+     * @route /indicator
      */
     public function listAction()
     {
@@ -59,7 +59,7 @@ class IndicatorController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/indicator/list
+     * @route /indicator/list
      */
     public function datatableAction()
     {
@@ -69,7 +69,7 @@ class IndicatorController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/indicator/formlist
+     * @route /indicator/formlist
      */
     /*public function formListAction()
     {
@@ -97,7 +97,7 @@ class IndicatorController extends BasicController
      * Create a new poller
      *
      * @method post
-     * @route /bam/indicator/add
+     * @route /indicator/add
      */
     public function createAction()
     {
@@ -109,7 +109,7 @@ class IndicatorController extends BasicController
      *
      *
      * @method post
-     * @route /bam/indicator/update
+     * @route /indicator/update
      */
     public function updateAction()
     {
@@ -120,12 +120,12 @@ class IndicatorController extends BasicController
      * Add a poller
      *
      * @method get
-     * @route /bam/indicator/add
+     * @route /indicator/add
      */
     public function addAction()
     {
         $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->assign('validateUrl', '/bam/indicator/add');
+        $tpl->assign('validateUrl', '/centreon-bam/indicator/add');
         parent::addAction();
     }
     
@@ -133,7 +133,7 @@ class IndicatorController extends BasicController
      * Update a poller
      *
      * @method get
-     * @route /bam/indicator/[i:id]
+     * @route /indicator/[i:id]
      */
     public function editAction()
     {
@@ -144,7 +144,7 @@ class IndicatorController extends BasicController
      * Duplicate a poller
      *
      * @method post
-     * @route /bam/indicator/duplicate
+     * @route /indicator/duplicate
      */
     public function duplicateAction()
     {
@@ -155,7 +155,7 @@ class IndicatorController extends BasicController
      * Apply massive change
      *
      * @method POST
-     * @route /bam/indicator/massive_change
+     * @route /indicator/massive_change
      */
     public function massiveChangeAction()
     {
@@ -166,7 +166,7 @@ class IndicatorController extends BasicController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /bam/indicator/mc_fields
+     * @route /indicator/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -177,7 +177,7 @@ class IndicatorController extends BasicController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /bam/indicator/mc_fields/[i:id]
+     * @route /indicator/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -188,7 +188,7 @@ class IndicatorController extends BasicController
      * Delete action for poller
      *
      * @method post
-     * @route /bam/indicator/delete
+     * @route /indicator/delete
      */
     public function deleteAction()
     {

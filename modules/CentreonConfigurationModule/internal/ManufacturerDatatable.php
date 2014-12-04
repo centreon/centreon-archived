@@ -98,7 +98,7 @@ class ManufacturerDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/manufacturer/[i:id]',
+                    'route' => '/centreon-configuration/manufacturer/[i:id]',
                     'routeParams' => array(
                         'id' => '::id::'
                     ),

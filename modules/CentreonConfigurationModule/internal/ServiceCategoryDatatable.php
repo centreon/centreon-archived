@@ -99,7 +99,7 @@ class ServiceCategoryDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/servicecategory/[i:id]',
+                    'route' => '/centreon-configuration/servicecategory/[i:id]',
                     'routeParams' => array(
                         'id' => '::sc_id::',
                         'advanced' => '0'

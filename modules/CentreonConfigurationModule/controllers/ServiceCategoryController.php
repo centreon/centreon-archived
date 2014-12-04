@@ -41,7 +41,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
 {
     protected $objectDisplayName = 'Servicecategory';
     protected $objectName = 'servicecategory';
-    protected $objectBaseUrl = '/configuration/servicecategory';
+    protected $objectBaseUrl = '/centreon-configuration/servicecategory';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceCategoryDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicecategory';
     protected $repository = '\CentreonConfiguration\Repository\ServicecategoryRepository';
@@ -56,7 +56,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * List servicecategories
      *
      * @method get
-     * @route /configuration/servicecategory
+     * @route /servicecategory
      */
     public function listAction()
     {
@@ -67,7 +67,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * List servicecategories
      * 
      * @method get
-     * @route /configuration/servicecategory/formlist
+     * @route /servicecategory/formlist
      */
     public function formListAction()
     {
@@ -77,7 +77,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
     /**
      * 
      * @method get
-     * @route /configuration/servicecategory/list
+     * @route /servicecategory/list
      */
     public function datatableAction()
     {
@@ -89,7 +89,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method post
-     * @route /configuration/servicecategory/update
+     * @route /servicecategory/update
      */
     public function updateAction()
     {
@@ -119,7 +119,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method post
-     * @route /configuration/servicecategory/add
+     * @route /servicecategory/add
      */
     public function createAction()
     {
@@ -130,11 +130,11 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Add a servicecategory
      *
      * @method get
-     * @route /configuration/servicecategory/add
+     * @route /servicecategory/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/servicecategory/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/servicecategory/add');
         parent::addAction();
     }
     
@@ -143,7 +143,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicecategory/[i:id]
+     * @route /servicecategory/[i:id]
      */
     public function editAction()
     {
@@ -154,7 +154,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/servicecategory/mc_fields
+     * @route /servicecategory/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -165,7 +165,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/servicecategory/mc_fields/[i:id]
+     * @route /servicecategory/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -176,7 +176,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/servicecategory/duplicate
+     * @route /servicecategory/duplicate
      */
     public function duplicateAction()
     {
@@ -187,7 +187,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/servicecategory/massive_change
+     * @route /servicecategory/massive_change
      */
     public function massiveChangeAction()
     {
@@ -198,7 +198,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Delete action for servicecategory
      *
      * @method post
-     * @route /configuration/servicecategory/delete
+     * @route /servicecategory/delete
      */
     public function deleteAction()
     {
@@ -209,7 +209,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Enable action for service category
      * 
      * @method post
-     * @route /configuration/servicecategory/enable
+     * @route /servicecategory/enable
      */
     public function enableAction()
     {
@@ -220,7 +220,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Disable action for service category
      * 
      * @method post
-     * @route /configuration/servicecategory/disable
+     * @route /servicecategory/disable
      */
     public function disableAction()
     {
@@ -231,7 +231,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Services for a specific category
      *
      * @method get
-     * @route /configuration/servicecategory/[i:id]/service
+     * @route /servicecategory/[i:id]/service
      */
     public function serviceForServicecategoryAction()
     {
@@ -242,7 +242,7 @@ class ServiceCategoryController extends \CentreonConfiguration\Controllers\Basic
      * Service templates for a specific category
      *
      * @method get
-     * @route /configuration/servicecategory/[i:id]/servicetemplate
+     * @route /servicecategory/[i:id]/servicetemplate
      */
     public function servicetemplateForServicecategoryAction()
     {

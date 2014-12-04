@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="aclgroup_form">
-		<route>/administration/aclgroup/update</route>
+		<route>/centreon-administration/aclgroup/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/administration/aclgroup</redirect_route>
+		<redirect_route>/centreon-administration/aclgroup</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="acl_group_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
@@ -14,7 +14,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
-						<listValuesRoute>/administration/aclgroup/[i:id]/contact</listValuesRoute>
+						<listValuesRoute>/centreon-administration/aclgroup/[i:id]/contact</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -23,7 +23,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/administration/aclgroup/[i:id]/contactgroup</listValuesRoute>
+						<listValuesRoute>/centreon-administration/aclgroup/[i:id]/contactgroup</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -45,8 +45,8 @@
 				<field name="acl_group_resources" label="Resource access" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/administration/aclresource/formlist</defaultValuesRoute>
-						<listValuesRoute>/administration/aclgroup/[i:id]/aclresource</listValuesRoute>
+						<defaultValuesRoute>/centreon-administration/aclresource/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-administration/aclgroup/[i:id]/aclresource</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -56,8 +56,8 @@
 				<field name="acl_group_menus" label="Menu access" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/administration/aclmenu/formlist</defaultValuesRoute>
-						<listValuesRoute>/administration/aclgroup/[i:id]/aclmenu</listValuesRoute>
+						<defaultValuesRoute>/centreon-administration/aclmenu/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-administration/aclgroup/[i:id]/aclmenu</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -67,8 +67,8 @@
 				<field name="acl_group_access" label="Action access" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/administration/aclaction/formlist</defaultValuesRoute>
-						<listValuesRoute>/administration/aclgroup/[i:id]/aclaction</listValuesRoute>
+						<defaultValuesRoute>/centreon-administration/aclaction/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-administration/aclgroup/[i:id]/aclaction</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -77,7 +77,7 @@
 		</section>
 	</form>
 	<wizard name="add_aclgroup">
-		<route>/administration/aclgroup/add</route>
+		<route>/centreon-administration/aclgroup/add</route>
 		<step name="General">
 			<field name="acl_group_name" mandatory="1"></field>
 			<field name="acl_group_contacts" mandatory="0"></field>

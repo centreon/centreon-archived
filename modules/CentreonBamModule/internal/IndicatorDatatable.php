@@ -93,7 +93,7 @@ class IndicatorDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/bam/business-view/[i:id]',
+                    'route' => '/centreon-bam/business-view/[i:id]',
                     'routeParams' => array(
                         'id' => '::kpi_id::'
                     ),

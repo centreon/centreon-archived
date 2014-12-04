@@ -45,7 +45,7 @@ class SearchController extends Controller
      * Save search
      *
      * @method post
-     * @route /administration/search/save
+     * @route /search/save
      */
     public function saveAction()
     {
@@ -74,7 +74,7 @@ class SearchController extends Controller
      * Load search
      * 
      * @method post
-     * @route /administration/search/load
+     * @route /search/load
      */
     public function loadAction()
     {
@@ -104,7 +104,7 @@ class SearchController extends Controller
      * Delete search
      * 
      * @method post
-     * @route /administration/search/delete
+     * @route /search/delete
      */
     public function deleteAction()
     {
@@ -131,7 +131,7 @@ class SearchController extends Controller
      * Delete search
      * 
      * @method post
-     * @route /administration/search/list
+     * @route /search/list
      */
     public function listAction()
     {

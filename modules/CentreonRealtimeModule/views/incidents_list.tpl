@@ -41,7 +41,7 @@ $(function() {
   var incidentExtInfoCompiled = Hogan.compile( incidentExtInfoTmpl );
 
   $("#incidents").centreonTableInfiniteScroll({
-    "ajaxUrlGetScroll": "{url_for url="/realtime/incident"}",
+    "ajaxUrlGetScroll": "{url_for url="/centreon-realtime/incident"}",
     "templateRows": "<tr> \
       <td class='span-1'> \{literal}
         <a href='#' class='ext_infos' data-id='{{{issue_id}}}'><i class='fa fa-plus-square-o'></i></a> \
@@ -49,8 +49,8 @@ $(function() {
         <a href='{{{url_graph}}}'><i class='fa fa-sitemap'></i></a> \
         <a href='#'><i class='fa fa-ticket'></i></a> \
       </td> \
-      <td class='span-2'><a href='./realtime/host/{{{host_id}}}'><i class='fa fa-hdd-o'></i> {{{host_name}}}</a></td> \
-      <td class='span-2'><a href='./realtime/service/{{{service_id}}}'><i class='fa fa-gear'></i> {{{service_desc}}}</a></td> \
+      <td class='span-2'><a href='./centreon-realtime/host/{{{host_id}}}'><i class='fa fa-hdd-o'></i> {{{host_name}}}</a></td> \
+      <td class='span-2'><a href='./centreon-realtime/service/{{{service_id}}}'><i class='fa fa-gear'></i> {{{service_desc}}}</a></td> \
       <td class='span-1 centreon-status-s-{{{state}}}' style='text-align:center;'>{{{status}}}</td> \
       <td class='span-1' style='text-align:right;'>{{{duration}}}</td> \
       <td class='span-5'>{{{output}}}</td> \
@@ -71,7 +71,7 @@ $(function() {
       $icon.removeClass("fa-minus-square-o").addClass("fa-plus-square-o");
     } else {
       $.ajax({
-        url: "{url_for  url="/realtime/incident/extented_info"}",
+        url: "{url_for  url="/centreon-realtime/incident/extented_info"}",
         method: "POST",
         dataType: "json",
         data: { incidentId: incidentId },

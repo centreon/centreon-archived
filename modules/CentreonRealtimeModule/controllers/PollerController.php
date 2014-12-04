@@ -50,7 +50,7 @@ class PollerController extends \Centreon\Internal\Controller
      * Get the list of poller status in json
      *
      * @method get
-     * @route /realtime/poller/status
+     * @route /poller/status
      */
     public function pollerStatusAction()
     {

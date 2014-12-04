@@ -14,22 +14,22 @@
                     {
                         "name" : "ACL action",
                         "short_name" : "acl_action",
-                        "route" : "/administration/aclaction"
+                        "route" : "/centreon-administration/aclaction"
                     },
                     {
                         "name" : "ACL group",
                         "short_name" : "acl_group",
-                        "route" : "/administration/aclgroup"
+                        "route" : "/centreon-administration/aclgroup"
                     },
                     {
                         "name" : "ACL menu",
                         "short_name" : "acl_menu",
-                        "route" : "/administration/aclmenu"
+                        "route" : "/centreon-administration/aclmenu"
                     },
                     {
                         "name" : "ACL resource",
                         "short_name" : "acl_resource",
-                        "route" : "/administration/aclresource"
+                        "route" : "/centreon-administration/aclresource"
                     }
                 ]
             },
@@ -41,7 +41,7 @@
                     {
                         "name" : "Modules",
                         "short_name" : "modules",
-                        "route" : "/administration/extensions/module"
+                        "route" : "/centreon-administration/extensions/module"
                     }
                 ]
             },
@@ -49,13 +49,13 @@
                 "name" : "Environments",
                 "short_name": "conf_environments_list",
                 "icon_class": "fa fa-tree",
-                "route": "/administration/environment"
+                "route": "/centreon-administration/environment"
             },
             {
                 "name": "Domains",
                 "short_name": "domains",
                 "icon_class": "fa fa-building-o",
-                "route" : "/administration/domain"
+                "route" : "/centreon-administration/domain"
             },
             {
                 "name": "Options",
@@ -65,7 +65,7 @@
                     {
                         "name" : "Centreon",
                         "short_name" : "centreon-options",
-                        "route" : "/administration/options/centreon"
+                        "route" : "/centreon-administration/options/centreon"
                     }
                 ]
             }

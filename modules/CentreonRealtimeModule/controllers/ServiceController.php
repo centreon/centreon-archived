@@ -57,7 +57,7 @@ class ServiceController extends \Centreon\Internal\Controller
      * Display services
      *
      * @method get
-     * @route /realtime/service
+     * @route /service
      * @todo work on ajax refresh
      */
     public function displayServicesAction()
@@ -104,7 +104,7 @@ class ServiceController extends \Centreon\Internal\Controller
         $tpl->assign('datatableObject', $this->datatableObject);
         $tpl->assign('objectName', 'Service');
         $tpl->assign('consoleType', 1); // service console
-        $tpl->assign('objectListUrl', '/realtime/service/list');
+        $tpl->assign('objectListUrl', '/centreon-realtime/service/list');
 
         $actions = array();
         $actions[] = array(
@@ -119,8 +119,8 @@ class ServiceController extends \Centreon\Internal\Controller
 
         $urls = array(
             'tag' => array(
-                'add' => $router->getPathFor('/administration/tag/add'),
-                'del' => $router->getPathFor('/administration/tag/delete')
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete')
             )
         );
         $tpl->append('jsUrl', $urls, true);
@@ -134,7 +134,7 @@ class ServiceController extends \Centreon\Internal\Controller
      * The page structure for display
      *
      * @method get
-     * @route /realtime/service/list
+     * @route /service/list
      */
     public function listAction()
     {
@@ -151,7 +151,7 @@ class ServiceController extends \Centreon\Internal\Controller
      * Service detail page
      *
      * @method get
-     * @route /realtime/service/[i:hid]/[i:id]
+     * @route /service/[i:hid]/[i:id]
      */
     public function serviceDetailAction()
     {
@@ -167,7 +167,7 @@ class ServiceController extends \Centreon\Internal\Controller
      * Service tooltip
      *
      * @method get
-     * @route /realtime/service/[i:hid]/[i:sid]/tooltip
+     * @route /service/[i:hid]/[i:sid]/tooltip
      */
     public function serviceTooltipAction()
     {
@@ -191,7 +191,7 @@ class ServiceController extends \Centreon\Internal\Controller
      * Display graph in a tooltip
      *
      * @method get
-     * @route /realtime/service/[i:hid]/[i:sid]/graph
+     * @route /service/[i:hid]/[i:sid]/graph
      */
     public function serviceTooltipGraphAction()
     {

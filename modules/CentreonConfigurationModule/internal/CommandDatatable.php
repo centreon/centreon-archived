@@ -101,7 +101,7 @@ class CommandDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/command/[i:id]',
+                    'route' => '/centreon-configuration/command/[i:id]',
                     'routeParams' => array(
                         'id' => '::command_id::'
                     ),

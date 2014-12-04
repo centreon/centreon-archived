@@ -51,6 +51,9 @@ use Centreon\Internal\Exception;
 abstract class FormController extends \Centreon\Internal\Controller
 {
     public static $moduleName = '';
+    public static $moduleShortName = '';
+    protected $objectBaseUrl = '';
+    protected $objectName = '';
     
     public static $isDisableable = false;
 
@@ -71,6 +74,7 @@ abstract class FormController extends \Centreon\Internal\Controller
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
         }
+        $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
     }
 
     /**

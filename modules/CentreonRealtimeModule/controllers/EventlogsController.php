@@ -54,7 +54,7 @@ class EventlogsController extends \Centreon\Internal\Controller
      * The page structure for display
      *
      * @method GET
-     * @route /realtime/eventlogs
+     * @route /eventlogs
      */
     public function displayAction()
     {
@@ -77,7 +77,7 @@ class EventlogsController extends \Centreon\Internal\Controller
      * Get the list of event logs
      *
      * @method POST
-     * @route /realtime/eventlogs
+     * @route /eventlogs
      */
     public function getListEventAction()
     {
@@ -121,7 +121,7 @@ class EventlogsController extends \Centreon\Internal\Controller
      * That includes the services too
      *
      * @method GET
-     * @route /realtime/eventlogs/lasthostevents/[i:host_id]/[i:last_nb]
+     * @route /eventlogs/lasthostevents/[i:host_id]/[i:last_nb]
      */
     public function getLastNbEventsOfHostAction()
     {
@@ -145,7 +145,7 @@ class EventlogsController extends \Centreon\Internal\Controller
      * Get new events
      *
      * @method POST
-     * @route /realtime/eventlogs/refresh
+     * @route /eventlogs/refresh
      */
     public function refreshNewEventLogsAction()
     {

@@ -99,7 +99,7 @@ class HostCategoryDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/hostcategory/[i:id]',
+                    'route' => '/centreon-configuration/hostcategory/[i:id]',
                     'routeParams' => array(
                         'id' => '::hc_id::'
                     ),

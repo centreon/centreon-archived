@@ -6,7 +6,7 @@
     <ul class="nav submenu collapse in" style="height: auto;">
         {foreach from=$variables.bookmarkedViews item=view key=k}
         <li>
-            {assign var=view_url value="/customview/"|cat:$view.custom_view_id}
+            {assign var=view_url value="/centreon-customview/"|cat:$view.custom_view_id}
             <a href="{url_for url=$view_url}">
                 <i></i>
                 <span>{$view.name}</span>
@@ -23,7 +23,7 @@
     <ul class="nav submenu collapse in" style="height: auto;">
         {foreach from=$variables.publicViews item=view}
         <li>
-            {assign var=view_url value="/customview/"|cat:$view.custom_view_id}
+            {assign var=view_url value="/centreon-customview/"|cat:$view.custom_view_id}
             <a href="{url_for url=$view_url}">
                 <i></i>
                 <span>{$view.name}</span>

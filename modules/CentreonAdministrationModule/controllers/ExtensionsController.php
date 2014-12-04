@@ -84,7 +84,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
     /**
      * 
      * @method get
-     * @route /administration/extensions/module
+     * @route /extensions/module
      */
     public function moduleAction()
     {
@@ -98,14 +98,14 @@ class ExtensionsController extends \Centreon\Internal\Controller
         /* Display variable */
         $this->tpl->assign('objectName', self::$objectDisplayName);
         $this->tpl->assign('moduleName', self::$moduleName);
-        $this->tpl->assign('objectListUrl', '/administration/extensions/module/list');
+        $this->tpl->assign('objectListUrl', '/centreon-administration/extensions/module/list');
         $this->tpl->display('administration/module.tpl');
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]
+     * @route /extensions/module/[i:id]
      */
     public function displayModuleAction()
     {
@@ -119,7 +119,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[*:shortname]/install
+     * @route /extensions/module/[*:shortname]/install
      */
     public function installModuleAction()
     {
@@ -163,14 +163,14 @@ class ExtensionsController extends \Centreon\Internal\Controller
             }
         }
         
-        $backUrl = $router->getPathFor('/administration/extensions/module');
+        $backUrl = $router->getPathFor('/centreon-administration/extensions/module');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]/uninstall
+     * @route /extensions/module/[i:id]/uninstall
      */
     public function uninstallModuleAction()
     {
@@ -191,14 +191,14 @@ class ExtensionsController extends \Centreon\Internal\Controller
         $moduleInstaller = new $classCall($moduleDirectory, $module);
         $moduleInstaller->remove();
         
-        $backUrl = $router->getPathFor('/administration/extensions/module');
+        $backUrl = $router->getPathFor('/centreon-administration/extensions/module');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]/enable
+     * @route /extensions/module/[i:id]/enable
      */
     public function enableModuleAction()
     {
@@ -217,7 +217,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/[i:id]/disable
+     * @route /extensions/module/[i:id]/disable
      */
     public function disableModuleAction()
     {
@@ -236,7 +236,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
     /**
      * 
      * @method get
-     * @route /administration/extensions/module/list
+     * @route /extensions/module/list
      */
     public function datatableAction()
     {

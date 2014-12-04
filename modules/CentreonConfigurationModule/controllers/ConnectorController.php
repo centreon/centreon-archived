@@ -39,7 +39,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
 {
     protected $objectDisplayName = 'Connector';
     protected $objectName = 'connector';
-    protected $objectBaseUrl = '/configuration/connector';
+    protected $objectBaseUrl = '/centreon-configuration/connector';
     protected $datatableObject = '\CentreonConfiguration\Internal\ConnectorDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Connector';
     protected $repository = '\CentreonConfiguration\Repository\ConnectorRepository';    
@@ -53,7 +53,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * List connectors
      *
      * @method get
-     * @route /configuration/connector
+     * @route /connector
      * @acl view
      */
     public function listAction()
@@ -64,7 +64,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
     /**
      * 
      * @method get
-     * @route /configuration/connector/formlist
+     * @route /connector/formlist
      */
     public function formListAction()
     {
@@ -74,7 +74,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
     /**
      * 
      * @method get
-     * @route /configuration/connector/list
+     * @route /connector/list
      */
     public function datatableAction()
     {
@@ -86,7 +86,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method post
-     * @route /configuration/connector/update
+     * @route /connector/update
      * @acl update
      */
     public function updateAction()
@@ -99,12 +99,12 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method get
-     * @route /configuration/connector/add
+     * @route /connector/add
      * @acl add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/connector/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/connector/add');
         parent::addAction();
     }
     
@@ -113,7 +113,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method post
-     * @route /configuration/connector/add
+     * @route /connector/add
      * @acl add
      */
     public function createAction()
@@ -126,7 +126,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method get
-     * @route /configuration/connector/[i:id]
+     * @route /connector/[i:id]
      * @acl update
      */
     public function editAction()
@@ -138,7 +138,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/connector/mc_fields
+     * @route /connector/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -149,7 +149,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/connector/mc_fields/[i:id]
+     * @route /connector/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -160,7 +160,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/connector/duplicate
+     * @route /connector/duplicate
      */
     public function duplicateAction()
     {
@@ -171,7 +171,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/connector/massive_change
+     * @route /connector/massive_change
      */
     public function massiveChangeAction()
     {
@@ -182,7 +182,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /configuration/connector/delete
+     * @route /connector/delete
      */
     public function deleteAction()
     {
@@ -193,7 +193,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Enable action for connector
      * 
      * @method post
-     * @route /configuration/connector/enable
+     * @route /connector/enable
      */
     public function enableAction()
     {
@@ -204,7 +204,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Disable action for host
      * 
      * @method post
-     * @route /configuration/connector/disable
+     * @route /connector/disable
      */
     public function disableAction()
     {
@@ -215,7 +215,7 @@ class ConnectorController extends \CentreonConfiguration\Controllers\BasicContro
      * Commands for specific connector
      *
      * @method get
-     * @route /configuration/connector/[i:id]/command
+     * @route /connector/[i:id]/command
      */
     public function commandsForConnectorAction()
     {

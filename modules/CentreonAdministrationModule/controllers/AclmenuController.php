@@ -41,7 +41,7 @@ class AclmenuController extends BasicController
 {
     protected $objectDisplayName = 'AclMenu';
     protected $objectName = 'aclmenu';
-    protected $objectBaseUrl = '/administration/aclmenu';
+    protected $objectBaseUrl = '/centreon-administration/aclmenu';
     protected $objectClass = '\CentreonAdministration\Models\Aclmenu';
     public static $relationMap = array(
         'aclmenu_aclgroups' => '\CentreonAdministration\Models\Relation\Aclgroup\Aclmenu'
@@ -53,7 +53,7 @@ class AclmenuController extends BasicController
      * List aclmenu
      *
      * @method get
-     * @route /administration/aclmenu
+     * @route /aclmenu
      */
     public function listAction()
     {
@@ -63,7 +63,7 @@ class AclmenuController extends BasicController
     /**
      * 
      * @method get
-     * @route /administration/aclmenu/list
+     * @route /aclmenu/list
      */
     public function datatableAction()
     {
@@ -74,7 +74,7 @@ class AclmenuController extends BasicController
      * Create a new ACL menu
      *
      * @method post
-     * @route /administration/aclmenu/add
+     * @route /aclmenu/add
      */
     public function createAction()
     {
@@ -129,7 +129,7 @@ class AclmenuController extends BasicController
      *
      *
      * @method post
-     * @route /administration/aclmenu/update
+     * @route /aclmenu/update
      */
     public function updateAction()
     {
@@ -175,11 +175,11 @@ class AclmenuController extends BasicController
      *
      *
      * @method get
-     * @route /administration/aclmenu/add
+     * @route /aclmenu/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/administration/aclmenu/add');
+        $this->tpl->assign('validateUrl', '/centreon-administration/aclmenu/add');
         parent::addAction();
     }
     
@@ -188,7 +188,7 @@ class AclmenuController extends BasicController
      *
      *
      * @method get
-     * @route /administration/aclmenu/[i:id]
+     * @route /aclmenu/[i:id]
      */
     public function editAction()
     {
@@ -199,7 +199,7 @@ class AclmenuController extends BasicController
      * Retrieve list of acl menu for a form
      *
      * @method get
-     * @route /administration/aclmenu/formlist
+     * @route /aclmenu/formlist
      */
     public function formListAction()
     {
@@ -210,7 +210,7 @@ class AclmenuController extends BasicController
      * Retrieve list of acl menu for a form
      *
      * @method get
-     * @route /administration/aclmenu/delete
+     * @route /aclmenu/delete
      */
     public function deleteAction()
     {
@@ -221,7 +221,7 @@ class AclmenuController extends BasicController
      * Duplicate acl menu
      *
      * @method get
-     * @route /administration/aclmenu/duplicate
+     * @route /aclmenu/duplicate
      */
     public function duplicateAction()
     {
@@ -232,7 +232,7 @@ class AclmenuController extends BasicController
      * Duplicate acl menu
      *
      * @method get
-     * @route /administration/aclmenu/massive_change
+     * @route /aclmenu/massive_change
      */
     public function massiveChangeAction()
     {
@@ -243,7 +243,7 @@ class AclmenuController extends BasicController
      * MC Field action for aclmenu
      *
      * @method post
-     * @route /administration/aclmenu/mc_fields
+     * @route /aclmenu/mc_fields
      */
     public function getMcFieldAction()
     {
@@ -254,7 +254,7 @@ class AclmenuController extends BasicController
      * Get default list of Acl groups
      *
      * @method get
-     * @route /administration/aclmenu/[i:id]/aclgroup
+     * @route /aclmenu/[i:id]/aclgroup
      */
     public function aclgroupAction()
     {

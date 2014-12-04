@@ -9,25 +9,25 @@
                 "name": "Incidents",
                 "short_name": "incidents",
                 "icon_class": "fa fa-bell",
-                "route": "/realtime/incident"
+                "route": "/centreon-realtime/incident"
             },
             {
                 "name": "Services",
                 "short_name": "monitoring-services",
                 "icon_class": "fa fa-rss",
-                "route": "/realtime/service"
+                "route": "/centreon-realtime/service"
             },
             {
                 "name": "Hosts",
                 "short_name": "monitoring-hosts",
                 "icon_class": "fa fa-desktop",
-                "route": "/realtime/host"
+                "route": "/centreon-realtime/host"
             },
             {
                 "name": "EventLogs",
                 "short_name": "eventlogs",
                 "icon_class": "fa fa-edit",
-                "route": "/realtime/eventlogs"
+                "route": "/centreon-realtime/eventlogs"
             }
         ]
     }

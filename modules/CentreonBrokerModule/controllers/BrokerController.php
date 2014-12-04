@@ -59,7 +59,7 @@ class BrokerController extends FormController
      * List brokers
      *
      * @method get
-     * @route /centreon-broker/broker
+     * @route /broker
      */
     public function listAction()
     {
@@ -69,7 +69,7 @@ class BrokerController extends FormController
     /**
      * 
      * @method get
-     * @route /centreon-broker/broker/formlist
+     * @route /broker/formlist
      */
     public function formListAction()
     {
@@ -79,7 +79,7 @@ class BrokerController extends FormController
     /**
      * 
      * @method get
-     * @route /centreon-broker/broker/list
+     * @route /broker/list
      */
     public function datatableAction()
     {
@@ -91,7 +91,7 @@ class BrokerController extends FormController
      *
      *
      * @method post
-     * @route /centreon-broker/broker/update
+     * @route /broker/update
      */
     public function updateAction()
     {
@@ -125,7 +125,7 @@ class BrokerController extends FormController
      *
      *
      * @method post
-     * @route /centreon-broker/broker/add
+     * @route /broker/add
      */
     public function createAction()
     {
@@ -137,7 +137,7 @@ class BrokerController extends FormController
      *
      *
      * @method get
-     * @route /centreon-broker/broker/[i:id]
+     * @route /broker/[i:id]
      */
     public function editAction()
     {
@@ -166,7 +166,7 @@ class BrokerController extends FormController
      * Add a broker
      *
      * @method get
-     * @route /centreon-broker/broker/add
+     * @route /broker/add
      */
     public function addAction()
     {
@@ -178,7 +178,7 @@ class BrokerController extends FormController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /centreon-broker/broker/mc_fields
+     * @route /broker/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -189,7 +189,7 @@ class BrokerController extends FormController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /centreon-broker/broker/mc_fields/[i:id]
+     * @route /broker/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -200,7 +200,7 @@ class BrokerController extends FormController
      * Duplicate a hosts
      *
      * @method post
-     * @route /centreon-broker/broker/duplicate
+     * @route /broker/duplicate
      */
     public function duplicateAction()
     {
@@ -211,7 +211,7 @@ class BrokerController extends FormController
      * Apply massive change
      *
      * @method post
-     * @route /centreon-broker/broker/massive_change
+     * @route /broker/massive_change
      */
     public function massiveChangeAction()
     {
@@ -222,7 +222,7 @@ class BrokerController extends FormController
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /centreon-broker/broker/delete
+     * @route /broker/delete
      */
     public function deleteAction()
     {

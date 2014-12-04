@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="domain_form">
-		<route>/administration/domain/update</route>
+		<route>/centreon-administration/domain/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/administration/domain</redirect_route>
+		<redirect_route>/centreon-administration/domain</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -18,16 +18,16 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-						<listValuesRoute>/administration/domain/[i:id]/icon</listValuesRoute>
+						<listValuesRoute>/centreon-administration/domain/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add</wizardRoute>
+						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
 					</attributes>
 				</field>
 			</block>
 		</section>
 	</form>
 	<wizard name="add_domain">
-		<route>/administration/domain/add</route>
+		<route>/centreon-administration/domain/add</route>
 		<step name="General">
 			<field name="name" mandatory="1"></field>
 			<field name="description" mandatory="0"></field>

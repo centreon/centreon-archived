@@ -42,7 +42,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
 {
     protected $objectDisplayName = 'Servicegroup';
     protected $objectName = 'servicegroup';
-    protected $objectBaseUrl = '/configuration/servicegroup';
+    protected $objectBaseUrl = '/centreon-configuration/servicegroup';
     protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceGroupDatatable';
     protected $repository = '\CentreonConfiguration\Repository\ServicegroupRepository';
@@ -56,7 +56,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * List servicegroups
      *
      * @method get
-     * @route /configuration/servicegroup
+     * @route /servicegroup
      */
     public function listAction()
     {
@@ -78,7 +78,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * List service groups 
      *
      * @method get
-     * @route /configuration/servicegroup/formlist
+     * @route /servicegroup/formlist
      */
     public function formListAction()
     {
@@ -88,7 +88,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/servicegroup/list
+     * @route /servicegroup/list
      */
     public function datatableAction()
     {
@@ -100,7 +100,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /configuration/servicegroup/update
+     * @route /servicegroup/update
      */
     public function updateAction()
     {
@@ -112,11 +112,11 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/servicegroup/add
+     * @route /servicegroup/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/servicegroup/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/servicegroup/add');
         parent::addAction();
     }
     
@@ -125,7 +125,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /configuration/servicegroup/add
+     * @route /servicegroup/add
      */
     public function createAction()
     {
@@ -137,7 +137,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/servicegroup/[i:id]
+     * @route /servicegroup/[i:id]
      */
     public function editAction()
     {
@@ -149,7 +149,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/servicegroup/mc_fields
+     * @route /servicegroup/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -160,7 +160,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/servicegroup/mc_fields/[i:id]
+     * @route /servicegroup/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -171,7 +171,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/servicegroup/duplicate
+     * @route /servicegroup/duplicate
      */
     public function duplicateAction()
     {
@@ -182,7 +182,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/servicegroup/massive_change
+     * @route /servicegroup/massive_change
      */
     public function massiveChangeAction()
     {
@@ -193,7 +193,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Delete action for servicegroup
      *
      * @method post
-     * @route /configuration/servicegroup/delete
+     * @route /servicegroup/delete
      */
     public function deleteAction()
     {
@@ -204,7 +204,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Enable action for service group
      * 
      * @method post
-     * @route /configuration/servicegroup/enable
+     * @route /servicegroup/enable
      */
     public function enableAction()
     {
@@ -215,7 +215,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Disable action for service group
      * 
      * @method post
-     * @route /configuration/servicegroup/disable
+     * @route /servicegroup/disable
      */
     public function disableAction()
     {
@@ -226,7 +226,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      * Get services for a specific service group
      *
      * @method get
-     * @route /configuration/servicegroup/[i:id]/service
+     * @route /servicegroup/[i:id]/service
      */
     public function servicesForServicegroupAction()
     {

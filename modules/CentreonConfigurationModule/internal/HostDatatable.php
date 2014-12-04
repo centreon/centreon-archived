@@ -113,7 +113,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/host/[i:id]',
+                    'route' => '/centreon-configuration/host/[i:id]',
                     'routeParams' => array(
                         'id' => '::host_id::'
                     ),
@@ -245,12 +245,12 @@ class HostDatatable extends \Centreon\Internal\Datatable
             
         foreach ($resultSet as &$myHostSet) {
             $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;<span data-overlay-url="'.$router->getPathFor('/configuration/host/snapshot/').
+                '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/host/snapshot/').
                 $myHostSet['host_id'].
                 '"><span class="overlay">'.
                 $myHostSet['host_name'].
                 '</span></span>';
-            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor('/realtime/host/').
+            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor('/centreon-realtime/host/').
                 $myHostSet['host_id'].
                 '/tooltip">';
             $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
@@ -261,9 +261,9 @@ class HostDatatable extends \Centreon\Internal\Datatable
             $myHostSet['host_template']  = "";
             $templates = HostTemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/configuration/hosttemplate/viewconf/').
+                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/').
                     $template['id'].'"><a class="overlay" href="'.
-                    $router->getPathFor("/configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
+                    $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
                     '"><i class="fa '.
                     $template['ico'].
                     '"></i></a></span>';

@@ -100,7 +100,7 @@ class ServiceGroupDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/servicegroup/[i:id]',
+                    'route' => '/centreon-configuration/servicegroup/[i:id]',
                     'routeParams' => array(
                         'id' => '::sg_id::',
                         'advanced' => '0'

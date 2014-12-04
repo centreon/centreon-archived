@@ -68,12 +68,22 @@ class Router extends \Klein\Klein
      * @var int
      */
     protected $countDeep = 0;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $mainRouteModules = array();
 
     /**
      * 
      */
     public function parseRoutes()
     {
+        $this->mainRouteModules = array(
+            'centreon-main',
+            'centreon-security'
+        );
         $cacheHandler = Di::getDefault()->get('cache');
         $routesFullList = $cacheHandler->get('routes');
         
@@ -82,8 +92,21 @@ class Router extends \Klein\Klein
             $cacheHandler->set('routes', $routesFullList);
         }
         
-        foreach ($routesFullList as $controllerName => $routes) {
-            $this->parseRouteData($controllerName, $routes);
+        foreach ($routesFullList as $routeType => $routesList) {
+            switch ($routeType) {
+                default:
+                case 'front':
+                    $prefix = '';
+                    break;
+                case 'api':
+                    $prefix = 'api';
+                    break;
+            }
+            foreach ($routesList as $moduleName => $routesAndControllers) {
+                foreach ($routesAndControllers as $controllerName => $routes) {
+                    $this->parseRouteData($moduleName, $controllerName, $routes, $prefix);
+                }
+            }
         }
         
         $this->respond(
@@ -103,22 +126,36 @@ class Router extends \Klein\Klein
     {
         // getting controllers list using current activate module list
         $modulesList = Informations::getModuleList(true);
+        $modules = array();
         foreach ($modulesList as $currentModule) {
-            $moduleName = Informations::getModuleCommonName($currentModule);
-            $modules[$moduleName] = Informations::getModulePath($currentModule);
+            $modules[$currentModule]['path'] = Informations::getModulePath($currentModule);
+            $modules[$currentModule]['commonName'] = Informations::getModuleCommonName($currentModule);
         }
-        $controllersList = $this->getControllersList($modules);
-
-        // getting route
-        $routesFullList = array();
-        foreach ($controllersList as $controllerName) {
-            $routes = $controllerName::getRoutes();
-            if (count($routes) > 0) {
-                $routesFullList[$controllerName] = $routes;
+        $controllersFullList = $this->getControllersList($modules);
+        
+        // getting front route
+        $routesFullList = array('front' => array(), 'api' => array());
+        foreach ($controllersFullList as $type => $controllersList) {
+            foreach($controllersList as $moduleName => $controllers) {
+                $this->getRoutesFromController($moduleName, $controllers, $routesFullList[$type]);
             }
         }
         
         return $routesFullList;
+    }
+    
+    /**
+     * 
+     * @param type $controllerName
+     */
+    private function getRoutesFromController($moduleName, $controllers, &$routesFullList)
+    {
+        foreach($controllers as $controllerName) {
+            $routes = $controllerName::getRoutes();
+            if (count($routes) > 0) {
+                $routesFullList[$moduleName][$controllerName] = $routes;
+            }
+        }
     }
     
     /**
@@ -132,13 +169,13 @@ class Router extends \Klein\Klein
         
         // Now lets see the modules
         foreach ($modules as $moduleName => $module) {
-            $myModuleControllersFiles = glob("$module/controllers/*Controller.php");
-            $myModuleApiFiles = glob("$module/api/rest/*Api.php");
+            $myModuleControllersFiles = glob("$module[path]/controllers/*Controller.php");
+            $myModuleApiFiles = glob("$module[path]/api/rest/*Api.php");
             foreach ($myModuleControllersFiles as $moduleController) {
-                $controllersList[] = '\\'.$moduleName.'\\Controllers\\'.basename($moduleController, '.php');
+                $controllersList['front'][$moduleName][] = '\\'.$module['commonName'].'\\Controllers\\'.basename($moduleController, '.php');
             }
             foreach ($myModuleApiFiles as $moduleApi) {
-                $controllersList[] = '\\'.$moduleName.'\\Api\\Rest\\'.basename($moduleApi, '.php');
+                $controllersList['api'][$moduleName][] = '\\'.$module['commonName'].'\\Api\\Rest\\'.basename($moduleApi, '.php');
             }
         }
         
@@ -150,9 +187,12 @@ class Router extends \Klein\Klein
      * @param string $controllerName
      * @param array $routesData
      */
-    private function parseRouteData($controllerName, $routesData)
+    private function parseRouteData($moduleName, $controllerName, $routesData, $routePrefix = '')
     {
         $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
+        if (!empty($routePrefix)) {
+            $baseUrl .= '/' . $routePrefix;
+        }
         foreach ($routesData as $action => $data) {
             if (!isset($data['acl'])) {
                 $data['acl'] = "";
@@ -167,7 +207,11 @@ class Router extends \Klein\Klein
                     'method' => $data['method_type']
                 );
             } else {
-                $routeName = $baseUrl.$data['route'];
+                if (!in_array($moduleName, $this->mainRouteModules)) {
+                    $routeName = $baseUrl. '/' . $moduleName . $data['route'];
+                } else {
+                    $routeName = $baseUrl . $data['route'];
+                }
             }
             if (isset($_SESSION['acl']) &&
                 false === $_SESSION['acl']->routeAllowed($data['route'])) {

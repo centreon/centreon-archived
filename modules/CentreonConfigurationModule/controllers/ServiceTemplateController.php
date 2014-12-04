@@ -47,7 +47,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
 {
     protected $objectDisplayName = 'ServiceTemplate';
     protected $objectName = 'servicetemplate';
-    protected $objectBaseUrl = '/configuration/servicetemplate';
+    protected $objectBaseUrl = '/centreon-configuration/servicetemplate';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceTemplateDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
     protected $repository = '\CentreonConfiguration\Repository\ServicetemplateRepository';
@@ -63,8 +63,8 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
     );
 
 
-    protected $inheritanceUrl = '/configuration/servicetemplate/[i:id]/inheritance';
-    protected $inheritanceTmplUrl = '/configuration/servicetemplate/inheritance';
+    protected $inheritanceUrl = '/centreon-configuration/servicetemplate/[i:id]/inheritance';
+    protected $inheritanceTmplUrl = '/centreon-configuration/servicetemplate/inheritance';
     protected $tmplField = '#service_template_model_stm_id';
     
     /**
@@ -77,7 +77,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * List servicetemplates
      *
      * @method get
-     * @route /configuration/servicetemplate
+     * @route /servicetemplate
      */
     public function listAction()
     {
@@ -88,7 +88,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
     /**
      * 
      * @method get
-     * @route /configuration/servicetemplate/formlist
+     * @route /servicetemplate/formlist
      */
     public function formListAction()
     {
@@ -98,7 +98,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
     /**
      * 
      * @method get
-     * @route /configuration/servicetemplate/list
+     * @route /servicetemplate/list
      */
     public function datatableAction()
     {
@@ -110,7 +110,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method post
-     * @route /configuration/servicetemplate/update
+     * @route /servicetemplate/update
      */
     public function updateAction()
     {
@@ -153,7 +153,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method post
-     * @route /configuration/servicetemplate/add
+     * @route /servicetemplate/add
      */
     public function createAction()
     {
@@ -198,11 +198,11 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Add a servicetemplate
      *
      * @method get
-     * @route /configuration/servicetemplate/add
+     * @route /servicetemplate/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/servicetemplate/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/servicetemplate/add');
         parent::addAction();
     }
     
@@ -211,7 +211,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]
+     * @route /servicetemplate/[i:id]
      */
     public function editAction()
     {
@@ -222,7 +222,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/servicetemplate/mc_fields
+     * @route /servicetemplate/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -233,7 +233,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/servicetemplate/mc_fields/[i:id]
+     * @route /servicetemplate/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -244,7 +244,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/servicetemplate/duplicate
+     * @route /servicetemplate/duplicate
      */
     public function duplicateAction()
     {
@@ -255,7 +255,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/servicetemplate/massive_change
+     * @route /servicetemplate/massive_change
      */
     public function massiveChangeAction()
     {
@@ -266,7 +266,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Delete action for servicetemplate
      *
      * @method post
-     * @route /configuration/servicetemplate/delete
+     * @route /servicetemplate/delete
      */
     public function deleteAction()
     {
@@ -277,7 +277,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Enable action for service template
      * 
      * @method post
-     * @route /configuration/servicetemplate/enable
+     * @route /servicetemplate/enable
      */
     public function enableAction()
     {
@@ -288,7 +288,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Disable action for service template
      * 
      * @method post
-     * @route /configuration/servicetemplate/disable
+     * @route /servicetemplate/disable
      */
     public function disableAction()
     {
@@ -300,7 +300,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/checkperiod
+     * @route /servicetemplate/[i:id]/checkperiod
      */
     public function checkPeriodForServiceAction()
     {
@@ -312,7 +312,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/notificationperiod
+     * @route /servicetemplate/[i:id]/notificationperiod
      */
     public function notificationPeriodForServiceAction()
     {
@@ -323,7 +323,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get check command for a specific service
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/checkcommand
+     * @route /servicetemplate/[i:id]/checkcommand
      */
     public function checkCommandForServiceAction()
     {
@@ -335,7 +335,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/eventhandler
+     * @route /servicetemplate/[i:id]/eventhandler
      */
     public function eventHandlerForServiceAction()
     {
@@ -347,7 +347,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/contact
+     * @route /servicetemplate/[i:id]/contact
      */
     public function contactForServiceAction()
     {
@@ -359,7 +359,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/contactgroup
+     * @route /servicetemplate/[i:id]/contactgroup
      */
     public function contactgroupForServiceAction()
     {
@@ -371,7 +371,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/hosttemplate
+     * @route /servicetemplate/[i:id]/hosttemplate
      */
     public function hosttemplateForServiceAction()
     {
@@ -383,7 +383,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/servicegroup
+     * @route /servicetemplate/[i:id]/servicegroup
      */
     public function serviceGroupForServiceAction()
     {
@@ -395,7 +395,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/servicecategory
+     * @route /servicetemplate/[i:id]/servicecategory
      */
     public function serviceCategoryForServiceTemplateAction()
     {
@@ -407,7 +407,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/servicetemplate
+     * @route /servicetemplate/[i:id]/servicetemplate
      */
     public function serviceTemplateForServiceTemplateAction()
     {
@@ -419,7 +419,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/trap
+     * @route /servicetemplate/[i:id]/trap
      */
     public function trapForServiceTemplateAction()
     {
@@ -431,7 +431,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/icon
+     * @route /servicetemplate/[i:id]/icon
      */
     public function iconForServiceTemplateAction()
     {
@@ -467,7 +467,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Display service template configuration in a popin window
      *
      * @method get
-     * @route /configuration/servicetemplate/viewconf/[i:id]
+     * @route /servicetemplate/viewconf/[i:id]
      */
     public function displayConfAction()
     {
@@ -482,7 +482,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get inheritance values
      *
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/inheritance
+     * @route /servicetemplate/[i:id]/inheritance
      */
     public function getInheritanceAction()
     {
@@ -504,7 +504,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get inheritance value from a list of template
      *
      * @method post
-     * @route /configuration/servicetemplate/inheritance
+     * @route /servicetemplate/inheritance
      */
     public function getInheritanceTmplAction()
     {
@@ -533,7 +533,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get list of Environment for a specific service template
      * 
      * @method get
-     * @route /configuration/servicetemplate/[i:id]/domain
+     * @route /servicetemplate/[i:id]/domain
      */
     public function domainForServiceTemplateAction()
     {

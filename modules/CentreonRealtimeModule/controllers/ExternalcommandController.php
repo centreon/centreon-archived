@@ -54,7 +54,7 @@ class ExternalcommandController extends \Centreon\Internal\Controller
      * or the host console
      *
      * @method post
-     * @route /realtime/externalcommands/[i:cmdid]/[i:source]
+     * @route /externalcommands/[i:cmdid]/[i:source]
      */
     public function sendCommandAction()
     {
@@ -119,7 +119,7 @@ class ExternalcommandController extends \Centreon\Internal\Controller
      * Acknowledge host / service problems 
      *
      * @method post
-     * @route /realtime/externalcommands/advanced/[i:cmdid]
+     * @route /externalcommands/advanced/[i:cmdid]
      * @todo 
      */
     public function advancedAction()

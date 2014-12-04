@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="host_category_form">
-		<route>/configuration/hostcategory/update</route>
+		<route>/centreon-configuration/hostcategory/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/hostcategory</redirect_route>
+		<redirect_route>/centreon-configuration/hostcategory</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="hc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -17,7 +17,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-						<listValuesRoute>/configuration/hostcategory/[i:id]/icon</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/hostcategory/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
@@ -28,8 +28,8 @@
 				<field name="hc_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
- 						<listValuesRoute>/configuration/hostcategory/[i:id]/host</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+ 						<listValuesRoute>/centreon-configuration/hostcategory/[i:id]/host</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -37,8 +37,8 @@
 				<field name="hc_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hosttemplate/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hostcategory/[i:id]/hosttemplate</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hostcategory/[i:id]/hosttemplate</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -58,7 +58,7 @@
 		</section>
 	</form>
 	<wizard name="add_hostcategory">
-		<route>/configuration/hostcategory/add</route>
+		<route>/centreon-configuration/hostcategory/add</route>
 		<step name="General">
 			<field name="hc_name" mandatory="1"></field>
 			<field name="hc_alias" mandatory="0"></field>

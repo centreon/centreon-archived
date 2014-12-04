@@ -39,7 +39,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
 {
     protected $objectDisplayName = 'Hostcategory';
     protected $objectName = 'hostcategory';
-    protected $objectBaseUrl = '/configuration/hostcategory';
+    protected $objectBaseUrl = '/centreon-configuration/hostcategory';
     protected $objectClass = '\CentreonConfiguration\Models\Hostcategory';
     protected $repository = '\CentreonConfiguration\Repository\HostcategoryRepository';
 
@@ -55,7 +55,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * List hostcategories
      *
      * @method get
-     * @route /configuration/hostcategory
+     * @route /hostcategory
      */
     public function listAction()
     {
@@ -65,7 +65,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/hostcategory/formlist
+     * @route /hostcategory/formlist
      */
     public function formListAction()
     {
@@ -75,7 +75,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/hostcategory/list
+     * @route /hostcategory/list
      */
     public function datatableAction()
     {
@@ -87,7 +87,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /configuration/hostcategory/update
+     * @route /hostcategory/update
      */
     public function updateAction()
     {
@@ -99,11 +99,11 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hostcategory/add
+     * @route /hostcategory/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/hostcategory/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/hostcategory/add');
         parent::addAction();
     }
 
@@ -112,7 +112,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /configuration/hostcategory/add
+     * @route /hostcategory/add
      */
     public function createAction()
     {
@@ -124,7 +124,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hostcategory/[i:id]
+     * @route /hostcategory/[i:id]
      */
     public function editAction()
     {
@@ -135,7 +135,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/hostcategory/mc_fields
+     * @route /hostcategory/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -146,7 +146,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/hostcategory/mc_fields/[i:id]
+     * @route /hostcategory/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -157,7 +157,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/hostcategory/duplicate
+     * @route /hostcategory/duplicate
      */
     public function duplicateAction()
     {
@@ -168,7 +168,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/hostcategory/massive_change
+     * @route /hostcategory/massive_change
      */
     public function massiveChangeAction()
     {
@@ -179,7 +179,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Delete action for hostcategory
      *
      * @method post
-     * @route /configuration/hostcategory/delete
+     * @route /hostcategory/delete
      */
     public function deleteAction()
     {
@@ -190,7 +190,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Enable action for hostcategory
      * 
      * @method post
-     * @route /configuration/hostcategory/enable
+     * @route /hostcategory/enable
      */
     public function enableAction()
     {
@@ -201,7 +201,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Disable action for hostcategory
      * 
      * @method post
-     * @route /configuration/hostcategory/disable
+     * @route /hostcategory/disable
      */
     public function disableAction()
     {
@@ -212,7 +212,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Host for specific host category
      *
      * @method get
-     * @route /configuration/hostcategory/[i:id]/host
+     * @route /hostcategory/[i:id]/host
      */
     public function hostForHostcategoryAction()
     {
@@ -223,7 +223,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      * Host for specific host category
      *
      * @method get
-     * @route /configuration/hostcategory/[i:id]/hosttemplate
+     * @route /hostcategory/[i:id]/hosttemplate
      */
     public function hosttemplateForHostcategoryAction()
     {
@@ -235,7 +235,7 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hostcategory/[i:id]/icon
+     * @route /hostcategory/[i:id]/icon
      */
     public function iconForHostAction()
     {

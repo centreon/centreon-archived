@@ -126,7 +126,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/host/[i:id]',
+                    'route' => '/centreon-configuration/host/[i:id]',
                     'routeParams' => array(
                         'id' => '::host_id::'
                     ),
@@ -146,7 +146,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/service/[i:id]',
+                    'route' => '/centreon-configuration/service/[i:id]',
                     'routeParams' => array(
                         'id' => '::service_id::',
                         'advanced' => '0'
@@ -286,7 +286,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             } else {
                 $previousHost = $myServiceSet['host_name'];
                 $myServiceSet['host_name'] = '<span data-overlay-url="'.$router->getPathFor(
-                    '/configuration/host/snapshot/'
+                    '/centreon-configuration/host/snapshot/'
                 ).
                 $myServiceSet['host_id'].
                 '"><span class="overlay">'.
@@ -327,12 +327,12 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
                     "//",
                     "/",
                     $router->getPathFor(
-                        '/configuration/servicetemplate/[i:id]',
+                        '/centreon-configuration/servicetemplate/[i:id]',
                         array('id' => $tplArr['id'])
                     )
                 );
 
-                $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/configuration/servicetemplate/viewconf/').
+                $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/servicetemplate/viewconf/').
                     $myServiceSet['service_template_model_stm_id'].
                     '"><a href="'.
                     $tplRoute.
@@ -344,7 +344,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             }
             
             $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
-                '/configuration/service/snapshot/'
+                '/centreon-configuration/service/snapshot/'
             ).
             $myServiceSet['service_id'].
             '"><span class="overlay">'.
@@ -353,7 +353,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             $myServiceSet['service_description'].
             '</span></span>';
             $myServiceSet['service_description'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor(
-                '/realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip'
+                '/centreon-realtime/service/'.$myServiceSet['host_id'].'/'.$myServiceSet['service_id'].'/tooltip'
             ).'">';
             $myServiceSet['service_description'] .= ServiceRealTimeRepository::getStatusBadge(
                 ServiceRealTimeRepository::getStatus($myServiceSet["host_id"], $myServiceSet["service_id"])

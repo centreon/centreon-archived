@@ -65,6 +65,6 @@ $tpl->addJs('jquery.min.js')
 /* Datatable */
 $tpl->assign('moduleName', 'CentreonRealtime');
 $tpl->assign('objectName', 'Service');
-$tpl->assign('objectListUrl', '/realtime/service/list');
+$tpl->assign('objectListUrl', '/centreon-realtime/service/list');
 $tpl->assign('datatableObject', '\CentreonRealtime\Internal\ServiceDatatable');
 $tpl->display('file:[ServiceMonitoringWidget]console.tpl');

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="aclaction_form">
-		<route>/administration/aclaction/update</route>
+		<route>/centreon-administration/aclaction/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/administration/aclaction</redirect_route>
+		<redirect_route>/centreon-administration/aclaction</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="acl_action_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
@@ -138,7 +138,7 @@
 		</section>
 	</form>
 	<wizard name="add_aclaction">
-		<route>/administration/aclaction/add</route>
+		<route>/centreon-administration/aclaction/add</route>
 		<step name="General">
 			<field name="acl_action_name" mandatory="1"></field>
 		</step>

@@ -43,7 +43,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
 {
     protected $objectDisplayName = 'Timeperiod';
     protected $objectName = 'timeperiod';
-    protected $objectBaseUrl = '/configuration/timeperiod';
+    protected $objectBaseUrl = '/centreon-configuration/timeperiod';
     protected $datatableObject = '\CentreonConfiguration\Internal\TimeperiodDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Timeperiod';
     protected $repository = '\CentreonConfiguration\Repository\TimePeriodRepository';    
@@ -56,7 +56,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * List timeperiods
      *
      * @method get
-     * @route /configuration/timeperiod
+     * @route /timeperiod
      */
     public function listAction()
     {
@@ -66,7 +66,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
     /**
      * 
      * @method get
-     * @route /configuration/timeperiod/formlist
+     * @route /timeperiod/formlist
      */
     public function formListAction()
     {
@@ -76,7 +76,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
     /**
      * 
      * @method get
-     * @route /configuration/timeperiod/list
+     * @route /timeperiod/list
      */
     public function datatableAction()
     {
@@ -87,7 +87,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Create a new timeperiod
      *
      * @method post
-     * @route /configuration/timeperiod/add
+     * @route /timeperiod/add
      */
     public function createAction()
     {
@@ -99,7 +99,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      *
      *
      * @method post
-     * @route /configuration/timeperiod/update
+     * @route /timeperiod/update
      */
     public function updateAction()
     {
@@ -110,11 +110,11 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Add a timeperiod
      *
      * @method get
-     * @route /configuration/timeperiod/add
+     * @route /timeperiod/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/timeperiod/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/timeperiod/add');
         parent::addAction();
     }
     
@@ -122,7 +122,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Update a timeperiod
      *
      * @method get
-     * @route /configuration/timeperiod/[i:id]
+     * @route /timeperiod/[i:id]
      */
     public function editAction()
     {
@@ -133,7 +133,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Duplicate a timeperiod
      *
      * @method post
-     * @route /configuration/timeperiod/duplicate
+     * @route /timeperiod/duplicate
      */
     public function duplicateAction()
     {
@@ -144,7 +144,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/timeperiod/massive_change
+     * @route /timeperiod/massive_change
      */
     public function massiveChangeAction()
     {
@@ -155,7 +155,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/timeperiod/mc_fields
+     * @route /timeperiod/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -166,7 +166,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/timeperiod/mc_fields/[i:id]
+     * @route /timeperiod/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -177,7 +177,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      * Delete action for timeperiod
      *
      * @method post
-     * @route /configuration/timeperiod/delete
+     * @route /timeperiod/delete
      */
     public function deleteAction()
     {
@@ -187,7 +187,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
     /**
      * 
      * @method get
-     * @route /configuration/timeperiod/[i:id]/include
+     * @route /timeperiod/[i:id]/include
      */
     public function includedTimeperiodAction()
     {
@@ -221,7 +221,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
     /**
      * 
      * @method get
-     * @route /configuration/timeperiod/[i:id]/exclude
+     * @route /timeperiod/[i:id]/exclude
      */
     public function excludedTimeperiodAction()
     {

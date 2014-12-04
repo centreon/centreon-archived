@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="hostgroup_form">
-		<route>/configuration/hostgroup/update</route>
+		<route>/centreon-configuration/hostgroup/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/hostgroup</redirect_route>
+		<redirect_route>/centreon-configuration/hostgroup</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="hg_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -18,8 +18,8 @@
 				<field name="hg_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hostgroup/[i:id]/host</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hostgroup/[i:id]/host</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -39,7 +39,7 @@
 		</section>
 	</form>
     <wizard name="add_hostgroup">
-        <route>/configuration/hostgroup/add</route>
+        <route>/centreon-configuration/hostgroup/add</route>
         <step name="General">
             <field name="hg_name" mandatory="1"></field>
             <field name="hg_alias" mandatory="0"></field>

@@ -98,7 +98,7 @@ class AclmenuDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/aclmenu/[i:id]',
+                    'route' => '/centreon-administration/aclmenu/[i:id]',
                     'routeParams' => array(
                         'id' => '::acl_menu_id::'
                     ),

@@ -51,12 +51,12 @@ class OptionsController extends \Centreon\Internal\Controller
     
     /**
      * @method get
-     * @route /administration/options/centreon
+     * @route /options/centreon
      */
     public function centreonAction()
     {
         //
-        $objectFormUpdateUrl = '/administration/options/centreon/update';
+        $objectFormUpdateUrl = '/centreon-administration/options/centreon/update';
         
         $myForm = new Generator($objectFormUpdateUrl);
         
@@ -75,7 +75,7 @@ class OptionsController extends \Centreon\Internal\Controller
     
     /**
      * @method post
-     * @route /administration/options/centreon/update
+     * @route /options/centreon/update
      */
     public function updateAction()
     {

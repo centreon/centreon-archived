@@ -66,7 +66,7 @@ $(function() {
         var pollerId = $(this).attr('id');
 
         $.ajax({
-          url: '{'/api/configuration/1/generatecfg/'|url}' + pollerId,
+          url: '{'/api/centreon-configuration/generatecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
           $csl.append(data.output);
@@ -75,7 +75,7 @@ $(function() {
           } else {
             /* File testing */
             $.ajax({
-              url: '{'/api/configuration/1/testcfg/'|url}' + pollerId,
+              url: '{'/api/centreon-configuration/testcfg/'|url}' + pollerId,
               dataType: 'json'
             }).success(function(data2, textStatus2, jqXHR2) {
               $csl.append(data2.output);
@@ -104,7 +104,7 @@ $(function() {
         var pollerId = $(this).attr('id');
 
         $.ajax({
-          url: '{'/api/configuration/1/generatecfg/'|url}' + pollerId,
+          url: '{'/api/centreon-configuration/generatecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
           $csl.append(data.output);
@@ -128,7 +128,7 @@ $(function() {
         var pollerId = $(this).attr('id');
 
         $.ajax({
-          url: '{'/api/configuration/1/testcfg/'|url}' + pollerId,
+          url: '{'/api/centreon-configuration/testcfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data2, textStatus2, jqXHR2) {
           $csl.append(data2.output);
@@ -154,7 +154,7 @@ $(function() {
         var pollerId = $(this).attr('id');
 
         $.ajax({
-          url: '{'/api/configuration/1/movecfg/'|url}' + pollerId,
+          url: '{'/api/centreon-configuration/movecfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
           $csl.append(data.output);
@@ -180,7 +180,7 @@ $(function() {
         var pollerId = $(this).attr('id');
         
         $.ajax({
-          url: '{'/api/configuration/1/'|url}' + action + '/' + pollerId,
+          url: '{'/api/centreon-configuration/'|url}' + action + '/' + pollerId,
           dataType: 'json'
         }).success(function(data, textStatus, jqXHR) {
           $csl.append(data.output);

@@ -54,12 +54,12 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     protected $objectDisplayName = 'Host';
     protected $objectName = 'host';
     protected $datatableObject = '\CentreonConfiguration\Internal\HostDatatable';
-    protected $objectBaseUrl = '/configuration/host';
+    protected $objectBaseUrl = '/centreon-configuration/host';
     protected $objectClass = '\CentreonConfiguration\Models\Host';
     protected $repository = '\CentreonConfiguration\Repository\HostRepository';
 
-    protected $inheritanceUrl = '/configuration/host/[i:id]/inheritance';
-    protected $inheritanceTmplUrl = '/configuration/hosttemplate/inheritance';
+    protected $inheritanceUrl = '/centreon-configuration/host/[i:id]/inheritance';
+    protected $inheritanceTmplUrl = '/centreon-configuration/hosttemplate/inheritance';
     protected $tmplField = '#host_hosttemplates';
     
     public static $relationMap = array(
@@ -79,7 +79,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * List hosts
      *
      * @method get
-     * @route /configuration/host
+     * @route /host
      */
     public function listAction()
     {
@@ -104,7 +104,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/host/formlist
+     * @route /host/formlist
      */
     public function formListAction()
     {
@@ -114,7 +114,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/host/list
+     * @route /host/list
      */
     public function datatableAction()
     {
@@ -131,7 +131,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Create a new host
      *
      * @method post
-     * @route /configuration/host/add
+     * @route /host/add
      */
     public function createAction()
     {
@@ -184,7 +184,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method post
-     * @route /configuration/host/update
+     * @route /host/update
      */
     public function updateAction()
     {
@@ -232,11 +232,11 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Add a host
      *
      * @method get
-     * @route /configuration/host/add
+     * @route /host/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/host/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/host/add');
         parent::addAction();
     }
     
@@ -244,7 +244,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Update a host
      *
      * @method get
-     * @route /configuration/host/[i:id]
+     * @route /host/[i:id]
      */
     public function editAction()
     {
@@ -256,7 +256,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/contact
+     * @route /host/[i:id]/contact
      */
     public function contactForHostAction()
     {
@@ -268,7 +268,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/contactgroup
+     * @route /host/[i:id]/contactgroup
      */
     public function contactgroupForHostAction()
     {
@@ -280,7 +280,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/hostgroup
+     * @route /host/[i:id]/hostgroup
      */
     public function hostgroupForHostAction()
     {
@@ -292,7 +292,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/hostcategory
+     * @route /host/[i:id]/hostcategory
      */
     public function hostcategoryForHostAction()
     {
@@ -304,7 +304,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/icon
+     * @route /host/[i:id]/icon
      */
     public function iconForHostAction()
     {
@@ -341,7 +341,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Get host template for a specific host
      *
      * @method get
-     * @route /configuration/host/[i:id]/hosttemplate
+     * @route /host/[i:id]/hosttemplate
      */
     public function hostTemplateForHostAction()
     {
@@ -351,7 +351,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/host/[i:id]/parent
+     * @route /host/[i:id]/parent
      */
     public function parentForHostAction()
     {
@@ -388,7 +388,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/host/[i:id]/child
+     * @route /host/[i:id]/child
      */
     public function childForHostAction()
     {
@@ -427,7 +427,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/environment
+     * @route /host/[i:id]/environment
      */
     public function checkEnvironmentHostAction()
     {
@@ -439,7 +439,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/checkperiod
+     * @route /host/[i:id]/checkperiod
      */
     public function checkPeriodForHostAction()
     {
@@ -451,7 +451,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/notificationperiod
+     * @route /host/[i:id]/notificationperiod
      */
     public function notificationPeriodForHostAction()
     {
@@ -462,7 +462,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Get check command for a specific host
      *
      * @method get
-     * @route /configuration/host/[i:id]/checkcommand
+     * @route /host/[i:id]/checkcommand
      */
     public function checkcommandForHostAction()
     {
@@ -474,7 +474,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/eventhandler
+     * @route /host/[i:id]/eventhandler
      */
     public function eventHandlerForHostAction()
     {
@@ -485,7 +485,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/host/mc_fields
+     * @route /host/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -496,7 +496,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/host/mc_fields/[i:id]
+     * @route /host/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -508,7 +508,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/host/[i:id]/poller
+     * @route /host/[i:id]/poller
      */
     public function pollerForHostAction()
     {
@@ -519,7 +519,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Duplicate a hosts
      *
      * @method post
-     * @route /configuration/host/duplicate
+     * @route /host/duplicate
      */
     public function duplicateAction()
     {
@@ -530,7 +530,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/host/massive_change
+     * @route /host/massive_change
      */
     public function massiveChangeAction()
     {
@@ -541,7 +541,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Delete action for host
      *
      * @method post
-     * @route /configuration/host/delete
+     * @route /host/delete
      */
     public function deleteAction()
     {
@@ -552,7 +552,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Enable action for host
      * 
      * @method post
-     * @route /configuration/host/enable
+     * @route /host/enable
      */
     public function enableAction()
     {
@@ -563,7 +563,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Disable action for host
      * 
      * @method post
-     * @route /configuration/host/disable
+     * @route /host/disable
      */
     public function disableAction()
     {
@@ -575,7 +575,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * with template inheritance
      *
      * @method get
-     * @route /configuration/host/snapshot/[i:id]
+     * @route /host/snapshot/[i:id]
      */
     public function snapshotAction()
     {
@@ -590,7 +590,7 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
      * Get inheritance value
      *
      * @method get
-     * @route /configuration/host/[i:id]/inheritance
+     * @route /host/[i:id]/inheritance
      */
     public function getInheritanceAction()
     {

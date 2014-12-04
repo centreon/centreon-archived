@@ -47,7 +47,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action for listing hosts
      *
      * @method GET
-     * @route /api/configuration/[a:version]/command
+     * @route /command
      */
     public function listAction()
     {
@@ -74,7 +74,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action to get info a specific host
      *
      * @method GET
-     * @route /api/configuration/[a:version]/command/[i:id]
+     * @route /command/[i:id]
      */
     public function listCommandAction()
     {
@@ -109,7 +109,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action for update 
      *
      * @method PUT
-     * @route /api/configuration/[a:version]/command/[i:id]
+     * @route /command/[i:id]
      */
     public function updateAction()
     {
@@ -120,7 +120,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action for add
      *
      * @method POST
-     * @route /api/configuration/[a:version]/command
+     * @route /command
      */
     public function addAction()
     {
@@ -131,7 +131,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action for delete
      *
      * @method DELETE
-     * @route /api/configuration/[a:version]/command/[i:id]
+     * @route /command/[i:id]
      * 
      */
     public function deleteAction()
@@ -143,7 +143,7 @@ class CommandApi extends \Centreon\Internal\Controller
      * Action for duplicate
      *
      * @method PUT
-     * @route /api/configuration/[a:version]/command/duplicate/[i:id]
+     * @route /command/duplicate/[i:id]
      */
     public function duplicateAction()
     {

@@ -40,4 +40,5 @@ use Centreon\Controllers\FormController;
 class BasicController extends FormController
 {
     public static $moduleName = 'CentreonAdministration';
+    public static $moduleShortName = 'centreon-administration';
 }

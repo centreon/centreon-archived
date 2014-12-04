@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="aclmenu_form">
-		<route>/administration/aclmenu/update</route>
+		<route>/centreon-administration/aclmenu/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/administration/aclmenu</redirect_route>
+		<redirect_route>/centreon-administration/aclmenu</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
@@ -25,7 +25,7 @@
 		</section>
 	</form>
 	<wizard name="add_aclmenu">
-		<route>/administration/aclmenu/add</route>
+		<route>/centreon-administration/aclmenu/add</route>
 		<step name="General">
 			<field name="name" mandatory="1"></field>
 			<field name="description" mandatory="0"></field>

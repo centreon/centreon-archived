@@ -60,7 +60,7 @@ class EngineController extends FormController
      * List engines
      *
      * @method get
-     * @route /centreon-engine/engine
+     * @route /engine
      */
     public function listAction()
     {
@@ -70,7 +70,7 @@ class EngineController extends FormController
     /**
      * 
      * @method get
-     * @route /centreon-engine/engine/formlist
+     * @route /engine/formlist
      */
     public function formListAction()
     {
@@ -80,7 +80,7 @@ class EngineController extends FormController
     /**
      * 
      * @method get
-     * @route /centreon-engine/engine/list
+     * @route /engine/list
      */
     public function datatableAction()
     {
@@ -92,7 +92,7 @@ class EngineController extends FormController
      *
      *
      * @method post
-     * @route /centreon-engine/engine/update
+     * @route /engine/update
      */
     public function updateAction()
     {
@@ -129,7 +129,7 @@ class EngineController extends FormController
      *
      *
      * @method post
-     * @route /centreon-engine/engine/add
+     * @route /engine/add
      */
     public function createAction()
     {
@@ -141,7 +141,7 @@ class EngineController extends FormController
      *
      *
      * @method get
-     * @route /centreon-engine/engine/[i:id]
+     * @route /engine/[i:id]
      */
     public function editAction()
     {
@@ -157,7 +157,7 @@ class EngineController extends FormController
      * Add a engine
      *
      * @method get
-     * @route /centreon-engine/engine/add
+     * @route /engine/add
      */
     public function addAction()
     {
@@ -169,7 +169,7 @@ class EngineController extends FormController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /centreon-engine/engine/mc_fields
+     * @route /engine/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -180,7 +180,7 @@ class EngineController extends FormController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /centreon-engine/engine/mc_fields/[i:id]
+     * @route /engine/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -191,7 +191,7 @@ class EngineController extends FormController
      * Duplicate a hosts
      *
      * @method POST
-     * @route /centreon-engine/engine/duplicate
+     * @route /engine/duplicate
      */
     public function duplicateAction()
     {
@@ -202,7 +202,7 @@ class EngineController extends FormController
      * Apply massive change
      *
      * @method POST
-     * @route /centreon-engine/engine/massive_change
+     * @route /engine/massive_change
      */
     public function massiveChangeAction()
     {
@@ -213,7 +213,7 @@ class EngineController extends FormController
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /centreon-engine/engine/delete
+     * @route /engine/delete
      */
     public function deleteAction()
     {
@@ -223,7 +223,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /centreon-engine/engine/[i:id]/globalhosteventhandler
+     * @route /engine/[i:id]/globalhosteventhandler
      */
     public function globalHostEventHandlerForEngineAction()
     {
@@ -233,7 +233,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /centreon-engine/engine/[i:id]/globalserviceeventhandler
+     * @route /engine/[i:id]/globalserviceeventhandler
      */
     public function globalServiceEventHandlerForEngineAction()
     {
@@ -243,7 +243,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /centreon-engine/engine/[i:id]/ochpcommand
+     * @route /engine/[i:id]/ochpcommand
      */
     public function ochpCommandForEngineAction()
     {
@@ -253,7 +253,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /centreon-engine/engine/[i:id]/ocspcommand
+     * @route /engine/[i:id]/ocspcommand
      */
     public function ocspCommandForEngineAction()
     {

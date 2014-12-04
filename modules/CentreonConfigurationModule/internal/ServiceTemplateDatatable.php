@@ -103,7 +103,7 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/servicetemplate/[i:id]',
+                    'route' => '/centreon-configuration/servicetemplate/[i:id]',
                     'routeParams' => array(
                         'id' => '::service_id::',
                         'advanced' => '0'
@@ -219,7 +219,7 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
 
         foreach ($resultSet as &$myServiceSet) {
             $myServiceSet['service_description'] = '<span data-overlay-url="'.$router->getPathFor(
-                '/configuration/service/snapshot/'
+                '/centreon-configuration/service/snapshot/'
             ).
             $myServiceSet['service_id'].
             '"><span class="overlay">'.
@@ -239,12 +239,12 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
                                         \Centreon\Internal\Di::getDefault()
                                         ->get('router')
                                         ->getPathFor(
-                                                     '/configuration/servicetemplate/[i:id]',
+                                                     '/centreon-configuration/servicetemplate/[i:id]',
                                                      array('id' => $tplArr['id'])
                                                      )
                                         );
                 if (isset($tplArr['description'])) {
-                    $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/configuration/servicetemplate/viewconf/').
+                    $tplStr .= '<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/servicetemplate/viewconf/').
                         $myServiceSet['service_template_model_stm_id'].
                         '"><a href="'.
                         $tplRoute.

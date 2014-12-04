@@ -41,7 +41,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
 {
     protected $objectDisplayName = 'Command';
     protected $objectName = 'command';
-    protected $objectBaseUrl = '/configuration/command';
+    protected $objectBaseUrl = '/centreon-configuration/command';
     protected $objectClass = '\CentreonConfiguration\Models\Command';
     protected $datatableObject = '\CentreonConfiguration\Internal\CommandDatatable';
     protected $repository = '\CentreonConfiguration\Repository\CommandRepository';   
@@ -51,7 +51,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * List commands
      *
      * @method get
-     * @route /configuration/command
+     * @route /command
      * @acl view
      */
     public function listAction()
@@ -62,7 +62,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
     /**
      * 
      * @method get
-     * @route /configuration/command/formlist
+     * @route /command/formlist
      */
     public function formListAction()
     {
@@ -72,7 +72,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
     /**
      * 
      * @method get
-     * @route /configuration/command/list
+     * @route /command/list
      */
     public function datatableAction()
     {
@@ -84,7 +84,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      *
      *
      * @method post
-     * @route /configuration/command/update
+     * @route /command/update
      * @acl view,update
      */
     public function updateAction()
@@ -97,7 +97,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      *
      *
      * @method post
-     * @route /configuration/command/add
+     * @route /command/add
      * @acl add
      */
     public function createAction()
@@ -110,12 +110,12 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      *
      *
      * @method get
-     * @route /configuration/command/add
+     * @route /command/add
      * @acl add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/command/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/command/add');
         parent::addAction();
     }
     
@@ -124,7 +124,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      *
      *
      * @method get
-     * @route /configuration/command/[i:id]
+     * @route /command/[i:id]
      * @acl update
      */
     public function editAction()
@@ -136,7 +136,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/command/mc_fields
+     * @route /command/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -147,7 +147,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/command/mc_fields/[i:id]
+     * @route /command/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -158,7 +158,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * Duplicate a command
      *
      * @method POST
-     * @route /configuration/command/duplicate
+     * @route /command/duplicate
      */
     public function duplicateAction()
     {
@@ -169,7 +169,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/command/massive_change
+     * @route /command/massive_change
      */
     public function massiveChangeAction()
     {
@@ -180,7 +180,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * Delete action for command
      *
      * @method post
-     * @route /configuration/command/delete
+     * @route /command/delete
      */
     public function deleteAction()
     {
@@ -191,7 +191,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * Connector for a specific command
      *
      * @method get
-     * @route /configuration/command/[i:id]/connector
+     * @route /command/[i:id]/connector
      */
     public function connectorForCommandAction()
     {
@@ -202,7 +202,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      * Delete action for command
      *
      * @method get
-     * @route /configuration/command/[i:id]/arguments
+     * @route /command/[i:id]/arguments
      */
     public function getArgumentsAction()
     {

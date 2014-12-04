@@ -52,7 +52,7 @@ class TagController extends \Centreon\Internal\Controller
      * Add a tag
      *
      * @method post
-     * @route /administration/tag/add
+     * @route /tag/add
      */
     public function addAction()
     {
@@ -79,7 +79,7 @@ class TagController extends \Centreon\Internal\Controller
      * Delete a tag
      *
      * @method post
-     * @route /administration/tag/delete
+     * @route /tag/delete
      */
     public function deleteAction()
     {

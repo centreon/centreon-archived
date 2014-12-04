@@ -42,7 +42,7 @@ class AclresourceController extends BasicController
 {
     protected $objectDisplayName = 'AclResource';
     protected $objectName = 'aclresource';
-    protected $objectBaseUrl = '/administration/aclresource';
+    protected $objectBaseUrl = '/centreon-administration/aclresource';
     protected $objectClass = '\CentreonAdministration\Models\Aclresource';
     public static $relationMap = array(
     );
@@ -53,7 +53,7 @@ class AclresourceController extends BasicController
      * List aclresources
      *
      * @method get
-     * @route /administration/aclresource
+     * @route /aclresource
      */
     public function listAction()
     {
@@ -63,7 +63,7 @@ class AclresourceController extends BasicController
     /**
      * 
      * @method get
-     * @route /administration/aclresource/list
+     * @route /aclresource/list
      */
     public function datatableAction()
     {
@@ -74,7 +74,7 @@ class AclresourceController extends BasicController
      * Create a new acl resource
      *
      * @method post
-     * @route /administration/aclresource/create
+     * @route /aclresource/create
      */
     public function createAction()
     {
@@ -86,7 +86,7 @@ class AclresourceController extends BasicController
      *
      *
      * @method post
-     * @route /administration/aclresource/update
+     * @route /aclresource/update
      */
     public function updateAction()
     {
@@ -98,11 +98,11 @@ class AclresourceController extends BasicController
      *
      *
      * @method get
-     * @route /administration/aclresource/add
+     * @route /aclresource/add
      */
     public function addAction()
     {
-         $this->tpl->assign('validateUrl', '/administration/aclresource/add');
+         $this->tpl->assign('validateUrl', '/centreon-administration/aclresource/add');
          parent::addAction();
     }
     
@@ -111,7 +111,7 @@ class AclresourceController extends BasicController
      *
      *
      * @method get
-     * @route /administration/aclresource/[i:id]/[i:advanced]
+     * @route /aclresource/[i:id]/[i:advanced]
      */
     public function editAction()
     {
@@ -122,7 +122,7 @@ class AclresourceController extends BasicController
      * Retrieve list of acl resources for a form
      *
      * @method get
-     * @route /administration/aclresource/formlist
+     * @route /aclresource/formlist
      */
     public function formListAction()
     {
@@ -133,7 +133,7 @@ class AclresourceController extends BasicController
      * Duplicate action for aclresource
      *
      * @method post
-     * @route /administration/aclresource/duplicate
+     * @route /aclresource/duplicate
      */
     public function duplicateAction()
     {
@@ -144,7 +144,7 @@ class AclresourceController extends BasicController
      * Massive Change action for aclresource
      *
      * @method post
-     * @route /administration/aclresource/massive_change
+     * @route /aclresource/massive_change
      */
     public function massiveChangeAction()
     {
@@ -155,7 +155,7 @@ class AclresourceController extends BasicController
      * MC Field action for aclresource
      *
      * @method post
-     * @route /administration/aclresource/mc_fields
+     * @route /aclresource/mc_fields
      */
     public function getMcFieldAction()
     {
@@ -166,7 +166,7 @@ class AclresourceController extends BasicController
      * Delete action for aclresource
      *
      * @method post
-     * @route /administration/aclresource/delete
+     * @route /aclresource/delete
      */
     public function deleteAction()
     {

@@ -39,7 +39,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
 {
     protected $objectDisplayName = 'Domain';
     protected $objectName = 'domain';
-    protected $objectBaseUrl = '/administration/domain';
+    protected $objectBaseUrl = '/centreon-administration/domain';
     protected $objectClass = '\CentreonAdministration\Models\Domain';
     protected $repository = '\CentreonAdministration\Repository\DomainRepository';
     
@@ -52,7 +52,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      * List hostcategories
      *
      * @method get
-     * @route /administration/domain
+     * @route /domain
      */
     public function listAction()
     {
@@ -62,7 +62,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
     /**
      * 
      * @method get
-     * @route /administration/domain/formlist
+     * @route /domain/formlist
      */
     public function formListAction()
     {
@@ -72,7 +72,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
     /**
      * 
      * @method get
-     * @route /administration/domain/list
+     * @route /domain/list
      */
     public function datatableAction()
     {
@@ -84,7 +84,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      *
      *
      * @method post
-     * @route /administration/domain/update
+     * @route /domain/update
      */
     public function updateAction()
     {
@@ -96,11 +96,11 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      *
      *
      * @method get
-     * @route /administration/domain/add
+     * @route /domain/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/administration/domain/add');
+        $this->tpl->assign('validateUrl', '/centreon-administration/domain/add');
         parent::addAction();
     }
 
@@ -109,7 +109,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      *
      *
      * @method post
-     * @route /administration/domain/add
+     * @route /domain/add
      */
     public function createAction()
     {
@@ -121,7 +121,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      *
      *
      * @method get
-     * @route /administration/domain/[i:id]
+     * @route /domain/[i:id]
      */
     public function editAction()
     {
@@ -132,7 +132,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      * Get the list of massive change fields
      *
      * @method get
-     * @route /administration/domain/mc_fields
+     * @route /domain/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -143,7 +143,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      * Get the html of attribute filed
      *
      * @method get
-     * @route /administration/domain/mc_fields/[i:id]
+     * @route /domain/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -154,7 +154,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      * Duplicate a hosts
      *
      * @method POST
-     * @route /administration/domain/duplicate
+     * @route /domain/duplicate
      */
     public function duplicateAction()
     {
@@ -165,7 +165,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      * Apply massive change
      *
      * @method POST
-     * @route /administration/domain/massive_change
+     * @route /domain/massive_change
      */
     public function massiveChangeAction()
     {
@@ -176,7 +176,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      * Delete action for domain
      *
      * @method post
-     * @route /administration/domain/delete
+     * @route /domain/delete
      */
     public function deleteAction()
     {
@@ -188,7 +188,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      *
      *
      * @method get
-     * @route /administration/domain/[i:id]/icon
+     * @route /domain/[i:id]/icon
      */
     public function iconForDomainAction()
     {

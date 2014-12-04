@@ -41,7 +41,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
 {
     protected $objectDisplayName = 'Hostgroup';
     protected $objectName = 'hostgroup';
-    protected $objectBaseUrl = '/configuration/hostgroup';
+    protected $objectBaseUrl = '/centreon-configuration/hostgroup';
     protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
     protected $repository = '\CentreonConfiguration\Repository\HostgroupRepository';
 
@@ -61,7 +61,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * List hostgroups
      *
      * @method get
-     * @route /configuration/hostgroup
+     * @route /hostgroup
      */
     public function listAction()
     {
@@ -82,7 +82,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
     /**
      * 
      * @method get
-     * @route /configuration/hostgroup/formlist
+     * @route /hostgroup/formlist
      */
     public function formListAction()
     {
@@ -92,7 +92,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
     /**
      * 
      * @method get
-     * @route /configuration/hostgroup/list
+     * @route /hostgroup/list
      */
     public function datatableAction()
     {
@@ -104,7 +104,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method post
-     * @route /configuration/hostgroup/update
+     * @route /hostgroup/update
      */
     public function updateAction()
     {
@@ -115,11 +115,11 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Add a hostgroup
      *
      * @method get
-     * @route /configuration/hostgroup/add
+     * @route /hostgroup/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/hostgroup/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/hostgroup/add');
         parent::addAction();
     }
     
@@ -128,7 +128,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method post
-     * @route /configuration/hostgroup/add
+     * @route /hostgroup/add
      */
     public function createAction()
     {
@@ -140,7 +140,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method get
-     * @route /configuration/hostgroup/[i:id]
+     * @route /hostgroup/[i:id]
      */
     public function editAction()
     {
@@ -151,7 +151,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/hostgroup/mc_fields
+     * @route /hostgroup/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -162,7 +162,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/hostgroup/mc_fields/[i:id]
+     * @route /hostgroup/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -173,7 +173,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Duplicate a hostgroup
      *
      * @method POST
-     * @route /configuration/hostgroup/duplicate
+     * @route /hostgroup/duplicate
      */
     public function duplicateAction()
     {
@@ -184,7 +184,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/hostgroup/massive_change
+     * @route /hostgroup/massive_change
      */
     public function massiveChangeAction()
     {
@@ -195,7 +195,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Delete action for hostgroup
      *
      * @method post
-     * @route /configuration/hostgroup/delete
+     * @route /hostgroup/delete
      */
     public function deleteAction()
     {
@@ -206,7 +206,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Enable action for hostcategory
      * 
      * @method post
-     * @route /configuration/hostgroup/enable
+     * @route /hostgroup/enable
      */
     public function enableAction()
     {
@@ -217,7 +217,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Disable action for hostgroup
      * 
      * @method post
-     * @route /configuration/hostgroup/disable
+     * @route /hostgroup/disable
      */
     public function disableAction()
     {
@@ -229,7 +229,7 @@ class HostGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method get
-     * @route /configuration/hostgroup/[i:id]/host
+     * @route /hostgroup/[i:id]/host
      */
     public function hostForHostGroupAction()
     {

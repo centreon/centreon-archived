@@ -103,7 +103,7 @@ class BusinessActivityDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/bam/business-activity/[i:id]',
+                    'route' => '/centreon-bam/business-activity/[i:id]',
                     'routeParams' => array(
                         'id' => '::ba_id::'
                     ),

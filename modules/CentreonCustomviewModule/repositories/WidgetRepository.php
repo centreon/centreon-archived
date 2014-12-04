@@ -558,7 +558,7 @@ class WidgetRepository
     {
         $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("INSERT INTO cfg_forms_wizards (name, route, module_id) VALUES (?, ?, ?)");
-        $stmt->execute(array($formName, "/customview/widgetsettings/$widgetModelId", $moduleId));
+        $stmt->execute(array($formName, "/centreon-customview/widgetsettings/$widgetModelId", $moduleId));
     }
 
     /**

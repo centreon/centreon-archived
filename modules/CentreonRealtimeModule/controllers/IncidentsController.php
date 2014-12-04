@@ -50,7 +50,7 @@ class IncidentsController extends \Centreon\Internal\Controller
      * The page structure for display the list
      *
      * @method GET
-     * @route /realtime/incident
+     * @route /incident
      */
     public function displayListAction()
     {
@@ -67,7 +67,7 @@ class IncidentsController extends \Centreon\Internal\Controller
      * Get the list of incidents
      *
      * @method POST
-     * @route /realtime/incident
+     * @route /incident
      */
     public function getListIncidentsAction()
     {
@@ -139,7 +139,7 @@ class IncidentsController extends \Centreon\Internal\Controller
     /**
      * Get extended information for a issue
      *
-     * @route /realtime/incident/extented_info
+     * @route /incident/extented_info
      * @method POST
      */
     public function getIncidentExtInfoAction()
@@ -184,7 +184,7 @@ class IncidentsController extends \Centreon\Internal\Controller
     /**
      * Display the graph map of incident
      *
-     * @route /realtime/incident/graph/[i:id]
+     * @route /incident/graph/[i:id]
      * @method GET
      */
     public function displayIncidentGraphAction()
@@ -206,7 +206,7 @@ class IncidentsController extends \Centreon\Internal\Controller
     /**
      * Get information for a incident for display graph
      *
-     * @route /realtime/incident/graph
+     * @route /incident/graph
      * @method POST
      */
     public function getIncidentGraphInfoAction()

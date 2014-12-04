@@ -44,7 +44,7 @@ class AclactionController extends BasicController
 {
     protected $objectDisplayName = 'AclAction';
     protected $objectName = 'aclaction';
-    protected $objectBaseUrl = '/administration/aclaction';
+    protected $objectBaseUrl = '/centreon-administration/aclaction';
     protected $objectClass = '\CentreonAdministration\Models\Aclaction';
     public static $relationMap = array(
         'aclaction_aclgroups' => '\CentreonAdministration\Models\Relation\Aclgroup\Aclaction'
@@ -56,7 +56,7 @@ class AclactionController extends BasicController
      * List aclaction
      *
      * @method get
-     * @route /administration/aclaction
+     * @route /aclaction
      */
     public function listAction()
     {
@@ -66,7 +66,7 @@ class AclactionController extends BasicController
     /**
      * 
      * @method get
-     * @route /administration/aclaction/list
+     * @route /aclaction/list
      */
     public function datatableAction()
     {
@@ -77,7 +77,7 @@ class AclactionController extends BasicController
      * Create a new acl action
      *
      * @method post
-     * @route /administration/aclaction/create
+     * @route /aclaction/create
      */
     public function createAction()
     {
@@ -88,7 +88,7 @@ class AclactionController extends BasicController
      * Update an acl action
      *
      * @method post
-     * @route /administration/aclaction/update
+     * @route /aclaction/update
      */
     public function updateAction()
     {
@@ -102,11 +102,11 @@ class AclactionController extends BasicController
      *
      *
      * @method get
-     * @route /administration/aclaction/add
+     * @route /aclaction/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/administration/aclaction/add');
+        $this->tpl->assign('validateUrl', '/centreon-administration/aclaction/add');
         parent::addAction();
     }
     
@@ -114,7 +114,7 @@ class AclactionController extends BasicController
      * Update a aclaction
      *
      * @method get
-     * @route /administration/aclaction/[i:id]
+     * @route /aclaction/[i:id]
      */
     public function editAction()
     {
@@ -155,7 +155,7 @@ class AclactionController extends BasicController
      * Retrieve list of acl action for a form
      *
      * @method get
-     * @route /administration/aclaction/formlist
+     * @route /aclaction/formlist
      */
     public function formListAction()
     {
@@ -166,7 +166,7 @@ class AclactionController extends BasicController
      * Get default list of Acl groups
      *
      * @method get
-     * @route /administration/aclaction/[i:id]/aclgroup
+     * @route /aclaction/[i:id]/aclgroup
      */
     public function aclgroupAction()
     {

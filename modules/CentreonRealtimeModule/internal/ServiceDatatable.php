@@ -120,7 +120,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/realtime/host/[i:id]',
+                    'route' => '/centreon-realtime/host/[i:id]',
                     'routeParams' => array(
                         'id' => '::host_id::'
                     ),
@@ -140,7 +140,7 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/realtime/service/[i:hid]/[i:sid]',
+                    'route' => '/centreon-realtime/service/[i:hid]/[i:sid]',
                     'routeParams' => array(
                         'hid' => '::host_id::',
                         'sid' => '::service_id::'
@@ -288,21 +288,21 @@ class ServiceDatatable extends \Centreon\Internal\Datatable
             } else {
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span data-overlay-url="/realtime/host/'.
+                $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'.
                     $myServiceSet['host_id'].
                     '/tooltip"><span class="overlay">'.
                     $icon.
                     '&nbsp;'.$myServiceSet['name'].'</span></span>';
             }
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
-            $myServiceSet['description'] = '<span data-overlay-url="/realtime/service/'.
+            $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'.
                 $myServiceSet['host_id'].
                 '/'.$myServiceSet['service_id'].
                 '/tooltip"><span class="overlay">'.
                 $icon.
                 '&nbsp;'.$myServiceSet['description'].'</span></span>';
             if ($myServiceSet['perfdata'] != '') {
-                $myServiceSet['ico'] = '<span data-overlay-url="/realtime/service/'
+                $myServiceSet['ico'] = '<span data-overlay-url="/centreon-realtime/service/'
                     . $myServiceSet['host_id']
                     . '/' . $myServiceSet['service_id']
                     . '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';

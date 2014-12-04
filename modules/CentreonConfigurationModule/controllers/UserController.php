@@ -42,7 +42,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'User';
     protected $objectName = 'user';
-    protected $objectBaseUrl = '/configuration/user';
+    protected $objectBaseUrl = '/centreon-configuration/user';
     protected $datatableObject = '\CentreonConfiguration\Internal\UserDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Contact';
     protected $repository = '\CentreonConfiguration\Repository\UserRepository';
@@ -59,7 +59,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * List users
      *
      * @method get
-     * @route /configuration/user
+     * @route /user
      */
     public function listAction()
     {
@@ -69,7 +69,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/user/list
+     * @route /user/list
      */
     public function datatableAction()
     {
@@ -79,7 +79,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/user/formlist
+     * @route /user/formlist
      */
     public function formListAction()
     {
@@ -91,7 +91,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method post
-     * @route /configuration/user/update
+     * @route /user/update
      */
     public function updateAction()
     {
@@ -114,7 +114,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method post
-     * @route /configuration/user/add
+     * @route /user/add
      */
     public function createAction()
     {
@@ -125,11 +125,11 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Add a user
      *
      * @method get
-     * @route /configuration/user/add
+     * @route /user/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/user/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/user/add');
         parent::addAction();
     }
     
@@ -138,7 +138,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/user/[i:id]
+     * @route /user/[i:id]
      */
     public function editAction()
     {
@@ -149,7 +149,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/user/mc_fields
+     * @route /user/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -160,7 +160,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/user/mc_fields/[i:id]
+     * @route /user/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -171,7 +171,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Duplicate contact
      *
      * @method POST
-     * @route /configuration/user/duplicate
+     * @route /user/duplicate
      */
     public function duplicateAction()
     {
@@ -182,7 +182,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/user/massive_change
+     * @route /user/massive_change
      */
     public function massiveChangeAction()
     {
@@ -193,7 +193,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Delete action for contact
      *
      * @method post
-     * @route /configuration/user/delete
+     * @route /user/delete
      */
     public function deleteAction()
     {
@@ -204,7 +204,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Enable action for contact
      * 
      * @method post
-     * @route /configuration/user/enable
+     * @route /user/enable
      */
     public function enableAction()
     {
@@ -215,7 +215,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Disable action for contact
      * 
      * @method post
-     * @route /configuration/user/disable
+     * @route /user/disable
      */
     public function disableAction()
     {
@@ -226,7 +226,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get contact template for a specific contact
      *
      * @method get
-     * @route /configuration/user/[i:id]/contacttemplate
+     * @route /user/[i:id]/contacttemplate
      */
     public function contactTemplateForContactAction()
     {
@@ -237,7 +237,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get host notification period for a specific contact
      *
      * @method get
-     * @route /configuration/user/[i:id]/hostnotifperiod
+     * @route /user/[i:id]/hostnotifperiod
      */
     public function hostNotifPeriodForContactAction()
     {
@@ -248,7 +248,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get host notification command for a specific contact
      *
      * @method get
-     * @route /configuration/user/[i:id]/hostnotifcommand
+     * @route /user/[i:id]/hostnotifcommand
      */
     public function hostNotifCommandForContactAction()
     {
@@ -259,7 +259,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get service notification period for a specific contact
      *
      * @method get
-     * @route /configuration/user/[i:id]/servicenotifperiod
+     * @route /user/[i:id]/servicenotifperiod
      */
     public function serviceNotifPeriodForContactAction()
     {
@@ -270,7 +270,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get service notification command for a specific contact
      *
      * @method get
-     * @route /configuration/user/[i:id]/servicenotifcommand
+     * @route /user/[i:id]/servicenotifcommand
      */
     public function serviceNotifCommandForContactAction()
     {
@@ -281,7 +281,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get contact group for a specific contact
      *
      * @method get
-     * @route /configuration/user/[i:id]/contactgroup
+     * @route /user/[i:id]/contactgroup
      */
     public function contactGroupForContactAction()
     {
@@ -292,7 +292,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      * Get acl group for a specific contact
      *
      * @method get
-     * @route /configuration/user/[i:id]/aclgroup
+     * @route /user/[i:id]/aclgroup
      */
     public function aclGroupForContactAction()
     {

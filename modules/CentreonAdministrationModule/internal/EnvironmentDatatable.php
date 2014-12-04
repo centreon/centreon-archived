@@ -98,7 +98,7 @@ class EnvironmentDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/environment/[i:id]',
+                    'route' => '/centreon-administration/environment/[i:id]',
                     'routeParams' => array(
                         'id' => '::environment_id::'
                     ),

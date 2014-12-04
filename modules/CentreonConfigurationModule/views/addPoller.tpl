@@ -67,7 +67,7 @@ $(function() {
 
     if ( data !== null ) {
       $.ajax({
-        url: "{url_for url='/configuration/poller/templates/form'}",
+        url: "{url_for url='/centreon-configuration/poller/templates/form'}",
         type: "post",
         data: { name: data.id },
         dataType: "json",
@@ -133,7 +133,7 @@ $(function() {
     }
 
     $.ajax({
-      url: "{url_for url='/configuration/poller/add'}",
+      url: "{url_for url='/centreon-configuration/poller/add'}",
       data: $( "#wizard_form" ).serializeArray(),
       dataType: "json",
       type: "post",

@@ -39,7 +39,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
 {
     protected $objectDisplayName = 'Trap';
     protected $objectName = 'trap';
-    protected $objectBaseUrl = '/configuration/trap';
+    protected $objectBaseUrl = '/centreon-configuration/trap';
     protected $objectClass = '\CentreonConfiguration\Models\Trap';
     protected $datatableObject = '\CentreonConfiguration\Internal\TrapDatatable';
     protected $repository = '\CentreonConfiguration\Repository\TrapRepository';
@@ -53,7 +53,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * List traps
      *
      * @method get
-     * @route /configuration/trap
+     * @route /trap
      */
     public function listAction()
     {
@@ -63,7 +63,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/trap/formlist
+     * @route /trap/formlist
      */
     public function formListAction()
     {
@@ -73,7 +73,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
     /**
      * 
      * @method get
-     * @route /configuration/trap/list
+     * @route /trap/list
      */
     public function datatableAction()
     {
@@ -85,7 +85,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method post
-     * @route /configuration/trap/update
+     * @route /trap/update
      */
     public function updateAction()
     {
@@ -97,7 +97,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method post
-     * @route /configuration/trap/add
+     * @route /trap/add
      */
     public function createAction()
     {
@@ -109,7 +109,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      *
      *
      * @method get
-     * @route /configuration/trap/[i:id]
+     * @route /trap/[i:id]
      */
     public function editAction()
     {
@@ -120,11 +120,11 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Add a trap
      *
      * @method get
-     * @route /configuration/trap/add
+     * @route /trap/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/trap/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/trap/add');
         parent::addAction();
     }
 
@@ -132,7 +132,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/trap/mc_fields
+     * @route /trap/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -143,7 +143,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/trap/mc_fields/[i:id]
+     * @route /trap/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -154,7 +154,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/trap/duplicate
+     * @route /trap/duplicate
      */
     public function duplicateAction()
     {
@@ -165,7 +165,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/trap/massive_change
+     * @route /trap/massive_change
      */
     public function massiveChangeAction()
     {
@@ -176,7 +176,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /configuration/trap/delete
+     * @route /trap/delete
      */
     public function deleteAction()
     {
@@ -187,7 +187,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Manufacturer for specific trap
      *
      * @method get
-     * @route /configuration/trap/[i:id]/manufacturer
+     * @route /trap/[i:id]/manufacturer
      */
     public function manufacturerForTrapAction()
     {
@@ -198,7 +198,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Services for specific trap
      *
      * @method get
-     * @route /configuration/trap/[i:id]/service
+     * @route /trap/[i:id]/service
      */
     public function serviceForTrapAction()
     {
@@ -209,7 +209,7 @@ class TrapController extends \CentreonConfiguration\Controllers\BasicController
      * Service templates for specific trap
      *
      * @method get
-     * @route /configuration/trap/[i:id]/servicetemplate
+     * @route /trap/[i:id]/servicetemplate
      */
     public function servicetemplateForTrapAction()
     {

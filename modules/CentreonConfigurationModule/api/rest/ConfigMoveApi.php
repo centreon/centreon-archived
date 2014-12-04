@@ -49,7 +49,7 @@ class ConfigMoveApi extends \Centreon\Internal\Controller
      * Action for Testing configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/movecfg/[i:id]
+     * @route /movecfg/[i:id]
      */
     public static function moveAction()
     {

@@ -47,43 +47,18 @@ class HostApi extends \Centreon\Internal\Controller
      * Action for listing hosts
      *
      * @method GET
-     * @route /api/configuration/[a:version]/host
+     * @route /host
      */
     public function listAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
         
-        $requestParams = $this->getParams();
-
-        /*
-         * Fields that we want to display
-         */
-        $params = 'host_id,host_name,host_alias,host_address,host_activate';
-        
-        $hostList = \CentreonConfiguration\Models\Host::getList(
-            $params,
-            -1,
-            0,
-            null,
-            "ASC",
-            array("host_register" => '1')
-        );
-        
-        $router->response()->json(
-            array(
-                "api-version" => $requestParams['version'],
-                "status" => true,
-                "data" => $hostList
-            )
-        );
     }
 
     /**
      * Action to get info a specific host
      *
      * @method GET
-     * @route /api/configuration/[a:version]/host/[i:id]
+     * @route /host/[i:id]
      */
     public function listHostAction()
     {
@@ -121,7 +96,7 @@ class HostApi extends \Centreon\Internal\Controller
      * Action for update 
      *
      * @method PUT
-     * @route /api/configuration/[a:version]/host/[i:id]
+     * @route /host/[i:id]
      */
     public function updateAction()
     {
@@ -132,7 +107,7 @@ class HostApi extends \Centreon\Internal\Controller
      * Action for add
      *
      * @method POST
-     * @route /api/configuration/[a:version]/host
+     * @route /host
      */
     public function addAction()
     {
@@ -143,7 +118,7 @@ class HostApi extends \Centreon\Internal\Controller
      * Action for delete
      *
      * @method DELETE
-     * @route /api/configuration/[a:version]/host/[i:id]
+     * @route /host/[i:id]
      */
     public function deleteAction()
     {
@@ -154,7 +129,7 @@ class HostApi extends \Centreon\Internal\Controller
      * Action for duplicate
      *
      * @method PUT
-     * @route /api/configuration/[a:version]/host/[i:id]
+     * @route /host/[i:id]
      */
     public function duplicateAction()
     {

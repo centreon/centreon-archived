@@ -97,7 +97,7 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/usergroup/[i:id]',
+                    'route' => '/centreon-configuration/usergroup/[i:id]',
                     'routeParams' => array(
                         'id' => '::cg_id::'
                     ),

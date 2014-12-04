@@ -98,7 +98,7 @@ class TrapDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/trap/[i:id]',
+                    'route' => '/centreon-configuration/trap/[i:id]',
                     'routeParams' => array(
                         'id' => '::traps_id::'
                     ),

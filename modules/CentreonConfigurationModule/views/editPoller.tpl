@@ -73,7 +73,7 @@ function loadTemplateSteps( data, $el ) {
 
   if ( data !== null ) {
     $.ajax({
-      url: "{url_for url='/configuration/poller/templates/form'}",
+      url: "{url_for url='/centreon-configuration/poller/templates/form'}",
       type: "post",
       data: {
         name: data.id,
@@ -145,7 +145,7 @@ $(function() {
     }
 
     $.ajax({
-      url: "{url_for url='/configuration/poller/update'}",
+      url: "{url_for url='/centreon-configuration/poller/update'}",
       data: $( "form" ).serializeArray(),
       dataType: "json",
       type: "post",

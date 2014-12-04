@@ -47,22 +47,22 @@
                     {
                         "name": "Hosts",
                         "short_name": "conf_hosts_list",
-                        "route": "/configuration/host"
+                        "route": "/centreon-configuration/host"
                     },
                     {
                         "name": "Host templates",
                         "short_name": "conf_hosttemplate_list",
-                        "route": "/configuration/hosttemplate"
+                        "route": "/centreon-configuration/hosttemplate"
                     },
                     {
                         "name": "Host groups",
                         "short_name": "conf_hostgroup_list",
-                        "route": "/configuration/hostgroup"
+                        "route": "/centreon-configuration/hostgroup"
                     },
                     {
                         "name": "Host categories",
                         "short_name": "conf_category_list",
-                        "route": "/configuration/hostcategory"
+                        "route": "/centreon-configuration/hostcategory"
                     }
                 ]
             },
@@ -74,22 +74,22 @@
                     {
                         "name": "Services",
                         "short_name": "conf_services_list",
-                        "route": "/configuration/service"
+                        "route": "/centreon-configuration/service"
                     },
                     {
                         "name": "Service templates",
                         "short_name": "conf_servicetemplate_list",
-                        "route": "/configuration/servicetemplate"
+                        "route": "/centreon-configuration/servicetemplate"
                     },
                     {
                         "name": "Servicegroups",
                         "short_name": "conf_servicegroup_list",
-                        "route": "/configuration/servicegroup"
+                        "route": "/centreon-configuration/servicegroup"
                     },
                     {
                         "name": "Service categories",
                         "short_name": "conf_servicecategory_list",
-                        "route": "/configuration/servicecategory"
+                        "route": "/centreon-configuration/servicecategory"
                     }
                 ]
             },
@@ -101,12 +101,12 @@
                     {
                         "name": "Commands",
                         "short_name": "conf_commands_list",
-                        "route": "/configuration/command"
+                        "route": "/centreon-configuration/command"
                     },
                     {
                         "name": "Connectors",
                         "short_name": "conf_connectors_list",
-                        "route": "/configuration/connector"
+                        "route": "/centreon-configuration/connector"
                     }
                 ]
             },
@@ -118,12 +118,12 @@
                     {
                         "name": "Users",
                         "short_name": "conf_users_list",
-                        "route": "/configuration/user"
+                        "route": "/centreon-configuration/user"
                     },
                     {
                         "name": "User groups",
                         "short_name": "conf_usergroups_list",
-                        "route": "/configuration/usergroup"
+                        "route": "/centreon-configuration/usergroup"
                     }
                 ]
             },
@@ -135,12 +135,12 @@
                     {
                         "name": "Traps",
                         "short_name": "conf_traps_list",
-                        "route": "/configuration/trap"
+                        "route": "/centreon-configuration/trap"
                     },
                     {
                         "name": "Manufacturers",
                         "short_name": "conf_manufacturers_list",
-                        "route": "/configuration/manufacturer"
+                        "route": "/centreon-configuration/manufacturer"
                     }
                 ]
             },
@@ -148,13 +148,13 @@
                 "name": "Timeperiods",
                 "short_name": "conf_timeperiod",
                 "icon_class": "fa fa-calendar",
-                "route": "/configuration/timeperiod"
+                "route": "/centreon-configuration/timeperiod"
             },
             {
                 "name": "Pollers",
                 "short_name": "conf_poller",
                 "icon_class": "fa fa-code-fork",
-                "route": "/configuration/poller"
+                "route": "/centreon-configuration/poller"
             }
         ]
     }

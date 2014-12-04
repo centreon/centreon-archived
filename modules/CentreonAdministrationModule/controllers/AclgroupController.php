@@ -41,7 +41,7 @@ class AclgroupController extends BasicController
 {
     protected $objectDisplayName = 'AclGroup';
     protected $objectName = 'aclgroup';
-    protected $objectBaseUrl = '/administration/aclgroup';
+    protected $objectBaseUrl = '/centreon-administration/aclgroup';
     protected $objectClass = '\CentreonAdministration\Models\Aclgroup';
     public static $relationMap = array(
         'aclgroup_contacts' => '\CentreonConfiguration\Models\Relation\Aclgroup\Contact',
@@ -57,7 +57,7 @@ class AclgroupController extends BasicController
      * List aclgroups
      *
      * @method get
-     * @route /administration/aclgroup
+     * @route /aclgroup
      */
     public function listAction()
     {
@@ -67,7 +67,7 @@ class AclgroupController extends BasicController
     /**
      * 
      * @method get
-     * @route /administration/aclgroup/list
+     * @route /aclgroup/list
      */
     public function datatableAction()
     {
@@ -78,7 +78,7 @@ class AclgroupController extends BasicController
      * Create a new ACL group
      *
      * @method post
-     * @route /administration/aclgroup/add
+     * @route /aclgroup/add
      */
     public function createAction()
     {
@@ -90,7 +90,7 @@ class AclgroupController extends BasicController
      *
      *
      * @method post
-     * @route /administration/aclgroup/update
+     * @route /aclgroup/update
      */
     public function updateAction()
     {
@@ -101,11 +101,11 @@ class AclgroupController extends BasicController
      * Add a aclgroup
      *
      * @method get
-     * @route /administration/aclgroup/add
+     * @route /aclgroup/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/administration/aclgroup/add');
+        $this->tpl->assign('validateUrl', '/centreon-administration/aclgroup/add');
         parent::addAction();
     }
 
@@ -114,7 +114,7 @@ class AclgroupController extends BasicController
      *
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]
+     * @route /aclgroup/[i:id]
      */
     public function editAction()
     {
@@ -125,7 +125,7 @@ class AclgroupController extends BasicController
      * Retrieve list of acl groups for a form
      *
      * @method get
-     * @route /administration/aclgroup/formlist
+     * @route /aclgroup/formlist
      */
     public function formListAction()
     {
@@ -136,7 +136,7 @@ class AclgroupController extends BasicController
      * Duplicate action for aclgroup
      *
      * @method post
-     * @route /administration/aclgroup/duplicate
+     * @route /aclgroup/duplicate
      */
     public function duplicateAction()
     {
@@ -147,7 +147,7 @@ class AclgroupController extends BasicController
      * Massive Change action for aclgroup
      *
      * @method post
-     * @route /administration/aclgroup/massive_change
+     * @route /aclgroup/massive_change
      */
     public function massiveChangeAction()
     {
@@ -158,7 +158,7 @@ class AclgroupController extends BasicController
      * MC Field action for aclgroup
      *
      * @method post
-     * @route /administration/aclgroup/mc_fields
+     * @route /aclgroup/mc_fields
      */
     public function getMcFieldAction()
     {
@@ -169,7 +169,7 @@ class AclgroupController extends BasicController
      * Delete action for aclgroup
      *
      * @method post
-     * @route /administration/aclgroup/delete
+     * @route /aclgroup/delete
      */
     public function deleteAction()
     {
@@ -180,7 +180,7 @@ class AclgroupController extends BasicController
      * Contacts for a specific acl group
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]/contact
+     * @route /aclgroup/[i:id]/contact
      */
     public function contactForAclgroupAction()
     {
@@ -191,7 +191,7 @@ class AclgroupController extends BasicController
      * Contact groups for a specific acl group
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]/contactgroup
+     * @route /aclgroup/[i:id]/contactgroup
      */
     public function contactgroupForAclgroupAction()
     {
@@ -202,7 +202,7 @@ class AclgroupController extends BasicController
      * Acl resource for a specific acl group
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]/aclresource
+     * @route /aclgroup/[i:id]/aclresource
      */
     public function aclresourceForAclgroupAction()
     {
@@ -213,7 +213,7 @@ class AclgroupController extends BasicController
      * Acl menu for a specific acl group
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]/aclmenu
+     * @route /aclgroup/[i:id]/aclmenu
      */
     public function aclmenuForAclgroupAction()
     {
@@ -224,7 +224,7 @@ class AclgroupController extends BasicController
      * Acl action for a specific acl group
      *
      * @method get
-     * @route /administration/aclgroup/[i:id]/aclaction
+     * @route /aclgroup/[i:id]/aclaction
      */
     public function aclactionForAclgroupAction()
     {

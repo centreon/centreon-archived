@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="service_category_form">
-		<route>/configuration/servicecategory/update</route>
+		<route>/centreon-configuration/servicecategory/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/servicecategory</redirect_route>
+		<redirect_route>/centreon-configuration/servicecategory</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="sc_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -19,8 +19,8 @@
 				<field name="sc_services" label="Services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/service/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/servicecategory/[i:id]/service</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/service/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/servicecategory/[i:id]/service</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -28,8 +28,8 @@
 				<field name="sc_servicetemplates" label="Service templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/servicecategory/[i:id]/servicetemplate</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/servicecategory/[i:id]/servicetemplate</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
 					</attributes>
@@ -48,7 +48,7 @@
 		</section>
 	</form>
     <wizard name="add_servicecategory">
-		<route>/configuration/servicecategory/add</route>
+		<route>/centreon-configuration/servicecategory/add</route>
 		<step name="General">
 			<field name="sc_name" mandatory="1"></field>
 			<field name="sc_description" mandatory="0"></field>

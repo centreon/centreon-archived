@@ -102,7 +102,7 @@ class HostGroupDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/hostgroup/[i:id]',
+                    'route' => '/centreon-configuration/hostgroup/[i:id]',
                     'routeParams' => array(
                         'id' => '::hg_id::'
                     ),

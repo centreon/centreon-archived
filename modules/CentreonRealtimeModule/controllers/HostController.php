@@ -59,7 +59,7 @@ class HostController extends \Centreon\Internal\Controller
      * Display services
      *
      * @method get
-     * @route /realtime/host
+     * @route /host
      * @todo work on ajax refresh
      */
     public function displayHostsAction()
@@ -97,7 +97,7 @@ class HostController extends \Centreon\Internal\Controller
         $this->tpl->assign('datatableObject', $this->datatableObject);
         $this->tpl->assign('objectName', 'Host');
         $this->tpl->assign('consoleType', 0); // host console
-        $this->tpl->assign('objectListUrl', '/realtime/host/list');
+        $this->tpl->assign('objectListUrl', '/centreon-realtime/host/list');
         
         $actions = array();
         $actions[] = array(
@@ -108,8 +108,8 @@ class HostController extends \Centreon\Internal\Controller
         
         $urls = array(
             'tag' => array(
-                'add' => $router->getPathFor('/administration/tag/add'),
-                'del' => $router->getPathFor('/administration/tag/delete')
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete')
             )
         );
         $this->tpl->append('jsUrl', $urls, true);
@@ -121,7 +121,7 @@ class HostController extends \Centreon\Internal\Controller
      * The page structure for display
      *
      * @method get
-     * @route /realtime/host/list
+     * @route /host/list
      */
     public function listAction()
     {
@@ -138,7 +138,7 @@ class HostController extends \Centreon\Internal\Controller
      * Host detail page
      *
      * @method get
-     * @route /realtime/host/[i:id]
+     * @route /host/[i:id]
      */
     public function hostDetailAction()
     {
@@ -166,7 +166,7 @@ class HostController extends \Centreon\Internal\Controller
     /**
      * 
      * @method get
-     * @route /realtime/host/[i:id]/data
+     * @route /host/[i:id]/data
      */
     public function hostDetailDataAction()
     {
@@ -196,7 +196,7 @@ class HostController extends \Centreon\Internal\Controller
      * Host tooltip
      *
      * @method get
-     * @route /realtime/host/[i:id]/tooltip
+     * @route /host/[i:id]/tooltip
      */
     public function hostTooltipAction()
     {

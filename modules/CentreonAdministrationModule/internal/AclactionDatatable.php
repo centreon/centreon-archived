@@ -99,7 +99,7 @@ class AclactionDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/aclaction/[i:id]',
+                    'route' => '/centreon-administration/aclaction/[i:id]',
                     'routeParams' => array(
                         'id' => '::acl_action_id::'
                     ),

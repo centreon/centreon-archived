@@ -48,7 +48,7 @@ class ConfigTestApi extends \Centreon\Internal\Controller
      * Action for Testing configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/testcfg/[i:id]
+     * @route /testcfg/[i:id]
      */
     public function testAction()
     {

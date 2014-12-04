@@ -101,7 +101,7 @@ class PollerDatatable extends Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/poller/[i:id]',
+                    'route' => '/centreon-configuration/poller/[i:id]',
                     'routeParams' => array(
                         'id' => '::poller_id::'
                     ),

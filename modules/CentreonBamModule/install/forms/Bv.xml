@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
     <form>
-        <route>/bam/business-view/update</route>
+        <route>/centreon-bam/business-view/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/bam/business-view</redirect_route>
+		<redirect_route>/centreon-bam/business-view</redirect_route>
         <section name="Configuration">
             <block name="Information">
                 <field name="ba_group_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -26,7 +26,7 @@
                 <field name="bv_ba" label="Linked Business Activity" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/bam/business-activity/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-bam/business-activity/formlist</defaultValuesRoute>
 						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
@@ -47,7 +47,7 @@
         </section>
     </form>
     <wizard name="add_bv">
-        <route>/bam/business-view/add</route>
+        <route>/centreon-bam/business-view/add</route>
 		<step name="General">
 			<field name="ba_group_name" mandatory="1"></field>
 			<field name="ba_group_description" mandatory="0"></field>

@@ -40,7 +40,7 @@ class BusinessViewController extends BasicController
 {
     protected $objectDisplayName = 'BusinessView';
     protected $objectName = 'BusinessView';
-    protected $objectBaseUrl = '/bam/business-view';
+    protected $objectBaseUrl = '/centreon-bam/business-view';
     protected $objectClass = '\CentreonBam\Models\BusinessView';
     protected $datatableObject = '\CentreonBam\Internal\BusinessViewDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessViewRepository';     
@@ -49,7 +49,7 @@ class BusinessViewController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/business-view
+     * @route /business-view
      */
     public function listAction()
     {
@@ -59,7 +59,7 @@ class BusinessViewController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/business-view/formlist
+     * @route /business-view/formlist
      */
     public function formListAction()
     {
@@ -69,7 +69,7 @@ class BusinessViewController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/business-view/list
+     * @route /business-view/list
      */
     public function datatableAction()
     {
@@ -80,7 +80,7 @@ class BusinessViewController extends BasicController
      * Create a new business view
      *
      * @method post
-     * @route /bam/business-view/add
+     * @route /business-view/add
      */
     public function createAction()
     {
@@ -92,7 +92,7 @@ class BusinessViewController extends BasicController
      *
      *
      * @method post
-     * @route /bam/business-view/update
+     * @route /business-view/update
      */
     public function updateAction()
     {
@@ -103,11 +103,11 @@ class BusinessViewController extends BasicController
      * Add a business view
      *
      * @method get
-     * @route /bam/business-view/add
+     * @route /business-view/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/bam/business-view/add');
+        $this->tpl->assign('validateUrl', '/centreon-bam/business-view/add');
         parent::addAction();
     }
     
@@ -115,7 +115,7 @@ class BusinessViewController extends BasicController
      * Update a business view
      *
      * @method get
-     * @route /bam/business-view/[i:id]
+     * @route /business-view/[i:id]
      */
     public function editAction()
     {
@@ -126,7 +126,7 @@ class BusinessViewController extends BasicController
      * Duplicate a business view
      *
      * @method post
-     * @route /bam/business-view/duplicate
+     * @route /business-view/duplicate
      */
     public function duplicateAction()
     {
@@ -137,7 +137,7 @@ class BusinessViewController extends BasicController
      * Apply massive change
      *
      * @method POST
-     * @route /bam/business-view/massive_change
+     * @route /business-view/massive_change
      */
     public function massiveChangeAction()
     {
@@ -148,7 +148,7 @@ class BusinessViewController extends BasicController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /bam/business-view/mc_fields
+     * @route /business-view/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -159,7 +159,7 @@ class BusinessViewController extends BasicController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /bam/business-view/mc_fields/[i:id]
+     * @route /business-view/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -170,7 +170,7 @@ class BusinessViewController extends BasicController
      * Delete action for business view
      *
      * @method post
-     * @route /bam/business-view/delete
+     * @route /business-view/delete
      */
     public function deleteAction()
     {

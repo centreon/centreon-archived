@@ -39,7 +39,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
 {
     protected $objectDisplayName = 'Environment';
     protected $objectName = 'environment';
-    protected $objectBaseUrl = '/administration/environment';
+    protected $objectBaseUrl = '/centreon-administration/environment';
     protected $objectClass = '\CentreonAdministration\Models\Environment';
     protected $repository = '\CentreonAdministration\Repository\EnvironmentRepository';
     
@@ -52,7 +52,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      * List hostcategories
      *
      * @method get
-     * @route /administration/environment
+     * @route /environment
      */
     public function listAction()
     {
@@ -62,7 +62,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /administration/environment/formlist
+     * @route /environment/formlist
      */
     public function formListAction()
     {
@@ -72,7 +72,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /administration/environment/list
+     * @route /environment/list
      */
     public function datatableAction()
     {
@@ -84,7 +84,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /administration/environment/update
+     * @route /environment/update
      */
     public function updateAction()
     {
@@ -96,11 +96,11 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /administration/environment/add
+     * @route /environment/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/administration/environment/add');
+        $this->tpl->assign('validateUrl', '/centreon-administration/environment/add');
         parent::addAction();
     }
 
@@ -109,7 +109,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /administration/environment/add
+     * @route /environment/add
      */
     public function createAction()
     {
@@ -121,7 +121,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /administration/environment/[i:id]
+     * @route /environment/[i:id]
      */
     public function editAction()
     {
@@ -132,7 +132,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      * Get the list of massive change fields
      *
      * @method get
-     * @route /administration/environment/mc_fields
+     * @route /environment/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -143,7 +143,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      * Get the html of attribute filed
      *
      * @method get
-     * @route /administration/environment/mc_fields/[i:id]
+     * @route /environment/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -154,7 +154,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      * Duplicate a hosts
      *
      * @method POST
-     * @route /administration/environment/duplicate
+     * @route /environment/duplicate
      */
     public function duplicateAction()
     {
@@ -165,7 +165,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      * Apply massive change
      *
      * @method POST
-     * @route /administration/environment/massive_change
+     * @route /environment/massive_change
      */
     public function massiveChangeAction()
     {
@@ -176,7 +176,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      * Delete action for environment
      *
      * @method post
-     * @route /administration/environment/delete
+     * @route /environment/delete
      */
     public function deleteAction()
     {
@@ -188,7 +188,7 @@ class EnvironmentController extends \CentreonAdministration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /administration/environment/[i:id]/icon
+     * @route /environment/[i:id]/icon
      */
     public function iconForEnvironmentAction()
     {

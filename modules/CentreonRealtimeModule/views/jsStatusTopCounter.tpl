@@ -6,7 +6,7 @@ $(document).on('centreon.refresh_status', function(e) {
     $('.top-counter-service .label-danger').removeClass('hide').text(statusData.service.critical);
     $('.top-counter-service ul').append(
       $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/realtime/service'}?search=status:2").text(
+        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/service'}?search=status:2").text(
           statusData.service.critical + " unhandled critical problem"
         ).prepend(
           $('<i></i>').addClass('fa fa-times-circle info')
@@ -18,7 +18,7 @@ $(document).on('centreon.refresh_status', function(e) {
     $('.top-counter-service .label-warning').removeClass('hide').text(statusData.service.warning);
     $('.top-counter-service ul').append(
       $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/realtime/service'}?search=status:1").text(
+        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/service'}?search=status:1").text(
           statusData.service.warning + " unhandled warning alerts"
         ).prepend(
           $('<i></i>').addClass('fa fa-warning info')
@@ -30,7 +30,7 @@ $(document).on('centreon.refresh_status', function(e) {
     $('.top-counter-host .label-danger').removeClass('hide').text(statusData.host.critical);
     $('.top-counter-host ul').append(
       $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/realtime/host'}?search=state:2").text(
+        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/host'}?search=state:2").text(
           statusData.host.critical + " host down"
         ).prepend(
           $('<i></i>').addClass('fa fa-times-circle info')
@@ -42,7 +42,7 @@ $(document).on('centreon.refresh_status', function(e) {
     $('.top-counter-host .label-warning').removeClass('hide').text(statusData.host.warning);
     $('.top-counter-host ul').append(
       $('<li></li>').append(
-        $('<a></a>').attr('href', "{url_for url='/realtime/host'}?search=state:1").text(
+        $('<a></a>').attr('href', "{url_for url='/centreon-realtime/host'}?search=state:1").text(
           statusData.host.warning + " unhandled warning alerts"
         ).prepend(
           $('<i></i>').addClass('fa fa-warning info')
@@ -63,7 +63,7 @@ $(document).on('centreon.refresh_status', function(e) {
 $(function() {
   $('.top-counter-poller').on('show.bs.dropdown', function(e) {
     $.ajax({
-      url: "{url_for url='/realtime/poller/status'}",
+      url: "{url_for url='/centreon-realtime/poller/status'}",
       type: 'get',
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {

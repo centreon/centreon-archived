@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="view_preference_form">
-		<route>/customview/updateview</route>
+		<route>/centreon-customview/updateview</route>
 		<section name="General">
 			<block name="General information">
 				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
@@ -25,7 +25,7 @@
 		</section>
 	</form>
 	<wizard name="view_preference_form">
-		<route>/customview/updateview</route>
+		<route>/centreon-customview/updateview</route>
 		<step name="General">
 			<field name="name" mandatory="1"></field>
 			<field name="mode" mandatory="1"></field>
@@ -33,13 +33,13 @@
 		</step>
 	</wizard>
 	<form name="add_widget_to_view_form">
-		<route>/customview/addwidget</route>
+		<route>/centreon-customview/addwidget</route>
 		<section name="General">
 			<block name="General information">
 				<field name="title" label="Title" default_value="" advanced="0" type="text" parent_field="" module_id="1" mandatory="1"></field>
 				<field name="widget" label="Widget" default_value="" advanced="0" type="select" parent_field="" module_id="1" mandatory="1">
 					<attributes>
-						<defaultValuesRoute>/customview/widgetformlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-customview/widgetformlist</defaultValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 					<help></help>
@@ -48,7 +48,7 @@
 		</section>
 	</form>
 	<wizard name="add_widget_to_view_form">
-		<route>/customview/addwidget</route>
+		<route>/centreon-customview/addwidget</route>
 		<step name="Give a title to your widget">
 			<field name="title" mandatory="1"></field>
 		</step>

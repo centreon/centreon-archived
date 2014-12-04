@@ -48,7 +48,7 @@ class ConfigGenerateApi extends \Centreon\Internal\Controller
      * Action for Generating configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/generatecfg/[i:id]
+     * @route /generatecfg/[i:id]
      */
     public function generateAction()
     {

@@ -48,7 +48,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
 {
     protected $objectDisplayName = 'Poller';
     protected $objectName = 'poller';
-    protected $objectBaseUrl = '/configuration/poller';
+    protected $objectBaseUrl = '/centreon-configuration/poller';
     protected $datatableObject = '\CentreonConfiguration\Internal\PollerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Poller';
     protected $repository = '\CentreonConfiguration\Repository\PollerRepository';
@@ -58,7 +58,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * List users
      *
      * @method get
-     * @route /configuration/poller
+     * @route /poller
      */
     public function listAction()
     {
@@ -70,7 +70,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
     /**
      * 
      * @method get
-     * @route /configuration/poller/list
+     * @route /poller/list
      */
     public function datatableAction()
     {
@@ -80,7 +80,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
     /**
      * 
      * @method get
-     * @route /configuration/poller/formlist
+     * @route /poller/formlist
      */
     public function formListAction()
     {
@@ -91,7 +91,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Update a poller
      *
      * @method post
-     * @route /configuration/poller/update
+     * @route /poller/update
      */
     public function updateAction()
     {
@@ -112,7 +112,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Add a poller
      *
      * @method get
-     * @route /configuration/poller/add
+     * @route /poller/add
      */
     public function addAction()
     {
@@ -126,7 +126,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Create a new poller
      *
      * @method post
-     * @route /configuration/poller/add
+     * @route /poller/add
      */
     public function createAction()
     {
@@ -152,7 +152,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Update a poller
      *
      * @method get
-     * @route /configuration/poller/[i:id]
+     * @route /poller/[i:id]
      */
     public function editAction()
     {
@@ -179,7 +179,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Delete action for poller
      *
      * @method post
-     * @route /configuration/poller/delete
+     * @route /poller/delete
      */
     public function deleteAction()
     {
@@ -190,7 +190,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Display wizard for applying configuration
      *
      * @method get
-     * @route /configuration/poller/applycfg
+     * @route /poller/applycfg
      */
     public function applyConfAction()
     {
@@ -202,7 +202,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
     /**
      * 
      * @method get
-     * @route /configuration/poller/templates
+     * @route /poller/templates
      */
     public function getPollerTemplatesAction()
     {
@@ -224,7 +224,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Get default template for a poller
      *
      * @method get
-     * @route /configuration/poller/[i:id]/template
+     * @route /poller/[i:id]/template
      */
     public function getPollerDefaultTemplateAction()
     {
@@ -252,7 +252,7 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
      * Get default template for a poller
      *
      * @method post
-     * @route /configuration/poller/templates/form
+     * @route /poller/templates/form
      */
     public function getFormForTemplateAction()
     {
@@ -299,8 +299,8 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
         ));
         $selectParams = array(
             'object_type' => 'object',
-            'defaultValuesRoute' => '/configuration/poller/templates',
-            'listValuesRoute' => '/configuration/poller/[i:id]/template',
+            'defaultValuesRoute' => '/centreon-configuration/poller/templates',
+            'listValuesRoute' => '/centreon-configuration/poller/[i:id]/template',
             'multiple' => false,
             'initCallback' => 'loadTemplateSteps'
         );

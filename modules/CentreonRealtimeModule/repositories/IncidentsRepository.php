@@ -139,7 +139,7 @@ class IncidentsRepository
                 'end_time' => $row['end_time'],
                 'state' => $row['state'],
                 'output' => $row['output'],
-                'url_graph' => $router->getPathFor('/realtime/incident/graph/[i:id]', array('id' => $row['issue_id'])),
+                'url_graph' => $router->getPathFor('/centreon-realtime/incident/graph/[i:id]', array('id' => $row['issue_id'])),
                 'ticket' => ''
             );
         }

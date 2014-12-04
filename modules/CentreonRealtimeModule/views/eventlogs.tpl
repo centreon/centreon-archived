@@ -87,8 +87,8 @@
 <script>
 $(function() {
   $('#eventlogs').centreonTableInfiniteScroll({
-    ajaxUrlGetScroll: "{url_for url="/realtime/eventlogs"}",
-    ajaxUrlGetNew: "{url_for url="/realtime/eventlogs/refresh"}",
+    ajaxUrlGetScroll: "{url_for url="/centreon-realtime/eventlogs"}",
+    ajaxUrlGetNew: "{url_for url="/centreon-realtime/eventlogs/refresh"}",
     formFilter: "#filters",{literal}
     templateRows: "<tr class='{{{border_color}}}'> \
       <td class='span-1'>{{{datetime}}}</td> \

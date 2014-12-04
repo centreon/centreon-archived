@@ -191,7 +191,7 @@ class User
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
-        $homePage = $router->getPathFor('/customview');
+        $homePage = $router->getPathFor('/centreon-customview');
         return $homePage;
     }
 }

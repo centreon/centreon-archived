@@ -101,7 +101,7 @@
             });
             $.ajax({
                 type: 'POST',
-                url: '/customview/applyfilters',
+                url: '/centreon-customview/applyfilters',
                 data: {
                     'filterNames': JSON.stringify(filterNames),
                     'filterValues': JSON.stringify(filterValues),

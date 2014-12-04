@@ -39,7 +39,7 @@ class BusinessActivityController extends BasicController
 {
     protected $objectDisplayName = 'BusinessActivity';
     protected $objectName = 'BusinessActivity';
-    protected $objectBaseUrl = '/bam/business-activity';
+    protected $objectBaseUrl = '/centreon-bam/business-activity';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
@@ -48,7 +48,7 @@ class BusinessActivityController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/business-activity
+     * @route /business-activity
      */
     public function listAction()
     {
@@ -69,7 +69,7 @@ class BusinessActivityController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/business-activity/formlist
+     * @route /business-activity/formlist
      */
     public function formListAction()
     {
@@ -79,7 +79,7 @@ class BusinessActivityController extends BasicController
     /**
      * 
      * @method get
-     * @route /bam/business-activity/list
+     * @route /business-activity/list
      */
     public function datatableAction()
     {
@@ -91,7 +91,7 @@ class BusinessActivityController extends BasicController
      *
      *
      * @method post
-     * @route /bam/business-activity/update
+     * @route /business-activity/update
      */
     public function updateAction()
     {
@@ -102,7 +102,7 @@ class BusinessActivityController extends BasicController
      * Create a new business activity
      *
      * @method post
-     * @route /bam/business-activity/add
+     * @route /business-activity/add
      */
     public function createAction()
     {
@@ -113,11 +113,11 @@ class BusinessActivityController extends BasicController
      * Add a business activity
      *
      * @method get
-     * @route /bam/business-activity/add
+     * @route /business-activity/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/bam/business-activity/add');
+        $this->tpl->assign('validateUrl', '/centreon-bam/business-activity/add');
         parent::addAction();
     }
     
@@ -125,7 +125,7 @@ class BusinessActivityController extends BasicController
      * Update a business activity
      *
      * @method get
-     * @route /bam/business-activity/[i:id]
+     * @route /business-activity/[i:id]
      */
     public function editAction()
     {
@@ -136,7 +136,7 @@ class BusinessActivityController extends BasicController
      * Duplicate a business activity
      *
      * @method post
-     * @route /bam/business-activity/duplicate
+     * @route /business-activity/duplicate
      */
     public function duplicateAction()
     {
@@ -147,7 +147,7 @@ class BusinessActivityController extends BasicController
      * Apply massive change
      *
      * @method POST
-     * @route /bam/business-activity/massive_change
+     * @route /business-activity/massive_change
      */
     public function massiveChangeAction()
     {
@@ -158,7 +158,7 @@ class BusinessActivityController extends BasicController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /bam/business-activity/mc_fields
+     * @route /business-activity/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -169,7 +169,7 @@ class BusinessActivityController extends BasicController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /bam/business-activity/mc_fields/[i:id]
+     * @route /business-activity/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -180,7 +180,7 @@ class BusinessActivityController extends BasicController
      * Delete action for business activity
      *
      * @method post
-     * @route /bam/business-activity/delete
+     * @route /business-activity/delete
      */
     public function deleteAction()
     {

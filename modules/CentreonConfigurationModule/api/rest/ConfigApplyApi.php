@@ -72,7 +72,7 @@ class ConfigApplyApi extends \Centreon\Internal\Controller
      * Action for Testing configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/applycfg/[i:id]
+     * @route /applycfg/[i:id]
      */
     public function applyAction()
     {
@@ -84,7 +84,7 @@ class ConfigApplyApi extends \Centreon\Internal\Controller
      * Action for Testing configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/restartcfg/[i:id]
+     * @route /restartcfg/[i:id]
      */
     public function restartAction()
     {
@@ -95,7 +95,7 @@ class ConfigApplyApi extends \Centreon\Internal\Controller
      * Action for Testing configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/reloadcfg/[i:id]
+     * @route /reloadcfg/[i:id]
      */
     public function reloadAction()
     {
@@ -106,7 +106,7 @@ class ConfigApplyApi extends \Centreon\Internal\Controller
      * Action for Testing configuration files
      *
      * @method GET
-     * @route /api/configuration/[a:version]/forcereloadcfg/[i:id]
+     * @route /forcereloadcfg/[i:id]
      */
     public function forcereloadAction()
     {

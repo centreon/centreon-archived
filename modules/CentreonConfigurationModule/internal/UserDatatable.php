@@ -97,7 +97,7 @@ class UserDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/user/[i:id]',
+                    'route' => '/centreon-configuration/user/[i:id]',
                     'routeParams' => array(
                         'id' => '::contact_id::'
                     ),

@@ -98,7 +98,7 @@ class DomainDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/domain/[i:id]',
+                    'route' => '/centreon-administration/domain/[i:id]',
                     'routeParams' => array(
                         'id' => '::domain_id::'
                     ),

@@ -102,7 +102,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/realtime/host/[i:id]',
+                    'route' => '/centreon-realtime/host/[i:id]',
                     'routeParams' => array(
                         'id' => '::host_id::'
                     ),
@@ -121,7 +121,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/realtime/host/[i:id]',
+                    'route' => '/centreon-realtime/host/[i:id]',
                     'routeParams' => array(
                         'id' => '::host_id::'
                     ),

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
   <form name="connector_form">
-	<route>/configuration/connector/update</route>
+	<route>/centreon-configuration/connector/update</route>
 	<redirect>1</redirect>
-	<redirect_route>/configuration/connector</redirect_route>
+	<redirect_route>/centreon-configuration/connector</redirect_route>
 	<section name="General">
 	  <block name="General information">
 		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -22,8 +22,8 @@
 		<field name="connector_command" label="Commands" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/connector/[i:id]/command</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/connector/[i:id]/command</listValuesRoute>
 			<multiple>true</multiple>
 			<ordered>false</ordered>
 		  </attributes>
@@ -42,7 +42,7 @@
 	</section>
   </form>
   <wizard name="add_connector">
-	<route>/configuration/connector/add</route>
+	<route>/centreon-configuration/connector/add</route>
 	<step name="General">
 	  <field name="name" mandatory="1"></field>
 	  <field name="description" mandatory="0"></field>

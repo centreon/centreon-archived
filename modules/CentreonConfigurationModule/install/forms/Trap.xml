@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="trap_form">
-		<route>/configuration/trap/update</route>
+		<route>/centreon-configuration/trap/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/trap</redirect_route>
+		<redirect_route>/centreon-configuration/trap</redirect_route>
 		<section name="Trap configuration">
 			<block name="General information">
 				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -16,8 +16,8 @@
 				<field name="manufacturer_id" label="Manufacturer" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/manufacturer/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/trap/[i:id]/manufacturer</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/manufacturer/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/trap/[i:id]/manufacturer</listValuesRoute>
 						<multiple>false</multiple>
 						<ordered>true</ordered>
 					</attributes>
@@ -92,16 +92,16 @@
 				<field name="trap_services" label="Linked services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/service/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/trap/[i:id]/service</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/service/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/trap/[i:id]/service</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
 				<field name="trap_servicetemplates" label="Linked service templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/trap/[i:id]/servicetemplate</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/trap/[i:id]/servicetemplate</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
@@ -151,7 +151,7 @@
 		</section>
 	</form>
 	<wizard name="add_trap">
-		<route>/configuration/trap/add</route>
+		<route>/centreon-configuration/trap/add</route>
 		<step name="General">
 			<field name="traps_name" mandatory="1"></field>
 			<field name="traps_oid" mandatory="1"></field>

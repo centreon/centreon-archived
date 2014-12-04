@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="host_form">
-		<route>/configuration/host/update</route>
+		<route>/centreon-configuration/host/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/host</redirect_route>
+		<redirect_route>/centreon-configuration/host</redirect_route>
 		<section name="Host configuration">
 			<block name="General information">
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -23,8 +23,8 @@
 					<help>This is where you specify the template that you want to inherit properties/variables from. Inherited properties doesn't need to be specified again. "Local" object variables always take precedence over variables defined in the template object. Objects can inherit properties/variables from multiple levels of template objects. When defining multiple sources, the first template specified takes precedence over the later one, in the case where a property is defined in both.</help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hosttemplate/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/hosttemplate</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/hosttemplate</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>true</ordered>
 					</attributes>
@@ -37,7 +37,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/icon</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
@@ -47,7 +47,7 @@
                     <attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/administration/environment/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/environment</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/environment</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -64,8 +64,8 @@
 					<help>Define the poller that will monitor the host</help>
                     <attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/poller/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/poller</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/poller/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/poller</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -73,8 +73,8 @@
 					<help>This directive is used to specify the time period during which active checks of this host can be executed.</help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/checkperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/checkperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -82,8 +82,8 @@
 					<help>Specify the command that should be used to check if the host is up or down. Typically, this command would try and ping the host to see if it is "alive". On a non-OK state monitoring engine will assume the host is down. A blank argument disables active checks for the host status and Monitoring Engine will always assume the host is up. This is useful if you are monitoring printers or other devices that are frequently turned off.</help>
                     <attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/checkcommand</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/checkcommand</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -147,8 +147,8 @@
 					<help>This is a list of contacts that should be notified whenever there are problems (or recoveries) with this host. Useful if you want notifications to go to just a few people and don't want to configure contact groups.</help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/contact</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/user/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/contact</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
@@ -156,8 +156,8 @@
 					<help>This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this host.</help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/contactgroup</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/usergroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/contactgroup</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
@@ -167,8 +167,8 @@
 				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -195,8 +195,8 @@
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostgroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/hostgroup</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hostgroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/hostgroup</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
@@ -206,8 +206,8 @@
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hostcategory/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
@@ -217,8 +217,8 @@
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/parent</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/parent</listValuesRoute>
 						<multiple>true</multiple>			
 					</attributes>
 				</field>
@@ -226,8 +226,8 @@
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/child</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/child</listValuesRoute>
 						<multiple>true</multiple>			
 					</attributes>
 				</field>
@@ -251,8 +251,8 @@
 					<help></help>
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -337,7 +337,7 @@
 		</section>
 	</form>
 	<wizard name="add_host">
-		<route>/configuration/host/add</route>
+		<route>/centreon-configuration/host/add</route>
 		<step name="General">
 			<field name="host_name" mandatory="1"></field>
 			<field name="host_address" mandatory="1"></field>

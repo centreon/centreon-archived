@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
   <form name="poller_form">
-	<route>/configuration/poller/update</route>
+	<route>/centreon-configuration/poller/update</route>
 	<redirect>1</redirect>
-	<redirect_route>/configuration/poller</redirect_route>
+	<redirect_route>/centreon-configuration/poller</redirect_route>
 	<section name="General">
 	  <block name="General settings">
 		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -62,7 +62,7 @@
 	</section>
   </form>
   <wizard name="add_poller">
-	<route>/configuration/poller/add</route>
+	<route>/centreon-configuration/poller/add</route>
 	<step name="General">
 	  <field name="name" mandatory="1"></field>
 	  <field name="ip_address" mandatory="1"></field>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="manufacturer_form">
-		<route>/configuration/manufacturer/update</route>
+		<route>/centreon-configuration/manufacturer/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/manufacturer</redirect_route>
+		<redirect_route>/centreon-configuration/manufacturer</redirect_route>
 		<section name="General">
 			<block name="General information">
 				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -18,7 +18,7 @@
 		</section>
 	</form>
 	<wizard name="add_manufacturer">
-		<route>/configuration/manufacturer/add</route>
+		<route>/centreon-configuration/manufacturer/add</route>
 		<step name="General">
 			<field name="name" mandatory="1"></field>
 			<field name="alias" mandatory="0"></field>

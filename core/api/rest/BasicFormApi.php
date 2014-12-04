@@ -34,67 +34,88 @@
  * 
  */
 
-require_once '../bootstrap.php';
+namespace Centreon\Api\Rest;
 
-try {
-    $sectionToInit = array(
-        'configuration',
-        'template',
-        'routes'
-    );
-    $bootstrap = new \Centreon\Internal\Bootstrap();
-    $bootstrap->init($sectionToInit);
-} catch (\Exception $e) {
-    echo $e;
+/**
+ * Description of BasicFormApi
+ *
+ * @author lionel
+ */
+class BasicFormApi
+{
+    /**
+     *
+     * @var type 
+     */
+    protected $liteAttributesSet = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $repository;
+    
+    /**
+     * 
+     * @param type $request
+     * @throws Exception
+     */
+    public function __construct($request)
+    {
+        parent::__construct($request);
+        if (is_null($this->repository)) {
+            throw new Exception('Repository unspecified');
+        }
+        $repository = $this->repository;
+    }
+    
+    /**
+     * 
+     * @param type $set
+     * @param type $children
+     * @param type $childrenSet
+     */
+    public function listAction($set = "lazy", $children = false, $childrenSet = "lazy")
+    {
+        // Example
+        // api/centreon-configuration/host/1,2,3/links/service
+        // 
+        // lazy = ids
+        // short = just preselected set
+        // custom = selected set
+        // full = all parameters
+    }
+    
+    /**
+     * 
+     * @param type $full
+     */
+    public function viewAction($set = "list")
+    {
+        
+    }
+    
+    /**
+     * 
+     */
+    public function createAction()
+    {
+        
+    }
+
+    /**
+     * 
+     */
+    public function editAction()
+    {
+        
+    }
+    
+    /**
+     * 
+     */
+    public function deleteAction()
+    {
+        
+    }
 }
-
-// Installation Steps
-$installSteps = array();
-
-
-// First Step
-$installSteps['Welcome'] = array(
-    'default' => 'Bienvenue & Release note'
-);
-
-// License Note
-$licenseStr = '<textarea class="form-control" rows="20" readonly>' .
-    htmlentities(file_get_contents("../install/steps/LICENSE.txt")) .
-    '</textarea>';
-$installSteps['License'] = array(
-    'default' => $licenseStr
-);
-
-// Database
-$installSteps['Database'] = array(
-    'default' => "Database"
-);
-
-// Admin
-$installSteps['Admin'] = array(
-    'default' => "Admin"
-);
-
-// Core Modules
-$installSteps['Core Modules'] = array(
-    'default' => "Core Modules"
-);
-
-// Additionnal Modules
-$installSteps['Additionnal Modules'] = array(
-    'default' => "Additionnal Modules"
-);
-
-// Congratulations
-$installSteps['Congratulations'] = array(
-    'default' => "Congratulations"
-);
-
-// Launching Display
-$tmpl = \Centreon\Internal\Di::getDefault()->get('template');
-$tmpl->addCss('centreon-wizard.css');
-$tmpl->addJs('centreon-wizard.js');
-$tmpl->assign('modalTitle', 'Install Centreon');
-$tmpl->assign('name', 'centreonInstall');
-$tmpl->assign('steps', $installSteps);
-$tmpl->display("[Core]install/wizardInstall.tpl");

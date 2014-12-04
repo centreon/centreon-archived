@@ -70,7 +70,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Action for custom view
      *
      * @method get
-     * @route /customview/[i:id]?
+     * @route /[i:id]?
      */
     public function customviewAction()
     {
@@ -104,8 +104,8 @@ class CustomviewController extends \Centreon\Internal\Controller
                 '.$this->getJsFunctionSavePos().'
                 '.$this->getJsFunctionRemoveWidget().'
                 '.$this->getJsInitGrid($jsonPosition, $jsonWidgets).'
-                '.$this->getJsEditView("#view_add", "$this->baseUrl/customview/updateview").'
-                '.$this->getJsEditView("#view_settings", "$this->baseUrl/customview/updateview/{$this->currentView}").'
+                '.$this->getJsEditView("#view_add", "$this->baseUrl/centreon-customview/updateview").'
+                '.$this->getJsEditView("#view_settings", "$this->baseUrl/centreon-customview/updateview/{$this->currentView}").'
                 '.$this->getJsDeleteView().'
                 '.$this->getJsDefault().'
                 '.$this->getJsBookmark().'
@@ -152,7 +152,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Save position
      *
      * @method post
-     * @route /customview/saveposition
+     * @route /saveposition
      */
     public function savePositionAction()
     {
@@ -164,7 +164,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Update widget settings
      *
      * @method post
-     * @route /customview/updatewidgetsettings
+     * @route /updatewidgetsettings
      */
     public function updatePreferencesAction()
     {
@@ -180,14 +180,14 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Display widget preference widget settings
      *
      * @method get
-     * @route /customview/widgetsettings/[i:id]
+     * @route /widgetsettings/[i:id]
      */
     public function displayWidgetPreferenceAction()
     {
         $params = $this->getParams('named');
         $widgetId = $params['id'];
         $template = \Centreon\Internal\Di::getDefault()->get('template');
-        $template->assign('validateUrl', '/customview/updatewidgetsettings');
+        $template->assign('validateUrl', '/centreon-customview/updatewidgetsettings');
         $form = new \Centreon\Internal\Form\Widget($widgetId, array('id' => $widgetId));
         $title = _('Settings for widget');
         $form->addHiddenComponent('widget_id', $widgetId);
@@ -204,7 +204,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Add a new widget
      *
      * @method post
-     * @route /customview/addwidget
+     * @route /addwidget
      */
     public function addWidgetAction()
     {
@@ -222,7 +222,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Return a list of widget for selectbox
      *
      * @method get
-     * @route /customview/widgetformlist
+     * @route /widgetformlist
      */
     public function widgetformlistAction()
     {
@@ -244,18 +244,18 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Display list of widgets
      *
      * @method get
-     * @route /customview/widgetlist/[i:view_id]
+     * @route /widgetlist/[i:view_id]
      */
     public function widgetListAction()
     {
         $template = \Centreon\Internal\Di::getDefault()->get('template');
-        $template->assign('validateUrl', '/customview/addwidget');
+        $template->assign('validateUrl', '/centreon-customview/addwidget');
         $template->assign('modalTitle', _('Add a new widget'));
         $widgets = json_encode(WidgetRepository::getWidgetInfo());
         $params = $this->getParams('named');
-        $form = new Wizard('/customview/addwidget', array('id' => 0));
+        $form = new Wizard('/centreon-customview/addwidget', array('id' => 0));
         $form->addHiddenComponent('custom_view_id', $params['view_id']);
-        $template->assign('formRedirect', '/customview/'.$params['view_id']);
+        $template->assign('formRedirect', '/centreon-customview/'.$params['view_id']);
         $template->addCustomJs('
             var widgets = '.$widgets.';
 
@@ -290,7 +290,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Remove widget from view
      *
      * @method post
-     * @route /customview/removewidget
+     * @route /removewidget
      */
     public function removeWidgetAction()
     {
@@ -302,7 +302,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Remove view
      *
      * @method post
-     * @route /customview/removeview
+     * @route /removeview
      */
     public function removeViewAction()
     {
@@ -314,7 +314,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Bookmark view
      *
      * @method post
-     * @route /customview/bookmarkview
+     * @route /bookmarkview
      */
     public function bookmarkViewAction()
     {
@@ -326,7 +326,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Unbookmark view
      *
      * @method post
-     * @route /customview/unbookmarkview
+     * @route /unbookmarkview
      */
     public function unbookmarkViewAction()
     {
@@ -338,7 +338,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Set view as default
      *
      * @method post
-     * @route /customview/setdefaultview
+     * @route /setdefaultview
      */
     public function setDefaultViewAction()
     {
@@ -350,7 +350,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Update view
      *
      * @method post
-     * @route /customview/updateview
+     * @route /updateview
      */
     public function updateViewAction()
     {
@@ -372,18 +372,18 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Display view preference window
      * 
      * @method get
-     * @route /customview/updateview/[i:id]?
+     * @route /updateview/[i:id]?
      */
     public function displayViewPreferenceAction()
     {
         $template = \Centreon\Internal\Di::getDefault()->get('template');
-        $template->assign('validateUrl', '/customview/updateview');
+        $template->assign('validateUrl', '/centreon-customview/updateview');
         $id = 0;
         $requestParam = $this->getParams('named');
         if (isset($requestParam['id']) && $requestParam['id']) {
             $id = $requestParam['id'];
         }
-        $form = new Wizard('/customview/updateview', array('id' => $id));
+        $form = new Wizard('/centreon-customview/updateview', array('id' => $id));
         $title = _('Add a new view');
         if ($id) {
             $form->addHiddenComponent('custom_view_id', $id);
@@ -402,7 +402,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      * Apply global filters
      *
      * @method POST
-     * @route /customview/applyfilters
+     * @route /applyfilters
      */
     public function applyFiltersAction()
     {
@@ -449,7 +449,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "'.$this->baseUrl.'/customview/removeview",
+                                        url: "'.$this->baseUrl.'/centreon-customview/removeview",
                                         data: { view_id: '.$this->currentView.' }
                                     });
                                 }
@@ -509,7 +509,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         $(this).centreonWizard();
                     });
                     $("#modal").modal({
-                        "remote": "'.$this->baseUrl.'/customview/widgetsettings/" + $(li).data("widget-id")
+                        "remote": "'.$this->baseUrl.'/centreon-customview/widgetsettings/" + $(li).data("widget-id")
                     });
                 });';
 
@@ -537,7 +537,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "'.$this->baseUrl.'/customview/unbookmarkview",
+                                        url: "'.$this->baseUrl.'/centreon-customview/unbookmarkview",
                                         data: { view_id: '.$this->currentView.' }
                                     });
                                 }
@@ -548,7 +548,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "'.$this->baseUrl.'/customview/bookmarkview",
+                                        url: "'.$this->baseUrl.'/centreon-customview/bookmarkview",
                                         data: { view_id: '.$this->currentView.' }
                                     });
                                 }
@@ -580,7 +580,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "'.$this->baseUrl.'/customview/setdefaultview",
+                                        url: "'.$this->baseUrl.'/centreon-customview/setdefaultview",
                                         data: { view_id: '.$this->currentView.' }
                                     });
                                 }
@@ -605,7 +605,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         $(this).centreonWizard();
                     });
                     $("#modal").modal({
-                        "remote": "'.$this->baseUrl.'/customview/widgetlist/'.$this->currentView.'"
+                        "remote": "'.$this->baseUrl.'/centreon-customview/widgetlist/'.$this->currentView.'"
                     });
                 })';
     }
@@ -717,7 +717,7 @@ class CustomviewController extends \Centreon\Internal\Controller
         return 'function savepos() {
                     $.ajax({
                         type: "POST",
-                        url: "'.$this->baseUrl.'/customview/saveposition",
+                        url: "'.$this->baseUrl.'/centreon-customview/saveposition",
                         data: { pos: gridster.serialize(), view_id: '.$this->currentView.' }
                     });
                 }';
@@ -733,7 +733,7 @@ class CustomviewController extends \Centreon\Internal\Controller
         return 'function removeWidget(widgetId) {
                     $.ajax({
                         type: "POST",
-                        url: "'.$this->baseUrl.'/customview/removewidget",
+                        url: "'.$this->baseUrl.'/centreon-customview/removewidget",
                         data: {
                             widget_id: widgetId
                         }

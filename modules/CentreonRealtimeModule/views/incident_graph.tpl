@@ -14,7 +14,7 @@ $(function() {
     $( "#main" ).height() - $( ".breadcrumb-bar" ).height()
   );
   $( ".graph" ).centreonIncidentsGraph({
-    urlGetInfo: "{url_for url='/realtime/incident/graph'}"
+    urlGetInfo: "{url_for url='/centreon-realtime/incident/graph'}"
   });
   $( ".graph" ).centreonIncidentsGraph( "loadIncident", {$incident_id} );
 });

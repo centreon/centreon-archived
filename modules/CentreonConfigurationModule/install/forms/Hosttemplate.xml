@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="hosttemplate_form">
-		<route>/configuration/hosttemplate/update</route>
+		<route>/centreon-configuration/hosttemplate/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/configuration/hosttemplate</redirect_route>
+		<redirect_route>/centreon-configuration/hosttemplate</redirect_route>
 		<section name="Host configuration">
 			<block name="General information">
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -16,8 +16,8 @@
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hosttemplate/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/hosttemplate</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/hosttemplate</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>true</ordered>
 					</attributes>
@@ -26,7 +26,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-                                                <listValuesRoute>/configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
+                                                <listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
 						<wizardRoute>/administration/media/image/add</wizardRoute>
 					</attributes>
@@ -43,16 +43,16 @@
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/checkperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/checkperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
 				<field name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/checkcommand</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/checkcommand</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -104,16 +104,16 @@
 				<field name="host_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/contact</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/user/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/contact</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
 				<field name="host_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/contactgroup</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/usergroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/contactgroup</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
@@ -121,8 +121,8 @@
 				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/notificationperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -144,8 +144,8 @@
 		                <field name="hosttemplate_servicetemplates" label="Linked Service Templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		                  <attributes>
 		                    <object_type>object</object_type>
-		                    <defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
-		                    <listValuesRoute>/configuration/hosttemplate/[i:id]/servicetemplate</listValuesRoute>
+		                    <defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+		                    <listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/servicetemplate</listValuesRoute>
 		                    <multiple>true</multiple>
 		                  </attributes>
 		                <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
@@ -155,8 +155,8 @@
 				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/hostcategory</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hostcategory/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 				</field>
@@ -252,8 +252,8 @@
 				<field name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 				</field>
@@ -263,7 +263,7 @@
 		</section>
 	</form>
     <wizard name="add_hosttemplates">
-		<route>/configuration/hosttemplate/add</route>
+		<route>/centreon-configuration/hosttemplate/add</route>
 		<step name="General">
 			<field name="host_name" mandatory="1"></field>
 			<field name="host_alias" mandatory="0"></field>

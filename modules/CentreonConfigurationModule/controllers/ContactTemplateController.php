@@ -41,7 +41,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
 {
     protected $objectDisplayName = 'Contacttemplate';
     protected $objectName = 'contacttemplate';
-    protected $objectBaseUrl = '/configuration/contacttemplate';
+    protected $objectBaseUrl = '/centreon-configuration/contacttemplate';
     protected $objectClass = '\CentreonConfiguration\Models\Contact';
     public static $relationMap = array(
         'contact_contactgroups' => '\Models\Configuraton\Relation\Contact\Contactgroup',
@@ -55,7 +55,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * List contact templates
      *
      * @method get
-     * @route /configuration/contacttemplate
+     * @route /contacttemplate
      */
     public function listAction()
     {
@@ -65,7 +65,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
     /**
      * 
      * @method get
-     * @route /configuration/contacttemplate/list
+     * @route /contacttemplate/list
      */
     public function datatableAction()
     {
@@ -75,7 +75,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
     /**
      * 
      * @method get
-     * @route /configuration/contacttemplate/formlist
+     * @route /contacttemplate/formlist
      */
     public function formListAction()
     {
@@ -87,7 +87,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method put
-     * @route /configuration/contacttemplate/update
+     * @route /contacttemplate/update
      */
     public function updateAction()
     {
@@ -99,7 +99,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/contacttemplate/add
+     * @route /contacttemplate/add
      */
     public function createAction()
     {
@@ -111,7 +111,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      *
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]
+     * @route /contacttemplate/[i:id]
      */
     public function editAction()
     {
@@ -122,7 +122,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/contacttemplate/mc_fields
+     * @route /contacttemplate/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -133,7 +133,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/contacttemplate/mc_fields/[i:id]
+     * @route /contacttemplate/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -144,7 +144,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Duplicate contact templates
      *
      * @method POST
-     * @route /configuration/contacttemplate/duplicate
+     * @route /contacttemplate/duplicate
      */
     public function duplicateAction()
     {
@@ -155,7 +155,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/contacttemplate/massive_change
+     * @route /contacttemplate/massive_change
      */
     public function massiveChangeAction()
     {
@@ -166,7 +166,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Delete action for contact template
      *
      * @method post
-     * @route /configuration/contacttemplate/delete
+     * @route /contacttemplate/delete
      */
     public function deleteAction()
     {
@@ -177,7 +177,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Enable action for contact template
      * 
      * @method post
-     * @route /configuration/contacttemplate/enable
+     * @route /contacttemplate/enable
      */
     public function enableAction()
     {
@@ -188,7 +188,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Disable action for contact template
      * 
      * @method post
-     * @route /configuration/contacttemplate/disable
+     * @route /contacttemplate/disable
      */
     public function disableAction()
     {
@@ -199,7 +199,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get contact template for a specific contact
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]/contacttemplate
+     * @route /contacttemplate/[i:id]/contacttemplate
      */
     public function contactTemplateForContactAction()
     {
@@ -210,7 +210,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get host notification period for a specific contact template
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]/hostnotifperiod
+     * @route /contacttemplate/[i:id]/hostnotifperiod
      */
     public function hostNotifPeriodForContactAction()
     {
@@ -221,7 +221,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get host notification command for a specific contact template
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]/hostnotifcommand
+     * @route /contacttemplate/[i:id]/hostnotifcommand
      */
     public function hostNotifCommandForContactAction()
     {
@@ -232,7 +232,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get service notification period for a specific contact template
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]/servicenotifperiod
+     * @route /contacttemplate/[i:id]/servicenotifperiod
      */
     public function serviceNotifPeriodForContactAction()
     {
@@ -243,7 +243,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get service notification command for a specific contact template
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]/servicenotifcommand
+     * @route /contacttemplate/[i:id]/servicenotifcommand
      */
     public function serviceNotifCommandForContactAction()
     {
@@ -254,7 +254,7 @@ class ContactTemplateController extends \CentreonConfiguration\Controllers\Basic
      * Get contact group for a specific contact template
      *
      * @method get
-     * @route /configuration/contacttemplate/[i:id]/contactgroup
+     * @route /contacttemplate/[i:id]/contactgroup
      */
     public function contactGroupForContactAction()
     {

@@ -59,7 +59,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      * @var string 
      */
-    protected $objectBaseUrl = '/configuration/hosttemplate';
+    protected $objectBaseUrl = '/centreon-configuration/hosttemplate';
     
     /**
      *
@@ -82,8 +82,8 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
 
     protected $repository = '\CentreonConfiguration\Repository\HostTemplateRepository';
 
-    protected $inheritanceUrl = '/configuration/hosttemplate/[i:id]/inheritance';
-    protected $inheritanceTmplUrl = '/configuration/hosttemplate/inheritance';
+    protected $inheritanceUrl = '/centreon-configuration/hosttemplate/[i:id]/inheritance';
+    protected $inheritanceTmplUrl = '/centreon-configuration/hosttemplate/inheritance';
     protected $tmplField = '#host_hosttemplates';
 
     /**
@@ -105,7 +105,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * List hosts
      *
      * @method get
-     * @route /configuration/hosttemplate
+     * @route /hosttemplate
      */
     public function listAction()
     {
@@ -116,7 +116,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/hosttemplate/formlist
+     * @route /hosttemplate/formlist
      */
     public function formListAction()
     {
@@ -126,7 +126,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/hosttemplate/list
+     * @route /hosttemplate/list
      */
     public function datatableAction()
     {
@@ -137,7 +137,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Create a new host template
      *
      * @method post
-     * @route /configuration/hosttemplate/add
+     * @route /hosttemplate/add
      */
     public function createAction()
     {
@@ -188,7 +188,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /configuration/hosttemplate/update
+     * @route /hosttemplate/update
      */
     public function updateAction()
     {
@@ -203,11 +203,11 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Add a host template
      *
      * @method get
-     * @route /configuration/hosttemplate/add
+     * @route /hosttemplate/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/hosttemplate/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/hosttemplate/add');
         parent::addAction();
     }
     
@@ -215,7 +215,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Update a host template
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]
+     * @route /hosttemplate/[i:id]
      */
     public function editAction()
     {
@@ -226,7 +226,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Get inheritance value
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/inheritance
+     * @route /hosttemplate/[i:id]/inheritance
      */
     public function getInheritanceAction()
     {
@@ -248,7 +248,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Get inheritance value from a list of template
      *
      * @method post
-     * @route /configuration/hosttemplate/inheritance
+     * @route /hosttemplate/inheritance
      */
     public function getInheritanceTmplAction()
     {
@@ -281,7 +281,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/contact
+     * @route /hosttemplate/[i:id]/contact
      */
     public function contactForHostTemplateAction()
     {
@@ -321,7 +321,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/contactgroup
+     * @route /hosttemplate/[i:id]/contactgroup
      */
     public function contactgroupForHostTemplateAction()
     {
@@ -333,7 +333,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/servicetemplate
+     * @route /hosttemplate/[i:id]/servicetemplate
      */
     public function servicetemplateForHostTemplateAction()
     {
@@ -345,7 +345,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/hostgroup
+     * @route /hosttemplate/[i:id]/hostgroup
      */
     public function hostgroupForHostTemplateAction()
     {
@@ -357,7 +357,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/hostcategory
+     * @route /hosttemplate/[i:id]/hostcategory
      */
     public function hostcategoryForHostTemplateAction()
     {
@@ -368,7 +368,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Get host template for a specific host template
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/hosttemplate
+     * @route /hosttemplate/[i:id]/hosttemplate
      */
     public function hostTemplateForHostTemplateAction()
     {
@@ -378,7 +378,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/parent
+     * @route /hosttemplate/[i:id]/parent
      */
     public function parentForHostTemplateAction()
     {
@@ -415,7 +415,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/child
+     * @route /hosttemplate/[i:id]/child
      */
     public function childForHostTemplateAction()
     {
@@ -454,7 +454,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/checkperiod
+     * @route /hosttemplate/[i:id]/checkperiod
      */
     public function checkPeriodForHostTemplateAction()
     {
@@ -466,7 +466,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/notificationperiod
+     * @route /hosttemplate/[i:id]/notificationperiod
      */
     public function notificationPeriodForHostTemplateAction()
     {
@@ -477,7 +477,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Get check command for a specific host template
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/checkcommand
+     * @route /hosttemplate/[i:id]/checkcommand
      */
     public function checkcommandForHostTemplateAction()
     {
@@ -489,7 +489,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/eventhandler
+     * @route /hosttemplate/[i:id]/eventhandler
      */
     public function eventHandlerForHostTemplateAction()
     {
@@ -501,7 +501,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/hosttemplate/[i:id]/icon
+     * @route /hosttemplate/[i:id]/icon
      */
     public function iconForHostTemplaeAction()
     {
@@ -538,7 +538,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/hosttemplate/mc_fields
+     * @route /hosttemplate/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -549,7 +549,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/hosttemplate/mc_fields/[i:id]
+     * @route /hosttemplate/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -560,7 +560,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Duplicate a host template
      *
      * @method post
-     * @route /configuration/hosttemplate/duplicate
+     * @route /hosttemplate/duplicate
      */
     public function duplicateAction()
     {
@@ -571,7 +571,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/hosttemplate/massive_change
+     * @route /hosttemplate/massive_change
      */
     public function massiveChangeAction()
     {
@@ -582,7 +582,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Delete action for host template
      *
      * @method post
-     * @route /configuration/hosttemplate/delete
+     * @route /hosttemplate/delete
      */
     public function deleteAction()
     {
@@ -593,7 +593,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Enable action for host template
      * 
      * @method post
-     * @route /configuration/hosttemplate/enable
+     * @route /hosttemplate/enable
      */
     public function enableAction()
     {
@@ -604,7 +604,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Disable action for host template
      * 
      * @method post
-     * @route /configuration/hosttemplate/disable
+     * @route /hosttemplate/disable
      */
     public function disableAction()
     {
@@ -615,7 +615,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * Display host template configuration in a popin window
      *
      * @method get
-     * @route /configuration/hosttemplate/viewconf/[i:id]
+     * @route /hosttemplate/viewconf/[i:id]
      */
     public function displayConfAction()
     {
@@ -631,7 +631,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      * with template inheritance
      *
      * @method get
-     * @route /configuration/hosttemplate/snapshot/[i:id]
+     * @route /hosttemplate/snapshot/[i:id]
      */
     public function snapshotAction()
     {

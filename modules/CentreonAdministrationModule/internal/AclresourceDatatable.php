@@ -99,7 +99,7 @@ class AclresourceDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/aclresource/[i:id]',
+                    'route' => '/centreon-administration/aclresource/[i:id]',
                     'routeParams' => array(
                         'id' => '::acl_res_id::'
                     ),

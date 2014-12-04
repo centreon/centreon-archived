@@ -39,7 +39,6 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
 {
     protected $objectDisplayName = 'Usergroup';
     protected $objectName = 'usergroup';
-    protected $objectBaseUrl = '/configuration/usergroup';
     protected $objectClass = '\CentreonConfiguration\Models\Contactgroup';
     protected $datatableObject = '\CentreonConfiguration\Internal\UserGroupDatatable';
     protected $repository = '\CentreonConfiguration\Repository\UsergroupRepository';
@@ -51,7 +50,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * List usergroups
      *
      * @method get
-     * @route /configuration/usergroup
+     * @route /usergroup
      */
     public function listAction()
     {
@@ -61,7 +60,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     /**
      * 
      * @method get
-     * @route /configuration/usergroup/list
+     * @route /usergroup/list
      */
     public function datatableAction()
     {
@@ -71,7 +70,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     /**
      * 
      * @method get
-     * @route /configuration/usergroup/formlist
+     * @route /usergroup/formlist
      */
     public function formListAction()
     {
@@ -83,7 +82,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method put
-     * @route /configuration/usergroup/update
+     * @route /usergroup/update
      */
     public function updateAction()
     {
@@ -95,11 +94,11 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method get
-     * @route /configuration/usergroup/add
+     * @route /usergroup/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/usergroup/add');
+        $this->tpl->assign('validateUrl', $this->objectBaseUrl . '/add');
         parent::addAction();
     }
     
@@ -108,7 +107,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method post
-     * @route /configuration/usergroup/add
+     * @route /usergroup/add
      */
     public function createAction()
     {
@@ -120,7 +119,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      *
      *
      * @method get
-     * @route /configuration/usergroup/[i:id]
+     * @route /usergroup/[i:id]
      */
     public function editAction()
     {
@@ -131,7 +130,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Duplicate contact group
      *
      * @method POST
-     * @route /configuration/usergroup/duplicate
+     * @route /usergroup/duplicate
      */
     public function duplicateAction()
     {
@@ -142,7 +141,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Enable action for contact group
      * 
      * @method post
-     * @route /configuration/usergroup/enable
+     * @route /usergroup/enable
      */
     public function enableAction()
     {
@@ -153,7 +152,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Disable action for contact group
      * 
      * @method post
-     * @route /configuration/usergroup/disable
+     * @route /usergroup/disable
      */
     public function disableAction()
     {
@@ -164,7 +163,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Delete action for contact group
      *
      * @method post
-     * @route /configuration/usergroup/delete
+     * @route /usergroup/delete
      */
     public function deleteAction()
     {
@@ -175,7 +174,7 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
      * Get list of contacts for a specific contact group
      *
      * @method get
-     * @route /configuration/usergroup/[i:id]/contact
+     * @route /usergroup/[i:id]/contact
      */
     public function contactForContactgroupAction()
     {

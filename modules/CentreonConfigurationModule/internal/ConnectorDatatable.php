@@ -98,7 +98,7 @@ class ConnectorDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/configuration/connector/[i:id]',
+                    'route' => '/centreon-configuration/connector/[i:id]',
                     'routeParams' => array(
                         'id' => '::id::'
                     ),

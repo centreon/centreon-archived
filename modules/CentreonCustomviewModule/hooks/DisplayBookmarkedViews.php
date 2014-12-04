@@ -44,7 +44,7 @@ class DisplayBookmarkedViews
     public static function execute($params)
     {
         $router = \Centreon\Internal\Di::getDefault()->get('router');
-        if (!preg_match("/^\/customview/", $router->getCurrentUri())) {
+        if (!preg_match("/^\/centreon-customview/", $router->getCurrentUri())) {
             return;
         }
         $user = $_SESSION['user'];

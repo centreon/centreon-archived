@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
   <form name="service_form">
-	<route>/configuration/service/update</route>
+	<route>/centreon-configuration/service/update</route>
 	<redirect>1</redirect>
-	<redirect_route>/configuration/service</redirect_route>
+	<redirect_route>/centreon-configuration/service</redirect_route>
 	<section name="Service configuration">
 	  <block name="General information">
 		<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -12,8 +12,8 @@
 		<field name="service_template_model_stm_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/servicetemplate/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/servicetemplate</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/servicetemplate</listValuesRoute>
 			<multiple>false</multiple>
 		  </attributes>
           <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
@@ -22,7 +22,7 @@
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/icon</listValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/icon</listValuesRoute>
 			<multiple>false</multiple>
 			<wizardRoute>/administration/media/image/add</wizardRoute>
 		  </attributes>
@@ -30,8 +30,8 @@
 		<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/host/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/host</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/host</listValuesRoute>
 			<multiple>true</multiple>
 		  </attributes>
           <help>Specify one or multiple host templates, that should be linked to this template. A service, that uses this service template, will complete the missing host relation and result in a full service definition.</help>
@@ -41,7 +41,7 @@
             <attributes>
                 <object_type>object</object_type>
                 <defaultValuesRoute>/administration/environment/formlist</defaultValuesRoute>
-                <listValuesRoute>/configuration/service/[i:id]/environment</listValuesRoute>
+                <listValuesRoute>/centreon-configuration/service/[i:id]/environment</listValuesRoute>
                 <multiple>false</multiple>
             </attributes>
         </field>
@@ -50,7 +50,7 @@
             <attributes>
                 <object_type>object</object_type>
                 <defaultValuesRoute>/administration/domain/formlist</defaultValuesRoute>
-                <listValuesRoute>/configuration/service/[i:id]/domain</listValuesRoute>
+                <listValuesRoute>/centreon-configuration/service/[i:id]/domain</listValuesRoute>
                 <multiple>false</multiple>
             </attributes>
         </field>
@@ -68,8 +68,8 @@
 		<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/checkperiod</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/checkperiod</listValuesRoute>
 			<multiple>false</multiple>
 		  </attributes>
           <help>Specify the time period during which active checks of this service can be made.</help>
@@ -77,8 +77,8 @@
 		<field name="command_command_id" label="Check command" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/checkcommand</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/checkcommand</listValuesRoute>
 			<multiple>false</multiple>
 		  </attributes>
           <help>Specify the command that monitoring engine will run in order to check the status of the service.</help>
@@ -150,8 +150,8 @@
 		  <help></help>
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/notificationperiod</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/notificationperiod</listValuesRoute>
 			<multiple>false</multiple>
 		  </attributes>
 		</field>
@@ -192,8 +192,8 @@
 		  <help></help>
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/user/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/contact</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/user/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/contact</listValuesRoute>
 			<multiple>true</multiple>
 		  </attributes>
 		</field>
@@ -209,8 +209,8 @@
 		  <help></help>
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/contactgroup</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/usergroup/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/contactgroup</listValuesRoute>
 			<multiple>true</multiple>
 		  </attributes>
 		</field>
@@ -221,16 +221,16 @@
 			<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  		<attributes>
 					<object_type>object</object_type>
-					<defaultValuesRoute>/configuration/servicegroup/formlist</defaultValuesRoute>
-					<listValuesRoute>/configuration/service/[i:id]/servicegroup</listValuesRoute>
+					<defaultValuesRoute>/centreon-configuration/servicegroup/formlist</defaultValuesRoute>
+					<listValuesRoute>/centreon-configuration/service/[i:id]/servicegroup</listValuesRoute>
 					<multiple>true</multiple>
 		  		</attributes>
 			</field>
 			<field name="servicecategories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  		<attributes>
 					<object_type>object</object_type>
-					<defaultValuesRoute>/configuration/servicecategory/formlist</defaultValuesRoute>
-					<listValuesRoute>/configuration/service/[i:id]/servicecategory</listValuesRoute>
+					<defaultValuesRoute>/centreon-configuration/servicecategory/formlist</defaultValuesRoute>
+					<listValuesRoute>/centreon-configuration/service/[i:id]/servicecategory</listValuesRoute>
 					<multiple>true</multiple>
 		  		</attributes>
 			</field>
@@ -239,8 +239,8 @@
 			<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  		<attributes>
 					<object_type>object</object_type>
-					<defaultValuesRoute>/configuration/trap/formlist</defaultValuesRoute>
-					<listValuesRoute>/configuration/service/[i:id]/trap</listValuesRoute>
+					<defaultValuesRoute>/centreon-configuration/trap/formlist</defaultValuesRoute>
+					<listValuesRoute>/centreon-configuration/service/[i:id]/trap</listValuesRoute>
 					<multiple>true</multiple>
 		  		</attributes>
 			</field>
@@ -326,8 +326,8 @@
 		<field name="command_command_id2" label="Event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
-			<defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
-			<listValuesRoute>/configuration/service/[i:id]/eventhandler</listValuesRoute>
+			<defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/service/[i:id]/eventhandler</listValuesRoute>
 			<multiple>false</multiple>
 		  </attributes>
 		</field>
@@ -335,7 +335,7 @@
 	</section>
   </form>
   <wizard name="add_service">
-    <route>/configuration/service/add</route>
+    <route>/centreon-configuration/service/add</route>
     	<step name="General">
     	<field name="service_description" mandatory="1"></field>
     	<field name="service_template_model_stm_id" mandatory="0"></field>

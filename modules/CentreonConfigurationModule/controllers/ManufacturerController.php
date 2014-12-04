@@ -39,7 +39,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
 {
     protected $objectDisplayName = 'Manufacturer';
     protected $objectName = 'manufacturer';
-    protected $objectBaseUrl = '/configuration/manufacturer';
+    protected $objectBaseUrl = '/centreon-configuration/manufacturer';
     protected $datatableObject = '\CentreonConfiguration\Internal\ManufacturerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Manufacturer';
     protected $repository = '\CentreonConfiguration\Repository\ManufacturerRepository';
@@ -49,7 +49,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      * List manufacturers
      *
      * @method get
-     * @route /configuration/manufacturer
+     * @route /manufacturer
      */
     public function listAction()
     {
@@ -59,7 +59,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/manufacturer/formlist
+     * @route /manufacturer/formlist
      */
     public function formListAction()
     {
@@ -69,7 +69,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
     /**
      * 
      * @method get
-     * @route /configuration/manufacturer/list
+     * @route /manufacturer/list
      */
     public function datatableAction()
     {
@@ -81,7 +81,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method put
-     * @route /configuration/manufacturer/update
+     * @route /manufacturer/update
      */
     public function updateAction()
     {
@@ -93,7 +93,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method post
-     * @route /configuration/manufacturer/add
+     * @route /manufacturer/add
      */
     public function createAction()
     {
@@ -104,11 +104,11 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      * Add a manufacturer
      *
      * @method get
-     * @route /configuration/manufacturer/add
+     * @route /manufacturer/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/configuration/manufacturer/add');
+        $this->tpl->assign('validateUrl', '/centreon-configuration/manufacturer/add');
         parent::addAction();
     }
     
@@ -117,7 +117,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      *
      *
      * @method get
-     * @route /configuration/manufacturer/[i:id]
+     * @route /manufacturer/[i:id]
      */
     public function editAction()
     {
@@ -128,7 +128,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the list of massive change fields
      *
      * @method get
-     * @route /configuration/manufacturer/mc_fields
+     * @route /manufacturer/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -139,7 +139,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      * Get the html of attribute filed
      *
      * @method get
-     * @route /configuration/manufacturer/mc_fields/[i:id]
+     * @route /manufacturer/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -150,7 +150,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      * Duplicate a hosts
      *
      * @method POST
-     * @route /configuration/manufacturer/duplicate
+     * @route /manufacturer/duplicate
      */
     public function duplicateAction()
     {
@@ -161,7 +161,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      * Apply massive change
      *
      * @method POST
-     * @route /configuration/manufacturer/massive_change
+     * @route /manufacturer/massive_change
      */
     public function massiveChangeAction()
     {
@@ -172,7 +172,7 @@ class ManufacturerController extends \CentreonConfiguration\Controllers\BasicCon
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /configuration/manufacturer/delete
+     * @route /manufacturer/delete
      */
     public function deleteAction()
     {

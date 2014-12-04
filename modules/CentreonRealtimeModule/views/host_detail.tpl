@@ -210,7 +210,7 @@ $(function() {
 
   function loadData() {
     $.ajax({
-      url: "{url_for url='/realtime/host/[i:id]/data' params=$routeParams}",
+      url: "{url_for url='/centreon-realtime/host/[i:id]/data' params=$routeParams}",
       type: 'get',
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
@@ -404,7 +404,7 @@ $(function() {
 
     /* Get eventlogs */
     $.ajax({
-      url: "{url_for url='/realtime/eventlogs/lasthostevents/[i:id]/10' params=$routeParams}",
+      url: "{url_for url='/centreon-realtime/eventlogs/lasthostevents/[i:id]/10' params=$routeParams}",
       method: 'get',
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
