@@ -8,7 +8,7 @@
             "name" : "Graph",
             "short_name" : "graph",
             "icon_class": "fa fa-bar-chart-o",
-            "route" : "/graph"
+            "route" : "/centreon-performance/graph"
 	}]
     }
 ]

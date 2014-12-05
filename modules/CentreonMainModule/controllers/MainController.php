@@ -56,7 +56,7 @@ class MainController extends \Centreon\Internal\Controller
     {
         $di = \Centreon\Internal\Di::getDefault();
         $router = $di->get('router');
-        $backUrl = $router->getPathFor('/customview');
+        $backUrl = $router->getPathFor('/centreon-customview');
         $router->response()->redirect($backUrl, 200);
     }
     

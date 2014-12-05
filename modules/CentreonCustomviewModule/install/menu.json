@@ -9,7 +9,7 @@
                 "name": "Home page",
                 "short_name": "customviews",
                 "icon_class": "fa fa-home",
-                "route": "/customview"
+                "route": "/centreon-customview"
             }
         ]
     },
@@ -20,7 +20,7 @@
             {
                 "name": "Widgets",
                 "short_name": "adminwidgets",
-                "route": "/administration/extensions/widgets"
+                "route": "/centreon-administration/extensions/widgets"
             }
         ]
     }
