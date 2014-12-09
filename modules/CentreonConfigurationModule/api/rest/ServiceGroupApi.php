@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2014 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developped by : Lionel Assepo and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,74 +35,61 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
+use Centreon\Api\Rest\BasicFormApi;
+
 /**
  * Login controller
- * @authors Julien Mathis
+ * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers
  */
-class ServiceGroupApi extends \Centreon\Internal\Controller
+class ServiceGroupApi extends BasicFormApi
 {
+    public static $moduleShortName = 'centreon-configuration';
+    
+    protected $objectDisplayName = 'Servicegroup';
+    protected $objectName = 'servicegroup';
+    protected $objectBaseUrl = '/centreon-configuration/servicegroup';
+    protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
+    protected $repository = '\CentreonConfiguration\Repository\ServicegroupRepository';
+
+    public static $relationMap = array(
+        'service' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
+        'servicetemplate' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup'
+    );
+    
     /**
-     * Action for listing hosts
+     * Action for listing servicegroups
      *
      * @method GET
      * @route /servicegroup
      */
     public function listAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        /*
-         * Fields that we want to display
-         */
-        $params = 'sg_id,sg_name';
-        
-        $cmdList = \CentreonConfiguration\Models\Servicegroup::getList($params);
-        
-        $router->response()->json(
-            array(
-                "api-version" => 1,
-                "status" => true,
-                "data" => $cmdList
-            )
-        );
+        $set = 'sg_id,sg_name,sg_alias,sg_activate';
+        parent::listAction($set);
     }
-
+    
     /**
-     * Action to get info a specific host
+     * Action to get info a specific servicegroup
      *
      * @method GET
-     * @route /servicegroup/[i:id]
+     * @route /servicegroup/[:id]
      */
-    public function listServicegroupAction()
+    public function viewAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        /*
-         * Get parameters
-         */
-        $param = $router->request()->paramsNamed();
-
-        /*
-         * Query parameter
-         */
-        $params = array("sg_id" => $param['id']);
-        
-        /*
-         * Get host informations
-         */
-        $hostList = \CentreonConfiguration\Models\Servicegroup::getList('*', -1, 0, null, "ASC", $params);
-
-        $router->response()->json(
-            array(
-                "api-version" => 1,
-                "status" => true,
-                "data" => $hostList
-            )
-        );
+        parent::viewAction();
+    }
+    
+    /**
+     * Action to get info a specific servicegroup wiiith relations
+     *
+     * @method GET
+     * @route /servicegroup/[:id]/links/[a:object]
+     */
+    public function viewWithRelationAction()
+    {
+        parent::viewAction();
     }
 
     /**
@@ -113,7 +100,7 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      */
     public function updateAction()
     {
-        print "Not implemented yet";
+        parent::updateAction();
     }
 
     /**
@@ -124,28 +111,28 @@ class ServiceGroupApi extends \Centreon\Internal\Controller
      */
     public function addAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 
     /**
      * Action for delete
      *
      * @method DELETE
-     * @route /servicegroup/[i:id]
+     * @route /servicegroup/[:id]
      */
     public function deleteAction()
     {
-        print "Not implemented yet";
+        parent::deleteAction();
     }
 
     /**
      * Action for duplicate
      *
-     * @method PUT
-     * @route /servicegroup/duplicate/[i:id]
+     * @method POST
+     * @route /servicegroup/[i:id]
      */
     public function duplicateAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2014 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developped by : Lionel Assepo and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,74 +35,61 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
+use Centreon\Api\Rest\BasicFormApi;
+
 /**
  * Login controller
- * @authors Julien Mathis
+ * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers
  */
-class HostCategoryApi extends \Centreon\Internal\Controller
+class HostCategoryApi extends BasicFormApi
 {
+    public static $moduleShortName = 'centreon-configuration';
+    
+    protected $objectDisplayName = 'Hostcategory';
+    protected $objectName = 'hostcategory';
+    protected $objectBaseUrl = '/centreon-configuration/hostcategory';
+    protected $objectClass = '\CentreonConfiguration\Models\Hostcategory';
+    protected $repository = '\CentreonConfiguration\Repository\HostcategoryRepository';
+
+    public static $relationMap = array(
+        'host' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
+        'hosttemplate' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory'
+    );
+    
     /**
-     * Action for listing hosts
+     * Action for listing hostcategorys
      *
      * @method GET
      * @route /hostcategory
      */
     public function listAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        /*
-         * Fields that we want to display
-         */
-        $params = 'hc_id,hc_name';
-        
-        $cmdList = \CentreonConfiguration\Models\Hostcategory::getList($params);
-        
-        $router->response()->json(
-            array(
-                "api-version" => 1,
-                "status" => true,
-                "data" => $cmdList
-            )
-        );
+        $set = 'hc_id,hc_name,hc_alias,hc_activate';
+        parent::listAction($set);
     }
-
+    
     /**
-     * Action to get info a specific host
+     * Action to get info a specific hostcategory
      *
      * @method GET
-     * @route /hostcategory/[i:id]
+     * @route /hostcategory/[:id]
      */
-    public function listHostcategoryAction()
+    public function viewAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        /*
-         * Get parameters
-         */
-        $param = $router->request()->paramsNamed();
-
-        /*
-         * Query parameter
-         */
-        $params = array("hc_id" => $param['id']);
-        
-        /*
-         * Get host informations
-         */
-        $hostList = \CentreonConfiguration\Models\Hostcategory::getList('*', -1, 0, null, "ASC", $params);
-
-        $router->response()->json(
-            array(
-                "api-version" => 1,
-                "status" => true,
-                "data" => $hostList
-            )
-        );
+        parent::viewAction();
+    }
+    
+    /**
+     * Action to get info a specific hostcategory wiiith relations
+     *
+     * @method GET
+     * @route /hostcategory/[:id]/links/[a:object]
+     */
+    public function viewWithRelationAction()
+    {
+        parent::viewAction();
     }
 
     /**
@@ -113,7 +100,7 @@ class HostCategoryApi extends \Centreon\Internal\Controller
      */
     public function updateAction()
     {
-        print "Not implemented yet";
+        parent::updateAction();
     }
 
     /**
@@ -124,28 +111,28 @@ class HostCategoryApi extends \Centreon\Internal\Controller
      */
     public function addAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 
     /**
      * Action for delete
      *
      * @method DELETE
-     * @route /hostcategory/[i:id]
+     * @route /hostcategory/[:id]
      */
     public function deleteAction()
     {
-        print "Not implemented yet";
+        parent::deleteAction();
     }
 
     /**
      * Action for duplicate
      *
-     * @method PUT
-     * @route /hostcategory/duplicate/[i:id]
+     * @method POST
+     * @route /hostcategory/[i:id]
      */
     public function duplicateAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 }

@@ -420,4 +420,9 @@ class Generator
             $this->formHandler->setDefaults($defaultValues);
         }
     }
+    
+    public function getFormFieldsWithValidators($route)
+    {
+        
+    }
 }

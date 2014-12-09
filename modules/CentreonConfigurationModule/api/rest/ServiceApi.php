@@ -43,38 +43,42 @@ use Centreon\Api\Rest\BasicFormApi;
  * @package Centreon
  * @subpackage Controllers
  */
-class HostGroupApi extends BasicFormApi
+class ServiceApi extends BasicFormApi
 {
     public static $moduleShortName = 'centreon-configuration';
-    
-    protected $objectDisplayName = 'Hostgroup';
-    protected $objectName = 'hostgroup';
-    protected $objectBaseUrl = '/centreon-configuration/hostgroup';
-    protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
-    protected $repository = '\CentreonConfiguration\Repository\HostgroupRepository';
-
+    protected $objectName = 'service';
+    protected $objectBaseUrl = '/centreon-configuration/service';
+    protected $objectClass = '\CentreonConfiguration\Models\Service';
+    protected $repository = '\CentreonConfiguration\Repository\ServiceRepository';
     public static $relationMap = array(
-        'host' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
-        'hosttemplate' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostgroup'
+        'host' => '\CentreonConfiguration\Models\Relation\Host\Service',
+        'servicegroup' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
+        'servicecategory' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
+        'parents' => '\CentreonConfiguration\Models\Relation\Service\Serviceparents',
+        'children' => '\CentreonConfiguration\Models\Relation\Service\Servicechildren',
+    );
+    
+    public static $simpleRelationMap = array(
+        'servicetemplate' => 'service_template_model_stm_id'
     );
     
     /**
-     * Action for listing hostgroups
+     * Action for listing services
      *
      * @method GET
-     * @route /hostgroup
+     * @route /service
      */
     public function listAction()
     {
-        $set = 'hg_id,hg_name,hg_alias,hg_activate';
+        $set = 'service_id,service_description,service_activate';
         parent::listAction($set);
     }
-    
+
     /**
-     * Action to get info a specific hostgroup
+     * Action to get info a specific service
      *
      * @method GET
-     * @route /hostgroup/[:id]
+     * @route /service/[:id]
      */
     public function viewAction()
     {
@@ -82,10 +86,10 @@ class HostGroupApi extends BasicFormApi
     }
     
     /**
-     * Action to get info a specific hostgroup wiiith relations
+     * Action to get info a specific service with relations
      *
      * @method GET
-     * @route /hostgroup/[:id]/links/[a:object]
+     * @route /service/[:id]/links/[a:object]
      */
     public function viewWithRelationAction()
     {
@@ -96,7 +100,7 @@ class HostGroupApi extends BasicFormApi
      * Action for update 
      *
      * @method PUT
-     * @route /hostgroup/[i:id]
+     * @route /service/[i:id]
      */
     public function updateAction()
     {
@@ -107,7 +111,7 @@ class HostGroupApi extends BasicFormApi
      * Action for add
      *
      * @method POST
-     * @route /hostgroup
+     * @route /service
      */
     public function addAction()
     {
@@ -118,7 +122,7 @@ class HostGroupApi extends BasicFormApi
      * Action for delete
      *
      * @method DELETE
-     * @route /hostgroup/[:id]
+     * @route /service/[:id]
      */
     public function deleteAction()
     {
@@ -129,7 +133,7 @@ class HostGroupApi extends BasicFormApi
      * Action for duplicate
      *
      * @method POST
-     * @route /hostgroup/[i:id]
+     * @route /service/[i:id]
      */
     public function duplicateAction()
     {

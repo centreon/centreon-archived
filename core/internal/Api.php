@@ -35,47 +35,37 @@
 
 namespace Centreon\Internal;
 
-use Centreon\Internal\Di;
-
 /**
  * Description of Api
  *
  * @author lionel
  */
-class Api
+class Api extends HttpCore
 {
-    /**
-     *
-     * @var type 
-     */
-    public $router;
-    
-    /**
-     *
-     * @var type 
-     */
-    public $request;
-    
-    /**
-     *
-     * @var type 
-     */
-    public $di;
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $moduleName = 'Core';
-
     /**
      * 
      * @param type $request
      */
     public function __construct($request)
     {
-        $this->db = Di::getDefault()->get('db_centreon');
-        $this->router = Di::getDefault()->get('router');
-        $this->request = $request;
+        parent::__construct($request);
+    }
+    
+    /**
+     * 
+     * @param type $object
+     * @param type $objectData
+     * @param type $links
+     */
+    protected function sendJsonApiResponse($object, $objectData, $links = array())
+    {
+        $finalResponse = array(strtolower($object) => $objectData);
+        
+        if (count($finalResponse) > 0) {
+            $finalResponse['links'] = $links;
+        }
+        
+        $this->router->response()->header('Content-Type', 'application/json');
+        $this->router->response()->json($finalResponse);
     }
 }

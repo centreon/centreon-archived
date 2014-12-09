@@ -36,49 +36,23 @@
 
 namespace Centreon\Internal;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
-abstract class Controller
+abstract class Controller extends HttpCore
 {
     /**
      *
      * @var type 
      */
-    protected $db;
-    
-    /**
-     *
-     * @var type 
-     */
-    protected $request;
-    
-    /**
-     *
-     * @var \Centreon\Internal\Router 
-     */
-    protected $router;
-    
-    /**
-     *
-     * @var type 
-     */
     protected $tpl;
-    
-    /**
-     *
-     * @var string 
-     */
-    public static $moduleName = 'Core';
 
     /**
      * 
      */
     public function __construct($request)
     {
-        $this->db = Di::getDefault()->get('db_centreon');
+        parent::__construct($request);
         $this->tpl = Di::getDefault()->get('template');
-        $this->router = Di::getDefault()->get('router');
-        $this->request = $request;
         $this->init();
     }
     
@@ -123,70 +97,6 @@ abstract class Controller
     }
     
     /**
-     * 
-     * @return string
-     */
-    protected function getUri()
-    {
-        return $this->request->uri();
-    }
-
-    /**
-     * Get params
-     *
-     * @param string $type
-     * @return array
-     */
-    protected function getParams($type = "")
-    {
-        switch(strtolower($type)) {
-            case 'get':
-                $collection = $this->request->paramsGet();
-                break;
-            case 'post':
-                $collection = $this->request->paramsPost();
-                break;
-            case 'named':
-                $collection = $this->request->paramsNamed();
-                break;
-            default:
-                $collection = $this->request->params();
-                break;
-        }
-        return $collection;
-    }
-
-    /**
-     * Get routes
-     *
-     * @return array
-     */
-    public static function getRoutes()
-    {
-        $tempo = array();
-        $ref = new \ReflectionClass(get_called_class());
-        foreach ($ref->getMethods() as $method) {
-            $methodName = $method->getName();
-            if (substr($methodName, -6) == 'Action') {
-                foreach (explode("\n", $method->getDocComment()) as $line) {
-                    $str = trim(str_replace("* ", '', $line));
-                    if (substr($str, 0, 6) == '@route') {
-                        $route = substr($str, 6);
-                        $tempo[$methodName]['route'] = trim($route);
-                    } elseif (substr($str, 0, 7) == '@method') {
-                        $method_type = strtoupper(substr($str, 7));
-                        $tempo[$methodName]['method_type'] = trim($method_type);
-                    } elseif (substr($str, 0, 4) == '@acl') {
-                        $aclFlags = explode(",", trim(substr($str, 4)));
-                        $tempo[$methodName]['acl'] = Acl::convertAclFlags($aclFlags);
-                    }
-                }
-            }
-        }
-        return $tempo;
-    }
-    
-    /**
      *
      */
     protected function init()
@@ -203,27 +113,5 @@ abstract class Controller
          * Set md5Email for Gravatar
          */
         $this->tpl->assign("md5Email", $md5Email);
-    }
-    
-    /**
-     * 
-     * @param string $route
-     * @param integer $returnCode
-     */
-    protected function redirect($route, $returnCode = 200)
-    {
-        $redirectUrl = $this->router->getPathFor($route);
-        $this->router->response()->redirect($redirectUrl, $returnCode);
-    }
-    
-    /**
-     * 
-     * @param array $response
-     */
-    protected function sendResponse(array $response = array())
-    {
-        if (isset($response['json']) && is_array($response['json'])) {
-            $this->router->response()->json($response['json']);
-        }
     }
 }

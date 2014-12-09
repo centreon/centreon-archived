@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2014 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developped by : Lionel Assepo and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,7 +38,7 @@ namespace CentreonConfiguration\Api\Rest;
 use \CentreonConfiguration\Repository\ConfigGenerateRepository;
 
 /**
- * @authors Julien Mathis
+ * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers                                   
  */

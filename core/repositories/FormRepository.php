@@ -407,4 +407,49 @@ abstract class FormRepository
         }
         return $finalList;
     }
+    
+    /**
+     * 
+     * @param type $fields
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param type $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getList(
+        $fields = '*',
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = 'asc',
+        $filters = array(),
+        $filterType = 'OR'
+    ) {
+        if (!empty(static::$secondaryObjectClass)) {
+            $class = static::$secondaryObjectClass;
+        } else {
+            $class = static::$objectClass;
+        }
+        
+        return $class::getList($fields, $count, $offset, $order, $sort, $filters, $filterType);
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @param type $params
+     * @return type
+     */
+    public static function load($id, $params = '*')
+    {
+         if (!empty(static::$secondaryObjectClass)) {
+            $class = static::$secondaryObjectClass;
+        } else {
+            $class = static::$objectClass;
+        }
+        return $class::get($id, $params);
+    }
 }

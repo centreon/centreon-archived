@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2014 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developped by : Lionel Assepo and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,14 +35,30 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
+use Centreon\Api\Rest\BasicFormApi;
+
 /**
  * Login controller
- * @authors Julien Mathis
+ * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers
  */
-class HostApi extends \Centreon\Internal\Controller
+class HostApi extends BasicFormApi
 {
+    public static $moduleShortName = 'centreon-configuration';
+    protected $objectName = 'host';
+    protected $objectBaseUrl = '/centreon-configuration/host';
+    protected $objectClass = '\CentreonConfiguration\Models\Host';
+    protected $repository = '\CentreonConfiguration\Repository\HostRepository';
+    public static $relationMap = array(
+        'hostgroup' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
+        'hostcategory' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
+        'parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
+        'children' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
+        'hosttemplate' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
+        'service' => '\CentreonConfiguration\Models\Relation\Host\Service',
+    );
+    
     /**
      * Action for listing hosts
      *
@@ -51,45 +67,30 @@ class HostApi extends \Centreon\Internal\Controller
      */
     public function listAction()
     {
-        
+        $set = 'host_id,host_name,host_alias,host_address,host_activate';
+        parent::listAction($set);
     }
-
+    
     /**
      * Action to get info a specific host
      *
      * @method GET
-     * @route /host/[i:id]
+     * @route /host/[:id]
      */
-    public function listHostAction()
+    public function viewAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-        
-        /*
-         * Get parameters
-         */
-        $requestParams = $this->getParams();
-        
-        /*
-         * Query parameter
-         */
-        $params = array(
-            "host_id" => $requestParams['id'],
-            "host_register" => '1'
-        );
-        
-        /*
-         * Get host informations
-         */
-        $hostList = \CentreonConfiguration\Models\Host::getList('*', -1, 0, null, "ASC", $params, "AND");
-
-        $router->response()->json(
-            array(
-                "api-version" => $requestParams['version'],
-                "status" => true,
-                "data" => $hostList
-            )
-        );
+        parent::viewAction();
+    }
+    
+    /**
+     * Action to get info a specific host wiiith relations
+     *
+     * @method GET
+     * @route /host/[:id]/links/[a:object]
+     */
+    public function viewWithRelationAction()
+    {
+        parent::viewAction();
     }
 
     /**
@@ -100,7 +101,7 @@ class HostApi extends \Centreon\Internal\Controller
      */
     public function updateAction()
     {
-        print "Not implemented yet";
+        parent::updateAction();
     }
 
     /**
@@ -111,28 +112,28 @@ class HostApi extends \Centreon\Internal\Controller
      */
     public function addAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 
     /**
      * Action for delete
      *
      * @method DELETE
-     * @route /host/[i:id]
+     * @route /host/[:id]
      */
     public function deleteAction()
     {
-        print "Not implemented yet";
+        parent::deleteAction();
     }
 
     /**
      * Action for duplicate
      *
-     * @method PUT
+     * @method POST
      * @route /host/[i:id]
      */
     public function duplicateAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 }

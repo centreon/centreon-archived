@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2014 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developped by : Lionel Assepo and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ namespace CentreonConfiguration\Api\Rest;
 
 /**
  * Login controller
- * @authors Julien Mathis
+ * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers
  */
@@ -113,7 +113,7 @@ class CommandApi extends \Centreon\Internal\Controller
      */
     public function updateAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 
     /**
@@ -124,7 +124,7 @@ class CommandApi extends \Centreon\Internal\Controller
      */
     public function addAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 
     /**
@@ -136,7 +136,7 @@ class CommandApi extends \Centreon\Internal\Controller
      */
     public function deleteAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 
     /**
@@ -147,6 +147,6 @@ class CommandApi extends \Centreon\Internal\Controller
      */
     public function duplicateAction()
     {
-        print "Not implemented yet";
+        parent::createAction();
     }
 }
