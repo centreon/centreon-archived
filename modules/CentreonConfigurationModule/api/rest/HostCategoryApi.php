@@ -35,104 +35,14 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use Centreon\Api\Rest\BasicFormApi;
+use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
 
-/**
- * Login controller
- * @authors Lionel Assepo
- * @package Centreon
- * @subpackage Controllers
- */
-class HostCategoryApi extends BasicFormApi
+class HostCategoryApi extends CentreonConfigurationRootApi
 {
-    public static $moduleShortName = 'centreon-configuration';
+    public $objectName = 'hostcategory';
     
-    protected $objectDisplayName = 'Hostcategory';
-    protected $objectName = 'hostcategory';
-    protected $objectBaseUrl = '/centreon-configuration/hostcategory';
-    protected $objectClass = '\CentreonConfiguration\Models\Hostcategory';
-    protected $repository = '\CentreonConfiguration\Repository\HostcategoryRepository';
-
-    public static $relationMap = array(
-        'host' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
-        'hosttemplate' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory'
-    );
-    
-    /**
-     * Action for listing hostcategorys
-     *
-     * @method GET
-     * @route /hostcategory
-     */
-    public function listAction()
+    public function __construct($request)
     {
-        $set = 'hc_id,hc_name,hc_alias,hc_activate';
-        parent::listAction($set);
-    }
-    
-    /**
-     * Action to get info a specific hostcategory
-     *
-     * @method GET
-     * @route /hostcategory/[:id]
-     */
-    public function viewAction()
-    {
-        parent::viewAction();
-    }
-    
-    /**
-     * Action to get info a specific hostcategory wiiith relations
-     *
-     * @method GET
-     * @route /hostcategory/[:id]/links/[a:object]
-     */
-    public function viewWithRelationAction()
-    {
-        parent::viewAction();
-    }
-
-    /**
-     * Action for update 
-     *
-     * @method PUT
-     * @route /hostcategory/[i:id]
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-
-    /**
-     * Action for add
-     *
-     * @method POST
-     * @route /hostcategory
-     */
-    public function addAction()
-    {
-        parent::createAction();
-    }
-
-    /**
-     * Action for delete
-     *
-     * @method DELETE
-     * @route /hostcategory/[:id]
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-
-    /**
-     * Action for duplicate
-     *
-     * @method POST
-     * @route /hostcategory/[i:id]
-     */
-    public function duplicateAction()
-    {
-        parent::createAction();
+        parent::__construct($request);
     }
 }

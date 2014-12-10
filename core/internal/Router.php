@@ -109,13 +109,23 @@ class Router extends \Klein\Klein
             }
         }
         
-        $this->respond(
-            '404',
-            function ($request, $response) {
-                $tmpl = Di::getDefault()->get('template');
-                $response->body($tmpl->fetch('404.tpl'));
+        $this->onHttpError(function ($code, $router, $matched, $methods_matched, $http_exception) {
+            switch ($code) {
+                case 404:
+                    $tmpl = Di::getDefault()->get('template');
+                    $router->response()->body($tmpl->fetch('404.tpl'));
+                    break;
+                case 405:
+                    $router->response()->body(
+                        'You can\'t do that!'
+                    );
+                    break;
+                default:
+                    $router->response()->body(
+                        'Oh no, a bad error happened that caused a '. $code
+                    );
             }
-        );
+        });
     }
     
     /**
@@ -197,6 +207,11 @@ class Router extends \Klein\Klein
             if (!isset($data['acl'])) {
                 $data['acl'] = "";
             }
+            
+            if (!in_array($moduleName, $this->mainRouteModules)) {
+                $data['route'] = '/' . $moduleName . $data['route'];
+            }
+            
             $this->routesData[] = $data;
             if (substr($data['route'], 0, 1) === '@' || $data['route'] === '405') {
                 $routeName = $data['route'];
@@ -207,11 +222,7 @@ class Router extends \Klein\Klein
                     'method' => $data['method_type']
                 );
             } else {
-                if (!in_array($moduleName, $this->mainRouteModules)) {
-                    $routeName = $baseUrl. '/' . $moduleName . $data['route'];
-                } else {
-                    $routeName = $baseUrl . $data['route'];
-                }
+                $routeName = $baseUrl . $data['route'];
             }
             if (isset($_SESSION['acl']) &&
                 false === $_SESSION['acl']->routeAllowed($data['route'])) {

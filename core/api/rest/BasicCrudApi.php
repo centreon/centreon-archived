@@ -39,17 +39,29 @@ namespace Centreon\Api\Rest;
 use Centreon\Internal\Exception;
 
 /**
- * Description of BasicFormApi
+ * Description of BasicCrudApi
  *
  * @author lionel
  */
-class BasicFormApi extends \Centreon\Internal\Api
+class BasicCrudApi extends \Centreon\Internal\Api
 {
     /**
      *
      * @var type 
      */
+    protected $objectManifest = '';
+    
+    /**
+     *
+     * @var type 
+     */
     protected $liteAttributesSet = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $attributesMap = array();
     
     /**
      *
@@ -85,13 +97,13 @@ class BasicFormApi extends \Centreon\Internal\Api
      *
      * @var type 
      */
-    public static $relationMap = array();
+    public $relationMap = array();
     
     /**
      *
      * @var type 
      */
-    public static $simpleRelationMap = array();
+    public $simpleRelationMap = array();
     
     /**
      * 
@@ -106,11 +118,12 @@ class BasicFormApi extends \Centreon\Internal\Api
     public function __construct($request)
     {
         parent::__construct($request);
+        $this->parseManifest();
         if (is_null($this->repository)) {
             throw new Exception('Repository unspecified');
         }
         $repository = $this->repository;
-        $repository::setRelationMap(static::$relationMap);
+        $repository::setRelationMap($this->relationMap);
         $repository::setObjectName($this->objectName);
         $repository::setObjectClass($this->objectClass);
         if (!empty($this->secondaryObjectClass)) {
@@ -121,9 +134,25 @@ class BasicFormApi extends \Centreon\Internal\Api
     
     /**
      * 
-     * @param type $set
+     * @param string $manifestFile
      */
-    public function listAction($set = '*')
+    private function parseManifest()
+    {
+        $reflector = new \ReflectionClass($this);
+        $manifestFile = dirname($reflector->getFileName()) . '/' . $this->objectName . 'Manifest.json';
+        $this->objectManifest = json_decode(file_get_contents($manifestFile), true);
+        foreach ($this->objectManifest as $mKey => $mValue) {
+            if (property_exists($this, $mKey)) {
+                $this->$mKey = $mValue;
+            }
+        }
+    }
+    
+    /**
+     * @method GET
+     * @route /{object}
+     */
+    public function listAction()
     {
         // 
         $params = $this->getParams();
@@ -136,7 +165,7 @@ class BasicFormApi extends \Centreon\Internal\Api
         //
         $count = (isset($params['count'])) ? $params['count'] : 25;
         $offset = (isset($params['offset'])) ? $params['offset'] : 0;
-        $fields = (isset($params['fields'])) ? $params['fields'] : $set;
+        $fields = (isset($params['fields'])) ? $params['fields'] : $this->liteAttributesSet;
         $list = $repository::getList($fields, $count, $offset);
         
         // 
@@ -150,7 +179,7 @@ class BasicFormApi extends \Centreon\Internal\Api
     /**
      * 
      */
-    public function viewAction()
+    private function viewObject()
     {
         // 
         $params = $this->getParams();
@@ -163,7 +192,7 @@ class BasicFormApi extends \Centreon\Internal\Api
         
         //
         $fields = (isset($params['fields'])) ? $params['fields'] : '*';
-        $linkedObjects = (isset($params['object'])) ? explode(',', $params['object']) : array();
+        $linkedObjects = (isset($params['linkedobject'])) ? explode(',', $params['linkedobject']) : array();
         $ids = explode(',', $params['id']);
         
         try {
@@ -199,12 +228,32 @@ class BasicFormApi extends \Centreon\Internal\Api
     }
     
     /**
+     * @method GET
+     * @route /{object}/[:id]
+     */
+    public function viewAction()
+    {
+        $this->viewObject();
+    }
+
+    /**
+     * @method GET
+     * @route /{object}/[:id]/links/[:linkedobject]
+     */
+    public function viewWithRelationsAction()
+    {
+        $this->viewObject();
+    }
+
+    /**
      * 
+     * @method POST
+     * @route /{object}
      */
     public function createAction()
     {
         // 
-        $params = $this->getParams('post');
+        $params = $this->getParams();
         
         try {
             if (isset($params[$this->objectName])) {
@@ -225,16 +274,29 @@ class BasicFormApi extends \Centreon\Internal\Api
             } else {
                 $this->router->response()->code(400);
             }
+        } catch (\PDOException $ex) {
+            if ($ex->getCode() == 23000) {
+                $this->router->response()->code(409);
+            }
         } catch (Exception $ex) {
             $this->router->response()->code(500);
         }
+    }
+    
+    /**
+     * @method PUT
+     * @route /{object}/[:id]
+     */
+    public function fullUpdateAction()
+    {
         
     }
-
+    
     /**
-     * 
+     * @method PATCH
+     * @route /{object}/[:id]
      */
-    public function updateAction()
+    public function partialUpdateAction()
     {
         $params = $this->getParams();
         
@@ -267,7 +329,17 @@ class BasicFormApi extends \Centreon\Internal\Api
     }
     
     /**
-     * 
+     * @method PATCH
+     * @route /{object}/[:id]/links/[:linkedobject]
+     */
+    public function updateRelationsAction()
+    {
+        
+    }
+    
+    /**
+     * @method DELETE
+     * @route /{object}/[:id]
      */
     public function deleteAction()
     {
@@ -279,27 +351,12 @@ class BasicFormApi extends \Centreon\Internal\Api
             $ids = explode(',', $params['id']);
             $repository::delete($ids);
         } catch (Exception $ex) {
-            
+            if ($ex->getMessage() === static::OBJ_NOT_EXIST) {
+                $this->router->response()->code(404);
+            } else {
+                $this->router->response()->code(500);
+            }
         }
-        
-        $this->router->response()->code(204);
-    }
-    
-    /**
-     * 
-     */
-    public function deleteRelationsAction()
-    {
-        // 
-        $params = $this->getParams();
-        $repository = $this->repository;
-        
-        $ids = explode(',', $params['id']);
-        if (count($ids) > 1) {
-            $this->router->response()->code(401);
-        }
-        
-        $repository::update($ids);
         
         $this->router->response()->code(204);
     }
@@ -314,8 +371,8 @@ class BasicFormApi extends \Centreon\Internal\Api
         $repository = $this->repository;
         
         foreach ($linkedObjects as $linkedObject) {
-            if (isset(static::$relationMap[$linkedObject])) {
-                $relClass = static::$relationMap[$linkedObject];
+            if (isset($this->relationMap[$linkedObject])) {
+                $relClass = $this->relationMap[$linkedObject];
                 $list = $repository::getRelations($relClass, $objectId);
                 
                 $fList = array();
@@ -323,8 +380,8 @@ class BasicFormApi extends \Centreon\Internal\Api
                     $fList[] = $obj['id'];
                 }
                 
-            } elseif (isset(static::$simpleRelationMap[$linkedObject])) {
-                $fList = $repository::getSimpleRelation(static::$simpleRelationMap[$linkedObject], $linkedObject, $objectId);
+            } elseif (isset($this->simpleRelationMap[$linkedObject])) {
+                $fList = $repository::getSimpleRelation($this->simpleRelationMap[$linkedObject], $linkedObject, $objectId);
             }
             
             $linked[$linkedObject] = $fList;

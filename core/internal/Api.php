@@ -68,4 +68,41 @@ class Api extends HttpCore
         $this->router->response()->header('Content-Type', 'application/json');
         $this->router->response()->json($finalResponse);
     }
+    
+    /**
+     * Get routes
+     *
+     * @return array
+     */
+    public static function getRoutes()
+    {
+        $tempo = array();
+        $ref = new \ReflectionClass(get_called_class());
+        foreach ($ref->getMethods() as $method) {
+            $methodName = $method->getName();
+            if (substr($methodName, -6) == 'Action') {
+                foreach (explode("\n", $method->getDocComment()) as $line) {
+                    $str = trim(str_replace("* ", '', $line));
+                    if (substr($str, 0, 6) == '@route') {
+                        $route = substr($str, 6);
+                        
+                        $obj = get_called_class();
+                        $objExp = explode('\\', $obj);
+                        $nbOcc = count($objExp) -1;
+                        $finalName = substr($objExp[$nbOcc], 0, strlen($objExp[$nbOcc])-3);
+                        $route = str_replace('{object}', strtolower($finalName), $route);
+                        
+                        $tempo[$methodName]['route'] = trim($route);
+                    } elseif (substr($str, 0, 7) == '@method') {
+                        $method_type = strtoupper(substr($str, 7));
+                        $tempo[$methodName]['method_type'] = trim($method_type);
+                    } elseif (substr($str, 0, 4) == '@acl') {
+                        $aclFlags = explode(",", trim(substr($str, 4)));
+                        $tempo[$methodName]['acl'] = Acl::convertAclFlags($aclFlags);
+                    }
+                }
+            }
+        }
+        return $tempo;
+    }
 }

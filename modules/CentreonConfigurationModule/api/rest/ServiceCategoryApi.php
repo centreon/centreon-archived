@@ -37,9 +37,9 @@ namespace CentreonConfiguration\Api\Rest;
 
 use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
 
-class ServiceApi extends CentreonConfigurationRootApi
+class ServiceCategoryApi extends CentreonConfigurationRootApi
 {
-    public $objectName = 'service';
+    public $objectName = 'servicecategory';
     
     public function __construct($request)
     {

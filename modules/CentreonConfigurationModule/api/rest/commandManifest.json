@@ -1,0 +1,12 @@
+{
+    "liteAttributesSet" : "command_id,command_name,command_line,command_type",
+    "repository" : "\\CentreonConfiguration\\Repository\\CommandRepository",
+    "objectBaseUrl" : "command",
+    "objectClass" : "\\CentreonConfiguration\\Models\\Command",
+    "attributesMap" : {
+        "id" : "command_id",
+        "name" : "command_name",
+        "description" : "command_line",
+        "ip_dns" : "command_type"
+    }
+}

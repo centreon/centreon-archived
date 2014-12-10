@@ -35,105 +35,14 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use Centreon\Api\Rest\BasicFormApi;
+use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
 
-/**
- * Login controller
- * @authors Lionel Assepo
- * @package Centreon
- * @subpackage Controllers
- */
-class HostApi extends BasicFormApi
+class HostApi extends CentreonConfigurationRootApi
 {
-    public static $moduleShortName = 'centreon-configuration';
-    protected $objectName = 'host';
-    protected $objectBaseUrl = '/centreon-configuration/host';
-    protected $objectClass = '\CentreonConfiguration\Models\Host';
-    protected $repository = '\CentreonConfiguration\Repository\HostRepository';
-    public static $relationMap = array(
-        'hostgroup' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
-        'hostcategory' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
-        'parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
-        'children' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
-        'hosttemplate' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-        'service' => '\CentreonConfiguration\Models\Relation\Host\Service',
-    );
+    public $objectName = 'host';
     
-    /**
-     * Action for listing hosts
-     *
-     * @method GET
-     * @route /host
-     */
-    public function listAction()
+    public function __construct($request)
     {
-        $set = 'host_id,host_name,host_alias,host_address,host_activate';
-        parent::listAction($set);
-    }
-    
-    /**
-     * Action to get info a specific host
-     *
-     * @method GET
-     * @route /host/[:id]
-     */
-    public function viewAction()
-    {
-        parent::viewAction();
-    }
-    
-    /**
-     * Action to get info a specific host wiiith relations
-     *
-     * @method GET
-     * @route /host/[:id]/links/[a:object]
-     */
-    public function viewWithRelationAction()
-    {
-        parent::viewAction();
-    }
-
-    /**
-     * Action for update 
-     *
-     * @method PUT
-     * @route /host/[i:id]
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-
-    /**
-     * Action for add
-     *
-     * @method POST
-     * @route /host
-     */
-    public function addAction()
-    {
-        parent::createAction();
-    }
-
-    /**
-     * Action for delete
-     *
-     * @method DELETE
-     * @route /host/[:id]
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-
-    /**
-     * Action for duplicate
-     *
-     * @method POST
-     * @route /host/[i:id]
-     */
-    public function duplicateAction()
-    {
-        parent::createAction();
+        parent::__construct($request);
     }
 }

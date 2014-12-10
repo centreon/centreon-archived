@@ -35,104 +35,14 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use Centreon\Api\Rest\BasicFormApi;
+use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
 
-/**
- * Login controller
- * @authors Lionel Assepo
- * @package Centreon
- * @subpackage Controllers
- */
-class HostGroupApi extends BasicFormApi
+class HostGroupApi extends CentreonConfigurationRootApi
 {
-    public static $moduleShortName = 'centreon-configuration';
+    public $objectName = 'hostgroup';
     
-    protected $objectDisplayName = 'Hostgroup';
-    protected $objectName = 'hostgroup';
-    protected $objectBaseUrl = '/centreon-configuration/hostgroup';
-    protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
-    protected $repository = '\CentreonConfiguration\Repository\HostgroupRepository';
-
-    public static $relationMap = array(
-        'host' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
-        'hosttemplate' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostgroup'
-    );
-    
-    /**
-     * Action for listing hostgroups
-     *
-     * @method GET
-     * @route /hostgroup
-     */
-    public function listAction()
+    public function __construct($request)
     {
-        $set = 'hg_id,hg_name,hg_alias,hg_activate';
-        parent::listAction($set);
-    }
-    
-    /**
-     * Action to get info a specific hostgroup
-     *
-     * @method GET
-     * @route /hostgroup/[:id]
-     */
-    public function viewAction()
-    {
-        parent::viewAction();
-    }
-    
-    /**
-     * Action to get info a specific hostgroup wiiith relations
-     *
-     * @method GET
-     * @route /hostgroup/[:id]/links/[a:object]
-     */
-    public function viewWithRelationAction()
-    {
-        parent::viewAction();
-    }
-
-    /**
-     * Action for update 
-     *
-     * @method PUT
-     * @route /hostgroup/[i:id]
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-
-    /**
-     * Action for add
-     *
-     * @method POST
-     * @route /hostgroup
-     */
-    public function addAction()
-    {
-        parent::createAction();
-    }
-
-    /**
-     * Action for delete
-     *
-     * @method DELETE
-     * @route /hostgroup/[:id]
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-
-    /**
-     * Action for duplicate
-     *
-     * @method POST
-     * @route /hostgroup/[i:id]
-     */
-    public function duplicateAction()
-    {
-        parent::createAction();
+        parent::__construct($request);
     }
 }

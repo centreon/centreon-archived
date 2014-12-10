@@ -48,7 +48,7 @@ class ImageController extends \Centreon\Internal\Controller
      * Add a image
      *
      * @method get
-     * @route /administration/media/image/add
+     * @route /media/image/add
      */
     public function addAction()
     {

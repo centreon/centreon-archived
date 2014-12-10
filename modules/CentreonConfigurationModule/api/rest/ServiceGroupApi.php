@@ -35,104 +35,14 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use Centreon\Api\Rest\BasicFormApi;
+use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
 
-/**
- * Login controller
- * @authors Lionel Assepo
- * @package Centreon
- * @subpackage Controllers
- */
-class ServiceGroupApi extends BasicFormApi
+class ServiceGroupApi extends CentreonConfigurationRootApi
 {
-    public static $moduleShortName = 'centreon-configuration';
+    public $objectName = 'servicegroup';
     
-    protected $objectDisplayName = 'Servicegroup';
-    protected $objectName = 'servicegroup';
-    protected $objectBaseUrl = '/centreon-configuration/servicegroup';
-    protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
-    protected $repository = '\CentreonConfiguration\Repository\ServicegroupRepository';
-
-    public static $relationMap = array(
-        'service' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
-        'servicetemplate' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup'
-    );
-    
-    /**
-     * Action for listing servicegroups
-     *
-     * @method GET
-     * @route /servicegroup
-     */
-    public function listAction()
+    public function __construct($request)
     {
-        $set = 'sg_id,sg_name,sg_alias,sg_activate';
-        parent::listAction($set);
-    }
-    
-    /**
-     * Action to get info a specific servicegroup
-     *
-     * @method GET
-     * @route /servicegroup/[:id]
-     */
-    public function viewAction()
-    {
-        parent::viewAction();
-    }
-    
-    /**
-     * Action to get info a specific servicegroup wiiith relations
-     *
-     * @method GET
-     * @route /servicegroup/[:id]/links/[a:object]
-     */
-    public function viewWithRelationAction()
-    {
-        parent::viewAction();
-    }
-
-    /**
-     * Action for update 
-     *
-     * @method PUT
-     * @route /servicegroup/[i:id]
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-
-    /**
-     * Action for add
-     *
-     * @method POST
-     * @route /servicegroup
-     */
-    public function addAction()
-    {
-        parent::createAction();
-    }
-
-    /**
-     * Action for delete
-     *
-     * @method DELETE
-     * @route /servicegroup/[:id]
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-
-    /**
-     * Action for duplicate
-     *
-     * @method POST
-     * @route /servicegroup/[i:id]
-     */
-    public function duplicateAction()
-    {
-        parent::createAction();
+        parent::__construct($request);
     }
 }

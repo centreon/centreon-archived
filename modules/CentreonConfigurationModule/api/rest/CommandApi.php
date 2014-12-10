@@ -35,118 +35,14 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-/**
- * Login controller
- * @authors Lionel Assepo
- * @package Centreon
- * @subpackage Controllers
- */
-class CommandApi extends \Centreon\Internal\Controller
+use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
+
+class CommandApi extends CentreonConfigurationRootApi
 {
-    /**
-     * Action for listing hosts
-     *
-     * @method GET
-     * @route /command
-     */
-    public function listAction()
+    public $objectName = 'command';
+    
+    public function __construct($request)
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        /*
-         * Fields that we want to display
-         */
-        $params = 'command_id,command_name';
-        
-        $cmdList = \CentreonConfiguration\Models\Command::getList($params);
-        
-        $router->response()->json(
-            array(
-                "api-version" => 1,
-                "status" => true,
-                "data" => $cmdList
-            )
-        );
-    }
-
-    /**
-     * Action to get info a specific host
-     *
-     * @method GET
-     * @route /command/[i:id]
-     */
-    public function listCommandAction()
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-        $router = $di->get('router');
-
-        /*
-         * Get parameters
-         */
-        $param = $router->request()->paramsNamed();
-
-        /*
-         * Query parameter
-         */
-        $params = array("command_id" => $param['id']);
-        
-        /*
-         * Get host informations
-         */
-        $hostList = \CentreonConfiguration\Models\Command::getList('*', -1, 0, null, "ASC", $params);
-
-        $router->response()->json(
-            array(
-                "api-version" => 1,
-                "status" => true,
-                "data" => $hostList
-            )
-        );
-    }
-
-    /**
-     * Action for update 
-     *
-     * @method PUT
-     * @route /command/[i:id]
-     */
-    public function updateAction()
-    {
-        parent::createAction();
-    }
-
-    /**
-     * Action for add
-     *
-     * @method POST
-     * @route /command
-     */
-    public function addAction()
-    {
-        parent::createAction();
-    }
-
-    /**
-     * Action for delete
-     *
-     * @method DELETE
-     * @route /command/[i:id]
-     * 
-     */
-    public function deleteAction()
-    {
-        parent::createAction();
-    }
-
-    /**
-     * Action for duplicate
-     *
-     * @method PUT
-     * @route /command/duplicate/[i:id]
-     */
-    public function duplicateAction()
-    {
-        parent::createAction();
+        parent::__construct($request);
     }
 }
