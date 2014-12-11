@@ -20,7 +20,7 @@
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
 						<listValuesRoute>/centreon-administration/domain/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
+						<wizardRoute>/media/image/add</wizardRoute>
 					</attributes>
 				</field>
 			</block>

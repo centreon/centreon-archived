@@ -171,7 +171,7 @@
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/host/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
+						<wizardRoute>/media/image/add</wizardRoute>
 					</attributes>
 					<help></help>
 				</field>

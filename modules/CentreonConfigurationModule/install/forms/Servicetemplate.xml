@@ -27,7 +27,7 @@
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
+						<wizardRoute>/media/image/add</wizardRoute>
 					</attributes>
 				</field>
 				<field name="domain_id" label="Domain" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
