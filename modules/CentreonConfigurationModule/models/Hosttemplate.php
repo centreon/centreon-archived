@@ -51,7 +51,6 @@ class Hosttemplate extends \Centreon\Models\CentreonBaseModel
         "\CentreonConfiguration\Models\Relation\Host\Contactgroup",
         "\CentreonConfiguration\Models\Relation\Host\Contact",
         "\CentreonConfiguration\Models\Relation\Host\Hostgroup",
-        "\CentreonConfiguration\Models\Relation\Host\Poller",
         "\CentreonConfiguration\Models\Relation\Host\Hostcategory",
         "\CentreonConfiguration\Models\Relation\Host\Service",
         "\CentreonConfiguration\Models\Relation\Host\Hostparents",
