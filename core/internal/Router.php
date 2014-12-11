@@ -109,7 +109,15 @@ class Router extends \Klein\Klein
             }
         }
         
-        $this->onHttpError(function ($code, $router, $matched, $methods_matched, $http_exception) {
+        $this->respond(
+            '404',
+            function ($request, $response) {
+                $tmpl = Di::getDefault()->get('template');
+                $response->body($tmpl->fetch('404.tpl'));
+            }
+        );
+        
+        /*$this->onHttpError(function ($code, $router, $matched, $methods_matched, $http_exception) {
             switch ($code) {
                 case 404:
                     $tmpl = Di::getDefault()->get('template');
@@ -125,7 +133,7 @@ class Router extends \Klein\Klein
                         'Oh no, a bad error happened that caused a '. $code
                     );
             }
-        });
+        });*/
     }
     
     /**

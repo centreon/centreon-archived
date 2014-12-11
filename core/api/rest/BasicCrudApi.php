@@ -149,6 +149,45 @@ class BasicCrudApi extends \Centreon\Internal\Api
     }
     
     /**
+     * 
+     * @param type $dataset
+     * @param type $strict
+     */
+    protected function normalizeParams(&$dataset, $strict = false)
+    {
+        foreach ($dataset as &$value) {
+            $this->normalizeSingleSet($value, $strict);
+        }
+    }
+    
+    /**
+     * 
+     * @param type $dataset
+     * @param type $strict
+     */
+    protected function normalizeSingleSet(&$dataset, $strict = false)
+    {
+        $newDataset = array();
+        foreach($dataset as $dKey => $dValue) {
+            $normalizeKey = array_search($dKey, $this->attributesMap);
+            if ($normalizeKey !== false) {
+                $newDataset[$normalizeKey] = $dValue;
+            } else {
+                $newDataset[$dKey] = $dValue;
+            }
+        }
+        
+        if ($strict) {
+            $diffKey = array_diff(array_keys($newDataset), array_keys($this->attributesMap));
+            foreach ($diffKey as $dKey) {
+                unset($newDataset[$dKey]);
+            }
+        }
+        
+        $dataset = $newDataset;
+    }
+    
+    /**
      * @method GET
      * @route /{object}
      */
@@ -158,8 +197,6 @@ class BasicCrudApi extends \Centreon\Internal\Api
         $params = $this->getParams();
         $headers = $this->request->headers();
         $repository = $this->repository;
-        $obj = $this->objectClass;
-        $objPrimaryKey = $obj::getPrimaryKey();
         $objLink = $this->objectBaseUrl . '/[i:id]';
         
         //
@@ -168,9 +205,11 @@ class BasicCrudApi extends \Centreon\Internal\Api
         $fields = (isset($params['fields'])) ? $params['fields'] : $this->liteAttributesSet;
         $list = $repository::getList($fields, $count, $offset);
         
+        $this->normalizeParams($list);
+        
         // 
         foreach ($list as &$singleObject) {
-            $finalLink = $this->router->getPathFor($objLink, array('id' => $singleObject[$objPrimaryKey]));
+            $finalLink = $this->router->getPathFor($objLink, array('id' => $singleObject['id']));
             $singleObject['href'] = 'http://' . $headers['host'] . $finalLink;
         }
         $this->sendJsonApiResponse($this->objectName, $list);
@@ -198,15 +237,17 @@ class BasicCrudApi extends \Centreon\Internal\Api
         try {
             if (count($ids) > 1) {
                 $object = $repository::getList($fields, -1, 0, null, 'asc', array($objPrimaryKey => $ids));
+                $this->normalizeParams($object);
                 foreach ($object as &$singleObject) {
-                    $singleObject['links'] = $this->getLinkedObjects($singleObject[$objPrimaryKey], $linkedObjects);
-                    $finalLink = $this->router->getPathFor($objLink, array('id' => $singleObject[$objPrimaryKey]));
+                    $singleObject['links'] = $this->getLinkedObjects($singleObject['id'], $linkedObjects);
+                    $finalLink = $this->router->getPathFor($objLink, array('id' => $singleObject['id']));
                     $singleObject['href'] = $hostUrl . $finalLink;
                 }
             } else {
                 $object = $repository::load($params['id'], $fields);
+                $this->normalizeSingleSet($object);
                 $object['links'] = $this->getLinkedObjects($params['id'], $linkedObjects);
-                $finalLink = $this->router->getPathFor($objLink, array('id' => $object[$objPrimaryKey]));
+                $finalLink = $this->router->getPathFor($objLink, array('id' => $object['id']));
                 $object['href'] = $hostUrl . $finalLink;
             }
 
