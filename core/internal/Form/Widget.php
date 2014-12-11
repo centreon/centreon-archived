@@ -113,7 +113,7 @@ class Widget extends Generator
                 $attr = json_encode(
                     array(
                         'object_type' => 'object',
-                        'defaultValuesRoute' => '/configuration/host/formlist'
+                        'defaultValuesRoute' => '/centreon-configuration/host/formlist'
                     )
                 );
                 break;
@@ -122,7 +122,7 @@ class Widget extends Generator
                 $attr = json_encode(
                     array(
                         'object_type' => 'object',
-                        'defaultValuesRoute' => '/configuration/hosttemplate/formlist'
+                        'defaultValuesRoute' => '/centreon-configuration/hosttemplate/formlist'
                     )
                 );
                 break;
@@ -131,7 +131,7 @@ class Widget extends Generator
                 $attr = json_encode(
                     array(
                         'object_type' => 'object',
-                        'defaultValuesRoute' => '/configuration/servicetemplate/formlist'
+                        'defaultValuesRoute' => '/centreon-configuration/servicetemplate/formlist'
                     )
                 );
                 break;
@@ -140,7 +140,7 @@ class Widget extends Generator
                 $attr = json_encode(
                     array(
                         'object_type' => 'object',
-                        'defaultValuesRoute' => '/configuration/hostgroup/formlist'
+                        'defaultValuesRoute' => '/centreon-configuration/hostgroup/formlist'
                     )
                 );
                 break;
@@ -149,7 +149,7 @@ class Widget extends Generator
                 $attr = json_encode(
                     array(
                         'object_type' => 'object',
-                        'defaultValuesRoute' => '/configuration/servicegroup/formlist'
+                        'defaultValuesRoute' => '/centreon-configuration/servicegroup/formlist'
                     )
                 );
                 break;
@@ -158,7 +158,7 @@ class Widget extends Generator
                 $attr = json_encode(
                     array(
                         'object_type' => 'object',
-                        'defaultValuesRoute' => '/configuration/service/formlist'
+                        'defaultValuesRoute' => '/centreon-configuration/service/formlist'
                     )
                 );
                 break;

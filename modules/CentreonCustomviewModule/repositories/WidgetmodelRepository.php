@@ -121,7 +121,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
                 'parameters' => array(
                     '0' => array(
                         'parameters' => array(
-                            'route' => '/administration/extensions/widgets/[i:id]/enable',
+                            'route' => '/centreon-administration/extensions/widgets/[i:id]/enable',
                             'routeParams' => array(
                                 'id' => '::widget_model_id::'
                             ),
@@ -131,7 +131,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
                     ),
                     '1' => array(
                         'parameters' => array(
-                            'route' => '/administration/extensions/widgets/[i:id]/disable',
+                            'route' => '/centreon-administration/extensions/widgets/[i:id]/disable',
                             'routeParams' => array(
                                 'id' => '::widget_model_id::'
                             ),
@@ -149,7 +149,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
                 'parameters' => array(
                     '0' => array(
                         'parameters' => array(
-                            'route' => '/administration/extensions/widgets/[*:shortname]/install',
+                            'route' => '/centreon-administration/extensions/widgets/[*:shortname]/install',
                             'routeParams' => array(
                                 'shortname' => '::shortname::'
                             ),
@@ -159,7 +159,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
                     ),
                     '1' => array(
                         'parameters' => array(
-                            'route' => '/administration/extensions/widgets/[i:id]/uninstall',
+                            'route' => '/centreon-administration/extensions/widgets/[i:id]/uninstall',
                             'routeParams' => array(
                                 'id' => '::widget_model_id::'
                             ),
@@ -179,7 +179,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
         'name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/administration/extensions/widgets/[i:id]',
+                'route' => '/centreon-administration/extensions/widgets/[i:id]',
                 'routeParams' => array(
                     'id' => '::widget_model_id::'
                 ),

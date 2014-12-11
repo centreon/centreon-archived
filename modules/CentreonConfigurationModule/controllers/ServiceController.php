@@ -87,8 +87,8 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
             ->addCss('centreon.tag.css', 'centreon-administration');
         $urls = array(
             'tag' => array(
-                'add' => $router->getPathFor('/administration/tag/add'),
-                'del' => $router->getPathFor('/administration/tag/delete')
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete')
             )
         );
         $this->tpl->append('jsUrl', $urls, true);

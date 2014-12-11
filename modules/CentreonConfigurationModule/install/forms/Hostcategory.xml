@@ -19,7 +19,7 @@
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/hostcategory/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add</wizardRoute>
+						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
 					</attributes>
 					<help></help>
 				</field>

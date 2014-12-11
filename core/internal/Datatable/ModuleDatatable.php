@@ -100,7 +100,7 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/administration/extensions/module/[i:id]',
+                    'route' => '/centreon-administration/extensions/module/[i:id]',
                     'routeParams' => array(
                         'id' => '::id::'
                     ),
@@ -184,14 +184,14 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
                     'data' => array(
                         'urlEnabled' => array(
                             'type' => 'url',
-                            'route' => '/administration/extensions/module/[i:id]/enable',
+                            'route' => '/centreon-administration/extensions/module/[i:id]/enable',
                             'routeParams' => array(
                                 'id' => '::id::'
                             )
                         ),
                         'urlDisabled' => array(
                             'type' => 'url',
-                            'route' => '/administration/extensions/module/[i:id]/disable',
+                            'route' => '/centreon-administration/extensions/module/[i:id]/disable',
                             'routeParams' => array(
                                 'id' => '::id::'
                             )
@@ -218,7 +218,7 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
                         '0' => array(
                             'parameters' => array(
                                 'tmpl' => '<a class="btn btn-sm btn-primary" href="::link::">Install</a>',
-                                'route' => '/administration/extensions/module/[*:shortname]/install',
+                                'route' => '/centreon-administration/extensions/module/[*:shortname]/install',
                                 'routeParams' => array(
                                     'shortname' => '::name::'
                                 )
@@ -227,7 +227,7 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
                         '1' => array(
                             'parameters' => array(
                                 'tmpl' => '<a class="btn btn-sm btn-danger" href="::link::">Uninstall</a>',
-                                'route' => '/administration/extensions/module/[i:id]/uninstall',
+                                'route' => '/centreon-administration/extensions/module/[i:id]/uninstall',
                                 'routeParams' => array(
                                     'id' => '::id::'
                                 )

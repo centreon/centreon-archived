@@ -55,7 +55,7 @@ class ImageController extends \Centreon\Internal\Controller
         $di = \Centreon\Internal\Di::getDefault();
         $config = $di->get('config');
         $form = new \Centreon\Internal\Form\Wizard(
-            rtrim($config->get('global', 'base_url'), '/').'/administration/media/image/add',
+            rtrim($config->get('global', 'base_url'), '/').'/centreon-administration/media/image/add',
             0,
             array('id' => 0)
         );

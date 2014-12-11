@@ -27,7 +27,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-bam/business-activity/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help>List of business activities that belong to this view</help>
@@ -37,8 +37,8 @@
                 <field name="bv_acl" label="Authorized Access Groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-administration/aclgroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help>ACL groups that can access this view</help>

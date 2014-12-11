@@ -58,7 +58,7 @@ class Command extends Customobject
         
         $commandArgumentsUrl = \Centreon\Internal\Di::getDefault()
                             ->get('router')
-                            ->getPathFor('/configuration/command/[i:id]/arguments');
+                            ->getPathFor('/centreon-configuration/command/[i:id]/arguments');
         
         $myJs .= ' '
             . '$("#'.$element['name'].'").on("change", function() { '

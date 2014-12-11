@@ -625,7 +625,7 @@
           source: function(query) {
             var result = [];
             $.ajax({
-              url: "{url_for url='/administration/search/list'}",
+              url: "{url_for url='/centreon-administration/search/list'}",
               dataType: "json",
               method: "post",
               async: false,
@@ -656,7 +656,7 @@
             return;
           }
           $.ajax({
-            url: "{url_for url='/administration/search/save'}",
+            url: "{url_for url='/centreon-administration/search/save'}",
             dataType: "json",
             method: "post",
             data: {
@@ -682,7 +682,7 @@
             return;
           }
           $.ajax({
-            url: "{url_for url='/administration/search/delete'}",
+            url: "{url_for url='/centreon-administration/search/delete'}",
             dataType: "json",
             method: "post",
             data: {
@@ -707,7 +707,7 @@
             return;
           }
           $.ajax({
-            url: "{url_for url='/administration/search/load'}",
+            url: "{url_for url='/centreon-administration/search/load'}",
             dataType: "json",
             method: "post",
             data: {

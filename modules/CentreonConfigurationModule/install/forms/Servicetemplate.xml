@@ -27,14 +27,14 @@
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add</wizardRoute>
+						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
 					</attributes>
 				</field>
 				<field name="domain_id" label="Domain" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
             		<help>Define the domain of the Service template</help>
 		            <attributes>
         		        <object_type>object</object_type>
-                		<defaultValuesRoute>/administration/domain/formlist</defaultValuesRoute>
+                		<defaultValuesRoute>/centreon-administration/domain/formlist</defaultValuesRoute>
 		                <listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/domain</listValuesRoute>
         		        <multiple>false</multiple>
 		            </attributes>

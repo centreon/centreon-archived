@@ -70,7 +70,7 @@ class EngineController extends FormController
     /**
      * 
      * @method get
-     * @route /engine/formlist
+     * @route /formlist
      */
     public function formListAction()
     {
@@ -80,7 +80,7 @@ class EngineController extends FormController
     /**
      * 
      * @method get
-     * @route /engine/list
+     * @route /list
      */
     public function datatableAction()
     {
@@ -92,7 +92,7 @@ class EngineController extends FormController
      *
      *
      * @method post
-     * @route /engine/update
+     * @route /update
      */
     public function updateAction()
     {
@@ -129,7 +129,7 @@ class EngineController extends FormController
      *
      *
      * @method post
-     * @route /engine/add
+     * @route /add
      */
     public function createAction()
     {
@@ -141,14 +141,14 @@ class EngineController extends FormController
      *
      *
      * @method get
-     * @route /engine/[i:id]
+     * @route /[i:id]
      */
     public function editAction()
     {
         $requestParam = $this->getParams('named');
         $additionnalParams = array(
             'formRedirect'=> true,
-            'formRedirectRoute' => '/configuration/poller/' . $requestParam['id']
+            'formRedirectRoute' => '/centreon-configuration/poller/' . $requestParam['id']
         );
         parent::editAction($additionnalParams);
     }
@@ -157,7 +157,7 @@ class EngineController extends FormController
      * Add a engine
      *
      * @method get
-     * @route /engine/add
+     * @route /add
      */
     public function addAction()
     {
@@ -169,7 +169,7 @@ class EngineController extends FormController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /engine/mc_fields
+     * @route /mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -180,7 +180,7 @@ class EngineController extends FormController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /engine/mc_fields/[i:id]
+     * @route /mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -191,7 +191,7 @@ class EngineController extends FormController
      * Duplicate a hosts
      *
      * @method POST
-     * @route /engine/duplicate
+     * @route /duplicate
      */
     public function duplicateAction()
     {
@@ -202,7 +202,7 @@ class EngineController extends FormController
      * Apply massive change
      *
      * @method POST
-     * @route /engine/massive_change
+     * @route /massive_change
      */
     public function massiveChangeAction()
     {
@@ -213,7 +213,7 @@ class EngineController extends FormController
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /engine/delete
+     * @route /delete
      */
     public function deleteAction()
     {
@@ -223,7 +223,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /engine/[i:id]/globalhosteventhandler
+     * @route /[i:id]/globalhosteventhandler
      */
     public function globalHostEventHandlerForEngineAction()
     {
@@ -233,7 +233,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /engine/[i:id]/globalserviceeventhandler
+     * @route /[i:id]/globalserviceeventhandler
      */
     public function globalServiceEventHandlerForEngineAction()
     {
@@ -243,7 +243,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /engine/[i:id]/ochpcommand
+     * @route /[i:id]/ochpcommand
      */
     public function ochpCommandForEngineAction()
     {
@@ -253,7 +253,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /engine/[i:id]/ocspcommand
+     * @route /[i:id]/ocspcommand
      */
     public function ocspCommandForEngineAction()
     {

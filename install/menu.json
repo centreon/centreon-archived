@@ -24,7 +24,7 @@
                     {
                         "name" : "Modules",
                         "short_name" : "modules",
-                        "route" : "/administration/extensions/module"
+                        "route" : "/centreon-administration/extensions/module"
                     }
                 ]
             }

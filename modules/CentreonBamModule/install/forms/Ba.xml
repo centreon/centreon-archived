@@ -15,8 +15,8 @@
                 <field name="id_check_period" label="Check Time Period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 					<help></help>
@@ -24,8 +24,8 @@
                 <field name="id_reporting_period" label="Reporting Time Period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 					<help></help>
@@ -35,8 +35,8 @@
                 <field name="ba_contactgroups" label="Contact Groups" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/usergroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/contactgroup</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/usergroup/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/contactgroup</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help></help>
@@ -44,8 +44,8 @@
                 <field name="id_notification_period" label="Notification Time Period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
 					<help></help>
@@ -91,8 +91,8 @@
                 <field name="business_activity_escalations" label="Escalations" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/configuration/hostcategory/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hostcategory/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help></help>
@@ -134,7 +134,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-bam/business-activity/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help></help>
@@ -143,7 +143,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-bam/business-activity/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help></help>
@@ -156,7 +156,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/centreon-bam/business-view/formlist</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/hostcategory</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/hostcategory</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help></help>
@@ -169,9 +169,9 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-						<listValuesRoute>/configuration/host/[i:id]/eventhandler</listValuesRoute>
+						<listValuesRoute>/centreon-configuration/host/[i:id]/eventhandler</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add</wizardRoute>
+						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
 					</attributes>
 					<help></help>
 				</field>

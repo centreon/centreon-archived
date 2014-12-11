@@ -35,40 +35,40 @@
 		<section name="Hosts"> 
 			<block name="Shared resources">
 				<field name="acl_resource_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/host/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/host","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/host/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/host","multiple":true,"ordered":false}</attributes>
 				</field>
 				<field name="acl_resource_hostgroups" label="Host groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostgroup/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/hostgroup","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/hostgroup/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/hostgroup","multiple":true,"ordered":false}</attributes>
 				</field>
 				<field name="acl_resource_excluded_hosts" label="Exclude hosts from host groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/host/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/excludedhost","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/host/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/excludedhost","multiple":true,"ordered":false}</attributes>
 				</field>
 			</block>
 		</section>
 		<section name="Services"> 
 			<block name="Shared resources">
 				<field name="acl_resource_servicegroups" label="Service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/servicegroup/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/servicegroup","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/servicegroup/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/servicegroup","multiple":true,"ordered":false}</attributes>
 				</field>
 			</block>
 		</section>
 		<section name="Meta services"> 
 			<block name="Shared resources">
 				<field name="acl_resource_metaservices" label="Meta services" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/metaservice/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/metaservice","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/metaservice/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/metaservice","multiple":true,"ordered":false}</attributes>
 				</field>
 			</block>
 		</section>
 		<section name="Filters"> 
 			<block name="Resource filters">
 				<field name="acl_resource_pollers" label="Pollers" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/poller/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/poller","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/poller/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/poller","multiple":true,"ordered":false}</attributes>
 				</field>
 				<field name="acl_resource_host_categories" label="Host categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/hostcategory/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/hostcategory","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/hostcategory/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/hostcategory","multiple":true,"ordered":false}</attributes>
 				</field>
 				<field name="acl_resource_servicecategories" label="Service categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/configuration/servicecategory/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/servicecategory","multiple":true,"ordered":false}</attributes>
+					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/servicecategory/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/servicecategory","multiple":true,"ordered":false}</attributes>
 				</field>
 			</block>
 		</section>

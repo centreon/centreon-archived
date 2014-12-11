@@ -262,7 +262,7 @@ $(function() {
     ajax: {
       data: function(term, page) { return { q: term }; },
       dataType: "json",
-      url: "{url_for url="/configuration/service/formlist"}" ,
+      url: "{url_for url="/centreon-configuration/service/formlist"}" ,
       results: function(data) { return { results: data, more: false }; }
     }
   });

@@ -39,14 +39,14 @@
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/host/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
-						<wizardRoute>/administration/media/image/add</wizardRoute>
+						<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
 					</attributes>
 				</field>
                 <field name="environment_id" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help>Define the environment of the host</help>
                     <attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/administration/environment/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/host/[i:id]/environment</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>

@@ -84,7 +84,7 @@
         "name": "ACL action",
         "parent_id": "4",
         "short_name": "acl_action",
-        "url": "/administration/aclaction"
+        "url": "/centreon-administration/aclaction"
     },
     {
         "menu_id": "6",
@@ -93,7 +93,7 @@
         "name": "ACL group",
         "parent_id": "4",
         "short_name": "acl_group",
-        "url": "/administration/aclgroup"
+        "url": "/centreon-administration/aclgroup"
     },
     {
         "menu_id": "7",
@@ -102,7 +102,7 @@
         "name": "ACL menu",
         "parent_id": "4",
         "short_name": "acl_menu",
-        "url": "/administration/aclmenu"
+        "url": "/centreon-administration/aclmenu"
     },
     {
         "menu_id": "8",
@@ -111,7 +111,7 @@
         "name": "ACL resource",
         "parent_id": "4",
         "short_name": "acl_resource",
-        "url": "/administration/aclresource"
+        "url": "/centreon-administration/aclresource"
     },
     {
         "menu_id": "10",
@@ -120,7 +120,7 @@
         "name": "Modules",
         "parent_id": "9",
         "short_name": "modules",
-        "url": "/administration/extensions/module"
+        "url": "/centreon-administration/extensions/module"
     },
     {
         "menu_id": "48",
@@ -129,7 +129,7 @@
         "name": "Widgets",
         "parent_id": "9",
         "short_name": "adminwidgets",
-        "url": "/administration/extensions/widgets"
+        "url": "/centreon-administration/extensions/widgets"
     },
     {
         "menu_id": "12",
@@ -138,7 +138,7 @@
         "name": "Centreon",
         "parent_id": "11",
         "short_name": "centreon-options",
-        "url": "/administration/options/centreon"
+        "url": "/centreon-administration/options/centreon"
     },
     {
         "menu_id": "13",
@@ -147,7 +147,7 @@
         "name": "Monitoring",
         "parent_id": "11",
         "short_name": "monitoring-options",
-        "url": "/administration/options/monitoring"
+        "url": "/centreon-administration/options/monitoring"
     },
     {
         "menu_id": "14",
@@ -156,7 +156,7 @@
         "name": "RRDTool",
         "parent_id": "11",
         "short_name": "rrdtool-options",
-        "url": "/administration/options/rrdtool"
+        "url": "/centreon-administration/options/rrdtool"
     },
     {
         "menu_id": "16",
@@ -205,7 +205,7 @@
         "name": "Timeperiods",
         "parent_id": "15",
         "short_name": "conf_timeperiod",
-        "url": "/configuration/timeperiod"
+        "url": "/centreon-configuration/timeperiod"
     },
     {
         "menu_id": "36",
@@ -214,7 +214,7 @@
         "name": "Pollers",
         "parent_id": "15",
         "short_name": "conf_poller",
-        "url": "/configuration/poller"
+        "url": "/centreon-configuration/poller"
     },
     {
         "menu_id": "42",
@@ -231,7 +231,7 @@
         "name": "Hosts",
         "parent_id": "16",
         "short_name": "conf_hosts_list",
-        "url": "/configuration/host"
+        "url": "/centreon-configuration/host"
     },
     {
         "menu_id": "18",
@@ -240,7 +240,7 @@
         "name": "Host templates",
         "parent_id": "16",
         "short_name": "conf_hosttemplate_list",
-        "url": "/configuration/hosttemplate"
+        "url": "/centreon-configuration/hosttemplate"
     },
     {
         "menu_id": "19",
@@ -249,7 +249,7 @@
         "name": "Host groups",
         "parent_id": "16",
         "short_name": "conf_hostgroup_list",
-        "url": "/configuration/hostgroup"
+        "url": "/centreon-configuration/hostgroup"
     },
     {
         "menu_id": "20",
@@ -258,7 +258,7 @@
         "name": "Host categories",
         "parent_id": "16",
         "short_name": "conf_category_list",
-        "url": "/configuration/hostcategory"
+        "url": "/centreon-configuration/hostcategory"
     },
     {
         "menu_id": "22",
@@ -267,7 +267,7 @@
         "name": "Services",
         "parent_id": "21",
         "short_name": "conf_services_list",
-        "url": "/configuration/service"
+        "url": "/centreon-configuration/service"
     },
     {
         "menu_id": "23",
@@ -276,7 +276,7 @@
         "name": "Service templates",
         "parent_id": "21",
         "short_name": "conf_servicetemplate_list",
-        "url": "/configuration/servicetemplate"
+        "url": "/centreon-configuration/servicetemplate"
     },
     {
         "menu_id": "24",
@@ -285,7 +285,7 @@
         "name": "Servicegroups",
         "parent_id": "21",
         "short_name": "conf_servicegroup_list",
-        "url": "/configuration/servicegroup"
+        "url": "/centreon-configuration/servicegroup"
     },
     {
         "menu_id": "25",
@@ -294,7 +294,7 @@
         "name": "Service categories",
         "parent_id": "21",
         "short_name": "conf_servicecategory_list",
-        "url": "/configuration/servicecategory"
+        "url": "/centreon-configuration/servicecategory"
     },
     {
         "menu_id": "27",
@@ -303,7 +303,7 @@
         "name": "Commands",
         "parent_id": "26",
         "short_name": "conf_commands_list",
-        "url": "/configuration/command"
+        "url": "/centreon-configuration/command"
     },
     {
         "menu_id": "28",
@@ -312,7 +312,7 @@
         "name": "Connectors",
         "parent_id": "26",
         "short_name": "conf_connectors_list",
-        "url": "/configuration/connector"
+        "url": "/centreon-configuration/connector"
     },
     {
         "menu_id": "30",
@@ -321,7 +321,7 @@
         "name": "Users",
         "parent_id": "29",
         "short_name": "conf_users_list",
-        "url": "/configuration/user"
+        "url": "/centreon-configuration/user"
     },
     {
         "menu_id": "31",
@@ -330,7 +330,7 @@
         "name": "User groups",
         "parent_id": "29",
         "short_name": "conf_usergroups_list",
-        "url": "/configuration/usergroup"
+        "url": "/centreon-configuration/usergroup"
     },
     {
         "menu_id": "33",
@@ -339,7 +339,7 @@
         "name": "Traps",
         "parent_id": "32",
         "short_name": "conf_traps_list",
-        "url": "/configuration/trap"
+        "url": "/centreon-configuration/trap"
     },
     {
         "menu_id": "34",
@@ -348,7 +348,7 @@
         "name": "Manufacturers",
         "parent_id": "32",
         "short_name": "conf_manufacturers_list",
-        "url": "/configuration/manufacturer"
+        "url": "/centreon-configuration/manufacturer"
     },
     {
         "menu_id": "38",
@@ -357,7 +357,7 @@
         "name": "Incidents",
         "parent_id": "37",
         "short_name": "incidents",
-        "url": "/realtime/incident"
+        "url": "/centreon-realtime/incident"
     },
     {
         "menu_id": "39",
@@ -366,7 +366,7 @@
         "name": "Services",
         "parent_id": "37",
         "short_name": "monitoring-services",
-        "url": "/realtime/service"
+        "url": "/centreon-realtime/service"
     },
     {
         "menu_id": "40",
@@ -375,7 +375,7 @@
         "name": "Hosts",
         "parent_id": "37",
         "short_name": "monitoring-hosts",
-        "url": "/realtime/host"
+        "url": "/centreon-realtime/host"
     },
     {
         "menu_id": "41",
@@ -384,7 +384,7 @@
         "name": "EventLogs",
         "parent_id": "37",
         "short_name": "eventlogs",
-        "url": "/realtime/eventlogs"
+        "url": "/centreon-realtime/eventlogs"
     },
     {
         "menu_id": "43",

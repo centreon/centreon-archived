@@ -58,7 +58,7 @@
 		<field name="global_host_event_handler" label="Global host event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
-		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+		    <defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
 			<listValuesRoute>/centreon-engine/engine/[i:id]/globalhosteventhandler</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>
@@ -67,7 +67,7 @@
 		<field name="global_service_event_handler" label="Global service event handler" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
-		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+		    <defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
 			<listValuesRoute>/centreon-engine/engine/[i:id]/globalserviceeventhandler</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>
@@ -124,7 +124,7 @@
 		<field name="ochp_command" label="OCHP command" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
-		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+		    <defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
 			<listValuesRoute>/centreon-engine/engine/[i:id]/ochpcommand</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>
@@ -136,7 +136,7 @@
 		<field name="ocsp_command" label="OCSP command" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
-		    <defaultValuesRoute>/configuration/command/formlist</defaultValuesRoute>
+		    <defaultValuesRoute>/centreon-configuration/command/formlist</defaultValuesRoute>
 			<listValuesRoute>/centreon-engine/engine/[i:id]/ocspcommand</listValuesRoute>
 		    <multiple>false</multiple>
 		  </attributes>

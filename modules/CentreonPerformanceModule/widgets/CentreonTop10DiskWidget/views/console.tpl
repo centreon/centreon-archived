@@ -6,7 +6,7 @@
 </tr>
 {foreach $data as $item}
 <tr style='height:20px  '>
-    <td><span><a href='/realtime/host/{$item['host_id']}'>{$item['host_name']}</a> - <a href='/realtime/service/{$item['service_id']}'>{$item['service_description']}</a><span></td>
+    <td><span><a href='/centreon-realtime/host/{$item['host_id']}'>{$item['host_name']}</a> - <a href='/centreon-realtime/service/{$item['service_id']}'>{$item['service_description']}</a><span></td>
     <td width='40%'>
     <div class="progress">
          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {$item['percent']}%;">{$item['percent']}%</div>

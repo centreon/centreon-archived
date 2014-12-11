@@ -139,7 +139,7 @@
 				<field name="contact_aclgroups" label="ACL groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-administration/aclgroup/formlist</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/user/[i:id]/aclgroup</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>false</ordered>
@@ -152,7 +152,7 @@
 				<field name="contact_lang" label="Language" default_value="en_US.UTF-8" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/administration/aclgroup/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-administration/aclgroup/formlist</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/user/[i:id]/aclgroup</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>

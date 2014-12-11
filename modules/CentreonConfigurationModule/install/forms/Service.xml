@@ -24,7 +24,7 @@
 			<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
 			<listValuesRoute>/centreon-configuration/service/[i:id]/icon</listValuesRoute>
 			<multiple>false</multiple>
-			<wizardRoute>/administration/media/image/add</wizardRoute>
+			<wizardRoute>/centreon-administration/media/image/add</wizardRoute>
 		  </attributes>
 		</field>
 		<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
@@ -40,7 +40,7 @@
             <help>Define the environment of the Services</help>
             <attributes>
                 <object_type>object</object_type>
-                <defaultValuesRoute>/administration/environment/formlist</defaultValuesRoute>
+                <defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
                 <listValuesRoute>/centreon-configuration/service/[i:id]/environment</listValuesRoute>
                 <multiple>false</multiple>
             </attributes>
@@ -49,7 +49,7 @@
             <help>Define the domain of the Service</help>
             <attributes>
                 <object_type>object</object_type>
-                <defaultValuesRoute>/administration/domain/formlist</defaultValuesRoute>
+                <defaultValuesRoute>/centreon-administration/domain/formlist</defaultValuesRoute>
                 <listValuesRoute>/centreon-configuration/service/[i:id]/domain</listValuesRoute>
                 <multiple>false</multiple>
             </attributes>

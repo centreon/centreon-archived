@@ -69,7 +69,7 @@ class BrokerController extends FormController
     /**
      * 
      * @method get
-     * @route /broker/formlist
+     * @route /formlist
      */
     public function formListAction()
     {
@@ -79,7 +79,7 @@ class BrokerController extends FormController
     /**
      * 
      * @method get
-     * @route /broker/list
+     * @route /list
      */
     public function datatableAction()
     {
@@ -91,7 +91,7 @@ class BrokerController extends FormController
      *
      *
      * @method post
-     * @route /broker/update
+     * @route /update
      */
     public function updateAction()
     {
@@ -125,7 +125,7 @@ class BrokerController extends FormController
      *
      *
      * @method post
-     * @route /broker/add
+     * @route /add
      */
     public function createAction()
     {
@@ -137,7 +137,7 @@ class BrokerController extends FormController
      *
      *
      * @method get
-     * @route /broker/[i:id]
+     * @route /[i:id]
      */
     public function editAction()
     {
@@ -155,7 +155,7 @@ class BrokerController extends FormController
         $this->tpl->assign('form', BrokerFormRepository::getFormForPoller($requestParam['id']));
         $this->tpl->assign('advanced', $requestParam['advanced']);
         $this->tpl->assign('formRedirect', true);
-        $this->tpl->assign('formRedirectRoute', '/configuration/poller/' . $requestParam['id']);
+        $this->tpl->assign('formRedirectRoute', '/centreon-configuration/poller/' . $requestParam['id']);
         $this->tpl->assign('formModeUrl', $formModeUrl);
         $this->tpl->assign('formName', 'broker_full_form');
         $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
@@ -166,7 +166,7 @@ class BrokerController extends FormController
      * Add a broker
      *
      * @method get
-     * @route /broker/add
+     * @route /add
      */
     public function addAction()
     {
@@ -178,7 +178,7 @@ class BrokerController extends FormController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /broker/mc_fields
+     * @route /mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -189,7 +189,7 @@ class BrokerController extends FormController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /broker/mc_fields/[i:id]
+     * @route /mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -200,7 +200,7 @@ class BrokerController extends FormController
      * Duplicate a hosts
      *
      * @method post
-     * @route /broker/duplicate
+     * @route /duplicate
      */
     public function duplicateAction()
     {
@@ -211,7 +211,7 @@ class BrokerController extends FormController
      * Apply massive change
      *
      * @method post
-     * @route /broker/massive_change
+     * @route /massive_change
      */
     public function massiveChangeAction()
     {
@@ -222,7 +222,7 @@ class BrokerController extends FormController
      * Delete action for hosttemplate
      *
      * @method post
-     * @route /broker/delete
+     * @route /delete
      */
     public function deleteAction()
     {
