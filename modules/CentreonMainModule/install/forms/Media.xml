@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
 	<form name="media_form">
-		<route>/centreon-administration/media/image/update</route>
+		<route>/media/image/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/centreon-administration/media/image</redirect_route>
+		<redirect_route>/media/image</redirect_route>
 		<section name="Media">
 			<block name="Add Media">
 				<field name="media_file" label="Media file" default_value="" advanced="0" type="file" parent_field="" mandatory="0"></field>
@@ -11,7 +11,7 @@
         </section>
     </form>
     <wizard name="add_media">
-		<route>/centreon-administration/media/image/add</route>
+		<route>/media/image/add</route>
 		<step name="Add Media">
 			<field name="media_file" mandatory="0"></field>
 		</step>
