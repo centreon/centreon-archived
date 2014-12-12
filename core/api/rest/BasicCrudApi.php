@@ -412,11 +412,11 @@ class BasicCrudApi extends \Centreon\Internal\Api
         $repository = $this->repository;
         
         foreach ($linkedObjects as $linkedObject) {
+            $fList = array();
             if (isset($this->relationMap[$linkedObject])) {
                 $relClass = $this->relationMap[$linkedObject];
                 $list = $repository::getRelations($relClass, $objectId);
                 
-                $fList = array();
                 foreach ($list as $obj) {
                     $fList[] = $obj['id'];
                 }
@@ -425,7 +425,9 @@ class BasicCrudApi extends \Centreon\Internal\Api
                 $fList = $repository::getSimpleRelation($this->simpleRelationMap[$linkedObject], $linkedObject, $objectId);
             }
             
-            $linked[$linkedObject] = $fList;
+            if (count($fList) > 0) {
+                $linked[$linkedObject] = $fList;
+            }
         }
         
         return $linked;
