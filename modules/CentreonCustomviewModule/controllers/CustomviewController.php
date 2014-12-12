@@ -688,7 +688,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         </span> \
                         </span> \
                         </div> \
-                        <iframe class="portlet-content" src="'.$this->baseUrl.'/widget/\' + this.widget_id + \'" \
+                        <iframe class="portlet-content" src="'.$this->baseUrl.'/centreon-customview/widget/\' + this.widget_id + \'" \
                                 width="100%" height="100%" frameborder="0" style="overflow:hidden;"></iframe> \
                         </li>\',
                         (typeof jsonPosition[index] !== \'undefined\') ? jsonPosition[index].size_x : 5,
