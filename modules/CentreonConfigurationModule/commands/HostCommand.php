@@ -80,9 +80,8 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
      * @param    int   $id    ID of object
      * @param    mixed   $host    Name of object
      */
-    public function showAction($host)
+    public function showAction($host, $linkedObject = '')
     {
-        
         if (is_numeric($host)) {
             $params['host_id'] = $host;
         } else {

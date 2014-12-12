@@ -15,7 +15,7 @@ var chart;
 
 function updateChart(serviceId, startTime, endTime) {
   $.ajax({
-    url: "{url_for url="/graph"}",
+    url: "{url_for url="/centreon-performance/graph"}",
     type: "POST",
     data: {
       service_id: serviceId,

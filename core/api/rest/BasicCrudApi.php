@@ -153,7 +153,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
      * @param type $dataset
      * @param type $strict
      */
-    protected function normalizeParams(&$dataset, $strict = false)
+    protected function normalizeParams(&$dataset, $strict = true)
     {
         foreach ($dataset as &$value) {
             $this->normalizeSingleSet($value, $strict);
@@ -165,7 +165,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
      * @param type $dataset
      * @param type $strict
      */
-    protected function normalizeSingleSet(&$dataset, $strict = false)
+    protected function normalizeSingleSet(&$dataset, $strict = true)
     {
         $newDataset = array();
         foreach($dataset as $dKey => $dValue) {
@@ -220,20 +220,20 @@ class BasicCrudApi extends \Centreon\Internal\Api
      */
     private function viewObject()
     {
+        $headers = $this->request->headers();
         // 
         $params = $this->getParams();
-        $headers = $this->request->headers();
         $hostUrl = 'http://' . $headers['host'];
         $repository = $this->repository;
         $obj = $this->objectClass;
         $objPrimaryKey = $obj::getPrimaryKey();
         $objLink = $this->objectBaseUrl . '/[i:id]';
-        
+
         //
         $fields = (isset($params['fields'])) ? $params['fields'] : '*';
         $linkedObjects = (isset($params['linkedobject'])) ? explode(',', $params['linkedobject']) : array();
         $ids = explode(',', $params['id']);
-        
+
         try {
             if (count($ids) > 1) {
                 $object = $repository::getList($fields, -1, 0, null, 'asc', array($objPrimaryKey => $ids));

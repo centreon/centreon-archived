@@ -76,7 +76,7 @@ class DisplaySvcGraph
         $tpl->append(
             'jsUrl',
             array(
-                'graph' => $router->getPathFor('/graph')
+                'graph' => $router->getPathFor('/centreon-performance/graph')
             ),
             true
         );

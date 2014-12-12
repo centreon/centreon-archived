@@ -140,7 +140,7 @@ class GraphController extends \Centreon\Internal\Controller
     /**
      * Save a graph view
      *
-     * @route /graph/view
+     * @route /view
      * @method POST
      */
     public function saveViewAction()
@@ -179,7 +179,7 @@ class GraphController extends \Centreon\Internal\Controller
     /**
      * Save a graph view
      *
-     * @route /graph/view
+     * @route /view
      * @method GET
      */
     public function getListViewAction()
@@ -200,7 +200,7 @@ class GraphController extends \Centreon\Internal\Controller
     /**
      * Load the list of graph for a view
      *
-     * @route /graph/view/[i:id]
+     * @route /view/[i:id]
      * @method GET
      */
     public function getListGraphAction()
@@ -216,7 +216,7 @@ class GraphController extends \Centreon\Internal\Controller
     /**
      * Delete a graph view
      *
-     * @route /graph/view/[i:id]
+     * @route /view/[i:id]
      * @method DELETE
      */
     public function deleteGraphViewAction()
@@ -240,7 +240,7 @@ class GraphController extends \Centreon\Internal\Controller
     /**
      * Save a image to filesystem
      *
-     * @route /graph/save
+     * @route /save
      * @method POST
      */
     public function saveAsImageAction()
@@ -271,7 +271,7 @@ class GraphController extends \Centreon\Internal\Controller
     /**
      * Propose to download the graph in image
      *
-     * @route /graph/download
+     * @route /download
      * @method POST
      */
     public function downloadAction()
