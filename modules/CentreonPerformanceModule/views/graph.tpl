@@ -85,7 +85,7 @@
   </div>
 </div>
 <div class="hide">
-<form name="forDownload" action="{url_for url='/centreon-performance/graph/download'}" method="post">
+<form name="forDownload" action="{url_for url='/centreon-performance/download'}" method="post">
 <input type="hidden" name="svg">
 <input type="hidden" name="graph_type" value="svc">
 <input type="hidden" name="graph_id">
@@ -140,7 +140,7 @@ function createGraph(serviceId) {
 
 function saveView(viewId, graphs, viewName, viewPrivacy) {
   $.ajax({
-    url: "{url_for url="/centreon-performance/graph/view"}",
+    url: "{url_for url="/centreon-performance/view"}",
     method: "POST",
     data: {
       viewId: viewId,
@@ -189,7 +189,7 @@ $(function() {
     }
     
     $.ajax({
-      url: "{url_for url="/centreon-performance/graph/view"}/" + viewId,
+      url: "{url_for url="/centreon-performance/view"}/" + viewId,
       dataType: "json",
       method: "DELETE",
       success: function(data, textStatus, jqXHR) {
@@ -274,7 +274,7 @@ $(function() {
     ajax: {
       data: function(term, page) { return { q: term }; },
       dataType: "json",
-      url: "{url_for url="/centreon-performance/graph/view"}" ,
+      url: "{url_for url="/centreon-performance/view"}" ,
       results: function(data) { return { results: data, more: false }; }
     }
   });
@@ -358,7 +358,7 @@ $(function() {
       return;
     }
     $.ajax({
-      url: "{url_for url="/centreon-performance/graph/view"}/" + viewId,
+      url: "{url_for url="/centreon-performance/view"}/" + viewId,
       dataType: "json",
       method: "GET",
       success: function(data, textStatus, jqXHR) {
