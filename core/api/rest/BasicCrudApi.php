@@ -194,8 +194,25 @@ class BasicCrudApi extends \Centreon\Internal\Api
     public function listAction()
     {
         // 
-        $params = $this->getParams();
         $headers = $this->request->headers();
+        $version = null;
+        if (isset($headers['centreon-version'])) {
+            $version = trim($headers['centreon-version']);
+        } /* mode strict */
+        $calledMethod = '\\' . get_called_class() . '::' . __FUNCTION__;
+        static::executeRoute($calledMethod, $version);
+        
+    }
+    
+    /**
+     * @api /{object}
+     * @method GET
+     * @since 3.0.0
+     */
+    protected function list300Action()
+    {
+        $headers = $this->request->headers();
+        $params = $this->getParams();
         $repository = $this->repository;
         $objLink = $this->objectBaseUrl . '/[i:id]';
         
@@ -215,6 +232,17 @@ class BasicCrudApi extends \Centreon\Internal\Api
         $this->sendJsonApiResponse($this->objectName, $list);
     }
     
+    /**
+     * @api /{object}
+     * @method GET
+     * @since 3.1.0
+     */
+    protected function list310Action()
+    {
+        echo "aaaaaaa";
+    }
+
+
     /**
      * 
      */
@@ -406,7 +434,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
      * 
      * @param type $linkedObjects
      */
-    private function getLinkedObjects($objectId, $linkedObjects = array())
+    private function getLinkedObjects($objectId, $linkedObjects = array(), $asResource = false)
     {
         $linked = array();
         $repository = $this->repository;
@@ -418,7 +446,11 @@ class BasicCrudApi extends \Centreon\Internal\Api
                 $list = $repository::getRelations($relClass, $objectId);
                 
                 foreach ($list as $obj) {
-                    $fList[] = $obj['id'];
+                    if ($asResource) {
+                        $fList[] = $obj;
+                    } else {
+                        $fList[] = $obj['id'];
+                    }
                 }
                 
             } elseif (isset($this->simpleRelationMap[$linkedObject])) {

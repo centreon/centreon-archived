@@ -47,6 +47,12 @@ class Router extends \Klein\Klein
      * @const string
      */
     const ROUTE_COMPILE_REGEX = '`(\\\?(?:/|\.|))(\[([^:\]]*+)(?::([^:\]]*+))?\])(\?|)`';
+    
+    /**
+     * Temporary list of route with method for create API route version
+     * @var array
+     */
+    protected $tmpRoute = array();
 
     /**
      * Route info
@@ -74,6 +80,12 @@ class Router extends \Klein\Klein
      * @var type 
      */
     protected $mainRouteModules = array();
+    
+    /**
+     * The list of version for api route
+     * @var array
+     */
+    protected static $routeApiVersion = array();
 
     /**
      * 
@@ -107,7 +119,11 @@ class Router extends \Klein\Klein
                     $this->parseRouteData($moduleName, $controllerName, $routes, $prefix);
                 }
             }
+            if ($routeType == 'api') {
+                $this->computeApiVersion($routesList);
+            }
         }
+        unset($this->tmpRoute);
         
         $this->respond(
             '404',
@@ -216,45 +232,49 @@ class Router extends \Klein\Klein
                 $data['acl'] = "";
             }
             
-            if (!in_array($moduleName, $this->mainRouteModules)) {
-                $data['route'] = '/' . $moduleName . $data['route'];
-            }
+            if (isset($data['route'])) {
             
-            $this->routesData[] = $data;
-            if (substr($data['route'], 0, 1) === '@' || $data['route'] === '405') {
-                $routeName = $data['route'];
-            } elseif ($data['route'] === '404') {
-                $this->notFoundRoute = array(
-                    'controllerName' => $controllerName,
-                    'action' => $action,
-                    'method' => $data['method_type']
-                );
-            } else {
-                $routeName = $baseUrl . $data['route'];
-            }
-            if (isset($_SESSION['acl']) &&
-                false === $_SESSION['acl']->routeAllowed($data['route'])) {
-                $this->respond(
-                    $routeName,
-                    function ($request, $response) {
-                        $response->code(403);
-                    }
-                );
-            } else {
-                $this->respond(
-                    $data['method_type'],
-                    $routeName,
-                    function ($request, $response) use ($controllerName, $action, $routeName) {
-                        if (!isset($_SESSION['user']) && !strstr($routeName, ".css") &&
-                            !strstr($controllerName, "LoginController") && !strstr($routeName, "/api/")) {
-                            $obj = new LoginController($request);
-                            $obj->loginAction();
-                        } else {
-                            $obj = new $controllerName($request);
-                            $obj->$action();
+                if (!in_array($moduleName, $this->mainRouteModules)) {
+                    $data['route'] = '/' . $moduleName . $data['route'];
+                }
+
+                $this->routesData[] = $data;
+                if (substr($data['route'], 0, 1) === '@' || $data['route'] === '405') {
+                    $routeName = $data['route'];
+                } elseif ($data['route'] === '404') {
+                    $this->notFoundRoute = array(
+                        'controllerName' => $controllerName,
+                        'action' => $action,
+                        'method' => $data['method_type']
+                    );
+                } else {
+                    $routeName = $baseUrl . $data['route'];
+                }
+                if (isset($_SESSION['acl']) &&
+                    false === $_SESSION['acl']->routeAllowed($data['route'])) {
+                    $this->respond(
+                        $routeName,
+                        function ($request, $response) {
+                            $response->code(403);
                         }
-                    }
-                );
+                    );
+                } else {
+                    $this->tmpRoute[$routeName][$data['method_type']] = $controllerName . '::' . $action;
+                    $this->respond(
+                        $data['method_type'],
+                        $routeName,
+                        function ($request, $response) use ($controllerName, $action, $routeName) {
+                            if (!isset($_SESSION['user']) && !strstr($routeName, ".css") &&
+                                !strstr($controllerName, "LoginController") && !strstr($routeName, "/api/")) {
+                                $obj = new LoginController($request);
+                                $obj->loginAction();
+                            } else {
+                                $obj = new $controllerName($request);
+                                $obj->$action();
+                            }
+                        }
+                    );
+                }
             }
         }
     }
@@ -323,5 +343,49 @@ class Router extends \Klein\Klein
     {
         $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
         return preg_replace('/^'.preg_quote($baseUrl, '/').'/', '', $this->request()->uri());
+    }
+    
+    public static function getApiVersion($methodName)
+    {
+        if (isset(static::$routeApiVersion[$methodName])) {
+            return static::$routeApiVersion[$methodName];
+        }
+        return array();
+    }
+    
+    protected function computeApiVersion($routesList)
+    {
+        foreach ($routesList as $moduleName => $routesAndControllers) {
+            foreach ($routesAndControllers as $controllerName => $routes) {
+                foreach ($routes as $action => $info) {
+                    if (isset($info['api_route']) && isset($info['api_version']) && isset($info['method_type'])) {
+                        $route = $this->fullPath($moduleName, $info['api_route'], 'api');
+                        if (isset($this->tmpRoute[$route][$info['method_type']])) {
+                            static::$routeApiVersion[$this->tmpRoute[$route][$info['method_type']]][$info['api_version']] = $action;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param string $moduleName
+     * @param string $route
+     * @param string $routePrefix
+     * @return string
+     */
+    protected function fullPath($moduleName, $route, $routePrefix='')
+    {
+        $baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
+        if (!empty($routePrefix)) {
+            $baseUrl .= '/' . $routePrefix;
+        }
+        
+        if (!in_array($moduleName, $this->mainRouteModules)) {
+            return $baseUrl . '/' . $moduleName . $route;
+        }
+        return $baseUrl . '/' . $route;
     }
 }

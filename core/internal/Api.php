@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal;
 
+use Centreon\Internal\Router;
+
 /**
  * Description of Api
  *
@@ -42,6 +44,12 @@ namespace Centreon\Internal;
  */
 class Api extends HttpCore
 {
+    /**
+     * If a api route need the auth token
+     * @var array
+     */
+    protected static $routeAuth = array();
+    
     /**
      * 
      * @param type $request
@@ -99,10 +107,80 @@ class Api extends HttpCore
                     } elseif (substr($str, 0, 4) == '@acl') {
                         $aclFlags = explode(",", trim(substr($str, 4)));
                         $tempo[$methodName]['acl'] = Acl::convertAclFlags($aclFlags);
+                    } elseif (substr($str, 0, 5) == '@auth') {
+                        $tempo[$methodName]['auth'] = true;
+                    } elseif (substr($str, 0, 4) == '@api') {
+                        $route = substr($str, 4);
+                        
+                        /* @todo better */
+                        $obj = get_called_class();
+                        $objExp = explode('\\', $obj);
+                        $nbOcc = count($objExp) -1;
+                        $finalName = substr($objExp[$nbOcc], 0, strlen($objExp[$nbOcc])-3);
+                        $route = str_replace('{object}', strtolower($finalName), $route);
+                        
+                        $tempo[$methodName]['api_route'] = trim($route);
+                    } elseif (substr($str, 0, 6) == '@since') {
+                        $version = substr($str, 6);
+                        $tempo[$methodName]['api_version'] = trim($version);
+                    }
+                }
+                if (isset($tempo[$methodName]['auth']) && $tempo[$methodName]['auth']) {
+                    if (isset($tempo[$methodName]['route'])) {
+                        static::$routeAuth[] = $methodName;
                     }
                 }
             }
         }
         return $tempo;
+    }
+    
+    public function executeRoute($requestMethod, $requestVersion = null)
+    {
+        
+        $routeVersion = Router::getApiVersion($requestMethod);
+        if (in_array($requestMethod, static::$routeAuth)) {
+            if (false) { /* method auth */
+                $this->router->createFromCode(401);
+            }
+        }
+        
+        $methodName = null;
+        $currentVersion = null;
+        
+        if (isset($routeVersion[$requestVersion])) {
+            $methodName = $routeVersion[$requestVersion];
+        } elseif (isset($routeVersion)) {
+            foreach ($routeVersion as $version => $method) {
+                if (is_null($requestVersion)) {
+                    if (is_null($currentVersion)) {
+                        $currentVersion = $version;
+                        $methodName = $method;
+                    } else {
+                        if (version_compare($currentVersion, $version, '>')) {
+                            $currentVersion = $version;
+                            $methodName = $method;
+                        }
+                    }
+                } else {
+                    if (version_compare($version, $requestVersion, '<')) {
+                        if (is_null($currentVersion)) {
+                            $currentVersion = $version;
+                            $methodName = $method;
+                        } else {
+                            if (version_compare($currentVersion, $version, '>')) {
+                                $currentVersion = $version;
+                                $methodName = $method;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (is_null($methodName)) {
+            $this->router->createFromCode(404);
+        }
+        
+        $this->$methodName();
     }
 }
