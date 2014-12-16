@@ -69,6 +69,10 @@
         header('HTTP/1.1 406 Not Acceptable');
         exit();
     }
+    if (isset($_GET['template_id']) && false === is_numeric($_GET['template_id'])) {
+        header('HTTP/1.1 406 Not Acceptable');
+        exit();
+    }
 
 	$len = $end - $start;
 
@@ -128,8 +132,9 @@
 			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
 			$template_id = getDefaultGraph($svc_id, 1);
 			$index = $index_data_ODS["id"];
-		} else
+		} else {
 			$template_id = $_GET["template_id"];
+        }
 		$DBRESULT->free();
 
 		/*
