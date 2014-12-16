@@ -97,7 +97,9 @@ class ToolsController extends \Centreon\Internal\Controller
         
         /* Response compiled CSS */
         $response->header('Content-Type', 'text/css');
-        $variables = array('login-background-image' => 'url("' . $baseUrl . '/static/centreon/img/login.jpg")');
+        
+        $imgUrl = rtrim($baseUrl, '/') . '/static/centreon/img/login.jpg")';
+        $variables = array('login-background-image' => 'url("' . $imgUrl);
         $less_file = array($centreonPath . $route => $route);
         $css_file_name = \Less_Cache::Get($less_file, $options, $variables);
         $compiled = file_get_contents($tempDir . $css_file_name );
