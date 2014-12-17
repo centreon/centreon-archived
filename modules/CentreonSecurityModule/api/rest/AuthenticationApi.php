@@ -70,6 +70,7 @@ class AuthenticationApi extends Api
             $token = UserRepository::getTokenForApi($login, $password);
             $this->router->response()->json(array('token' => $token));
         } catch(BadCredentialException $ex) {
+            //throw new UnauthorizedException('Api Authentication failed', $ex->getMessage(), $ex->getCode(), $ex);
             $errorObject = array(
                 'id' => '',
                 'href' => '',

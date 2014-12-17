@@ -58,7 +58,7 @@ class Api extends HttpCore
      * 
      * @param type $request
      */
-    public function __construct($request)
+    protected function __construct($request)
     {
         parent::__construct($request);
     }
@@ -192,11 +192,17 @@ class Api extends HttpCore
             }
             
             if (is_null($methodName)) {
-                $this->router->createFromCode(404);
+                throw new Exception\Http\NotFoundException('Action does not exist', 'The requested action does not exist');
             }
             
             // Exexcute Api Method
-            $this->$methodName();
+            $calledMethod = function($methodName, $request) {
+                $className = get_called_class();
+                $classToCall = $className::getHttpCoreInstance($request);
+                $classToCall->$methodName();
+            };
+            $calledMethod($methodName, $this->request);
+            
         } catch (HttpException $ex) {
             $errorObject = array(
                 'id' => '',

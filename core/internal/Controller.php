@@ -49,7 +49,7 @@ abstract class Controller extends HttpCore
     /**
      * 
      */
-    public function __construct($request)
+    protected function __construct($request)
     {
         parent::__construct($request);
         $this->tpl = Di::getDefault()->get('template');

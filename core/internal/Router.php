@@ -270,10 +270,10 @@ class Router extends \Klein\Klein
                         function ($request, $response) use ($controllerName, $action, $routeName) {
                             if (!isset($_SESSION['user']) && !strstr($routeName, ".css") &&
                                 !strstr($controllerName, "LoginController") && !strstr($routeName, "/api/")) {
-                                $obj = new LoginController($request);
+                                $obj = LoginController::getHttpCoreInstance($request);
                                 $obj->loginAction();
                             } else {
-                                $obj = new $controllerName($request);
+                                $obj = $controllerName::getHttpCoreInstance($request);
                                 $obj->$action();
                             }
                         }

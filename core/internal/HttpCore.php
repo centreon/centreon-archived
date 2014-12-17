@@ -68,16 +68,37 @@ class HttpCore
      * @var string 
      */
     public static $moduleName = 'Core';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $httpCoreInstance;
 
     /**
      * 
      * @param type $request
      */
-    public function __construct($request)
+    protected function __construct($request)
     {
         $this->db = Di::getDefault()->get('db_centreon');
         $this->router = Di::getDefault()->get('router');
         $this->request = $request;
+    }
+    
+    /**
+     * 
+     * @param type $request
+     * @return type
+     */
+    final public static function getHttpCoreInstance($request)
+    {
+        if (is_null(self::$httpCoreInstance)) {
+            $className = get_called_class();
+            self::$httpCoreInstance = new $className($request);
+        }
+        
+        return self::$httpCoreInstance;
     }
     
     /**
