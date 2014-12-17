@@ -55,6 +55,10 @@
 	$pearDB = new CentreonDB();
 
 	if (isset($_POST["index"])){
+        if (false === is_numeric($_POST['index'])) {
+            header('HTTP/1.1 406 Not Acceptable');
+            exit();
+        }
 		$DBRESULT = $pearDB->query("SELECT `command_example` FROM `command` WHERE `command_id` = '". $pearDB->escape($_POST["index"]) ."'");
 		while ($arg = $DBRESULT->fetchRow())
 			echo myDecodeService($arg["command_example"]);

@@ -80,7 +80,9 @@
 	 * Verify if session is active
 	 */
 
-    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
+    $sid = $pearDB->escape($_GET['session_id']);
+
+    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$sid."'");
 	if (!$session->numRows()){
 
 		$image = imagecreate(250,100);
@@ -95,7 +97,7 @@
 	 	 * Get GMT for current user
 	 	 */
 	 	$CentreonGMT = new CentreonGMT($pearDB);
-	 	$CentreonGMT->getMyGMTFromSession($_GET["session_id"], $pearDB);
+	 	$CentreonGMT->getMyGMTFromSession($sid, $pearDB);
 
 		/*
 		 * Get Values
