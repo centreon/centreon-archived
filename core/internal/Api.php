@@ -36,6 +36,10 @@
 namespace Centreon\Internal;
 
 use Centreon\Internal\Router;
+use Centreon\Internal\Exception\HttpException;
+use Centreon\Internal\Exception\Http\BadRequestException;
+use Centreon\Internal\Exception\Http\UnauthorizedException;
+use CentreonConfiguration\Repository\UserRepository;
 
 /**
  * Description of Api
@@ -85,6 +89,7 @@ class Api extends HttpCore
     public static function getRoutes()
     {
         $tempo = array();
+        $obj = get_called_class();
         $ref = new \ReflectionClass(get_called_class());
         foreach ($ref->getMethods() as $method) {
             $methodName = $method->getName();
@@ -93,8 +98,6 @@ class Api extends HttpCore
                     $str = trim(str_replace("* ", '', $line));
                     if (substr($str, 0, 6) == '@route') {
                         $route = substr($str, 6);
-                        
-                        $obj = get_called_class();
                         $objExp = explode('\\', $obj);
                         $nbOcc = count($objExp) -1;
                         $finalName = substr($objExp[$nbOcc], 0, strlen($objExp[$nbOcc])-3);
@@ -113,7 +116,6 @@ class Api extends HttpCore
                         $route = substr($str, 4);
                         
                         /* @todo better */
-                        $obj = get_called_class();
                         $objExp = explode('\\', $obj);
                         $nbOcc = count($objExp) -1;
                         $finalName = substr($objExp[$nbOcc], 0, strlen($objExp[$nbOcc])-3);
@@ -127,7 +129,7 @@ class Api extends HttpCore
                 }
                 if (isset($tempo[$methodName]['auth']) && $tempo[$methodName]['auth']) {
                     if (isset($tempo[$methodName]['route'])) {
-                        static::$routeAuth[] = $methodName;
+                        static::$routeAuth[] = '\\' . $obj . '::' . $methodName;
                     }
                 }
             }
@@ -135,35 +137,35 @@ class Api extends HttpCore
         return $tempo;
     }
     
+    /**
+     * 
+     * @param type $requestMethod
+     * @param type $requestVersion
+     */
     public function executeRoute($requestMethod, $requestVersion = null)
     {
-        
-        $routeVersion = Router::getApiVersion($requestMethod);
-        if (in_array($requestMethod, static::$routeAuth)) {
-            if (false) { /* method auth */
-                $this->router->createFromCode(401);
+        try {
+            $routeVersion = Router::getApiVersion($requestMethod);
+            if (in_array($requestMethod, static::$routeAuth)) {
+                $headers = $this->request->headers();
+                if (!isset($headers['centreon-x-token'])) {
+                    throw new BadRequestException('Missing Token', 'The Token for the request is not present');
+                }
+                
+                $token = $headers['centreon-x-token'];
+                if (!\CentreonConfiguration\Repository\UserRepository::checkApiToken($token)) { /* method auth */
+                    throw new UnauthorizedException('Invalid Token', 'The Token is not valid');
+                }
             }
-        }
-        
-        $methodName = null;
-        $currentVersion = null;
-        
-        if (isset($routeVersion[$requestVersion])) {
-            $methodName = $routeVersion[$requestVersion];
-        } elseif (isset($routeVersion)) {
-            foreach ($routeVersion as $version => $method) {
-                if (is_null($requestVersion)) {
-                    if (is_null($currentVersion)) {
-                        $currentVersion = $version;
-                        $methodName = $method;
-                    } else {
-                        if (version_compare($currentVersion, $version, '>')) {
-                            $currentVersion = $version;
-                            $methodName = $method;
-                        }
-                    }
-                } else {
-                    if (version_compare($version, $requestVersion, '<')) {
+
+            $methodName = null;
+            $currentVersion = null;
+
+            if (isset($routeVersion[$requestVersion])) {
+                $methodName = $routeVersion[$requestVersion];
+            } elseif (isset($routeVersion)) {
+                foreach ($routeVersion as $version => $method) {
+                    if (is_null($requestVersion)) {
                         if (is_null($currentVersion)) {
                             $currentVersion = $version;
                             $methodName = $method;
@@ -173,14 +175,52 @@ class Api extends HttpCore
                                 $methodName = $method;
                             }
                         }
+                    } else {
+                        if (version_compare($version, $requestVersion, '<')) {
+                            if (is_null($currentVersion)) {
+                                $currentVersion = $version;
+                                $methodName = $method;
+                            } else {
+                                if (version_compare($currentVersion, $version, '>')) {
+                                    $currentVersion = $version;
+                                    $methodName = $method;
+                                }
+                            }
+                        }
                     }
                 }
             }
+            
+            if (is_null($methodName)) {
+                $this->router->createFromCode(404);
+            }
+            
+            // Exexcute Api Method
+            $this->$methodName();
+        } catch (HttpException $ex) {
+            $errorObject = array(
+                'id' => '',
+                'href' => '',
+                'status' => $ex->getCode(),
+                'code' => $ex->getInternalCode(),
+                'title' => $ex->getTitle(),
+                'detail' => $ex->getMessage(),
+                'links' => '',
+                'path' => ''
+            );
+            $this->router->response()->code($ex->getCode())->json($errorObject);
+        } catch (Exception $ex) {
+            $this->router->response()->code(500);
         }
-        if (is_null($methodName)) {
-            $this->router->createFromCode(404);
-        }
+    }
+    
+    /**
+     * 
+     * @param type $code
+     * @param type $exceptionParams
+     */
+    public static function raiseHttpException($code, $exceptionParams)
+    {
         
-        $this->$methodName();
     }
 }

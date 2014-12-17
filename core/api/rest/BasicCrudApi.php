@@ -190,6 +190,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
     /**
      * @method GET
      * @route /{object}
+     * @auth
      */
     public function listAction()
     {
@@ -299,6 +300,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
     /**
      * @method GET
      * @route /{object}/[:id]
+     * @auth
      */
     public function viewAction()
     {
@@ -308,6 +310,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
     /**
      * @method GET
      * @route /{object}/[:id]/links/[:linkedobject]
+     * @auth
      */
     public function viewWithRelationsAction()
     {
@@ -318,6 +321,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
      * 
      * @method POST
      * @route /{object}
+     * @auth
      */
     public function createAction()
     {
@@ -355,6 +359,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
     /**
      * @method PUT
      * @route /{object}/[:id]
+     * @auth
      */
     public function fullUpdateAction()
     {
@@ -364,6 +369,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
     /**
      * @method PATCH
      * @route /{object}/[:id]
+     * @auth
      */
     public function partialUpdateAction()
     {
@@ -400,6 +406,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
     /**
      * @method PATCH
      * @route /{object}/[:id]/links/[:linkedobject]
+     * @auth
      */
     public function updateRelationsAction()
     {
@@ -409,6 +416,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
     /**
      * @method DELETE
      * @route /{object}/[:id]
+     * @auth
      */
     public function deleteAction()
     {

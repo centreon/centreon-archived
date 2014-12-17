@@ -35,6 +35,11 @@
 
 namespace CentreonConfiguration\Repository;
 
+use CentreonConfiguration\Models\Contact;
+use Centreon\Internal\Di;
+use Centreon\Internal\Auth\Sso;
+use Centreon\Internal\Exception\Authentication\BadCredentialException;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -84,7 +89,6 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         parent::update($givenParameters);
     }
 
-
     /**
      * 
      * @param integer $contactId
@@ -120,6 +124,12 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         return $return;
     }
     
+    /**
+     * 
+     * @param type $name
+     * @param type $email
+     * @return string
+     */
     public static function getUserIcon($name, $email)
     {
         if ($email != "") {
@@ -134,6 +144,12 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         return $name;
     }
 
+    /**
+     * 
+     * @param type $contact_id
+     * @param type $type
+     * @return string
+     */
     public static function getNotificationCommand($contact_id, $type)
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -160,6 +176,11 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         return $cmd;
     }
     
+    /**
+     * 
+     * @param type $contact_id
+     * @return type
+     */
     public static function getContactContactGroup($contact_id)
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -180,5 +201,37 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
             $cg .= $row["cg_name"];
         }
         return $cg;
+    }
+    
+    /**
+     * 
+     * @param type $login
+     * @param type $password
+     */
+    public static function getTokenForApi($login, $password)
+    {
+        $token = "";
+        $connectedUser = new Sso($login, $password, 0);
+        if (1 === $connectedUser->passwdOk) {
+            $token = hash('sha256', $login . $password);
+            Contact::update($connectedUser->userInfos['contact_id'], array('contact_autologin_key' => $token));
+        } else {
+            throw new BadCredentialException('The password or the login is incorrect', 0);
+        }
+        return $token;
+    }
+    
+    /**
+     * 
+     * @param type $token
+     */
+    public static function checkApiToken($token)
+    {
+        $tokenOk = false;
+        $user = Contact::getIdByParameter('contact_autologin_key', array($token));
+        if (is_array($user) && (count($user) == 1)) {
+            $tokenOk = true;
+        }
+        return $tokenOk;
     }
 }

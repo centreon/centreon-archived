@@ -180,7 +180,9 @@ class Router extends \Klein\Klein
     
     /**
      * 
-     * @param type $controllerName
+     * @param type $moduleName
+     * @param type $controllers
+     * @param type $routesFullList
      */
     private function getRoutesFromController($moduleName, $controllers, &$routesFullList)
     {
@@ -218,8 +220,10 @@ class Router extends \Klein\Klein
     
     /**
      * 
-     * @param string $controllerName
-     * @param array $routesData
+     * @param type $moduleName
+     * @param type $controllerName
+     * @param type $routesData
+     * @param type $routePrefix
      */
     private function parseRouteData($moduleName, $controllerName, $routesData, $routePrefix = '')
     {
@@ -345,6 +349,11 @@ class Router extends \Klein\Klein
         return preg_replace('/^'.preg_quote($baseUrl, '/').'/', '', $this->request()->uri());
     }
     
+    /**
+     * 
+     * @param type $methodName
+     * @return type
+     */
     public static function getApiVersion($methodName)
     {
         if (isset(static::$routeApiVersion[$methodName])) {
@@ -353,6 +362,10 @@ class Router extends \Klein\Klein
         return array();
     }
     
+    /**
+     * 
+     * @param type $routesList
+     */
     protected function computeApiVersion($routesList)
     {
         foreach ($routesList as $moduleName => $routesAndControllers) {
