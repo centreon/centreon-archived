@@ -196,12 +196,12 @@ class Api extends HttpCore
             }
             
             // Exexcute Api Method
-            $calledMethod = function($methodName, $request) {
-                $className = get_called_class();
+            $calledMethod = function($className, $methodName, $request) {
                 $classToCall = $className::getHttpCoreInstance($request);
                 $classToCall->$methodName();
             };
-            $calledMethod($methodName, $this->request);
+            $className = get_called_class();
+            $calledMethod($className, $methodName, $this->request);
             
         } catch (HttpException $ex) {
             $errorObject = array(

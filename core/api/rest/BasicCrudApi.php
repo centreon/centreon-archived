@@ -210,7 +210,7 @@ class BasicCrudApi extends \Centreon\Internal\Api
      * @method GET
      * @since 3.0.0
      */
-    protected function list300Action()
+    public function list300Action()
     {
         $headers = $this->request->headers();
         $params = $this->getParams();
