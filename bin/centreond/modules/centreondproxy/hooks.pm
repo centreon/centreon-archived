@@ -69,7 +69,7 @@ sub routing {
         $options{logger}->writeLogError("Cannot decode json data: $@");
         centreon::centreond::common::add_history(dbh => $options{dbh},
                                                  code => 20, token => $options{token},
-                                                 data => { msg => 'centreondproxy: cannot decode json' },
+                                                 data => { message => 'centreondproxy: cannot decode json' },
                                                  json_encode => 1);
         return undef;
     }
@@ -115,7 +115,7 @@ sub routing {
         (!defined($last_pollers->{$options{target}}) && !defined($register_pollers->{$options{target}}))) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
                                                  code => 20, token => $options{token},
-                                                 data => { msg => 'centreondproxy: need a valid poller id' },
+                                                 data => { message => 'centreondproxy: need a valid poller id' },
                                                  json_encode => 1);
         return undef;
     }
@@ -124,7 +124,7 @@ sub routing {
         if ($synctime_error == -1 || get_sync_time(dbh => $options{dbh}) == -1) {
             centreon::centreond::common::add_history(dbh => $options{dbh},
                                                      code => 20, token => $options{token},
-                                                     data => { msg => 'centreondproxy: problem to getlog' },
+                                                     data => { message => 'centreondproxy: problem to getlog' },
                                                      json_encode => 1);
             return undef;
         }
@@ -132,14 +132,14 @@ sub routing {
         if ($synctime_pollers->{$options{target}}->{in_progress} == 1) {
             centreon::centreond::common::add_history(dbh => $options{dbh},
                                                      code => 20, token => $options{token},
-                                                     data => { msg => 'centreondproxy: getlog already in progress' },
+                                                     data => { message => 'centreondproxy: getlog already in progress' },
                                                      json_encode => 1);
             return undef;
         }
         if (defined($last_pollers->{$options{target}}) && $last_pollers->{$options{target}}->{type} == 2) {
             centreon::centreond::common::add_history(dbh => $options{dbh},
                                                      code => 20, token => $options{token},
-                                                     data => { msg => "centreondproxy: can't get log a ssh target" },
+                                                     data => { message => "centreondproxy: can't get log a ssh target" },
                                                      json_encode => 1);
             return undef;
         }
@@ -161,7 +161,7 @@ sub routing {
     if (centreon::script::centreondcore::waiting_ready_pool(pool => $pools) == 0) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
                                                  code => 20, token => $options{token},
-                                                 data => { msg => 'centreondproxy: still none ready' },
+                                                 data => { message => 'centreondproxy: still none ready' },
                                                  json_encode => 1);
         return undef;
     }
@@ -236,7 +236,7 @@ sub check {
             time() - $synctime_pollers->{$_}->{in_progress_time} > $synctimeout_option) {
             centreon::centreond::common::add_history(dbh => $options{dbh},
                                                      code => 20,
-                                                     data => { msg => "centreondproxy: getlog in timeout for '$_'" },
+                                                     data => { message => "centreondproxy: getlog in timeout for '$_'" },
                                                      json_encode => 1);
             $synctime_pollers->{$_}->{in_progress} = 0;
         }
@@ -267,14 +267,14 @@ sub setlogs {
     if (!defined($options{data}->{data}->{id}) || $options{data}->{data}->{id} eq '') {
         centreon::centreond::common::add_history(dbh => $options{dbh},
                                                  code => 20, token => $options{token},
-                                                 data => { msg => 'centreondproxy: need a id to setlogs' },
+                                                 data => { message => 'centreondproxy: need a id to setlogs' },
                                                  json_encode => 1);
         return undef;
     }
     if ($synctime_pollers->{$options{data}->{data}->{id}}->{in_progress} == 0) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
                                                  code => 20, token => $options{token},
-                                                 data => { msg => 'centreondproxy: skip setlogs response. Maybe too much time to get response. Retry' },
+                                                 data => { message => 'centreondproxy: skip setlogs response. Maybe too much time to get response. Retry' },
                                                  json_encode => 1);
         return undef;
     }
@@ -428,7 +428,7 @@ sub pull_request {
     if ($status == 0) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
                                                  code => 20, token => $options{token},
-                                                 data => { msg => "centreondproxy: node '" . $options{target} . "' had never been connected" },
+                                                 data => { message => "centreondproxy: node '" . $options{target} . "' had never been connected" },
                                                  json_encode => 1);
         return undef;
     }

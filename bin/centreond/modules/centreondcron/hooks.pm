@@ -39,8 +39,8 @@ sub routing {
     if ($@) {
         $options{logger}->writeLogError("Cannot decode json data: $@");
         centreon::centreond::common::add_history(dbh => $options{dbh},
-                                                 code => 30, token => $options{token},
-                                                 data => { msg => 'centreondcron: cannot decode json' },
+                                                 code => 10, token => $options{token},
+                                                 data => { message => 'centreondcron: cannot decode json' },
                                                  json_encode => 1);
         return undef;
     }
@@ -52,8 +52,8 @@ sub routing {
     
     if (centreon::script::centreondcore::waiting_ready(ready => \$cron->{ready}) == 0) {
         centreon::centreond::common::add_history(dbh => $options{dbh},
-                                                 code => 30, token => $options{token},
-                                                 data => { msg => 'centreondcron: still no ready' },
+                                                 code => 10, token => $options{token},
+                                                 data => { message => 'centreondcron: still no ready' },
                                                  json_encode => 1);
         return undef;
     }
