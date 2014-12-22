@@ -57,6 +57,12 @@ jQuery(function() {
 				item.selected = true;
 			}
 		});
+
+		$$('select[name="periods[{/literal}{$period_tab}{literal}][month_cycle]"]  > option').each(function(item, index){
+	        if (item.value == infos_{/literal}{$period_info}{literal}.month_cycle) {
+		        item.selected = true;
+		    }
+		});
 	}
 
         jQuery(".timepicker").timepicker();
