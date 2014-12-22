@@ -232,6 +232,7 @@ The code responses:
 
 * x0: problem. It stopped (read the message)
 * 31: command proceed
+* 32: command proceed end
 * 35: problem. It stopped (read the message)
 * 36: command had been finished
 
@@ -253,6 +254,7 @@ The code responses:
 
 * x0: problem. It stopped (read the message)
 * 31: command proceed
+* 32: command proceed end
 * 35: problem. It stopped (read the message)
 * 36: command had been submitted
 
