@@ -100,9 +100,9 @@ class CentreonUserLog {
 		$string = str_replace("*", "\*", $string);
 
 		/*
-		 * print Error in log file.
+		 * Write Error in log file.
 		 */
-		exec("echo \"".$string."\" >> ".$this->errorType[$id]);
+        file_put_contents($this->errorType[$id], $string . "\n", FILE_APPEND);
 	}
 
 	public function setUID($uid)
@@ -174,9 +174,9 @@ class CentreonLog {
 
 
 		/*
-		 * print Error in log file.
+		 * Write Error in log file.
 		 */
-		exec("echo \"".$string."\" >> ".$this->errorType[$id]);
+        file_put_contents($this->errorType[$id], $string . "\n", FILE_APPEND);
 	}
 
 }

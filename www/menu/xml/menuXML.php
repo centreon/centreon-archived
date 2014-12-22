@@ -60,7 +60,7 @@
 	/*
 	 * Check Session existence
 	 */
-	$session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8")."'");
+	$session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape($_GET["sid"])."'");
 	if (!$session->numRows()){
 		$buffer = new CentreonXML();
 		$buffer->startElement("root");
@@ -95,7 +95,7 @@
 	/*
 	 * Get CSS
 	 */
-	$DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".htmlentities($_GET["menu"], ENT_QUOTES, "UTF-8")."' LIMIT 1");
+	$DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".$pearDB->escape($_GET["menu"])."' LIMIT 1");
 	$menu_style = $DBRESULT2->fetchRow();
 
 	ob_start();

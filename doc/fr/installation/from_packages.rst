@@ -17,7 +17,7 @@ Prérequis
 Afin d'installer les logiciels Centreon à partir des dépôts CES, vous
 devez au préalable installer le fichier lié au dépôt. 
 
-CES 3.0 (CentOS 6.x)
+CES 3.1 (CentOS 6.6)
 --------------------
 
 Exécuter la commande suivante à partir d'un utilisateur possédant les droits suffisants :

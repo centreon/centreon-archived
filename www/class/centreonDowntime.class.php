@@ -45,17 +45,93 @@ class CentreonDowntime
 	protected $db;
 	protected $search = '';
 	protected $nbRows = null;
-
+	protected $localCommands;
+	protected $localCmdFile = '';
+	protected $remoteCommands;
+	protected $remoteCmdFile = '';
+	protected $varlib;
 
 	/**
 	 * Construtor
 	 *
 	 * @param CentreonDB $pearDB The connection to database centreon
+	 * @param string $varlib Centreon dynamic dir
 	 */
-	public function __construct($pearDB)
+	public function __construct($pearDB, $varlib = null)
 	{
 		$this->db = $pearDB;
+		$this->localCommands = array();
+		$this->remoteCommands = array();
+		if (!is_null($varlib)) {
+			$this->remoteCmdFile = $varlib . '/centcore.cmd';
+		}
 	}
+
+	/**
+	 * Send external command to nagios or centcore
+	 *
+	 * @param int $host_id The host id for command
+	 * @param string $cmd The command to send
+	 * @return The command return code
+	 */
+	public function setCommand($host_id, $cmd)
+	{
+		static $cmdData = null;
+		static $remoteCommands = array();
+		static $localCommands = array();
+
+		if (is_null($cmdData)) {
+			$cmdData = array();
+			$query = "SELECT ns.localhost, ns.id, cn.command_file, host_host_id
+		 		FROM cfg_nagios cn, nagios_server ns, ns_host_relation nsh
+			    WHERE cn.nagios_server_id = ns.id
+			    AND nsh.nagios_server_id = ns.id
+			    AND cn.nagios_activate = '1'
+			    AND ns.ns_activate = '1'";
+			$res = $this->db->query($query);
+			while ($row = $res->fetchRow()) {
+				$hid = $row['host_host_id'];
+				$cmdData[$hid] = array(
+					'localhost' => $row['localhost'],
+					'command_file' => $row['command_file'],
+					'id' => $row['id']
+				);
+			}
+		}
+
+		if (!isset($cmdData[$host_id])) {
+			return;
+		}
+
+		if ($cmdData[$host_id]['localhost'] == 1) {
+			$this->localCommands[] = $cmd;
+			$this->localCmdFile = $cmdData[$host_id]['command_file'];
+		} else {
+			$this->remoteCommands[] = 'EXTERNALCMD:' . $cmdData[$host_id]['id']  . ':' . $cmd;
+		}
+	}
+
+	/**
+	 * Send all commands
+	 */
+	public function sendCommands()
+	{
+		$tmpFile = '/tmp/downtime.tmp';
+
+		/* send local commands */
+		$str = implode(PHP_EOL, $this->localCommands);
+		if ($str && $this->localCmdFile) {
+			file_put_contents($tmpFile, $str);
+			passthru("cat $tmpFile >> {$this->localCmdFile}");
+		}
+
+		/* send remote commands */
+		$str = implode(PHP_EOL, $this->remoteCommands);
+		if ($str) {
+			file_put_contents($this->remoteCmdFile, $str, FILE_APPEND);
+		}
+	}
+
 
 	/**
 	 * Set the string for filter the display
@@ -188,15 +264,29 @@ class CentreonDowntime
 	 */
 	public function getPeriods($id)
 	{
-		$query = "SELECT dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration
-			FROM downtime_period
-			WHERE dt_id = " . $id;
-		$res = $this->db->query($query);
-		if (PEAR::isError($res)) {
+		static $periods = null;
+
+		if (is_null($periods)) {
+			$periods = array();
+
+			$query = "SELECT dt_id, dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle, dtp_day_of_month, dtp_fixed, dtp_duration
+				FROM downtime_period";
+			
+			$res = $this->db->query($query);
+			while ($row = $res->fetchRow()) {
+				if (!isset($periods[$row['dt_id']])) {
+					$periods[$row['dt_id']] = array();
+				}
+				$periods[$row['dt_id']][] = $row;
+			}
+		}
+
+		if (!isset($periods[$id])) {
 			return array();
 		}
+
 		$list = array();
-		while ($row = $res->fetchRow()) {
+		foreach ($periods[$id] as $row) {
 			$days = $row['dtp_day_of_week'];
 			/* Make a array if the cycle is all */
 			if ($row['dtp_month_cycle'] == 'all') {
@@ -312,7 +402,7 @@ class CentreonDowntime
 					$clause = ' AND dtr.hg_hg_id = hg.hg_id';
 					break;
 				case 'svc':
-					$query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name
+					$query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name, h.host_id
 								FROM downtime_period dtp, downtime dt, downtime_service_relation dtr, service s, host h, host_service_relation hsr
 								WHERE 
 									dtp.dt_id = dtr.dt_id AND 
@@ -322,7 +412,7 @@ class CentreonDowntime
 									hsr.host_host_id = h.host_id AND
 									h.host_id = dtr.host_host_id
 								UNION 
-								SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name
+								SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name, h.host_id
 								FROM downtime_period dtp, downtime dt, downtime_service_relation dtr, service s, host h, hostgroup_relation hgr, host_service_relation hsr
 								WHERE
 									dtp.dt_id = dtr.dt_id AND 

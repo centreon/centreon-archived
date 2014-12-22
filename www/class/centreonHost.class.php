@@ -250,21 +250,21 @@ class CentreonHost
 	 */
  	public function getHostName($host_id)
  	{
- 		static $hosts = array();
+ 		static $hosts = null;
 
  		if (!isset($host_id) || !$host_id) {
  		    return null;
  		}
- 		if (!isset($hosts[$host_id])) {
-     	    $rq = "SELECT host_name
-     	    	   FROM host
-     	    	   WHERE host_id = ".$this->db->escape($host_id)."
-     	    	   LIMIT 1";
-     		$res = $this->db->query($rq);
-     		if ($res->numRows()) {
-     		    $row = $res->fetchRow();
-     		    $hosts[$host_id] = $row['host_name'];
-     		}
+
+        if (is_null($hosts)) {
+            $hosts = array();
+            
+            $rq = "SELECT host_id, host_name
+     	    	   FROM host";
+            $res = $this->db->query($rq);
+            while ($row = $res->fetchRow()) {
+                $hosts[$row['host_id']] = $row['host_name'];
+            }
  		}
  		if (isset($hosts[$host_id])) {
  		    return $hosts[$host_id];

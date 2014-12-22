@@ -1,29 +1,29 @@
 .. _firststepsces3:
 
 ========================
-Premier pas avec CES 3.0
+Premier pas avec CES 3.1
 ========================
 
 *************************
 Comparaison avec CES 2.2
 *************************
 
-Le tableau suivant compare la version de CES 2.2 à la version de CES 3.0 :
+Le tableau suivant compare la version de CES 2.2 à la version de CES 3.1 :
 
 +------------------------+-----------------------------+
-|       CES 2.2          |         CES 3.0             | 
+|       CES 2.2          |         CES 3.1             | 
 +========================+=============================+
-|       CentOS 5         |         CentOS 6.5          |
+|       CentOS 5         |         CentOS 6.6          |
 +------------------------+-----------------------------+
-| Centreon 2.4           |  Centreon 2.5               |
+| Centreon 2.4           |  Centreon 2.5.4             |
 +------------------------+-----------------------------+
 | MySQL 5.1              |  MariaDB 5.5                |
 +------------------------+-----------------------------+
-| Centreon Engine 1.2    |  Centreon Engine 1.3.7      |
+| Centreon Engine 1.2    |  Centreon Engine 1.4.8      |
 +------------------------+-----------------------------+
-| Centreon Broker 2.1    |  Centreon Broker 2.6.1      |
+| Centreon Broker 2.1    |  Centreon Broker 2.7.0      |
 +------------------------+-----------------------------+
-| N/A                    |  Centreon Connecteur 1.0.2  |
+| N/A                    |  Centreon Connecteur 1.1.1  |
 +------------------------+-----------------------------+
 
 La liste des nouvelles fonctionnalités est disponible aux adresses suivantes :
@@ -63,7 +63,7 @@ Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker
 Prérequis
 **********
 
-Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.0 :
+Le tableau ci-dessous donne les prérequis pour l'installation de CES 3.1 :
 
 +------------------------+--------------------------+-------------------------------+---------------------------------+
 |  Nombre de services    |  Architecture conseillée |  Serveur central              |  Serveur(s) de collecte         |
@@ -371,7 +371,7 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 Avant d'aller plus loin
 =======================
 
-Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.0. Pour cela :
+Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.1. Pour cela :
 
  #.	Connectez-vous en tant que 'root' sur le serveur central
  #.	Tapez la commande 

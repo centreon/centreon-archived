@@ -65,13 +65,24 @@
 	(!isset($_GET["start"])) ? $start = time() - (60*60*48): $start = $_GET["start"];
 	(!isset($_GET["end"])) ? $end = time() : $end = $_GET["end"];
 
+    if (false === is_numeric($start) || false === is_numeric($end)) {
+        header('HTTP/1.1 406 Not Acceptable');
+        exit();
+    }
+    if (isset($_GET['template_id']) && false === is_numeric($_GET['template_id'])) {
+        header('HTTP/1.1 406 Not Acceptable');
+        exit();
+    }
+
 	$len = $end - $start;
 
 	/*
 	 * Verify if session is active
 	 */
 
-    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($_GET["session_id"])."'");
+    $sid = $pearDB->escape($_GET['session_id']);
+
+    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$sid."'");
 	if (!$session->numRows()){
 
 		$image = imagecreate(250,100);
@@ -86,7 +97,7 @@
 	 	 * Get GMT for current user
 	 	 */
 	 	$CentreonGMT = new CentreonGMT($pearDB);
-	 	$CentreonGMT->getMyGMTFromSession($_GET["session_id"], $pearDB);
+	 	$CentreonGMT->getMyGMTFromSession($sid, $pearDB);
 
 		/*
 		 * Get Values
@@ -111,10 +122,10 @@
 		 */
 
 		if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])){
-			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$pearDB->escape($_GET["index"])."' LIMIT 1");
 		} else {
 			$pearDBO->query("SET NAMES 'utf8'");
-			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".utf8_encode($_GET["host_name"])."' AND `service_description` = '".utf8_encode($_GET["service_description"])."' LIMIT 1");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$pearDB->escape(utf8_encode($_GET["host_name"]))."' AND `service_description` = '".$pearDB->escape(utf8_encode($_GET["service_description"]))."' LIMIT 1");
 		}
 
 		$index_data_ODS = $DBRESULT->fetchRow();
@@ -123,8 +134,9 @@
 			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
 			$template_id = getDefaultGraph($svc_id, 1);
 			$index = $index_data_ODS["id"];
-		} else
+		} else {
 			$template_id = $_GET["template_id"];
+        }
 		$DBRESULT->free();
 
 		/*

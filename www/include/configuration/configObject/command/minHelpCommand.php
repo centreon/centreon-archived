@@ -99,7 +99,7 @@
 	    }
 	}
 
-	$tab = split(' ', $command);
+	$tab = explode(' ', $command);
 	if (strncmp(realpath($tab[0]), $oreon->optGen["nagios_path_plugins"], strlen($oreon->optGen["nagios_path_plugins"]))) {
         $msg = _('Error: Cannot Execute this command due to an path security problem.');
         $command = realpath($tab[0]);

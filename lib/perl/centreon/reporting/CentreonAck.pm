@@ -80,13 +80,14 @@ sub getServiceAckTime {
     } elsif ($dbLayer eq "broker") {
         $query = "SELECT `entry_time` as ack_time ".
             " FROM `acknowledgements` a, `services` s, `hosts` h ".
-            " WHERE h.`host_id` = a.`host_id`".
-            " AND a.`host_id` = s.`host_id`".
+            " WHERE h.`name` = '".$hostName. "'".
+            " AND h.`host_id` = s.`host_id`".   
+            " AND s.`description` = '".$serviceDescription. "'".
+            " AND s.`host_id` = a.`host_id`".
+            " AND s.`service_id` = a.`service_id`".
             " AND `type` = 1".
             " AND `entry_time` >= ".$start.
-            " AND `entry_time` <= ".$end.
-            " AND h.`name` = '".$hostName. "'".
-            " AND s.`description` = '".$serviceDescription. "'".    
+            " AND `entry_time` <= ".$end. 
             " ORDER BY `entry_time` asc";
     }
 

@@ -14,7 +14,7 @@ Prerequisites
 
 To install Centreon software from the CES repository, you should first install the file linked to the repository.
 
-CES 3.0 (CentOS 6.x)
+CES 3.1 (CentOS 6.6)
 --------------------
 
 Perform the following command from a user with sufficient rights:
@@ -35,6 +35,23 @@ Perform the following command from a user with sufficient rights:
  $ wget http://yum.centreon.com/standard/2.2/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
 
 The repository is now installed.
+
+Any operating system
+--------------------
+
+SELinux should be disabled; for this, you have to modify the file "/etc/sysconfig/selinux" and replace "enforcing" by "disabled":
+
+ ::
+ 
+ SELINUX=disabled
+
+PHP timezone should be set; go to the ";date.timezone" line into the file "/etc/php.ini". Comment out this line and add your timezone:
+
+ ::
+ 
+ date.timezone = Europe/Paris
+
+The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
 *********************
 Centreon installation

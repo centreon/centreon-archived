@@ -95,18 +95,23 @@
 
 	global $is_admin, $user_id;
 
-	$is_admin = isUserAdmin($_GET["sid"]);
-	if (isset($_GET["sid"]) && $_GET["sid"]){
-		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$pearDB->escape($_GET["sid"])."'");
-		$session = $DBRESULT->fetchRow();
-		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+    if (false === isset($_GET['sid']) || !$_GET['sid']) {
+        exit();
+    }
 
-		$hoststr = $access->getHostsString("ID", $pearDBndo);
-		$servicestr = $access->getServicesString("ID", $pearDBndo);
-	} else {
-		exit();
-	}
+    $sid = $pearDB->escape($_GET['sid']);
+
+	$is_admin = isUserAdmin($sid);
+	$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '" . $sid . "'");
+	$session = $DBRESULT->fetchRow();
+    if (is_null($session)) {
+        exit();
+    }
+	$access = new CentreonAcl($session["user_id"], $is_admin);
+	$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+
+	$hoststr = $access->getHostsString("ID", $pearDBndo);
+	$servicestr = $access->getServicesString("ID", $pearDBndo);
 
 	$normal_mode = 1;
 

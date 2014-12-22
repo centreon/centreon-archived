@@ -3,7 +3,7 @@
 <xsl:template match='/'>
 <xsl:for-each select='//root'>          
     	<xsl:element name='table'>
-			<xsl:attribute name='class'>ListTableSmall</xsl:attribute>
+	    <xsl:attribute name='class'>ListTableSmallArg</xsl:attribute>
             <xsl:element name='tbody'>
 	            <tr class='ListHeader'>
 	            	<td><xsl:value-of select='//main/argLabel'/></td>

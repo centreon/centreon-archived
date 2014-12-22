@@ -604,7 +604,7 @@ if ($oreon->CentreonGMT->used() == 1) {
                 } else {
                     // Get Criticities From hosts                                                                                                                                                             
                     global $critCacheName;
-                    $t = split(',', $hostNameTmp);
+                    $t = explode(',', $hostNameTmp);
                     if (count($t) == 1) {
                         if (isset($critCacheName[$hostNameTmp])) {
                             $name = $critCacheName[$hostNameTmp]['name'];

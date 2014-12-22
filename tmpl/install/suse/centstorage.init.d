@@ -22,6 +22,11 @@ start_timeout=5
 logfile=@CENTREON_LOG@/centstorage.log
 config=@CENTREON_ETC@/conf.pm
 
+FOLDER=/var/run/centreon/
+if [ ! -d "$FOLDER" ]; then # Control will enter here if $DIRECTORY doesn't exist.
+    mkdir $FOLDER
+fi
+
 # Add optionnal option for centstorage daemon
 opt_daemon=""
 if [ -n "${logfile}" ]; then

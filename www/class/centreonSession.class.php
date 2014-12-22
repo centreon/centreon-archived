@@ -58,8 +58,9 @@ class CentreonSession
 	}
 
 	function restart() {
-		$this->stop();
-		$this->start();
+		self::stop();
+		self::start();
+        session_regenerate_id(true);
 	}
 
 	function s_unset() {

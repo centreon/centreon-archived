@@ -46,13 +46,19 @@ require_once $centreon_path . "/www/class/centreonXML.class.php";
  */
 $pearDB = new CentreonDB();
 
+$mnftr_id = $pearDB->escape($_POST["mnftr_id"]);
+
+if (false === is_numeric($mnftr_id)) {
+    header('HTTP/1.1 406 Not Acceptable');
+    exit();
+}
+
+
 /** ************************************
  * start XML Flow
  */
 $buffer = new CentreonXML();
 $buffer->startElement("traps");
-
-$mnftr_id = $pearDB->escape($_POST["mnftr_id"]);
 
 $empty = 0;
 if (isset($_POST["mnftr_id"])){
