@@ -21,6 +21,8 @@ centreond protocol
 * internal: uncrypted dialog (used by internal modules. Commonly in ipc)
 * external: crypted dialog (used by third-party clients. Commonly in tcp)
 
+.. _handshake-scenario:
+
 ==================
 Handshake scenario
 ==================
@@ -54,8 +56,8 @@ Third-party clients connected had to use the zeromq library and the following pr
 The server keeps sessions for 24 hours since the last message of the client. Otherwise, it purges the identity/symmetric-key of the client.
 If a third-party client with the same identity try to open a new session, the server deletes the old identity/symmetric-key.
 
-Warning::
-   Be sure to have the same parameters to crypt/uncrypt with the symmetric key. Commonly: 'AES' cipher, keysize of 32 bytes, vector '0123456789012345', 
+.. Warning::
+  Be sure to have the same parameters to crypt/uncrypt with the symmetric key. Commonly: 'AES' cipher, keysize of 32 bytes, vector '0123456789012345', 
 
 ==============
 Client request
@@ -196,7 +198,7 @@ The client have to set the poller id.
 PUTLOG
 ------
 
-The request shoudln't be used by third-party program. It's commonly used by the internal modules.
+The request shouldn't be used by third-party program. It's commonly used by the internal modules.
 The client request:
 ::
 
@@ -260,6 +262,8 @@ You only have the message to get informations (it tells you if there are some pe
 FAQ
 ***
 
+
+
 ===============================
 Which modules should i enable ?
 ===============================
@@ -267,7 +271,7 @@ Which modules should i enable ?
 A poller with centreond should have the following modules:
 
 * centreond-action
-* centreond-pull: if the connection to the central should be initiated by the poller 
+* centreond-pull: if the connection to the central should be opened by the poller 
 
 A central with centreond should have the following modules:
 
@@ -275,6 +279,27 @@ A central with centreond should have the following modules:
 * centreond-action
 * centreond-proxy
 * centreond-cron
+
+=================================================
+I want to create a client. How should i proceed ?
+=================================================
+
+First, you must choose a language which can used zeromq library and have some knowledge about zeromq.
+I recommend following scenarios:
+
+* Create a ZMQ_DEALER
+* Manage the handshake with the server. See :ref:`handshake-scenario`
+* Do a request:
+
+  * if you don't need to get the result: close the connection
+  * if you need to get the result:
+  
+    1. get the token
+    2. if you have used a target, force a synchronization with 'GETLOG'
+    3. do a 'GETLOG' request with the token to get the result
+    4. repeat actions 2 and 3 if you don't have a result (you should stop after X retries) 
+
+You can see the code from 'test-client.pl'.
 
 ***************
 Database scheme
