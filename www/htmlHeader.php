@@ -80,6 +80,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/buzz/buzz.min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/notifier.js"></script>
+<script type="text/javascript" src="./include/common/javascript/centreon/multiselectResizer.js"></script>
 
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
