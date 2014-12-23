@@ -129,10 +129,10 @@ sub getLogOfHosts {
 # Get First log date and last log date
 sub getFirstLastLogTime {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my $centstorage = $self->{centstorage};
 
     my $query;
-    if ($self->{'dbLayer'} eq "ndo") {
+    if ($self->{dbLayer} eq "ndo") {
         $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log`";
     } elsif ($self->{'dbLayer'} eq "broker") {
         $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `logs`";
@@ -140,7 +140,7 @@ sub getFirstLastLogTime {
     my ($status, $sth) = $centstorage->query($query);
     my ($start, $end) = (0,0);
     if (my $row = $sth->fetchrow_hashref()) {
-        ($start, $end) = ($row->{"minc"}, $row->{"maxc"});
+        ($start, $end) = ($row->{minc}, $row->{maxc});
     }
     $sth->finish;
     return ($start, $end);

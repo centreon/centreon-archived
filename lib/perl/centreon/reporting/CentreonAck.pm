@@ -45,11 +45,11 @@ package centreon::reporting::CentreonAck;
 sub new {
     my $class = shift;
     my $self  = {};
-    $self->{"logger"} = shift;
-    $self->{"centstatus"} = shift;
-    $self->{'dbLayer'} = shift;
+    $self->{logger} = shift;
+    $self->{centstatus} = shift;
+    $self->{dbLayer} = shift;
     if (@_) {
-        $self->{"centstorage"}  = shift;
+        $self->{centstorage}  = shift;
     }    
     bless $self, $class;
     return $self;
@@ -58,12 +58,12 @@ sub new {
 # returns first ack time for a service or a host event
 sub getServiceAckTime {
     my $self = shift;
-    my $centreon = $self->{"centstatus"};
+    my $centreon = $self->{centstatus};
     my $start = shift;
     my $end = shift;
     my $hostName = shift;
     my $serviceDescription = shift;
-    my $dbLayer = $self->{'dbLayer'};
+    my $dbLayer = $self->{dbLayer};
     my $query;
     
     if ($dbLayer eq "ndo") {
@@ -94,7 +94,7 @@ sub getServiceAckTime {
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
     if (my $row = $sth->fetchrow_hashref()) {
-        $ackTime = $row->{'ack_time'};
+        $ackTime = $row->{ack_time};
     }
     $sth->finish();
     return ($ackTime);
@@ -103,11 +103,11 @@ sub getServiceAckTime {
 # returns first ack time for a service or a host event
 sub getHostAckTime {
     my $self = shift;
-    my $centreon = $self->{"centstatus"};
+    my $centreon = $self->{centstatus};
     my $start = shift;
     my $end = shift;
     my $hostName = shift;
-    my $dbLayer = $self->{'dbLayer'};
+    my $dbLayer = $self->{dbLayer};
     my $query;
     
     if ($dbLayer eq "ndo") {
@@ -133,7 +133,7 @@ sub getHostAckTime {
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
     if (my $row = $sth->fetchrow_hashref()) {
-        $ackTime = $row->{'ack_time'};
+        $ackTime = $row->{ack_time};
     }
     $sth->finish();
     return ($ackTime);

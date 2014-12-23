@@ -210,11 +210,18 @@ sub insertEventTable {
 
 # Truncate service incident table
 sub truncateStateEvents {
-    my $self = shift;
-    my $centstorage = $self->{"centstorage"};
-    
-    my $query = "TRUNCATE TABLE `servicestateevents`";
-    $centstorage->query($query);
+    my ($self, %options) = @_;
+    my $centstorage = $self->{centstorage};
+
+    if (defined($options{start})) {
+        my $query = "DELETE FROM servicestateevents WHERE start_time > $options{start}";
+        $centstorage->query($query);
+        $query = "UPDATE servicestateevents SET end_time = $options{midnight} WHERE end_time > $options{midnight}";
+        $centstorage->query($query);
+    } else {
+        my $query = "TRUNCATE TABLE servicestateevents";
+        $centstorage->query($query);
+    }
 }
 
 # Get first and last events date

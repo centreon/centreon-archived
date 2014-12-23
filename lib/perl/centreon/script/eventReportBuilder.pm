@@ -60,6 +60,8 @@ sub new {
     bless $self, $class;
     $self->add_options(
         "r" => \$self->{opt_rebuild}, "rebuild" => \$self->{opt_rebuild},
+        "s:s" => \$self->{opt_stime}, "start-time:s" => \$self->{opt_stime},
+        "e:s" => \$self->{opt_etime}, "end-time:s" => \$self->{opt_etime},
     );
     $self->{centstatusdb} = undef;
     $self->{processEvents} = undef;
@@ -102,11 +104,11 @@ sub initVars {
         my ($status, $sth) = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
         if (my $row = $sth->fetchrow_hashref()) {
             #connecting to censtatus
-            $centstatus = centreon::common::db->new(db => $row->{"db_name"},
-                                                    host => $row->{'db_host'},
-                                                    port => $row->{'db_port'},
-                                                    user => $row->{'db_user'},
-                                                    password => $row->{'db_pass'},
+            $centstatus = centreon::common::db->new(db => $row->{db_name},
+                                                    host => $row->{db_host},
+                                                    port => $row->{db_port},
+                                                    user => $row->{db_user},
+                                                    password => $row->{db_pass},
                                                     force => 0,
                                                     logger => $self->{logger});
         }
@@ -154,8 +156,8 @@ sub getDaysFromPeriod {
             $start = mktime(0,0,0, ++$day, $month, $year,0,0,-1);
         }
         # setting day beginning/end hour and minute with the value set in centreon DB
-        my $dayEnd =mktime(0, 0, 0, ++$day, $month, $year, 0, 0, -1);
-        my %period = ("day_start" => $start, "day_end" => $dayEnd);
+        my $dayEnd = mktime(0, 0, 0, ++$day, $month, $year, 0, 0, -1);
+        my %period = (day_start => $start, day_end => $dayEnd);
         $days[scalar(@days)] = \%period;
         
         $previousDay = $start;
@@ -164,22 +166,62 @@ sub getDaysFromPeriod {
     return \@days;
 }
 
+sub get_date {
+    my ($self, %options) = @_;
+    
+    my ($date, $midnight);
+    if (defined($self->{$options{option_label}})) {
+        require DateTime;
+        
+        if ($self->{$options{option_label}} !~ /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/) {
+            $self->{logger}->writeLogError("Wrong $options{option} option. Syntax is: YYYY-MM-DD.");
+            $self->exit_pgr();
+        }
+        eval {
+            my $dt = DateTime->new( 
+                year => $1, 
+                month => $2, 
+                day => $3);
+        };
+        if ($@) {
+            $self->{logger}->writeLogError("Wrong $options{option} option. Not a valid date.");
+            $self->exit_pgr();
+        }
+        $date = mktime(0,0,0,$3,$2-1,$1-1900,0,0,-1);
+        $midnight = mktime(0,0,0,$3+1,$2-1,$1-1900,0,0,-1);
+    }
+    
+    return ($date, $midnight);
+}
+
 # rebuild all events
 sub rebuildIncidents {
     my $self = shift;
     my $time_period = shift;
-
-    # Empty tables
-    $self->{serviceEvents}->truncateStateEvents();
-    $self->{hostEvents}->truncateStateEvents();
+    
+    my ($start, $midnight) = $self->get_date(option_label => 'opt_stime', option => '--start-time');
+    my ($end) = $self->get_date(option_label => 'opt_etime', option => '--end-time');
     # Getting first log and last log times
-    my ($start, $end) = $self->{nagiosLog}->getFirstLastLogTime();
-       my $periods = $self->getDaysFromPeriod($start, $end);
+    if (!defined($start) || !defined($end)) {
+        my ($start2, $end2) = $self->{nagiosLog}->getFirstLastLogTime();
+        $start = $start2 if (!defined($start));
+        $end = $end2 if (!defined($end));
+    }
+    if ($start > $end) {
+        $self->{logger}->writeLogError("start date couldn't be more recent than end date");
+        $self->exit_pgr();
+    }
+    
+    # Empty tables
+    $self->{serviceEvents}->truncateStateEvents(start => $start, midnight => $midnight);
+    $self->{hostEvents}->truncateStateEvents(start => $start, midnight => $midnight);    
+    
+    my $periods = $self->getDaysFromPeriod($start, $end);
     # archiving logs for each days
     foreach(@$periods) {
-        $self->{logger}->writeLogInfo("Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-        $self->{processEvents}->parseHostLog($_->{"day_start"}, $_->{"day_end"});
-        $self->{processEvents}->parseServiceLog($_->{"day_start"}, $_->{"day_end"});
+        $self->{logger}->writeLogInfo("Processing period: ".localtime($_->{day_start})." => ".localtime($_->{day_end}));
+        $self->{processEvents}->parseHostLog($_->{day_start}, $_->{day_end});
+        $self->{processEvents}->parseServiceLog($_->{day_start}, $_->{day_end});
     }
 }
 

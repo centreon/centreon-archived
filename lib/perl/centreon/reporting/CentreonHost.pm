@@ -44,10 +44,10 @@ package centreon::reporting::CentreonHost;
 sub new {
     my $class = shift;
     my $self  = {};
-    $self->{"logger"} = shift;
-    $self->{"centreon"} = shift;
+    $self->{logger} = shift;
+    $self->{centreon} = shift;
     if (@_) {
-        $self->{"centstorage"}  = shift;
+        $self->{centstorage}  = shift;
     }
     bless $self, $class;
     return $self;
@@ -56,7 +56,7 @@ sub new {
 # returns two references to two hash tables => hosts indexed by id and hosts indexed by name
 sub getAllHosts {
     my $self = shift;
-    my $centreon = $self->{"centreon"};
+    my $centreon = $self->{centreon};
     my $activated = 1;
     if (@_) {
         $activated  = 0;
@@ -71,8 +71,8 @@ sub getAllHosts {
     }
     my ($status, $sth) = $centreon->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
-        $host_ids{$row->{"host_name"}} = $row->{"host_id"};
-        $host_names{$row->{"host_id"}} = $row->{"host_name"};
+        $host_ids{$row->{host_name}} = $row->{host_id};
+        $host_names{$row->{host_id}} = $row->{host_name};
     }
     $sth->finish();
     return (\%host_ids,\%host_names);

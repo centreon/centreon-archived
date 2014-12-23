@@ -181,42 +181,42 @@ sub rebuildIncidents {
 
     if (!defined($start) || !defined($end)) {
         $self->{logger}->writeLogError("Cannot determine reporting rebuild period");
-	$self->{logger}->writeLogError("Please use -s and -e option to defined the rebuild period.");
+        $self->{logger}->writeLogError("Please use -s and -e option to defined the rebuild period.");
     } else {
 	
-	# Purge tables in order to rebuild statistics
-	my $periods = $self->getDaysFromPeriod($start, $end);
-	if (!scalar(@$periods)) {
-	    $self->{logger}->writeLogInfo("Incorrect rebuild period");
-	}
-	if ($purgeType eq "truncate") {
-	    $self->{dashboard}->truncateServiceStats();
-	    $self->{dashboard}->truncateHostStats();
-	} else {
-	    $self->{dashboard}->deleteServiceStats($start, $end);
-	    $self->{dashboard}->deleteHostStats($start, $end);
-	}
+        # Purge tables in order to rebuild statistics
+        my $periods = $self->getDaysFromPeriod($start, $end);
+        if (!scalar(@$periods)) {
+            $self->{logger}->writeLogInfo("Incorrect rebuild period");
+        }
+        if ($purgeType eq "truncate") {
+            $self->{dashboard}->truncateServiceStats();
+            $self->{dashboard}->truncateHostStats();
+        } else {
+            $self->{dashboard}->deleteServiceStats($start, $end);
+            $self->{dashboard}->deleteHostStats($start, $end);
+        }
 	
-	if (defined($start) && defined($end) && !$serviceOnly) {
-	    my ($allIds, $allNames) = $self->{host}->getAllHosts(0);
+        if (defined($start) && defined($end) && !$serviceOnly) {
+            my ($allIds, $allNames) = $self->{host}->getAllHosts(0);
 	    
-	    # archiving logs for each days
-	    foreach(@$periods) {
-		$self->{logger}->writeLogInfo("[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-		my $hostStateDurations = $self->{hostEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
-		$self->{dashboard}->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
-	    }
-	}
-	if (defined($start) && defined($end) && !$hostOnly) {
-	    my ($allIds, $allNames) = $self->{service}->getAllServices(0);
+            # archiving logs for each days
+            foreach(@$periods) {
+                $self->{logger}->writeLogInfo("[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+                my $hostStateDurations = $self->{hostEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+                $self->{dashboard}->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
+            }
+        }
+        if (defined($start) && defined($end) && !$hostOnly) {
+            my ($allIds, $allNames) = $self->{service}->getAllServices(0);
 	    
-	    # archiving logs for each days
-	    foreach(@$periods) {
-		$self->{logger}->writeLogInfo("[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-		my $serviceStateDurations = $self->{serviceEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
-		$self->{dashboard}->insertServiceStats($allNames, $serviceStateDurations, $_->{"day_start"}, $_->{"day_end"});
-	    }
-	}
+            # archiving logs for each days
+            foreach(@$periods) {
+                $self->{logger}->writeLogInfo("[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+                my $serviceStateDurations = $self->{serviceEvents}->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+                $self->{dashboard}->insertServiceStats($allNames, $serviceStateDurations, $_->{"day_start"}, $_->{"day_end"});
+            }
+        }
     }
 }
 

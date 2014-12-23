@@ -44,10 +44,10 @@ package centreon::reporting::CentreonHostStateEvents;
 sub new {
     my $class = shift;
     my $self  = {};
-    $self->{"logger"} = shift;
-    $self->{"centstorage"} = shift;
-    $self->{"centreonAck"} = shift;
-    $self->{"centreonDownTime"} = shift;
+    $self->{logger} = shift;
+    $self->{centstorage} = shift;
+    $self->{centreonAck} = shift;
+    $self->{centreonDownTime} = shift;
     bless $self, $class;
     return $self;
 }
@@ -58,7 +58,7 @@ sub new {
 # $end: period end
 sub getStateEventDurations {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my $centstorage = $self->{centstorage};
     my $start = shift;
     my $end = shift;
     my %hosts;
@@ -69,27 +69,27 @@ sub getStateEventDurations {
                     " AND `state` < 3"; # STATE PENDING AND UNKNOWN NOT HANDLED
     my ($status, $sth) = $centstorage->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
-        if ($row->{"start_time"} < $start) {
-            $row->{"start_time"} = $start;
+        if ($row->{start_time} < $start) {
+            $row->{start_time} = $start;
         }
-        if ($row->{"end_time"} > $end) {
-            $row->{"end_time"} = $end;
+        if ($row->{end_time} > $end) {
+            $row->{end_time} = $end;
         }
-        if (!defined($hosts{$row->{"host_id"}})) {
+        if (!defined($hosts{$row->{host_id}})) {
             my @tab = (0, 0, 0, 0, 0, 0, 0, 0);
             # index 0: UP, index 1: DOWN, index 2: UNREACHABLE, index 3: DOWNTIME, index 4: UNDETERMINED
             # index 5: UP alerts, index 6: Down alerts, , index 7: Unreachable alerts
-            $hosts{$row->{"host_id"}} = \@tab;            
+            $hosts{$row->{host_id}} = \@tab;            
         }
         
-        my $stats = $hosts{$row->{"host_id"}};
-        if ($row->{"in_downtime"} == 0) {
-            $stats->[$row->{"state"}] += $row->{"end_time"} - $row->{"start_time"};
-            $stats->[$row->{"state"} + 5] += 1;
+        my $stats = $hosts{$row->{host_id}};
+        if ($row->{in_downtime} == 0) {
+            $stats->[$row->{state}] += $row->{end_time} - $row->{start_time};
+            $stats->[$row->{state} + 5] += 1;
         } else {
-            $stats->[3] += $row->{"end_time"} - $row->{"start_time"};
+            $stats->[3] += $row->{end_time} - $row->{start_time};
         }
-        $hosts{$row->{"host_id"}} = $stats;
+        $hosts{$row->{host_id}} = $stats;
     }
     my %results;
     while (my ($key, $value) = each %hosts) {
@@ -115,9 +115,9 @@ sub getLastStates {
                 " WHERE `last_update` = 1";
     my ($status, $sth) = $centstorage->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
-        if (defined($hostNames->{$row->{'host_id'}})) {
-            my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'hoststateevent_id'}, $row->{'in_downtime'});
-            $currentStates{$hostNames->{$row->{'host_id'}}} = \@tab;
+        if (defined($hostNames->{$row->{host_id}})) {
+            my @tab = ($row->{end_time}, $row->{state}, $row->{hoststateevent_id}, $row->{in_downtime});
+            $currentStates{$hostNames->{$row->{host_id}}} = \@tab;
         }
     }
     $sth->finish();
@@ -131,9 +131,9 @@ sub getLastStates {
 # $eventId: ID of event to update
 sub updateEventEndTime {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
-    my $centreonDownTime = $self->{"centreonDownTime"};
-    my $centreonAck = $self->{"centreonAck"};
+    my $centstorage = $self->{centstorage};
+    my $centreonDownTime = $self->{centreonDownTime};
+    my $centreonAck = $self->{centreonAck};
 
     my ($id, $hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift, shift);
 
@@ -168,7 +168,7 @@ sub updateEventEndTime {
 # $end: incident end time
 sub insertEvent {
     my $self = shift;
-    my $centreonDownTime = $self->{"centreonDownTime"};
+    my $centreonDownTime = $self->{centreonDownTime};
 
     my ($id, $hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift);
 
@@ -180,8 +180,8 @@ sub insertEvent {
 
 sub insertEventTable {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
-    my $centreonAck = $self->{"centreonAck"};
+    my $centstorage = $self->{centstorage};
+    my $centreonAck = $self->{centreonAck};
 
     my ($id, $hostId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift, shift);
 
@@ -209,11 +209,18 @@ sub insertEventTable {
 
 # Truncate service incident table
 sub truncateStateEvents {
-    my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my ($self, %options) = @_;
+    my $centstorage = $self->{centstorage};
 
-    my $query = "TRUNCATE TABLE `hoststateevents`";
-    $centstorage->query($query);
+    if (defined($options{start})) {
+        my $query = "DELETE FROM hoststateevents WHERE start_time > $options{start}";
+        $centstorage->query($query);
+        $query = "UPDATE hoststateevents SET end_time = $options{midnight} WHERE end_time > $options{midnight}";
+        $centstorage->query($query);
+    } else {
+        my $query = "TRUNCATE TABLE hoststateevents";
+        $centstorage->query($query);
+    }
 }
 
 # Get first and last events date

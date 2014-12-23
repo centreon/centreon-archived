@@ -23,6 +23,15 @@ eventReportBuilder [options]
 
 Specify for rebuild all events.
 
+=item B<-s|--start-time>
+
+Set the start date for rebuild (Syntax: YYYY-MM-DD).
+Without the option '--end-time', it goes to the current date.
+
+=item B<-e|--end-time>
+
+Set the end date for rebuild (Syntax: YYYY-MM-DD).
+
 =item B<--config>
 
 Specify the path to the main configuration file (default: /etc/centreon/conf.pm).
