@@ -44,10 +44,10 @@ package centreon::reporting::CentreonServiceStateEvents;
 sub new {
     my $class = shift;
     my $self  = {};
-    $self->{"logger"} = shift;
-    $self->{"centstorage"} = shift;
-    $self->{"centreonAck"} = shift;
-    $self->{"centreonDownTime"}  = shift;
+    $self->{logger} = shift;
+    $self->{centstorage} = shift;
+    $self->{centreonAck} = shift;
+    $self->{centreonDownTime}  = shift;
     bless $self, $class;
     return $self;
 }
@@ -58,7 +58,7 @@ sub new {
 # $end: period end
 sub getStateEventDurations {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my $centstorage = $self->{centstorage};
     my $start = shift;
     my $end = shift;
 
@@ -70,27 +70,29 @@ sub getStateEventDurations {
                     " AND `state` < 4"; # NOT HANDLING PENDING STATE
     my ($status, $sth) = $centstorage->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
-        if ($row->{"start_time"} < $start) {
-            $row->{"start_time"} = $start;
+        if ($row->{start_time} < $start) {
+            $row->{start_time} = $start;
         }
-        if ($row->{"end_time"} > $end) {
-            $row->{"end_time"} = $end;
+        if ($row->{end_time} > $end) {
+            $row->{end_time} = $end;
         }
-        if (!defined($services{$row->{"host_id"}.";;".$row->{"service_id"}})) {
+        if (!defined($services{$row->{host_id}.";;".$row->{service_id}})) {
             my @tab = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             # index 0: OK, index 1: WARNING, index 2: CRITICAL, index 3: UNKNOWN, index 4: DOWNTIME, index 5: UNDETERMINED
             # index 6: OK alerts, index 7: WARNING alerts, index 8: CRITICAL alerts, index 9: UNKNOWN alerts
-            $services{$row->{"host_id"}.";;".$row->{"service_id"}} = \@tab;            
+            $services{$row->{host_id}.";;".$row->{service_id}} = \@tab;            
         }
         
-        my $stats = $services{$row->{"host_id"}.";;".$row->{"service_id"}};
-        if ($row->{"in_downtime"} == 0) {
-            $stats->[$row->{"state"}] += $row->{"end_time"} - $row->{"start_time"};
-            $stats->[$row->{"state"} + 6] += 1;
-        }else {
-            $stats->[4] += $row->{"end_time"} - $row->{"start_time"};
+        my $stats = $services{$row->{host_id}.";;".$row->{service_id}};
+        if ($row->{in_downtime} == 0) {
+            $stats->[$row->{state}] += $row->{end_time} - $row->{start_time};
+            if ($row->{state} != 0 || ($row->{state} == 0 && $row->{start_time} > $start)) {
+                $stats->[$row->{state} + 6] += 1;
+            }
+        } else {
+            $stats->[4] += $row->{end_time} - $row->{start_time};
         }
-        $services{$row->{"host_id"}.";;".$row->{"service_id"}} = $stats;
+        $services{$row->{host_id}.";;".$row->{service_id}} = $stats;
     }
     my %results;
     while (my ($key, $value) = each %services) {
@@ -107,7 +109,7 @@ sub getStateEventDurations {
 # $serviceNames: references a hash table containing a list of services
 sub getLastStates {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my $centstorage = $self->{centstorage};
     
     my $serviceNames = shift;
     
@@ -118,9 +120,9 @@ sub getLastStates {
                 " WHERE `last_update` = 1";
     my ($status, $sth) = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
-        my $serviceId = $row->{'host_id'}.";;".$row->{'service_id'};
+        my $serviceId = $row->{host_id}.";;".$row->{service_id};
         if (defined($serviceNames->{$serviceId})) {
-            my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'servicestateevent_id'}, $row->{'in_downtime'});
+            my @tab = ($row->{end_time}, $row->{state}, $row->{servicestateevent_id}, $row->{in_downtime});
             $currentStates->{$serviceNames->{$serviceId}} = \@tab;
         }
     }
@@ -135,10 +137,10 @@ sub getLastStates {
 # $eventId: ID of event to update
 sub updateEventEndTime {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
-    my $centstatus = $self->{"centstatus"};
-    my $centreonAck = $self->{"centreonAck"};
-    my $centreonDownTime = $self->{"centreonDownTime"};
+    my $centstorage = $self->{centstorage};
+    my $centstatus = $self->{centstatus};
+    my $centreonAck = $self->{centreonAck};
+    my $centreonDownTime = $self->{centreonDownTime};
     my ($id, $hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift, shift, shift);
     
     my ($hostName, $serviceDescription) = split (";;", $id);
@@ -172,7 +174,7 @@ sub updateEventEndTime {
 # $end: incident end time
 sub insertEvent {
     my $self = shift;
-    my $centreonDownTime = $self->{"centreonDownTime"};
+    my $centreonDownTime = $self->{centreonDownTime};
     my ($id, $hostId, $serviceId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
     my $events = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime, $state);    
     if ($state ne "") {
@@ -182,8 +184,8 @@ sub insertEvent {
 
 sub insertEventTable {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
-    my $centreonAck = $self->{"centreonAck"};
+    my $centstorage = $self->{centstorage};
+    my $centreonAck = $self->{centreonAck};
     my ($id, $hostId, $serviceId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift, shift, shift);
     
     my $query_start = "INSERT INTO `servicestateevents`".
@@ -227,13 +229,13 @@ sub truncateStateEvents {
 # Get first and last events date
 sub getFirstLastIncidentTimes {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my $centstorage = $self->{centstorage};
     
     my $query = "SELECT min(`start_time`) as minc, max(`end_time`) as maxc FROM `servicestateevents`";
     my ($status, $sth) = $centstorage->query($query);
     my ($start, $end) = (0,0);
     if (my $row = $sth->fetchrow_hashref()) {
-        ($start, $end) = ($row->{"minc"}, $row->{"maxc"});
+        ($start, $end) = ($row->{minc}, $row->{maxc});
     }
     $sth->finish;
     return ($start, $end);

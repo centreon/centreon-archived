@@ -85,7 +85,11 @@ sub getStateEventDurations {
         my $stats = $hosts{$row->{host_id}};
         if ($row->{in_downtime} == 0) {
             $stats->[$row->{state}] += $row->{end_time} - $row->{start_time};
-            $stats->[$row->{state} + 5] += 1;
+            
+            # We count UP alert like a recovery (don't put it otherwise)
+            if ($row->{state} != 0 || ($row->{state} == 0 && $row->{start_time} > $start)) {
+                $stats->[$row->{state} + 5] += 1;
+            }
         } else {
             $stats->[3] += $row->{end_time} - $row->{start_time};
         }
@@ -105,7 +109,7 @@ sub getStateEventDurations {
 # $serviceNames: references a hash table containing a list of host
 sub getLastStates {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my $centstorage = $self->{centstorage};
     my $hostNames = shift;
     
     my %currentStates;
@@ -226,13 +230,13 @@ sub truncateStateEvents {
 # Get first and last events date
 sub getFirstLastIncidentTimes {
     my $self = shift;
-    my $centstorage = $self->{"centstorage"};
+    my $centstorage = $self->{centstorage};
 
     my $query = "SELECT min(`start_time`) as minc, max(`end_time`) as maxc FROM `hoststateevents`";
     my ($status, $sth) = $centstorage->query($query);
     my ($start, $end) = (0,0);
     if (my $row = $sth->fetchrow_hashref()) {
-        ($start, $end) = ($row->{"minc"}, $row->{"maxc"});
+        ($start, $end) = ($row->{minc}, $row->{maxc});
     }
     $sth->finish;
     return ($start, $end);
