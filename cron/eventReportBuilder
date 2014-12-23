@@ -32,6 +32,10 @@ Without the option '--end-time', it goes to the current date.
 
 Set the end date for rebuild (Syntax: YYYY-MM-DD).
 
+=item B<--no-validate-date>
+
+Don't check time values. Otherwise, you need the perl module 'DateTime'.
+
 =item B<--config>
 
 Specify the path to the main configuration file (default: /etc/centreon/conf.pm).

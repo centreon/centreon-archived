@@ -62,6 +62,7 @@ sub new {
         "r" => \$self->{opt_rebuild}, "rebuild" => \$self->{opt_rebuild},
         "s:s" => \$self->{opt_stime}, "start-time:s" => \$self->{opt_stime},
         "e:s" => \$self->{opt_etime}, "end-time:s" => \$self->{opt_etime},
+        "no-validate-date" => \$self->{opt_no_validate_date},
     );
     $self->{centstatusdb} = undef;
     $self->{processEvents} = undef;
@@ -171,21 +172,22 @@ sub get_date {
     
     my ($date, $midnight);
     if (defined($self->{$options{option_label}})) {
-        require DateTime;
-        
         if ($self->{$options{option_label}} !~ /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/) {
             $self->{logger}->writeLogError("Wrong $options{option} option. Syntax is: YYYY-MM-DD.");
             $self->exit_pgr();
         }
-        eval {
-            my $dt = DateTime->new( 
-                year => $1, 
-                month => $2, 
-                day => $3);
-        };
-        if ($@) {
-            $self->{logger}->writeLogError("Wrong $options{option} option. Not a valid date.");
-            $self->exit_pgr();
+        if (!defined($self->{opt_no_validate_date})) {
+            require DateTime;
+            eval {
+                my $dt = DateTime->new( 
+                    year => $1, 
+                    month => $2, 
+                    day => $3);
+            };
+            if ($@) {
+                $self->{logger}->writeLogError("Wrong $options{option} option. Not a valid date.");
+                $self->exit_pgr();
+            }
         }
         $date = mktime(0,0,0,$3,$2-1,$1-1900,0,0,-1);
         $midnight = mktime(0,0,0,$3+1,$2-1,$1-1900,0,0,-1);
