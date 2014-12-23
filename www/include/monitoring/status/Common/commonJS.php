@@ -301,7 +301,7 @@ function construct_HostGroupSelectList(id) {
 		}
 
 		if ($broker == 'broker') {
-			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.enabled = 1 AND hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta_%' AND enabled = 1 ORDER BY `name`");
+			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.enabled = 1 AND hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta\_%' AND enabled = 1 ORDER BY `name`");
 		} else {
 			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias , `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
 		}

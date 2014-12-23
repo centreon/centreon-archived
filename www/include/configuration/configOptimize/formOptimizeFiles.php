@@ -111,7 +111,7 @@
 		$DBRESULT_Servers = $pearDB->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
 		while ($tab = $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])){
-				$stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
+				$stdout = shell_exec($nagios_bin["nagios_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
 				$stdout = htmlentities($stdout, ENT_QUOTES, "UTF-8");
 				$msg_optimize[$tab['id']] = str_replace ("\n", "<br />", $stdout);
 				$cpt++;

@@ -41,45 +41,10 @@
 	 * Configuration file
 	 */
 	$centreonConf = "@CENTREON_ETC@/centreon.conf.php";
+	$varlib = "@CENTREON_VARLIB@";
 	$delay = 600; /* Default 10 minutes */
 
 	/* Does not modified after */
-
-	/**
-	 * Send external command to nagios or centcore
-	 *
-	 * @param CentreonDb $db The database connection to centreon
-	 * @param int $host_id The host id for command
-	 * @param string $cmd The command to send
-	 * @return The command return code
-	 */
-	function sendCommand($db, $host_id, $cmd)
-	{
-		$varlib = "@CENTREON_VARLIB@";
-	 	if ($varlib == "") {
-	 		$varlib = "/var/lib/centreon";
-	 	}
-
-		$query = "SELECT ns.localhost, ns.id, cn.command_file
-				  FROM cfg_nagios cn, nagios_server ns, ns_host_relation nsh
-			      WHERE cn.nagios_server_id = ns.id
-			      AND nsh.nagios_server_id = ns.id
-			      AND cn.nagios_activate = '1'
-			      AND ns.ns_activate = '1'
-			      AND host_host_id = " .$host_id;
-		$res = $db->query($query);
-		if (PEAR::isError($res)) {
-			return false;
-		}
-		$row = $res->fetchRow();
-		if ($row['localhost'] == 1) {
-			$str_cmd = "echo '" . $cmd . "' >> " . $row['command_file'];
-		} else {
-			$str_cmd = "echo 'EXTERNALCMD:" . $row['id'] . ":" . $cmd . "' >> " . $varlib . "/centcore.cmd";
-		}
-		passthru(trim($str_cmd), $return);
-		return $return;
-	}
 
 	/* ***********************************************
 	 * Test if Centreon configuration file exists
@@ -145,7 +110,7 @@
 	}
 	require_once $centreonClasspath . '/centreonDowntime.' . $brokerName . '.class.php';
 	$classname = "CentreonDowntime" . $brokerName;
-	$downtime = new $classname($pearDB);
+	$downtime = new $classname($pearDB, $varlib);
 
 	/*
 	 * Get the list of all downtime
@@ -170,13 +135,16 @@
 					$currentHostDate = $gmt->getHostCurrentDatetime($period['obj_id'], 'U');
 					$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 					if (count($dts) != 0) {
-						$listSchedDt = $downtime->isScheduled($period['dt_id'], $period['obj_name']);
+						$listSchedDt = $downtime->isScheduled(
+							$period['dt_id'], 
+							($broker == 'broker') ? $period['obj_id'] : $period['obj_name']
+						);
 						foreach ($dts as $dt) {
 							if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 								foreach ($ext_cmd_add['host'] as $cmd) {
 									$cmd = sprintf($cmd, time(), $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
                                     if (!in_array($cmd, $existingDowntime)) {
-                                        sendCommand($pearDB, $period['obj_id'], $cmd);
+                                        $downtime->setCommand($period['obj_id'], $cmd);
                                         $existingDowntime[] = $cmd;
                                     }
 								}
@@ -188,7 +156,7 @@
 										$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 									}
                                     if (!in_array($cmd, $existingDowntime)) {
-                                        sendCommand($pearDB, $period['obj_id'], $cmd);
+                                        $downtime->setCommand($period['obj_id'], $cmd);
                                         $existingDowntime[] = $cmd;
                                     }
 								}
@@ -208,13 +176,16 @@
 						$currentHostDate = $gmt->getHostCurrentDatetime($host, 'U');
 						$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 						if (count($dts) != 0) {
-							$listSchedDt = $downtime->isScheduled($period['dt_id'], $host);
+							$listSchedDt = $downtime->isScheduled(
+								$period['dt_id'], 
+								($broker == 'broker') ? $host : $hostClass->getHostName($host)
+							);
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['host'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $hostClass->getHostName($host), $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $host, $cmd);
+                                            $downtime->setCommand($host, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -226,7 +197,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $host, $cmd);
+                                            $downtime->setCommand($host, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -236,19 +207,25 @@
 					}
 					break;
 				case 'svc':
-					$hostClass = new CentreonHost($pearDB);
+					if (!isset($hostClass)) {
+						$hostClass = new CentreonHost($pearDB);
+					}
 					$hid = $hostClass->getHostId($period['host_name']);
 					if ($gmt->used()) {
 						$currentHostDate = $gmt->getHostCurrentDatetime($hid, 'U');
 						$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 						if (count($dts) != 0) {
-							$listSchedDt = $downtime->isScheduled($period['dt_id'], $period['host_name'], $period['obj_name']);
+							$listSchedDt = $downtime->isScheduled(
+								$period['dt_id'], 
+								($broker == 'broker') ? $period['host_id'] : $period['host_name'], 
+								($broker == 'broker') ? $period['obj_id'] : $period['obj_name']
+							);
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
+                                            $downtime->setCommand($period['host_id'], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -260,7 +237,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
+                                            $downtime->setCommand($period['host_id'], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -270,13 +247,17 @@
 					} else {
 						$dts = $downtime->doSchedule($period['dt_id'], time(), $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 						if (count($dts) != 0) {
-							$listSchedDt = $downtime->isScheduled($period['dt_id'], $period['host_name'], $period['obj_name']);
+							$listSchedDt = $downtime->isScheduled(
+								$period['dt_id'], 
+								($broker == 'broker') ? $period['host_id'] : $period['host_name'], 
+								($broker == 'broker') ? $period['obj_id'] : $period['obj_name']
+							);
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
+                                            $downtime->setCommand($period['host_id'], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -288,7 +269,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $hostClass->getHostId($period['host_name']), $cmd);
+                                            $downtime->setCommand($period['host_id'], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -298,9 +279,15 @@
 					}
 					break;
 				case 'svcgrp':
-					$sg = new CentreonServicegroups($pearDB);
-					$hostClass = new CentreonHost($pearDB);
-					$serviceClass = new CentreonService($pearDB);
+					if (!isset($sg)) {
+						$sg = new CentreonServicegroups($pearDB);
+					}
+					if (!isset($hostClass)) {
+						$hostClass = new CentreonHost($pearDB);
+					}
+					if (!isset($serviceClass)) {
+						$serviceClass = new CentreonService($pearDB);
+					}
 					$services = $sg->getServiceGroupServices($period['obj_id']);
 					foreach ($services as $service){
                         if (!isset($service[0])) {
@@ -311,13 +298,17 @@
 						if (count($dts) != 0) {
 							$host_name = $hostClass->getHostName($service[0]);
 							$service_name = $serviceClass->getServiceDesc($service[1]);
-							$listSchedDt = $downtime->isScheduled($period['dt_id'], $host_name, $service_name);
+							$listSchedDt = $downtime->isScheduled(
+								$period['dt_id'], 
+								($broker == 'broker') ? $service[0] : $host_name, 
+								($broker == 'broker') ? $service[1] : $service_name
+							);
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $host_name, $service_name, $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $downtime->setCommand($period['obj_id'], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -329,7 +320,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $downtime->setCommand($period['obj_id'], $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -341,4 +332,6 @@
 			}
 		}
 	}
+	/* send the external commands */
+	$downtime->sendCommands();
 ?>

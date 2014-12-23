@@ -42,8 +42,6 @@ if (!isset($centreon)) {
 require_once ($centreon_path . "/www/class/centreonHost.class.php");
 require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
-$criticality = new CentreonCriticality($pearDB);
-
 /*
  * Create table for host / instance list.
  */
@@ -126,125 +124,136 @@ while ($cg = $DBRESULT2->fetchRow())	{
 $DBRESULT->free();
 unset($cg);
 
-/*
- * Criticality cache
- */
+/*                                                                                                                                                                                                             * Criticality cache                                                                                                                                                                                           */
+global $critCache;
+global $critHTpl;
 $critCache = array();
-$critRes = $pearDB->query("SELECT hcr.hostcategories_hc_id, hcr.host_host_id 
-                                   FROM hostcategories_relation hcr, host h, hostcategories hc
-                                   WHERE hcr.host_host_id = h.host_id
-                                   AND hcr.hostcategories_hc_id = hc.hc_id
-                                   AND h.host_register = '1'
-                                   AND level IS NOT NULL
-                                   ORDER BY level DESC");
-        while ($critRow = $critRes->fetchRow()) {
-            $critCache[$critRow['host_host_id']] = $critRow['hostcategories_hc_id'];
-        }
-        
-	/*
-	 * Build GMT cache
-	 */
-	$gmtCache = array();
+$critCacheName = array();
+$critRes = $pearDB->query("SELECT hcr.hostcategories_hc_id, hcr.host_host_id, hc.hc_name, hc.level, hc.hc_id, h.host_name
+FROM hostcategories_relation hcr, host h, hostcategories hc
+WHERE hcr.host_host_id = h.host_id
+AND hcr.hostcategories_hc_id = hc.hc_id
+AND h.host_register = '1'
+AND level IS NOT NULL ORDER BY level DESC");
+while ($critRow = $critRes->fetchRow()) {
+    $critCache[$critRow['host_host_id']] = $critRow['hostcategories_hc_id'];
+    $critCacheName[$critRow["host_name"]] = array("name" => $critRow['hc_name'], 'level' => $critRow["level"], 'id' => $critRow["hc_id"]);
+}
 
-	/*
-	 * Init Buffer for hostgroup used in hosts
-	 */
-	global $hgHostGenerated;
-	$hgHostGenerated = array();
+/*
+ * Build GMT cache
+ */
+$gmtCache = array();
+
+/*
+ * Init Buffer for hostgroup used in hosts
+ */
+global $hgHostGenerated;
+$hgHostGenerated = array();
 
 
-	/*
-	 * Create host object
-	 */
-	$host_method = new CentreonHost($pearDB);
+/*
+ * Create host object
+ */
+$host_method = new CentreonHost($pearDB);
 
-	/******************************************************
-	 * Host Generation
-	 ******************************************************/
-	$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
+/******************************************************
+ * Host Generation
+ ******************************************************/
+$handle = create_file($nagiosCFGPath.$tab['id']."/hosts.cfg", $oreon->user->get_name());
 
-	/*
-	 * Create Host Lists
-	 */
-	$hostGenerated = array();
-	$DBRESULT = $pearDB->query("SELECT host.* " .
-							"FROM host, ns_host_relation " .
-							"WHERE host_activate = '1' " .
-							"	AND host_register = '1' AND host.host_id = ns_host_relation.host_host_id " .
-							"	AND ns_host_relation.nagios_server_id = '".$tab['id']."' " .
-							"ORDER BY `host_register`, `host_name`");
-	$i = 1;
-	$str = NULL;
-	$host = array();
-	while ($host = $DBRESULT->fetchRow())	{
-		if (isset($host_instance[$host["host_id"]])) {
-			if (isset($gbArr[2][$host["host_id"]]))	{
+/*
+ * Create Host Lists
+ */
+$hostGenerated = array();
+$DBRESULT = $pearDB->query("SELECT host.* " .
+                           "FROM host, ns_host_relation " .
+                           "WHERE host_activate = '1' " .
+                           "	AND host_register = '1' AND host.host_id = ns_host_relation.host_host_id " .
+                           "	AND ns_host_relation.nagios_server_id = '".$tab['id']."' " .
+                           "ORDER BY `host_register`, `host_name`");
+$i = 1;
+$str = NULL;
+$host = array();
+while ($host = $DBRESULT->fetchRow())	{
+    $criticity = 0;
+    if (isset($host_instance[$host["host_id"]])) {
+        if (isset($gbArr[2][$host["host_id"]]))	{
 
-				$hostGenerated[$host["host_id"]] = $host["host_name"];
+            $hostGenerated[$host["host_id"]] = $host["host_name"];
 
-				$ret["comment"] ? ($str .= "# '" . $host["host_name"]."' host definition ".$i."\n") : NULL;
-				if ($ret["comment"] && $host["host_comment"])	{
-					$comment = array();
-					$comment = explode("\n", $host["host_comment"]);
-					foreach ($comment as $cmt)
-						$str .= "# ".$cmt."\n";
-				}
-				/*
-				 * Adjust host_location and time period name
-				 */
-				 if ($host["host_location"] > 0)
-				 	$host["host_location_tp"] = "-".$host["host_location"];
-				 else if ($host["host_location"] < 0)
-				 	$host["host_location_tp"] = abs($host["host_location"]);
-				 else
-					 $host["host_location_tp"] = "";
-				$gmtCache[$host["host_id"]] = $host["host_location_tp"];
+            $ret["comment"] ? ($str .= "# '" . $host["host_name"]."' host definition ".$i."\n") : NULL;
+            if ($ret["comment"] && $host["host_comment"])	{
+                $comment = array();
+                $comment = explode("\n", $host["host_comment"]);
+                foreach ($comment as $cmt)
+                    $str .= "# ".$cmt."\n";
+            }
+            /*
+             * Adjust host_location and time period name
+             */
+            if ($host["host_location"] > 0)
+                $host["host_location_tp"] = "-".$host["host_location"];
+            else if ($host["host_location"] < 0)
+                $host["host_location_tp"] = abs($host["host_location"]);
+            else
+                $host["host_location_tp"] = "";
+            $gmtCache[$host["host_id"]] = $host["host_location_tp"];
 
-				$str .= "define host{\n";
-				if (!$host["host_register"] && $host["host_name"])
-					$str .= print_line("name", $host["host_name"]);
-				else
-					if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);
+            $str .= "define host{\n";
+            if (!$host["host_register"] && $host["host_name"])
+                $str .= print_line("name", $host["host_name"]);
+            else
+                if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);
 
-				/*
-				 *  Multi Templates
-				 */
-				if (isset($templateCache[$host["host_id"]])) {
-					$tpl_str = "";
-					foreach ($templateCache[$host["host_id"]] as $host_template) {
-						if ($tpl_str != "") {
-							$tpl_str .= ",";
-						}
-						$tpl_str .= $host_template;
-					}
-				}
-				if (isset($tpl_str) && $tpl_str != "")
-					$str .= print_line("use", $tpl_str);
-				unset($tpl_str);
+            /*
+             *  Multi Templates
+             */
+            if (isset($templateCache[$host["host_id"]])) {
+                $tpl_str = "";
+                foreach ($templateCache[$host["host_id"]] as $host_template) {
+                    if ($tpl_str != "") {
+                        $tpl_str .= ",";
+                    }
+                    $tpl_str .= $host_template;
 
-				if ($host["host_alias"])
-					$str .= print_line("alias", $host["host_alias"]);
-				if ($host["host_address"])
-					$str .= print_line("address", $host["host_address"]);
+                    // Criticity                                                                                                                                                                              
+                    if ($criticity == 0) {
+                        if (isset($critHTpl[$tpl_id])) {
+                            $criticity = $critHTpl[$tpl_id];
+                        }
+                    }
+                }
+            }
+            if (isset($tpl_str) && $tpl_str != "")
+                $str .= print_line("use", $tpl_str);
+            unset($tpl_str);
+
+            if ($host["host_alias"])
+                $str .= print_line("alias", $host["host_alias"]);
+            if ($host["host_address"])
+                $str .= print_line("address", $host["host_address"]);
                                 
-				/*
-                                 * Write Host_id
-                                 */
-                                $str .= print_line("_HOST_ID", $host["host_id"]);
-
-                                /*
-                                 * Criticality level
-                                 */
-                                if (isset($critCache[$host['host_id']])) {
-                                    $critData = $criticality->getData($critCache[$host['host_id']]);
-                                    if (!is_null($critData)) {
-                                        $str .= print_line("_CRITICALITY_LEVEL", $critData['level']);
-                                        $str .= print_line("_CRITICALITY_ID", $critData['hc_id']);
-                                    }
-                                }
+            /*
+             * Write Host_id
+             */
+            $str .= print_line("_HOST_ID", $host["host_id"]);
+                
+            if (isset($critCache[$host['host_id']])) {
+                $critData = $criticality->getData($critCache[$host['host_id']]);
+                if (!is_null($critData)) {
+                    $str .= print_line("_CRITICALITY_LEVEL", $critData['level']);
+                    $str .= print_line("_CRITICALITY_ID", $critData['hc_id']);
+                }
+            } else {
+                if ($criticity) {
+                    $critCacheName[$host['host_name']] = $criticality->getData($criticity);
+                }
+            }
                                 
-            if ($host["host_register"] == 1 && $host["host_location"] != "")
+            if ($host["host_register"] == 1 && $host["host_location"] != "") {
                 $str .= print_line("#location", $host["host_location"]);
+            }
 
             if ($host["host_snmp_community"])
                 $str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
@@ -438,47 +447,47 @@ $critRes = $pearDB->query("SELECT hcr.hostcategories_hc_id, hcr.host_host_id
 					   FROM `on_demand_macro_host`
 					   WHERE `host_host_id` = '" . $host['host_id']."'
 					   AND host_macro_name NOT IN (SELECT macro_name FROM nagios_macro)";
-				$DBRESULT3 = $pearDB->query($rq);
-				while ($od_macro = $DBRESULT3->fetchRow()) {
-					$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
-					$mac_name = str_replace("\$", "", $mac_name);
-					$mac_name = str_replace("#S#", "/", $mac_name);
-					$mac_name = str_replace("#BS##BS#", "\\", $mac_name);
-					$mac_value = $od_macro['host_macro_value'];
-					$mac_value = str_replace("#S#", "/", $mac_value);
-					$mac_value = str_replace("#BS##BS#", "\\", $mac_value);
-					$str .= print_line($mac_name, $mac_value);
-				}
+            $DBRESULT3 = $pearDB->query($rq);
+            while ($od_macro = $DBRESULT3->fetchRow()) {
+                $mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
+                $mac_name = str_replace("\$", "", $mac_name);
+                $mac_name = str_replace("#S#", "/", $mac_name);
+                $mac_name = str_replace("#BS##BS#", "\\", $mac_name);
+                $mac_value = $od_macro['host_macro_value'];
+                $mac_value = str_replace("#S#", "/", $mac_value);
+                $mac_value = str_replace("#BS##BS#", "\\", $mac_value);
+                $str .= print_line($mac_name, $mac_value);
+            }
 
-				/*
-				 * Extended Informations
-				 */
-				$DBRESULT2 = $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
-				$ehi = $DBRESULT2->fetchRow();
-				if ($ehi["ehi_notes"])
-					$str .= print_line("notes", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes"]));
-				if ($ehi["ehi_notes_url"])
-        			$str .= print_line("notes_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes_url"]));
-				if ($ehi["ehi_action_url"])
-        			$str .= print_line("action_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_action_url"]));
-				if ($ehi["ehi_icon_image"])
-        			$str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)));
-				if ($ehi["ehi_icon_image_alt"])
-        			$str .= print_line("icon_image_alt", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_icon_image_alt"]));
-				if ($ehi["ehi_vrml_image"])
-        			$str .= print_line("vrml_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1)));
-				if ($ehi["ehi_statusmap_image"])
-        			$str .= print_line("statusmap_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_statusmap_image", 1)));
-				if ($ehi["ehi_2d_coords"])
-        			$str .= print_line("2d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_2d_coords"]));
-				if ($ehi["ehi_3d_coords"])
-        			$str .= print_line("3d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_3d_coords"]));
-				$DBRESULT2->free();
-			}
-			$str .= "}\n\n";
-			$i++;
-		}
-	}
+            /*
+             * Extended Informations
+             */
+            $DBRESULT2 = $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
+            $ehi = $DBRESULT2->fetchRow();
+            if ($ehi["ehi_notes"])
+                $str .= print_line("notes", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes"]));
+            if ($ehi["ehi_notes_url"])
+                $str .= print_line("notes_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes_url"]));
+            if ($ehi["ehi_action_url"])
+                $str .= print_line("action_url", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_action_url"]));
+            if ($ehi["ehi_icon_image"])
+                $str .= print_line("icon_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)));
+            if ($ehi["ehi_icon_image_alt"])
+                $str .= print_line("icon_image_alt", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_icon_image_alt"]));
+            if ($ehi["ehi_vrml_image"])
+                $str .= print_line("vrml_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_vrml_image", 1)));
+            if ($ehi["ehi_statusmap_image"])
+                $str .= print_line("statusmap_image", $host_method->replaceMacroInString($host["host_id"], getMyHostExtendedInfoImage($host["host_id"], "ehi_statusmap_image", 1)));
+            if ($ehi["ehi_2d_coords"])
+                $str .= print_line("2d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_2d_coords"]));
+            if ($ehi["ehi_3d_coords"])
+                $str .= print_line("3d_coords", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_3d_coords"]));
+            $DBRESULT2->free();
+        }
+        $str .= "}\n\n";
+        $i++;
+    }
+}
 	unset($host);
 
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/hosts.cfg");

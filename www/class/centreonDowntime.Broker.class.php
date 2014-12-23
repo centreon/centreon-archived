@@ -49,10 +49,11 @@ class CentreonDowntimeBroker extends CentreonDowntime
 	 * Constructor
 	 *
 	 * @param CentreonDb $pearDB
+	 * @param string $varlib
 	 */
-	public function __construct($pearDB)
+	public function __construct($pearDB, $varlib = null)
 	{
-		$this->db = $pearDB;
+		parent::__construct($pearDB, $varlib);
 		$this->dbb = new CentreonDB('centstorage');
 	}
 
@@ -138,31 +139,46 @@ class CentreonDowntimeBroker extends CentreonDowntime
 	 * 	)
 	 *
 	 * @param int $dt_id The downtime id
-	 * @param string $oname1 The first object name (host_name)
-	 * @param string $oname2 The second object name (service_name), is null if search a host
+	 * @param int $hostId The first object id (host_id)
+	 * @param int $serviceId The second object id (service_id), is null if search a host
 	 * @return array
 	 */
-	public function isScheduled($dt_id, $oname1, $oname2 = null)
+	public function isScheduled($dt_id, $hostId, $serviceId = null)
 	{
-		$query = "SELECT d.internal_id as internal_downtime_id, d.type as downtime_type
-				  FROM downtimes d, hosts h ";
-        if (isset($oname2) && $oname2 != "") {
-            $query .= ", services s ";
-        }
-        $query .= "WHERE d.host_id = h.host_id
-                  AND d.start_time > UNIX_TIMESTAMP()
-        		  AND d.comment_data = '[Downtime cycle #".$dt_id."]'
-        		  AND h.name = '".$this->dbb->escape($oname1)."' ";
-        if (isset($oname2) && $oname2 != "") {
-            $query .= " AND h.host_id = s.host_id ";
-            $query .= " AND s.description = '".$this->dbb->escape($oname2)."' ";
-        }
-		$res = $this->dbb->query($query);
-		if (PEAR::isError($res)) {
-			return array();
+		static $downtimeHosts = array();
+		static $downtimeServices = array();
+
+		if (!isset($downtimeHosts[$dt_id])) {
+			$downtimeHosts[$dt_id] = array();
+			$downtimeServices[$dt_id] = array();
+
+			$query = "SELECT internal_id as internal_downtime_id, type as downtime_type, host_id, service_id
+				FROM downtimes
+				WHERE start_time > UNIX_TIMESTAMP()
+				AND comment_data = '[Downtime cycle #" . $dt_id . "]'";
+			$res = $this->dbb->query($query);
+			while ($row = $res->fetchRow()) {
+				if (!isset($downtimes[$dt_id][$row['host_id']]) && is_null($row['service_id'])) {
+					$downtimeHosts[$dt_id][$row['host_id']] = $row;
+				}
+				if (!is_null($row['service_id'])) {
+					$downtimeServices[$dt_id][$row['host_id']][$row['service_id']] = $row;
+				}
+			}
 		}
+		
+		$arr = array();
+		if (!is_null($serviceId)) {
+			if (isset($downtimeServices[$dt_id]) 
+				&& isset($downtimeServices[$dt_id][$hostId]) && isset($downtimeServices[$dt_id][$hostId][$serviceId])) {
+					$arr = $downtimeServices[$dt_id][$hostId][$serviceId];
+				}
+		} elseif (isset($downtimeHosts[$dt_id]) && isset($downtimeHosts[$dt_id][$hostId])) {
+			$arr = $downtimeHosts[$dt_id][$hostId];
+		}
+
 		$listObj = array();
-		while ($row = $res->fetchRow()) {
+		foreach ($arr as $row) {
 			$listObj[] = $row;
 		}
 		return $listObj;

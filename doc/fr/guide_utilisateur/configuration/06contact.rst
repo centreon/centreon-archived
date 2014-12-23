@@ -46,7 +46,7 @@ Authentification Centreon
 
   ::
 
-      http://[IP_DU_SERVEUR_CENTRAL]/index.php&autologin=1&useralias=[login_utilisateur]&token=[valeur_autologin]
+      http://[IP_DU_SERVEUR_CENTRAL]/index.php?autologin=1&useralias=[login_utilisateur]&token=[valeur_autologin]
 
 .. note:: 
     La possibilité de connexion automatique (auto login) doit être activée dans le menu **Administration** ==> **Options**.

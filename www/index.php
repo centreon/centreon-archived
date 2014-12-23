@@ -108,8 +108,7 @@ if (isset($_GET["disconnect"])) {
 
         $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
 
-        CentreonSession::stop();
-        CentreonSession::start();
+        CentreonSession::restart();
     }
 }
 
