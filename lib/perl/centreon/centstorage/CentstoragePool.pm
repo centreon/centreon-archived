@@ -739,8 +739,8 @@ sub get_perfdata {
 
     my ($status_th_warn, $th_warn_start, $th_warn_end, $th_warn_inclusive) = $self->parse_threshold();
     my ($status_th_crit, $th_crit_start, $th_crit_end, $th_crit_inclusive) = $self->parse_threshold();
-    $perf_min = $self->parse_value();
-    $perf_max = $self->parse_value();
+    ($perf_min) = $self->parse_value();
+    ($perf_max) = $self->parse_value();
 
     $perf_label = $self->trim($perf_label);
     $counter_type = 'g';
