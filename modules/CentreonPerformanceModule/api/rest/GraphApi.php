@@ -106,7 +106,7 @@ class GraphApi extends \Centreon\Internal\Api
                 }
                 $serviceData[$i]['data'] = $values;
                 $serviceData[$i]['label'] = $serviceData[$i]['legend'];
-                unset($serviceData[$i]['legend'];
+                unset($serviceData[$i]['legend']);
                 $serviceData[$i]['type'] = $serviceData[$i]['graph_type'];
                 unset($serviceData[$i]['graph_type']);
             }
