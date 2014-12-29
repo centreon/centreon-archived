@@ -3,7 +3,7 @@
 {block name="title"}{t}Graphs{/t}{/block}
 
 {block name="content"}
-<div class="container" style='padding-top:20px;'>
+<div class="container-fluid" style='padding-top:20px;'>
   <div class="c3" id="graph">
   </div>
 </div>
@@ -11,9 +11,13 @@
 
 {block name="javascript-bottom" append}
 <script>
-var chart;
+var chart,
+    timeout = undefined,
+    graphMargin = 40;
 
 function updateChart(serviceId, startTime, endTime) {
+  var height = window.frameElement.offsetHeight - graphMargin,
+      width = window.frameElement.offsetWidth - graphMargin;
   $.ajax({
     url: "{url_for url="/centreon-performance/graph"}",
     type: "POST",
@@ -69,8 +73,12 @@ function updateChart(serviceId, startTime, endTime) {
       axis["x"] = {
         type: "timeseries"
       };
-      var chart = c3.generate({
+      chart = c3.generate({
         bindto: "#graph",
+        size: {
+          height: height,
+          width: width
+        },
         data: {
           x: 'x',
           columns: columns,
@@ -91,6 +99,19 @@ $(function() {
       startTime = new Date();
   startTime.setHours(endTime.getHours() - 24);
   updateChart(serviceId, Math.floor(startTime.getTime() / 1000), Math.floor(endTime.getTime() / 1000));
+  $(document).on('resize', function() {
+    if (timeout !== undefined) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(function() {
+      var height = window.frameElement.offsetHeight - graphMargin,
+          width = window.frameElement.offsetWidth - graphMargin;
+      chart.resize({
+        height: height,
+        width: width
+      });
+    }, 500);
+  });
 });
 </script>
 {/block}
