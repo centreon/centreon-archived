@@ -71,7 +71,11 @@ function updateChart(serviceId, startTime, endTime) {
         });
       }
       axis["x"] = {
-        type: "timeseries"
+        type: "timeseries",
+        tick: {
+          format: '%Y-%m-%d %H:%M',
+          count: 10
+        }
       };
       chart = c3.generate({
         bindto: "#graph",

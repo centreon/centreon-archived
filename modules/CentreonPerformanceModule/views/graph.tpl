@@ -120,11 +120,18 @@ function createGraph(serviceId) {
         )
         .append(
           $("<button></button>")
+            .addClass("stack-graph")
+            .addClass("close")
+            .attr("type", "button")
+            .html('<i class="fa fa-area-chart"></i>')
+        )
+        /*.append(
+          $("<button></button>")
             .addClass("download-graph")
             .addClass("close")
             .attr("type", "button")
             .html('<i class="fa fa-save"></i>')
-        )
+        )*/
     )
     .append(
       $("<div></div>")
@@ -253,6 +260,17 @@ $(function() {
     /**/
     form.find('input[name="svg"]').val(svg.outerHTML);
     form.submit();
+  });
+
+  $('#graphs').on('click', '.stack-graph', function(e) {
+    var $element = $(e.currentTarget),
+        id = $element.parents(".graph").find(".c3").attr("id").replace("graph-", "");
+    if ($element.hasClass('active')) {
+      stackCurve(id - 1 , false);
+    } else {
+      stackCurve(id - 1, true);
+    }
+    $element.toggleClass('active');
   });
 
   /* Initialize service selection */
