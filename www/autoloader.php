@@ -38,6 +38,7 @@ if (!isset($centreon_path)) {
 
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath($centreon_path . '/www/class'),
+    realpath($centreon_path . '/www/lib'),
     get_include_path(),
 )));
 
