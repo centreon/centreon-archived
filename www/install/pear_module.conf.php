@@ -71,6 +71,7 @@ $pear_module[6]["version"] = "0.14.0";
 $pear_module[6]["file"] = "Numbers_Words-0.14.0.tgz";
 $pear_module[6]["path"] = "Numbers/Words.php";
 */
+/*
 $pear_module[7]["name"] = "HTML_Common";
 $pear_module[7]["version"] = "1.2.2";
 $pear_module[7]["file"] = "HTML_Common-1.2.2.tgz";
@@ -85,7 +86,7 @@ $pear_module[9]["name"] = "HTML_QuickForm_advmultiselect";
 $pear_module[9]["version"] = "1.1.0";
 $pear_module[9]["file"] = "HTML_QuickForm_advmultiselect-1.1.0.tgz";
 $pear_module[9]["path"] = "HTML/QuickForm/advmultiselect.php";
-
+ */
 $pear_module[10]["name"] = "HTML_Table";
 $pear_module[10]["version"] = "1.6.1";
 $pear_module[10]["file"] = "HTML_Table-1.6.1.tgz";
