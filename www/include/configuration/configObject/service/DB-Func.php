@@ -857,7 +857,7 @@ function insertService($ret = array(), $macro_on_demand = null)
 
 
     isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
-    isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
+    isset($ret["service_register"]) && $ret["service_register"] != NULL ? $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
     isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
@@ -1006,8 +1006,8 @@ function insertService($ret = array(), $macro_on_demand = null)
     if (isset($ret["command_command_id_arg2"])) {
         $fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
     }
-    if (isset($ret["service_register"]) && isset($ret["service_register"]["service_register"])) {
-        $fields["service_register"] = $ret["service_register"]["service_register"];
+    if (isset($ret["service_register"]) && isset($ret["service_register"])) {
+        $fields["service_register"] = $ret["service_register"];
     }
     if (isset($ret["service_activate"]) && isset($ret["service_activate"]["service_activate"])) {
         $fields["service_activate"] = $ret["service_activate"]["service_activate"];
@@ -1198,7 +1198,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     $rq .= "command_command_id_arg2 = ";
     isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg2"])."', " : $rq .= "NULL, ";
     $rq .= "service_register = ";
-    isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL ? $rq .= "'".$ret["service_register"]["service_register"]."', " : $rq .= "NULL, ";
+    isset($ret["service_register"]) && $ret["service_register"] != NULL ? $rq .= "'".$ret["service_register"]."', " : $rq .= "NULL, ";
     $rq .= "service_activate = ";
     isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '".$service_id."'";
@@ -1254,7 +1254,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     $fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
     $fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
     $fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
-    $fields["service_register"] = $ret["service_register"]["service_register"];
+    $fields["service_register"] = $ret["service_register"];
     $fields["service_activate"] = $ret["service_activate"]["service_activate"];
     $fields["esi_notes"] = CentreonDB::escape($ret["esi_notes"]);
     $fields["esi_notes_url"] = CentreonDB::escape($ret["esi_notes_url"]);
@@ -1443,9 +1443,9 @@ function updateService_MC($service_id = null, $params = array())
         $rq .= "command_command_id_arg2 = '".CentreonDB::escape($ret["command_command_id_arg2"])."', ";
         $fields["command_command_id_arg2"] = CentreonDB::escape($ret["command_command_id_arg2"]);
     }
-    if (isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL) {
-        $rq .= "service_register = '".$ret["service_register"]["service_register"]."', ";
-        $fields["service_register"] = $ret["service_register"]["service_register"];
+    if (isset($ret["service_register"]) && $ret["service_register"] != NULL) {
+        $rq .= "service_register = '".$ret["service_register"]."', ";
+        $fields["service_register"] = $ret["service_register"];
     }
     if (isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL) {
         $rq .= "service_activate = '".$ret["service_activate"]["service_activate"]."', ";

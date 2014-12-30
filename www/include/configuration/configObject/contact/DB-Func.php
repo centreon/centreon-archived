@@ -384,7 +384,7 @@
 			isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL ? $rq .= "'".$ret["contact_oreon"]["contact_oreon"]."', ": $rq .= " '1', ";
 		}
 
-		isset($ret["contact_register"]["contact_register"]) && $ret["contact_register"]["contact_register"] != NULL ? $rq .= "'".$ret["contact_register"]["contact_register"]."', ": $rq .= " '1', ";
+		isset($ret["contact_register"]) && $ret["contact_register"] != NULL ? $rq .= "'".$ret["contact_register"]."', ": $rq .= " '1', ";
 		isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != NULL ? $rq .= "'".$ret["contact_enable_notifications"]["contact_enable_notifications"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL ? $rq .= "'".$ret["contact_admin"]["contact_admin"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'".$ret["contact_type_msg"]."', ": $rq .= "NULL, ";
@@ -533,7 +533,7 @@
 		isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL ? $rq .= "'".$ret["contact_admin"]["contact_admin"]."', ": $rq .= "NULL, ";
 
 		$rq .= "contact_register = ";
-		isset($ret["contact_register"]["contact_register"]) && $ret["contact_register"]["contact_register"] != NULL ? $rq .= "'".$ret["contact_register"]["contact_register"]."', ": $rq .= "NULL, ";
+		isset($ret["contact_register"]) && $ret["contact_register"] != NULL ? $rq .= "'".$ret["contact_register"]."', ": $rq .= "NULL, ";
 
 		$rq .= "contact_type_msg = ";
 		isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL ? $rq .= "'".$ret["contact_type_msg"]."', ": $rq .= "NULL, ";
@@ -598,8 +598,8 @@
                 if (isset($ret['contact_admin'])) {
                     $fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
                 }
-		if (isset($ret["contact_register"]) && isset($ret["contact_register"]["contact_register"]))
-			$fields["contact_register"] = $ret["contact_register"]["contact_register"];
+		if (isset($ret["contact_register"]) && isset($ret["contact_register"]))
+			$fields["contact_register"] = $ret["contact_register"];
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
                 if (isset($ret['contact_auth_type'])) {
                     $fields["contact_auth_type"] = $ret["contact_auth_type"];

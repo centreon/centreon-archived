@@ -726,7 +726,7 @@ function insertHost($ret, $macro_on_demand = NULL)	{
     isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_snmp_version"])."', " : $rq .= "NULL, ";
     isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_location"])."', " : $rq .= "NULL, ";
     isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_comment"])."', " : $rq .= "NULL, ";
-    isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
+    isset($ret["host_register"]) && $ret["host_register"] != NULL ? $rq .= "'".$ret["host_register"]."', " : $rq .= "NULL, ";
     isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
@@ -883,7 +883,7 @@ function insertHost($ret, $macro_on_demand = NULL)	{
     if (isset($ret["host_comment"]))
         $fields["host_comment"] = CentreonDB::escape($ret["host_comment"]);
     if (isset($ret["host_register"]))
-        $fields["host_register"] = $ret["host_register"]["host_register"];
+        $fields["host_register"] = $ret["host_register"];
     if (isset($ret["host_activate"]))
         $fields["host_activate"] = $ret["host_activate"]["host_activate"];
     if (isset($ret["templates"]))
@@ -1184,7 +1184,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     $rq .= "host_comment = ";
     isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_comment"])."', " : $rq .= "NULL, ";
     $rq .= "host_register = ";
-    isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
+    isset($ret["host_register"]) && $ret["host_register"]!= NULL ? $rq .= "'".$ret["host_register"]."', " : $rq .= "NULL, ";
     $rq .= "host_activate = ";
     isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '".$host_id."'";
@@ -1270,7 +1270,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     if (isset($ret["host_location"]))
         $fields["host_location"] = CentreonDB::escape($ret["host_location"]);
     if (isset($ret["host_comment"])) $fields["host_comment"] = CentreonDB::escape($ret["host_comment"]);
-    if (isset($ret["host_register"])) $fields["host_register"] = $ret["host_register"]["host_register"];
+    if (isset($ret["host_register"])) $fields["host_register"] = $ret["host_register"];
     if (isset($ret["host_activate"])) $fields["host_activate"] = $ret["host_activate"]["host_activate"];
     if (isset($multiTP_logStr)) $fields["templates"] = $multiTP_logStr;
     if (isset($ret["ehi_notes"])) $fields["ehi_notes"] = CentreonDB::escape($ret["ehi_notes"]);
@@ -1467,9 +1467,9 @@ function updateHost_MC($host_id = null)	{
         $rq .= "host_comment = '".CentreonDB::escape($ret["host_comment"])."', ";
         $fields["host_comment"] = CentreonDB::escape($ret["host_comment"]);
     }
-    if (isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL) {
-        $rq .= "host_register = '".$ret["host_register"]["host_register"]."', ";
-        $fields["host_register"] = $ret["host_register"]["host_register"];
+    if (isset($ret["host_register"]) && $ret["host_register"] != NULL) {
+        $rq .= "host_register = '".$ret["host_register"]."', ";
+        $fields["host_register"] = $ret["host_register"];
     }
     if (isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL) {
         $rq .= "host_activate = '".$ret["host_activate"]["host_activate"]."', ";
