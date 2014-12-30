@@ -86,12 +86,12 @@ $pear_module[9]["name"] = "HTML_QuickForm_advmultiselect";
 $pear_module[9]["version"] = "1.1.0";
 $pear_module[9]["file"] = "HTML_QuickForm_advmultiselect-1.1.0.tgz";
 $pear_module[9]["path"] = "HTML/QuickForm/advmultiselect.php";
- */
+
 $pear_module[10]["name"] = "HTML_Table";
 $pear_module[10]["version"] = "1.6.1";
 $pear_module[10]["file"] = "HTML_Table-1.6.1.tgz";
 $pear_module[10]["path"] = "HTML/Table.php";
-
+*/
 $pear_module[11]["name"] = "Archive_Tar";
 $pear_module[11]["version"] = "1.1";
 $pear_module[11]["file"] = "Archive_Tar-1.1.tgz";

@@ -4,10 +4,6 @@ DB_DataObject::1.8.4
 DB_DataObject_FormBuilder::1.0.0RC4::beta
 MDB2::2.0.0
 Date::1.4.6	
-HTML_Common::1.2.2
-HTML_QuickForm::3.2.5
-HTML_QuickForm_advmultiselect::1.1.0
-HTML_Table::1.6.1
 Archive_Tar::1.1
 Auth_SASL::1.0.1
 Console_Getopt::1.2
