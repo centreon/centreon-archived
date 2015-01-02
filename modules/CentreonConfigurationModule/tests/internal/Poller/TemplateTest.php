@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,10 +34,11 @@
  */
 namespace Test\CentreonConfiguration\Internal\Poller;
 
-use \Test\Centreon\SimpleTestCase;
-use \CentreonConfiguration\Internal\Poller\Template;
-use \CentreonConfiguration\Internal\Poller\Template\Engine;
-use \CentreonConfiguration\Internal\Poller\Template\Broker;
+use Test\Centreon\SimpleTestCase;
+use CentreonConfiguration\Internal\Poller\Template;
+use CentreonConfiguration\Internal\Poller\Template\Engine;
+use CentreonConfiguration\Internal\Poller\Template\Broker;
+use Centreon\Internal\Di;
 
 
 /**
@@ -91,6 +91,9 @@ class TemplateTest extends SimpleTestCase
     
     public function testGenForm()
     {
+        $router = Di::getDefault()->get('router');
+        $router->dispatch();
+
         $expectedField = '<div class="form-group ">';
             $expectedField .= '<div class="col-sm-2" style="text-align:right">';
                 $expectedField .= '<label class="label-controller" for="TemporayFilePath">Temporay File Path</label>';
@@ -98,7 +101,7 @@ class TemplateTest extends SimpleTestCase
             $expectedField .= '</div>';
             $expectedField .= '<div class="col-sm-9">';
                 $expectedField .= '<span>';
-                    $expectedField .= '<input id="TemporayFilePath" type="text" name="TemporayFilePath" value="" class="form-control mandatory-field " placeholder="Temporay File Path" />';
+                    $expectedField .= '<input id="TemporayFilePath" type="text" name="TemporayFilePath" value="" class="form-control input-sm mandatory-field " placeholder="Temporay File Path" />';
                 $expectedField .= '<span>';
             $expectedField .= '</div>';
         $expectedField .= '</div>';
