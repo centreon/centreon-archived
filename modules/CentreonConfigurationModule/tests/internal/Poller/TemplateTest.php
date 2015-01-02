@@ -39,6 +39,7 @@ use CentreonConfiguration\Internal\Poller\Template;
 use CentreonConfiguration\Internal\Poller\Template\Engine;
 use CentreonConfiguration\Internal\Poller\Template\Broker;
 use Centreon\Internal\Di;
+use CentreonAdministration\Internal\User;
 
 
 /**
@@ -91,6 +92,7 @@ class TemplateTest extends SimpleTestCase
     
     public function testGenForm()
     {
+        $_SESSION['user'] = new User(1);
         $router = Di::getDefault()->get('router');
         $router->dispatch();
 
