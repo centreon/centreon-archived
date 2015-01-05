@@ -223,7 +223,6 @@ class Hook
             $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $hook['module'])));
             $filename = "$path/modules/{$commonName}Module/hooks/".ucfirst($hook['module_hook_name']).".php";
             if (file_exists($filename)) {
-                include_once $filename;
                 $data = call_user_func(
                     array("\\".$commonName."\\Hooks\\".ucfirst($hook['module_hook_name']), "execute"),
                     $params
