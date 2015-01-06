@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
-    <table name="cfg_organizations_contacts_relations" phpName="OrganizationsContactsRelation" idMethod="native">
+    <table name="cfg_organizations_users_relations" phpName="OrganizationsUsersRelation" idMethod="native">
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
-        <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
         <column name="is_default" phpName="IsDefault" type="TINYINT" default="0"/>
         <column name="is_admin" phpName="IsAdmin" type="TINYINT" default="0"/>
-        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_contacts_relations_fk01" onDelete="CASCADE">
+        <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_users_relations_fk01" onDelete="CASCADE">
             <reference local="organization_id" foreign="organization_id" />
         </foreign-key>
-        <foreign-key foreignTable="cfg_contacts" name="cfg_organizations_contacts_relations_fk02" onDelete="CASCADE">
-            <reference local="contact_id" foreign="contact_id" />
+        <foreign-key foreignTable="cfg_users" name="cfg_organizations_users_relations_fk02" onDelete="CASCADE">
+            <reference local="user_id" foreign="user_id" />
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

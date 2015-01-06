@@ -8,8 +8,8 @@
       <unique-column name="user_id"/>
       <unique-column name="tagname"/>
     </unique>
-    <foreign-key foreignTable="cfg_contacts" name="cfg_tags_fk_01" onDelete="cascade">
-      <reference local="user_id" foreign="contact_id"/>
+    <foreign-key foreignTable="cfg_users" name="cfg_tags_fk_01" onDelete="cascade">
+      <reference local="user_id" foreign="user_id"/>
     </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>

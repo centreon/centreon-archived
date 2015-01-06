@@ -2,59 +2,6 @@
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
     <table name="cfg_contacts" phpName="Contact" idMethod="native">
         <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-        <column name="timeperiod_tp_id" phpName="TimeperiodTpId" type="INTEGER" required="false"/>
-        <column name="timeperiod_tp_id2" phpName="TimeperiodTpId2" type="INTEGER" required="false"/>
-        <column name="contact_name" phpName="ContactName" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_alias" phpName="ContactAlias" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_passwd" phpName="ContactPasswd" type="VARCHAR" size="255" required="false"/>
-        <column name="contact_lang" phpName="ContactLang" type="VARCHAR" size="255" required="false"/>
-        <column name="contact_host_notification_options" phpName="ContactHostNotificationOptions" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_service_notification_options" phpName="ContactServiceNotificationOptions" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_email" phpName="ContactEmail" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_pager" phpName="ContactPager" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_address1" phpName="ContactAddress1" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_address2" phpName="ContactAddress2" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_address3" phpName="ContactAddress3" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_address4" phpName="ContactAddress4" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_address5" phpName="ContactAddress5" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_address6" phpName="ContactAddress6" type="VARCHAR" size="200" required="false"/>
-        <column name="contact_comment" phpName="ContactComment" type="LONGVARCHAR" required="false"/>
-        <column name="contact_js_effects" phpName="ContactJsEffects" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
-        <column name="contact_location" phpName="ContactLocation" type="INTEGER" required="false" defaultValue="0"/>
-        <column name="contact_oreon" phpName="ContactOreon" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
-        <column name="contact_enable_notifications" phpName="ContactEnableNotifications" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="contact_template_id" phpName="ContactTemplateId" type="INTEGER" required="false"/>
-        <column name="contact_admin" phpName="ContactAdmin" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
-        <column name="contact_type_msg" phpName="ContactTypeMsg" type="CHAR" sqlType="enum('txt','html','pdf')" required="false" defaultValue="txt"/>
-        <column name="contact_activate" phpName="ContactActivate" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
-        <column name="contact_auth_type" phpName="ContactAuthType" type="VARCHAR" size="255" required="false" defaultValue=""/>
-        <column name="contact_ldap_dn" phpName="ContactLdapDn" type="LONGVARCHAR" required="false"/>
-        <column name="ar_id" phpName="ArId" type="INTEGER" required="false"/>
-        <column name="contact_acl_group_list" phpName="ContactAclGroupList" type="VARCHAR" size="255" required="false"/>
-        <column name="contact_autologin_key" phpName="ContactAutologinKey" type="VARCHAR" size="255" required="false"/>
-        <column name="contact_charset" phpName="ContactCharset" type="VARCHAR" size="255" required="false"/>
-        <column name="contact_register" phpName="ContactRegister" type="TINYINT" size="6" required="true" defaultValue="1"/>
-        <unique name="contact_alias">
-            <unique-column name="contact_alias"/>
-        </unique>
-        <foreign-key foreignTable="cfg_contacts" name="contact_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="contact_template_id" foreign="contact_id"/>
-        </foreign-key>
-        <index name="name_index">
-            <index-column name="contact_name"/>
-        </index>
-        <index name="tp1_index">
-            <index-column name="timeperiod_tp_id"/>
-        </index>
-        <index name="tp2_index">
-            <index-column name="timeperiod_tp_id2"/>
-        </index>
-        <index name="tmpl_index">
-            <index-column name="contact_template_id"/>
-        </index>
-        <index name="fk_ar_id">
-            <index-column name="ar_id"/>
-        </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

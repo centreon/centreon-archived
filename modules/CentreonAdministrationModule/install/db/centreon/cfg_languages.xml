@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_languages" phpName="Language" idMethod="native">
+        <column name="language_id" phpName="languageId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="name" type="VARCHAR" size="200" required="true"/>
+        <column name="description" phpName="description" type="VARCHAR" size="200" required="false"/>
+        <unique name="name">
+            <unique-column name="name"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

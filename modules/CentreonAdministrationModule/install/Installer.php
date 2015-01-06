@@ -63,7 +63,7 @@ class Installer extends \Centreon\Internal\Module\Installer
     {
         $di = \Centreon\Internal\Di::getDefault();
         $db = $di->get('db_centreon');
-        $updateUser = "UPDATE cfg_contacts SET contact_passwd = '" . md5('centreon') . "' WHERE contact_alias = 'admin'";
+        $updateUser = "UPDATE cfg_users SET password = '" . md5('centreon') . "' WHERE login = 'admin'";
         $db->query($updateUser);
     }
     

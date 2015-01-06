@@ -11,8 +11,8 @@
             <unique-column name="label"/>
             <unique-column name="route"/>
         </unique>
-        <foreign-key foreignTable="cfg_contacts" name="search_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="user_id" foreign="contact_id"/>
+        <foreign-key foreignTable="cfg_users" name="search_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="user_id" foreign="user_id"/>
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

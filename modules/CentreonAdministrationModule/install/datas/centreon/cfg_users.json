@@ -1,0 +1,27 @@
+[
+    {
+        "firstname": "@firstname@",
+        "lastname": "@lastname@",
+        "login": "is_admin",
+        "password": "@ADMIN_PASSWORD@",
+        "is_admin": 1,
+        "is_activated": 1,
+        "contact_id": 1
+    },
+    {
+        "firstname": "Guest",
+        "login": "guest",
+        "password": "",
+        "is_admin": 0,
+        "is_activated": 0,
+        "contact_id": 2
+    },
+    {
+        "firstname": "User",
+        "login": "user",
+        "password": "",
+        "is_admin": 0,
+        "is_activated": 0,
+        "contact_id": 3
+    }
+]
