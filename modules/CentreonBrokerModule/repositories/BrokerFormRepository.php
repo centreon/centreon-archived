@@ -376,8 +376,16 @@ class BrokerFormRepository extends FormRepository
             . '<div class="inline-block">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
+        $first = true;
+        
         foreach ($formComponents as $sectionLabel => $sectionComponents) {
-            $tabRendering .= '<li>'
+            if ($first) {
+                $active = 'active';
+                $first = false;
+            } else {
+                $active = '';
+            }
+            $tabRendering .= '<li class="'.$active.'">'
                 . '<a '
                 . 'href="#'.str_replace(' ', '', $sectionLabel).'" '
                 . 'data-toggle="tab">'
