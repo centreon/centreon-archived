@@ -388,8 +388,15 @@ class BrokerFormRepository extends FormRepository
         $formRendering .= '</ul></div></div>';
         
         $formRendering .= '<div class="tab-content">';
+        $first = true;
         foreach ($formComponents as $sectionLabel => $sectionComponents) {
-            $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
+            if ($first) {
+                $active = 'active';
+                $first = false;
+            } else {
+                $active = '';
+            }
+            $formRendering .= '<div class="tab-pane '.$active.'" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel => $blockComponents) {
                 $formRendering .= '<h4 class="page-header" style="padding-top:0px;">'.ucwords($blockLabel).'</h4>';
                 $formRendering .= '<div class="panel-body">';
