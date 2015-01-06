@@ -166,8 +166,8 @@ class PollerController extends \CentreonConfiguration\Controllers\BasicControlle
             'ip_address' => $node['ip_address']
         ));
         
-        $this->tpl->assign('brokerFormUrl', $this->router->getPathFor('/centreon-broker/broker/[i:id]', array('id' => $params['id'])));
-        $this->tpl->assign('engineFormUrl', $this->router->getPathFor('/centreon-engine/engine/[i:id]', array('id' => $params['id'])));
+        $this->tpl->assign('brokerFormUrl', $this->router->getPathFor('/centreon-broker/[i:id]', array('id' => $params['id'])));
+        $this->tpl->assign('engineFormUrl', $this->router->getPathFor('/centreon-engine/[i:id]', array('id' => $params['id'])));
         $form->addHidden('poller_id', $params['id']);
         $this->tpl->assign('object_id', $params['id']);
         $this->tpl->assign('form', $form->toSmarty());
