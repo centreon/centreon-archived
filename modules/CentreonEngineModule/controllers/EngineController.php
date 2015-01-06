@@ -47,6 +47,7 @@ use Centreon\Controllers\FormController;
  */
 class EngineController extends FormController
 {
+    public static $moduleShortName = 'centreon-engine';
     protected $objectDisplayName = 'Engine';
     protected $objectName = 'engine';
     protected $objectBaseUrl = '/centreon-engine';

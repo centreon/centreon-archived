@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <forms>
   <form name="engine_form">
-	<route>/centreon-engine/update</route>
+	<route>/centreon-engine/engine/update</route>
 	<redirect>0</redirect>
 	<redirect_route></redirect_route>
 	<section name="Engine">
