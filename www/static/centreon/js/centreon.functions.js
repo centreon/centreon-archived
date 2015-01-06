@@ -48,7 +48,7 @@ function resizeContentLeftPanel()
   if ($('#main > .content-container').length > 0) {
     /* Form */
     contentHeight = $('#main > .content-container > .col-sm-offset-1.col-sm-10').height();
-    console.log(contentHeight);
+    //console.log(contentHeight);
   } else {
     $('#main').children(':visible').each(function(idx, el) {
       contentHeight += $(el).height();

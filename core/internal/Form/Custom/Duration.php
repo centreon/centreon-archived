@@ -108,7 +108,6 @@ class Duration extends Customobject
          
          $myJs = '$(".'.$element['name'].'_scale_values").on("click", function(){'
              . '$("#'.$element['id'].'_scale").val($(this).text()); '
-             . 'console.log($(this).text());'
              . '$("#'.$element['id'].'_scale_selector").text($(this).text());'
              . '});';
         
