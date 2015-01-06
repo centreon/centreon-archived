@@ -24,3 +24,7 @@ function initTooltips() {
     });
   });
 }
+
+$(function() {
+  initTooltips();
+});
