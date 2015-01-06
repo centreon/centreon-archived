@@ -376,8 +376,16 @@ class BrokerFormRepository extends FormRepository
             . '<div class="inline-block">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
+        $first = true;
+        
         foreach ($formComponents as $sectionLabel => $sectionComponents) {
-            $tabRendering .= '<li>'
+            if ($first) {
+                $active = 'active';
+                $first = false;
+            } else {
+                $active = '';
+            }
+            $tabRendering .= '<li class="'.$active.'">'
                 . '<a '
                 . 'href="#'.str_replace(' ', '', $sectionLabel).'" '
                 . 'data-toggle="tab">'
@@ -388,8 +396,15 @@ class BrokerFormRepository extends FormRepository
         $formRendering .= '</ul></div></div>';
         
         $formRendering .= '<div class="tab-content">';
+        $first = true;
         foreach ($formComponents as $sectionLabel => $sectionComponents) {
-            $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
+            if ($first) {
+                $active = 'active';
+                $first = false;
+            } else {
+                $active = '';
+            }
+            $formRendering .= '<div class="tab-pane '.$active.'" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel => $blockComponents) {
                 $formRendering .= '<h4 class="page-header" style="padding-top:0px;">'.ucwords($blockLabel).'</h4>';
                 $formRendering .= '<div class="panel-body">';

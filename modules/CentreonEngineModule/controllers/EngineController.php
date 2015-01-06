@@ -47,9 +47,10 @@ use Centreon\Controllers\FormController;
  */
 class EngineController extends FormController
 {
+    public static $moduleShortName = 'centreon-engine';
     protected $objectDisplayName = 'Engine';
     protected $objectName = 'engine';
-    protected $objectBaseUrl = '/centreon-engine/engine';
+    protected $objectBaseUrl = '/centreon-engine';
     protected $objectClass = '\CentreonEngine\Models\Engine';
     protected $datatableObject = '\CentreonEngine\Internal\EngineDatatable';
     protected $repository = '\CentreonEngine\Repository\EngineRepository';
@@ -161,7 +162,7 @@ class EngineController extends FormController
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/centreon-engine/engine/add');
+        $this->tpl->assign('validateUrl', '/centreon-engine/add');
         parent::addAction();
     }
 
