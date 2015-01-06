@@ -91,6 +91,12 @@ class DisplayBrokerPaths
             'value' => ''
         );
 
+        $paths['broker_cbmod_directory'] = array(
+            'label' => _('Directory for cbmod.so'),
+            'help' => _('Directory of the main broker module'),
+            'value' => ''
+        );
+
         $paths['broker_init_script'] = array(
             'label' => _('Init script'),
             'help' => _('The init script for Broker'),
@@ -113,7 +119,8 @@ class DisplayBrokerPaths
             return $paths;
         }
         $dbconn = Di::getDefault()->get('db_centreon');
-        $query = "SELECT directory_config, directory_modules, directory_data, directory_logs, init_script
+        $query = "SELECT directory_config, directory_modules, directory_data, 
+            directory_logs, directory_cbmod, init_script
             FROM cfg_centreonbroker_paths
             WHERE poller_id = :poller_id";
         $stmt = $dbconn->prepare($query);
@@ -126,6 +133,7 @@ class DisplayBrokerPaths
         $paths['broker_module_directory']['value'] = $row['directory_modules'];
         $paths['broker_logs_directory']['value'] = $row['directory_logs'];
         $paths['broker_data_directory']['value'] = $row['directory_data'];
+        $paths['broker_cbmod_directory']['value'] = $row['directory_cbmod'];
         $paths['broker_init_script']['value'] = $row['init_script'];
         return $paths;
     }

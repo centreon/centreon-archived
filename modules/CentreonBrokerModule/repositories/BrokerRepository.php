@@ -78,13 +78,16 @@ class BrokerRepository
                 directory_modules = :broker_module_directory,
                 directory_logs = :broker_logs_directory,
                 directory_data = :broker_data_directory,
+                directory_cbmod = :broker_cbmod_directory,
                 init_script = :init_script
                 WHERE poller_id = :poller_id";
         } else {
             /* Insert */
             $query = "INSERT INTO cfg_centreonbroker_paths
-                (poller_id, directory_config, directory_modules, directory_logs, directory_data, init_script) VALUES
-                (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory, :init_script)";
+                (poller_id, directory_config, directory_modules, directory_logs, 
+                directory_data, init_script, directory_cbmod) VALUES
+                (:poller_id, :broker_etc_directory, :broker_module_directory, 
+                :broker_logs_directory, :broker_data_directory, :init_script, :broker_cbmod_directory)";
         }
         $stmt = $db->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId);
@@ -93,6 +96,7 @@ class BrokerRepository
         $stmt->bindParam(':broker_logs_directory', $arr['broker_logs_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_data_directory', $arr['broker_data_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':init_script', $arr['broker_init_script'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_cbmod_directory', $arr['broker_cbmod_directory'], \PDO::PARAM_STR);
         $stmt->execute();
         
         /* Save extract params */
@@ -367,7 +371,8 @@ class BrokerRepository
     public static function getPathsFromPollerId($pollerId)
     {
         $db = Di::getDefault()->get('db_centreon');
-        $sql = "SELECT directory_modules, directory_config, directory_logs, directory_data, init_script
+        $sql = "SELECT directory_modules, directory_config, directory_logs, 
+            directory_data, directory_cbmod, init_script
             FROM cfg_centreonbroker_paths
             WHERE poller_id = :poller_id";
         $stmt = $db->prepare($sql);

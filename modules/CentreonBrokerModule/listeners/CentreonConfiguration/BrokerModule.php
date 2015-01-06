@@ -51,8 +51,8 @@ class BrokerModule
         $paths = BrokerRepository::getPathsFromPollerId($event->getPollerId());
         
         /* Set modules */
-        if (isset($paths['directory_modules']) && isset($paths['directory_config'])) {
-            $moduleDir = rtrim($paths['directory_modules'], '/');
+        if (isset($paths['directory_cbmod']) && isset($paths['directory_config'])) {
+            $moduleDir = rtrim($paths['directory_cbmod'], '/');
             $etcDir = rtrim($paths['directory_config'], '/');
             $event->addModule("{$moduleDir}/cbmod.so {$etcDir}/central-module.xml");
         }
