@@ -213,17 +213,19 @@ class BrokerRepository
         $configId = static::getConfig($pollerId, $configName);
         if (false !== $configId) {
             $queryInsert = "UPDATE cfg_centreonbroker
-                SET config_name = :config_name,
-                event_queue_max_size = :event_queue_max_size,
+                SET event_queue_max_size = :event_queue_max_size,
                 write_thread_id = :write_thread_id,
                 write_timestamp = :write_timestamp,
-                flush_logs = :flush_logs";
+                flush_logs = :flush_logs
+                WHERE config_name = :config_name
+                AND poller_id = :poller_id";
             $stmt = $dbconn->prepare($queryInsert);
             $stmt->bindParam(':config_name', $configName, \PDO::PARAM_STR);
             $stmt->bindParam(':event_queue_max_size', $params['event_queue_max_size'], \PDO::PARAM_STR);
             $stmt->bindParam(':write_thread_id', $params['write_thread_id'], \PDO::PARAM_STR);
             $stmt->bindParam(':write_timestamp', $params['write_timestamp'], \PDO::PARAM_STR);
             $stmt->bindParam(':flush_logs', $params['flush_logs'], \PDO::PARAM_STR);
+            $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
             $stmt->execute();
         } else {
             $queryInsert = "INSERT INTO cfg_centreonbroker
