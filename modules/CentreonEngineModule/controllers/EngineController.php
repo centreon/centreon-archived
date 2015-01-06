@@ -161,7 +161,7 @@ class EngineController extends FormController
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/centreon-engine/engine/add');
+        $this->tpl->assign('validateUrl', '/centreon-engine/add');
         parent::addAction();
     }
 
