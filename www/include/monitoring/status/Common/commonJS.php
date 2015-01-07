@@ -775,7 +775,7 @@ function set_page(page)	{
 // Popin images
 function set_displayIMG() {
     jQuery('#forAjax').delegate('a .graph-volant', 'mouseenter', func_displayIMG);
-    jQuery('#forAjax').delegate('a .graph-volant', 'mouseleave', func_displayIMG);
+    jQuery('#forAjax').delegate('a .graph-volant', 'mouseleave', func_hideIMG);
 }
 
 var func_displayIMG = function(event) {
@@ -826,7 +826,7 @@ var popup_counter = {};
 
 function set_displayPOPUP() {
     jQuery('#forAjax').delegate('.link_popup_volante', 'mouseenter', func_displayPOPUP);
-    jQuery('#forAjax').delegate('.link_popup_volante', 'mouseleave', func_displayPOPUP);
+    jQuery('#forAjax').delegate('.link_popup_volante', 'mouseleave', func_hidePOPUP);
 }
 
 var func_popupXsltCallback = function(trans_obj) {
