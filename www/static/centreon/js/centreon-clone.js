@@ -1,6 +1,12 @@
+var clone_events = {
+  add: [],
+  remove: [],
+  change: []
+};
+
 $("body").on("click", ".clone-trigger", function() {
     
-    $('.clone_template').clone()
+    $element = $('.clone_template').clone()
             .css("display", "block").removeClass('clone_template').addClass('cloned_element')
             .appendTo('.clonable');
     
@@ -25,6 +31,10 @@ $("body").on("click", ".clone-trigger", function() {
             cloneResort($(this).attr('id'));
         }
     });
+
+    $.each(clone_events.add, function(id, fct) {
+      fct($element);
+    });
    
     function cloneResort(id) {
         $('input[name^="clone_order_'+id+'_"]').each(function(idx, el) {
@@ -35,6 +45,9 @@ $("body").on("click", ".clone-trigger", function() {
 
 $(document).on("click", '.remove-trigger', function() {
     var $parentEl = $(this).closest('li.cloned_element');
+    $.each(clone_events.remove, function(id, fct) {
+      fct($parentEl);
+    });
     $($parentEl).remove();
 });
 
@@ -46,4 +59,7 @@ $(document).on("change", 'input.hidden-value-trigger', function() {
     } else {
         $inputValueEl.attr('type', 'text');
     }
+    $.each(clone_events.change, function(id, fct) {
+      fct($inputValueEl.closest('li.cloned_element'));
+    });
 });
