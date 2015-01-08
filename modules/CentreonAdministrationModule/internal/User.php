@@ -35,8 +35,8 @@
 
 namespace CentreonAdministration\Internal;
 
-use \CentreonConfiguration\Models\Contact,
-    \Centreon\Internal\Exception;
+use CentreonAdministration\Models\User as UserModel;
+use Centreon\Internal\Exception;
 
 /**
  * Object that represents the logged in user
@@ -81,25 +81,22 @@ class User
      */
     public function __construct($userId)
     {
-        $contactObj = new Contact();
+        $contactObj = new UserModel();
         $paramArr = array(
-            'contact_id',
-            'contact_name',
-            'contact_alias',
-            'contact_lang',
-            'contact_admin',
-            'contact_email'
+            'user_id',
+            'firstname',
+            'lastname',
+            'login',
+            'is_admin'
         );
         $params = $contactObj->getParameters($userId, $paramArr);
         if (!is_array($params) || !count($params)) {
             throw new Exception('Unknown user id');
         }
-        $this->id = $params['contact_id'];
-        $this->name = $params['contact_name'];
-        $this->login = $params['contact_alias'];
-        $this->lang = $params['contact_lang'];
-        $this->admin = $params['contact_admin'];
-        $this->email = $params['contact_email'];
+        $this->id = $params['user_id'];
+        $this->name = $params['firstname'] . ' ' . $params['lastname'];
+        $this->login = $params['login'];
+        $this->admin = $params['is_admin'];
     }
 
     /**

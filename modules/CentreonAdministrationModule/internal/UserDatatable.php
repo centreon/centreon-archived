@@ -34,7 +34,7 @@
  * 
  */
 
-namespace CentreonConfiguration\Internal;
+namespace CentreonAdministration\Internal;
 
 use \Centreon\Internal\Datatable\Datasource\CentreonDb;
 
@@ -43,7 +43,7 @@ use \Centreon\Internal\Datatable\Datasource\CentreonDb;
  *
  * @author lionel
  */
-class UserGroupDatatable extends \Centreon\Internal\Datatable
+class UserDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -51,22 +51,22 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonConfiguration\Models\Contactgroup';
+    protected static $datasource = '\CentreonAdministration\Models\User';
     
     /**
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'cg_id', 'name' => 'cg_name');
+    protected static $rowIdColumn = array('id' => 'user_id', 'name' => 'firstname');
     
     /**
      *
      * @var array 
      */
-    protected static $configuration = array(
+    protected static $administration = array(
         'autowidth' => true,
         'order' => array(
-            array('cg_name', 'asc')
+            array('firstname', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
@@ -79,17 +79,17 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
     public static $columns = array(
         array (
             'title' => "Id",
-            'name' => 'cg_id',
-            'data' => 'cg_id',
+            'name' => 'user_id',
+            'data' => 'user_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
         ),
         array (
-            'title' => 'Name',
-            'name' => 'cg_name',
-            'data' => 'cg_name',
+            'title' => 'Alias / Login',
+            'name' => 'login',
+            'data' => 'login',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -97,27 +97,43 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-configuration/usergroup/[i:id]',
+                    'route' => '/centreon-administration/user/[i:id]',
                     'routeParams' => array(
-                        'id' => '::cg_id::'
+                        'id' => '::user_id::'
                     ),
-                    'linkName' => '::cg_name::'
+                    'linkName' => '::login::'
                 )
             )
         ),
         array (
-            'title' => 'Description',
-            'name' => 'cg_alias',
-            'data' => 'cg_alias',
+            'title' => 'Full Name',
+            'name' => 'firstname',
+            'data' => 'firstname',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
         ),
         array (
+            'title' => 'Admin',
+            'name' => 'is_admin',
+            'data' => 'is_admin',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'cast' => array(
+                'type' => 'select',
+                'parameters' =>array(
+                    '0' => '<span class="label label-danger">No</span>',
+                    '1' => '<span class="label label-success">Yes</span>'
+                )
+            )
+        ),
+        array (
             'title' => 'Status',
-            'name' => 'cg_activate',
-            'data' => 'cg_activate',
+            'name' => 'is_activated',
+            'data' => 'is_activated',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -141,4 +157,12 @@ class UserGroupDatatable extends \Centreon\Internal\Datatable
         parent::__construct($params, $objectModelClass);
     }
 
+    /**
+     * 
+     * @param array $resultSet
+     */
+    public function formatDatas(&$resultSet)
+    {
+        
+    }
 }

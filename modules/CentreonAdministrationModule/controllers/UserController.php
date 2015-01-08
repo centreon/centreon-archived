@@ -33,25 +33,20 @@
  *
  */
 
-namespace CentreonConfiguration\Controllers;
+namespace CentreonAdministration\Controllers;
 
-use \CentreonConfiguration\Models\Contact;
+use \CentreonAdministration\Models\User as UserModel;
 use \CentreonAdministration\Internal\User;
 
-class UserController extends \CentreonConfiguration\Controllers\BasicController
+class UserController extends \CentreonAdministration\Controllers\BasicController
 {
     protected $objectDisplayName = 'User';
     protected $objectName = 'user';
-    protected $objectBaseUrl = '/centreon-configuration/user';
-    protected $datatableObject = '\CentreonConfiguration\Internal\UserDatatable';
-    protected $objectClass = '\CentreonConfiguration\Models\Contact';
-    protected $repository = '\CentreonConfiguration\Repository\UserRepository';
-    public static $relationMap = array(
-        'contact_contactgroups' => '\CentreonConfiguration\Models\Relation\Contact\Contactgroup',
-        'contact_hostcommands' => '\CentreonConfiguration\Models\Relation\Contact\Hostcommand',
-        'contact_servicecommands' => '\CentreonConfiguration\Models\Relation\Contact\Servicecommand',
-        'contact_aclgroups' => '\CentreonConfiguration\Models\Relation\Aclgroup\Contact'
-    );
+    protected $objectBaseUrl = '/centreon-administration/user';
+    protected $datatableObject = '\CentreonAdministration\Internal\UserDatatable';
+    protected $objectClass = '\CentreonAdministration\Models\User';
+    protected $repository = '\CentreonAdministration\Repository\UserRepository';
+    public static $relationMap = array();
     
     public static $isDisableable = true;
 
@@ -129,7 +124,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/user/add');
+        $this->tpl->assign('validateUrl', '/centreon-administration/user/add');
         parent::addAction();
     }
     
@@ -208,7 +203,7 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function enableAction()
     {
-        parent::enableAction('contact_activate');
+        parent::enableAction('is_activated');
     }
     
     /**
@@ -219,83 +214,40 @@ class UserController extends \CentreonConfiguration\Controllers\BasicController
      */
     public function disableAction()
     {
-        parent::disableAction('contact_activate');
+        parent::disableAction('is_activated');
     }
-
+    
     /**
-     * Get contact template for a specific contact
+     * lock action for user
+     * 
+     * @method post
+     * @route /user/lock
+     */
+    public function lockAction()
+    {
+        parent::lockAction('is_locked');
+    }
+    
+    /**
+     * unlock action for user
+     * 
+     * @method post
+     * @route /user/unlock
+     */
+    public function unlockAction()
+    {
+        parent::unlockAction('is_locked');
+    }
+    
+    /**
+     * Get list of pollers for a specific host
+     *
      *
      * @method get
-     * @route /user/[i:id]/contacttemplate
+     * @route /user/[i:id]/language
      */
-    public function contactTemplateForContactAction()
+    public function languageForUserAction()
     {
-        parent::getSimpleRelation('contact_template_id', '\CentreonConfiguration\Models\Contact');
-    }
-   
-    /**
-     * Get host notification period for a specific contact
-     *
-     * @method get
-     * @route /user/[i:id]/hostnotifperiod
-     */
-    public function hostNotifPeriodForContactAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id', '\CentreonConfiguration\Models\Timeperiod');
-    }
-
-    /**
-     * Get host notification command for a specific contact
-     *
-     * @method get
-     * @route /user/[i:id]/hostnotifcommand
-     */
-    public function hostNotifCommandForContactAction()
-    {
-        parent::getRelations(static::$relationMap['contact_hostcommands']);
-    }
-
-    /**
-     * Get service notification period for a specific contact
-     *
-     * @method get
-     * @route /user/[i:id]/servicenotifperiod
-     */
-    public function serviceNotifPeriodForContactAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id2', '\CentreonConfiguration\Models\Timeperiod');
-    }
-
-    /**
-     * Get service notification command for a specific contact
-     *
-     * @method get
-     * @route /user/[i:id]/servicenotifcommand
-     */
-    public function serviceNotifCommandForContactAction()
-    {
-        parent::getRelations(static::$relationMap['contact_servicecommands']);
-    }
-
-    /**
-     * Get contact group for a specific contact
-     *
-     * @method get
-     * @route /user/[i:id]/contactgroup
-     */
-    public function contactGroupForContactAction()
-    {
-        parent::getRelations(static::$relationMap['contact_contactgroups']);
-    }
-
-    /**
-     * Get acl group for a specific contact
-     *
-     * @method get
-     * @route /user/[i:id]/aclgroup
-     */
-    public function aclGroupForContactAction()
-    {
-        parent::getRelations(static::$relationMap['contact_aclgroups']);
+        parent::getSimpleRelation('language_id', '\CentreonAdministration\Models\Language');
     }
 }

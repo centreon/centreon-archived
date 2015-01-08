@@ -31,13 +31,20 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Repository;
+
+namespace CentreonAdministration\Models;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
- * @package Centreon
- * @subpackage Repository
+ * Used for interacting with Contact objects
+ *
+ * @author sylvestre
  */
-class UsergroupRepository extends \CentreonConfiguration\Repository\Repository {}
+class Contact extends \Centreon\Models\CentreonBaseModel
+{
+    protected static $table = "cfg_contacts";
+    protected static $primaryKey = "contact_id";
+    protected static $uniqueLabelField = "contact_alias";
+}

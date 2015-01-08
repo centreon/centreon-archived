@@ -61,7 +61,7 @@ class Auth
     /*
      * Flags
      */
-    public $passwdOk;
+    public $passwordOk;
     protected $authType;
     protected $ldap_auto_import;
     protected $ldap_store_password;
@@ -121,13 +121,13 @@ class Auth
     protected function checkPassword($password, $token = "", $autoimport = false)
     {
         if ((strlen($password) == 0 || $password == "") && $token == "") {
-            $this->passwdOk = 0;
+            $this->passwordOk = 0;
             return;
         }
 
         $dbconn = Di::getDefault()->get('db_centreon');
 
-        if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
+        if ($this->userInfos["auth_type"] == "ldap" && $this->autologin == 0) {
             $query = "SELECT ar_id FROM cfg_auth_resources WHERE ar_enable = '1'";
             $res = $dbconn->query($query);
             $authResources = array();
@@ -143,76 +143,76 @@ class Auth
                 if ($autoimport && !isset($this->ldap_auto_import[$arId])) {
                     break;
                 }
-                if ($this->passwdOk == 1) {
+                if ($this->passwordOk == 1) {
                     break;
                 }
                 $authLDAP = new \Centreon\Auth\Ldap($this->login, $this->password, $this->userInfos, $arId);
-                $this->passwdOk = $authLDAP->checkPassword();
-                if ($this->passwdOk == -1) {
-                    $this->passwdOk = 0;
-                    if (isset($this->userInfos["contact_passwd"])
-                        && $this->userInfos["contact_passwd"] == $this->myCrypt($password)) {
-                        $this->passwdOk = 1;
+                $this->passwordOk = $authLDAP->checkPassword();
+                if ($this->passwordOk == -1) {
+                    $this->passwordOk = 0;
+                    if (isset($this->userInfos["password"])
+                        && $this->userInfos["password"] == $this->myCrypt($password)) {
+                        $this->passwordOk = 1;
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                             $dbconn->query(
-                                "UPDATE `cfg_contacts`
-                                    SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
-                                    WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                                "UPDATE `cfg_users`
+                                    SET `password` = '" . $this->myCrypt($this->password) . "'
+                                    WHERE `login` = '" . $this->login
                             );
                         }
                     }
-                } elseif ($this->passwdOk == 1) {
+                } elseif ($this->passwordOk == 1) {
                     if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
-                        if (!isset($this->userInfos["contact_passwd"])) {
+                        if (!isset($this->userInfos["password"])) {
                             $dbconn->query(
-                                "UPDATE `cfg_contacts`
-                                    SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
-                                    WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                                "UPDATE `cfg_users`
+                                    SET `password` = '" . $this->myCrypt($this->password) . "'
+                                    WHERE `login` = '" . $this->login
                             );
-                        } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
+                        } elseif ($this->userInfos["password"] != $this->myCrypt($this->password)) {
                             $dbconn->query(
-                                "UPDATE `cfg_contacts`
-                                    SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
-                                    WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                                "UPDATE `cfg_users`
+                                    SET `password` = '" . $this->myCrypt($this->password) . "'
+                                    WHERE `login` = '" . $this->login
                             );
                         }
                     }
                 }
                 $cnt++;
             }
-        } elseif ($this->userInfos["contact_auth_type"] == ""
-            || $this->userInfos["contact_auth_type"] == "local"
+        } elseif ($this->userInfos["auth_type"] == ""
+            || $this->userInfos["auth_type"] == "local"
             || $this->autologin) {
-            if ($this->autologin && $this->userInfos["contact_autologin_key"]
-                && $this->userInfos["contact_autologin_key"] == $token) {
-                $this->passwdOk = 1;
-            } elseif ($this->userInfos["contact_passwd"] == $password && $this->autologin) {
-                $this->passwdOk = 1;
-            } elseif ($this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
-                $this->passwdOk = 1;
+            if ($this->autologin && $this->userInfos["autologin_key"]
+                && $this->userInfos["autologin_key"] == $token) {
+                $this->passwordOk = 1;
+            } elseif ($this->userInfos["password"] == $password && $this->autologin) {
+                $this->passwordOk = 1;
+            } elseif ($this->userInfos["password"] == $this->myCrypt($password) && $this->autologin == 0) {
+                $this->passwordOk = 1;
             } else {
-                $this->passwdOk = 0;
+                $this->passwordOk = 0;
             }
         }
 
         /**
          * LDAP - fallback
          */
-        if ($this->passwdOk == 2) {
+        if ($this->passwordOk == 2) {
             if ($this->autologin
-                && $this->userInfos["contact_autologin_key"]
-                && $this->userInfos["contact_autologin_key"] == $token) {
-                $this->passwdOk = 1;
-            } elseif (isset($this->userInfos["contact_passwd"])
-                && $this->userInfos["contact_passwd"] == $password
+                && $this->userInfos["autologin_key"]
+                && $this->userInfos["autologin_key"] == $token) {
+                $this->passwordOk = 1;
+            } elseif (isset($this->userInfos["password"])
+                && $this->userInfos["password"] == $password
                 && $this->autologin) {
-                $this->passwdOk = 1;
-            } elseif (isset($this->userInfos["contact_passwd"])
-                && $this->userInfos["contact_passwd"] == $this->myCrypt($password)
+                $this->passwordOk = 1;
+            } elseif (isset($this->userInfos["password"])
+                && $this->userInfos["password"] == $this->myCrypt($password)
                 && $this->autologin == 0) {
-                $this->passwdOk = 1;
+                $this->passwordOk = 1;
             } else {
-                $this->passwdOk = 0;
+                $this->passwordOk = 0;
             }
         }
     }
@@ -231,34 +231,32 @@ class Auth
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
             $res = $dbconn->query(
                 "SELECT *
-                    FROM `cfg_contacts`
-                    WHERE `contact_alias` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
-                        AND `contact_activate` = '1'
-                        AND `contact_register` = '1'"
+                    FROM `cfg_users`
+                    WHERE `login` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
+                        AND `is_activated` = '1'"
             );
         } else {
             $res = $dbconn->query(
                 "SELECT *
-                    FROM `cfg_contacts`
-                    WHERE MD5(contact_alias) = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
-                        AND `contact_activate` = '1'
-                        AND `contact_register` = '1'"
+                    FROM `cfg_users`
+                    WHERE MD5(login) = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
+                        AND `is_activated` = '1'"
             );
         }
         $userInfos = $res->fetch();
         if (false !== $userInfos) {
             $this->userInfos = $userInfos;
-            if ($this->userInfos["contact_oreon"]) {
+            if (!$this->userInfos["is_locked"]) {
                 /*
                  * Check password matching
                  */
                 $this->getCryptFunction();
                 $this->checkPassword($password, $token);
 
-                if ($this->passwdOk == 1) {
+                if ($this->passwordOk == 1) {
                     /*
                      * @todo see CentreonLog
-                     * $this->CentreonLog->setUID($this->userInfos["contact_id"]);
+                     * $this->CentreonLog->setUID($this->userInfos["id"]);
                      */
                     if ($this->debug) {
                         $logger->debug("Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]);
@@ -279,17 +277,16 @@ class Auth
             /*
              * Add temporary userinfo auth_type
              */
-            $this->userInfos['contact_alias'] = $username;
-            $this->userInfos['contact_auth_type'] = "ldap";
+            $this->userInfos['login'] = $username;
+            $this->userInfos['auth_type'] = "ldap";
             $this->checkPassword($password, "", true);
             /*
              * Reset userInfos with imported informations
              */
             $res = $dbconn->query(
-                "SELECT * FROM `cfg_contacts`
-                WHERE `contact_alias` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
-                AND `contact_activate` = '1'
-                AND `contact_register` = '1'"
+                "SELECT * FROM `cfg_users`
+                WHERE `login` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "'
+                AND `is_activated` = '1'"
             );
             $userInfos = $res->fetch();
             if (false !== $userInfos) {
@@ -382,7 +379,7 @@ class Auth
      */
     protected function passwordIsOk()
     {
-        return $this->passwdOk;
+        return $this->passwordOk;
     }
 
     /**

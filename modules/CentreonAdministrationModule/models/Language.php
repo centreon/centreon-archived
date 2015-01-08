@@ -34,22 +34,18 @@
  *
  */
 
-namespace CentreonAdministration\Models\Relation\Organization;
+namespace CentreonAdministration\Models;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * Relation between organization and contact;
+ * Model for language
  *
- * @version 3.0.0
- * @package Centreon
- * @subpackage Administration
+ * @author Lionel Assepo <lassepo@merethis.com>
  */
-class Contact extends CentreonRelationModel
+class Language extends CentreonBaseModel
 {
-    protected static $relationTable = "cfg_organizations_contacts_relations";
-    protected static $firstKey = "organization_id";
-    protected static $secondKey = "contact_id";
-    public static $firstObject = "\\CentreonAdministration\\Models\\Organization";
-    public static $secondObject = "\\CentreonAdministration\\Models\\Contact";
+    protected static $table = "cfg_languages";
+    protected static $primaryKey = "language_id";
+    protected static $uniqueLabelField = "name";
 }

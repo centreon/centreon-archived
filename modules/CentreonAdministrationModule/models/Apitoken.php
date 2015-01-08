@@ -31,25 +31,22 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonAdministration\Models\Relation\Organization;
-
-use \Centreon\Models\CentreonRelationModel;
+namespace CentreonAdministration\Models;
 
 /**
- * Relation between organization and contact;
+ * Models for tags
  *
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
  * @version 3.0.0
  * @package Centreon
- * @subpackage Administration
+ * @package CentreonAdministration
  */
-class Contact extends CentreonRelationModel
+class Apitoken extends \Centreon\Models\CentreonBaseModel
 {
-    protected static $relationTable = "cfg_organizations_contacts_relations";
-    protected static $firstKey = "organization_id";
-    protected static $secondKey = "contact_id";
-    public static $firstObject = "\\CentreonAdministration\\Models\\Organization";
-    public static $secondObject = "\\CentreonAdministration\\Models\\Contact";
+    protected static $table = 'cfg_api_tokens';
+    protected static $primaryKey = 'api_token_id';
+    protected static $uniqueLabelField = 'value';
+    protected static $relations = array();
 }

@@ -2,7 +2,7 @@
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
     <table name="cfg_organizations_users_relations" phpName="OrganizationsUsersRelation" idMethod="native">
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" primaryKey="true" required="true"/>
-        <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="user_id" phpName="UserId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="is_default" phpName="IsDefault" type="TINYINT" default="0"/>
         <column name="is_admin" phpName="IsAdmin" type="TINYINT" default="0"/>
         <foreign-key foreignTable="cfg_organizations" name="cfg_organizations_users_relations_fk01" onDelete="CASCADE">

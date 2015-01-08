@@ -77,23 +77,6 @@
                 ]
             },
             {
-                "name": "Users",
-                "short_name": "conf_users",
-                "icon_class": "fa fa-users",
-                "menus": [
-                    {
-                        "name": "Users",
-                        "short_name": "conf_users_list",
-                        "route": "/centreon-configuration/user"
-                    },
-                    {
-                        "name": "User groups",
-                        "short_name": "conf_usergroups_list",
-                        "route": "/centreon-configuration/usergroup"
-                    }
-                ]
-            },
-            {
                 "name": "Traps",
                 "short_name": "conf_traps",
                 "icon_class": "fa fa-bell",

@@ -33,9 +33,10 @@
  *
  */
 
-namespace CentreonConfiguration\Repository;
+namespace CentreonAdministration\Repository;
 
-use CentreonConfiguration\Models\Contact;
+use CentreonAdministration\Models\User;
+use CentreonAdministration\Models\Apitoken;
 use Centreon\Internal\Di;
 use Centreon\Internal\Auth\Sso;
 use Centreon\Internal\Exception\Authentication\BadCredentialException;
@@ -45,13 +46,13 @@ use Centreon\Internal\Exception\Authentication\BadCredentialException;
  * @package Centreon
  * @subpackage Repository
  */
-class UserRepository extends \CentreonConfiguration\Repository\Repository
+class UserRepository extends \CentreonAdministration\Repository\Repository
 {
     /**
      *
      * @var string
      */
-    public static $tableName = 'cfg_contacts';
+    public static $tableName = 'cfg_users';
     
     /**
      *
@@ -67,8 +68,8 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function create($givenParameters)
     {
-        if (isset($givenParameters['contact_passwd']) && $givenParameters['contact_passwd']) {
-            $givenParameters['contact_passwd'] = md5($givenParameters['contact_passwd']);
+        if (isset($givenParameters['password']) && $givenParameters['password']) {
+            $givenParameters['password'] = md5($givenParameters['password']);
         }
         parent::create($givenParameters);
     }
@@ -81,10 +82,10 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
     public static function update($givenParameters)
     {
         /* Do not perform update if password is empty */
-        if (isset($givenParameters['contact_passwd']) && $givenParameters['contact_passwd'] == '') {
-            unset($givenParameters['contact_passwd']);
-        } elseif (isset($givenParameters['contact_passwd'])) { /* Let's md5() the password */
-            $givenParameters['contact_passwd'] = md5($givenParameters['contact_passwd']);
+        if (isset($givenParameters['password']) && $givenParameters['password'] == '') {
+            unset($givenParameters['password']);
+        } elseif (isset($givenParameters['password'])) { /* Let's md5() the password */
+            $givenParameters['password'] = md5($givenParameters['password']);
         }
         parent::update($givenParameters);
     }
@@ -107,9 +108,9 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
             $ctp = 'timeperiod_tp_id2';
         }
         
-        $query = "SELECT tp_name, contact_".$object."_notification_options "
-            . "FROM cfg_contacts, cfg_timeperiods "
-            . "WHERE contact_id='$contactId' "
+        $query = "SELECT tp_name, ".$object."_notification_options "
+            . "FROM cfg_users, cfg_timeperiods "
+            . "WHERE user_id='$contactId' "
             . "AND tp_id = $ctp" ;
         
         $stmt = $dbconn->query($query);
@@ -118,7 +119,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         if ($resultSet === false) {
             $return = '';
         } else {
-            $return = $resultSet['tp_name'].' ('.$resultSet['contact_'.$object.'_notification_options'].')';
+            $return = $resultSet['tp_name'].' ('.$resultSet[''.$object.'_notification_options'].')';
         }
         
         return $return;
@@ -146,11 +147,11 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
 
     /**
      * 
-     * @param type $contact_id
+     * @param type $user_id
      * @param type $type
      * @return string
      */
-    public static function getNotificationCommand($contact_id, $type)
+    public static function getNotificationCommand($user_id, $type)
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -162,8 +163,8 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         }
 
         /* Launch Request */
-        $query = "SELECT command_name FROM cfg_contacts_".$type."commands_relations, cfg_commands "
-            . "WHERE contact_contact_id = $contact_id AND command_command_id = command_id";
+        $query = "SELECT command_name FROM cfg_users_".$type."commands_relations, cfg_commands "
+            . "WHERE user_id = $user_id AND command_command_id = command_id";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
         $cmd = "";
@@ -178,33 +179,6 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param type $contact_id
-     * @return type
-     */
-    public static function getContactContactGroup($contact_id)
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        /* Launch Request */
-        $query = "SELECT cg_name FROM cfg_contactgroups_contacts_relations cgr, cfg_contactgroups cg "
-            . "WHERE contact_contact_id = ".$contact_id." AND cgr.contactgroup_cg_id = cg.cg_id";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        $cg = "";
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($cg != "") {
-                $cg .= ",";
-            }
-            $cg .= $row["cg_name"];
-        }
-        return $cg;
-    }
-    
-    /**
-     * 
      * @param type $login
      * @param type $password
      */
@@ -214,7 +188,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         $connectedUser = new Sso($login, $password, 0);
         if (1 === $connectedUser->passwdOk) {
             $token = hash('sha256', $login . $password);
-            Contact::update($connectedUser->userInfos['contact_id'], array('contact_autologin_key' => $token));
+            Apitoken::insert($connectedUser->userInfos['user_id'], array('value' => $token));
         } else {
             throw new BadCredentialException('The password or the login is incorrect', 0);
         }
@@ -223,13 +197,13 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
     
     /**
      * 
-     * @param type $token
+     * @param string $token
      */
     public static function checkApiToken($token)
     {
         $tokenOk = false;
-        $user = Contact::getIdByParameter('contact_autologin_key', array($token));
-        if (is_array($user) && (count($user) == 1)) {
+        $token = Apitoken::getIdByParameter('value', array($token));
+        if (is_array($token) && (count($token) == 1)) {
             $tokenOk = true;
         }
         return $tokenOk;

@@ -96,7 +96,7 @@ class LoginController extends \Centreon\Internal\Controller
             );
         }
         $auth = new Sso($username, $password, 0);
-        if (1 === $auth->passwdOk) {
+        if (1 === $auth->passwordOk) {
             $user = new User($auth->userInfos['contact_id']);
             $_SESSION['user'] = $user;
             Session::init($user->getId());

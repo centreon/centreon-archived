@@ -2,11 +2,20 @@
     {
         "firstname": "@firstname@",
         "lastname": "@lastname@",
-        "login": "is_admin",
+        "login": "admin",
         "password": "@ADMIN_PASSWORD@",
         "is_admin": 1,
         "is_activated": 1,
-        "contact_id": 1
+        "auth_type": "local",
+        "contact_id": 1,
+        "createdat" : {
+            "domain" : "php",
+            "function" : "time"
+        },
+        "updatedat" : {
+            "domain" : "php",
+            "function" : "time"
+        }
     },
     {
         "firstname": "Guest",
@@ -14,7 +23,16 @@
         "password": "",
         "is_admin": 0,
         "is_activated": 0,
-        "contact_id": 2
+        "auth_type": "local",
+        "contact_id": 2,
+        "createdat" : {
+            "domain" : "php",
+            "function" : "time"
+        },
+        "updatedat" : {
+            "domain" : "php",
+            "function" : "time"
+        }
     },
     {
         "firstname": "User",
@@ -22,6 +40,15 @@
         "password": "",
         "is_admin": 0,
         "is_activated": 0,
-        "contact_id": 3
+        "auth_type": "local",
+        "contact_id": 3,
+        "createdat" : {
+            "domain" : "php",
+            "function" : "time"
+        },
+        "updatedat" : {
+            "domain" : "php",
+            "function" : "time"
+        }
     }
 ]

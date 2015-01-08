@@ -33,34 +33,46 @@
  *
  */
 
-namespace CentreonConfiguration\Controllers;
+namespace CentreonAdministration\Controllers;
 
-class UserGroupController extends \CentreonConfiguration\Controllers\BasicController
+class TimezoneController extends \CentreonAdministration\Controllers\ObjectAbstract
 {
-    protected $objectDisplayName = 'Usergroup';
-    protected $objectName = 'usergroup';
-    protected $objectClass = '\CentreonConfiguration\Models\Contactgroup';
-    protected $datatableObject = '\CentreonConfiguration\Internal\UserGroupDatatable';
-    protected $repository = '\CentreonConfiguration\Repository\UsergroupRepository';
-    public static $relationMap = array(
-        'cg_contacts' => '\CentreonConfiguration\Models\Relation\Contact\Contactgroup'
-    );
+    protected $objectDisplayName = 'Timezone';
+    protected $objectName = 'timezone';
+    protected $objectBaseUrl = '/centreon-administration/timezone';
+    protected $objectClass = '\CentreonAdministration\Models\Timezone';
+    protected $repository = '\CentreonAdministration\Repository\TimezoneRepository';
+    
+    public static $relationMap = array();
+    
+    protected $datatableObject = '\CentreonAdministration\Internal\TimezoneDatatable';
+    public static $isDisableable = true;
 
     /**
-     * List usergroups
+     * List hostcategories
      *
      * @method get
-     * @route /usergroup
+     * @route /timezone
      */
     public function listAction()
     {
         parent::listAction();
     }
+    
+    /**
+     * 
+     * @method get
+     * @route /timezone/formlist
+     */
+    public function formListAction()
+    {
+        parent::formListAction();
+    }
 
     /**
      * 
      * @method get
-     * @route /usergroup/list
+     * @route /timezone/list
      */
     public function datatableAction()
     {
@@ -68,21 +80,11 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     }
     
     /**
-     * 
-     * @method get
-     * @route /usergroup/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-    
-    /**
-     * Update a usergroup
+     * Update a timezone
      *
      *
-     * @method put
-     * @route /usergroup/update
+     * @method post
+     * @route /timezone/update
      */
     public function updateAction()
     {
@@ -90,24 +92,24 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     }
     
     /**
-     * Add a usergroup
+     * Add a timezone
      *
      *
      * @method get
-     * @route /usergroup/add
+     * @route /timezone/add
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', $this->objectBaseUrl . '/add');
+        $this->tpl->assign('validateUrl', '/centreon-administration/timezone/add');
         parent::addAction();
     }
-    
+
     /**
-     * Add a usergroup
+     * Add a timezone
      *
      *
      * @method post
-     * @route /usergroup/add
+     * @route /timezone/add
      */
     public function createAction()
     {
@@ -115,11 +117,11 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     }
     
     /**
-     * Update a usergroup
+     * Update a timezone
      *
      *
      * @method get
-     * @route /usergroup/[i:id]
+     * @route /timezone/[i:id]
      */
     public function editAction()
     {
@@ -127,10 +129,32 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     }
 
     /**
-     * Duplicate contact group
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /timezone/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /timezone/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
      *
      * @method POST
-     * @route /usergroup/duplicate
+     * @route /timezone/duplicate
      */
     public function duplicateAction()
     {
@@ -138,46 +162,24 @@ class UserGroupController extends \CentreonConfiguration\Controllers\BasicContro
     }
 
     /**
-     * Enable action for contact group
-     * 
-     * @method post
-     * @route /usergroup/enable
+     * Apply massive change
+     *
+     * @method POST
+     * @route /timezone/massive_change
      */
-    public function enableAction()
+    public function massiveChangeAction()
     {
-        parent::enableAction('cg_activate');
-    }
-    
-    /**
-     * Disable action for contact group
-     * 
-     * @method post
-     * @route /usergroup/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('cg_activate');
+        parent::massiveChangeAction();
     }
 
     /**
-     * Delete action for contact group
+     * Delete action for timezone
      *
      * @method post
-     * @route /usergroup/delete
+     * @route /timezone/delete
      */
     public function deleteAction()
     {
         parent::deleteAction();
-    }
-
-    /**
-     * Get list of contacts for a specific contact group
-     *
-     * @method get
-     * @route /usergroup/[i:id]/contact
-     */
-    public function contactForContactgroupAction()
-    {
-        parent::getRelations(static::$relationMap['cg_contacts']);
     }
 }

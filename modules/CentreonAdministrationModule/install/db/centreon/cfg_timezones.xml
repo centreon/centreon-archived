@@ -4,6 +4,7 @@
         <column name="timezone_id" phpName="timezoneId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="name" type="VARCHAR" size="200" required="true"/>
         <column name="offset" phpName="offset" type="VARCHAR" size="200" required="true"/>
+        <column name="dst_offset" phpName="dstOffset" type="VARCHAR" size="200" required="true"/>
         <column name="description" phpName="description" type="VARCHAR" size="200" required="false"/>
         <unique name="name">
             <unique-column name="name"/>

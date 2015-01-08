@@ -31,25 +31,26 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonAdministration\Models\Relation\Organization;
-
-use \Centreon\Models\CentreonRelationModel;
+namespace CentreonAdministration\Repository;
 
 /**
- * Relation between organization and contact;
- *
- * @version 3.0.0
+ * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
- * @subpackage Administration
+ * @subpackage Repository
  */
-class Contact extends CentreonRelationModel
+class LanguageRepository extends \CentreonAdministration\Repository\Repository
 {
-    protected static $relationTable = "cfg_organizations_contacts_relations";
-    protected static $firstKey = "organization_id";
-    protected static $secondKey = "contact_id";
-    public static $firstObject = "\\CentreonAdministration\\Models\\Organization";
-    public static $secondObject = "\\CentreonAdministration\\Models\\Contact";
+    /**
+     *
+     * @var string
+     */
+    public static $tableName = 'cfg_languages';
+    
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = 'Language';
 }
