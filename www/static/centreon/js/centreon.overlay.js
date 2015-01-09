@@ -18,7 +18,7 @@ $(function() {
             },
             show: { ready: true },
             style: {
-                classes: 'qtip-bootstrap centreon-qtip',
+                classes: 'qtip-bootstrap',
                 width: 'auto'
             },
             position: {

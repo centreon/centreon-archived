@@ -41,7 +41,6 @@ $tpl->addCss('dataTables.tableTools.min.css')
     ->addCss('dataTables.colReorder.min.css')
     ->addCss('dataTables.fixedHeader.min.css')
     ->addCss('dataTables.bootstrap.css')
-    ->addCss('jquery.qtip.min.css')
     ->addCss('centreon.qtip.css')
     ->addCss('daterangepicker-bs3.css');
 
