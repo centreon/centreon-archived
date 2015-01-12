@@ -44,6 +44,7 @@ use \Centreon\Internal\Utils\Filesystem\Directory;
 class GenerateEngineTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
+    protected static $bootstrapExtraSteps = array('events');
 
     static public function setUpBeforeClass()
     {
