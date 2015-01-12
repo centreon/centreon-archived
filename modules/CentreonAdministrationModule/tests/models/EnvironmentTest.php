@@ -287,8 +287,8 @@ class EnvironmentTest extends DbTestCase
     public function testGetListOneParameter()
     {
         $expectedResult = array(
-            array('name' => 'Production'),
-            array('name' => 'Preproduction')
+            array('name' => 'Preproduction'),
+            array('name' => 'Production')
         );
         $this->assertEquals($expectedResult, Environment::getList('name'));
     }
@@ -296,8 +296,8 @@ class EnvironmentTest extends DbTestCase
     public function testGetListMultipleParameters()
     {
         $expectedResult = array(
-            array('environment_id' => '1', 'name' => 'Production'),
-            array('environment_id' => '2', 'name' => 'Preproduction')
+            array('environment_id' => '2', 'name' => 'Preproduction'),
+            array('environment_id' => '1', 'name' => 'Production')
         );
         $this->assertEquals($expectedResult, Environment::getList(array('environment_id', 'name')));
     }
@@ -384,7 +384,7 @@ class EnvironmentTest extends DbTestCase
                 null, 
                 null, 
                 null,
-                array('name' => 'prod')
+                array('name' => 'prepro')
             )
         );
     }
@@ -430,13 +430,13 @@ class EnvironmentTest extends DbTestCase
 
     public function testGetIdByParameter()
     {
-        $expectedResult = array('2');
+        $expectedResult = array('1');
         $this->assertEquals($expectedResult, Environment::getIdByParameter('name', 'Production'));
     }
 
     public function testGetMultipleIdsByParameters()
     {
-        $expectedResult = array('1', '2');
+        $expectedResult = array('2', '1');
         $this->assertEquals($expectedResult, Environment::getIdByParameter('name', array('Production', 'Preproduction')));
     }
 

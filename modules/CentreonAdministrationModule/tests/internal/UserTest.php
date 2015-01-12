@@ -79,6 +79,6 @@ class UserTest extends DbTestCase
 
     public function testGetHomePage()
     {
-        $this->assertEquals('/customview', $this->user->getHomePage());
+        $this->assertEquals('/centreon-customview', $this->user->getHomePage());
     }
 }
