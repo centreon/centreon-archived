@@ -36,29 +36,59 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Config;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Template;
+use Centreon\Internal\Config;
+use Centreon\Internal\Di;
+use Centreon\Internal\Template;
 
-class TemplateTest extends \PHPUnit_Framework_TestCase
+class TemplateTest extends DbTestCase
 {
     private $datadir;
+    protected static $bootstrapExtraSteps = array('template');
 
-    public function setUp()
+    public static function setUpBeforeClass()
     {
-        $this->datadir = CENTREON_PATH . '/core/tests/data';
-        $config = new Config($this->datadir . '/test-template.ini');
-        $di = new Di();
+        parent::setUpBeforeClass();
+
+        $di = Di::getDefault();
+
+        /* config */
+        $config = new Config(CENTREON_PATH . '/core/tests/data/test-template.ini');
         $di->setShared('config', $config);
+
+        /* router */
+        ob_start();
+        $di->get('router')->dispatch();
+        ob_end_clean();
+
+        /* template */
         $tpl = new Template();
         $di->setShared('template', $tpl);
         $tpl->setTemplateDir(CENTREON_PATH . '/core/tests/views/');
+    }
+
+    public function setUp()
+    {
         parent::setUp();
+/*
+        $di = Di::getDefault();
+
+        $this->datadir = CENTREON_PATH . '/core/tests/data';
+        $config = new Config($this->datadir . '/test-template.ini');
+
+        $di->setShared('config', $config);
+
+        ob_start();
+        $di->get('router')->dispatch();
+        ob_end_clean();
+        $tpl = new Template();
+        $di->setShared('template', $tpl);
+        $tpl->setTemplateDir(CENTREON_PATH . '/core/tests/views/');
+ */
     }
 
     public function tearDown()
     {
-        Di::reset();
+        parent::tearDown();
     }
 
     public function testAddCss()
