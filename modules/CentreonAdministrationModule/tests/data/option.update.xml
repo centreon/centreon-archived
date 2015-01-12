@@ -38,7 +38,7 @@
         value="0"/>
     <cfg_options
         group="default"
-        key="ldap_contact_tmpl"
+        key="ldap_user_tmpl"
         value="1"/>
     <cfg_options
         group="default"

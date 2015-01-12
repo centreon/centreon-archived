@@ -59,7 +59,8 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      * @var string
      */
     public static $objectName = 'User';
-
+    
+    protected static $saveEvents = false;
 
     /**
      * Create user
@@ -69,7 +70,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     public static function create($givenParameters)
     {
         if (isset($givenParameters['password']) && $givenParameters['password']) {
-            $givenParameters['password'] = md5($givenParameters['password']);
+            $givenParameters['password'] = $this->generateHashedPassword($givenParameters);
         }
         parent::create($givenParameters);
     }
@@ -79,15 +80,108 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      *
      * @param array $givenParameters
      */
-    public static function update($givenParameters)
+    public static function update($givenParameters, $login = null)
     {
+        static::$saveEvents = false;
         /* Do not perform update if password is empty */
         if (isset($givenParameters['password']) && $givenParameters['password'] == '') {
             unset($givenParameters['password']);
-        } elseif (isset($givenParameters['password'])) { /* Let's md5() the password */
-            $givenParameters['password'] = md5($givenParameters['password']);
+        } elseif (isset($givenParameters['password'])) {
+            $givenParameters['password'] = self::generateHashedPassword($givenParameters);
         }
+        
+        if (!is_null($login) && !isset($givenParameters['object_id'])) {
+            $user = User::getIdByParameter('login', array($login));
+            if (is_array($user) && count($user) > 0) {
+                $givenParameters['object_id'] = $user[0];
+            }
+        }
+        
         parent::update($givenParameters);
+    }
+    
+    /**
+     * 
+     * @param type $givenParameters
+     * @return type
+     */
+    private static function generateHashedPassword($givenParameters)
+    {
+        $saltPrefix = $givenParameters['login'] . $givenParameters['firstname'] . $givenParameters['lastname'];
+        $salt = hash('sha256', uniqid(hash('sha256', $saltPrefix), true));
+        $cost = 8000;
+        $hashedPassword = hash_pbkdf2('sha256', $givenParameters['password'], $salt, $cost, 204);
+        
+        $finalPasswordForStorage = $salt . '::' . $cost . '::' . $hashedPassword;
+        
+        return $finalPasswordForStorage;
+    }
+    
+    /**
+     * 
+     * @param type $login
+     * @param type $password
+     * @param type $autologin_key
+     * @return type
+     * @throws Exception
+     */
+    public static function checkUser($login, $password, $autologin_key = '')
+    {
+        $passwordCheck = true;
+        
+        $extraParams = array(
+            'is_activated' => '1',
+            'is_locked' => '0'
+        );
+        
+        if (!empty($autologin_key)) {
+            $extraParams['autologin_key'] = $autologin_key;
+            $passwordCheck = false;
+        }
+        
+        $userId = User::getIdByParameter(
+            'login',
+            array($login),
+            $extraParams
+        );
+        
+        if (!is_array($userId) || count($userId) == 0) {
+            throw new Exception("User '" . $login . "' is not enable for reaching centreon", 4404);
+        }
+        
+        $user = User::get($userId[0]);
+        
+        if ($passwordCheck) {
+            if (!self::checkPassword($login, $password)) {
+                throw new Exception("User '" . $login . "' doesn't match with password", 4403);
+            }
+        }
+        
+        return $user;
+    }
+    
+    /**
+     * 
+     * @param type $login
+     * @param type $password
+     */
+    public static function checkPassword($login, $password)
+    {
+        $loginResult = false;
+        $userId = User::getIdByParameter('login', array($login));
+        if (is_array($userId) && count($userId) > 0) {
+            $user = User::getParameters($userId[0], array('password'));
+            
+            $explodedStoredPassword = explode('::', $user['password']);
+            
+            $hashedPassword = hash_pbkdf2('sha256', $password, $explodedStoredPassword[0], $explodedStoredPassword[1], 204);
+            
+            if ($explodedStoredPassword[2] === $hashedPassword) {
+                $loginResult = true;
+            }
+        }
+        
+        return $loginResult;
     }
 
     /**

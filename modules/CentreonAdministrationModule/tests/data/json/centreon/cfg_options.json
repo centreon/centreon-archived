@@ -36,7 +36,7 @@
         "value": 0
     },
     {
-        "key": "ldap_contact_tmpl",
+        "key": "ldap_user_tmpl",
         "value": 0
     },
     {

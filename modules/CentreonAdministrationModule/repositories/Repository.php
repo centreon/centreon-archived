@@ -68,6 +68,12 @@ abstract class Repository
      * @var string
      */
     protected static $objectName;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $saveEvents = true;
 
 
     /**
@@ -211,7 +217,9 @@ abstract class Repository
             $db->commit();
             unset($givenParameters[$k]);
         }
-        static::postSave($id, 'add', $givenParameters);
+        if (static::$saveEvents) {
+            static::postSave($id, 'add', $givenParameters);
+        }
     }
 
     /**
@@ -279,7 +287,10 @@ abstract class Repository
             }
         }
         $class::update($id, $givenParameters);
-        static::postSave($id, 'update', $givenParameters);
+        
+        if (static::$saveEvents) {
+            static::postSave($id, 'update', $givenParameters);
+        }
     }
 
     /**
