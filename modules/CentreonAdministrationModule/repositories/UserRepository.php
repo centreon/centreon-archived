@@ -279,13 +279,15 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     public static function getTokenForApi($login, $password)
     {
         $token = "";
-        $connectedUser = new Sso($login, $password, 0);
-        if (1 === $connectedUser->passwdOk) {
-            $token = hash('sha256', $login . $password);
+        
+        try {
+            $connectedUser = new Sso($login, $password, 0);
+            $token = hash_pbkdf2('sha256', $login . $password, hash('sha256', uniqid($login, true)), 8000, 200);
             Apitoken::insert($connectedUser->userInfos['user_id'], array('value' => $token));
-        } else {
+        } catch (\Centreon\Internal\Exception $e) {
             throw new BadCredentialException('The password or the login is incorrect', 0);
         }
+        
         return $token;
     }
     
@@ -296,8 +298,8 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     public static function checkApiToken($token)
     {
         $tokenOk = false;
-        $token = Apitoken::getIdByParameter('value', array($token));
-        if (is_array($token) && (count($token) == 1)) {
+        $storedToken = Apitoken::getIdByParameter('value', array($token));
+        if (is_array($storedToken) && (count($storedToken) == 1)) {
             $tokenOk = true;
         }
         return $tokenOk;
