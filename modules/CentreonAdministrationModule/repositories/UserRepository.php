@@ -59,8 +59,6 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      * @var string
      */
     public static $objectName = 'User';
-    
-    protected static $saveEvents = false;
 
     /**
      * Create user
@@ -93,7 +91,6 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function update($givenParameters, $login = null)
     {
-        static::$saveEvents = false;
         /* Do not perform update if password is empty */
         if (isset($givenParameters['password']) && $givenParameters['password'] == '') {
             unset($givenParameters['password']);

@@ -70,6 +70,7 @@ class Installer extends \Centreon\Internal\Module\Installer
         $repository::setRelationMap(static::$relationMap);
         $repository::setObjectName($this->objectName);
         $repository::setObjectClass($this->objectClass);
+        $repository::setSaveEvents(false);
         $adminUser = array(
             'firstname' => 'admin',
             'lastname' => 'admin',

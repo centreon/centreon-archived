@@ -116,6 +116,15 @@ abstract class Repository
     {
         static::$objectClass = $objectClass;
     }
+    
+    /**
+     * 
+     * @param boolean $saveEvents
+     */
+    public static function setSaveEvents($saveEvents)
+    {
+        static::$saveEvents = $saveEvents;
+    }
 
     /**
      * Set secondary object class property
