@@ -37,7 +37,7 @@
 namespace CentreonSecurity\Api\rest;
 
 use Centreon\Internal\Api;
-use CentreonConfiguration\Repository\UserRepository;
+use CentreonAdministration\Repository\UserRepository;
 use Centreon\Internal\Exception\Authentication\BadCredentialException;
 use Centreon\Internal\Exception\Http\UnauthorizedException;
 
