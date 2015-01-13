@@ -62,7 +62,9 @@ class Custommacro extends Customobject
         $tpl = \Centreon\Internal\Di::getDefault()->get('template');
         $tpl->addJs('centreon-clone.js');
         
-        $myJs = '';
+        $myJs = '$(function() {
+  $(".clonable").centreonClone();
+})';
         
         $myHtml = '<div id="'.$element['name'].'_controls">
                        <div id="'.$element['name'].'_add" class="clone-trigger">
