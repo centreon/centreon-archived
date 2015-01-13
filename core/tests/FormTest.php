@@ -160,7 +160,7 @@ class FormTest extends DbTestCase
             '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
             '<label class="label-controller" for="testText">Test</label></div>'.
             '<div class="col-sm-9"><span>'.
-            '<input id="testText" type="text" name="testText" value="" class="form-control " placeholder="Test" />'.
+            '<input id="testText" type="text" name="testText" value="" class="form-control input-sm " placeholder="Test" />'.
             '<span></div></div>',
             $printedResult
         );
@@ -214,7 +214,7 @@ class FormTest extends DbTestCase
             '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
             '<label class="label-controller" for="testFloat">Test</label></div>'.
             '<div class="col-sm-9"><span>'.
-            '<input id="testFloat" type="text" name="testFloat" value="" class="form-control " placeholder="Test" />'.
+            '<input id="testFloat" type="text" name="testFloat" value="" class="form-control input-sm " placeholder="Test" />'.
             '<span></div></div>',
             $printedResult
         );
@@ -238,7 +238,7 @@ class FormTest extends DbTestCase
             '<div class="form-group "><div class="col-sm-2" style="text-align:right">'.
             '<label class="label-controller" for="testInt">Test</label></div>'.
             '<div class="col-sm-9"><span>'.
-            '<input id="testInt" type="text" name="testInt" value="" class="form-control " placeholder="Test" />'.
+            '<input id="testInt" type="text" name="testInt" value="" class="form-control input-sm " placeholder="Test" />'.
             '<span></div></div>',
             $printedResult
         );

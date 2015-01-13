@@ -35,10 +35,12 @@
 
 namespace Test\CentreonEngine\Repository;
 
-use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\HostTemplateRepository;
+use Test\Centreon\DbTestCase;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Filesystem\Directory;
+use CentreonEngine\Repository\HostTemplateRepository;
+use CentreonEngine\Events\GetMacroHost as HostMacroEvent;
+use CentreonEngine\Events\GetMacroService as ServiceMacroEvent;
 
 class HostTemplateRepositoryTest extends DbTestCase
 {
@@ -63,7 +65,11 @@ class HostTemplateRepositoryTest extends DbTestCase
     {
         $fileList = array();
         $pollerId = 1;
+
+        $hostMacroEvent = new HostMacroEvent($pollerId);
+        $serviceMacroEvent = new ServiceMacroEvent($pollerId);
         HostTemplateRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'hosttemplates.cfg');
+
         $this->assertEquals(
             array('cfg_dir' => array(
                 $this->tmpDir . '/1/'

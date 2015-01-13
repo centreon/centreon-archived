@@ -113,13 +113,16 @@ class ConfigGenerateRepository
         $this->loadMacros($pollerId);
 
         /* Get list of configuration files */
-        $query = "SELECT config_id, config_name, flush_logs, write_timestamp, write_thread_id, event_queue_max_size
-            FROM cfg_centreonbroker WHERE poller_id = :poller_id";
+        $query = "SELECT config_id, config_name, flush_logs, write_timestamp, name, 
+            write_thread_id, event_queue_max_size
+            FROM cfg_centreonbroker c, cfg_pollers p
+            WHERE c.poller_id = p.poller_id
+            AND p.poller_id = :poller_id";
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
-            $this->baseConfig['%name%'] = $row['config_name'];
+            $this->baseConfig['%name%'] = $row['name'];
             static::generateModule($row);
         }
     }

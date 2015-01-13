@@ -78,13 +78,16 @@ class BrokerRepository
                 directory_modules = :broker_module_directory,
                 directory_logs = :broker_logs_directory,
                 directory_data = :broker_data_directory,
+                directory_cbmod = :broker_cbmod_directory,
                 init_script = :init_script
                 WHERE poller_id = :poller_id";
         } else {
             /* Insert */
             $query = "INSERT INTO cfg_centreonbroker_paths
-                (poller_id, directory_config, directory_modules, directory_logs, directory_data, init_script) VALUES
-                (:poller_id, :broker_etc_directory, :broker_module_directory, :broker_logs_directory, :broker_data_directory, :init_script)";
+                (poller_id, directory_config, directory_modules, directory_logs, 
+                directory_data, init_script, directory_cbmod) VALUES
+                (:poller_id, :broker_etc_directory, :broker_module_directory, 
+                :broker_logs_directory, :broker_data_directory, :init_script, :broker_cbmod_directory)";
         }
         $stmt = $db->prepare($query);
         $stmt->bindParam(':poller_id', $pollerId);
@@ -93,6 +96,7 @@ class BrokerRepository
         $stmt->bindParam(':broker_logs_directory', $arr['broker_logs_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':broker_data_directory', $arr['broker_data_directory'], \PDO::PARAM_STR);
         $stmt->bindParam(':init_script', $arr['broker_init_script'], \PDO::PARAM_STR);
+        $stmt->bindParam(':broker_cbmod_directory', $arr['broker_cbmod_directory'], \PDO::PARAM_STR);
         $stmt->execute();
         
         /* Save extract params */
@@ -209,17 +213,19 @@ class BrokerRepository
         $configId = static::getConfig($pollerId, $configName);
         if (false !== $configId) {
             $queryInsert = "UPDATE cfg_centreonbroker
-                SET config_name = :config_name,
-                event_queue_max_size = :event_queue_max_size,
+                SET event_queue_max_size = :event_queue_max_size,
                 write_thread_id = :write_thread_id,
                 write_timestamp = :write_timestamp,
-                flush_logs = :flush_logs";
+                flush_logs = :flush_logs
+                WHERE config_name = :config_name
+                AND poller_id = :poller_id";
             $stmt = $dbconn->prepare($queryInsert);
             $stmt->bindParam(':config_name', $configName, \PDO::PARAM_STR);
             $stmt->bindParam(':event_queue_max_size', $params['event_queue_max_size'], \PDO::PARAM_STR);
             $stmt->bindParam(':write_thread_id', $params['write_thread_id'], \PDO::PARAM_STR);
             $stmt->bindParam(':write_timestamp', $params['write_timestamp'], \PDO::PARAM_STR);
             $stmt->bindParam(':flush_logs', $params['flush_logs'], \PDO::PARAM_STR);
+            $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
             $stmt->execute();
         } else {
             $queryInsert = "INSERT INTO cfg_centreonbroker
@@ -367,7 +373,8 @@ class BrokerRepository
     public static function getPathsFromPollerId($pollerId)
     {
         $db = Di::getDefault()->get('db_centreon');
-        $sql = "SELECT directory_modules, directory_config, directory_logs, directory_data, init_script
+        $sql = "SELECT directory_modules, directory_config, directory_logs, 
+            directory_data, directory_cbmod, init_script
             FROM cfg_centreonbroker_paths
             WHERE poller_id = :poller_id";
         $stmt = $db->prepare($sql);

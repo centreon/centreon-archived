@@ -82,7 +82,6 @@ class ServiceController extends \CentreonConfiguration\Controllers\BasicControll
             ->addJs('jquery.qtip.min.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
-            ->addCss('jquery.qtip.min.css')
             ->addCss('centreon.qtip.css')
             ->addCss('centreon.tag.css', 'centreon-administration');
         $urls = array(

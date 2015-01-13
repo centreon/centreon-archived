@@ -27,7 +27,7 @@
                                 "normal" : [
                                     {
                                         "general" : {
-                                            "name" : "cb_module"
+                                            "name" : "central-module"
                                         },
                                         "output" : [
                                             {
@@ -46,7 +46,7 @@
                                         "logger": [
                                           {
                                             "type": "file",
-                                            "name": "%global_broker_logs_directory%/cb_module.log"
+                                            "name": "%global_broker_logs_directory%/central-module.log"
                                           }
                                         ]
                                     }
@@ -54,7 +54,7 @@
                                 "one-peer-retention" : [
                                     {
                                         "general" : {
-                                            "name" : "cb_module"
+                                            "name" : "central-module"
                                         },
                                         "output" : [
                                             {
@@ -73,7 +73,7 @@
                                         "logger": [
                                           {
                                             "type": "file",
-                                            "name": "%global_broker_logs_directory%/cb_module.log"
+                                            "name": "%global_broker_logs_directory%/central-module.log"
                                           }
                                         ]
                                     }

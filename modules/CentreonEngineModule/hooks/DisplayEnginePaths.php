@@ -86,13 +86,13 @@ class DisplayEnginePaths
             'value' => '/var/lib/centreon-engine/'
         );
 
-	$paths['module_dir'] = array(
+    	$paths['module_dir'] = array(
             'label' => _('Module directory'),
             'help' => _('Event broker modules will be placed there.'),
             'value' => '/usr/lib/centreon-engine/'
         );
 
-	$paths['init_script'] = array(
+	    $paths['init_script'] = array(
             'label' => _('Init script'),
             'help' => _('Path of init script'),
             'value' => '/etc/init.d/centengine'

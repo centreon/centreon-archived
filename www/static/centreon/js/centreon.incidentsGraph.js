@@ -297,7 +297,7 @@
 
             /* Resize */
             fullsize = $elem.find( ".panel-heading" ).height() + $elem.find( ".panel-body" ).height() + 15;
-            console.log($extInfo.height());
+            //console.log($extInfo.height());
             if ( $elem.hasClass( "service-box-child" )) {
               $elem.nextAll( ".service-box" ).each( function( idx, elem ) {
                 thisObj.moveArrow( elem, "+=" + ( fullsize - thisObj.settings.boxHeight ) );
@@ -310,7 +310,7 @@
             thisObj.jsPlumbInstance.animate( $elem[0], { 
               height: fullsize
             });
-            console.log($elem.find( ".panel-body" ).height());
+            //console.log($elem.find( ".panel-body" ).height());
           }
         });
       } else {

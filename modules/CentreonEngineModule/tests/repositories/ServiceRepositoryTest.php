@@ -35,10 +35,11 @@
 
 namespace Test\CentreonEngine\Repository;
 
-use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\ServiceRepository;
+use Test\Centreon\DbTestCase;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Filesystem\Directory;
+use CentreonEngine\Repository\ServiceRepository;
+use CentreonEngine\Events\GetMacroService as ServiceMacroEvent;
 
 class ServiceRepositoryTest extends DbTestCase
 {
@@ -65,7 +66,9 @@ class ServiceRepositoryTest extends DbTestCase
                 )
             )
         );
-        $content = ServiceRepository::generate(2);
+
+        $serviceMacroEvent = new ServiceMacroEvent(2);
+        $content = ServiceRepository::generate(2, $serviceMacroEvent);
         $this->assertEquals($resultContent, $content);
         $resultContent = array(
             array(
@@ -80,7 +83,9 @@ class ServiceRepositoryTest extends DbTestCase
                 )
             )
         );
-        $content = ServiceRepository::generate(3);
+
+        $serviceMacroEvent = new ServiceMacroEvent(3);
+        $content = ServiceRepository::generate(3, $serviceMacroEvent);
         $this->assertEquals($resultContent, $content);
     }
 }

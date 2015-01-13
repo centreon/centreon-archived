@@ -6,7 +6,7 @@
     "name": "Poller 1",
     "port": 5569,
     "one_per_retention": 1,
-    "tmpl_name": "central",
+    "tmpl_name": "Central",
     "enable": 1
   }
 ]

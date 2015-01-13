@@ -224,7 +224,7 @@
                     .attr('for', 'duplicate_' + $(v).data('id'))
                     .html($(v).data('name'))
                     .appendTo($group);
-            console.log(v);
+            //console.log(v);
                 $('<div></div>').addClass('col-sm-1').append(
                     $('<input></input>')
                         .attr('id', 'duplicate_' + $(v).val('id'))

@@ -54,7 +54,9 @@
         "check_replication": 0,
         "with_state_events": "yes",
         "store_in_data_bin": "yes",
-        "insert_in_index_data": "yes"
+        "insert_in_index_data": "yes",
+        "interval": 60,
+        "length": 15552000
       },
       "sql": {
         "db_type": "%global_db_type%",

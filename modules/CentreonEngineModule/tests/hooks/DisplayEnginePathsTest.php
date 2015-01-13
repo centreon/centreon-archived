@@ -50,8 +50,7 @@ class DisplayEnginePathsTest extends DbTestCase
         $this->assertArrayHasKey('variables', $result);
         $this->assertEquals('displayEnginePaths.tpl', $result['template']);
         $this->assertArrayHasKey('paths', $result['variables']);
-        $this->assertArrayHasKey('resource_file', $result['variables']['paths']);
-        $this->assertEquals('', $result['variables']['paths']['resource_file']['value']);
+        $this->assertEquals('/etc/init.d/centengine', $result['variables']['paths']['init_script']['value']);
     }
 
     public function testExecuteWithPollerId()

@@ -11,13 +11,16 @@
                 "normal": [
                   {
                     "general": {
-                      "name": "cb_module"
+                      "name": "central-module"
                     },
                     "output": [
                       {
-                        "type" :"IPV4",
+                        "type" :"ipv4",
                         "name" : "central-output",
-                        "port" : "5668"
+                        "port" : "5668",
+                        "host" : "localhost",
+                        "failover" : "failover-central-output",
+                        "protocol": "bbdo"
                       },
                       {
                         "type" :"file",
@@ -28,13 +31,13 @@
                     "logger": [
                       {
                         "type": "file",
-                        "name": "%global_broker_logs_directory%/cb_module.log"
+                        "name": "%global_broker_logs_directory%/central-module.log"
                       }
                     ]
                   },
                   {
                     "general": {
-                      "name": "cbd_storage"
+                      "name": "central-broker"
                     },
                     "input": [
                       {
@@ -46,40 +49,40 @@
                     "output": [
                       {
                         "type": "sql",
-                        "name": "central-sql"
+                        "name": "central-sql",
+                        "failover": "failover-central-sql"
                       },
                       {
                         "type": "file",
                         "name": "failover-central-sql",
-                        "path" : "%global_broker_data_directory%/central-sql.failover",
-                        "failover": "central-sql"
+                        "path" : "%global_broker_data_directory%/central-sql.failover"
                       },
                       {
                         "type": "storage",
-                        "name": "central-storage"
+                        "name": "central-storage",
+                        "failover": "failover-central-storage"
                       },
                       {
                         "type": "file",
                         "name": "failover-central-storage",
-                        "path" : "%global_broker_data_directory%/central-sql.failover",
-                        "failover": "central-storage"
+                        "path" : "%global_broker_data_directory%/central-sql.failover"
                       },
                       {
                         "type": "local_client",
                         "name": "central-rrd",
-                        "path": "%global_broker_data_directory%/central-rdd.pipe"
+                        "path": "%global_broker_data_directory%/central-rrd.pipe",
+                        "failover": "failover-central-rrd"
                       },
                       {
                         "type": "file",
                         "name": "failover-central-rrd",
-                        "path" : "%global_broker_data_directory%/central-rrd.failover",
-                        "failover": "central-rrd"
+                        "path" : "%global_broker_data_directory%/central-rrd.failover"
                       }
                     ],
                     "logger": [
                       {
                         "type": "file",
-                        "name": "%global_broker_logs_directory%/cb_module.log"
+                        "name": "%global_broker_logs_directory%/central-broker.log"
                       }
                     ],
                     "correlation": [
@@ -91,22 +94,23 @@
                   },
                   {
                     "general": {
-                      "name": "cbd_rrd"
+                      "name": "central-rrd"
                     },
                     "input": [
                       {
                         "type": "local_server",
                         "name": "central-rrd",
-                        "path": "%global_broker_data_directory%/central-rdd.pipe"
+                        "path": "%global_broker_data_directory%/central-rrd.pipe"
                       }
                     ],
                     "output": [
                       {
                         "type": "rrd",
-                        "name": "storage-rrd"
+                        "name": "storage-rrd",
+                        "failover": "failover-storage-rrd"
                       },
                       {
-                        "type": "failover",
+                        "type": "file",
                         "name": "failover-storage-rrd",
                         "path": "%global_broker_data_directory%/storage-rrd.failover"
                       }
@@ -114,7 +118,7 @@
                     "logger": [
                       {
                         "type": "file",
-                        "name": "%global_broker_logs_directory%/cb_rrd.log"
+                        "name": "%global_broker_logs_directory%/central-rrd.log"
                       }
                     ]
                   }

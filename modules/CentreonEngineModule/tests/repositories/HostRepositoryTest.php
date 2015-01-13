@@ -35,10 +35,12 @@
 
 namespace Test\CentreonEngine\Repository;
 
-use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\HostRepository;
+use Test\Centreon\DbTestCase;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Filesystem\Directory;
+use CentreonEngine\Repository\HostRepository;
+use CentreonEngine\Events\GetMacroHost as HostMacroEvent;
+use CentreonEngine\Events\GetMacroService as ServiceMacroEvent;
 
 class HostRepositoryTest extends DbTestCase
 {
@@ -63,12 +65,18 @@ class HostRepositoryTest extends DbTestCase
     {
         $fileList = array();
         $pollerId = 1;
-        HostRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'hosts_');
+
+        $hostMacroEvent = new HostMacroEvent($pollerId);
+        $serviceMacroEvent = new ServiceMacroEvent($pollerId);
+
+        HostRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'hosts_', $hostMacroEvent, $serviceMacroEvent);
+
         $this->assertEquals(
             array('cfg_dir' => array(
                 $this->tmpDir . '/1/'
             )), $fileList
         );
+
         $content = file_get_contents($this->tmpDir . '/1/hosts_host1-2.cfg');
         /* Remove line with the generate date */
         $lines = explode("\n", $content);
