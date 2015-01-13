@@ -63,12 +63,11 @@ class Auth
 
     /**
      * Constructor
-     *
-     * @param $username string The username for authentication
-     * @param $password string The password
-     * @param $autologin boolean If the authentication is by autologin
-     * @param $encryptType int The type of crypt
-     * @param $token string The token string
+     * 
+     * @param string $username The username for authentication
+     * @param string $password The password
+     * @param boolean $autologin If the authentication is by autologin
+     * @param string $token The token string
      */
     public function __construct($username, $password, $autologin, $token = "")
     {

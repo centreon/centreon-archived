@@ -33,7 +33,7 @@
  *
  *
  */
-namespace Test\CentreonAdministation\Models;
+namespace Test\CentreonAdministration\Models;
 
 require_once CENTREON_PATH . "/tests/DbTestCase.php";
 

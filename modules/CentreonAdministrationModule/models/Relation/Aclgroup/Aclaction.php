@@ -35,7 +35,7 @@
  */
 
 
-namespace CentreonAdministation\Models\Aclgroup;
+namespace CentreonAdministration\Models\Aclgroup;
 
 use \Centreon\Models\CentreonRelationModel;
 

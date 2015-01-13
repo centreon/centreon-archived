@@ -33,7 +33,7 @@
  *
  *
  */
-namespace Test\CentreonAdministation\Models\Relation;
+namespace Test\CentreonAdministration\Models\Relation;
 
 use \Test\Centreon\DbTestCase,
     \CentreonAdministration\Models\Relation\Organization\Contact;

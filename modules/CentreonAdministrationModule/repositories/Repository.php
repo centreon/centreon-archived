@@ -220,6 +220,7 @@ abstract class Repository
         if (static::$saveEvents) {
             static::postSave($id, 'add', $givenParameters);
         }
+        return $id;
     }
 
     /**

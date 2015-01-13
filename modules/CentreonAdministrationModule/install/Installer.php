@@ -70,15 +70,17 @@ class Installer extends \Centreon\Internal\Module\Installer
         $repository::setRelationMap(static::$relationMap);
         $repository::setObjectName($this->objectName);
         $repository::setObjectClass($this->objectClass);
-        $repository::update(
-            array(
-                'firstname' => 'admin',
-                'lastname' => 'admin',
-                'login' => 'admin',
-                'password' => 'centreon'
-            ),
-            'admin'
+        $adminUser = array(
+            'firstname' => 'admin',
+            'lastname' => 'admin',
+            'login' => 'admin',
+            'password' => 'centreon',
+            'is_admin' => 1,
+            'is_locked' => 0,
+            'is_activated' => 1,
+            'is_password_old' => 1
         );
+        $repository::create($adminUser);
     }
     
     /**

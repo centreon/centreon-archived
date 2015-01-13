@@ -2,7 +2,5 @@
     "cfg_options",
     "cfg_organizations",
     "cfg_environments",
-    "cfg_contacts",
-    "cfg_users",
     "cfg_domains"
 ]

@@ -45,29 +45,30 @@ namespace CentreonSecurity\Internal;
  */
 class Sso extends Auth
 {
+    /**
+     *
+     * @var boolean 
+     */
     protected $ssoEnable = false;
+    
+    /**
+     *
+     * @var integer 
+     */
     protected $sso_mandatory = 0;
 
     /**
      * Constructor
-     *
-     * @param $username string The username for authentication
-     * @param $password string The password
-     * @param $autologin boolean If the authentication is by autologin
-     * @param $encryptType int The type of crypt
-     * @param $token string The token string
+     * 
+     * @param string $username The username for authentication
+     * @param string $password The password
+     * @param boolean $autologin If the authentication is by autologin
+     * @param string $token The token string
      */
-    public function __construct($username, $password, $autologin, $encryptType = 1, $token = "")
+    public function __construct($username, $password, $autologin, $token = "")
     {
         $config = \Centreon\Internal\Di::getDefault()->get('config');
-        /*
-         * var
-         * $this->options_sso['sso_enable'] = 1;
-         * $this->options_sso['sso_mode'] = 1;
-         * $this->options_sso['sso_trusted_clients'] = '10.30.3.53';
-         * $this->options_sso['sso_header_username'] = 'HTTP_AUTH_USER';
-         */
-
+        
         if (1 === $config->get('default', 'sso_enable', 0)) {
             if ('' !== $config->get('default', 'sso_header_username', '')) {
                 $this->sso_username = $_SERVER[$config->get('default', 'sso_header_username', '')];
@@ -78,18 +79,13 @@ class Sso extends Auth
                 }
             }
         }
-        parent::__construct($username, $password, $autologin, $encryptType, $token);
-        /*if ($this->error != '' && $self->sso_mandatory == 1) {
-            $this->error .= " SSO Protection (user=" . $this->sso_username . ').';
-            global $msg_error;
-            $msg_error = "Invalid User. SSO Protection (user=" . $this->sso_username . ")";
-        }*/
+        parent::__construct($username, $password, $autologin, $token);
     }
 
     /**
      * Check if it's a SSO client
-     *
-     * return bool
+     * 
+     * @return boolean
      */
     protected function checkSsoClient()
     {

@@ -69,16 +69,27 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function create($givenParameters)
     {
+        $contactId = \CentreonAdministration\Models\Contact::insert(array('description' => "admin's contact"));
+        
         if (isset($givenParameters['password']) && $givenParameters['password']) {
-            $givenParameters['password'] = $this->generateHashedPassword($givenParameters);
+            $givenParameters['password'] = static::generateHashedPassword($givenParameters);
         }
-        parent::create($givenParameters);
+        
+        $currentDate = date('Y-m-d H:i:s');
+        $givenParameters['createdat'] = $currentDate;
+        $givenParameters['updatedat'] = $currentDate;
+        $givenParameters['contact_id'] = $contactId;
+        
+        $newId = parent::create($givenParameters);
+        
+        
+        return $newId;
     }
 
     /**
-     * Update user
-     *
-     * @param array $givenParameters
+     * 
+     * @param type $givenParameters
+     * @param type $login
      */
     public static function update($givenParameters, $login = null)
     {
@@ -96,6 +107,9 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
                 $givenParameters['object_id'] = $user[0];
             }
         }
+        
+        $currentDate = date('Y-m-d H:i:s');
+        $givenParameters['updatedat'] = $currentDate;
         
         parent::update($givenParameters);
     }
