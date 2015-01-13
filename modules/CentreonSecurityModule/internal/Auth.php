@@ -34,7 +34,7 @@
  *
  */
 
-namespace Centreon\Internal;
+namespace CentreonSecurity\Internal;
 
 use CentreonAdministration\Repository\UserRepository;
 use Centreon\Internal\Exception;
@@ -105,6 +105,7 @@ class Auth
             if ($this->debug) {
                 //$logger->debug($e->getMessage());
             }
+            throw new \Centreon\Internal\Exception($e->getMessage(), $e->getCode());
         }
     }
 }

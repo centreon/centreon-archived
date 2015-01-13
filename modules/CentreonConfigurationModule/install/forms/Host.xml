@@ -143,24 +143,6 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="host_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<help>This is a list of contacts that should be notified whenever there are problems (or recoveries) with this host. Useful if you want notifications to go to just a few people and don't want to configure contact groups.</help>
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/user/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/host/[i:id]/contact</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
-				<field name="host_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<help>This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this host.</help>
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/usergroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/host/[i:id]/contactgroup</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
 				<field name="host_notification_interval" label="Notification interval" default_value="0" advanced="1" type="integer" parent_field="" mandatory="0">
 					<help>If this value is set to 0, the notification will be sent only one time.</help>
 				</field>

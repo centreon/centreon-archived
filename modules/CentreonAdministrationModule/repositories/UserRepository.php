@@ -38,7 +38,7 @@ namespace CentreonAdministration\Repository;
 use CentreonAdministration\Models\User;
 use CentreonAdministration\Models\Apitoken;
 use Centreon\Internal\Di;
-use Centreon\Internal\Auth\Sso;
+use CentreonSecurity\Internal\Sso;
 use Centreon\Internal\Exception\Authentication\BadCredentialException;
 
 /**
@@ -110,7 +110,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         $saltPrefix = $givenParameters['login'] . $givenParameters['firstname'] . $givenParameters['lastname'];
         $salt = hash('sha256', uniqid(hash('sha256', $saltPrefix), true));
         $cost = 8000;
-        $hashedPassword = hash_pbkdf2('sha256', $givenParameters['password'], $salt, $cost, 204);
+        $hashedPassword = hash_pbkdf2('sha256', $givenParameters['password'], $salt, $cost, 183);
         
         $finalPasswordForStorage = $salt . '::' . $cost . '::' . $hashedPassword;
         
@@ -153,7 +153,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         
         if ($passwordCheck) {
             if (!self::checkPassword($login, $password)) {
-                throw new Exception("User '" . $login . "' doesn't match with password", 4403);
+                throw new \Centreon\Internal\Exception("User '" . $login . "' doesn't match with password", 4403);
             }
         }
         
@@ -174,13 +174,12 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
             
             $explodedStoredPassword = explode('::', $user['password']);
             
-            $hashedPassword = hash_pbkdf2('sha256', $password, $explodedStoredPassword[0], $explodedStoredPassword[1], 204);
+            $hashedPassword = hash_pbkdf2('sha256', $password, $explodedStoredPassword[0], $explodedStoredPassword[1], 183);
             
             if ($explodedStoredPassword[2] === $hashedPassword) {
                 $loginResult = true;
             }
         }
-        
         return $loginResult;
     }
 
@@ -283,9 +282,11 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         try {
             $connectedUser = new Sso($login, $password, 0);
             $token = hash_pbkdf2('sha256', $login . $password, hash('sha256', uniqid($login, true)), 8000, 200);
-            Apitoken::insert($connectedUser->userInfos['user_id'], array('value' => $token));
+            Apitoken::insert(array('user_id' => $connectedUser->userInfos['user_id'], 'value' => $token));
         } catch (\Centreon\Internal\Exception $e) {
-            throw new BadCredentialException('The password or the login is incorrect', 0);
+            if ($e->getCode() === 4403) {
+                throw new BadCredentialException($e->getMessage(), $e->getCode(), $e);
+            }
         }
         
         return $token;

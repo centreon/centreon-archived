@@ -33,7 +33,7 @@
  *
  */
 
-namespace Centreon\Internal\Auth;
+namespace CentreonSecurity\Internal;
 
 /**
  * Class for authentication with SSO
@@ -43,7 +43,7 @@ namespace Centreon\Internal\Auth;
  * @package Centreon
  * @subpackage Core
  */
-class Sso extends \Centreon\Internal\Auth
+class Sso extends Auth
 {
     protected $ssoEnable = false;
     protected $sso_mandatory = 0;
