@@ -50,6 +50,7 @@ $str = NULL;
 while ($serviceGroup = $DBRESULT->fetchRow()) {
     $generated = 0;
     $strDef = "";
+    $strTemp = NULL;
 
     if (isset($gbArr[5][$serviceGroup["sg_id"]])) {
         $ret["comment"] ? ($strDef .= "# '" . $serviceGroup["sg_name"] . "' servicegroup definition " . $i . "\n") : NULL;
@@ -74,7 +75,6 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
          * Service members
          */
         $service = array();
-        $strTemp = NULL;
         $DBRESULT2 = $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
 									"FROM servicegroup_relation, service, host, host_service_relation " .
 									"WHERE servicegroup_relation.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
@@ -165,11 +165,10 @@ while ($serviceGroup = $DBRESULT->fetchRow()) {
         unset($service);
         if ($strTemp)
             $strDef .= print_line("members", $strTemp);
-        unset($strTemp);
         $strDef .= "}\n\n";
         $i++;
     }
-    if ($generated){
+    if ($generated && $strTemp){
         $str .= $strDef;
         $generatedSG[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
     }
