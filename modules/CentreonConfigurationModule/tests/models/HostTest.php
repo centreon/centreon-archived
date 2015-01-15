@@ -571,7 +571,7 @@ class HostTest extends DbTestCase
         $testResult = array(
             'host_id' => '1',
             'host_template_model_htm_id' => null,
-            'command_command_id' => 2,
+            'command_command_id' => '2',
             'command_command_id_arg1' => '1!2',
             'timeperiod_tp_id' => '1',
             'timeperiod_tp_id2' => '1',
@@ -612,8 +612,9 @@ class HostTest extends DbTestCase
             'host_comment' => 'Host template',
             'host_register' => '0',
             'host_activate' => '1',
-            'organization_id' => 1,
-            'environment_id' => null
+            'organization_id' => '1',
+            'environment_id' => null,
+            'poller_id' => null
         );
         $result = Host::get(1);
         $this->assertEquals($testResult, $result);
@@ -732,7 +733,8 @@ class HostTest extends DbTestCase
                 'host_register',
                 'host_activate',
                 'organization_id',
-                'environment_id'
+                'environment_id',
+                'poller_id'
             ),
             Host::getColumns()
         );

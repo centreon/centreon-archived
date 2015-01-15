@@ -46,6 +46,7 @@
     <column>host_activate</column>
     <column>organization_id</column>
     <column>environment_id</column>
+    <column>poller_id</column>
     <row>
       <value>2</value>
       <value>1</value>
@@ -92,6 +93,7 @@
       <value>1</value>
       <value>1</value>
       <null/>
+      <value>1</value>
     </row>
     <row>
       <value>3</value>
@@ -139,6 +141,7 @@
       <value>1</value>
       <value>1</value>
       <null/>
+      <value>1</value>
     </row>
   </table>
 </dataset>

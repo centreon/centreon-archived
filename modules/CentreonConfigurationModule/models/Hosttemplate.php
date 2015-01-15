@@ -34,7 +34,6 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
 
 /**

@@ -51,7 +51,8 @@
         "host_comment": "First host",
         "host_register": "1",
         "host_activate": "1",
-        "organization_id": "1"
+        "organization_id": "1",
+        "poller_id": "1"
     },
     {
         "host_id": 3,
@@ -66,6 +67,7 @@
         "host_comment": "Second host",
         "host_register": "1",
         "host_activate": "1",
-        "organization_id": "1"
+        "organization_id": "1",
+        "poller_id": "1"
     }
 ]

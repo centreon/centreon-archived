@@ -40,7 +40,6 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Utils\Filesystem\Directory;
 use CentreonEngine\Repository\HostTemplateRepository;
 use CentreonEngine\Events\GetMacroHost as HostMacroEvent;
-use CentreonEngine\Events\GetMacroService as ServiceMacroEvent;
 
 class HostTemplateRepositoryTest extends DbTestCase
 {
@@ -67,8 +66,7 @@ class HostTemplateRepositoryTest extends DbTestCase
         $pollerId = 1;
 
         $hostMacroEvent = new HostMacroEvent($pollerId);
-        $serviceMacroEvent = new ServiceMacroEvent($pollerId);
-        HostTemplateRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'hosttemplates.cfg');
+        HostTemplateRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'hosttemplates.cfg', $hostMacroEvent);
 
         $this->assertEquals(
             array('cfg_dir' => array(
