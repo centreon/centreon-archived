@@ -16,6 +16,11 @@
                         "name": "Users",
                         "short_name": "conf_users_list",
                         "route": "/centreon-administration/user"
+                    },
+                    {
+                        "name": "Contacts",
+                        "short_name": "conf_contacts_list",
+                        "route": "/centreon-administration/contact"
                     }
                 ]
             },

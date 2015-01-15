@@ -34,6 +34,8 @@
  */
 namespace Centreon\Internal\Form\Custom;
 
+use Centreon\Internal\Di;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
@@ -48,7 +50,7 @@ class Select extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl = Di::getDefault()->get('template');
         // Load CssFile
         $tpl->addCss('select2.css')
             ->addCss('select2-bootstrap.css');
@@ -57,12 +59,12 @@ class Select extends Customobject
         $tpl->addJs('jquery.select2/select2.min.js');
 
         if (isset($element['label_defaultValuesRoute'])) {
-            $element['label_defaultValuesRoute'] = \Centreon\Internal\Di::getDefault()
+            $element['label_defaultValuesRoute'] = Di::getDefault()
                             ->get('router')
                             ->getPathFor($element['label_defaultValuesRoute'], $element['label_extra']);
         }
         if (isset($element['label_listValuesRoute'])) {
-            $element['label_listValuesRoute'] = \Centreon\Internal\Di::getDefault()
+            $element['label_listValuesRoute'] = Di::getDefault()
                             ->get('router')
                             ->getPathFor($element['label_listValuesRoute'], $element['label_extra']);
         }

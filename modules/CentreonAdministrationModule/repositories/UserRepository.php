@@ -37,6 +37,7 @@ namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\User;
 use CentreonAdministration\Models\Apitoken;
+use CentreonAdministration\Models\Contact;
 use Centreon\Internal\Di;
 use CentreonSecurity\Internal\Sso;
 use Centreon\Internal\Exception\Authentication\BadCredentialException;
@@ -67,7 +68,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function create($givenParameters)
     {
-        $contactId = \CentreonAdministration\Models\Contact::insert(array('description' => "admin's contact"));
+        $contactId = Contact::insert(array('description' => $givenParameters['login'] . " contact"));
         
         if (isset($givenParameters['password']) && $givenParameters['password']) {
             $givenParameters['password'] = static::generateHashedPassword($givenParameters);
@@ -203,7 +204,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     public static function getNotificationInfos($contactId, $object)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         if ($object == 'host') {
@@ -257,7 +258,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      */
     public static function getNotificationCommand($user_id, $type)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');

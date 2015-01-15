@@ -48,16 +48,19 @@ abstract class CentreonBaseModel extends CentreonModel
 {
     /**
      * Table name of the object
+     * @var string 
      */
     protected static $table = null;
 
     /**
      * Primary key name
+     * @var string 
      */
     protected static $primaryKey = null;
 
     /**
      * Unique label field
+     * @var string 
      */
     protected static $uniqueLabelField = null;
 
@@ -68,7 +71,6 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     protected static $databaseName = 'db_centreon';
 
-
     /**
      * Array of relation objects 
      *
@@ -76,12 +78,14 @@ abstract class CentreonBaseModel extends CentreonModel
      */
     protected static $relations = array();
 
-
+    /**
+     * 
+     */
     const OBJ_NOT_EXIST = 'Object not in database.';
 
     /**
-     * Set attribute properties
-     *
+     * 
+     * @param array $params
      * @param array $not_null_attributes attributes that cannot be set to null
      * @param array $is_int_attribute attributes that are int based
      */
