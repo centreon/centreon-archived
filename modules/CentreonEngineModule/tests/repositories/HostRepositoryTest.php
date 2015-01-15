@@ -72,9 +72,12 @@ class HostRepositoryTest extends DbTestCase
         HostRepository::generate($fileList, $pollerId, $this->tmpDir . '/', 'hosts_', $hostMacroEvent, $serviceMacroEvent);
 
         $this->assertEquals(
-            array('cfg_dir' => array(
-                $this->tmpDir . '/1/'
-            )), $fileList
+            array(
+                'cfg_dir' => array(
+                    $this->tmpDir . '/1/'
+                )
+            ), 
+            $fileList
         );
 
         $content = file_get_contents($this->tmpDir . '/1/hosts_host1-2.cfg');

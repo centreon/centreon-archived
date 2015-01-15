@@ -1,5 +1,6 @@
 [global]
 centreon_path=/srv/centreon
+centreon_generate_tmp_dir=/tmp/
 
 [db_centreon]
 dsn="mysql:host=localhost;dbname=centreon"

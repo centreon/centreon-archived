@@ -1,7 +1,6 @@
 [
   {
     "poller_id": 1,
-    "log_dir": "/tmp/log",
-    "cfg_dir": "/tmp/cfg"
+    "log_dir": "/tmp/log"
   }
 ]

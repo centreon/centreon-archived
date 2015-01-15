@@ -44,6 +44,7 @@ class ConfigGenerateMainRepositoryTest extends DbTestCase
 {
     protected $dataPath = '/modules/CentreonEngineModule/tests/data/json/';
     protected $tmpDir;
+    protected static $bootstrapExtraSteps = array('events');
 
     public function setUp()
     {
