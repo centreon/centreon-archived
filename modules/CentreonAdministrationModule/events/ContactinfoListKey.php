@@ -59,6 +59,7 @@ class ContactinfoListKey
     public function addKey($key)
     {
         $this->keyList[] = array('id' => $key, 'text' => $key);
+        return $this;
     }
     
     /**

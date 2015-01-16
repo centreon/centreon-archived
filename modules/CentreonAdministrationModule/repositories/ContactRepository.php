@@ -69,7 +69,7 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
             'info_key' => $givenParameters['contact_info_key'],
             'info_value' => $givenParameters['contact_info_value'],
         );
-        ContactInfo::insert($infoToInsert);
+        return ContactInfo::insert($infoToInsert);
     }
     
     /**

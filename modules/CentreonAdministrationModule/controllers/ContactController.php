@@ -78,14 +78,29 @@ class ContactController extends BasicController
      * 
      * @method get
      * @route /contact/contact-info/formlist
+     * 
+     * @todo remove cutom data and emit event to retrieve the list
      */
     public function notificationWayFormListAction()
     {
-        $di = Di::getDefault();
-        $event = $di->get('events');
+        /*$di = Di::getDefault();
+        $event = $di->get('events');*/
         $InfoKeys = new ContactinfoListKey();
-        $event->emit('centreon-administration.contactinfo.key.list', array($InfoKeys));
+        //$event->emit('centreon-administration.contactinfo.key.list', array($InfoKeys));
+        $InfoKeys->addKey('sms')->addKey('email')->addKey('twitter')->addKey('whatsapp')->addKey('feelslikevegasdontit');
         $this->router->response()->json($InfoKeys->getKeyList());
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /contact/contact-info/default
+     * 
+     * @return array
+     */
+    public function defaultNotificationList()
+    {
+         $this->router->response()->json(array());
     }
 
     /**
@@ -120,8 +135,14 @@ class ContactController extends BasicController
         $givenParameters = $this->getParams();
         unset($givenParameters['token']);
         $repository = $this->repository;
-        $repository::addContactInfo($givenParameters);
-        $this->router->response()->json(array('success' => true));
+        $contactId = $repository::addContactInfo($givenParameters);
+        $removeUrl = $this->router->getPathFor('/centreon-administration/contact/info/remove/[i:id]', array('id' => $contactId));
+        $this->router->response()->json(array(
+            'success' => true,
+            'value' => $givenParameters['contact_info_value'],
+            'origin' => $givenParameters['contact_info_key'],
+            'removeurl' => $removeUrl
+        ));
     }
     
     /**
@@ -139,7 +160,6 @@ class ContactController extends BasicController
 
     /**
      * Add a contact
-     *
      *
      * @method post
      * @route /contact/add
@@ -164,7 +184,7 @@ class ContactController extends BasicController
         // Add selector
         $selectAttributes = json_encode(array(
             'defaultValuesRoute' =>  '/centreon-administration/contact/contact-info/formlist',
-            'listValuesRoute' =>  '/centreon-administration/contact/contact-info/formlist'
+            'listValuesRoute' =>  '/centreon-administration/contact/contact-info/default'
         ));
         $customForm->addStatic(array(
             'name' => 'contact_info_key',
@@ -185,7 +205,6 @@ class ContactController extends BasicController
         
         $customForm->addSubmit('add_button', 'Add');
         $customForm->addHidden('object_id', $requestParam['id']);
-        
         
         // Get Already loaded
         $repository = $this->repository;
