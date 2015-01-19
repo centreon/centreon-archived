@@ -34,7 +34,7 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
 /**
  * Handles audit logs

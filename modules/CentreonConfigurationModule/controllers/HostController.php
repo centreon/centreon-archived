@@ -37,8 +37,6 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Host;
-use CentreonConfiguration\Models\Relation\Host\Contact;
-use CentreonConfiguration\Models\Relation\Host\Contactgroup;
 use CentreonConfiguration\Models\Relation\Host\Hostchildren;
 use CentreonConfiguration\Models\Relation\Host\Hostparents;
 use CentreonConfiguration\Models\Relation\Host\Poller;
@@ -67,8 +65,6 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
         'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
-        'host_contacts' => '\CentreonConfiguration\Models\Relation\Host\Contact',
-        'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Host\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
         'host_icon' => '\CentreonConfiguration\Models\Relation\Host\Icon'
     );
@@ -248,30 +244,6 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     public function editAction()
     {
         parent::editAction();
-    }
-    
-    /**
-     * Get list of contacts for a specific host
-     *
-     *
-     * @method get
-     * @route /host/[i:id]/contact
-     */
-    public function contactForHostAction()
-    {
-        parent::getRelations(static::$relationMap['host_contacts']);
-    }
-    
-    /**
-     * Get list of contact groups for a specific host
-     *
-     *
-     * @method get
-     * @route /host/[i:id]/contactgroup
-     */
-    public function contactgroupForHostAction()
-    {
-        parent::getRelations(static::$relationMap['host_contactgroups']);
     }
     
     /**

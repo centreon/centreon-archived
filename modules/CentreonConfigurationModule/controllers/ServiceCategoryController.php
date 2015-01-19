@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \Centreon\Form;
+use Centreon\Form;
 
 class ServiceCategoryController extends \CentreonConfiguration\Controllers\BasicController
 {

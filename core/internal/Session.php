@@ -34,7 +34,7 @@
  */
 namespace Centreon\Internal;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
 /**
  * Class for manage session

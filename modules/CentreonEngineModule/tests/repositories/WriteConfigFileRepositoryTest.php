@@ -36,8 +36,8 @@
 namespace Test\CentreonEngine\Repository;
 
 use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\WriteConfigFileRepository;
+use Centreon\Internal\Utils\Filesystem\Directory;
+use CentreonEngine\Repository\WriteConfigFileRepository;
 
 class WriteConfigFileRepositoryTest extends \PHPUnit_Framework_TestCase
 {

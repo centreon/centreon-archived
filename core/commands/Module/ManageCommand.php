@@ -35,7 +35,7 @@
  */
 namespace Centreon\Commands\Module;
 
-use \Centreon\Internal\Module\Informations;
+use Centreon\Internal\Module\Informations;
 
 /**
  * COmmand Line to manage

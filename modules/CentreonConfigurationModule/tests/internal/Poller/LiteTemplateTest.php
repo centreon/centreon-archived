@@ -36,7 +36,7 @@
 namespace Test\CentreonConfiguration\Internal\Poller;
 
 use \Test\Centreon\SimpleTestCase;
-use \CentreonConfiguration\Internal\Poller\LiteTemplate;
+use CentreonConfiguration\Internal\Poller\LiteTemplate;
 
 
 /**

@@ -38,7 +38,7 @@ namespace Test\CentreonConfiguration\Repository;
 require_once 'modules/CentreonConfigurationModule/tests/repositories/RepositoryTestCase.php';
 
 use \Test\CentreonConfiguration\Repository\RepositoryTestCase;
-use \CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
 
 class ServiceRepositoryTest extends RepositoryTestCase
 {

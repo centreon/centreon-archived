@@ -35,8 +35,8 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Di;
-use \CentreonAdministration\Repository\TagsRepository;
+use Centreon\Internal\Di;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Controller for tag action

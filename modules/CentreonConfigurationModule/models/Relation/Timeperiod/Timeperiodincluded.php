@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Timeperiod;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Timeperiodincluded extends CentreonRelationModel
 {

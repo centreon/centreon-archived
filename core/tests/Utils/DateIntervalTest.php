@@ -36,7 +36,7 @@
 
 namespace Test\Centreon\Utils;
 
-use \Centreon\Internal\Utils\DateInterval;
+use Centreon\Internal\Utils\DateInterval;
 
 class DateIntervalTest extends \PHPUnit_Framework_TestCase
 {

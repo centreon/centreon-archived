@@ -35,8 +35,8 @@
 
 namespace CentreonEngine\Listeners\CentreonConfiguration;
 
-use \CentreonEngine\Repository\EngineRepository;
-use \CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
+use CentreonEngine\Repository\EngineRepository;
+use CentreonConfiguration\Events\EngineFormSave as EngineFormSaveEvent;
 
 class EngineFormSave
 {

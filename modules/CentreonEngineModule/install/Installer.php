@@ -36,7 +36,7 @@
 
 namespace CentreonEngine\Install;
 
-use \Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Module\Installer as ModuleInstaller;
 
 /**
  * 

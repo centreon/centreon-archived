@@ -35,9 +35,9 @@
  */
 namespace Centreon\Internal;
 
-use \Centreon\Internal\Module\Informations;
-use \Centreon\Internal\Utils\Filesystem\File;
-use \Centreon\Internal\Utils\String\CamelCaseTransformation;
+use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Utils\Filesystem\File;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
  * Description of Event

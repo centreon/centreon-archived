@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Hosttemplate;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Hostcategory extends CentreonRelationModel
 {

@@ -125,66 +125,6 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
     
     /**
      * 
-     * @param int $service_id
-     * @return array
-     */
-    public static function getContacts($service_id)
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        $contactList = "";
-
-        $query = "SELECT contact_alias "
-            . "FROM cfg_contacts c, cfg_contacts_services_relations cs "
-            . "WHERE service_service_id = '$service_id' "
-            . "AND c.contact_id = ccontact_id "
-            . "ORDER BY contact_alias";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($contactList != "") {
-                $contactList .= ",";
-            }
-            $contactList .= $row["contact_alias"];
-        }
-        return $contactList;
-    }
-
-    /**
-     * 
-     * @param int $service_id
-     * @return array
-     */
-    public static function getContactGroups($service_id)
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        $contactgroupList = "";
-
-        $query = "SELECT cg_name "
-            . "FROM cfg_contactgroups cg, cfg_contactgroups_services_relations cgs "
-            . "WHERE service_service_id = '$service_id' "
-            . "AND cg.cg_id = cgs.contactgroup_cg_id "
-            . "ORDER BY cg_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($contactgroupList != "") {
-                $contactgroupList .= ",";
-            }
-            $contactgroupList .= $row["cg_name"];
-        }
-        return $contactgroupList;
-    }
-
-    /**
-     * 
      * @param int $service_template_id
      * @return array
      */

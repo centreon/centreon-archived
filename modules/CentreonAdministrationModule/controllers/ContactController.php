@@ -209,7 +209,6 @@ class ContactController extends BasicController
         // Get Already loaded
         $repository = $this->repository;
         $contactInfos =  $repository::getContactInfo($requestParam['id'], true);
-
         
         $objectFormUpdateUrl = $this->objectBaseUrl.'/add/info';
         $deleteUrl = $this->router->getPathFor('/centreon-administration/contact/info/remove/[i:id]', array('id' => $requestParam['id']));

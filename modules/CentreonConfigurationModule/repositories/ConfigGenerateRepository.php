@@ -37,7 +37,7 @@ namespace CentreonConfiguration\Repository;
 use CentreonConfiguration\Events\GenerateEngine;
 use CentreonConfiguration\Events\GenerateBroker;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Exception;
 
 /**
  * Factory for ConfigGenerate Engine

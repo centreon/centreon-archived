@@ -37,7 +37,7 @@ namespace Test\CentreonConfiguration\Models;
 require_once CENTREON_PATH . "/tests/DbTestCase.php";
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Models\Manufacturer;
+use CentreonConfiguration\Models\Manufacturer;
 
 class ManufacturerTest extends DbTestCase
 {

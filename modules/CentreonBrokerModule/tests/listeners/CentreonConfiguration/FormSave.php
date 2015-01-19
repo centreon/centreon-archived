@@ -36,8 +36,8 @@
 namespace Test\CentreonBroker\Listeners\CentreonConfiguration;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonBroker\Listeners\CentreonConfiguration\FormSave;
-use \CentreonConfiguration\Events\BrokerFormSave;
+use CentreonBroker\Listeners\CentreonConfiguration\FormSave;
+use CentreonConfiguration\Events\BrokerFormSave;
 
 class FormSaveTest extends DbTestCase
 {

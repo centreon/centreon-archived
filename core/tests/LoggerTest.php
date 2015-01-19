@@ -37,7 +37,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Logger;
+use Centreon\Internal\Logger;
 
 class LoggerTest extends \PHPUnit_Framework_TestCase
 {

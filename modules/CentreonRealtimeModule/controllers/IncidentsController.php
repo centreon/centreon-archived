@@ -34,8 +34,8 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \Centreon\Internal\Utils\Datetime;
-use \Centreon\Internal\Utils\Status;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Utils\Status;
 
 /**
  * Display the logs of engine

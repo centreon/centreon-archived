@@ -36,8 +36,8 @@
 
 namespace Centreon\Internal;
 
-use \Centreon\Internal\Utils\CommandLine\Colorize;
-use \Centreon\Internal\Module\Informations;
+use Centreon\Internal\Utils\CommandLine\Colorize;
+use Centreon\Internal\Module\Informations;
 
 class Command
 {

@@ -37,7 +37,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Db;
+use Centreon\Internal\Db;
 
 class DbTest extends \PHPUnit_Framework_TestCase
 {

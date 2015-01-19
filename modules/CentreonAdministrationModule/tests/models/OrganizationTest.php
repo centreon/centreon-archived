@@ -37,8 +37,8 @@ namespace Test\CentreonAdministration\Models;
 
 require_once CENTREON_PATH . "/tests/DbTestCase.php";
 
-use \Test\Centreon\DbTestCase,
-    \CentreonAdministration\Models\Organization;
+use Test\Centreon\DbTestCase;
+use CentreonAdministration\Models\Organization;
 
 class OrganizationTest extends DbTestCase
 {
@@ -296,7 +296,14 @@ class OrganizationTest extends DbTestCase
             array('name' => 'Default organization'),
             array('name' => 'Client organization')
         );
-        $result = Organization::getList('name', -1, 0, null, 'ASC', array('shortname' => array('default_organization', 'client')));
+        $result = Organization::getList(
+            'name',
+            -1,
+            0,
+            null,
+            'ASC',
+            array('shortname' => array('default_organization', 'client'))
+        );
         $this->assertEquals($testResult, $result);
     }
 

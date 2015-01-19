@@ -182,7 +182,7 @@ abstract class CentreonBaseModel extends CentreonModel
     /**
      * Used for updating object in database
      *
-     * @param int $objectId
+     * @param integer $objectId
      * @param array $params
      * @return void
      */

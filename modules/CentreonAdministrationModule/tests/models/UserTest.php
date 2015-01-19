@@ -169,7 +169,8 @@ class UserTest extends DbTestCase
         User::update(3, $newInformation);
     }
 
-    public function testUpdateNotFound() {
+    public function testUpdateNotFound()
+    {
         $this->setExpectedException(
             '\Centreon\Internal\Exception',
             "Object not in database.",
@@ -237,7 +238,6 @@ class UserTest extends DbTestCase
                 'autologin_key'
         );
         $user = User::getParameters(1, '*');
-
         $this->assertEquals($user, $testInformation);
 
         $user = User::getParameters(2, 'login');
@@ -328,7 +328,7 @@ class UserTest extends DbTestCase
             )
         );
         $result = User::getList();
-        $this->assertEquals($testResult, $result);   
+        $this->assertEquals($testResult, $result);
 
         $testResult = array(
             array(
@@ -351,7 +351,7 @@ class UserTest extends DbTestCase
             )
         );
         $result = User::getList('*', 1);
-        $this->assertEquals($testResult, $result);   
+        $this->assertEquals($testResult, $result);
 
         $testResult = array(
             array(
@@ -374,7 +374,7 @@ class UserTest extends DbTestCase
             )
         );
         $result = User::getList('*', 1, 1);
-        $this->assertEquals($testResult, $result);   
+        $this->assertEquals($testResult, $result);
 
         $testResult = array(
             array('login' => 'User 1'),

@@ -35,9 +35,9 @@
 
 namespace CentreonAdministration\Repository;
 
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
-use \CentreonAdministration\Repository\AuditlogRepository;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use CentreonAdministration\Repository\AuditlogRepository;
 
 /**
  * Abstact class for administration repository
@@ -78,7 +78,7 @@ abstract class Repository
 
     /**
      * Reset all static properties
-     */ 
+     */
     public static function reset()
     {
         static::$relationMap = null;
@@ -111,7 +111,7 @@ abstract class Repository
      * Set object class property
      *
      * @param string $objectClass
-     */ 
+     */
     public static function setObjectClass($objectClass)
     {
         static::$objectClass = $objectClass;
@@ -158,7 +158,7 @@ abstract class Repository
 
         $columns = $class::getColumns();
         if (in_array(static::ORGANIZATION_FIELD, $columns)) {
-           $filters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
+            $filters[static::ORGANIZATION_FIELD] = Di::getDefault()->get('organization');
         }
 
         $list = $class::getList(array($idField, $uniqueField), -1, 0, null, "ASC", $filters, "AND");

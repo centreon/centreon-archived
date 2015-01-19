@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Exception;
 use CentreonConfiguration\Events\RunTest;
 
 /**

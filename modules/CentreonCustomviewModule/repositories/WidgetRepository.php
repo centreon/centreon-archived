@@ -35,9 +35,9 @@
 
 namespace CentreonCustomview\Repository;
 
-use \Centreon\Internal\Exception;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Module\Informations;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Module\Informations;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>

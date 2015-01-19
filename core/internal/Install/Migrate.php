@@ -36,8 +36,8 @@
 
 namespace Centreon\Internal\Install;
 
-use \Centreon\Internal\Utils\CommandLine\Colorize;
-use \Centreon\Internal\Install\Install;
+use Centreon\Internal\Utils\CommandLine\Colorize;
+use Centreon\Internal\Install\Install;
 
 class Migrate extends \Centreon\Internal\Install\AbstractInstall
 {

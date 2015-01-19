@@ -36,9 +36,9 @@
 
 namespace CentreonRealtime\Internal;
 
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
-use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
-use \Centreon\Internal\Utils\Datetime;
+use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use Centreon\Internal\Utils\Datetime;
 
 /**
  * Description of ServiceDatatable

@@ -35,7 +35,7 @@
 
 namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
 /**
  * @author Julien Mathis <jmathis@merethis.com>

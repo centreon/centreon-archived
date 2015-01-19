@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use \CentreonConfiguration\Repository\ConfigGenerateRepository;
+use CentreonConfiguration\Repository\ConfigGenerateRepository;
 
 /**
  * @authors Lionel Assepo

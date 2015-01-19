@@ -35,9 +35,9 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Module\Informations;
-use \Centreon\Internal\Di;
-use \CentreonConfiguration\Models\Node;
+use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Node;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>

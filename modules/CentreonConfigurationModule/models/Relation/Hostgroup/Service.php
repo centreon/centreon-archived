@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Hostgroup;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Service extends CentreonRelationModel
 {

@@ -126,25 +126,7 @@ class HostRepository extends HostTemplateRepository
                         if ($key == 'check_period' || $key == 'notification_period') {
                             $value = TimeperiodConfigurationRepository::getPeriodName($value);
                         }
-                        if ($key == "contact_additive_inheritance") {
-                            $tmpContact = HostConfigurationRepository::getContacts($host_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contacts"] = "+";
-                                }
-                                $tmpData["contacts"] .= $tmpContact;
-                            }
-                        } elseif ($key == "cg_additive_inheritance") {
-                            $tmpContact = HostConfigurationRepository::getContactGroups($host_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contact_groups"] = "+";
-                                }
-                                $tmpData["contact_groups"] .= $tmpContact;
-                            }
-                        } else {
-                            $tmpData[$key] = $value;
-                        }
+                        $tmpData[$key] = $value;
                     }
                 }
             }

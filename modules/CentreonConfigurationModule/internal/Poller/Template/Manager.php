@@ -36,8 +36,8 @@
 
 namespace CentreonConfiguration\Internal\Poller\Template;
 
-use \CentreonConfiguration\Internal\Poller\LiteTemplate;
-use \Centreon\Internal\Module\Informations;
+use CentreonConfiguration\Internal\Poller\LiteTemplate;
+use Centreon\Internal\Module\Informations;
 
 /**
  * Description of Manager

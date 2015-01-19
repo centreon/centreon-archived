@@ -36,7 +36,7 @@
 namespace Test\CentreonConfiguration\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Models\Hostcategory;
+use CentreonConfiguration\Models\Hostcategory;
 
 class HostCategoryTest extends DbTestCase
 {

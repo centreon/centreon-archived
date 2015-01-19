@@ -2,38 +2,22 @@
 <dataset>
   <table name="cfg_users">
     <column>user_id</column>
-    <column>timeperiod_tp_id</column>
-    <column>timeperiod_tp_id2</column>
-    <column>user_name</column>
-    <column>user_alias</column>
-    <column>user_passwd</column>
-    <column>user_lang</column>
-    <column>user_host_notification_options</column>
-    <column>user_service_notification_options</column>
-    <column>user_email</column>
-    <column>user_pager</column>
-    <column>user_address1</column>
-    <column>user_address2</column>
-    <column>user_address3</column>
-    <column>user_address4</column>
-    <column>user_address5</column>
-    <column>user_address6</column>
-    <column>user_comment</column>
-    <column>user_js_effects</column>
-    <column>user_location</column>
-    <column>user_oreon</column>
-    <column>user_enable_notifications</column>
-    <column>user_template_id</column>
-    <column>user_admin</column>
-    <column>user_type_msg</column>
-    <column>user_activate</column>
-    <column>user_auth_type</column>
-    <column>user_ldap_dn</column>
-    <column>ar_id</column>
-    <column>user_acl_group_list</column>
-    <column>user_autologin_key</column>
-    <column>user_charset</column>
-    <column>user_register</column>
+    <column>login</column>
+    <column>password</column>
+    <column>is_admin</column>
+    <column>is_locked</column>
+    <column>is_activated</column>
+    <column>is_password_old</column>
+    <column>language_id</column>
+    <column>timezone_id</column>
+    <column>contact_id</column>
+    <column>createdat</column>
+    <column>updatedat</column>
+    <column>auth_type</column>
+    <column>firstname</column>
+    <column>lastname</column>
+    <column>autologin_key</column>
+    
     <row>
       <value>1</value>
       <value>1</value>

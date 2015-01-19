@@ -35,9 +35,9 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Timeperiod;
-use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
-use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
+use CentreonConfiguration\Models\Timeperiod;
+use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
+use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
 
 class TimeperiodController extends \CentreonConfiguration\Controllers\BasicController
 {

@@ -35,8 +35,8 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \CentreonAdministration\Models\User as UserModel;
-use \CentreonAdministration\Internal\User;
+use CentreonAdministration\Models\User as UserModel;
+use CentreonAdministration\Internal\User;
 
 class UserController extends \CentreonAdministration\Controllers\BasicController
 {

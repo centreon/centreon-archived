@@ -48,8 +48,6 @@ class Hosttemplate extends \Centreon\Models\CentreonBaseModel
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "host_name";
     protected static $relations = array(
-        "\CentreonConfiguration\Models\Relation\Host\Contactgroup",
-        "\CentreonConfiguration\Models\Relation\Host\Contact",
         "\CentreonConfiguration\Models\Relation\Host\Hostgroup",
         "\CentreonConfiguration\Models\Relation\Host\Hostcategory",
         "\CentreonConfiguration\Models\Relation\Host\Service",

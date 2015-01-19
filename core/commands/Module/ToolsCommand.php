@@ -36,10 +36,10 @@
 
 namespace Centreon\Commands\Module;
 
-use \Centreon\Internal\Utils\String\CamelCaseTransformation;
-use \Centreon\Internal\Module\Generator;
-use \Centreon\Internal\Module\Informations;
-use \Centreon\Internal\Utils\CommandLine\InputOutput;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
+use Centreon\Internal\Module\Generator;
+use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Utils\CommandLine\InputOutput;
 
 /**
  * Description of Generate

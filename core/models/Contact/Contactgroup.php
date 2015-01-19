@@ -37,7 +37,7 @@
 
 namespace Centreon\Models\Relation\Contact;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Contactgroup extends CentreonRelationModel
 {

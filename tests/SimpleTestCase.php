@@ -36,7 +36,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Di,
+use Centreon\Internal\Di,
     \Centreon\Internal\Bootstrap;
 
 /**

@@ -162,67 +162,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         }
         return $hostTemplates;
     }
-
-    /**
-     * 
-     * @param int $host_id
-     * @return array
-     */
-    public static function getContacts($host_id)
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        $contactList = "";
-
-        $query = "SELECT contact_alias "
-            . "FROM cfg_contacts c, cfg_contacts_hosts_relations ch "
-            . "WHERE host_host_id = '$host_id' "
-            . "AND c.contact_id = ch.contact_id "
-            . "ORDER BY contact_alias";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($contactList != "") {
-                $contactList .= ",";
-            }
-            $contactList .= $row["contact_alias"];
-        }
-        return $contactList;
-    }
-
-    /**
-     * 
-     * @param int $host_id
-     * @return array
-     */
-    public static function getContactGroups($host_id)
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        $contactgroupList = "";
-
-        $query = "SELECT cg_name "
-            . "FROM cfg_contactgroups cg, cfg_contactgroups_hosts_relations cgh "
-            . "WHERE host_host_id = '$host_id' "
-            . "AND cg.cg_id = cgh.contactgroup_cg_id "
-            . "ORDER BY cg_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($contactgroupList != "") {
-                $contactgroupList .= ",";
-            }
-            $contactgroupList .= $row["cg_name"];
-        }
-        return $contactgroupList;
-    }
-
+    
     /**
      * Get the value from template
      *

@@ -36,9 +36,9 @@
 namespace Test\CentreonEngine\Repository;
 
 use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\ConnectorRepository;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Filesystem\Directory;
+use CentreonEngine\Repository\ConnectorRepository;
 
 class ConnectorRepositoryTest extends DbTestCase
 {

@@ -36,8 +36,8 @@
 
 namespace Centreon\Models;
 
-use \Centreon\Internal\Exception;
-use \Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
 
 /**
  * Abtract class for manage models

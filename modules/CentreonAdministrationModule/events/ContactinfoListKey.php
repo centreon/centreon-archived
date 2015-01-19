@@ -40,12 +40,12 @@ class ContactinfoListKey
 {
     /**
      *
-     * @var type 
+     * @var array 
      */
     private $keyList;
     
     /**
-     * 
+     * Constructor
      */
     public function __construct()
     {

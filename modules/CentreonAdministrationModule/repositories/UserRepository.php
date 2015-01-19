@@ -62,9 +62,9 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     public static $objectName = 'User';
 
     /**
-     * Create user
-     *
+     * 
      * @param array $givenParameters
+     * @return integer
      */
     public static function create($givenParameters)
     {
@@ -87,8 +87,8 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
 
     /**
      * 
-     * @param type $givenParameters
-     * @param type $login
+     * @param string $givenParameters
+     * @param string $login
      */
     public static function update($givenParameters, $login = null)
     {
@@ -114,8 +114,8 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     
     /**
      * 
-     * @param type $givenParameters
-     * @return type
+     * @param array $givenParameters
+     * @return string
      */
     private static function generateHashedPassword($givenParameters)
     {
@@ -131,9 +131,9 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     
     /**
      * 
-     * @param type $login
-     * @param type $password
-     * @param type $autologin_key
+     * @param string $login
+     * @param string $password
+     * @param string $autologin_key
      * @return type
      * @throws Exception
      */
@@ -174,8 +174,9 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     
     /**
      * 
-     * @param type $login
-     * @param type $password
+     * @param string $login
+     * @param string $password
+     * @return boolean
      */
     public static function checkPassword($login, $password)
     {
@@ -186,7 +187,13 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
             
             $explodedStoredPassword = explode('::', $user['password']);
             
-            $hashedPassword = hash_pbkdf2('sha256', $password, $explodedStoredPassword[0], $explodedStoredPassword[1], 183);
+            $hashedPassword = hash_pbkdf2(
+                'sha256',
+                $password,
+                $explodedStoredPassword[0],
+                $explodedStoredPassword[1],
+                183
+            );
             
             if ($explodedStoredPassword[2] === $hashedPassword) {
                 $loginResult = true;
@@ -232,8 +239,8 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     
     /**
      * 
-     * @param type $name
-     * @param type $email
+     * @param string $name
+     * @param string $email
      * @return string
      */
     public static function getUserIcon($name, $email)
@@ -252,8 +259,8 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
 
     /**
      * 
-     * @param type $user_id
-     * @param type $type
+     * @param integer $user_id
+     * @param string $type
      * @return string
      */
     public static function getNotificationCommand($user_id, $type)
@@ -284,8 +291,10 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     
     /**
      * 
-     * @param type $login
-     * @param type $password
+     * @param string $login
+     * @param string $password
+     * @return string
+     * @throws BadCredentialException
      */
     public static function getTokenForApi($login, $password)
     {
@@ -307,6 +316,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
     /**
      * 
      * @param string $token
+     * @return boolean
      */
     public static function checkApiToken($token)
     {
