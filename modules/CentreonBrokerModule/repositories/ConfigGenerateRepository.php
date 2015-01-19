@@ -36,6 +36,7 @@
 namespace CentreonBroker\Repository;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Db as CentreonDb;
 use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Poller;
 use CentreonBroker\Repository\BrokerRepository;
@@ -328,7 +329,7 @@ class ConfigGenerateRepository
         $this->baseConfig = array_merge($this->baseConfig, $paths);
         $this->baseConfig['poller_id'] = $this->pollerId;
         /* Information for database */
-        $dbInformation = \Centreon\Internal\Db::parseDsn(
+        $dbInformation = CentreonDb::parseDsn(
             $config->get('db_centreon', 'dsn'),
             $config->get('db_centreon', 'username'),
             $config->get('db_centreon', 'password')

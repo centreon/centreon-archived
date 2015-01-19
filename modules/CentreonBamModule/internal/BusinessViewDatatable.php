@@ -36,14 +36,15 @@
 
 namespace CentreonBam\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of BaDatatable
  *
  * @author lionel
  */
-class BusinessViewDatatable extends \Centreon\Internal\Datatable
+class BusinessViewDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

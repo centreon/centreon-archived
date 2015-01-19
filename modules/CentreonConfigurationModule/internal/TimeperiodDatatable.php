@@ -36,14 +36,15 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of TimeperiodDatatable
  *
  * @author lionel
  */
-class TimeperiodDatatable extends \Centreon\Internal\Datatable
+class TimeperiodDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

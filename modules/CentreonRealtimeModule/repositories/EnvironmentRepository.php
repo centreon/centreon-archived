@@ -35,6 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
+use Centreon\Internal\Di;
+
 /**
  * Repository for environment status
  *
@@ -50,7 +52,7 @@ class EnvironmentRepository
      */
     public static function getHostgroupAlerts()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare(
             "SELECT COUNT(service_id) as alerts, hg.hostgroup_id, hg.name
             FROM rt_services s, rt_hosts_hostgroups hhg, rt_hostgroups hg
@@ -78,7 +80,7 @@ class EnvironmentRepository
      */
     public static function getServicegroupAlerts()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare(
             "SELECT COUNT(s.service_id) as alerts, sg.servicegroup_id, sg.name
             FROM rt_services s, rt_services_servicegroups ssg, rt_servicegroups sg

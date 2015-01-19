@@ -32,7 +32,12 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonMain\Controllers;
+
+use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
+use Centreon\Internal\Form\Wizard;
 
 /**
  * Validators controller
@@ -41,7 +46,7 @@ namespace CentreonMain\Controllers;
  * @package Centreon
  * @subpackage Controllers
  */
-class ImageController extends \Centreon\Internal\Controller
+class ImageController extends Controller
 {
     
     /**
@@ -52,9 +57,9 @@ class ImageController extends \Centreon\Internal\Controller
      */
     public function addAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
-        $form = new \Centreon\Internal\Form\Wizard(
+        $form = new Wizard(
             rtrim($config->get('global', 'base_url'), '/').'/media/image/add',
             0,
             array('id' => 0)
@@ -69,7 +74,7 @@ class ImageController extends \Centreon\Internal\Controller
      */
     public function centreonIconAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $finalIconList = array();

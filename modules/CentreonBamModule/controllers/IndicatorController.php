@@ -36,6 +36,8 @@
 
 namespace CentreonBam\Controllers;
 
+use Centreon\Internal\Di;
+
 class IndicatorController extends BasicController
 {
     protected $objectDisplayName = 'Indicator';
@@ -124,7 +126,7 @@ class IndicatorController extends BasicController
      */
     public function addAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl = Di::getDefault()->get('template');
         $tpl->assign('validateUrl', '/centreon-bam/indicator/add');
         parent::addAction();
     }

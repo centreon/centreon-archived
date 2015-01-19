@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,19 +32,21 @@
  * For more information : contact@centreon.com
  * 
  */
+
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Form;
 use Centreon\Internal\Form\Generator;
 use CentreonAdministration\Models\Options;
 use CentreonAdministration\Repository\OptionRepository;
+use Centreon\Internal\Controller;
 
 /**
  * Description of OptionsController
  *
  * @author lionel
  */
-class OptionsController extends \Centreon\Internal\Controller
+class OptionsController extends Controller
 {
     public static $moduleName = 'centreon-administration';
     

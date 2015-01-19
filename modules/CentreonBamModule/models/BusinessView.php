@@ -35,12 +35,14 @@
 
 namespace CentreonBam\Models;
 
+use Centreon\Models\CentreonBaseModel;
+
 /**
  * Used for interacting with host categories
  *
  * @author sylvestre
  */
-class BusinessView extends \Centreon\Models\CentreonBaseModel
+class BusinessView extends CentreonBaseModel
 {
     protected static $table = "cfg_bam_bagroups";
     protected static $primaryKey = "id_ba_group";

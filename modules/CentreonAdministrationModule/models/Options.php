@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +32,10 @@
  * For more information : contact@centreon.com
  * 
  */
+
 namespace CentreonAdministration\Models;
+
+use Centreon\Internal\Di;
 
 /**
  * Description of Options
@@ -44,7 +46,7 @@ class Options
 {
     public static function getOptionsKeysList()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->query("SELECT `key` FROM `cfg_options`");
         $list = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
@@ -58,7 +60,7 @@ class Options
     
     public static function getList($group = null, array $options = array())
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         
         $conditions = "";
         if (!is_null($group)) {
@@ -96,7 +98,7 @@ class Options
      */
     public static function update($values)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         
         foreach ($values as $key => $value) {
             $sql = "UPDATE `cfg_options` SET `value`='$value' WHERE `key`='$key'";
@@ -110,7 +112,7 @@ class Options
      */
     public static function insert($values, $group = "default")
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         
         foreach ($values as $key => $value) {
             $sql = "INSERT INTO `cfg_options`(`group`, `key`, `value`) VALUES('$group', '$key', '$value');";

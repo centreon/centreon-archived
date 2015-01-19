@@ -35,15 +35,16 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use \Centreon\Internal\Di,
-    \CentreonConfiguration\Repository\ConfigMoveRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\ConfigMoveRepository;
+use Centreon\Internal\Controller;
 
 /**
  * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers                                   
  */
-class ConfigMoveApi extends \Centreon\Internal\Controller
+class ConfigMoveApi extends Controller
 {
     /**
      * Action for Testing configuration files

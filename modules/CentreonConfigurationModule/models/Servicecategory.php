@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with service categories
  *
  * @author sylvestre
  */
-class Servicecategory extends \Centreon\Models\CentreonBaseModel
+class Servicecategory extends CentreonBaseModel
 {
     protected static $table = "cfg_servicecategories";
     protected static $primaryKey = "sc_id";

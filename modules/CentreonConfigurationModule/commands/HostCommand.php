@@ -35,13 +35,16 @@
 
 namespace CentreonConfiguration\Commands;
 
+use Centreon\Internal\Command\AbstractCommand;
+use CentreonConfiguration\Models\Host;
+
 /**
  * Login controller
  * @authors Julien Mathis
  * @package Centreon
  * @subpackage Controllers
  */
-class HostCommand extends \Centreon\Internal\Command\AbstractCommand
+class HostCommand extends AbstractCommand
 {
     /**
      * Action for listing hosts
@@ -54,7 +57,7 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
          */
         $params = 'host_id,host_name,host_alias,host_address,host_activate';
         
-        $hostList = \CentreonConfiguration\Models\Host::getList(
+        $hostList = Host::getList(
             $params,
             -1,
             0,
@@ -91,7 +94,7 @@ class HostCommand extends \Centreon\Internal\Command\AbstractCommand
         /*
          * Get host informations
          */
-        $hostList = \CentreonConfiguration\Models\Host::getList('*', -1, 0, null, "ASC", $params, "AND");
+        $hostList = Host::getList('*', -1, 0, null, "ASC", $params, "AND");
         
         if (count($hostList) > 0) {
             $result = "id;name;alias;address;activate\n";

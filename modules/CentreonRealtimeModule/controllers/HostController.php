@@ -41,6 +41,7 @@ use CentreonRealtime\Events\HostDetailData;
 use CentreonRealtime\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostRepository as HostConfRepository;
 use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
 
 /**
  * Display service monitoring states
@@ -49,7 +50,7 @@ use Centreon\Internal\Di;
  * @package CentreonRealtime
  * @subpackage Controllers
  */
-class HostController extends \Centreon\Internal\Controller
+class HostController extends Controller
 {
     protected $datatableObject = '\CentreonRealtime\Internal\HostDatatable';
     
@@ -64,7 +65,7 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function displayHostsAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         /* Load css */
         $this->tpl->addCss('jquery.dataTables.min.css')
             ->addCss('dataTables.tableTools.min.css')
@@ -125,7 +126,7 @@ class HostController extends \Centreon\Internal\Controller
      */
     public function listAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);

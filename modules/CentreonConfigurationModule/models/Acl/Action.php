@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Acl;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with Acl Actions
  *
  * @author sylvestre
  */
-class Action extends \Centreon\Models\CentreonBaseModel
+class Action extends CentreonBaseModel
 {
     protected static $table = "cfg_acl_actions";
     protected static $primaryKey = "acl_action_id";

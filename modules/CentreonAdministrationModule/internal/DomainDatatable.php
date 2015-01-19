@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,14 +35,15 @@
 
 namespace CentreonAdministration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of DomainDatatable
  *
  * @author lionel
  */
-class DomainDatatable extends \Centreon\Internal\Datatable
+class DomainDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

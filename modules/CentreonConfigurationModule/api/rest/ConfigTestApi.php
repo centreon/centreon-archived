@@ -35,14 +35,16 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
+use CentreonConfiguration\Repository\ConfigTestRepository;
 
 /**
  * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers                                   
  */
-class ConfigTestApi extends \Centreon\Internal\Controller
+class ConfigTestApi extends Controller
 {
     /**
      * Action for Testing configuration files
@@ -57,7 +59,7 @@ class ConfigTestApi extends \Centreon\Internal\Controller
 
         $param = $router->request()->paramsNamed();
 
-        $obj = new \CentreonConfiguration\Repository\ConfigTestRepository($param["id"]);
+        $obj = new ConfigTestRepository($param["id"]);
         $obj->checkConfig();
 
         $router->response()->json(

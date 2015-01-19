@@ -34,10 +34,12 @@
  *
  */
 
-
 namespace CentreonMain\Controllers;
 
-class MenuController extends \Centreon\Internal\Controller
+use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
+
+class MenuController extends Controller
 {
     /**
      * Get menu
@@ -48,7 +50,7 @@ class MenuController extends \Centreon\Internal\Controller
     public function getmenuAction()
     {
         $params = $this->getParams("get");
-        $menu = \Centreon\Internal\Di::getDefault()->get('menu');
+        $menu = Di::getDefault()->get('menu');
         $menu_id = null;
         if (isset($params->menu_id)) {
             $menu_id = $params->menu_id;

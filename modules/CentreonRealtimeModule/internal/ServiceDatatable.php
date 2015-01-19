@@ -36,16 +36,17 @@
 
 namespace CentreonRealtime\Internal;
 
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
-use \CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
-use \Centreon\Internal\Utils\Datetime;
+use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of ServiceDatatable
  *
  * @author lionel
  */
-class ServiceDatatable extends \Centreon\Internal\Datatable
+class ServiceDatatable extends Datatable
 {
     protected static $hook = 'displayTagList';
     protected static $hookParams = array(

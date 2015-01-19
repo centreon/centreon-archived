@@ -37,8 +37,11 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Form;
 use Centreon\Internal\Di;
+use CentreonConfiguration\Controllers\BasicController;
+use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Host;
 
-class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicController
+class ServiceGroupController extends BasicController
 {
     protected $objectDisplayName = 'Servicegroup';
     protected $objectName = 'servicegroup';
@@ -230,7 +233,7 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function servicesForServicegroupAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -241,11 +244,11 @@ class ServiceGroupController extends \CentreonConfiguration\Controllers\BasicCon
         //
         $finalList = array();
         foreach ($listOfServices as $obj) {
-            $serviceDescription = \CentreonConfiguration\Models\Service::getParameters(
+            $serviceDescription = Service::getParameters(
                 $obj['service_id'],
                 'service_description'
             );
-            $hostName = \CentreonConfiguration\Models\Host::getParameters($obj['host_id'], 'host_name');
+            $hostName = Host::getParameters($obj['host_id'], 'host_name');
             $finalList[] = array(
                 "id" => $obj['service_id'] . '_' . $obj['host_id'],
                 "text" => $hostName['host_name'] . ' ' . $serviceDescription['service_description']

@@ -34,10 +34,14 @@
  *
  */
 
-
 namespace CentreonAdministration\Controllers;
 
-class ExtensionsController extends \Centreon\Internal\Controller
+use Centreon\Internal\Controller;
+use Centreon\Internal\Di;
+use Centreon\Models\Module;
+use Centreon\Internal\Form;
+
+class ExtensionsController extends Controller
 {
     /**
      *
@@ -110,7 +114,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
     public function displayModuleAction()
     {
         $params = $this->getParams();
-        $module = \Centreon\Models\Module::get($params['id']);
+        $module = Module::get($params['id']);
         echo "<pre>";
             var_dump($module);
         echo "<pre>";
@@ -153,7 +157,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
             }
         } catch (\Exception $e) {
             $moduleInstaller->remove();
-            if ("dev" === \Centreon\Internal\Di::getDefault()->get('config')->get('global', 'env')) {
+            if ("dev" === Di::getDefault()->get('config')->get('global', 'env')) {
                 echo '<pre>';
                 echo $e->getMessage();
                 var_dump(debug_backtrace());
@@ -176,7 +180,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
     {
         $router = $this->di->get('router');
         $params = $this->getParams();
-        $module = \Centreon\Models\Module::get($params['id']);
+        $module = Module::get($params['id']);
         $config = $this->di->get('config');
         $centreonPath = $config->get('global', 'centreon_path');
         
@@ -206,7 +210,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         
         $params = $this->getParams();
         try {
-            \Centreon\Models\Module::update($params['id'], array('isactivated' => '1'));
+            Module::update($params['id'], array('isactivated' => '1'));
         } catch (\Exception $e) {
             $router->response()->json(array('success' => false));
             return;
@@ -225,7 +229,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         
         $params = $this->getParams();
         try {
-            \Centreon\Models\Module::update($params['id'], array('isactivated' => '0'));
+            Module::update($params['id'], array('isactivated' => '0'));
         } catch (\Exception $e) {
             $router->response()->json(array('success' => false));
             return;
@@ -240,7 +244,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
@@ -255,7 +259,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
      */
     protected function init()
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->di = Di::getDefault();
         /* Init template */
         $this->tpl = $this->di->get('template');
         
@@ -289,7 +293,7 @@ class ExtensionsController extends \Centreon\Internal\Controller
         parent::init();
 
         /* Set Cookie */
-        $token = \Centreon\Internal\Form::getSecurityToken();
+        $token = Form::getSecurityToken();
         setcookie("ajaxToken", $token, time()+15, '/');
     }
 }

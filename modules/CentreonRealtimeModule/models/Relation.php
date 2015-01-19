@@ -34,8 +34,9 @@
  *
  */
 
-
 namespace CentreonRealtime\Models;
+
+use Centreon\Internal\Di;
 
 /**
  * Centreon Object Relation
@@ -81,7 +82,7 @@ abstract class Relation
     {
         $sql = "INSERT INTO " . static::$relationTable . " ( " . static::$firstKey . ", " . static::$secondKey . ") 
             VALUES (?, ?)";
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey, $skey));
     }
@@ -106,7 +107,7 @@ abstract class Relation
             $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
             $args = array($fkey);
         }
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute($args);
     }
@@ -120,7 +121,7 @@ abstract class Relation
      */
     protected static function getResult($sql, $params = array())
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -195,7 +196,7 @@ abstract class Relation
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $sql = $db->limit($sql, $count, $offset);
         }
         $result = static::getResult($sql, $filterTab);

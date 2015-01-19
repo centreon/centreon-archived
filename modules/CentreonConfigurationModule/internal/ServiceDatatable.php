@@ -41,13 +41,14 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 use Centreon\Internal\Di;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of ServiceDatatable
  *
  * @author lionel
  */
-class ServiceDatatable extends \Centreon\Internal\Datatable
+class ServiceDatatable extends Datatable
 {
     protected static $objectId = 'service_id';
     /**

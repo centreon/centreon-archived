@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with Connector objects
  *
  * @author sylvestre
  */
-class Connector extends \Centreon\Models\CentreonBaseModel
+class Connector extends CentreonBaseModel
 {
     protected static $table = "cfg_connectors";
     protected static $primaryKey = "id";

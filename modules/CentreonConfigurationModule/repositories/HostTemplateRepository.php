@@ -35,14 +35,18 @@
 
 namespace CentreonConfiguration\Repository;
 
+use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Hosttemplate;
+use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Models\Timeperiod;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class HostTemplateRepository extends \CentreonConfiguration\Repository\Repository
+class HostTemplateRepository extends Repository
 {
     /**
      * List of column for inheritance
@@ -102,7 +106,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
      */
     public static function getTemplates($host_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -136,7 +140,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
      */
     public static function getTemplateList($host_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -170,7 +174,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
      */
     public static function getContacts($host_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -200,7 +204,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
      */
     public static function getContactGroups($host_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -261,11 +265,11 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         switch ($name) {
             case 'command_command_id':
             case 'command_command_id2':
-                $command = \CentreonConfiguration\Models\Command::get($value);
+                $command = Command::get($value);
                 return $command['command_name'];
             case 'timeperiod_tp_id':
             case 'timeperiod_tp_id2':
-                $timeperiod = \CentreonConfiguration\Models\Timeperiod::get($value);
+                $timeperiod = Timeperiod::get($value);
                 return $timeperiod['tp_name'];
             case 'host_active_checks_enabled':
             case 'host_passive_checks_enabled':

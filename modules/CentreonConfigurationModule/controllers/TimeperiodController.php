@@ -35,11 +35,13 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Timeperiod;
-use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
-use \CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Timeperiod;
+use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
+use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
+use CentreonConfiguration\Controllers\BasicController;
 
-class TimeperiodController extends \CentreonConfiguration\Controllers\BasicController
+class TimeperiodController extends BasicController
 {
     protected $objectDisplayName = 'Timeperiod';
     protected $objectName = 'timeperiod';
@@ -191,7 +193,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      */
     public function includedTimeperiodAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -225,7 +227,7 @@ class TimeperiodController extends \CentreonConfiguration\Controllers\BasicContr
      */
     public function excludedTimeperiodAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');

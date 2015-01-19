@@ -32,9 +32,11 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonRealtime\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
 
 /**
  * Display service monitoring states
@@ -43,7 +45,7 @@ use Centreon\Internal\Di;
  * @package Centreon
  * @subpackage CentreonRealtime
  */
-class PollerController extends \Centreon\Internal\Controller
+class PollerController extends Controller
 {
 
     /**

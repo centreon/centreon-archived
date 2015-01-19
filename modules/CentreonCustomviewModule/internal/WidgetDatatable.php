@@ -36,12 +36,16 @@
 
 namespace CentreonCustomview\Internal;
 
+use Centreon\Internal\Di;
+use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Datatable;
+
 /**
  * Description of WidgetDatatable
  *
  * @author lionel
  */
-class WidgetDatatable extends \Centreon\Internal\Datatable
+class WidgetDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -281,8 +285,8 @@ class WidgetDatatable extends \Centreon\Internal\Datatable
             $widgetNameList[] = $cWidget['shortname'];
         }
 
-        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
-        $modules = \Centreon\Internal\Module\Informations::getModuleList(true);
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $modules = Informations::getModuleList(true);
         // Add file system repo
         $possibleWidgetDir = array(
             $path . "/widgets/*Widget/"

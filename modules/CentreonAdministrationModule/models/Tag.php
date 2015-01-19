@@ -35,6 +35,8 @@
 
 namespace CentreonAdministration\Models;
 
+use Centreon\Models\CentreonBaseModel;
+
 /**
  * Models for tags
  *
@@ -43,7 +45,7 @@ namespace CentreonAdministration\Models;
  * @package Centreon
  * @package CentreonAdministration
  */
-class Tag extends \Centreon\Models\CentreonBaseModel
+class Tag extends CentreonBaseModel
 {
     protected static $table = 'cfg_tags';
     protected static $primaryKey = 'tag_id';

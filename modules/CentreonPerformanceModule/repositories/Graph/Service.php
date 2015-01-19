@@ -36,6 +36,9 @@
 
 namespace CentreonPerformance\Repository\Graph;
 
+use Centreon\Internal\Di;
+use CentreonPerformance\Repository\Graph;
+
 /**
  * Class for generate values for graph service
  *
@@ -43,7 +46,7 @@ namespace CentreonPerformance\Repository\Graph;
  * @version 3.0.0
  * @package Centreon
  */
-class Service extends \CentreonPerformance\Repository\Graph
+class Service extends Graph
 {
     /**
      * Constructor
@@ -54,7 +57,7 @@ class Service extends \CentreonPerformance\Repository\Graph
      */
     public function __construct($serviceId, $startTime, $endTime)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         /* Get the list of metrics */

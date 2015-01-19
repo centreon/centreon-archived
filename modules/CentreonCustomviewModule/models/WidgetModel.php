@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonCustomview\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with widget objects
  *
  * @author sylvestre
  */
-class WidgetModel extends \Centreon\Models\CentreonBaseModel
+class WidgetModel extends CentreonBaseModel
 {
     protected static $table = "cfg_widgets_models";
     protected static $primaryKey = "widget_model_id";

@@ -35,13 +35,18 @@
 
 namespace CentreonConfiguration\Commands;
 
+use Centreon\Internal\Command\AbstractCommand;
+use CentreonConfiguration\Models\Relation\Service\Host as HostServiceRelation;
+use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Models\Service;
+
 /**
  * Login controller
  * @authors Julien Mathis
  * @package Centreon
  * @subpackage Controllers
  */
-class ServiceCommand extends \Centreon\Internal\Command\AbstractCommand
+class ServiceCommand extends AbstractCommand
 {
     /**
      * Action for listing hosts
@@ -66,7 +71,7 @@ class ServiceCommand extends \Centreon\Internal\Command\AbstractCommand
             'service_activate'
         );
         
-        $serviceList = \CentreonConfiguration\Models\Relation\Service\Host::getMergedParameters(
+        $serviceList = HostServiceRelation::getMergedParameters(
             $serviceParams,
             $hostParams
         );
@@ -76,7 +81,7 @@ class ServiceCommand extends \Centreon\Internal\Command\AbstractCommand
                 . "normal check interval;retry check interval;max check attempts;"
                 . "active checks enabled;passive checks enabled;activate\n";
             foreach ($serviceList as $service) {
-                $command = \CentreonConfiguration\Models\Command::getParameters($service['command_command_id'], array('command_name'));
+                $command = Command::getParameters($service['command_command_id'], array('command_name'));
                 $result .= "$service[host_id];$service[host_name];"
                     . "$service[service_description];$command[command_name];$service[service_normal_check_interval];"
                     . "$service[service_retry_check_interval];$service[service_max_check_attempts];"
@@ -114,7 +119,7 @@ class ServiceCommand extends \Centreon\Internal\Command\AbstractCommand
         /*
          * Get host informations
          */
-        $hostList = \CentreonConfiguration\Models\Service::getList('*', -1, 0, null, "ASC", $params, "AND");
+        $hostList = Service::getList('*', -1, 0, null, "ASC", $params, "AND");
         
         if (count($hostList) > 0) {
             $result = "id;name;alias;address;activate\n";

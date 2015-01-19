@@ -36,14 +36,15 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of HostCategoryDatatable
  *
  * @author lionel
  */
-class HostCategoryDatatable extends \Centreon\Internal\Datatable
+class HostCategoryDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

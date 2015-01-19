@@ -35,14 +35,16 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use \CentreonConfiguration\Repository\ConfigGenerateRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\ConfigGenerateRepository;
+use Centreon\Internal\Controller;
 
 /**
  * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers                                   
  */
-class ConfigGenerateApi extends \Centreon\Internal\Controller
+class ConfigGenerateApi extends Controller
 {
     /**
      * Action for Generating configuration files
@@ -52,7 +54,7 @@ class ConfigGenerateApi extends \Centreon\Internal\Controller
      */
     public function generateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
 
         $param = $router->request()->paramsNamed();

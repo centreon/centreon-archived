@@ -35,7 +35,12 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class HostCategoryController extends \CentreonConfiguration\Controllers\BasicController
+use Centreon\Internal\Di;
+use CentreonConfiguration\Controllers\BasicController;
+use CentreonConfiguration\Models\Hostcategory;
+use Centreon\Models\Image;
+
+class HostCategoryController extends BasicController
 {
     protected $objectDisplayName = 'Hostcategory';
     protected $objectName = 'hostcategory';
@@ -239,17 +244,17 @@ class HostCategoryController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public function iconForHostAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
         
         $finalIconList = array();
-        $iconId = \CentreonConfiguration\Models\Hostcategory::get($requestParam['id'], "icon_id");
+        $iconId = Hostcategory::get($requestParam['id'], "icon_id");
         
         if (is_array($iconId) && (count($iconId) > 0)) {
         
-            $icon = \Centreon\Models\Image::getIcon($iconId['icon_id']);
+            $icon = Image::getIcon($iconId['icon_id']);
 
             if (count($icon) > 0) {
                 $filenameExploded = explode('.', $icon['filename']);

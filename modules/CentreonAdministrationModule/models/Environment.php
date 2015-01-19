@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonAdministration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with Environments
  *
  * @author lionel
  */
-class Environment extends \Centreon\Models\CentreonBaseModel
+class Environment extends CentreonBaseModel
 {
     protected static $table = "cfg_environments";
     protected static $primaryKey = "environment_id";

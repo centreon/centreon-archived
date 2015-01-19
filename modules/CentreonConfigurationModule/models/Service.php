@@ -34,15 +34,17 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
+use Centreon\Internal\Di;
 
 /**
  * Used for interacting with services
  *
  * @author sylvestre
  */
-class Service extends \Centreon\Models\CentreonBaseModel
+class Service extends CentreonBaseModel
 {
     protected static $table = "cfg_services";
     protected static $primaryKey = "service_id";
@@ -56,7 +58,7 @@ class Service extends \Centreon\Models\CentreonBaseModel
      */
     public static function insert($params = array())
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $sql = "INSERT INTO " . static::$table;
         $sqlFields = "";
         $sqlValues = "";

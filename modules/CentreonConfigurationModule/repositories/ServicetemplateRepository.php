@@ -35,15 +35,19 @@
 
 namespace CentreonConfiguration\Repository;
 
+use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Servicetemplate;
+use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Models\Timeperiod;
+use CentreonConfiguration\Repository\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class ServicetemplateRepository extends \CentreonConfiguration\Repository\Repository
+class ServicetemplateRepository extends Repository
 {
     /**
      *
@@ -103,7 +107,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
      */
     public static function getTemplateName($template_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -130,7 +134,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
      */
     public static function getContacts($service_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -160,7 +164,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
      */
     public static function getContactGroups($service_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -191,7 +195,7 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
     public static function getMyServiceTemplateModels($service_template_id)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         $stmt = $dbconn->query(
@@ -254,11 +258,11 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         switch ($name) {
             case 'command_command_id':
             case 'command_command_id2':
-                $command = \CentreonConfiguration\Models\Command::get($value);
+                $command = Command::get($value);
                 return $command['command_name'];
             case 'timeperiod_tp_id':
             case 'timeperiod_tp_id2':
-                $timeperiod = \CentreonConfiguration\Models\Timeperiod::get($value);
+                $timeperiod = Timeperiod::get($value);
                 return $timeperiod['tp_name'];
             case 'service_is_volatile':
             case 'service_active_checks_enabled':

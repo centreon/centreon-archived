@@ -34,10 +34,10 @@
  * 
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Host;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
 class Icon extends CentreonRelationModel
 {
@@ -56,7 +56,7 @@ class Icon extends CentreonRelationModel
     {
         if (isset($skey) && is_numeric($skey)) {
             $sql = 'INSERT INTO cfg_hosts_images_relations(host_id, binary_id) VALUES(?, ?)';
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare($sql);
             $stmt->execute(array($fkey, $skey));
         }
@@ -70,7 +70,7 @@ class Icon extends CentreonRelationModel
     public static function delete($fkey, $skey = null)
     {
         $sql = 'DELETE FROM cfg_hosts_images_relations WHERE host_id = ?';
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey));
     }
@@ -88,7 +88,7 @@ class Icon extends CentreonRelationModel
             . "AND filetype = 1 "
             . "AND hir.binary_id = b.binary_id "
             . "LIMIT $limit";
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($hostId));
         $rawIconList = $stmt->fetchAll(\PDO::FETCH_ASSOC);

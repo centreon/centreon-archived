@@ -98,7 +98,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
     public static function getNotificationInfos($contactId, $object)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         if ($object == 'host') {
@@ -152,7 +152,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getNotificationCommand($contact_id, $type)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');
@@ -183,7 +183,7 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getContactContactGroup($contact_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');

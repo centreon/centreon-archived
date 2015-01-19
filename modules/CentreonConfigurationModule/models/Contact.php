@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with Contact objects
  *
  * @author sylvestre
  */
-class Contact extends \Centreon\Models\CentreonBaseModel
+class Contact extends CentreonBaseModel
 {
     protected static $table = "cfg_contacts";
     protected static $primaryKey = "contact_id";

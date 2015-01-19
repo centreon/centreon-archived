@@ -35,14 +35,15 @@
 
 namespace CentreonAdministration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Repository for Acl menu listing
  *
  * @author Sylvestre Ho
  */
-class AclmenuDatatable extends \Centreon\Internal\Datatable
+class AclmenuDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     

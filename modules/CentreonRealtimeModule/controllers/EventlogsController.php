@@ -40,6 +40,7 @@ use Centreon\Internal\Utils\Status;
 use CentreonRealtime\Repository\EventlogsRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\ServiceRepository;
+use Centreon\Internal\Controller;
 
 /**
  * Display the logs of engine
@@ -48,7 +49,7 @@ use CentreonConfiguration\Repository\ServiceRepository;
  * @package CentreonRealtime
  * @subpackage Controllers
  */
-class EventlogsController extends \Centreon\Internal\Controller
+class EventlogsController extends Controller
 {
     /**
      * The page structure for display

@@ -35,15 +35,17 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Utils\Datetime;
-use \Centreon\Internal\Utils\Status as UtilStatus;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Utils\Status as UtilStatus;
+use CentreonRealtime\Repository\Repository;
 
 /**
  * @author Julien Mathis <jmathis@merethis.com>
  * @package CentreonRealtime
  * @subpackage Repository
  */
-class HostRepository extends \CentreonRealtime\Repository\Repository
+class HostRepository extends Repository
 {
     /**
      *
@@ -78,7 +80,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
     public static function getStatus($hostId)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         $stmt = $dbconn->prepare('SELECT state as state FROM rt_hosts WHERE host_id = ? AND enabled = 1 LIMIT 1');
@@ -100,7 +102,7 @@ class HostRepository extends \CentreonRealtime\Repository\Repository
         $finalInfo = array();
         
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         $stmt = $dbconn->prepare('SELECT '

@@ -35,7 +35,13 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form;
+use Centreon\Internal\Acl;
+use Centreon\Internal\Exception;
+use CentreonConfiguration\Models\Acl\Menu;
+use CentreonConfiguration\Models\Relation\Aclgroup\Aclmenu as AclMenuRelation;
+use Centreon\Repository\AclmenuRepository;
 
 class AclmenuController extends BasicController
 {
@@ -98,22 +104,22 @@ class AclmenuController extends BasicController
                     }
                     switch ($aclType) {
                         case 'acl_create':
-                            $flag = \Centreon\Internal\Acl::ADD;
+                            $flag = Acl::ADD;
                             break;
                         case 'acl_update':
-                            $flag = \Centreon\Internal\Acl::UPDATE;
+                            $flag = Acl::UPDATE;
                             break;
                         case 'acl_delete':
-                            $flag = \Centreon\Internal\Acl::DELETE;
+                            $flag = Acl::DELETE;
                             break;
                         case 'acl_view':
-                            $flag = \Centreon\Internal\Acl::VIEW;
+                            $flag = Acl::VIEW;
                             break;
                         case 'acl_advanced':
-                            $flag = \Centreon\Internal\Acl::ADVANCED;
+                            $flag = Acl::ADVANCED;
                             break;
                         default:
-                            throw new \Centreon\Internal\Exception(
+                            throw new Exception(
                                 sprintf('Unknown acl type %s', $aclType)
                             );
                             break;
@@ -141,18 +147,18 @@ class AclmenuController extends BasicController
                 'enabled' => $givenParameters['enabled'],
             );
             
-            $aclmenuObj = new \CentreonConfiguration\Models\Acl\Menu();
-            $aclMenuGroupRelation = new \CentreonConfiguration\Models\Relation\Aclgroup\Aclmenu();
+            $aclmenuObj = new Menu();
+            $aclMenuGroupRelation = new AclMenuRelation();
             try {
                 $aclmenuObj->update($givenParameters['acl_menu_id'], $aclmenu);
                 $aclData = array();
                 $this->setAclMenuData($aclData, $givenParameters);
-                \Centreon\Repository\AclmenuRepository::updateAclLevel(
+                AclmenuRepository::updateAclLevel(
                     $givenParameters['acl_menu_id'],
                     $aclData
                 );
                 $aclMenuGroupRelation->delete(null, $givenParameters['acl_menu_id']);
-                $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+                $db = Di::getDefault()->get('db_centreon');
                 $db->beginTransaction();
                 $aclgroups = explode(",", $givenParameters['acl_groups']);
                 foreach ($aclgroups as $aclgroupId) {

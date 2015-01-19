@@ -36,7 +36,8 @@
 
 namespace CentreonConfiguration\Models\Relation\Hosttemplate;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
 class Servicetemplate extends CentreonRelationModel
 {
@@ -124,7 +125,7 @@ class Servicetemplate extends CentreonRelationModel
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $sql = $db->limit($sql, $count, $offset);
         }
         $result = static::getResult($sql, $filterTab);

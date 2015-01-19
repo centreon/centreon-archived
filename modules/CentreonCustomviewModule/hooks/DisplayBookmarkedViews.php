@@ -32,7 +32,11 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonCustomview\Hooks;
+
+use Centreon\Internal\Di;
+use CentreonCustomview\Repository\CustomviewRepository;
 
 class DisplayBookmarkedViews
 {
@@ -43,13 +47,13 @@ class DisplayBookmarkedViews
      */
     public static function execute($params)
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         if (!preg_match("/^\/centreon-customview/", $router->getCurrentUri())) {
             return;
         }
         $user = $_SESSION['user'];
-        $bookmarkedViews = \CentreonCustomview\Repository\CustomviewRepository::getCustomViewsOfUser($user->getId());
-        $publicViews = \CentreonCustomview\Repository\CustomviewRepository::getPublicViews();
+        $bookmarkedViews = CustomviewRepository::getCustomViewsOfUser($user->getId());
+        $publicViews = CustomviewRepository::getPublicViews();
         foreach ($publicViews as $viewId => $view) {
             if (isset($bookmarkedViews[$viewId])) {
                 unset($publicViews[$viewId]);

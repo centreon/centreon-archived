@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with traps
  *
  * @author sylvestre
  */
-class Trap extends \Centreon\Models\CentreonBaseModel
+class Trap extends CentreonBaseModel
 {
     protected static $table = "cfg_traps";
     protected static $primaryKey = "traps_id";

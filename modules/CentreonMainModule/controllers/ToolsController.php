@@ -35,6 +35,8 @@
 namespace CentreonMain\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
+use Centreon\Models\File;
 
 /**
  * Tools controller
@@ -43,7 +45,7 @@ use Centreon\Internal\Di;
  * @package Centreon
  * @subpackage Controllers
  */
-class ToolsController extends \Centreon\Internal\Controller
+class ToolsController extends Controller
 {
     /**
      *
@@ -208,7 +210,7 @@ class ToolsController extends \Centreon\Internal\Controller
                     'filetype' => 1,
                     'binary_content' => file_get_contents($fileDestination)
                 );
-                \Centreon\Models\File::insert($fileParam);
+                File::insert($fileParam);
                 
                 $fileUploadResult = array(
                     'url' => $baseUrl.$uploadedFile['name'],

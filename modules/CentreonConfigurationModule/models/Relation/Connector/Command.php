@@ -34,10 +34,11 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Connector;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
+use CentreonConfiguration\Models\Command;
 
 class Command extends CentreonRelationModel
 {
@@ -56,7 +57,7 @@ class Command extends CentreonRelationModel
      */
     public static function insert($fkey, $skey = null)
     {
-        \CentreonConfiguration\Models\Command::update($skey, array('connector_id' => $fkey));
+        Command::update($skey, array('connector_id' => $fkey));
     }
     
     /**
@@ -70,7 +71,7 @@ class Command extends CentreonRelationModel
     {
         $sql = "UPDATE cfg_commands SET connector_id = NULL WHERE connector_id = ?";
         $args = array($skey);
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute($args);
     }

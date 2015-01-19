@@ -35,6 +35,8 @@
 namespace CentreonMain\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
+use CentreonMain\Events\Status;
 
 /**
  * Home controller
@@ -42,7 +44,7 @@ use Centreon\Internal\Di;
  * @package Centreon
  * @subpackage Controllers
  */
-class MainController extends \Centreon\Internal\Controller
+class MainController extends Controller
 {
     public static $moduleName = 'CentreonMain';
     
@@ -54,7 +56,7 @@ class MainController extends \Centreon\Internal\Controller
      */
     public function indexAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $backUrl = $router->getPathFor('/centreon-customview');
         $router->response()->redirect($backUrl, 200);
@@ -83,7 +85,7 @@ class MainController extends \Centreon\Internal\Controller
         $events = Di::getDefault()->get('events');
         $status = array();
 
-        $statusEvent = new \CentreonMain\Events\Status($status);
+        $statusEvent = new Status($status);
 
         $events->emit('centreon-main.status', array($statusEvent));
 

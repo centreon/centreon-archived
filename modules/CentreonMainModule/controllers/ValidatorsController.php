@@ -32,7 +32,15 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonMain\Controllers;
+
+use Centreon\Internal\Di;
+use Centreon\Internal\Controller;
+use Centreon\Internal\Form\Validator\Ipaddress;
+use Centreon\Internal\Form\Validator\Unique;
+use Centreon\Internal\Form\Validator\ForbiddenChar;
+use Centreon\Internal\Form\Validator\CircularDependency;
 
 /**
  * Validators controller
@@ -41,7 +49,7 @@ namespace CentreonMain\Controllers;
  * @package Centreon
  * @subpackage Controllers
  */
-class ValidatorsController extends \Centreon\Internal\Controller
+class ValidatorsController extends Controller
 {
     /**
      * 
@@ -51,7 +59,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
     public function emailAction()
     {
         $params = $this->getParams('post');
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         if (filter_var($params['email'], FILTER_VALIDATE_EMAIL)) {
@@ -71,7 +79,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
     public function resolveDnsAction()
     {
         $params = $this->getParams('post');
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $ipAddress = gethostbyname($params['dnsname']);
@@ -93,9 +101,9 @@ class ValidatorsController extends \Centreon\Internal\Controller
     public function ipAddressAction()
     {
         $params = $this->getParams('post');
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
-        $jsonResponse = \Centreon\Internal\Form\Validator\Ipaddress::validate($params['ipaddress']);
+        $jsonResponse = Ipaddress::validate($params['ipaddress']);
         $router->response()->code('200')->json($jsonResponse);
     }
     
@@ -107,9 +115,9 @@ class ValidatorsController extends \Centreon\Internal\Controller
     public function uniqueAction()
     {
         $params = $this->getParams('post');
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
-        $jsonResponse = \Centreon\Internal\Form\Validator\Unique::validate(
+        $jsonResponse = Unique::validate(
             $params['value'],
             $params['module'],
             $params['object'],
@@ -126,9 +134,9 @@ class ValidatorsController extends \Centreon\Internal\Controller
     public function forbiddenCharAction()
     {
         $params = $this->getParams('post');
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
-        $jsonResponse = \Centreon\Internal\Form\Validator\ForbiddenChar::validate($params['value']);
+        $jsonResponse = ForbiddenChar::validate($params['value']);
         $router->response()->code('200')->json($jsonResponse);
     }
 
@@ -142,7 +150,7 @@ class ValidatorsController extends \Centreon\Internal\Controller
     {
         $params = $this->getParams('post');
 
-        $result = \Centreon\Internal\Form\Validator\CircularDependency::validate(
+        $result = CircularDependency::validate(
             $params['value'],
             $params['module'],
             $params['object'],

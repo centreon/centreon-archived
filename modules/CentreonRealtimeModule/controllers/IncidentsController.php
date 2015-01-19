@@ -34,8 +34,11 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \Centreon\Internal\Utils\Datetime;
-use \Centreon\Internal\Utils\Status;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Utils\Status;
+use Centreon\Internal\Controller;
+use CentreonRealtime\Repository\IncidentsRepository;
 
 /**
  * Display the logs of engine
@@ -44,7 +47,7 @@ use \Centreon\Internal\Utils\Status;
  * @package CentreonRealtime
  * @subpackage Controllers
  */
-class IncidentsController extends \Centreon\Internal\Controller
+class IncidentsController extends Controller
 {
     /**
      * The page structure for display the list
@@ -54,7 +57,7 @@ class IncidentsController extends \Centreon\Internal\Controller
      */
     public function displayListAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         $tmpl = $di->get('template');
         $tmpl->addJs('hogan-3.0.0.min.js');
@@ -71,7 +74,7 @@ class IncidentsController extends \Centreon\Internal\Controller
      */
     public function getListIncidentsAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $params = $router->request()->paramsPost();
         $filters = $params->all();
 
@@ -82,7 +85,7 @@ class IncidentsController extends \Centreon\Internal\Controller
         if (isset($params['startTime'])) {
             unset($filters['startTime']);
         }
-        $listIncidents = \CentreonRealtime\Repository\IncidentsRepository::getIncidents(
+        $listIncidents = IncidentsRepository::getIncidents(
             $fromTime,
             'DESC',
             20,
@@ -144,11 +147,11 @@ class IncidentsController extends \Centreon\Internal\Controller
      */
     public function getIncidentExtInfoAction()
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $incidentId = $router->request()->param('id');
 
         /* Get the list of children */
-        $listChildren = \CentreonRealtime\Repository\IncidentsRepository::getChildren($incidentId);
+        $listChildren = IncidentsRepository::getChildren($incidentId);
         $children = array();
 
         /* Convert format */
@@ -189,7 +192,7 @@ class IncidentsController extends \Centreon\Internal\Controller
      */
     public function displayIncidentGraphAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $incidentId = $router->request()->param('id');
 
@@ -211,7 +214,7 @@ class IncidentsController extends \Centreon\Internal\Controller
      */
     public function getIncidentGraphInfoAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         $response = array();
 
@@ -223,7 +226,7 @@ class IncidentsController extends \Centreon\Internal\Controller
         }
         switch ($action) {
             case 'get_info':
-                $incident = \CentreonRealtime\Repository\IncidentsRepository::getIncident($incidentId);
+                $incident = IncidentsRepository::getIncident($incidentId);
                 $fullname = $incident['name'];
                 if (false === is_null($incident['description'])) {
                     $fullname .= ' - ' . $incident['description'];
@@ -252,7 +255,7 @@ class IncidentsController extends \Centreon\Internal\Controller
                 );
                 break;
             case 'getChildren':
-                $listChildren = \CentreonRealtime\Repository\IncidentsRepository::getChildren($incidentId);
+                $listChildren = IncidentsRepository::getChildren($incidentId);
                 $response = array();
                 foreach ($listChildren as $child) {
                     $fullname = $child['name'];
@@ -271,7 +274,7 @@ class IncidentsController extends \Centreon\Internal\Controller
                 }
                 break;
             case 'get_extended_info':
-                $status = \CentreonRealtime\Repository\IncidentsRepository::getListStatus($incidentId);
+                $status = IncidentsRepository::getListStatus($incidentId);
                 $statusList = array();
                 foreach ($status as $tmp) {
                     if (false === is_null($tmp['service_id'])) {

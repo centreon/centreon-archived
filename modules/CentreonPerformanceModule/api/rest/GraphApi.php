@@ -38,6 +38,7 @@ namespace CentreonPerformance\Api\Rest;
 
 use Centreon\Internal\Di;
 use CentreonPerformance\Repository\Graph\Service;
+use Centreon\Internal\Api;
 
 /**
  * Controller for display graphs
@@ -46,7 +47,7 @@ use CentreonPerformance\Repository\Graph\Service;
  * @version 3.0.0
  * @package Centreon
  */
-class GraphApi extends \Centreon\Internal\Api
+class GraphApi extends Api
 {
     /**
      *

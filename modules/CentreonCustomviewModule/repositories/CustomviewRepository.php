@@ -35,7 +35,8 @@
 
 namespace CentreonCustomview\Repository;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -68,7 +69,7 @@ class CustomviewRepository
      */
     protected static function getLastViewId()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT MAX(custom_view_id) as last_id FROM cfg_custom_views");
         $stmt->execute();
         if ($stmt->rowCount()) {
@@ -86,7 +87,7 @@ class CustomviewRepository
      */
     public static function getViewFilters($viewId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $sql = "SELECT DISTINCT parameter_name, parameter_code_name
             FROM cfg_widgets_parameters wp, cfg_widgets w
             WHERE wp.widget_model_id = w.widget_model_id
@@ -147,7 +148,7 @@ class CustomviewRepository
      */
     public static function setDefault($viewId, $userId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         self::bookmark($viewId, $userId);
         $stmt = $db->prepare("UPDATE cfg_custom_views_users_relations SET is_default = 0 
             WHERE user_id = ?");
@@ -167,7 +168,7 @@ class CustomviewRepository
      */
     public static function bookmark($viewId, $userId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
 
         self::unbookmark($viewId, $userId);
         $stmt = $db->prepare("INSERT INTO cfg_custom_views_users_relations (custom_view_id, user_id) VALUES (?, ?)");
@@ -182,7 +183,7 @@ class CustomviewRepository
      */
     public static function unbookmark($viewId, $userId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("DELETE FROM cfg_custom_views_users_relations WHERE custom_view_id = ? AND user_id = ?");
         $stmt->execute(array($viewId, $userId));
     }
@@ -198,7 +199,7 @@ class CustomviewRepository
         static $defaultViews = array();
 
         if (!isset($defaultView[$userId])) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare("SELECT custom_view_id 
                 FROM cfg_custom_views_users_relations 
                 WHERE user_id = ? 
@@ -259,7 +260,7 @@ class CustomviewRepository
      */
     public static function getCustomViewData($viewId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT name, mode, locked, owner_id, position
             FROM cfg_custom_views
             WHERE custom_view_id = ?");
@@ -281,7 +282,7 @@ class CustomviewRepository
         static $customViews = null;
 
         if (is_null($customViews)) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare("SELECT cv.custom_view_id, name, owner_id, locked, user_id, position
                 FROM cfg_custom_views cv, cfg_custom_views_users_relations cvur
             	WHERE cv.custom_view_id = cvur.custom_view_id
@@ -313,7 +314,7 @@ class CustomviewRepository
      */
     public static function insert($params, $userId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("INSERT INTO cfg_custom_views (name, mode, locked, owner_id) VALUES (?, ?, ?, ?)");
         $stmt->execute(array($params['name'], $params['locked'], $params['mode'], $userId));
         $lastId = self::getLastViewId();
@@ -332,7 +333,7 @@ class CustomviewRepository
      */
     public static function delete($viewId, $userId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("DELETE FROM cfg_custom_views_users_relations WHERE custom_view_id = ? AND user_id = ?");
         $stmt->execute(array($viewId, $userId));
         $stmt = $db->prepare("DELETE FROM cfg_custom_views WHERE custom_view_id = ? AND owner_id = ?");
@@ -348,7 +349,7 @@ class CustomviewRepository
      */
     public static function update($params, $userId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("UPDATE cfg_custom_views 
             SET name = :name, mode = :mode, locked = :locked 
             WHERE custom_view_id = :view_id AND owner_id = :user_id");
@@ -369,7 +370,7 @@ class CustomviewRepository
      */
     public static function updatePosition($viewId, $position)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("UPDATE cfg_custom_views SET position = ? WHERE custom_view_id = ?");
         $stmt->execute(array($position, $viewId));
     }
@@ -381,7 +382,7 @@ class CustomviewRepository
      */
     public static function getPublicViews()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SELECT custom_view_id, name, mode, locked, owner_id, position 
             FROM cfg_custom_views 
             WHERE mode = 1
@@ -429,7 +430,7 @@ class CustomviewRepository
                 $cmp = " <= %d ";
                 break;
             default:
-                throw new \Centreon\Internal\Exception(sprintf('Unknown comparator %s', $comparator));
+                throw new Exception(sprintf('Unknown comparator %s', $comparator));
                 break;
         } 
         return sprintf($cmp, $value);

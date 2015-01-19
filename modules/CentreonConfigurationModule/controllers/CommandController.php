@@ -35,9 +35,11 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Command;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Controllers\BasicController;
 
-class CommandController extends \CentreonConfiguration\Controllers\BasicController
+class CommandController extends BasicController
 {
     protected $objectDisplayName = 'Command';
     protected $objectName = 'command';
@@ -206,7 +208,7 @@ class CommandController extends \CentreonConfiguration\Controllers\BasicControll
      */
     public function getArgumentsAction()
     {
-        $di = \Centreon\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');

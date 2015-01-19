@@ -34,13 +34,15 @@
  *
  */
 
-
 namespace CentreonAdministration\Install;
+
+use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Di;
 
 /**
  * 
  */
-class Installer extends \Centreon\Internal\Module\Installer
+class Installer extends ModuleInstaller
 {
     /**
      * 
@@ -61,7 +63,7 @@ class Installer extends \Centreon\Internal\Module\Installer
      */
     public function customInstall()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $db = $di->get('db_centreon');
         $updateUser = "UPDATE cfg_contacts SET contact_passwd = '" . md5('centreon') . "' WHERE contact_alias = 'admin'";
         $db->query($updateUser);

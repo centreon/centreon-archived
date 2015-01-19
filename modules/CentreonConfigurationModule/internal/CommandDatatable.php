@@ -36,14 +36,16 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
+use CentreonConfiguration\Repository\CommandRepository;
 
 /**
  * Description of CommandDatatable
  *
  * @author lionel
  */
-class CommandDatatable extends \Centreon\Internal\Datatable
+class CommandDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -180,8 +182,8 @@ class CommandDatatable extends \Centreon\Internal\Datatable
     {
         foreach ($resultSet as &$myCmdSet) {
             $myCmdSet['command_line'] = sprintf('%.70s', $myCmdSet['command_line'])."...";
-            $myCmdSet['host_use'] = \CentreonConfiguration\Repository\CommandRepository::getUseNumber($myCmdSet["command_id"], "host");
-            $myCmdSet['svc_use'] =  \CentreonConfiguration\Repository\CommandRepository::getUseNumber($myCmdSet["command_id"], "service");
+            $myCmdSet['host_use'] = CommandRepository::getUseNumber($myCmdSet["command_id"], "host");
+            $myCmdSet['svc_use'] =  CommandRepository::getUseNumber($myCmdSet["command_id"], "service");
         }
     }
 }

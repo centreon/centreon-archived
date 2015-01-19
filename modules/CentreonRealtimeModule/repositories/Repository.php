@@ -35,7 +35,9 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Hook;
+use Centreon\Internal\Di;
+use Centreon\Internal\Hook;
+use Centreon\Internal\Datatable;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -177,7 +179,7 @@ abstract class Repository
         $sort = '';
         
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         // Getting selected field(s)
@@ -274,7 +276,7 @@ abstract class Repository
 
         $tmp = self::arrayValuesRecursive(
             \array_values(
-                \Centreon\Internal\Datatable::removeUnwantedFields(
+                Datatable::removeUnwantedFields(
                     static::$moduleName,
                     static::$objectName,
                     \array_map(
@@ -345,7 +347,7 @@ abstract class Repository
     public static function getTotalRecordsForDatatable($params)
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         $conditions = '';

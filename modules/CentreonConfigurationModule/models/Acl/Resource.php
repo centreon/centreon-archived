@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Acl;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with Acl Resource
  *
  * @author sylvestre
  */
-class Resource extends \Centreon\Models\CentreonBaseModel
+class Resource extends CentreonBaseModel
 {
     protected static $table = "cfg_acl_resources";
     protected static $primaryKey = "acl_res_id";

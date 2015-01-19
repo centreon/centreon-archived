@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,14 +32,17 @@
  * For more information : contact@centreon.com
  * 
  */
+
 namespace CentreonRealtime\Internal;
+
+use Centreon\Internal\Datatable\Dataprovider\DataProviderInterface;
 
 /**
  * Description of CentreonStorageDb
  *
  * @author lionel
  */
-class CentreonStorageDb implements \Centreon\Internal\Datatable\Dataprovider\DataProviderInterface
+class CentreonStorageDb implements DataProviderInterface
 {
     public static function loadDatas(
         $params,

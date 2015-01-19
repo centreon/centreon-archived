@@ -35,12 +35,15 @@
 
 namespace CentreonConfiguration\Repository;
 
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\Repository;
+
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class TimePeriodRepository extends \CentreonConfiguration\Repository\Repository
+class TimePeriodRepository extends Repository
 {
     /**
      *
@@ -61,7 +64,7 @@ class TimePeriodRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getPeriodName($tp_id)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
 
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');

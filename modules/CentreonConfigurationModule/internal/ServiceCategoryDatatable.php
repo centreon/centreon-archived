@@ -36,14 +36,15 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of ServiceCategoryDatatable
  *
  * @author lionel
  */
-class ServiceCategoryDatatable extends \Centreon\Internal\Datatable
+class ServiceCategoryDatatable extends Datatable
 {
     /**
      *

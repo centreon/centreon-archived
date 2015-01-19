@@ -34,10 +34,10 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Host;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
 class Hosttemplate extends CentreonRelationModel
 {
@@ -57,7 +57,7 @@ class Hosttemplate extends CentreonRelationModel
      */
     public static function insert($fkey, $skey)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $sql = "SELECT MAX(`order`) as maxorder FROM " .static::$relationTable . " WHERE " .static::$firstKey . " = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey));
@@ -157,7 +157,7 @@ class Hosttemplate extends CentreonRelationModel
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         if (isset($count) && $count != -1) {
             $sql = $db->limit($sql, $count, $offset);
         }

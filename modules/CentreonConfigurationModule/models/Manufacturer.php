@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
 
+use Centreon\Models\CentreonBaseModel;
+
 /**
- * Used for interacting with traps
+ * Used for interacting with vendors (manufacturers)
  *
  * @author sylvestre
  */
-class Manufacturer extends \Centreon\Models\CentreonBaseModel
+class Manufacturer extends CentreonBaseModel
 {
     protected static $table = "cfg_traps_vendors";
     protected static $primaryKey = "id";

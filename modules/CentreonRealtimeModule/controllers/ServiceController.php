@@ -39,6 +39,8 @@ use CentreonRealtime\Repository\HostdetailRepository;
 use Centreon\Internal\Utils\Status;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Hook;
+use Centreon\Internal\Controller;
+use Centreon\Internal\Di;
 
 /**
  * Display service monitoring states
@@ -47,7 +49,7 @@ use Centreon\Internal\Hook;
  * @package CentreonRealtime
  * @subpackage Controllers
  */
-class ServiceController extends \Centreon\Internal\Controller
+class ServiceController extends Controller
 {
     protected $datatableObject = '\CentreonRealtime\Internal\ServiceDatatable';
     
@@ -62,8 +64,8 @@ class ServiceController extends \Centreon\Internal\Controller
      */
     public function displayServicesAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $tpl = Di::getDefault()->get('template');
+        $router = Di::getDefault()->get('router');
 
         /* Load css */
         $tpl->addCss('jquery.dataTables.min.css')
@@ -136,7 +138,7 @@ class ServiceController extends \Centreon\Internal\Controller
      */
     public function listAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
@@ -153,7 +155,7 @@ class ServiceController extends \Centreon\Internal\Controller
      */
     public function serviceDetailAction()
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl = Di::getDefault()->get('template');
         
         $tpl->assign('moduleName', 'CentreonRealtime');
         $tpl->assign('objectName', 'Service');

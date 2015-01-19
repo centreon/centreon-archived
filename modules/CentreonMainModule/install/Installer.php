@@ -34,13 +34,15 @@
  *
  */
 
-
 namespace CentreonMain\Install;
+
+use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Di;
 
 /**
  * 
  */
-class Installer extends \Centreon\Internal\Module\Installer
+class Installer extends ModuleInstaller
 {
     /**
      * 
@@ -66,7 +68,7 @@ class Installer extends \Centreon\Internal\Module\Installer
             "INSERT INTO cfg_forms_validators(name, action) VALUES ('circularDependency', '/validator/circular')"
         );
         
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         
         foreach ($validators as $validator) {
             $db->exec($validator);

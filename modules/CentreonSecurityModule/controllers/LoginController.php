@@ -32,14 +32,16 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonSecurity\Controllers;
 
-use \CentreonAdministration\Internal\User;
-use \Centreon\Internal\Form;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Auth\Sso;
-use \Centreon\Internal\Session;
-use \Centreon\Internal\Acl;
+use CentreonAdministration\Internal\User;
+use Centreon\Internal\Form;
+use Centreon\Internal\Di;
+use Centreon\Internal\Auth\Sso;
+use Centreon\Internal\Session;
+use Centreon\Internal\Acl;
+use Centreon\Internal\Controller;
 
 /**
  * Login controller
@@ -47,7 +49,7 @@ use \Centreon\Internal\Acl;
  * @package Centreon
  * @subpackage Controllers
  */
-class LoginController extends \Centreon\Internal\Controller
+class LoginController extends Controller
 {
     /**
      * Action for login page

@@ -36,12 +36,14 @@
 
 namespace CentreonRealtime\Models;
 
+use Centreon\Models\CentreonStorageBaseModel;
+
 /**
  * Used for interacting with services
  *
  * @author sylvestre
  */
-class IndexData extends \Centreon\Models\CentreonStorageBaseModel
+class IndexData extends CentreonStorageBaseModel
 {
     protected static $table = "rt_index_data idata";
     protected static $primaryKey = "metric_id";

@@ -36,15 +36,18 @@
 
 namespace CentreonConfiguration\Internal;
 
+use Centreon\Internal\Di;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\HostRepository; 
+use CentreonConfiguration\Repository\HostTemplateRepository;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of HostDatatable
  *
  * @author lionel
  */
-class HostTemplateDatatable extends \Centreon\Internal\Datatable
+class HostTemplateDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -198,7 +201,7 @@ class HostTemplateDatatable extends \Centreon\Internal\Datatable
      */
     protected function formatDatas(&$resultSet)
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myHostSet) {
             $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
@@ -210,7 +213,7 @@ class HostTemplateDatatable extends \Centreon\Internal\Datatable
             
             /* Templates */
             $myHostSet['host_template']  = "";
-            $templates = \CentreonConfiguration\Repository\HostTemplateRepository::getTemplateList($myHostSet['host_id']);
+            $templates = HostTemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
                  $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/').
                     $template['id'].'"><a class="overlay" href="'.

@@ -35,8 +35,9 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Di;
-use \CentreonAdministration\Repository\TagsRepository;
+use Centreon\Internal\Di;
+use CentreonAdministration\Repository\TagsRepository;
+use Centreon\Internal\Controller;
 
 /**
  * Controller for tag action
@@ -46,7 +47,7 @@ use \CentreonAdministration\Repository\TagsRepository;
  * @package Centreon
  * @subpackage CentreonAdministration
  */
-class TagController extends \Centreon\Internal\Controller
+class TagController extends Controller
 {
     /**
      * Add a tag

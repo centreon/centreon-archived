@@ -35,12 +35,15 @@
 
 namespace CentreonConfiguration\Commands;
 
+use Centreon\Internal\Command\AbstractCommand;
+use CentreonConfiguration\Repository\ConfigGenerateRepository;
+
 /**
  * @authors Lionel Assepo
  * @package CentreonConfiguration
  * @subpackage Commands                                 
  */
-class ConfigCommand extends \Centreon\Internal\Command\AbstractCommand
+class ConfigCommand extends AbstractCommand
 {
     /**
      * Action for Generating configuration files
@@ -48,7 +51,7 @@ class ConfigCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function generateAction($id)
     {
-        $obj = new \CentreonConfiguration\Repository\ConfigGenerateRepository($id);
+        $obj = new ConfigGenerateRepository($id);
         echo $obj->getStepStatus();
     }
 

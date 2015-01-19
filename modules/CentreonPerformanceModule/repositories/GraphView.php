@@ -36,6 +36,8 @@
 
 namespace CentreonPerformance\Repository;
 
+use Centreon\Internal\Di;
+
 /**
  * Manage the list of views for graph
  *
@@ -54,7 +56,7 @@ class GraphView
      */
     public static function add($name, $privacy = 0)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $ownerId = $_SESSION['user']->getId();
 
@@ -87,7 +89,7 @@ class GraphView
      */
     public static function update($viewId, $graphs)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         /* Test if the contact can modify the view */
@@ -136,7 +138,7 @@ class GraphView
      */
     public static function getList($onlyPublic = false)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         $query = "SELECT graph_view_id, name
@@ -168,7 +170,7 @@ class GraphView
      */
     public static function getListGraph($viewId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         $queryService = "SELECT service_id as id, 'service' as type
@@ -192,7 +194,7 @@ class GraphView
      */
     public static function delete($viewId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         $stmt = $dbconn->prepare("DELETE FROM cfg_graph_views WHERE graph_view_id = :view_id");

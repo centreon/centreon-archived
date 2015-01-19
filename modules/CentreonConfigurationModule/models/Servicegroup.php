@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with servicegroups
  *
  * @author sylvestre
  */
-class Servicegroup extends \Centreon\Models\CentreonBaseModel
+class Servicegroup extends CentreonBaseModel
 {
     protected static $table = "cfg_servicegroups";
     protected static $primaryKey = "sg_id";

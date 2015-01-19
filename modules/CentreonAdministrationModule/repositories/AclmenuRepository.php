@@ -35,6 +35,8 @@
 
 namespace CentreonAdministration\Repository;
 
+use Centreon\Internal\Di;
+
 /**
  * @author Sylvestre Ho <sho@merethis.com>
  * @package Centreon
@@ -50,7 +52,7 @@ class AclmenuRepository
      */
     public static function getAclLevelByAclMenuId($acl_menu_id)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $sql = "SELECT menu_id, acl_level
             FROM cfg_acl_menu_menu_relations
             WHERE acl_menu_id = ?";
@@ -72,7 +74,7 @@ class AclmenuRepository
      */
     public static function updateAclLevel($acl_menu_id, $menus)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("DELETE FROM cfg_acl_menu_menu_relations WHERE acl_menu_id = ?");
         $stmt->execute(array($acl_menu_id));
         $sql = "INSERT INTO cfg_acl_menu_menu_relations (acl_menu_id, menu_id, acl_level) VALUES (?, ?, ?)";

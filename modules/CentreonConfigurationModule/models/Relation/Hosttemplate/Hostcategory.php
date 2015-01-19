@@ -34,10 +34,10 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Hosttemplate;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
 class Hostcategory extends CentreonRelationModel
 {
@@ -116,7 +116,7 @@ class Hostcategory extends CentreonRelationModel
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+            $db = Di::getDefault()->get('db_centreon');
             $sql = $db->limit($sql, $count, $offset);
         }
         $result = static::getResult($sql, $filterTab);
@@ -146,7 +146,7 @@ class Hostcategory extends CentreonRelationModel
         
         $sql .= "AND host_host_id IN (SELECT host_id FROM cfg_hosts WHERE cfg_hosts.host_register = '0')";
         
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute($args);
     }

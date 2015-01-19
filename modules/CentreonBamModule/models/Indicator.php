@@ -35,12 +35,14 @@
 
 namespace CentreonBam\Models;
 
+use Centreon\Models\CentreonBaseModel;
+
 /**
  * Used for interacting with host categories
  *
  * @author sylvestre
  */
-class Indicator extends \Centreon\Models\CentreonBaseModel
+class Indicator extends CentreonBaseModel
 {
     protected static $table = "cfg_bam_kpi";
     protected static $primaryKey = "kpi_id";

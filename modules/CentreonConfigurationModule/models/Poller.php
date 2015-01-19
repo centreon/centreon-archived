@@ -34,8 +34,9 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with pollers
@@ -45,7 +46,7 @@ namespace CentreonConfiguration\Models;
  * @subpackage Configuration
  * @version 3.0.0
  */
-class Poller extends \Centreon\Models\CentreonBaseModel
+class Poller extends CentreonBaseModel
 {
     protected static $table = "cfg_pollers";
     protected static $primaryKey = "poller_id";

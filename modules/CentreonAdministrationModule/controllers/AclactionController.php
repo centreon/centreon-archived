@@ -35,10 +35,10 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form;
-use \Centreon\Internal\Form\Generator;
-use \CentreonAdministration\Repository\AclactionRepository;
-use \Centreon\Internal\Di;
+use Centreon\Internal\Form;
+use Centreon\Internal\Form\Generator;
+use CentreonAdministration\Repository\AclactionRepository;
+use Centreon\Internal\Di;
 
 class AclactionController extends BasicController
 {
@@ -133,7 +133,7 @@ class AclactionController extends BasicController
         $rules = AclactionRepository::getRulesFromActionId($requestParam['id']);
         $myForm->setDefaultValues($rules);
 
-        $formModeUrl = \Centreon\Internal\Di::getDefault()
+        $formModeUrl = Di::getDefault()
                         ->get('router')
                         ->getPathFor(
                             $this->objectBaseUrl.'/[i:id]',

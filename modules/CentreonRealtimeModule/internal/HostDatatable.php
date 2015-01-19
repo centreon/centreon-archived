@@ -35,15 +35,16 @@
 
 namespace CentreonRealtime\Internal;
 
-use \CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
-use \Centreon\Internal\Utils\Datetime;
+use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of HostDatatable
  *
  * @author lionel
  */
-class HostDatatable extends \Centreon\Internal\Datatable
+class HostDatatable extends Datatable
 {
     protected static $objectId = 'host_id';
 
@@ -238,7 +239,7 @@ class HostDatatable extends \Centreon\Internal\Datatable
                 $myHostSet['name'] = '';
             } else {
                 $previousHost = $myHostSet['name'];
-                $myHostSet['name'] = \CentreonConfiguration\Repository\HostRepository::getIconImage(
+                $myHostSet['name'] = HostConfigurationRepository::getIconImage(
                     $myHostSet['name']
                 ).'&nbsp;&nbsp;'.$myHostSet['name'];
             }

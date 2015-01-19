@@ -35,6 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
+use Centreon\Internal\Di;
+
 /**
  * Repository for incidents
  *
@@ -54,7 +56,7 @@ class IncidentsRepository
      */
     public static function getIncidents($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $router = $di->get('router');
         $globalWheres = array();
@@ -154,7 +156,7 @@ class IncidentsRepository
      */
     public static function getIncident($incidentId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         /* Query for host */
@@ -242,7 +244,7 @@ class IncidentsRepository
      */
     public static function getChildren($incidentId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         /* Query for host */
@@ -304,7 +306,7 @@ class IncidentsRepository
      */
     public static function getListStatus($incidentId)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
         /* Get list of status for incident id */

@@ -40,13 +40,14 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of ServiceTemplateDatatable
  *
  * @author lionel
  */
-class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
+class ServiceTemplateDatatable extends Datatable
 {
     /**
      *
@@ -236,7 +237,7 @@ class ServiceTemplateDatatable extends \Centreon\Internal\Datatable
                 $tplRoute = str_replace(
                                         "//",
                                         "/",
-                                        \Centreon\Internal\Di::getDefault()
+                                        Di::getDefault()
                                         ->get('router')
                                         ->getPathFor(
                                                      '/centreon-configuration/servicetemplate/[i:id]',

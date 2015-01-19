@@ -35,7 +35,12 @@
 
 namespace CentreonAdministration\Controllers;
 
-class DomainController extends \CentreonAdministration\Controllers\ObjectAbstract
+use Centreon\Internal\Di;
+use CentreonAdministration\Controllers\ObjectAbstract;
+use CentreonAdministration\Models\Domain;
+use Centreon\Models\Image;
+
+class DomainController extends ObjectAbstract
 {
     protected $objectDisplayName = 'Domain';
     protected $objectName = 'domain';
@@ -192,17 +197,17 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
      */
     public function iconForDomainAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
         
         $finalIconList = array();
-        $iconId = \CentreonAdministration\Models\Domain::get($requestParam['id'], "icon_id");
+        $iconId = Domain::get($requestParam['id'], "icon_id");
         
         if (is_array($iconId) && (count($iconId) > 0)) {
         
-            $icon = \Centreon\Models\Image::getIcon($iconId['icon_id']);
+            $icon = Image::getIcon($iconId['icon_id']);
 
             if (count($icon) > 0) {
                 $filenameExploded = explode('.', $icon['filename']);

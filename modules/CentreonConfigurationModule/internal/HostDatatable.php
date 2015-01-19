@@ -40,13 +40,14 @@ use Centreon\Internal\Di;
 use CentreonRealtime\Repository\HostRepository as RealTimeHostRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of HostDatatable
  *
  * @author lionel
  */
-class HostDatatable extends \Centreon\Internal\Datatable
+class HostDatatable extends Datatable
 {
     /**
      *

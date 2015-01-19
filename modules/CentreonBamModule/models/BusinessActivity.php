@@ -35,12 +35,14 @@
 
 namespace CentreonBam\Models;
 
+use Centreon\Models\CentreonBaseModel;
+
 /**
  * Used for interacting with Business activities
  *
  * @author sylvestre
  */
-class BusinessActivity extends \Centreon\Models\CentreonBaseModel
+class BusinessActivity extends CentreonBaseModel
 {
     protected static $table = "cfg_bam";
     protected static $primaryKey = "ba_id";

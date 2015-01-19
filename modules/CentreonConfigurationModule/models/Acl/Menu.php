@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Acl;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with Acl Menus
  *
  * @author sylvestre
  */
-class Menu extends \Centreon\Models\CentreonBaseModel
+class Menu extends CentreonBaseModel
 {
     protected static $table = "cfg_acl_menus";
     protected static $primaryKey = "acl_menu_id";

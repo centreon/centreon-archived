@@ -36,10 +36,10 @@
 
 namespace CentreonConfiguration\Internal;
 
-use Centreon\Internal\Utils\Datetime,
-    Centreon\Internal\Di,
-    Centreon\Internal\Datatable,
-    CentreonConfiguration\Repository\PollerRepository;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Di;
+use Centreon\Internal\Datatable;
+use CentreonConfiguration\Repository\PollerRepository;
 
 /**
  * Description of PollerDatatable

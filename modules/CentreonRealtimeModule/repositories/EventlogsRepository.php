@@ -37,6 +37,7 @@ namespace CentreonRealtime\Repository;
 
 use Centreon\Internal\Di;
 use CentreonRealtime\Repository\EventlogsRepository\Database as EventLogDatabase;
+use CentreonRealtime\Repository\EventlogsRepository\ElasticSearch;
 
 /**
  * Factory for Eventlogs
@@ -74,7 +75,7 @@ class EventlogsRepository
                 $filters
             );
         } elseif ($storageType == 'es') {
-            return \CentreonRealtime\Repository\EventlogsRepository\ElasticSearch::getEventLogs(
+            return ElasticSearch::getEventLogs(
                 $fromTime,
                 $order,
                 $limit,

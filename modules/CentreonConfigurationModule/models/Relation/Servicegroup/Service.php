@@ -34,10 +34,11 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Servicegroup;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use Centreon\Models\CentreonRelationModel;
 
 class Service extends CentreonRelationModel
 {
@@ -57,7 +58,7 @@ class Service extends CentreonRelationModel
      */
     public static function insert($fkey, $hostId, $serviceId)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $sql = "INSERT INTO ".static::$relationTable." "
             . "(".static::$firstKey.", host_host_id, ".static::$secondKey.") "
             . "VALUES (?, ?, ?)";
@@ -75,7 +76,7 @@ class Service extends CentreonRelationModel
      */
     public static function delete($fkey, $hostId = null, $serviceId = null)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         if (isset($fkey) && isset($hostId) && isset($serviceId)) {
             $sql = "DELETE FROM ".static::$relationTable." "
                 . "WHERE ".static::$firstKey." = ? "
@@ -143,7 +144,7 @@ class Service extends CentreonRelationModel
      *
      * @param string $name
      * @param array $arg
-     * @throws Exception
+     * @throws \Centreon\Internal\Exception
      */
     public function __call($name, $arg)
     {

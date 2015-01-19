@@ -34,9 +34,12 @@
  */
 namespace CentreonCustomview\Controllers;
 
-use \Centreon\Internal\Form\Wizard,
-    \CentreonCustomview\Repository\CustomviewRepository,
-    \CentreonCustomview\Repository\WidgetRepository;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form\Wizard;
+use Centreon\Internal\Form\Widget;
+use CentreonCustomview\Repository\CustomviewRepository;
+use CentreonCustomview\Repository\WidgetRepository;
+use Centreon\Internal\Controller;
 
 /**
  * Custom view controller
@@ -44,7 +47,7 @@ use \Centreon\Internal\Form\Wizard,
  * @package Centreon
  * @subpackage Controllers
  */
-class CustomviewController extends \Centreon\Internal\Controller
+class CustomviewController extends Controller
 {
     /**
      * @var int $currentView
@@ -63,7 +66,7 @@ class CustomviewController extends \Centreon\Internal\Controller
     {
         parent::init();
         $this->user = $_SESSION['user'];
-        $this->baseUrl = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'base_url'), '/');
+        $this->baseUrl = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/');
     }
 
     /**
@@ -78,7 +81,7 @@ class CustomviewController extends \Centreon\Internal\Controller
             unset($_SESSION['customview_filters']);
         }
         $this->currentView = CustomviewRepository::getCurrentView($this->user->getId(), $this->getParams());
-        $template = \Centreon\Internal\Di::getDefault()->get('template');
+        $template = Di::getDefault()->get('template');
         $template->addCss('jquery.gridster.min.css')
             ->addCss('centreon-widget.css')
             ->addCss('centreon-wizard.css')
@@ -170,7 +173,7 @@ class CustomviewController extends \Centreon\Internal\Controller
     {
         $params = $this->getParams('post');
         WidgetRepository::updateWidgetPreferences($params, $this->user->getId()); 
-        \Centreon\Internal\Di::getDefault()
+        Di::getDefault()
             ->get('router')
             ->response()
             ->json(array('success' => true));
@@ -186,9 +189,9 @@ class CustomviewController extends \Centreon\Internal\Controller
     {
         $params = $this->getParams('named');
         $widgetId = $params['id'];
-        $template = \Centreon\Internal\Di::getDefault()->get('template');
+        $template = Di::getDefault()->get('template');
         $template->assign('validateUrl', '/centreon-customview/updatewidgetsettings');
-        $form = new \Centreon\Internal\Form\Widget($widgetId, array('id' => $widgetId));
+        $form = new Widget($widgetId, array('id' => $widgetId));
         $title = _('Settings for widget');
         $form->addHiddenComponent('widget_id', $widgetId);
         $template->assign('modalTitle', $title);
@@ -214,7 +217,7 @@ class CustomviewController extends \Centreon\Internal\Controller
             $params[$k] = $v;
         }
         WidgetRepository::addWidget($params);
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $router->response()->json(array('success' => true));
     }
 
@@ -234,7 +237,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 'text' => $info['name']
             );
         }
-        \Centreon\Internal\Di::getDefault()
+        Di::getDefault()
             ->get('router')
             ->response()
             ->json($list);
@@ -248,7 +251,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function widgetListAction()
     {
-        $template = \Centreon\Internal\Di::getDefault()->get('template');
+        $template = Di::getDefault()->get('template');
         $template->assign('validateUrl', '/centreon-customview/addwidget');
         $template->assign('modalTitle', _('Add a new widget'));
         $widgets = json_encode(WidgetRepository::getWidgetInfo());
@@ -364,7 +367,7 @@ class CustomviewController extends \Centreon\Internal\Controller
         } else {
             CustomviewRepository::update($params, $this->user->getId());
         }
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $router->response()->json(array('success' => true));
     }
 
@@ -376,7 +379,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function displayViewPreferenceAction()
     {
-        $template = \Centreon\Internal\Di::getDefault()->get('template');
+        $template = Di::getDefault()->get('template');
         $template->assign('validateUrl', '/centreon-customview/updateview');
         $id = 0;
         $requestParam = $this->getParams('named');
@@ -421,7 +424,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                 }
             }
         }
-        \Centreon\Internal\Di::getDefault()
+        Di::getDefault()
             ->get('router')
             ->response()
             ->json(array('success' => true));

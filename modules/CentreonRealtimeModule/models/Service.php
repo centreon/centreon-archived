@@ -36,12 +36,14 @@
 
 namespace CentreonRealtime\Models;
 
+use Centreon\Models\CentreonStorageBaseModel;
+
 /**
  * Used for interacting with services
  *
  * @author sylvestre
  */
-class Service extends \Centreon\Models\CentreonStorageBaseModel
+class Service extends CentreonStorageBaseModel
 {
     protected static $table = "rt_services s";
     protected static $primaryKey = "service_id";

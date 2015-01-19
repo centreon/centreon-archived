@@ -32,10 +32,14 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonCustomview\Controllers;
 
-use \CentreonCustomview\Repository\CustomviewRepository,
-    \CentreonCustomview\Repository\WidgetRepository;
+use CentreonCustomview\Repository\CustomviewRepository;
+use CentreonCustomview\Repository\WidgetRepository;
+use Centreon\Internal\Controller;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * Widget controller
@@ -44,7 +48,7 @@ use \CentreonCustomview\Repository\CustomviewRepository,
  * @package Centreon
  * @subpackage Controllers
  */
-class WidgetController extends \Centreon\Internal\Controller
+class WidgetController extends Controller
 {
     /**
      * Unique id of the widget
@@ -61,7 +65,7 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     public function widgetAction()
     {
-        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'));
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'));
         $params = $this->getParams();
         $this->widgetId = $params['id'];
         $data = WidgetRepository::getWidgetData($params['id']);
@@ -71,13 +75,13 @@ class WidgetController extends \Centreon\Internal\Controller
             $dir = glob($path . "/modules/*Module/widgets/" . $commonName ."Widget/");
         }
         if (!isset($dir[0])) {
-            throw new \Centreon\Internal\Exception(sprintf('Could not find directory %s', $commonName."Widget"));
+            throw new Exception(sprintf('Could not find directory %s', $commonName."Widget"));
         }
         $filename = $dir[0] . $commonName . "Widget.php";
         if (file_exists($filename)) {
             include_once $filename;
         } else {
-            throw new \Centreon\Internal\Exception(sprintf('Could not find file %s', $filename));
+            throw new Exception(sprintf('Could not find file %s', $filename));
         }
     }
 
@@ -98,7 +102,7 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     protected function getTemplate()
     {
-        return \Centreon\Internal\Di::getDefault()->get('template');
+        return Di::getDefault()->get('template');
     }
 
     /**
@@ -111,7 +115,7 @@ class WidgetController extends \Centreon\Internal\Controller
         if (isset($_SESSION['user'])) {
             return $_SESSION['user'];
         }
-        throw new \Centreon\Internal\Exception('No user session defined');
+        throw new Exception('No user session defined');
     }
 
     /**
@@ -121,7 +125,7 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     protected function getCache()
     {
-        return \Centreon\Internal\Di::getDefault()->get('cache');
+        return Di::getDefault()->get('cache');
     }
 
     /**
@@ -131,7 +135,7 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     protected function getConfigurationDb()
     {
-        return \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        return Di::getDefault()->get('db_centreon');
     }
 
     /**
@@ -141,6 +145,6 @@ class WidgetController extends \Centreon\Internal\Controller
      */
     protected function getMonitoringDb()
     {
-        return \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        return Di::getDefault()->get('db_centreon');
     }
 }

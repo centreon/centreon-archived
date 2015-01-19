@@ -35,14 +35,15 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of HostGroupDatatable
  *
  * @author lionel
  */
-class HostGroupDatatable extends \Centreon\Internal\Datatable
+class HostGroupDatatable extends Datatable
 {
     protected static $objectId = 'hg_id';
 

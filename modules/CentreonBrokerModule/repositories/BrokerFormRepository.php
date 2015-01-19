@@ -41,6 +41,7 @@ use CentreonBroker\Repository\BrokerRepository;
 use CentreonConfiguration\Repository\PollerRepository;
 use CentreonConfiguration\Internal\Poller\Template as PollerTemplate;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
+use Centreon\Internal\Form;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>
@@ -78,7 +79,7 @@ class BrokerFormRepository extends FormRepository
         $currentSetUp = $setUp[0];
         $brokerMode = $currentSetUp->getMode('normal');
         
-        $formHandler = new \Centreon\Internal\Form('broker_full_form');
+        $formHandler = new Form('broker_full_form');
         $formComponents = array();
         $defaultValues = array();
         

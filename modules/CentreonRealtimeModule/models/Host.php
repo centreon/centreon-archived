@@ -36,12 +36,14 @@
 
 namespace CentreonRealtime\Models;
 
+use Centreon\Models\CentreonStorageBaseModel;
+
 /**
  * Used for interacting with hosts
  *
  * @author sylvestre
  */
-class Host extends \Centreon\Models\CentreonStorageBaseModel
+class Host extends CentreonStorageBaseModel
 {
     protected static $table = "rt_hosts";
     protected static $primaryKey = "host_id";

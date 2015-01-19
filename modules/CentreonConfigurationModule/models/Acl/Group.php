@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Acl;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with Acl Groups
  *
  * @author sylvestre
  */
-class Group extends \Centreon\Models\CentreonBaseModel
+class Group extends CentreonBaseModel
 {
     protected static $table = "cfg_acl_groups";
     protected static $primaryKey = "acl_group_id";

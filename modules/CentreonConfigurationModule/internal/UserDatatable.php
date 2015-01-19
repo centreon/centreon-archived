@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,14 +35,17 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Utils\CentreonArray;
+use Centreon\Internal\Datatable;
+use CentreonConfiguration\Repository\UserRepository;
 
 /**
  * Description of UserGroupDatatable
  *
  * @author lionel
  */
-class UserDatatable extends \Centreon\Internal\Datatable
+class UserDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -216,15 +218,15 @@ class UserDatatable extends \Centreon\Internal\Datatable
     public function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myUserSet) {
-            \Centreon\Internal\Utils\CentreonArray::insertAfter(
+            CentreonArray::insertAfter(
                 $myUserSet,
                 'contact_email',
                 array(
-                    'contact_host_notification_options' => \CentreonConfiguration\Repository\UserRepository::getNotificationInfos(
+                    'contact_host_notification_options' => UserRepository::getNotificationInfos(
                         $myUserSet['contact_id'],
                         'host'
                     ),
-                    'contact_service_notification_options' => \CentreonConfiguration\Repository\UserRepository::getNotificationInfos(
+                    'contact_service_notification_options' => UserRepository::getNotificationInfos(
                         $myUserSet['contact_id'],
                         'service'
                     )

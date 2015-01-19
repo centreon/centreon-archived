@@ -35,15 +35,16 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use \Centreon\Internal\Di,
-    \CentreonConfiguration\Repository\ConfigApplyRepository;
+use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\ConfigApplyRepository;
+use Centreon\Internal\Controller;
 
 /**
  * @authors Lionel Assepo
  * @package Centreon
  * @subpackage Controllers                                   
  */
-class ConfigApplyApi extends \Centreon\Internal\Controller
+class ConfigApplyApi extends Controller
 {
     /**
      * Generic function

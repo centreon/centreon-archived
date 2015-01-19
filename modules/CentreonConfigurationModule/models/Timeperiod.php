@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with time periods
  *
  * @author sylvestre
  */
-class Timeperiod extends \Centreon\Models\CentreonBaseModel
+class Timeperiod extends CentreonBaseModel
 {
     protected static $table = "cfg_timeperiods";
     protected static $primaryKey = "tp_id";

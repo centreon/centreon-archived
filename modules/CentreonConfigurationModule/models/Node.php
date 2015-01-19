@@ -34,8 +34,9 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with node
@@ -45,7 +46,7 @@ namespace CentreonConfiguration\Models;
  * @subpackage Configuration
  * @version 3.0.0
  */
-class Node extends \Centreon\Models\CentreonBaseModel
+class Node extends CentreonBaseModel
 {
     protected static $table = "cfg_nodes";
     protected static $primaryKey = "node_id";

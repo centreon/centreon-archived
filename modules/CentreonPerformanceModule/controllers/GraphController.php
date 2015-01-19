@@ -39,6 +39,8 @@ namespace CentreonPerformance\Controllers;
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\HumanReadable;
 use CentreonPerformance\Repository\GraphView;
+use Centreon\Internal\Controller;
+use CentreonPerformance\Repository\Graph\Service as ServiceGraphRepository;
 
 /**
  * Controller for display graphs
@@ -47,7 +49,7 @@ use CentreonPerformance\Repository\GraphView;
  * @version 3.0.0
  * @package Centreon
  */
-class GraphController extends \Centreon\Internal\Controller
+class GraphController extends Controller
 {
 
     /**
@@ -90,7 +92,7 @@ class GraphController extends \Centreon\Internal\Controller
             // @todo Error http
         }
 
-        $service = new \CentreonPerformance\Repository\Graph\Service($serviceId, $start, $end);
+        $service = new ServiceGraphRepository($serviceId, $start, $end);
 
         $data = array();
         $serviceData = $service->getValues(200);

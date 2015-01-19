@@ -40,8 +40,10 @@ use CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Di;
+use CentreonConfiguration\Controllers\BasicController;
+use CentreonConfiguration\Repository\UserRepository;
 
-class HostTemplateController extends \CentreonConfiguration\Controllers\BasicController
+class HostTemplateController extends BasicController
 {
     /**
      *
@@ -236,7 +238,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
         $inheritanceValues = HostTemplateRepository::getInheritanceValues($requestParam['id']);
         array_walk($inheritanceValues, function(&$item, $key) {
             if (false === is_null($item)) {
-                $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+                $item = HostTemplateRepository::getTextValue($key, $item);
             }
         });
         $router->response()->json(array(
@@ -268,7 +270,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
         }
         array_walk($values, function(&$item, $key) {
             if (false === is_null($item)) {
-                $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+                $item = HostTemplateRepository::getTextValue($key, $item);
             }
         });
         $router->response()->json(array(
@@ -306,7 +308,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
             $finalContactList[] = array(
                 "id" => $contact['contact_id'],
                 "text" => $contact['contact_name'],
-                "theming" => \CentreonConfiguration\Repository\UserRepository::getUserIcon(
+                "theming" => UserRepository::getUserIcon(
                     $contact['contact_name'],
                     $contact['contact_email']
                 )
@@ -403,7 +405,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
             $finalHostList[] = array(
                 "id" => $Hostparents['host_id'],
                 "text" => $Hostparents['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                "theming" => HostRepository::getIconImage(
                     $Hostparents['host_name']
                 ).' '.$Hostparents['host_name']
             );
@@ -440,7 +442,7 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
             $finalHostList[] = array(
                 "id" => $Hostchildren['host_id'],
                 "text" => $Hostchildren['host_name'],
-                "theming" => \Centreon\Repository\HostRepository::getIconImage(
+                "theming" => HostRepository::getIconImage(
                     $Hostchildren['host_name']
                 ).' '.$Hostchildren['host_name']
             );

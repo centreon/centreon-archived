@@ -34,15 +34,20 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonBaseModel;
+use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
+use CentreonConfiguration\Models\Relation\Host\Hosttemplate as HostHosttemplateRelation;
 
 /**
  * Used for interacting with hosts
  *
  * @author sylvestre
  */
-class Host extends \Centreon\Models\CentreonBaseModel
+class Host extends CentreonBaseModel
 {
     protected static $table = "cfg_hosts";
     protected static $primaryKey = "host_id";
@@ -66,7 +71,7 @@ class Host extends \Centreon\Models\CentreonBaseModel
     public static function insert($params = array())
     {
         $params['host_register'] = '1';
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $sql = "INSERT INTO " . static::$table;
         $sqlFields = "";
         $sqlValues = "";
@@ -128,9 +133,9 @@ class Host extends \Centreon\Models\CentreonBaseModel
     {
         static $deployedServices = array();
 
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $hid = is_null($hostTemplateId) ? $hostId : $hostTemplateId;
-        $services = \CentreonConfiguration\Models\Relation\Host\Service::getMergedParameters(
+        $services = HostServiceRelation::getMergedParameters(
             array(),
             array('service_id', 'service_description', 'service_alias'),
             -1,
@@ -138,7 +143,7 @@ class Host extends \Centreon\Models\CentreonBaseModel
             null,
             'ASC',
             array(
-                \CentreonConfiguration\Models\Relation\Host\Service::getFirstKey() => $hid
+                HostServiceRelation::getFirstKey() => $hid
             ),
             'AND'
         );
@@ -146,7 +151,7 @@ class Host extends \Centreon\Models\CentreonBaseModel
             if (is_null($hostTemplateId)) {
                 $deployedServices[$hostId][$service['service_description']] =  true;
             } elseif (!isset($deployedServices[$hostId][$service['service_alias']])) {
-                $serviceId = \CentreonConfiguration\Models\Service::insert(
+                $serviceId = Service::insert(
                     array(
                         'service_description' => $service['service_alias'],
                         'service_template_model_stm_id' => $service['service_id'],
@@ -154,11 +159,11 @@ class Host extends \Centreon\Models\CentreonBaseModel
                         'service_activate' => 1
                     )
                 );
-                \CentreonConfiguration\Models\Relation\Host\Service::insert($hostId, $serviceId);
+                HostServiceRelation::insert($hostId, $serviceId);
                 $deployedServices[$hostId][$service['service_alias']] = true;
             }
         }
-        $templates = \CentreonConfiguration\Models\Relation\Host\Hosttemplate::getTargetIdFromSourceId(
+        $templates = HostHosttemplateRelation::getTargetIdFromSourceId(
             'host_tpl_id',
             'host_host_id',
             $hid

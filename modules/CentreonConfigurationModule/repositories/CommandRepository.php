@@ -35,14 +35,17 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Models\Command;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
  * @package Centreon
  * @subpackage Repository
  */
-class CommandRepository extends \CentreonConfiguration\Repository\Repository
+class CommandRepository extends Repository
 {
     const NOTIF_TYPE = 1;
     const CHECK_TYPE = 2;
@@ -66,7 +69,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getCommandName($id)
     {
-        $res = \CentreonConfiguration\Models\Command::get($id, "command_name");
+        $res = Command::get($id, "command_name");
         
         if (is_array($res)) {
             $returnedValue = $res['command_name'];
@@ -85,7 +88,7 @@ class CommandRepository extends \CentreonConfiguration\Repository\Repository
      */
     public static function getUseNumber($id, $object)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         
         /* Get Database Connexion */
         $dbconn = $di->get('db_centreon');

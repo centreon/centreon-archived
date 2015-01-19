@@ -36,14 +36,15 @@
 
 namespace CentreonBam\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of BaDatatable
  *
  * @author lionel
  */
-class BusinessActivityDatatable extends \Centreon\Internal\Datatable
+class BusinessActivityDatatable extends Datatable
 {
     /**
      *

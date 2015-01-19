@@ -35,12 +35,16 @@
 
 namespace CentreonCustomview\Repository;
 
+use Centreon\Internal\Di;
+use Centreon\Internal\Datatable;
+use CentreonCustomview\Repository\Repository;
+
 /**
  * @author Sylvestre Ho <sho@merethis.com>
  * @package CentreonCustomview
  * @subpackage Repository
  */
-class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
+class WidgetmodelRepository extends Repository
 {
     /**
      *
@@ -202,7 +206,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
         $sort = '';
         
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         // Getting selected field(s)
@@ -287,7 +291,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
             $widgetNameList[] = $cWidget['shortname'];
         }
 
-        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         // Add file system repo
         $possibleWidgetDir = array(
             $path . "/widgets/*Widget/",
@@ -330,7 +334,7 @@ class WidgetmodelRepository extends \CentreonCustomview\Repository\Repository
         
         return self::arrayValuesRecursive(
             \array_values(
-                \Centreon\Internal\Datatable::removeUnwantedFields(
+                Datatable::removeUnwantedFields(
                     static::$moduleName,
                     static::$objectName,
                     \array_map(

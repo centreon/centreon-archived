@@ -36,10 +36,12 @@
 
 namespace CentreonConfiguration\Install;
 
+use Centreon\Internal\Module\Installer as ModuleInstaller;
+
 /**
  * 
  */
-class Installer extends \Centreon\Internal\Module\Installer
+class Installer extends ModuleInstaller
 {
     /**
      * 

@@ -36,14 +36,15 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of ServiceGroupDatatable
  *
  * @author lionel
  */
-class ServiceGroupDatatable extends \Centreon\Internal\Datatable
+class ServiceGroupDatatable extends Datatable
 {
     protected static $objectId = 'sg_id';
     /**

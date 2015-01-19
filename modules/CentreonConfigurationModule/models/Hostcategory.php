@@ -37,12 +37,14 @@
 
 namespace CentreonConfiguration\Models;
 
+use Centreon\Models\CentreonBaseModel;
+
 /**
  * Used for interacting with host categories
  *
  * @author sylvestre
  */
-class Hostcategory extends \Centreon\Models\CentreonBaseModel
+class Hostcategory extends CentreonBaseModel
 {
     protected static $table = "cfg_hostcategories";
     protected static $primaryKey = "hc_id";

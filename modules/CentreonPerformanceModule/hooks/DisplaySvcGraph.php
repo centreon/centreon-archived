@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonPerformance\Hooks;
+
+use Centreon\Internal\Di;
 
 /**
  * Hook for display a service hook
@@ -69,7 +72,7 @@ class DisplaySvcGraph
      */
     public static function addJs($tpl)
     {
-        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router = Di::getDefault()->get('router');
         $tpl->addJs('centreon.graph.js', 'bottom', 'centreon-performance')
             ->addJs('d3.min.js')
             ->addJs('c3.min.js');

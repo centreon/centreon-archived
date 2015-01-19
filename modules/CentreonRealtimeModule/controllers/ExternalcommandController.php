@@ -32,12 +32,14 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\ServicedetailRepository;
-use \CentreonRealtime\Repository\HostdetailRepository;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
+use CentreonRealtime\Repository\ServicedetailRepository;
+use CentreonRealtime\Repository\HostdetailRepository;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Controller;
 
 /**
  * Handles external commands
@@ -46,7 +48,7 @@ use \Centreon\Internal\Exception;
  * @package CentreonRealtime
  * @subpackage Controllers
  */
-class ExternalcommandController extends \Centreon\Internal\Controller
+class ExternalcommandController extends Controller
 {
     /**
      * Send external command

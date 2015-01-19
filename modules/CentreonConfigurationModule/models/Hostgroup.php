@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with hostgroups
  *
  * @author sylvestre
  */
-class Hostgroup extends \Centreon\Models\CentreonBaseModel
+class Hostgroup extends CentreonBaseModel
 {
     protected static $table = "cfg_hostgroups";
     protected static $primaryKey = "hg_id";

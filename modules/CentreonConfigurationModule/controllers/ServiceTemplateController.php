@@ -39,11 +39,13 @@ use CentreonConfiguration\Repository\CustomMacroRepository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
 use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Controllers\BasicController;
+use CentreonConfiguration\Repository\HostTemplateRepository;
 
 /**
  * 
  */
-class ServiceTemplateController extends \CentreonConfiguration\Controllers\BasicController
+class ServiceTemplateController extends BasicController
 {
     protected $objectDisplayName = 'ServiceTemplate';
     protected $objectName = 'servicetemplate';
@@ -435,7 +437,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
      */
     public function iconForServiceTemplateAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $router = $di->get('router');
         
         $requestParam = $this->getParams('named');
@@ -492,7 +494,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
         $inheritanceValues = ServicetemplateRepository::getInheritanceValues($requestParam['id']);
         array_walk($inheritanceValues, function(&$item, $key) {
             if (false === is_null($item)) {
-                $item = \CentreonConfiguration\Repository\ServicetemplateRepository::getTextValue($key, $item);
+                $item = ServicetemplateRepository::getTextValue($key, $item);
             }
         });
         $router->response()->json(array(
@@ -520,7 +522,7 @@ class ServiceTemplateController extends \CentreonConfiguration\Controllers\Basic
             $values = ServicetemplateRepository::getInheritanceValues($tmpl, true);
             array_walk($values, function(&$item, $key) {
                 if (false === is_null($item)) {
-                    $item = \CentreonConfiguration\Repository\HostTemplateRepository::getTextValue($key, $item);
+                    $item = HostTemplateRepository::getTextValue($key, $item);
                 }
             });
             $router->response()->json(array(

@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with commands
  *
  * @author sylvestre
  */
-class Command extends \Centreon\Models\CentreonBaseModel
+class Command extends CentreonBaseModel
 {
     protected static $table = "cfg_commands";
     protected static $primaryKey = "command_id";
