@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Contact;
+use CentreonConfiguration\Models\Contact;
 
 class ContactTemplateController extends \CentreonConfiguration\Controllers\BasicController
 {

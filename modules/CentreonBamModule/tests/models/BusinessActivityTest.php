@@ -36,7 +36,7 @@
 namespace Test\CentreonBusinessActivity\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonBam\Models\BusinessActivity;
+use CentreonBam\Models\BusinessActivity;
 
 class BusinessActivityTest extends DbTestCase
 {

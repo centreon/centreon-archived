@@ -35,8 +35,8 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \Centreon\Internal\Exception;
-use \CentreonConfiguration\Events\CopyFiles;
+use Centreon\Internal\Exception;
+use CentreonConfiguration\Events\CopyFiles;
 
 /**
  * Factory for ConfigTest Engine

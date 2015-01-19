@@ -191,93 +191,8 @@ class Db
     /**
      * 
      * @param type $targetDbName
-     * @todo Need to remove it when user/contact seperation will be decide
      */
     private static function buildTargetDbSchema($targetDbName = 'centreon')
-    {
-        // Initialize configuration
-        $di = Di::getDefault();
-        $config = $di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
-        
-        $targetFolder = $centreonPath . '/tmp/db/target/' . $targetDbName . '/';
-        
-        // All Core Tables First
-        $fileList = array();
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonAdministrationModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonBamModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonConfigurationModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonCustomviewModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonMainModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonRealtimeModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonSecurityModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonEngineModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonBrokerModule/install/db/' . $targetDbName, 'xml')
-        );
-        $fileList = array_merge(
-            $fileList,
-            File::getFiles($centreonPath . '/modules/CentreonPerformanceModule/install/db/' . $targetDbName, 'xml')
-        );
-        
-        // Copy to destination
-        if (!file_exists($targetFolder)) {
-            mkdir($targetFolder, 0775, true);
-            if (posix_getuid() == 0) {
-                chown($targetFolder, 'centreon');
-                chgrp($targetFolder, 'centreon');
-            }
-        }
-        
-        $nbOfFiles = count($fileList);
-        for ($i=0; $i<$nbOfFiles; $i++) {
-            $targetFile = $targetFolder . basename($fileList[$i]);
-            copy($fileList[$i], $targetFile);
-            if (posix_getuid() == 0) {
-                chmod($targetFile, 0664);
-                chown($targetFile, 'centreon');
-                chgrp($targetFile, 'centreon');
-            }
-        }
-        
-        // send back the computed db
-        return glob($targetFolder . '/*.xml');
-    }
-    
-    /**
-     * 
-     * @param type $targetDbName
-     */
-    private static function rightBuildTargetDbSchema($targetDbName = 'centreon')
     {
         // Initialize configuration
         $di = Di::getDefault();
@@ -287,7 +202,7 @@ class Db
         $tmpFolder = '';
         
         
-        $tmpFolder .= trim($di->get('centreon_generate_tmp_dir'));
+        $tmpFolder .= trim($config->get('global', 'centreon_generate_tmp_dir'));
         if (!empty($tmpFolder)) {
             $targetFolder .= $tmpFolder . '/centreon/db/target/' . $targetDbName . '/';
         } else {

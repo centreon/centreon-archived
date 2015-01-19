@@ -34,7 +34,6 @@
  *
  */
 
-
 namespace CentreonConfiguration\Models\Relation\Hosttemplate;
 
 use Centreon\Internal\Di;

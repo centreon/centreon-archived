@@ -35,8 +35,8 @@
 
 namespace Centreon\Internal\Module;
 
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Informations as CentreonInformations;
+use Centreon\Internal\Di;
+use Centreon\Internal\Informations as CentreonInformations;
 
 /**
  * Module Generator

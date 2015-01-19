@@ -35,8 +35,8 @@
 
 namespace Centreon\Internal\Form;
 
-use \CentreonCustomview\Repository\WidgetRepository;
-use \CentreonCustomview\Repository\CustomviewRepository;
+use CentreonCustomview\Repository\WidgetRepository;
+use CentreonCustomview\Repository\CustomviewRepository;
 
 /**
  * Manage widget settings

@@ -273,66 +273,6 @@ class ServiceRepository extends Repository
     }
     
     /**
-     * 
-     * @param int $service_id
-     * @return array
-     */
-    public static function getContacts($service_id)
-    {
-        $di = Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        $contactList = "";
-
-        $query = "SELECT contact_name "
-            . "FROM cfg_contacts c, cfg_contacts_services_relations cs "
-            . "WHERE service_service_id = '$service_id' "
-            . "AND c.contact_id = cs.contact_id "
-            . "ORDER BY contact_alias";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($contactList != "") {
-                $contactList .= ",";
-            }
-            $contactList .= $row["contact_name"];
-        }
-        return $contactList;
-    }
-
-    /**
-     * 
-     * @param int $service_id
-     * @return array
-     */
-    public static function getContactGroups($service_id)
-    {
-        $di = Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        $contactgroupList = "";
-
-        $query = "SELECT cg_name "
-            . "FROM cfg_contactgroups cg, cfg_contactgroups_services_relations cgs "
-            . "WHERE service_service_id = '$service_id' "
-            . "AND cg.cg_id = cgs.contactgroup_cg_id "
-            . "ORDER BY cg_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($contactgroupList != "") {
-                $contactgroupList .= ",";
-            }
-            $contactgroupList .= $row["cg_name"];
-        }
-        return $contactgroupList;
-    }
-
-    /**
      * Get configuration data of a service
      * 
      * @param int $serviceId

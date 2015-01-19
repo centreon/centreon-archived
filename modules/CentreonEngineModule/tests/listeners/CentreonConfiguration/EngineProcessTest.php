@@ -36,8 +36,8 @@
 namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Events\EngineProcess as EngineProcessEvent;
-use \CentreonEngine\Listeners\CentreonConfiguration\EngineProcess;
+use CentreonConfiguration\Events\EngineProcess as EngineProcessEvent;
+use CentreonEngine\Listeners\CentreonConfiguration\EngineProcess;
 
 class EngineProcessTest extends DbTestCase
 {

@@ -151,12 +151,8 @@ class GenerateEngine
         UserRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/contacts.cfg");
         $event->setOutput('contacts.cfg');
 
-        UsergroupRepository::generate(
-            static::$fileList, 
-            $event->getPollerId(), 
-            static::$path, 
-            "objects/contactgroups.cfg"
-        );
+        // To be remove
+        UserRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/contactgroups.cfg");
         $event->setOutput('contactgroups.cfg');
 
         /* Generate config Object */

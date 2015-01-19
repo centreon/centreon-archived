@@ -39,6 +39,10 @@ namespace Centreon\Internal\Install;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Install\Migrate;
 use Centreon\Internal\Install\AbstractInstall;
+use Centreon\Internal\Utils\Dependency\PhpDependencies;
+use Centreon\Internal\Module\Dependency;
+use Centreon\Internal\Install\Db;
+use Centreon\Internal\Di;
 
 class Install extends AbstractInstall
 {
@@ -51,23 +55,23 @@ class Install extends AbstractInstall
             Migrate::migrateCentreon();
         } else {
             // Initialize configuration
-            $di = \Centreon\Internal\Di::getDefault();
+            $di = Di::getDefault();
             $config = $di->get('config');
             $centreonPath = $config->get('global', 'centreon_path');
             $dbName = $config->get('db_centreon', 'dbname');
             
             // Check Php Dependencies
             $phpDependencies = json_decode(file_get_contents(rtrim($centreonPath, '/') . '/install/dependencies.json'));
-            \Centreon\Internal\Utils\Dependency\PhpDependencies::checkDependencies($phpDependencies);
+            PhpDependencies::checkDependencies($phpDependencies);
             
             echo Colorize::colorizeMessage("Starting to install Centreon 3.0", "info") . "\n";
             echo "Creating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-            \Centreon\Internal\Install\Db::update($dbName);
+            Db::update($dbName);
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             
             $modulesToInstall = self::getCoreModules();
             
-            $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
+            $dependencyResolver = new Dependency($modulesToInstall['modules']);
             $installOrder = $dependencyResolver->resolve();
             
             foreach($installOrder as $moduleName) {

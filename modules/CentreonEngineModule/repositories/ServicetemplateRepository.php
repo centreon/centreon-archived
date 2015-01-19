@@ -154,24 +154,6 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
                             $key = "use";
                             $value = ServicetemplateConfigurationRepository::getTemplateName($value);
                         }
-                        if ($key == "contact_additive_inheritance") {
-                            $tmpContact = ServicetemplateConfigurationRepository::getContacts($service_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contacts"] = "+";
-                                }
-                                $tmpData["contacts"] .= $tmpContact;
-                            }
-                        }
-                        if ($key == "cg_additive_inheritance") {
-                            $tmpContact = ServicetemplateConfigurationRepository::getContactGroups($service_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contactgroups"] = "+";
-                                }
-                                $tmpData["contactgroups"] .= $tmpContact;
-                            }
-                        }
                         if ($writeParam == 1) {
                             $tmpData[$key] = $value;
                         }

@@ -6,7 +6,25 @@
       "bgcolor": "#FA5858",
       "block": "user",
       "order": 1,
-      "menus" : [{
+      "menus" : [
+            {
+                "name": "Users",
+                "short_name": "conf_users",
+                "icon_class": "fa fa-users",
+                "menus": [
+                    {
+                        "name": "Users",
+                        "short_name": "conf_users_list",
+                        "route": "/centreon-administration/user"
+                    },
+                    {
+                        "name": "Contacts",
+                        "short_name": "conf_contacts_list",
+                        "route": "/centreon-administration/contact"
+                    }
+                ]
+            },
+            {
                 "name": "ACL",
                 "short_name": "acl",
                 "icon_class": "fa fa-filter",
@@ -66,6 +84,16 @@
                         "name" : "Centreon",
                         "short_name" : "centreon-options",
                         "route" : "/centreon-administration/options/centreon"
+                    },
+                    {
+                        "name" : "Languages",
+                        "short_name" : "centreon-languages",
+                        "route" : "/centreon-administration/language"
+                    },
+                    {
+                        "name" : "Timezones",
+                        "short_name" : "centreon-timezones",
+                        "route" : "/centreon-administration/timezone"
                     }
                 ]
             }

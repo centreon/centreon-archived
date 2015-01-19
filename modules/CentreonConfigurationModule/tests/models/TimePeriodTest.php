@@ -36,7 +36,7 @@
 namespace Test\CentreonConfiguration\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Models\Timeperiod;
+use CentreonConfiguration\Models\Timeperiod;
 
 class TimeperiodTest extends DbTestCase
 {

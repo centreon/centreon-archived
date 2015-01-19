@@ -36,7 +36,7 @@
 
 namespace Test\Centreon\Utils;
 
-use \Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Utils\Datetime;
 
 class DatetimeTest extends \PHPUnit_Framework_TestCase
 {

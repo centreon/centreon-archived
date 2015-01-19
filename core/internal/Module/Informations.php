@@ -36,8 +36,8 @@
 
 namespace Centreon\Internal\Module;
 
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Utils\String\CamelCaseTransformation;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
  * Gives informations about modules

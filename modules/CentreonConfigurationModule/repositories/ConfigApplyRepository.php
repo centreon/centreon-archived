@@ -35,8 +35,8 @@
 
 namespace CentreonConfiguration\Repository;
 
-use \CentreonConfiguration\Events\EngineProcess;
-use \CentreonConfiguration\Events\BrokerProcess;
+use CentreonConfiguration\Events\EngineProcess;
+use CentreonConfiguration\Events\BrokerProcess;
 
 /**
  * Factory for ConfigTest Engine

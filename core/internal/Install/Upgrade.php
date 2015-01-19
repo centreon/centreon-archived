@@ -35,7 +35,7 @@
 
 namespace Centreon\Internal\Install;
 
-use \Centreon\Internal\Install\Migrate;
+use Centreon\Internal\Install\Migrate;
 
 class Upgrade extends \Centreon\Internal\Install\AbstractInstall
 {

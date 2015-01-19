@@ -35,8 +35,8 @@
 
 namespace Centreon\Repository;
 
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * Abstact class for configuration repository

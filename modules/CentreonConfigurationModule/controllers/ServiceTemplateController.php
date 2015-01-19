@@ -57,8 +57,6 @@ class ServiceTemplateController extends BasicController
         'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup',
         'service_template_hosts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Hosttemplate',
         'service_template_servicecategories' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicecategory',
-        'service_contacts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Contact',
-        'service_contactgroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Contactgroup',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
         'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate',
         'service_icon' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Icon'
@@ -342,30 +340,6 @@ class ServiceTemplateController extends BasicController
     public function eventHandlerForServiceAction()
     {
         parent::getSimpleRelation('command_command_id2', '\CentreonConfiguration\Models\Command');
-    }
-    
-    /**
-     * Get list of contacts for a specific service
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]/contact
-     */
-    public function contactForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['service_contacts']);
-    }
-    
-    /**
-     * Get list of contact groups for a specific service
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]/contactgroup
-     */
-    public function contactgroupForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['service_contactgroups']);
     }
     
     /**

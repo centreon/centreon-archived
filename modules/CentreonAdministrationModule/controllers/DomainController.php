@@ -54,7 +54,7 @@ class DomainController extends ObjectAbstract
     public static $isDisableable = true;
 
     /**
-     * List hostcategories
+     * List domain
      *
      * @method get
      * @route /domain
@@ -189,7 +189,7 @@ class DomainController extends ObjectAbstract
     }
     
     /**
-     * Get list of hostcategories for a specific host
+     * Get list of domain for a specific host
      *
      *
      * @method get

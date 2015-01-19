@@ -35,7 +35,7 @@
 
 namespace Centreon\Internal\Form;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Exception;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>

@@ -35,7 +35,7 @@
 
 namespace CentreonAdministration\Hooks;
 
-use \CentreonAdministration\Repository\TagsRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Hook for button add to tag
@@ -58,7 +58,7 @@ class DisplayAddToTag
         if (isset($params['objectType']) && in_array($params['objectType'], TagsRepository::getListResource())) {
             $returnParams['display'] = true;
             $returnParams['resourceType'] =  $params['objectType'];
-        } 
+        }
         return array(
             'template' => 'displayAddToTag.tpl',
             'variables' => $returnParams

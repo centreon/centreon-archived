@@ -37,7 +37,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Module;
+use Centreon\Internal\Module;
 
 class ModuleTest extends \PHPUnit_Framework_TestCase
 {

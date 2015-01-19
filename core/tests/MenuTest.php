@@ -37,7 +37,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Menu,
+use Centreon\Internal\Menu,
     \Centreon\Internal\Di,
     \Centreon\Internal\Config,
     \Centreon\Internal\Cache;

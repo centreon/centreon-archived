@@ -36,7 +36,7 @@
 
 namespace CentreonAdministration\Models;
 
-use \Centreon\Models\CentreonBaseModel;
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with ACL groups

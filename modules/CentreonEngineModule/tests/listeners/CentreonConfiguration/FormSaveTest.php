@@ -36,8 +36,8 @@
 namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonEngine\Listeners\CentreonConfiguration\EngineFormSave as EngineFormSaveListener;
-use \CentreonConfiguration\Events\EngineFormSave;
+use CentreonEngine\Listeners\CentreonConfiguration\EngineFormSave as EngineFormSaveListener;
+use CentreonConfiguration\Events\EngineFormSave;
 
 class FormSaveTest extends DbTestCase
 {

@@ -36,7 +36,7 @@
 
 namespace CentreonAdministration\Models\Relation\Organization;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 /**
  * Relation between organization and contact;
@@ -51,5 +51,5 @@ class Contact extends CentreonRelationModel
     protected static $firstKey = "organization_id";
     protected static $secondKey = "contact_id";
     public static $firstObject = "\\CentreonAdministration\\Models\\Organization";
-    public static $secondObject = "\\CentreonConfiguration\\Models\\Contact";
+    public static $secondObject = "\\CentreonAdministration\\Models\\Contact";
 }

@@ -37,7 +37,7 @@ namespace Test\CentreonConfiguration\Models;
 require_once CENTREON_PATH . "/tests/DbTestCase.php";
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Models\Trap;
+use CentreonConfiguration\Models\Trap;
 
 class TrapTest extends DbTestCase
 {

@@ -38,8 +38,8 @@
 namespace Test\CentreonAdministration;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonAdministration\Internal\User;
-use \Centreon\Internal\Di;
+use CentreonAdministration\Internal\User;
+use Centreon\Internal\Di;
 
 class UserTest extends DbTestCase
 {

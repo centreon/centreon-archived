@@ -36,7 +36,7 @@
 
 namespace Centreon\Internal\Module;
 
-use \Centreon\Internal\Utils\CommandLine\Colorize;
+use Centreon\Internal\Utils\CommandLine\Colorize;
 
 /**
  * Module Abstract Install

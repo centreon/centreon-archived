@@ -132,24 +132,6 @@ class ServiceRepository extends ServicetemplateRepository
                             $key = "use";
                             $value = ServicetemplateConfigurationRepository::getTemplateName($value);
                         }
-                        if ($key == "contact_additive_inheritance") {
-                            $tmpContact = ServiceConfigurationRepository::getContacts($service_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contacts"] = "+";
-                                }
-                                $tmpData["contacts"] .= $tmpContact;
-                            }
-                        }
-                        if ($key == "cg_additive_inheritance") {
-                            $tmpContact = ServiceConfigurationRepository::getContactGroups($service_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contactgroups"] = "+";
-                                }
-                                $tmpData["contactgroups"] .= $tmpContact;
-                            }
-                        }
                         $tmpData[$key] = $value;
                     }
                 }

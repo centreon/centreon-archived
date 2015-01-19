@@ -33,10 +33,10 @@
  *
  *
  */
-namespace Test\CentreonAdministation\Models\Relation;
+namespace Test\CentreonAdministration\Models\Relation;
 
-use \Test\Centreon\DbTestCase,
-    \CentreonAdministration\Models\Relation\Organization\Contact;
+use Test\Centreon\DbTestCase;
+use CentreonAdministration\Models\Relation\Organization\Contact;
 
 class OrganizationContactTest extends DbTestCase
 {
@@ -45,9 +45,11 @@ class OrganizationContactTest extends DbTestCase
 
     public function testInsert()
     {
-        Contact::insert(2, 1, array(
-            'is_default' => 1
-        ));
+        Contact::insert(
+            2,
+            1,
+            array('is_default' => 1)
+        );
         $this->tableEqualsXml(
             'cfg_organizations_contacts_relations',
             dirname(dirname(__DIR__)) . '/data/organization_contact.insert.xml'
@@ -328,18 +330,43 @@ class OrganizationContactTest extends DbTestCase
             )
         );
 
-        $result = Contact::getMergedParameters(array('name'), array('contact_name'), -1, 0, null, 'ASC', array(), 'OR', array('is_default'));
+        $result = Contact::getMergedParameters(
+            array('name'),
+            array('contact_name'),
+            -1,
+            0,
+            null,
+            'ASC',
+            array(),
+            'OR',
+            array('is_default')
+        );
         $this->assertEquals($testResult, $result);
     }
 
     public function testgetMergedParametersBySearch()
     {
-        $result = Contact::getMergedParametersBySearch(array('name'), array('contact_name'), -1, 0, null, 'ASC', array('cfg_contacts.contact_name' => 'Doe'), 'OR', array('is_default'));
-        $this->assertEquals(array(array(
-            'name' => 'Default organization',
-            'contact_name' => 'John Doe',
-            'is_default' => '0'
-        )), $result);
+        $result = Contact::getMergedParametersBySearch(
+            array('name'),
+            array('contact_name'),
+            -1,
+            0,
+            null,
+            'ASC',
+            array('cfg_contacts.contact_name' => 'Doe'),
+            'OR',
+            array('is_default')
+        );
+        $this->assertEquals(
+            array(
+                array(
+                    'name' => 'Default organization',
+                    'contact_name' => 'John Doe',
+                    'is_default' => '0'
+                )
+            ),
+            $result
+        );
     }
 
     public function testGetFirstKey()

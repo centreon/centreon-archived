@@ -36,7 +36,7 @@
 
 namespace CentreonCustomview\Models\Relation\Organization;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 /**
  * Relation between organization and widget

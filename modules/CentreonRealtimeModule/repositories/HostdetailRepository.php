@@ -35,7 +35,7 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
 /**
  * Repository for host data

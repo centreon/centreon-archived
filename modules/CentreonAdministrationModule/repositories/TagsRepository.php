@@ -35,9 +35,9 @@
 
 namespace CentreonAdministration\Repository;
 
-use \Centreon\Internal\Exception;
-use \Centreon\Internal\Di;
-use \CentreonAdministration\Models\Tag;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use CentreonAdministration\Models\Tag;
 
 /**
  * Repository tags

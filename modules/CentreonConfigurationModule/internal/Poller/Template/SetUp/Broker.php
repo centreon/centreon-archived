@@ -34,7 +34,7 @@
  */
 namespace CentreonConfiguration\Internal\Poller\Template\Setup;
 
-use \CentreonConfiguration\Internal\Poller\Template\Setup\Setup;
+use CentreonConfiguration\Internal\Poller\Template\Setup\Setup;
 /**
  * Description of BrokerTemplateManager
  *

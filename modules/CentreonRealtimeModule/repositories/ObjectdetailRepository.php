@@ -35,8 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * Repository for host and object

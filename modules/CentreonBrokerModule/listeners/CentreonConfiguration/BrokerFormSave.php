@@ -35,8 +35,8 @@
 
 namespace CentreonBroker\Listeners\CentreonConfiguration;
 
-use \CentreonBroker\Repository\BrokerRepository;
-use \CentreonConfiguration\Events\BrokerFormSave as BrokerFormSaveEvent;
+use CentreonBroker\Repository\BrokerRepository;
+use CentreonConfiguration\Events\BrokerFormSave as BrokerFormSaveEvent;
 
 class BrokerFormSave
 {

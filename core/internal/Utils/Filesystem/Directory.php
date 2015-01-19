@@ -35,7 +35,7 @@
 
 namespace Centreon\Internal\Utils\Filesystem;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Exception;
 
 /**
  * Utils for filesystem directories

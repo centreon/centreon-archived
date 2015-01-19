@@ -36,7 +36,7 @@
 
 namespace Test\Centreon\Utils;
 
-use \Centreon\Internal\Utils\HumanReadable;
+use Centreon\Internal\Utils\HumanReadable;
 
 class HumanReadableTest extends \PHPUnit_Framework_TestCase
 {

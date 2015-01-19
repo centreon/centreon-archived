@@ -36,7 +36,7 @@
 namespace Test\CentreonBroker\Hooks;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonEngine\Hooks\DisplayBrokerPaths;
+use CentreonEngine\Hooks\DisplayBrokerPaths;
 
 class DisplayBrokerPathsTest extends DbTestCase
 {
