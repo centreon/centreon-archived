@@ -36,7 +36,7 @@
 
 namespace Test\Centreon\Utils;
 
-use \Centreon\Internal\Utils\Status;
+use Centreon\Internal\Utils\Status;
 
 class StatusTest extends \PHPUnit_Framework_TestCase
 {

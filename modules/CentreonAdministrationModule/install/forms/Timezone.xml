@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="timezone_form">
+		<route>/centreon-administration/timezone/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/centreon-administration/timezone</redirect_route>
+		<section name="General">
+			<block name="General information">
+				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+					<validators>
+						<validator events="blur">unique</validator>
+						<validator events="blur">forbiddenChar</validator>
+					</validators>
+				</field>
+                <field name="offset" label="Offset" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="dst_offset" label="Dst Offset" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+				<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+			</block>
+		</section>
+	</form>
+	<wizard name="add_timezone">
+		<route>/centreon-administration/timezone/add</route>
+		<step name="General">
+			<field name="name" mandatory="1"></field>
+			<field name="offset" mandatory="1"></field>
+			<field name="description" mandatory="0"></field>
+		</step>
+    </wizard>
+</forms>

@@ -37,7 +37,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
 class DiTest extends \PHPUnit_Framework_TestCase
 {

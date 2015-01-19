@@ -37,7 +37,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Install\Db,
+use Centreon\Internal\Install\Db,
     \Centreon\Internal\Di,
     \Centreon\Internal\Bootstrap,
     \Centreon\Custom\Propel\CentreonMysqlPlatform;

@@ -115,38 +115,6 @@
                         </choices>
 					</attributes>
 				</field>
-				<field name="contact_additive_inheritance" label="Contact additive inheritance" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_contacts" label="Linked contacts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/user/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/contact</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
-				<field name="cg_additive_inheritance" label="Contact group additive inheritance" default_value="0" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_contactgroups" label="Linked contact groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/usergroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/contactgroup</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
 				<field name="service_notification_interval" label="Notification interval" default_value="0" advanced="1" type="integer" parent_field="" mandatory="0"></field>
 				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>

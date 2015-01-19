@@ -37,9 +37,9 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Config;
-use \Centreon\Internal\Cache;
-use \Centreon\Internal\Di;
+use Centreon\Internal\Config;
+use Centreon\Internal\Cache;
+use Centreon\Internal\Di;
 
 class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
 {

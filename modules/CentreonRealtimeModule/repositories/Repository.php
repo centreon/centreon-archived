@@ -35,7 +35,7 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Hook;
+use Centreon\Internal\Hook;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>

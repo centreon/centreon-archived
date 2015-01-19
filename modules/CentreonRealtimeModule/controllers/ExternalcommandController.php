@@ -34,10 +34,10 @@
  */
 namespace CentreonRealtime\Controllers;
 
-use \CentreonRealtime\Repository\ServicedetailRepository;
-use \CentreonRealtime\Repository\HostdetailRepository;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
+use CentreonRealtime\Repository\ServicedetailRepository;
+use CentreonRealtime\Repository\HostdetailRepository;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * Handles external commands

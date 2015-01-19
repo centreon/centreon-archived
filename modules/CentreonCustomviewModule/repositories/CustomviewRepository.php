@@ -35,7 +35,7 @@
 
 namespace CentreonCustomview\Repository;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Exception;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>

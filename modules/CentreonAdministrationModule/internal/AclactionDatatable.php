@@ -36,7 +36,7 @@
 
 namespace CentreonAdministration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
 
 /**
  * Repository for Acl action listing

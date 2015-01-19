@@ -36,7 +36,7 @@
 namespace Test\CentreonConfiguration\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Service;
 
 class ServiceTest extends DbTestCase
 {

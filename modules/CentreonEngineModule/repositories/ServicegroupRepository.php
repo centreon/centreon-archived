@@ -35,7 +35,7 @@
 
 namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Di;
+use Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@merethis.com>

@@ -35,11 +35,11 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form;
-use \Centreon\Internal\Form\Wizard;
-use \Centreon\Internal\Form\Generator;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Form;
+use Centreon\Internal\Form\Wizard;
+use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * Abstact class for configuration controller

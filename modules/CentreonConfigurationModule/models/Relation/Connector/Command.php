@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Connector;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Command extends CentreonRelationModel
 {

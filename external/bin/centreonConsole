@@ -67,7 +67,5 @@
         }
     } catch(\Exception $e) {
         echo '[Error ' . $e->getCode() . '] => ' . $e->getMessage() . "\n";
-        
-        var_dump(debug_backtrace());
     }
 ?>

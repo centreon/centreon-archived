@@ -34,12 +34,12 @@
  */
 namespace CentreonSecurity\Controllers;
 
-use \CentreonAdministration\Internal\User;
-use \Centreon\Internal\Form;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Auth\Sso;
-use \Centreon\Internal\Session;
-use \Centreon\Internal\Acl;
+use CentreonAdministration\Internal\User;
+use Centreon\Internal\Form;
+use Centreon\Internal\Di;
+use Centreon\Internal\Auth\Sso;
+use Centreon\Internal\Session;
+use Centreon\Internal\Acl;
 
 /**
  * Login controller
@@ -87,17 +87,8 @@ class LoginController extends \Centreon\Internal\Controller
         /* Validate CSRF */
         try {
             Form::validateSecurity($csrf);
-        } catch (\Exception $e) {
-            $router->response()->json(
-                array(
-                    'status' => false,
-                    'error' => _("Security key does not match.")
-                )
-            );
-        }
-        $auth = new Sso($username, $password, 0);
-        if (1 === $auth->passwdOk) {
-            $user = new User($auth->userInfos['contact_id']);
+            $auth = new Sso($username, $password, 0);
+            $user = new User($auth->userInfos['user_id']);
             $_SESSION['user'] = $user;
             Session::init($user->getId());
             $_SESSION['acl'] = new Acl($user);
@@ -108,13 +99,15 @@ class LoginController extends \Centreon\Internal\Controller
                     'redirectRoute' => $backUrl
                 )
             );
+            
+        } catch (\Exception $e) {
+            $router->response()->json(
+                array(
+                    'status' => false,
+                    'error' => $e->getMessage()
+                )
+            );
         }
-        $router->response()->json(
-            array(
-                'status' => false,
-                'error' => _("Authentication failed.")
-            )
-        );
     }
 
     /**
@@ -125,14 +118,8 @@ class LoginController extends \Centreon\Internal\Controller
      */
     public function logoutAction()
     {
-        // session_regenerate_id(true);
+        session_regenerate_id(true);
         session_destroy();
-        Di::getDefault()
-            ->get('router')
-            ->response()->json(
-                array(
-                    'status' => true
-                )
-            );
+        $this->router->response()->json(array('status' => true));
     }
 }

@@ -37,7 +37,7 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Hook,
+use Centreon\Internal\Hook,
     \Centreon\Internal\Di;
 
 class HookTest extends DbTestCase

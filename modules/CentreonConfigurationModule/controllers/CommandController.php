@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use \CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Models\Command;
 
 class CommandController extends \CentreonConfiguration\Controllers\BasicController
 {

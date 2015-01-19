@@ -36,7 +36,7 @@
 
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form;
+use Centreon\Internal\Form;
 
 class AclresourceController extends BasicController
 {

@@ -35,7 +35,7 @@
 
 namespace CentreonAdministration\Hooks;
 
-use \CentreonAdministration\Repository\TagsRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Hook for list the tags
@@ -73,7 +73,8 @@ class DisplayTagList
 
     private static function getTag($resourceType, $resourceId, $tagId, $tagName)
     {
-        $html = '<div class="tag" data-resourceid="' . $resourceId . '" data-resourcetype="'  . $resourceType .'" data-tagid="' . $tagId . '">
+        $html = '<div class="tag" data-resourceid="' . $resourceId . '" data-resourcetype="'
+            . $resourceType .'" data-tagid="' . $tagId . '">
             <div class="title">' . $tagName . '</div>
             <div class="remove"><a href="#">&times;</a></div>
         </div> ';
@@ -82,7 +83,8 @@ class DisplayTagList
 
     private static function getAddTag($resourceType, $resourceId)
     {
-        $html = '<div class="tag addtag" data-resourceid="' . $resourceId . '" data-resourcetype="'  . $resourceType .'">
+        $html = '<div class="tag addtag" data-resourceid="' . $resourceId . '" data-resourcetype="'
+            . $resourceType .'">
             <div class="title"><input type="text" style="width: 0;"></div>
             <div class="remove noborder"><a href="#">+</a></div>
         </div>';

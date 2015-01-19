@@ -36,9 +36,9 @@
 namespace Test\CentreonEngine\Repository;
 
 use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Utils\Filesystem\Directory;
-use \CentreonEngine\Repository\CommandRepository;
+use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Filesystem\Directory;
+use CentreonEngine\Repository\CommandRepository;
 
 class CommandRepositoryTest extends DbTestCase
 {

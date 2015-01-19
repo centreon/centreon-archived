@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Host;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Icon extends CentreonRelationModel
 {

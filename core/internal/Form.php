@@ -562,8 +562,6 @@ class Form
             throw new Exception('The validation is impossible due to missing form token');
         }
         
-        /*unset($_SESSION['form_token']);
-        unset($_SESSION['form_token_time']);*/
         return true;
     }
 
@@ -585,6 +583,12 @@ class Form
     public static function getSecurityToken()
     {
         $token = md5(uniqid(Di::getDefault()->get('config')->get('global', 'secret'), true));
+        if (isset($_SESSION['form_token'])) {
+            unset($_SESSION['form_token']);
+        }
+        if (isset($_SESSION['form_token_time'])) {
+            unset($_SESSION['form_token_time']);
+        }
         $_SESSION['form_token'] = $token;
         $_SESSION['form_token_time'] = time();
         return $token;

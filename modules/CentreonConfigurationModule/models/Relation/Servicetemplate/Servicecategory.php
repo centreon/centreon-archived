@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Servicetemplate;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Servicecategory extends CentreonRelationModel
 {

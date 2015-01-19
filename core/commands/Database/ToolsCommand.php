@@ -35,7 +35,7 @@
 
 namespace Centreon\Commands\Database;
 
-use \Centreon\Internal\Command\AbstractCommand,
+use Centreon\Internal\Command\AbstractCommand,
     \Centreon\Internal\Exception,
     \Centreon\Internal\Di;
 

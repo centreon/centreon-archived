@@ -36,7 +36,7 @@
 namespace Test\CentreonAdministration\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonAdministration\Models\Domain;
+use CentreonAdministration\Models\Domain;
 
 class DomainTest extends DbTestCase
 {
@@ -118,7 +118,7 @@ class DomainTest extends DbTestCase
 
     public function testUpdateUnknownId()
     {
-      $newInfo = array(
+        $newInfo = array(
             'name' => 'Test'
         );
         $this->setExpectedException(
@@ -218,15 +218,15 @@ class DomainTest extends DbTestCase
 
     public function testGetUnknownParameters()
     {
-       $this->setExpectedException(
-           'PDOException'
-       );
-       Domain::getParameters(2, 'idontexist');
+        $this->setExpectedException(
+            'PDOException'
+        );
+        Domain::getParameters(2, 'idontexist');
 
-       $this->setExpectedException(
-           'PDOException'
-       );
-       Domain::getParameters(2, array('name', 'idontexist'));
+        $this->setExpectedException(
+            'PDOException'
+        );
+        Domain::getParameters(2, array('name', 'idontexist'));
     }
 
     public function testGetList()
@@ -338,13 +338,13 @@ class DomainTest extends DbTestCase
             array('name' => 'Hardware')
         );
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Domain::getList(
-                'name', 
-                null, 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
+                null,
                 array(
                     'name' => 'Hardware'
                 )
@@ -358,13 +358,13 @@ class DomainTest extends DbTestCase
             array('name' => 'Hardware')
         );
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Domain::getList(
-                'name', 
-                null, 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
+                null,
                 array(
                     'name' => 'Hardware',
                     'domain_id' => 2
@@ -377,18 +377,17 @@ class DomainTest extends DbTestCase
     {
         $expectedResult = array();
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Domain::getList(
-                'name', 
-                null, 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
+                null,
                 array(
                     'name' => 'idontexist',
                 )
             )
-
         );
     }
 
@@ -398,12 +397,12 @@ class DomainTest extends DbTestCase
             array('name' => 'Hardware')
         );
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Domain::getListBySearch(
-                'name', 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
                 null,
                 array('name' => 'ware')
             )

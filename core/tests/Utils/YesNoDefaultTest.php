@@ -36,7 +36,7 @@
 
 namespace Test\Centreon\Utils;
 
-use \Centreon\Internal\Utils\YesNoDefault;
+use Centreon\Internal\Utils\YesNoDefault;
 
 class YesNoDefaultTest extends \PHPUnit_Framework_TestCase
 {

@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Aclmenu;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Menu extends CentreonRelationModel
 {

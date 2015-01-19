@@ -36,8 +36,8 @@
 
 namespace Centreon\Internal;
 
-use \Centreon\Internal\Utils\CommandLine\Colorize;
-use \Centreon\Internal\Module\Informations;
+use Centreon\Internal\Utils\CommandLine\Colorize;
+use Centreon\Internal\Module\Informations;
 
 class Command
 {
@@ -54,7 +54,7 @@ class Command
     {
         try {
             $bootstrap = new Bootstrap();
-            $sectionToInit = array('configuration', 'database', 'cache', 'logger');
+            $sectionToInit = array('configuration', 'database', 'cache', 'logger', 'organization');
             $bootstrap->init($sectionToInit);
             $this->requestLine = $requestLine;
             $this->parametersLine = $parametersLine;

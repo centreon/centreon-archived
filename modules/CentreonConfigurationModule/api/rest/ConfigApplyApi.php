@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use \Centreon\Internal\Di,
+use Centreon\Internal\Di,
     \CentreonConfiguration\Repository\ConfigApplyRepository;
 
 /**

@@ -42,6 +42,11 @@ namespace CentreonAdministration\Install;
  */
 class Installer extends \Centreon\Internal\Module\Installer
 {
+    protected $objectName = 'user';
+    protected $objectClass = '\CentreonAdministration\Models\User';
+    protected $repository = '\CentreonAdministration\Repository\UserRepository';
+    public static $relationMap = array();
+    
     /**
      * 
      * @param type $moduleInfo
@@ -57,14 +62,26 @@ class Installer extends \Centreon\Internal\Module\Installer
     }
     
     /**
-     * @todo to change if with user defined password when we know if we'll seperate user from contact
+     * 
      */
     public function customInstall()
     {
-        $di = \Centreon\Internal\Di::getDefault();
-        $db = $di->get('db_centreon');
-        $updateUser = "UPDATE cfg_contacts SET contact_passwd = '" . md5('centreon') . "' WHERE contact_alias = 'admin'";
-        $db->query($updateUser);
+        $repository = $this->repository;
+        $repository::setRelationMap(static::$relationMap);
+        $repository::setObjectName($this->objectName);
+        $repository::setObjectClass($this->objectClass);
+        $repository::setSaveEvents(false);
+        $adminUser = array(
+            'firstname' => 'admin',
+            'lastname' => 'admin',
+            'login' => 'admin',
+            'password' => 'centreon',
+            'is_admin' => 1,
+            'is_locked' => 0,
+            'is_activated' => 1,
+            'is_password_old' => 1
+        );
+        $repository::create($adminUser);
     }
     
     /**

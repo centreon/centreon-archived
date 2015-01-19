@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<dataset>
+  <table name="cfg_users">
+    <column>user_id</column>
+    <column>login</column>
+    <column>password</column>
+    <column>is_admin</column>
+    <column>is_locked</column>
+    <column>is_activated</column>
+    <column>is_password_old</column>
+    <column>language_id</column>
+    <column>timezone_id</column>
+    <column>contact_id</column>
+    <column>createdat</column>
+    <column>updatedat</column>
+    <column>auth_type</column>
+    <column>firstname</column>
+    <column>lastname</column>
+    <column>autologin_key</column>
+    <row>
+      <value>1</value>
+      <value>Template user</value>
+      <value>1</value>
+      <value>Template user</value>
+      <value>Template user</value>
+      <null/>
+      <value>fr_FR</value>
+      <value>n</value>
+      <value>n</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>Default template user</value>
+      <value>0</value>
+      <value>0</value>
+      <value>1</value>
+      <value>1</value>
+      <null/>
+      <value>0</value>
+      <value>txt</value>
+      <value>1</value>
+      <value>local</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>0</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>1</value>
+      <value>1</value>
+      <value>user 1</value>
+      <value>user 1</value>
+      <value>azerty</value>
+      <value>us_US</value>
+      <value>n</value>
+      <value>n</value>
+      <value>user_1@domain.tld</value>
+      <value>+331111</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>New comment</value>
+      <value>0</value>
+      <value>0</value>
+      <value>1</value>
+      <value>1</value>
+      <null/>
+      <value>0</value>
+      <value>txt</value>
+      <value>1</value>
+      <value>local</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>1</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>1</value>
+      <value>1</value>
+      <value>user 2</value>
+      <value>user 2</value>
+      <value>qsdfgh</value>
+      <value>us_US</value>
+      <value>n</value>
+      <value>n</value>
+      <value>user_2@domain.tld</value>
+      <value>+332222</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>user with template</value>
+      <value>0</value>
+      <value>0</value>
+      <value>1</value>
+      <value>1</value>
+      <value>1</value>
+      <value>0</value>
+      <value>txt</value>
+      <value>1</value>
+      <value>local</value>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <null/>
+      <value>1</value>
+    </row>
+  </table>
+</dataset>

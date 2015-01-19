@@ -35,7 +35,7 @@
 
 namespace CentreonConfiguration\Internal;
 
-use \Centreon\Internal\Datatable\Datasource\CentreonDb;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
 
 /**
  * Description of HostGroupDatatable

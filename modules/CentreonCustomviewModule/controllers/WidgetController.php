@@ -34,7 +34,7 @@
  */
 namespace CentreonCustomview\Controllers;
 
-use \CentreonCustomview\Repository\CustomviewRepository,
+use CentreonCustomview\Repository\CustomviewRepository,
     \CentreonCustomview\Repository\WidgetRepository;
 
 /**

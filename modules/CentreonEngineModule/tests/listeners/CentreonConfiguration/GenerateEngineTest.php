@@ -36,10 +36,10 @@
 namespace Test\CentreonEngine\Listeners\CentreonConfiguration;
 
 use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Di;
-use \CentreonEngine\Listeners\CentreonConfiguration\GenerateEngine;
-use \CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
-use \Centreon\Internal\Utils\Filesystem\Directory;
+use Centreon\Internal\Di;
+use CentreonEngine\Listeners\CentreonConfiguration\GenerateEngine;
+use CentreonConfiguration\Events\GenerateEngine as GenerateEngineEvent;
+use Centreon\Internal\Utils\Filesystem\Directory;
 
 class GenerateEngineTest extends DbTestCase
 {

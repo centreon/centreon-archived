@@ -35,8 +35,6 @@
 
 namespace CentreonConfiguration\Controllers;
 
-use CentreonConfiguration\Models\Relation\Hosttemplate\Contact;
-use CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Di;
@@ -92,8 +90,6 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
      */
     public static $relationMap = array(
         'host_categories' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory',
-        'host_contacts' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contact',
-        'host_contactgroups' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Contactgroup',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate',
         'hosttemplate_servicetemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate',
         'host_icon' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Icon'
@@ -274,58 +270,6 @@ class HostTemplateController extends \CentreonConfiguration\Controllers\BasicCon
         $router->response()->json(array(
             'success' => true,
             'values' => $values));
-    }
-    
-    /**
-     * Get list of contacts for a specific host template
-     *
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]/contact
-     */
-    public function contactForHostTemplateAction()
-    {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $contactList = Contact::getMergedParameters(
-            array('contact_id', 'contact_name', 'contact_email'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('cfg_hosts.host_id' => $requestParam['id']),
-            "AND"
-        );
-        
-        $finalContactList = array();
-        foreach ($contactList as $contact) {
-            $finalContactList[] = array(
-                "id" => $contact['contact_id'],
-                "text" => $contact['contact_name'],
-                "theming" => \CentreonConfiguration\Repository\UserRepository::getUserIcon(
-                    $contact['contact_name'],
-                    $contact['contact_email']
-                )
-            );
-        }
-        
-        $router->response()->json($finalContactList);
-    }
-    
-    /**
-     * Get list of contact groups for a specific host template
-     *
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]/contactgroup
-     */
-    public function contactgroupForHostTemplateAction()
-    {
-        parent::getRelations(static::$relationMap['host_contactgroups']);
     }
     
     /**

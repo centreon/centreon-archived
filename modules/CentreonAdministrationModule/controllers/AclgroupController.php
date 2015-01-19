@@ -35,7 +35,7 @@
     
 namespace CentreonAdministration\Controllers;
 
-use \Centreon\Internal\Form;
+use Centreon\Internal\Form;
 
 class AclgroupController extends BasicController
 {

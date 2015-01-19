@@ -35,8 +35,8 @@
 
 namespace CentreonRealtime\Repository;
 
-use \Centreon\Internal\Utils\Datetime;
-use \Centreon\Internal\Utils\Status as UtilStatus;
+use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Utils\Status as UtilStatus;
 
 /**
  * @author Julien Mathis <jmathis@merethis.com>

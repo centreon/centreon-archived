@@ -37,7 +37,7 @@
 
 namespace CentreonConfiguration\Models\Relation\Trap;
 
-use \Centreon\Models\CentreonRelationModel;
+use Centreon\Models\CentreonRelationModel;
 
 class Service extends CentreonRelationModel
 {

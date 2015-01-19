@@ -153,7 +153,7 @@ class Api extends HttpCore
                 }
                 
                 $token = $headers['centreon-x-token'];
-                if (!\CentreonConfiguration\Repository\UserRepository::checkApiToken($token)) { /* method auth */
+                if (!\CentreonAdministration\Repository\UserRepository::checkApiToken($token)) { /* method auth */
                     throw new UnauthorizedException('Invalid Token', 'The Token is not valid');
                 }
             }

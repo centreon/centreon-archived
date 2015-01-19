@@ -36,7 +36,7 @@
 namespace Test\CentreonAdministration\Models;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonAdministration\Models\Environment;
+use CentreonAdministration\Models\Environment;
 
 class EnvironmentTest extends DbTestCase
 {
@@ -119,7 +119,7 @@ class EnvironmentTest extends DbTestCase
 
     public function testUpdateUnknownId()
     {
-      $newInfo = array(
+        $newInfo = array(
             'name' => 'Test'
         );
         $this->setExpectedException(
@@ -219,15 +219,15 @@ class EnvironmentTest extends DbTestCase
 
     public function testGetUnknownParameters()
     {
-       $this->setExpectedException(
-           'PDOException'
-       );
-       Environment::getParameters(2, 'idontexist');
+        $this->setExpectedException(
+            'PDOException'
+        );
+        Environment::getParameters(2, 'idontexist');
 
-       $this->setExpectedException(
-           'PDOException'
-       );
-       Environment::getParameters(2, array('name', 'idontexist'));
+        $this->setExpectedException(
+            'PDOException'
+        );
+        Environment::getParameters(2, array('name', 'idontexist'));
     }
 
     public function testGetList()
@@ -317,13 +317,13 @@ class EnvironmentTest extends DbTestCase
             array('name' => 'Preproduction')
         );
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Environment::getList(
-                'name', 
-                null, 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
+                null,
                 array(
                     'name' => 'Preproduction'
                 )
@@ -337,13 +337,13 @@ class EnvironmentTest extends DbTestCase
             array('name' => 'Preproduction')
         );
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Environment::getList(
-                'name', 
-                null, 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
+                null,
                 array(
                     'name' => 'Preproduction',
                     'environment_id' => 2
@@ -356,18 +356,17 @@ class EnvironmentTest extends DbTestCase
     {
         $expectedResult = array();
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Environment::getList(
-                'name', 
-                null, 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
+                null,
                 array(
                     'name' => 'idontexist',
                 )
             )
-
         );
     }
 
@@ -377,12 +376,12 @@ class EnvironmentTest extends DbTestCase
             array('name' => 'Preproduction')
         );
         $this->assertEquals(
-            $expectedResult, 
+            $expectedResult,
             Environment::getListBySearch(
-                'name', 
-                null, 
-                null, 
-                null, 
+                'name',
+                null,
+                null,
+                null,
                 null,
                 array('name' => 'prepro')
             )
@@ -437,7 +436,10 @@ class EnvironmentTest extends DbTestCase
     public function testGetMultipleIdsByParameters()
     {
         $expectedResult = array('2', '1');
-        $this->assertEquals($expectedResult, Environment::getIdByParameter('name', array('Production', 'Preproduction')));
+        $this->assertEquals(
+            $expectedResult,
+            Environment::getIdByParameter('name', array('Production', 'Preproduction'))
+        );
     }
 
     public function testGetIdByParameterWithUnknownColumn()

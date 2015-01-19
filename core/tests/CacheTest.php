@@ -37,8 +37,8 @@
 
 namespace Test\Centreon;
 
-use \Centreon\Internal\Config;
-use \Centreon\Internal\Cache;
+use Centreon\Internal\Config;
+use Centreon\Internal\Cache;
 
 class CacheTest extends \PHPUnit_Framework_TestCase
 {

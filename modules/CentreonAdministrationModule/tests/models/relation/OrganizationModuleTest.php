@@ -33,10 +33,10 @@
  *
  *
  */
-namespace Test\CentreonAdministation\Models\Relation;
+namespace Test\CentreonAdministration\Models\Relation;
 
-use \Test\Centreon\DbTestCase,
-    \CentreonAdministration\Models\Relation\Organization\Module;
+use Test\Centreon\DbTestCase;
+use CentreonAdministration\Models\Relation\Organization\Module;
 
 class OrganizationModuleTest extends DbTestCase
 {
@@ -45,9 +45,11 @@ class OrganizationModuleTest extends DbTestCase
 
     public function testInsert()
     {
-        Module::insert(2, 1, array(
-            'is_activated' => 1
-        ));
+        Module::insert(
+            2,
+            1,
+            array('is_activated' => 1)
+        );
         $this->tableEqualsXml(
             'cfg_organizations_modules_relations',
             dirname(dirname(__DIR__)) . '/data/organization_module.insert.xml'
@@ -103,11 +105,11 @@ class OrganizationModuleTest extends DbTestCase
                 'version' => '3.0.0',
                 'author' => 'Merethis',
                 'isactivated' => '2',
-		'isinstalled' => '2',
-		'is_activated' => '0',
-		'module_id' => '1'
+                'isinstalled' => '2',
+                'is_activated' => '0',
+                'module_id' => '1'
             ),
-	    array(
+            array(
                 'organization_id' => '1',
                 'name' => 'Default organization',
                 'shortname' => 'default_organization',
@@ -119,9 +121,9 @@ class OrganizationModuleTest extends DbTestCase
                 'version' => '3.0.0',
                 'author' => 'Merethis',
                 'isactivated' => '2',
-		'isinstalled' => '2',
-		'is_activated' => '0',
-		'module_id' => '2'
+                'isinstalled' => '2',
+                'is_activated' => '0',
+                'module_id' => '2'
             ),
             array(
                 'organization_id' => '2',
@@ -135,9 +137,9 @@ class OrganizationModuleTest extends DbTestCase
                 'version' => '3.0.0',
                 'author' => 'Merethis',
                 'isactivated' => '2',
-		'isinstalled' => '2',
-		'is_activated' => '0',
-		'module_id' => '2'
+                'isinstalled' => '2',
+                'is_activated' => '0',
+                'module_id' => '2'
             )
         );
         $result = Module::getMergedParameters();
@@ -156,9 +158,9 @@ class OrganizationModuleTest extends DbTestCase
                 'version' => '3.0.0',
                 'author' => 'Merethis',
                 'isactivated' => '2',
-		'isinstalled' => '2',
-		'is_activated' => '0',
-		'module_id' => '1'
+                'isinstalled' => '2',
+                'is_activated' => '0',
+                'module_id' => '1'
             )
         );
         $result = Module::getMergedParameters(array(), array(), 1);
@@ -177,9 +179,9 @@ class OrganizationModuleTest extends DbTestCase
                 'version' => '3.0.0',
                 'author' => 'Merethis',
                 'isactivated' => '2',
-		'isinstalled' => '2',
-		'is_activated' => '0',
-		'module_id' => '2'
+                'isinstalled' => '2',
+                'is_activated' => '0',
+                'module_id' => '2'
             )
         );
         $result = Module::getMergedParameters(array(), array(), 1, 1);
@@ -191,7 +193,7 @@ class OrganizationModuleTest extends DbTestCase
                 'alias' => 'Centreon Main',
                 'is_activated' => '0'
             ),
-	    array(
+            array(
                 'name' => 'Default organization',
                 'alias' => 'Centreon Administration',
                 'is_activated' => '0'
@@ -203,18 +205,43 @@ class OrganizationModuleTest extends DbTestCase
             )
         );
 
-        $result = Module::getMergedParameters(array('name'), array('alias'), -1, 0, null, 'ASC', array(), 'OR', array('is_activated'));
+        $result = Module::getMergedParameters(
+            array('name'),
+            array('alias'),
+            -1,
+            0,
+            null,
+            'ASC',
+            array(),
+            'OR',
+            array('is_activated')
+        );
         $this->assertEquals($testResult, $result);
     }
 
     public function testgetMergedParametersBySearch()
     {
-        $result = Module::getMergedParametersBySearch(array('name'), array('alias'), -1, 0, null, 'ASC', array('cfg_modules.description' => 'Main'), 'OR', array('is_activated'));
-        $this->assertEquals(array(array(
-            'name' => 'Default organization',
-            'alias' => 'Centreon Main',
-            'is_activated' => '0'
-        )), $result);
+        $result = Module::getMergedParametersBySearch(
+            array('name'),
+            array('alias'),
+            -1,
+            0,
+            null,
+            'ASC',
+            array('cfg_modules.description' => 'Main'),
+            'OR',
+            array('is_activated')
+        );
+        $this->assertEquals(
+            array(
+                array(
+                    'name' => 'Default organization',
+                'alias' => 'Centreon Main',
+                'is_activated' => '0'
+                )
+            ),
+            $result
+        );
     }
 
     public function testGetFirstKey()

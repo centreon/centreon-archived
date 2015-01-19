@@ -8,8 +8,6 @@
             <a id="advanced_mode_switcher" href="#" class="btn btn-primary">{t}Switch to advanced mode{/t}</a>
         </div>
         
-        
-        
         <div class="row">
         
         <div class="bs-callout bs-callout-success" id="formSuccess" style="display: none;">

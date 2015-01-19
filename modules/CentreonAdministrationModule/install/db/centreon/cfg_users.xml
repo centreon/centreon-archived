@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_users" phpName="User" idMethod="native">
+        <column name="user_id" phpName="userId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="login" phpName="login" type="VARCHAR" size="200" required="true"/>
+        <column name="password" phpName="password" type="VARCHAR" size="255" required="true"/>
+        <column name="is_admin" phpName="isAdmin" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="is_locked" phpName="isLocked" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="is_activated" phpName="isActivated" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="is_password_old" phpName="isPasswordOld" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="language_id" phpName="languageId" type="INTEGER" required="false"/>
+        <column name="timezone_id" phpName="timezoneId" type="INTEGER" required="false"/>
+        <column name="contact_id" phpName="contactId" type="INTEGER" required="false"/>
+        <column name="createdat" phpName="createdAt" type="TIMESTAMP" required="true"/>
+        <column name="updatedat" phpName="updatedAt" type="TIMESTAMP" required="true"/>
+        <column name="auth_type" phpName="authType" type="VARCHAR" size="200" required="true"/>
+        <column name="firstname" phpName="firstname" type="VARCHAR" size="200" required="false"/>
+        <column name="lastname" phpName="lastname" type="VARCHAR" size="200" required="false"/>
+        <column name="autologin_key" phpName="autologinKey" type="VARCHAR" size="200" required="false"/>
+        <unique name="user_login">
+            <unique-column name="login"/>
+        </unique>
+        <foreign-key foreignTable="cfg_languages" name="user_language_ibfk_1" onDelete="setnull" onUpdate="RESTRICT">
+            <reference local="language_id" foreign="language_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_timezones" name="user_timezone_ibfk_1" onDelete="setnull" onUpdate="RESTRICT">
+            <reference local="timezone_id" foreign="timezone_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_contacts" name="user_contact_ibfk_1" onDelete="setnull" onUpdate="RESTRICT">
+            <reference local="contact_id" foreign="contact_id"/>
+        </foreign-key>
+        <index name="user_language_ibfk_1">
+            <index-column name="language_id"/>
+        </index>
+        <index name="user_timezone_ibfk_1">
+            <index-column name="timezone_id"/>
+        </index>
+        <index name="user_contact_ibfk_1">
+            <index-column name="contact_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

@@ -36,7 +36,7 @@
 namespace Test\CentreonEngine\Hooks;
 
 use \Test\Centreon\DbTestCase;
-use \CentreonEngine\Hooks\DisplayEnginePaths;
+use CentreonEngine\Hooks\DisplayEnginePaths;
 
 class DisplayEnginePathsTest extends DbTestCase
 {

@@ -132,31 +132,7 @@ class HostTemplateRepository
                         if ($key == 'check_period' || $key == 'notification_period') {
                             $value = TimePeriodConfigurationRepository::getPeriodName($value);
                         }
-                        if ($key == "contact_additive_inheritance") {
-                            $tmpContact = HostConfigurationRepository::getContacts($host_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contacts"] = "+";
-                                }
-                                $tmpData["contacts"] .= $tmpContact;
-                            }
-                        } elseif ($key == "cg_additive_inheritance") {
-                            $tmpContact = HostConfigurationRepository::getContactGroups($host_id);
-                            if ($tmpContact != "") {
-                                if ($value = 1) {
-                                    $tmpData["contact_groups"] = "+";
-                                }
-                                $tmpData["contact_groups"] .= $tmpContact;
-                            }
-                        } elseif ($key == "name") {
-                            $tmpData[$key] = $value;
-                            $template = HostTemplateConfigurationRepository::getTemplates($host_id);
-                            if ($template != "") {
-                                $tmpData["use"] = $template;
-                            }
-                        } else {
-                            $tmpData[$key] = $value;
-                        }
+                        $tmpData[$key] = $value;
                     }
                 }
             }

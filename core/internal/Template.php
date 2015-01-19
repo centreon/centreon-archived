@@ -35,8 +35,8 @@
 
 namespace Centreon\Internal;
 
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>

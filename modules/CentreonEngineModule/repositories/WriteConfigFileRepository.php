@@ -35,7 +35,7 @@
 
 namespace CentreonEngine\Repository;
 
-use \Centreon\Internal\Exception;
+use Centreon\Internal\Exception;
 
 /**
  * @author Julien Mathis <jmathis@merethis.com>

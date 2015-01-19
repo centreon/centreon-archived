@@ -35,7 +35,7 @@
 
 namespace CentreonAdministration\Controllers;
 
-class DomainController extends \CentreonAdministration\Controllers\ObjectAbstract
+class DomainController extends ObjectAbstract
 {
     protected $objectDisplayName = 'Domain';
     protected $objectName = 'domain';
@@ -49,7 +49,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
     public static $isDisableable = true;
 
     /**
-     * List hostcategories
+     * List domain
      *
      * @method get
      * @route /domain
@@ -184,7 +184,7 @@ class DomainController extends \CentreonAdministration\Controllers\ObjectAbstrac
     }
     
     /**
-     * Get list of hostcategories for a specific host
+     * Get list of domain for a specific host
      *
      *
      * @method get

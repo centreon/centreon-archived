@@ -36,10 +36,10 @@
 namespace Test\Centreon;
 
 use \Test\Centreon\DbTestCase;
-use \Centreon\Internal\Event;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Bootstrap;
-use \CentreonEngine\Install\Installer; 
+use Centreon\Internal\Event;
+use Centreon\Internal\Di;
+use Centreon\Internal\Bootstrap;
+use CentreonEngine\Install\Installer; 
 
 class EventTest extends DbTestCase
 {

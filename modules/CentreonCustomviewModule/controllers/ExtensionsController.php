@@ -36,12 +36,12 @@
 
 namespace CentreonCustomview\Controllers;
 
-use \CentreonCustomview\Repository\WidgetRepository;
-use \Centreon\Internal\Controller;
-use \Centreon\Models\WidgetModel;
-use \Centreon\Internal\Exception;
-use \Centreon\Internal\Di;
-use \Centreon\Internal\Form;
+use CentreonCustomview\Repository\WidgetRepository;
+use Centreon\Internal\Controller;
+use Centreon\Models\WidgetModel;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form;
 
 class ExtensionsController extends Controller
 {
