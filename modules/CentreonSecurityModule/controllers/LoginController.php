@@ -38,7 +38,7 @@ namespace CentreonSecurity\Controllers;
 use CentreonAdministration\Internal\User;
 use Centreon\Internal\Form;
 use Centreon\Internal\Di;
-use Centreon\Internal\Auth\Sso;
+use CentreonSecurity\Internal\Sso;
 use Centreon\Internal\Session;
 use Centreon\Internal\Acl;
 use Centreon\Internal\Controller;
