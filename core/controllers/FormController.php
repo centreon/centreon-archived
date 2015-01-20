@@ -51,48 +51,6 @@ use Centreon\Internal\Exception;
 abstract class FormController extends ListController
 {
     /**
-     *
-     * @var type 
-     */
-    public static $moduleName = '';
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $moduleShortName = '';
-    
-    /**
-     *
-     * @var type 
-     */
-    protected $objectBaseUrl = '';
-    
-    /**
-     *
-     * @var type 
-     */
-    protected $objectName = '';
-    
-    /**
-     *
-     * @var type 
-     */
-    public static $isDisableable = false;
-
-    /**
-     *
-     * @var type 
-     */
-    protected $repository = null;
-
-    /**
-     *
-     * @var type 
-     */
-    protected $inheritanceUrl = null;
-
-    /**
      * 
      * @param type $request
      * @throws Exception
