@@ -184,8 +184,8 @@ class HostTemplateRepository
             . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
             . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, "
             . "host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, "
-            . "host_notification_interval, host_notification_options, cg_additive_inheritance, "
-            . "contact_additive_inheritance, timeperiod_tp_id2 AS notification_period, "
+            . "host_notification_interval, host_notification_options, "
+            . "timeperiod_tp_id2 AS notification_period, "
             . "host_stalking_options, host_register ";
 
         return $fields;
