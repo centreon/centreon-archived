@@ -36,8 +36,9 @@
 namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Controllers\FormController;
 
-class BusinessActivityController extends BasicController
+class BusinessActivityController extends FormController
 {
     protected $objectDisplayName = 'BusinessActivity';
     protected $objectName = 'BusinessActivity';

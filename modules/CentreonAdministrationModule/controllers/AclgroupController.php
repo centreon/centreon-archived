@@ -36,8 +36,9 @@
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Form;
+use Centreon\Controllers\FormController;
 
-class AclgroupController extends BasicController
+class AclgroupController extends FormController
 {
     protected $objectDisplayName = 'AclGroup';
     protected $objectName = 'aclgroup';

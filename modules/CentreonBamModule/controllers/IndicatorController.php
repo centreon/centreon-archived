@@ -37,8 +37,9 @@
 namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Controllers\FormController;
 
-class IndicatorController extends BasicController
+class IndicatorController extends FormController
 {
     protected $objectDisplayName = 'Indicator';
     protected $objectName = 'indicator';

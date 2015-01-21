@@ -42,8 +42,9 @@ use Centreon\Internal\Exception;
 use CentreonConfiguration\Models\Acl\Menu;
 use CentreonConfiguration\Models\Relation\Aclgroup\Aclmenu as AclMenuRelation;
 use Centreon\Repository\AclmenuRepository;
+use Centreon\Controllers\FormController;
 
-class AclmenuController extends BasicController
+class AclmenuController extends FormController
 {
     protected $objectDisplayName = 'AclMenu';
     protected $objectName = 'aclmenu';

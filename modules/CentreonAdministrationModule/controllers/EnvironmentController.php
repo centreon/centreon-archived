@@ -37,10 +37,10 @@ namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Di;
 use CentreonAdministration\Models\Environment;
-use CentreonAdministration\Controllers\BasicController;
 use Centreon\Models\Image;
+use Centreon\Controllers\FormController;
 
-class EnvironmentController extends BasicController
+class EnvironmentController extends FormController
 {
     protected $objectDisplayName = 'Environment';
     protected $objectName = 'environment';

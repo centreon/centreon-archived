@@ -36,7 +36,9 @@
 
 namespace CentreonBam\Controllers;
 
-class BusinessViewController extends BasicController
+use Centreon\Controllers\FormController;
+
+class BusinessViewController extends FormController
 {
     protected $objectDisplayName = 'BusinessView';
     protected $objectName = 'BusinessView';

@@ -33,12 +33,12 @@
  *
  */
 
-
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Form;
+use Centreon\Controllers\FormController;
 
-class AclresourceController extends BasicController
+class AclresourceController extends FormController
 {
     protected $objectDisplayName = 'AclResource';
     protected $objectName = 'aclresource';
