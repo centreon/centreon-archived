@@ -39,9 +39,9 @@ use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Timeperiod;
 use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodincluded;
 use CentreonConfiguration\Models\Relation\Timeperiod\Timeperiodexcluded;
-use CentreonConfiguration\Controllers\BasicController;
+use Centreon\Controllers\FormController;
 
-class TimeperiodController extends BasicController
+class TimeperiodController extends FormController
 {
     protected $objectDisplayName = 'Timeperiod';
     protected $objectName = 'timeperiod';

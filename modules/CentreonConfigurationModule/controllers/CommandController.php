@@ -37,9 +37,9 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Command;
-use CentreonConfiguration\Controllers\BasicController;
+use Centreon\Controllers\FormController;
 
-class CommandController extends BasicController
+class CommandController extends FormController
 {
     protected $objectDisplayName = 'Command';
     protected $objectName = 'command';

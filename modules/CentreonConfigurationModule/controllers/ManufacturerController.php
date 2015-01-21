@@ -35,7 +35,9 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class ManufacturerController extends \CentreonConfiguration\Controllers\BasicController
+use Centreon\Controllers\FormController;
+
+class ManufacturerController extends FormController
 {
     protected $objectDisplayName = 'Manufacturer';
     protected $objectName = 'manufacturer';

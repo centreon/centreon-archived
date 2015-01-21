@@ -38,6 +38,7 @@ namespace Centreon\Internal\Module;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Utils\String\CamelCaseTransformation;
+use Centreon\Models\Module;
 
 /**
  * Gives informations about modules
@@ -57,7 +58,7 @@ class Informations
     public static function checkDependency($module)
     {
         $dependencySatisfied = false;
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $sql = "SELECT name, version FROM cfg_modules WHERE name = '$module[name]'";
         $res = $db->query($sql);
         $dependency = $res->fetchAll(\PDO::FETCH_ASSOC);
@@ -79,7 +80,7 @@ class Informations
     public static function isModuleActivated($moduleName)
     {
         $moduleId = self::getModuleIdByName($moduleName);
-        $result = \Centreon\Models\Module::getParameters($moduleId, 'isactivated');
+        $result = Module::getParameters($moduleId, 'isactivated');
         return (boolean)$result['isactivated'];
     }
     
@@ -93,7 +94,7 @@ class Informations
         $isinstalled = false;
         $moduleId = self::getModuleIdByName($moduleName);
         if ($moduleId != false) {
-            $result = \Centreon\Models\Module::getParameters($moduleId, 'isinstalled');
+            $result = Module::getParameters($moduleId, 'isinstalled');
             $isinstalled = (boolean)$result['isinstalled'];
         }
         return $isinstalled;
@@ -102,7 +103,7 @@ class Informations
     /**
      * Chzeck to see if the module routes can be reached
      * @return boolean
-     */
+        */
     public static function isModuleReachable($moduleName)
     {
         $isReachable = false;
@@ -123,7 +124,7 @@ class Informations
     public static function getModuleIdByName($moduleName)
     {
         $returnValue = false;
-        $resultModule = \Centreon\Models\Module::getIdByParameter('name', $moduleName);
+        $resultModule = Module::getIdByParameter('name', $moduleName);
         
         if (count($resultModule) > 0) {
             $returnValue = $resultModule[0];
@@ -146,7 +147,7 @@ class Informations
         }
         
         try {
-            $rawModuleList = \Centreon\Models\Module::getList(
+            $rawModuleList = Module::getList(
                 'name',
                 -1,
                 0,
@@ -195,7 +196,39 @@ class Informations
         $realPath = $path . '/modules/' . self::getModuleCommonName($moduleName) . 'Module/';
         return realpath($realPath);
     }
-    
+
+    /**
+     * Returns the name of the module from any given path
+     *
+     * @param string $path
+     * @return string
+     */
+    public static function getModuleFromPath($path)
+    {
+        $centreonPath = Di::getDefault()->get('config')->get('global', 'centreon_path');
+        $path = str_replace($centreonPath, '', $path);
+        $module = "";
+        if (preg_match('/modules\/([A-Za-z]+)Module\//', $path, $matches)) {
+            $module = $matches[1];
+        }
+        
+        return $module;
+    }
+
+    /**
+     * Returns the slug name from camelcased module name
+     *
+     * @param string $moduleName
+     * @return string
+     */
+    public static function getModuleSlugName($moduleName)
+    {
+        $slugName = ltrim(strtolower(preg_replace('/[A-Z]/', '-$0', $moduleName)), '-');
+
+        // remove the suffix
+        return str_replace('-module', '', $slugName);
+    }
+
     /**
      * 
      * @param string $moduleName

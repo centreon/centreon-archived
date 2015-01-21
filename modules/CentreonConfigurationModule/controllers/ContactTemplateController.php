@@ -36,8 +36,9 @@
 namespace CentreonConfiguration\Controllers;
 
 use CentreonConfiguration\Models\Contact;
+use Centreon\Controllers\FormController;
 
-class ContactTemplateController extends \CentreonConfiguration\Controllers\BasicController
+class ContactTemplateController extends FormController
 {
     protected $objectDisplayName = 'Contacttemplate';
     protected $objectName = 'contacttemplate';

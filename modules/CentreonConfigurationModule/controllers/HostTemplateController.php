@@ -38,10 +38,10 @@ namespace CentreonConfiguration\Controllers;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Di;
-use CentreonConfiguration\Controllers\BasicController;
 use CentreonConfiguration\Repository\UserRepository;
+use Centreon\Controllers\FormController;
 
-class HostTemplateController extends BasicController
+class HostTemplateController extends FormController
 {
     /**
      *

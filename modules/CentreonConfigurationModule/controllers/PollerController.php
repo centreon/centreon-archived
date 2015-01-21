@@ -43,8 +43,9 @@ use CentreonConfiguration\Repository\PollerRepository;
 use CentreonConfiguration\Internal\PollerTemplateManager;
 use Centreon\Internal\Form;
 use Centreon\Internal\Exception;
+use Centreon\Controllers\FormController;
 
-class PollerController extends \CentreonConfiguration\Controllers\BasicController
+class PollerController extends FormController
 {
     protected $objectDisplayName = 'Poller';
     protected $objectName = 'poller';

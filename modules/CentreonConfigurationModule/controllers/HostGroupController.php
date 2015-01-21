@@ -36,8 +36,9 @@
 namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Controllers\FormController;
 
-class HostGroupController extends \CentreonConfiguration\Controllers\BasicController
+class HostGroupController extends FormController
 {
     protected $objectDisplayName = 'Hostgroup';
     protected $objectName = 'hostgroup';

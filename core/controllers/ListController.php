@@ -42,6 +42,7 @@ use Centreon\Internal\Form\Generator;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Controller;
+use Centreon\Internal\Module\Informations;
 
 /**
  * Abstact class for configuration controller
@@ -111,6 +112,11 @@ abstract class ListController extends Controller
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
         }
+
+        $rc = new \ReflectionClass(get_class($this));
+        static::$moduleName = Informations::getModuleFromPath($rc->getFileName());
+        static::$moduleShortName = Informations::getModuleSlugName(static::$moduleName);
+
         $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
     }
 

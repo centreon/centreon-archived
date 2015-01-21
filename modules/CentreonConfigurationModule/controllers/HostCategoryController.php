@@ -36,11 +36,11 @@
 namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
-use CentreonConfiguration\Controllers\BasicController;
 use CentreonConfiguration\Models\Hostcategory;
 use Centreon\Models\Image;
+use Centreon\Controllers\FormController;
 
-class HostCategoryController extends BasicController
+class HostCategoryController extends FormController
 {
     protected $objectDisplayName = 'Hostcategory';
     protected $objectName = 'hostcategory';

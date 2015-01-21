@@ -46,8 +46,9 @@ use CentreonConfiguration\Internal\HostDatatable;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use Centreon\Controllers\FormController;
 
-class HostController extends \CentreonConfiguration\Controllers\BasicController
+class HostController extends FormController
 {
     protected $objectDisplayName = 'Host';
     protected $objectName = 'host';

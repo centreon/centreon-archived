@@ -60,7 +60,7 @@ class CamelCaseTransformation
     public static function camelCaseToCustom($string, $separator = "")
     {
         $matches = array();
-        preg_match_all(self::__REGEX__, $string, $matches);
+        preg_match_all(self::REGEX, $string, $matches);
         return implode($separator, $matches[0]);
     }
     

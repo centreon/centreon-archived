@@ -37,11 +37,11 @@ namespace CentreonConfiguration\Controllers;
 
 use Centreon\Form;
 use Centreon\Internal\Di;
-use CentreonConfiguration\Controllers\BasicController;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Host;
+use Centreon\Controllers\FormController;
 
-class ServiceGroupController extends BasicController
+class ServiceGroupController extends FormController
 {
     protected $objectDisplayName = 'Servicegroup';
     protected $objectName = 'servicegroup';

@@ -41,8 +41,9 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Host;
 use CentreonConfiguration\Models\Relation\Host\Service as HostService;
+use Centreon\Controllers\FormController;
 
-class ServiceController extends \CentreonConfiguration\Controllers\BasicController
+class ServiceController extends FormController
 {
     protected $objectDisplayName = 'Service';
     protected $objectName = 'service';
