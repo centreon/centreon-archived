@@ -35,9 +35,9 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
+use Centreon\Api\Rest\BasicCrudApi;
 
-class HostApi extends CentreonConfigurationRootApi
+class HostApi extends BasicCrudApi
 {
     public $objectName = 'host';
     

@@ -37,13 +37,14 @@
 namespace Centreon\Api\Rest;
 
 use Centreon\Internal\Exception;
+use Centreon\Internal\Api;
 
 /**
  * Description of BasicCrudApi
  *
  * @author lionel
  */
-class BasicCrudApi extends \Centreon\Internal\Api
+class BasicCrudApi extends Api
 {
     /**
      *
@@ -129,6 +130,11 @@ class BasicCrudApi extends \Centreon\Internal\Api
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
         }
+
+        $rc = new \ReflectionClass(get_class($this));
+        $moduleName = Informations::getModuleFromPath($rc->getFileName());
+        static::$moduleShortName = Informations::getModuleSlugName($moduleName);
+
         $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
     }
     
