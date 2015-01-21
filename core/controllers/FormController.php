@@ -75,6 +75,9 @@ abstract class FormController extends ListController
      * Action for getting list of objects
      *
      * JSON response
+     *
+     * @method get
+     * @route /{object}/formlist
      */
     public function formListAction()
     {
@@ -86,6 +89,8 @@ abstract class FormController extends ListController
     
     /**
      * 
+     * @method get
+     * @route /{object}/[i:id]
      */
     public function editAction($additionnalParamsForSmarty = array())
     {
@@ -148,6 +153,8 @@ abstract class FormController extends ListController
     /**
      * Generic update function
      *
+     * @method post
+     * @route /{object}/update
      */
     public function updateAction()
     {

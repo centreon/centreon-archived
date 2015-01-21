@@ -122,6 +122,9 @@ abstract class ListController extends Controller
 
     /**
      * List view for object
+     *
+     * @method get
+     * @route /{object}
      */
     public function listAction()
     {
@@ -191,6 +194,9 @@ abstract class ListController extends Controller
      * Get wizard for add a object
      *
      * Response HTML
+     *
+     * @method get
+     * @route /{object}/add
      */
     public function addAction()
     {
@@ -210,6 +216,8 @@ abstract class ListController extends Controller
      * Generic create action
      * 
      * @param boolean $sendResponse
+     * @method post
+     * @route /{object}/add
      * @return array
      */
     public function createAction($sendResponse = true)
@@ -239,6 +247,9 @@ abstract class ListController extends Controller
      * Delete a object
      *
      * Response JSON
+     *
+     * @method post
+     * @route /{object}/delete
      */
     public function deleteAction()
     {
@@ -268,7 +279,9 @@ abstract class ListController extends Controller
     }
 
     /**
-     * 
+     *
+     * @method get
+     * @route /{object}/list
      */
     public function datatableAction()
     {
@@ -281,6 +294,9 @@ abstract class ListController extends Controller
      * Get the list of massive change fields
      *
      * Response JSON
+     *
+     * @method get
+     * @route /{object}/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -308,6 +324,9 @@ abstract class ListController extends Controller
      * Get field HTML
      *
      * Response HTML
+     *
+     * @method get
+     * @route /{object}/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -336,6 +355,9 @@ abstract class ListController extends Controller
      * Duplicate a object
      *
      * Response JSON
+     *
+     * @method post
+     * @route /{object}/duplicate
      */
     public function duplicateAction()
     {
@@ -370,6 +392,8 @@ abstract class ListController extends Controller
      * Enable object
      *
      * @param string $field
+     * @method post
+     * @route /{object}/enable
      */
     public function enableAction($field)
     {
@@ -410,6 +434,8 @@ abstract class ListController extends Controller
      * Disable object
      *
      * @param string $field
+     * @method post
+     * @route /{object}/disable
      */
     public function disableAction($field)
     {
@@ -450,6 +476,9 @@ abstract class ListController extends Controller
      * Apply the massive change to a object
      *
      * Response JSON
+     *
+     * @method post
+     * @route /{object}/massive_change
      */
     public function massiveChangeAction()
     {
