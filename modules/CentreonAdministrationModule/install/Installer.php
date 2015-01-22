@@ -69,21 +69,25 @@ class Installer extends ModuleInstaller
     public function customInstall()
     {
         $repository = $this->repository;
-        $repository::setRelationMap(static::$relationMap);
-        $repository::setObjectName($this->objectName);
-        $repository::setObjectClass($this->objectClass);
-        $repository::setSaveEvents(false);
-        $adminUser = array(
-            'firstname' => 'admin',
-            'lastname' => 'admin',
-            'login' => 'admin',
-            'password' => 'centreon',
-            'is_admin' => 1,
-            'is_locked' => 0,
-            'is_activated' => 1,
-            'is_password_old' => 1
-        );
-        $repository::create($adminUser);
+        try {
+            $repository::setRelationMap(static::$relationMap);
+            $repository::setObjectName($this->objectName);
+            $repository::setObjectClass($this->objectClass);
+            $repository::setSaveEvents(false);
+            $user = $repository::checkUser('admin', 'centreon');
+        } catch (Centreon\Internal\Exception $e) {
+            $adminUser = array(
+                'firstname' => 'admin',
+                'lastname' => 'admin',
+                'login' => 'admin',
+                'password' => 'centreon',
+                'is_admin' => 1,
+                'is_locked' => 0,
+                'is_activated' => 1,
+                'is_password_old' => 1
+            );
+            $repository::create($adminUser);
+        }
     }
     
     /**
