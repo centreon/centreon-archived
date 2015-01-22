@@ -38,8 +38,13 @@ namespace Centreon\Internal\Install;
 
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Install\Install;
+use Centreon\Internal\Install\Db;
+use Centreon\Internal\Install\AbstractInstall;
+use Centreon\Internal\Informations;
+use Centreon\Internal\Di;
+use Centreon\Internal\Module\Dependency;
 
-class Migrate extends \Centreon\Internal\Install\AbstractInstall
+class Migrate extends AbstractInstall
 {
     /**
      * 
@@ -49,7 +54,7 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
     {
         $migrationNeeded = false;
         try {
-            if (version_compare(\Centreon\Internal\Informations::getCentreonVersion(), '3.0.0', '<')) {
+            if (version_compare(Informations::getCentreonVersion(), '3.0.0', '<')) {
                 $migrationNeeded = true;
             }
         } catch (\Exception $e) {
@@ -67,7 +72,7 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
         if (!self::checkForMigration()) {
             Install::installCentreon();
         } else {
-            $di = \Centreon\Internal\Di::getDefault();
+            $di = Di::getDefault();
             $config = $di->get('config');
             $dbName = $config->get('db_centreon', 'dbname');
             
@@ -78,12 +83,12 @@ class Migrate extends \Centreon\Internal\Install\AbstractInstall
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
             
             echo "Migrating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-            \Centreon\Internal\Install\Db::update($dbName);
+            Db::update($dbName);
             echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
 
             $modulesToInstall = self::getCoreModules();
 
-            $dependencyResolver = new \Centreon\Internal\Module\Dependency($modulesToInstall['modules']);
+            $dependencyResolver = new Dependency($modulesToInstall['modules']);
             $installOrder = $dependencyResolver->resolve();
 
             foreach($installOrder as $moduleName) {

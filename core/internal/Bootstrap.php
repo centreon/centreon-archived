@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal;
+
+use Evenement\EventEmitter;
 
 class Bootstrap
 {
@@ -111,7 +114,7 @@ class Bootstrap
         $this->di->set(
             'db_centreon',
             function () use ($config) {
-                return new \Centreon\Internal\Db(
+                return new Db(
                     $config->get('db_centreon', 'dsn'),
                     $config->get('db_centreon', 'username'),
                     $config->get('db_centreon', 'password'),
@@ -148,7 +151,7 @@ class Bootstrap
         $this->di->set(
             'events',
             function () {
-                return new \Evenement\EventEmitter();
+                return new EventEmitter();
             }
         );
         Event::initEventListeners();
@@ -190,7 +193,7 @@ class Bootstrap
         $this->di->set(
             'router',
             function () {
-                $router = new \Centreon\Internal\Router();
+                $router = new Router();
                 $router->parseRoutes();
                 return $router;
             }

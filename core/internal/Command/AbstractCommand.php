@@ -36,6 +36,8 @@
 
 namespace Centreon\Internal\Command;
 
+use Centreon\Internal\Di;
+
 abstract class AbstractCommand
 {
     /**
@@ -61,7 +63,7 @@ abstract class AbstractCommand
      */
     public function __construct()
     {
-        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->di = Di::getDefault();
         $this->db = $this->di->get('db_centreon');
     }
     

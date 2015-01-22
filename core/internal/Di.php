@@ -142,7 +142,7 @@ class Di
      *
      * @param $di \Centreon\Internal\Di
      */
-    public static function setDefault(\Centreon\Internal\Di $di)
+    public static function setDefault(Di $di)
     {
         self::$instance = $di;
     }

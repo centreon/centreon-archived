@@ -669,7 +669,7 @@ class Datatable
         $finalRoute = str_replace(
             "//",
             "/",
-            \Centreon\Internal\Di::getDefault()
+            Di::getDefault()
                 ->get('router')
                 ->getPathFor($params['route'], $routeParams)
         );

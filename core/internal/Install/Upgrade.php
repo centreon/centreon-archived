@@ -36,15 +36,17 @@
 namespace Centreon\Internal\Install;
 
 use Centreon\Internal\Install\Migrate;
+use Centreon\Internal\Db\Installer;
+use Centreon\Internal\Install\AbstractInstall;
 
-class Upgrade extends \Centreon\Internal\Install\AbstractInstall
+class Upgrade extends AbstractInstall
 {
     public static function upgradeCentreon()
     {
         if (Migrate::checkForMigration()) {
             Migrate::migrateCentreon();
         } else {
-            \Centreon\Internal\Db\Installer::updateDb('migrate');
+            Installer::updateDb('migrate');
 
             $modulesToUpgrade = self::getCoreModules();
             

@@ -149,7 +149,7 @@ class Form
         $this->formProcessor = new \HTML_QuickForm($name, 'post');
         $this->options = $options;
         $this->init();
-        $this->di = \Centreon\Internal\Di::getDefault();
+        $this->di = Di::getDefault();
         $this->tpl = $this->di->get('template');
         $this->addSecurity();
     }
@@ -601,7 +601,7 @@ class Form
      */
     public static function getValidatorsQuery($origin, $uri)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $uri = substr($uri, strlen($baseUrl));
         switch ($origin) {
@@ -666,7 +666,7 @@ class Form
     
     public static function getValidators($origin, $uri)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         // Check if we are in form or wizard
