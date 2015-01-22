@@ -225,9 +225,9 @@ class CentreonAuth {
     protected function checkUser($username, $password, $token) {
         $usernameForQuery = $this->pearDB->escape($username, true);
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
-            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '" . $usernameForQuery . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
+            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '" . htmlentities($usernameForQuery, ENT_QUOTES, "UTF-8") . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
         } else {
-            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '" . $usernameForQuery . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
+            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '" . htmlentities($usernameForQuery, ENT_QUOTES, "UTF-8") . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
         }
         if ($DBRESULT->numRows()) {
             $this->userInfos = $DBRESULT->fetchRow();
