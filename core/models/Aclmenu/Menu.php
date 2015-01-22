@@ -34,10 +34,11 @@
  *
  */
 
-
 namespace Centreon\Models\Relation\Aclmenu;
 
-class Menu extends \Centreon\Models\CentreonRelationModel
+use Centreon\Models\CentreonRelationModel; 
+
+class Menu extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_acl_menu_menu_relations";
     protected static $firstKey = "acl_menu_id";

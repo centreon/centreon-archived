@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -40,13 +39,14 @@ use Centreon\Internal\Utils\String\CamelCaseTransformation;
 use Centreon\Internal\Module\Generator;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
+use Centreon\Internal\Command\AbstractCommand;
 
 /**
  * Description of Generate
  *
  * @author lionel
  */
-class ToolsCommand extends \Centreon\Internal\Command\AbstractCommand
+class ToolsCommand extends AbstractCommand
 {
     /**
      * 

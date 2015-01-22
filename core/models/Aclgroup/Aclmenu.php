@@ -34,10 +34,11 @@
  *
  */
 
-
 namespace Centreon\Models\Relation\Aclgroup;
 
-class Aclmenu extends \Centreon\Models\CentreonRelationModel
+use Centreon\Models\CentreonRelationModel;
+
+class Aclmenu extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_acl_groups_menus_relations";
     protected static $firstKey = "acl_group_id";

@@ -34,8 +34,9 @@
  *
  */
 
-
 namespace Centreon\Models;
+
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -50,11 +51,11 @@ class File
      */
     public static function insert($file)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         // Insert the file in DB
-         $query = 'INSERT INTO `cfg_binaries` (`filename`, `checksum`, `mimetype`, `filetype`, `binary_content`)
+        $query = 'INSERT INTO `cfg_binaries` (`filename`, `checksum`, `mimetype`, `filetype`, `binary_content`)
                     VALUES (:filename, :checksum, :mimetype, :filetype, :binary_content)';
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':filename', $file['filename'], \PDO::PARAM_STR);
@@ -73,7 +74,7 @@ class File
     public static function getFilename($fileId)
     {
         $sql = "SELECT binary_id, filename FROM cfg_binaries WHERE binary_id  = ?";
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($fileId));
         $rawIconList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -96,7 +97,7 @@ class File
      */
     public static function getBinary($fields = '*', $binaryParam = array())
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         // Get the id of the brand new file that has been insert in the DB
@@ -125,7 +126,7 @@ class File
      */
     public static function getBinaryType($typeParam)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         // Get the id of the brand new file that has been insert in the DB

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +32,14 @@
  * For more information : contact@centreon.com
  * 
  */
+
 namespace Centreon\Commands;
+
+use Centreon\Internal\Command\AbstractCommand;
+use Centreon\Internal\Install\Install;
+use Centreon\Internal\Install\Upgrade;
+use Centreon\Internal\Install\Migrate;
+use Centreon\Internal\Install\Install;
 
 /**
  * Command Line for Centreon Internal actions
@@ -43,14 +49,14 @@ namespace Centreon\Commands;
  * @package Centreon
  * @subpackage Core
  */
-class InternalCommand extends \Centreon\Internal\Command\AbstractCommand
+class InternalCommand extends AbstractCommand
 {
     /**
      * 
      */
     public function installAction()
     {
-        \Centreon\Internal\Install\Install::installCentreon();
+        Install::installCentreon();
     }
     
     /**
@@ -58,7 +64,7 @@ class InternalCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function upgradeAction()
     {
-        \Centreon\Internal\Install\Upgrade::updateCentreon();
+        Upgrade::updateCentreon();
     }
     
     /**
@@ -66,7 +72,7 @@ class InternalCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function migrateAction()
     {
-        \Centreon\Internal\Install\Migrate::migrateCentreon();
+        Migrate::migrateCentreon();
     }
     
     /**
@@ -75,6 +81,6 @@ class InternalCommand extends \Centreon\Internal\Command\AbstractCommand
      */
     public function uninstallAction($removeDb = false)
     {
-        \Centreon\Internal\Install\Install::uninstallCentreon($removeDb);
+        Install::uninstallCentreon($removeDb);
     }
 }

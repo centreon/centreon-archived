@@ -37,6 +37,8 @@ namespace Centreon\Internal\Form;
 
 use CentreonCustomview\Repository\WidgetRepository;
 use CentreonCustomview\Repository\CustomviewRepository;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form;
 
 /**
  * Manage widget settings
@@ -65,7 +67,7 @@ class Widget extends Generator
      */
     protected function convertType($data)
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $attr = array();
         switch ($data['type']) {
             case 'list':
@@ -174,7 +176,7 @@ class Widget extends Generator
      */
     protected function getFormFromDatabase()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $widgetId = $this->formRoute;
         $baseUrl = $di->get('config')->get('global', 'base_url');
@@ -196,7 +198,7 @@ class Widget extends Generator
         while ($row = $stmt->fetch()) {
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
-                $this->formHandler = new \Centreon\Internal\Form($this->formName);
+                $this->formHandler = new Form($this->formName);
             }
             if ($row['header_title'] && !isset($this->formComponents[$row['header_title']])) {
                 $this->formComponents[$row['header_title']] = array();
@@ -232,7 +234,7 @@ class Widget extends Generator
         $this->formHandler->setDefaults($this->formDefaults);
         $formElements = $this->formHandler->toSmarty();
 
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tpl = $di->get('template');
         $tpl->assign('name', $this->formName);
         $tpl->assign('formElements', $formElements);

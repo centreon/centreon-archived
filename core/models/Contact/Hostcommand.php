@@ -34,7 +34,6 @@
  *
  */
 
-
 namespace Centreon\Models\Relation\Contact;
 
 use Centreon\Models\CentreonRelationModel;
