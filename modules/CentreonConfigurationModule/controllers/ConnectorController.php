@@ -40,7 +40,7 @@ use Centreon\Controllers\FormController;
 class ConnectorController extends FormController
 {
     protected $objectDisplayName = 'Connector';
-    protected $objectName = 'connector';
+    public static $objectName = 'connector';
     protected $objectBaseUrl = '/centreon-configuration/connector';
     protected $datatableObject = '\CentreonConfiguration\Internal\ConnectorDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Connector';

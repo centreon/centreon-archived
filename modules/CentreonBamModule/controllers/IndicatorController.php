@@ -42,7 +42,7 @@ use Centreon\Controllers\FormController;
 class IndicatorController extends FormController
 {
     protected $objectDisplayName = 'Indicator';
-    protected $objectName = 'indicator';
+    public static $objectName = 'indicator';
     protected $objectBaseUrl = '/centreon-bam/indicator';
     protected $objectClass = '\CentreonBam\Models\Indicator';
     protected $datatableObject = '\CentreonBam\Internal\IndicatorDatatable';

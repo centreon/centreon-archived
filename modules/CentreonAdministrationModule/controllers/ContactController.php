@@ -44,7 +44,7 @@ use Centreon\Controllers\FormController;
 class ContactController extends FormController
 {
     protected $objectDisplayName = 'Contact';
-    protected $objectName = 'contact';
+    public static $objectName = 'contact';
     protected $objectBaseUrl = '/centreon-administration/contact';
     protected $objectClass = '\CentreonAdministration\Models\Contact';
     protected $repository = '\CentreonAdministration\Repository\ContactRepository';

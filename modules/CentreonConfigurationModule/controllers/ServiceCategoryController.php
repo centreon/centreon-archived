@@ -41,7 +41,7 @@ use Centreon\Controllers\FormController;
 class ServiceCategoryController extends FormController
 {
     protected $objectDisplayName = 'Servicecategory';
-    protected $objectName = 'servicecategory';
+    public static $objectName = 'servicecategory';
     protected $objectBaseUrl = '/centreon-configuration/servicecategory';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceCategoryDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicecategory';

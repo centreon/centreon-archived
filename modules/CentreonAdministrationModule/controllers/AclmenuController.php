@@ -47,7 +47,7 @@ use Centreon\Controllers\FormController;
 class AclmenuController extends FormController
 {
     protected $objectDisplayName = 'AclMenu';
-    protected $objectName = 'aclmenu';
+    public static $objectName = 'aclmenu';
     protected $objectBaseUrl = '/centreon-administration/aclmenu';
     protected $objectClass = '\CentreonAdministration\Models\Aclmenu';
     public static $relationMap = array(

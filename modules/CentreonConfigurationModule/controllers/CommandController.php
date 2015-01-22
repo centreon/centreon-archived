@@ -42,7 +42,7 @@ use Centreon\Controllers\FormController;
 class CommandController extends FormController
 {
     protected $objectDisplayName = 'Command';
-    protected $objectName = 'command';
+    public static $objectName = 'command';
     protected $objectBaseUrl = '/centreon-configuration/command';
     protected $objectClass = '\CentreonConfiguration\Models\Command';
     protected $datatableObject = '\CentreonConfiguration\Internal\CommandDatatable';

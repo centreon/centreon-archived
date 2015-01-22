@@ -43,7 +43,7 @@ use Centreon\Controllers\FormController;
 class HostCategoryController extends FormController
 {
     protected $objectDisplayName = 'Hostcategory';
-    protected $objectName = 'hostcategory';
+    public static $objectName = 'hostcategory';
     protected $objectBaseUrl = '/centreon-configuration/hostcategory';
     protected $objectClass = '\CentreonConfiguration\Models\Hostcategory';
     protected $repository = '\CentreonConfiguration\Repository\HostcategoryRepository';

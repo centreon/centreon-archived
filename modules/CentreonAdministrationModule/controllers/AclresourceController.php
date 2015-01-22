@@ -41,7 +41,7 @@ use Centreon\Controllers\FormController;
 class AclresourceController extends FormController
 {
     protected $objectDisplayName = 'AclResource';
-    protected $objectName = 'aclresource';
+    public static $objectName = 'aclresource';
     protected $objectBaseUrl = '/centreon-administration/aclresource';
     protected $objectClass = '\CentreonAdministration\Models\Aclresource';
     public static $relationMap = array(

@@ -43,7 +43,7 @@ use Centreon\Controllers\FormController;
 class EnvironmentController extends FormController
 {
     protected $objectDisplayName = 'Environment';
-    protected $objectName = 'environment';
+    public static $objectName = 'environment';
     protected $objectBaseUrl = '/centreon-administration/environment';
     protected $objectClass = '\CentreonAdministration\Models\Environment';
     protected $repository = '\CentreonAdministration\Repository\EnvironmentRepository';

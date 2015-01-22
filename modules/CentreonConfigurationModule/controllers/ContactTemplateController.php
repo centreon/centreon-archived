@@ -41,7 +41,7 @@ use Centreon\Controllers\FormController;
 class ContactTemplateController extends FormController
 {
     protected $objectDisplayName = 'Contacttemplate';
-    protected $objectName = 'contacttemplate';
+    public static $objectName = 'contacttemplate';
     protected $objectBaseUrl = '/centreon-configuration/contacttemplate';
     protected $objectClass = '\CentreonConfiguration\Models\Contact';
     public static $relationMap = array(

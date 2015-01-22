@@ -48,7 +48,7 @@ use Centreon\Controllers\FormController;
 class PollerController extends FormController
 {
     protected $objectDisplayName = 'Poller';
-    protected $objectName = 'poller';
+    public static $objectName = 'poller';
     protected $objectBaseUrl = '/centreon-configuration/poller';
     protected $datatableObject = '\CentreonConfiguration\Internal\PollerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Poller';

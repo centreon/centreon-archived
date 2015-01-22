@@ -53,7 +53,7 @@ class HostTemplateController extends FormController
      *
      * @var string 
      */
-    protected $objectName = 'hosttemplate';
+    public static $objectName = 'hosttemplate';
     
     /**
      *

@@ -38,8 +38,9 @@ namespace Centreon\Internal;
 
 use Centreon\Internal\Module\Informations;
 use CentreonSecurity\Controllers\LoginController;
+use Klein\Klein;
 
-class Router extends \Klein\Klein
+class Router extends Klein
 {
     /**
      * The regular expression used to compile and match URL's

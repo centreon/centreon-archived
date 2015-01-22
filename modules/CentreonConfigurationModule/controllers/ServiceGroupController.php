@@ -44,7 +44,7 @@ use Centreon\Controllers\FormController;
 class ServiceGroupController extends FormController
 {
     protected $objectDisplayName = 'Servicegroup';
-    protected $objectName = 'servicegroup';
+    public static $objectName = 'servicegroup';
     protected $objectBaseUrl = '/centreon-configuration/servicegroup';
     protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceGroupDatatable';

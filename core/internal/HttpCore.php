@@ -143,7 +143,8 @@ class HttpCore
     public static function getRoutes()
     {
         $tempo = array();
-        $ref = new \ReflectionClass(get_called_class());
+        $className = get_called_class();
+        $ref = new \ReflectionClass($className);
         foreach ($ref->getMethods() as $method) {
             $methodName = $method->getName();
             if (substr($methodName, -6) == 'Action') {
@@ -151,6 +152,9 @@ class HttpCore
                     $str = trim(str_replace("* ", '', $line));
                     if (substr($str, 0, 6) == '@route') {
                         $route = substr($str, 6);
+                        if (isset($className::$objectName)) {
+                            $route = str_replace("{object}", $className::$objectName, $route);
+                        }
                         $tempo[$methodName]['route'] = trim($route);
                     } elseif (substr($str, 0, 7) == '@method') {
                         $method_type = strtoupper(substr($str, 7));

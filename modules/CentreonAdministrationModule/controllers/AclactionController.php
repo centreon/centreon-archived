@@ -44,7 +44,7 @@ use Centreon\Controllers\FormController;
 class AclactionController extends FormController
 {
     protected $objectDisplayName = 'AclAction';
-    protected $objectName = 'aclaction';
+    public static $objectName = 'aclaction';
     protected $objectBaseUrl = '/centreon-administration/aclaction';
     protected $objectClass = '\CentreonAdministration\Models\Aclaction';
     public static $relationMap = array(

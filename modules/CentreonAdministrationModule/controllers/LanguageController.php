@@ -38,7 +38,7 @@ namespace CentreonAdministration\Controllers;
 class LanguageController extends \CentreonAdministration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Language';
-    protected $objectName = 'language';
+    public static $objectName = 'language';
     protected $objectBaseUrl = '/centreon-administration/language';
     protected $objectClass = '\CentreonAdministration\Models\Language';
     protected $repository = '\CentreonAdministration\Repository\LanguageRepository';

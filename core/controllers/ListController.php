@@ -74,7 +74,7 @@ abstract class ListController extends Controller
      *
      * @var type 
      */
-    protected $objectName = '';
+    public static $objectName = '';
     
     /**
      *
@@ -107,7 +107,7 @@ abstract class ListController extends Controller
         }
         $repository = $this->repository;
         $repository::setRelationMap(static::$relationMap);
-        $repository::setObjectName($this->objectName);
+        $repository::setObjectName(static::$objectName);
         $repository::setObjectClass($this->objectClass);
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
@@ -117,7 +117,7 @@ abstract class ListController extends Controller
         static::$moduleName = Informations::getModuleFromPath($rc->getFileName());
         static::$moduleShortName = Informations::getModuleSlugName(static::$moduleName);
 
-        $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
+        $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . static::$objectName;
     }
 
     /**

@@ -63,12 +63,12 @@ abstract class FormController extends ListController
         }
         $repository = $this->repository;
         $repository::setRelationMap(static::$relationMap);
-        $repository::setObjectName($this->objectName);
+        $repository::setObjectName(static::$objectName);
         $repository::setObjectClass($this->objectClass);
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
         }
-        $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . $this->objectName;
+        $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . static::$objectName;
     }
 
     /**

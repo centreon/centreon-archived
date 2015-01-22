@@ -42,7 +42,7 @@ use Centreon\Controllers\FormController;
 class UserController extends FormController
 {
     protected $objectDisplayName = 'User';
-    protected $objectName = 'user';
+    public static $objectName = 'user';
     protected $objectBaseUrl = '/centreon-administration/user';
     protected $datatableObject = '\CentreonAdministration\Internal\UserDatatable';
     protected $objectClass = '\CentreonAdministration\Models\User';

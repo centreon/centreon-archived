@@ -40,7 +40,7 @@ use Centreon\Controllers\FormController;
 class ManufacturerController extends FormController
 {
     protected $objectDisplayName = 'Manufacturer';
-    protected $objectName = 'manufacturer';
+    public static $objectName = 'manufacturer';
     protected $objectBaseUrl = '/centreon-configuration/manufacturer';
     protected $datatableObject = '\CentreonConfiguration\Internal\ManufacturerDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Manufacturer';

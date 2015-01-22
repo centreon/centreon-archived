@@ -43,7 +43,7 @@ use Centreon\Models\Image;
 class DomainController extends ObjectAbstract
 {
     protected $objectDisplayName = 'Domain';
-    protected $objectName = 'domain';
+    public static $objectName = 'domain';
     protected $objectBaseUrl = '/centreon-administration/domain';
     protected $objectClass = '\CentreonAdministration\Models\Domain';
     protected $repository = '\CentreonAdministration\Repository\DomainRepository';
