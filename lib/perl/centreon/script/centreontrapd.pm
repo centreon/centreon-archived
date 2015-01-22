@@ -961,7 +961,8 @@ sub getTrapsInfos {
             return 0 if ($fstatus == -1);
             
             #### Check Host and Services downtimes ###
-            if ($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} > 0 &&
+            if (defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime}) && 
+                $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} ne '' && $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} > 0 &&
                 $self->{centreontrapd_config}->{mode} == 0) {
                 ($fstatus) = centreon::trapd::lib::check_downtimes($self->{csdb}, 
                                                                    $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime},
