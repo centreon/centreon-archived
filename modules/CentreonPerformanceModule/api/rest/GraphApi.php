@@ -39,6 +39,7 @@ namespace CentreonPerformance\Api\Rest;
 use Centreon\Internal\Di;
 use CentreonPerformance\Repository\Graph\Service;
 use Centreon\Internal\Api;
+use Centreon\Internal\Exception\Http\BadRequestException;
 
 /**
  * Controller for display graphs
@@ -81,7 +82,7 @@ class GraphApi extends Api
             false === is_numeric($params['start']) ||
             false === isset($params['end']) ||
             false === is_numeric($params['end'])) {
-            /* Bad parameters */
+            throw new BadRequestException('Missing parameter start or end', 'You must specify a start and an end timestamp');
         }
 
         $start = $params['start'];
