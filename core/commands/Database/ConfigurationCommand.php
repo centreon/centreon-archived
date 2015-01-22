@@ -36,13 +36,16 @@
 
 namespace Centreon\Commands\Database;
 
-class ConfigurationCommand extends \Centreon\Internal\Command\AbstractCommand
+use Centreon\Internal\Command\AbstractCommand;
+use Centreon\Internal\Install\Db;
+
+class ConfigurationCommand extends AbstractCommand
 {
     /**
      * 
      */
     public function generateAction($schema = 'centreon')
     {
-        \Centreon\Internal\Install\Db::update($schema);
+        Db::update($schema);
     }
 }

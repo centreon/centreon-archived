@@ -35,9 +35,9 @@
 
 namespace Centreon\Commands\Database;
 
-use Centreon\Internal\Command\AbstractCommand,
-    \Centreon\Internal\Exception,
-    \Centreon\Internal\Di;
+use Centreon\Internal\Command\AbstractCommand;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
 
 class ToolsCommand extends AbstractCommand
 {

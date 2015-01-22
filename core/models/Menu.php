@@ -34,15 +34,16 @@
  *
  */
 
-
 namespace Centreon\Models;
+
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with menus
  *
  * @author sylvestre
  */
-class Menu extends \Centreon\Models\CentreonBaseModel
+class Menu extends CentreonBaseModel
 {
     protected static $table = "cfg_menus";
     protected static $primaryKey = "menu_id";

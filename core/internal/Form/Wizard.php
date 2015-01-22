@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal\Form;
 
+use Centreon\Internal\Di;
+
 /**
  * Manage wizard for object
  *
@@ -59,7 +61,7 @@ class Wizard extends Generator
      */
     protected function getFormFromDatabase()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $route = $this->formRoute;
         $baseUrl = rtrim($di->get('config')->get('global', 'base_url'), '/');
@@ -110,7 +112,7 @@ class Wizard extends Generator
         $this->formHandler->setDefaults($this->formDefaults);
         $formElements = $this->formHandler->toSmarty();
 
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tpl = $di->get('template');
         $tpl->assign('name', $this->formName);
         $tpl->assign('formElements', $formElements);
@@ -124,7 +126,7 @@ class Wizard extends Generator
      */
     public function getFormFieldsWithValidators($route)
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $route = $this->formRoute;
         $baseUrl = rtrim($di->get('config')->get('global', 'base_url'), '/');

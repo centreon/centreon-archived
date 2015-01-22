@@ -36,6 +36,8 @@
 namespace Centreon\Internal\Form;
 
 use Centreon\Internal\Exception;
+use Centreon\Internal\Di;
+use Centreon\Internal\Form;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -127,7 +129,7 @@ class Generator
     protected function getFormFromDatabase()
     {
         // Initializing connection
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         $queryForm = "SELECT form_id, name, redirect, redirect_route FROM cfg_forms WHERE route = '$this->formRoute'";
@@ -143,7 +145,7 @@ class Generator
         $this->formRedirect = $formInfo[0]['redirect'];
         $this->formRedirectRoute = $formInfo[0]['redirect_route'];
         
-        $this->formHandler = new \Centreon\Internal\Form($this->formName);
+        $this->formHandler = new Form($this->formName);
         
         $sectionQuery = 'SELECT section_id, name '
             . 'FROM cfg_forms_sections '
@@ -233,7 +235,7 @@ class Generator
      */
     public function generate()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $tpl = $di->get('template');
         $finalHtml = $this->generateHtml();
         $tpl->assign('formRedirect', $this->formRedirect);

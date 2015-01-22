@@ -34,10 +34,11 @@
  *
  */
 
-
 namespace Centreon\Models\Relation\Aclgroup;
 
-class Aclresource extends \Centreon\Models\CentreonRelationModel
+use Centreon\Models\CentreonRelationModel;
+
+class Aclresource extends CentreonRelationModel
 {
     protected static $relationTable = "cfg_acl_res_group_relations";
     protected static $firstKey = "acl_group_id";

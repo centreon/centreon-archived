@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,9 +32,11 @@
  * For more information : contact@centreon.com
  * 
  */
+
 namespace Centreon\Commands\Module;
 
 use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Command\AbstractCommand;
 
 /**
  * COmmand Line to manage
@@ -45,7 +46,7 @@ use Centreon\Internal\Module\Informations;
  * @package Centreon
  * @subpackage Core
  */
-class ManageCommand extends \Centreon\Internal\Command\AbstractCommand
+class ManageCommand extends AbstractCommand
 {
     /**
      * 

@@ -544,7 +544,7 @@ abstract class CentreonStorageBaseModel
      */
     public static function getColumns()
     {
-        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("SHOW COLUMNS FROM " . static::$table);
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
