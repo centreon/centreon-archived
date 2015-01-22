@@ -38,7 +38,7 @@ namespace CentreonAdministration\Controllers;
 class TimezoneController extends \CentreonAdministration\Controllers\ObjectAbstract
 {
     protected $objectDisplayName = 'Timezone';
-    protected $objectName = 'timezone';
+    public static $objectName = 'timezone';
     protected $objectBaseUrl = '/centreon-administration/timezone';
     protected $objectClass = '\CentreonAdministration\Models\Timezone';
     protected $repository = '\CentreonAdministration\Repository\TimezoneRepository';

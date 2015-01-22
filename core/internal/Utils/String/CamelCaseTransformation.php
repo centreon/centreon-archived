@@ -49,7 +49,7 @@ class CamelCaseTransformation
     /**
      * 
      */
-    const __REGEX__ = '/((?:^|[A-Z])[a-z]+)/';
+    const REGEX = '/((?:^|[A-Z])[a-z]+)/';
     
     /**
      * 
@@ -57,10 +57,10 @@ class CamelCaseTransformation
      * @param string $separator
      * @return string
      */
-    public static function CamelCaseToCustom($string, $separator = "")
+    public static function camelCaseToCustom($string, $separator = "")
     {
         $matches = array();
-        preg_match_all(self::__REGEX__, $string, $matches);
+        preg_match_all(self::REGEX, $string, $matches);
         return implode($separator, $matches[0]);
     }
     
@@ -70,7 +70,7 @@ class CamelCaseTransformation
      * @param string $separator
      * @return string
      */
-    public static function CustomToCamelCase($string, $separator = "")
+    public static function customToCamelCase($string, $separator = "")
     {
         $stringExploded = ucwords(implode(' ', explode($separator, $string)));
         return str_replace(' ', '', $stringExploded);
@@ -84,7 +84,7 @@ class CamelCaseTransformation
     public static function isCamelCase($string)
     {
         $isCamelCase = false;
-        if (preg_match(self::__REGEX__, $string) === 1) {
+        if (preg_match(self::REGEX, $string) === 1) {
             $isCamelCase = true;
         }
         return $isCamelCase;

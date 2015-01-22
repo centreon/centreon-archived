@@ -64,8 +64,8 @@ class ToolsCommand extends \Centreon\Internal\Command\AbstractCommand
         );
         
         // Display Name and short name
-        $moduleDisplayName = CamelCaseTransformation::CamelCaseToCustom($moduleCanonicalName, " ");
-        $moduleShortname = strtolower(CamelCaseTransformation::CamelCaseToCustom($moduleCanonicalName, "-"));
+        $moduleDisplayName = CamelCaseTransformation::camelCaseToCustom($moduleCanonicalName, " ");
+        $moduleShortname = strtolower(CamelCaseTransformation::camelCaseToCustom($moduleCanonicalName, "-"));
         $moduleGenerator = new Generator($moduleCanonicalName);
         $moduleGenerator->setModuleShortName($moduleShortname);
         $moduleGenerator->setModuleDisplayName($moduleDisplayName);

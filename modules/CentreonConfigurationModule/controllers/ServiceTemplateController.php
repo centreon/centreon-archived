@@ -39,16 +39,16 @@ use CentreonConfiguration\Repository\CustomMacroRepository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
 use CentreonConfiguration\Repository\ServiceRepository;
-use CentreonConfiguration\Controllers\BasicController;
 use CentreonConfiguration\Repository\HostTemplateRepository;
+use Centreon\Controllers\FormController;
 
 /**
  * 
  */
-class ServiceTemplateController extends BasicController
+class ServiceTemplateController extends FormController
 {
     protected $objectDisplayName = 'ServiceTemplate';
-    protected $objectName = 'servicetemplate';
+    public static $objectName = 'servicetemplate';
     protected $objectBaseUrl = '/centreon-configuration/servicetemplate';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceTemplateDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';

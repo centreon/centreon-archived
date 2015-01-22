@@ -36,11 +36,12 @@
 namespace CentreonConfiguration\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Controllers\FormController;
 
-class HostGroupController extends \CentreonConfiguration\Controllers\BasicController
+class HostGroupController extends FormController
 {
     protected $objectDisplayName = 'Hostgroup';
-    protected $objectName = 'hostgroup';
+    public static $objectName = 'hostgroup';
     protected $objectBaseUrl = '/centreon-configuration/hostgroup';
     protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
     protected $repository = '\CentreonConfiguration\Repository\HostgroupRepository';

@@ -35,10 +35,12 @@
 
 namespace CentreonConfiguration\Controllers;
 
-class TrapController extends \CentreonConfiguration\Controllers\BasicController
+use Centreon\Controllers\FormController;
+
+class TrapController extends FormController
 {
     protected $objectDisplayName = 'Trap';
-    protected $objectName = 'trap';
+    public static $objectName = 'trap';
     protected $objectBaseUrl = '/centreon-configuration/trap';
     protected $objectClass = '\CentreonConfiguration\Models\Trap';
     protected $datatableObject = '\CentreonConfiguration\Internal\TrapDatatable';

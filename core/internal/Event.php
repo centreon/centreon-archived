@@ -58,7 +58,7 @@ class Event
                 $ModuleListenersList = glob($listenersPath . '*');
                 foreach ($ModuleListenersList as $moduleListenersPath) {   
                     $mTarget = substr($moduleListenersPath, strlen($listenersPath));
-                    $mSource = CamelCaseTransformation::CustomToCamelCase($module, '-');
+                    $mSource = CamelCaseTransformation::customToCamelCase($module, '-');
                     self::attachModuleEventListeners($mSource, $mTarget, $moduleListenersPath);
                 }
             }
@@ -78,9 +78,9 @@ class Event
         foreach ($myListeners as $myListener) {
             $listener = (basename($myListener, '.php'));
             
-            $eventName = CamelCaseTransformation::CamelCaseToCustom($moduleTarget, '-')
+            $eventName = CamelCaseTransformation::camelCaseToCustom($moduleTarget, '-')
                 . '.'
-                . CamelCaseTransformation::CamelCaseToCustom($listener, '.');
+                . CamelCaseTransformation::camelCaseToCustom($listener, '.');
             $emitter->on(
                 strtolower($eventName),
                 function ($params) use ($listener, $moduleSource, $moduleTarget) {

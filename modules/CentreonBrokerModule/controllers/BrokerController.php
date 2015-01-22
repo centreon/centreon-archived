@@ -48,7 +48,7 @@ use CentreonBroker\Repository\BrokerFormRepository;
 class BrokerController extends FormController
 {
     protected $objectDisplayName = 'Broker';
-    protected $objectName = 'broker';
+    public static $objectName = 'broker';
     protected $objectBaseUrl = '/centreon-broker/broker';
     protected $objectClass = '\CentreonBroker\Models\Broker';
     protected $datatableObject = '\CentreonBroker\Internal\BrokerDatatable';

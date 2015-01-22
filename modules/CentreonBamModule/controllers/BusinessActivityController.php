@@ -36,11 +36,12 @@
 namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
+use Centreon\Controllers\FormController;
 
-class BusinessActivityController extends BasicController
+class BusinessActivityController extends FormController
 {
     protected $objectDisplayName = 'BusinessActivity';
-    protected $objectName = 'BusinessActivity';
+    public static $objectName = 'BusinessActivity';
     protected $objectBaseUrl = '/centreon-bam/business-activity';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';

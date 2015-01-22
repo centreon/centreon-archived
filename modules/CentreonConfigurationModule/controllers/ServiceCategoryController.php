@@ -36,11 +36,12 @@
 namespace CentreonConfiguration\Controllers;
 
 use Centreon\Form;
+use Centreon\Controllers\FormController;
 
-class ServiceCategoryController extends \CentreonConfiguration\Controllers\BasicController
+class ServiceCategoryController extends FormController
 {
     protected $objectDisplayName = 'Servicecategory';
-    protected $objectName = 'servicecategory';
+    public static $objectName = 'servicecategory';
     protected $objectBaseUrl = '/centreon-configuration/servicecategory';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceCategoryDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicecategory';

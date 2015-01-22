@@ -35,9 +35,9 @@
 
 namespace CentreonConfiguration\Api\Rest;
 
-use CentreonConfiguration\Api\Internal\CentreonConfigurationRootApi;
+use Centreon\Api\Rest\BasicCrudApi;
 
-class ServiceCategoryApi extends CentreonConfigurationRootApi
+class ServiceCategoryApi extends BasicCrudApi
 {
     public $objectName = 'servicecategory';
     

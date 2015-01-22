@@ -46,11 +46,12 @@ use CentreonConfiguration\Internal\HostDatatable;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use Centreon\Controllers\FormController;
 
-class HostController extends \CentreonConfiguration\Controllers\BasicController
+class HostController extends FormController
 {
     protected $objectDisplayName = 'Host';
-    protected $objectName = 'host';
+    public static $objectName = 'host';
     protected $datatableObject = '\CentreonConfiguration\Internal\HostDatatable';
     protected $objectBaseUrl = '/centreon-configuration/host';
     protected $objectClass = '\CentreonConfiguration\Models\Host';
@@ -96,16 +97,6 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
         parent::listAction();
     }
     
-    /**
-     * 
-     * @method get
-     * @route /host/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
     /**
      * 
      * @method get
@@ -233,17 +224,6 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/host/add');
         parent::addAction();
-    }
-    
-    /**
-     * Update a host
-     *
-     * @method get
-     * @route /host/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
     }
     
     /**
@@ -453,28 +433,6 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     }
 
     /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /host/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /host/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-    
-    /**
      * Get list of pollers for a specific host
      *
      *
@@ -484,39 +442,6 @@ class HostController extends \CentreonConfiguration\Controllers\BasicController
     public function pollerForHostAction()
     {
         parent::getSimpleRelation('poller_id', '\CentreonConfiguration\Models\Poller');
-    }
-    
-    /**
-     * Duplicate a hosts
-     *
-     * @method post
-     * @route /host/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /host/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for host
-     *
-     * @method post
-     * @route /host/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**

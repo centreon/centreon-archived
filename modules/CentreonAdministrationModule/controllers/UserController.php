@@ -37,11 +37,12 @@ namespace CentreonAdministration\Controllers;
 
 use CentreonAdministration\Models\User as UserModel;
 use CentreonAdministration\Internal\User;
+use Centreon\Controllers\FormController;
 
-class UserController extends \CentreonAdministration\Controllers\BasicController
+class UserController extends FormController
 {
     protected $objectDisplayName = 'User';
-    protected $objectName = 'user';
+    public static $objectName = 'user';
     protected $objectBaseUrl = '/centreon-administration/user';
     protected $datatableObject = '\CentreonAdministration\Internal\UserDatatable';
     protected $objectClass = '\CentreonAdministration\Models\User';

@@ -39,6 +39,7 @@ use CentreonAdministration\Models\User;
 use CentreonAdministration\Models\Apitoken;
 use CentreonAdministration\Models\Contact;
 use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 use CentreonSecurity\Internal\Sso;
 use Centreon\Internal\Exception\Authentication\BadCredentialException;
 
@@ -165,7 +166,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         
         if ($passwordCheck) {
             if (!self::checkPassword($login, $password)) {
-                throw new \Centreon\Internal\Exception("User '" . $login . "' doesn't match with password", 4403);
+                throw new Exception("User '" . $login . "' doesn't match with password", 4403);
             }
         }
         
@@ -304,7 +305,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
             $connectedUser = new Sso($login, $password, 0);
             $token = hash_pbkdf2('sha256', $login . $password, hash('sha256', uniqid($login, true)), 8000, 200);
             Apitoken::insert(array('user_id' => $connectedUser->userInfos['user_id'], 'value' => $token));
-        } catch (\Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() === 4403) {
                 throw new BadCredentialException($e->getMessage(), $e->getCode(), $e);
             }
