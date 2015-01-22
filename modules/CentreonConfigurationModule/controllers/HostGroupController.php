@@ -42,6 +42,7 @@ class HostGroupController extends FormController
 {
     protected $objectDisplayName = 'Hostgroup';
     public static $objectName = 'hostgroup';
+    public static $enableDisableFieldName = 'hg_activate';
     protected $objectBaseUrl = '/centreon-configuration/hostgroup';
     protected $objectClass = '\CentreonConfiguration\Models\Hostgroup';
     protected $repository = '\CentreonConfiguration\Repository\HostgroupRepository';
@@ -90,28 +91,6 @@ class HostGroupController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/hostgroup/add');
         parent::addAction();
-    }
-    
-    /**
-     * Enable action for hostcategory
-     * 
-     * @method post
-     * @route /hostgroup/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('hg_activate');
-    }
-    
-    /**
-     * Disable action for hostgroup
-     * 
-     * @method post
-     * @route /hostgroup/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('hg_activate');
     }
     
     /**

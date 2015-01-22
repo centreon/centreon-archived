@@ -44,6 +44,7 @@ class HostCategoryController extends FormController
 {
     protected $objectDisplayName = 'Hostcategory';
     public static $objectName = 'hostcategory';
+    public static $enableDisableFieldName = 'hc_activate';
     protected $objectBaseUrl = '/centreon-configuration/hostcategory';
     protected $objectClass = '\CentreonConfiguration\Models\Hostcategory';
     protected $repository = '\CentreonConfiguration\Repository\HostcategoryRepository';
@@ -69,28 +70,6 @@ class HostCategoryController extends FormController
         parent::addAction();
     }
     
-    /**
-     * Enable action for hostcategory
-     * 
-     * @method post
-     * @route /hostcategory/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('hc_activate');
-    }
-    
-    /**
-     * Disable action for hostcategory
-     * 
-     * @method post
-     * @route /hostcategory/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('hc_activate');
-    }
-
     /**
      * Host for specific host category
      *

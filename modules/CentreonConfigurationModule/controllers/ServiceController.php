@@ -47,6 +47,7 @@ class ServiceController extends FormController
 {
     protected $objectDisplayName = 'Service';
     public static $objectName = 'service';
+    public static $enableDisableFieldName = 'service_activate'; 
     protected $objectBaseUrl = '/centreon-configuration/service';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Service';
@@ -270,28 +271,6 @@ class ServiceController extends FormController
         $this->router->response()->json(array('success' => true));
     }
 
-    /**
-     * Enable action for service
-     * 
-     * @method post
-     * @route /service/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('service_activate');
-    }
-    
-    /**
-     * Disable action for service
-     * 
-     * @method post
-     * @route /service/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('service_activate');
-    }
-    
     /**
      * Get list of Environment for a specific host
      * 

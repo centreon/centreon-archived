@@ -42,6 +42,7 @@ class ContactTemplateController extends FormController
 {
     protected $objectDisplayName = 'Contacttemplate';
     public static $objectName = 'contacttemplate';
+    public static $enableDisableFieldName = 'contact_activate';
     protected $objectBaseUrl = '/centreon-configuration/contacttemplate';
     protected $objectClass = '\CentreonConfiguration\Models\Contact';
     public static $relationMap = array(
@@ -51,28 +52,6 @@ class ContactTemplateController extends FormController
     );
     
     public static $isDisableable = true;
-
-    /**
-     * Enable action for contact template
-     * 
-     * @method post
-     * @route /contacttemplate/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('contact_activate');
-    }
-    
-    /**
-     * Disable action for contact template
-     * 
-     * @method post
-     * @route /contacttemplate/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('contact_activate');
-    }
 
     /**
      * Get contact template for a specific contact

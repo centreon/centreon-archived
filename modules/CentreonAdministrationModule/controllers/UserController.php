@@ -43,6 +43,7 @@ class UserController extends FormController
 {
     protected $objectDisplayName = 'User';
     public static $objectName = 'user';
+    public static $enableDisableFieldName = 'is_activated';
     protected $objectBaseUrl = '/centreon-administration/user';
     protected $datatableObject = '\CentreonAdministration\Internal\UserDatatable';
     protected $objectClass = '\CentreonAdministration\Models\User';
@@ -51,37 +52,6 @@ class UserController extends FormController
     
     public static $isDisableable = true;
 
-    /**
-     * List users
-     *
-     * @method get
-     * @route /user
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /user/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /user/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-    
     /**
      * Update a user
      *
@@ -108,18 +78,6 @@ class UserController extends FormController
     /**
      * Add a user
      *
-     *
-     * @method post
-     * @route /user/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Add a user
-     *
      * @method get
      * @route /user/add
      */
@@ -127,95 +85,6 @@ class UserController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-administration/user/add');
         parent::addAction();
-    }
-    
-    /**
-     * Update a user
-     *
-     *
-     * @method get
-     * @route /user/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /user/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /user/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate contact
-     *
-     * @method POST
-     * @route /user/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /user/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for contact
-     *
-     * @method post
-     * @route /user/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-    
-    /**
-     * Enable action for contact
-     * 
-     * @method post
-     * @route /user/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('is_activated');
-    }
-    
-    /**
-     * Disable action for contact
-     * 
-     * @method post
-     * @route /user/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('is_activated');
     }
     
     /**

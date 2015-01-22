@@ -45,6 +45,7 @@ class ServiceGroupController extends FormController
 {
     protected $objectDisplayName = 'Servicegroup';
     public static $objectName = 'servicegroup';
+    public static $enableDisableFieldName = 'sg_activate';
     protected $objectBaseUrl = '/centreon-configuration/servicegroup';
     protected $objectClass = '\CentreonConfiguration\Models\Servicegroup';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceGroupDatatable';
@@ -90,28 +91,6 @@ class ServiceGroupController extends FormController
         parent::addAction();
     }
     
-    /**
-     * Enable action for service group
-     * 
-     * @method post
-     * @route /servicegroup/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('sg_activate');
-    }
-    
-    /**
-     * Disable action for service group
-     * 
-     * @method post
-     * @route /servicegroup/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('sg_activate');
-    }
-
     /**
      * Get services for a specific service group
      *

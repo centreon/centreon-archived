@@ -54,7 +54,12 @@ class HostTemplateController extends FormController
      * @var string 
      */
     public static $objectName = 'hosttemplate';
-    
+
+    /**
+     * @var string
+     */
+    public static $enableDisableFieldName = 'host_activate';
+
     /**
      *
      * @var string 
@@ -447,28 +452,6 @@ class HostTemplateController extends FormController
         
         $router->response()->json($finalIconList);
         
-    }
-
-    /**
-     * Enable action for host template
-     * 
-     * @method post
-     * @route /hosttemplate/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('host_activate');
-    }
-    
-    /**
-     * Disable action for host template
-     * 
-     * @method post
-     * @route /hosttemplate/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('host_activate');
     }
 
     /**

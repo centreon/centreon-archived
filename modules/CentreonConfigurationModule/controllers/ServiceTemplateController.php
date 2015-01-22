@@ -49,6 +49,7 @@ class ServiceTemplateController extends FormController
 {
     protected $objectDisplayName = 'ServiceTemplate';
     public static $objectName = 'servicetemplate';
+    public static $enableDisableFieldName = 'service_activate';
     protected $objectBaseUrl = '/centreon-configuration/servicetemplate';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceTemplateDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
@@ -184,28 +185,6 @@ class ServiceTemplateController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/servicetemplate/add');
         parent::addAction();
-    }
-    
-    /**
-     * Enable action for service template
-     * 
-     * @method post
-     * @route /servicetemplate/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('service_activate');
-    }
-    
-    /**
-     * Disable action for service template
-     * 
-     * @method post
-     * @route /servicetemplate/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('service_activate');
     }
     
     /**

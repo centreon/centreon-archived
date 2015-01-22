@@ -41,6 +41,7 @@ class ConnectorController extends FormController
 {
     protected $objectDisplayName = 'Connector';
     public static $objectName = 'connector';
+    public static $enableDisableFieldName = 'enabled';
     protected $objectBaseUrl = '/centreon-configuration/connector';
     protected $datatableObject = '\CentreonConfiguration\Internal\ConnectorDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Connector';
@@ -65,28 +66,6 @@ class ConnectorController extends FormController
         parent::addAction();
     }
     
-    /**
-     * Enable action for connector
-     * 
-     * @method post
-     * @route /connector/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('enabled');
-    }
-    
-    /**
-     * Disable action for host
-     * 
-     * @method post
-     * @route /connector/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('enabled');
-    }
-
     /**
      * Commands for specific connector
      *

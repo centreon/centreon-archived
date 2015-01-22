@@ -63,13 +63,13 @@ abstract class ListController extends Controller
      * @var type 
      */
     public static $moduleShortName = '';
-    
+
     /**
      *
-     * @var type 
+     * @var string
      */
-    protected $objectBaseUrl = '';
-    
+    public static $enableDisableFieldName = ''; 
+
     /**
      *
      * @var type 
@@ -93,6 +93,12 @@ abstract class ListController extends Controller
      * @var type 
      */
     protected $inheritanceUrl = null;
+
+    /**
+     *
+     * @var type 
+     */
+    protected $objectBaseUrl = ''; 
 
     /**
      * 
@@ -391,85 +397,23 @@ abstract class ListController extends Controller
     /**
      * Enable object
      *
-     * @param string $field
      * @method post
      * @route /{object}/enable
      */
-    public function enableAction($field)
+    public function enableAction()
     {
-        $enableSuccess = true;
-        $errorMessage = '';
-        
-        try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
-            $params = $this->router->request()->paramsPost();
-
-            $repository = $this->repository;
-            foreach ($params['ids'] as $id) {
-                $repository::update(
-                    array(
-                        'object_id' => $id,
-                        $field => '1'
-                    )
-                );
-            }
-
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (Exception $e) {
-            $enableSuccess = false;
-            $errorMessage = $e->getMessage();
-        }
-        
-        $this->router->response()->json(
-            array(
-                'success' => $enableSuccess,
-                'errorMessage' => $errorMessage
-            )
-        );
+        $this->setEnableDisableParameter('1');
     }
     
     /**
      * Disable object
      *
-     * @param string $field
      * @method post
      * @route /{object}/disable
      */
-    public function disableAction($field)
+    public function disableAction()
     {
-        $enableSuccess = true;
-        $errorMessage = '';
-        
-        try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
-            $params = $this->router->request()->paramsPost();
-
-            $repository = $this->repository;
-            foreach ($params['ids'] as $id) {
-                $repository::update(
-                    array(
-                        'object_id' => $id,
-                        $field => '0'
-                    )
-                );
-            }
-
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
-        } catch (Exception $e) {
-            $enableSuccess = false;
-            $errorMessage = $e->getMessage();
-        }
-        
-        $this->router->response()->json(
-            array(
-                'success' => $enableSuccess,
-                'errorMessage' => $errorMessage
-            )
-        );
+        $this->setEnableDisableParameter('0');
     }
 
     /**
@@ -536,5 +480,51 @@ abstract class ListController extends Controller
         $repository = $this->repository;
         $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParam['id']);
         $this->router->response()->json($list);
+    }
+
+    /**
+     * Set enable or disable
+     *
+     * @param string $value
+     * @throws \Centreon\Internal\Exception
+     */
+    protected function setEnableDisableParameter($value)
+    {
+        if (static::$enableDisableFieldName == '') {
+            throw new Exception('Cannot enable or disable this object');
+        }
+        $success = true;
+        $errorMessage = '';
+        $field = static::$enableDisableFieldName;
+
+        try {
+            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
+            $params = $this->router->request()->paramsPost();
+
+            $repository = $this->repository;
+            foreach ($params['ids'] as $id) {
+                $repository::update(
+                    array(
+                        'object_id' => $id,
+                        $field => $value
+                    )
+                );
+            }
+
+            /* Set Cookie */
+            $token = Form::getSecurityToken();
+            setcookie("ajaxToken", $token, time()+15, '/');
+        } catch (Exception $e) {
+            $success = false;
+            $errorMessage = $e->getMessage();
+        }
+        
+        $this->router->response()->json(
+            array(
+                'success' => $success,
+                'errorMessage' => $errorMessage
+            )
+        );
+
     }
 }

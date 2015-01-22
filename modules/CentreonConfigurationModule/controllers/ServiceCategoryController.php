@@ -42,6 +42,7 @@ class ServiceCategoryController extends FormController
 {
     protected $objectDisplayName = 'Servicecategory';
     public static $objectName = 'servicecategory';
+    public static $enableDisableFieldName = 'sc_activate';
     protected $objectBaseUrl = '/centreon-configuration/servicecategory';
     protected $datatableObject = '\CentreonConfiguration\Internal\ServiceCategoryDatatable';
     protected $objectClass = '\CentreonConfiguration\Models\Servicecategory';
@@ -95,28 +96,6 @@ class ServiceCategoryController extends FormController
         parent::addAction();
     }
     
-    /**
-     * Enable action for service category
-     * 
-     * @method post
-     * @route /servicecategory/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('sc_activate');
-    }
-    
-    /**
-     * Disable action for service category
-     * 
-     * @method post
-     * @route /servicecategory/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('sc_activate');
-    }
-
     /**
      * Services for a specific category
      *

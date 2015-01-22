@@ -52,6 +52,7 @@ class HostController extends FormController
 {
     protected $objectDisplayName = 'Host';
     public static $objectName = 'host';
+    public static $enableDisableFieldName = 'host_activate';
     protected $datatableObject = '\CentreonConfiguration\Internal\HostDatatable';
     protected $objectBaseUrl = '/centreon-configuration/host';
     protected $objectClass = '\CentreonConfiguration\Models\Host';
@@ -444,28 +445,6 @@ class HostController extends FormController
         parent::getSimpleRelation('poller_id', '\CentreonConfiguration\Models\Poller');
     }
     
-    /**
-     * Enable action for host
-     * 
-     * @method post
-     * @route /host/enable
-     */
-    public function enableAction()
-    {
-        parent::enableAction('host_activate');
-    }
-    
-    /**
-     * Disable action for host
-     * 
-     * @method post
-     * @route /host/disable
-     */
-    public function disableAction()
-    {
-        parent::disableAction('host_activate');
-    }
-
     /**
      * Display the configuration snapshot of a host
      * with template inheritance
