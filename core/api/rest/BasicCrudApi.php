@@ -38,6 +38,7 @@ namespace Centreon\Api\Rest;
 
 use Centreon\Internal\Exception;
 use Centreon\Internal\Api;
+use Centreon\Internal\Module\Informations;
 
 /**
  * Description of BasicCrudApi
