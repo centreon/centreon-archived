@@ -52,51 +52,6 @@ class ConnectorController extends FormController
     );
 
     /**
-     * List connectors
-     *
-     * @method get
-     * @route /connector
-     * @acl view
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /connector/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /connector/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-
-    /**
-     * Update a connector
-     *
-     *
-     * @method post
-     * @route /connector/update
-     * @acl update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
      * Add a connector
      *
      *
@@ -108,87 +63,6 @@ class ConnectorController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/connector/add');
         parent::addAction();
-    }
-    
-    /**
-     * Add a connector
-     *
-     *
-     * @method post
-     * @route /connector/add
-     * @acl add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Update a connector
-     *
-     *
-     * @method get
-     * @route /connector/[i:id]
-     * @acl update
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /connector/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /connector/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /connector/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /connector/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for hosttemplate
-     *
-     * @method post
-     * @route /connector/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**

@@ -78,39 +78,6 @@ class ServiceGroupController extends FormController
     }
 
     /**
-     * List service groups 
-     *
-     * @method get
-     * @route /servicegroup/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /servicegroup/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-
-    /**
-     * Update a servicegroup
-     *
-     *
-     * @method post
-     * @route /servicegroup/update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
      * Add a servicegroup
      *
      *
@@ -121,86 +88,6 @@ class ServiceGroupController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/servicegroup/add');
         parent::addAction();
-    }
-    
-    /**
-     * Add a servicegroup
-     *
-     *
-     * @method post
-     * @route /servicegroup/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Update a servicegroup
-     *
-     *
-     * @method get
-     * @route /servicegroup/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /servicegroup/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /servicegroup/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /servicegroup/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /servicegroup/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for servicegroup
-     *
-     * @method post
-     * @route /servicegroup/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**

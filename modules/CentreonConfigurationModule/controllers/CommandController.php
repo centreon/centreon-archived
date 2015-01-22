@@ -50,64 +50,6 @@ class CommandController extends FormController
     public static $relationMap = array();
 
     /**
-     * List commands
-     *
-     * @method get
-     * @route /command
-     * @acl view
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /command/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /command/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-
-    /**
-     * Update a command
-     *
-     *
-     * @method post
-     * @route /command/update
-     * @acl view,update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
-     * Add a command
-     *
-     *
-     * @method post
-     * @route /command/add
-     * @acl add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
      * Add a command
      *
      *
@@ -121,74 +63,6 @@ class CommandController extends FormController
         parent::addAction();
     }
     
-    /**
-     * Update a command
-     *
-     *
-     * @method get
-     * @route /command/[i:id]
-     * @acl update
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /command/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /command/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a command
-     *
-     * @method POST
-     * @route /command/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /command/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for command
-     *
-     * @method post
-     * @route /command/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-
     /**
      * Connector for a specific command
      *

@@ -55,60 +55,6 @@ class TimeperiodController extends FormController
     );
 
     /**
-     * List timeperiods
-     *
-     * @method get
-     * @route /timeperiod
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /timeperiod/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /timeperiod/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * Create a new timeperiod
-     *
-     * @method post
-     * @route /timeperiod/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Update a timeperiod
-     *
-     *
-     * @method post
-     * @route /timeperiod/update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
      * Add a timeperiod
      *
      * @method get
@@ -118,72 +64,6 @@ class TimeperiodController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/timeperiod/add');
         parent::addAction();
-    }
-    
-    /**
-     * Update a timeperiod
-     *
-     * @method get
-     * @route /timeperiod/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-    
-    /**
-     * Duplicate a timeperiod
-     *
-     * @method post
-     * @route /timeperiod/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /timeperiod/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-    
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /timeperiod/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /timeperiod/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Delete action for timeperiod
-     *
-     * @method post
-     * @route /timeperiod/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**

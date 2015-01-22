@@ -201,7 +201,7 @@ abstract class ListController extends Controller
     public function addAction()
     {
         $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
-        $form->addHiddenComponent('object', $this->objectName);
+        $form->addHiddenComponent('object', static::$objectName);
         $form->addHiddenComponent('module', static::$moduleName);
         $this->tpl->assign('formName', $form->getName());
         $formGen = str_replace(

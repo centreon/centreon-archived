@@ -57,49 +57,6 @@ class HostCategoryController extends FormController
     public static $isDisableable = true;
 
     /**
-     * List hostcategories
-     *
-     * @method get
-     * @route /hostcategory
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /hostcategory/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /hostcategory/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * Update a hostcategory
-     *
-     *
-     * @method post
-     * @route /hostcategory/update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
      * Add a hostcategory
      *
      *
@@ -110,85 +67,6 @@ class HostCategoryController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/hostcategory/add');
         parent::addAction();
-    }
-
-    /**
-     * Add a hostcategory
-     *
-     *
-     * @method post
-     * @route /hostcategory/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Update a hostcategory
-     *
-     *
-     * @method get
-     * @route /hostcategory/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /hostcategory/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /hostcategory/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /hostcategory/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /hostcategory/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for hostcategory
-     *
-     * @method post
-     * @route /hostcategory/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**
