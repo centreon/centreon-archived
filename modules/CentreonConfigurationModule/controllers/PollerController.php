@@ -69,26 +69,6 @@ class PollerController extends FormController
     }
     
     /**
-     * 
-     * @method get
-     * @route /poller/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /poller/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-    
-    /**
      * Update a poller
      *
      * @method post
@@ -174,17 +154,6 @@ class PollerController extends FormController
         $this->tpl->assign('form', $form->toSmarty());
         $this->tpl->assign('hookParams', array('pollerId' => $params['id']));
         $this->tpl->display('editPoller.tpl');
-    }
-    
-    /**
-     * Delete action for poller
-     *
-     * @method post
-     * @route /poller/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
 
     /**

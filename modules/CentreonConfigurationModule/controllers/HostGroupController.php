@@ -81,38 +81,6 @@ class HostGroupController extends FormController
     }
     
     /**
-     * 
-     * @method get
-     * @route /hostgroup/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /hostgroup/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * Update a hostgroup
-     *
-     *
-     * @method post
-     * @route /hostgroup/update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
      * Add a hostgroup
      *
      * @method get
@@ -122,85 +90,6 @@ class HostGroupController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/hostgroup/add');
         parent::addAction();
-    }
-    
-    /**
-     * Add a hostgroup
-     *
-     *
-     * @method post
-     * @route /hostgroup/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Update a hostgroup
-     *
-     *
-     * @method get
-     * @route /hostgroup/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /hostgroup/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /hostgroup/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hostgroup
-     *
-     * @method POST
-     * @route /hostgroup/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /hostgroup/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for hostgroup
-     *
-     * @method post
-     * @route /hostgroup/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**

@@ -126,7 +126,7 @@ class AclactionController extends FormController
 
         $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
-        $myForm->addHiddenComponent('object', $this->objectName);
+        $myForm->addHiddenComponent('object', static::$objectName);
 
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
 

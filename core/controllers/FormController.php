@@ -107,7 +107,7 @@ abstract class FormController extends ListController
         
         $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
-        $myForm->addHiddenComponent('object', $this->objectName);
+        $myForm->addHiddenComponent('object', static::$objectName);
         
         // get object Current Values
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);

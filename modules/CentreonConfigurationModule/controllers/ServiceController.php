@@ -172,16 +172,6 @@ class ServiceController extends FormController
     }
 
     /**
-     * 
-     * @method get
-     * @route /service/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-
-    /**
      * Update a service
      *
      * @method post
@@ -279,74 +269,7 @@ class ServiceController extends FormController
 
         $this->router->response()->json(array('success' => true));
     }
-    
-    /**
-     * Update a service
-     *
-     *
-     * @method get
-     * @route /service/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
 
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /service/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /service/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /service/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /service/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for service
-     *
-     * @method post
-     * @route /service/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-    
     /**
      * Enable action for service
      * 

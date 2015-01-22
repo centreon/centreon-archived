@@ -52,73 +52,6 @@ class TrapController extends FormController
     );
 
     /**
-     * List traps
-     *
-     * @method get
-     * @route /trap
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /trap/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /trap/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * Update a trap
-     *
-     *
-     * @method post
-     * @route /trap/update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
-     * Add a trap
-     *
-     *
-     * @method post
-     * @route /trap/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Update a trap
-     *
-     *
-     * @method get
-     * @route /trap/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-    
-    /**
      * Add a trap
      *
      * @method get
@@ -128,61 +61,6 @@ class TrapController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/trap/add');
         parent::addAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /trap/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /trap/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /trap/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /trap/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for hosttemplate
-     *
-     * @method post
-     * @route /trap/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
 
     /**

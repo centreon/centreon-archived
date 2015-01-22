@@ -86,26 +86,6 @@ class ServiceTemplateController extends FormController
     }
 
     /**
-     * 
-     * @method get
-     * @route /servicetemplate/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /servicetemplate/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
      * Update a servicetemplate
      *
      *
@@ -204,73 +184,6 @@ class ServiceTemplateController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/servicetemplate/add');
         parent::addAction();
-    }
-    
-    /**
-     * Update a service template
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /servicetemplate/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /servicetemplate/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /servicetemplate/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /servicetemplate/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for servicetemplate
-     *
-     * @method post
-     * @route /servicetemplate/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**

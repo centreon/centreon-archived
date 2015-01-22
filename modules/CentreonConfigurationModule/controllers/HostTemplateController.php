@@ -112,26 +112,6 @@ class HostTemplateController extends FormController
     }
     
     /**
-     * 
-     * @method get
-     * @route /hosttemplate/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /hosttemplate/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
      * Create a new host template
      *
      * @method post
@@ -209,17 +189,6 @@ class HostTemplateController extends FormController
         parent::addAction();
     }
     
-    /**
-     * Update a host template
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
     /**
      * Get inheritance value
      *
@@ -480,61 +449,6 @@ class HostTemplateController extends FormController
         
     }
 
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /hosttemplate/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /hosttemplate/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-    
-    /**
-     * Duplicate a host template
-     *
-     * @method post
-     * @route /hosttemplate/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /hosttemplate/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for host template
-     *
-     * @method post
-     * @route /hosttemplate/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
-    }
-    
     /**
      * Enable action for host template
      * 

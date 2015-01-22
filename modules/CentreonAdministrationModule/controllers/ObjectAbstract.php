@@ -40,7 +40,7 @@ use Centreon\Internal\Form\Wizard;
 use Centreon\Internal\Form\Generator;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
-use Centreon\Internal\Controller;
+use Centreon\Controllers\FormController;
 
 /**
  * Abstact class for configuration controller
@@ -48,7 +48,7 @@ use Centreon\Internal\Controller;
  * @version 3.0.0
  * @author Maximilien Bersoult <mbersoult@merethis.com>
  */
-abstract class ObjectAbstract extends Controller
+abstract class ObjectAbstract extends FormController
 {
     public static $moduleName = 'CentreonAdministration';
     
@@ -64,7 +64,7 @@ abstract class ObjectAbstract extends Controller
         }
         $repository = $this->repository;
         $repository::setRelationMap(static::$relationMap);
-        $repository::setObjectName($this->objectName);
+        $repository::setObjectName(static::$objectName);
         $repository::setObjectClass($this->objectClass);
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
@@ -166,7 +166,7 @@ abstract class ObjectAbstract extends Controller
     public function addAction()
     {
         $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
-        $form->addHiddenComponent('object', $this->objectName);
+        $form->addHiddenComponent('object', static::$objectName);
         $tpl = Di::getDefault()->get('template');
         $this->tpl->assign('formName', $form->getName());
         $formGen = str_replace(
@@ -225,7 +225,7 @@ abstract class ObjectAbstract extends Controller
         
         $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
-        $myForm->addHiddenComponent('object', $this->objectName);
+        $myForm->addHiddenComponent('object', static::$objectName);
         
         // get object Current Values
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);

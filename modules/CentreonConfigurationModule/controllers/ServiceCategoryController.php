@@ -54,38 +54,6 @@ class ServiceCategoryController extends FormController
     public static $isDisableable = true;
 
     /**
-     * List servicecategories
-     *
-     * @method get
-     * @route /servicecategory
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-
-    /**
-     * List servicecategories
-     * 
-     * @method get
-     * @route /servicecategory/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /servicecategory/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
      * Update a servicecategory
      *
      *
@@ -118,18 +86,6 @@ class ServiceCategoryController extends FormController
     /**
      * Add a servicecategory
      *
-     *
-     * @method post
-     * @route /servicecategory/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Add a servicecategory
-     *
      * @method get
      * @route /servicecategory/add
      */
@@ -137,73 +93,6 @@ class ServiceCategoryController extends FormController
     {
         $this->tpl->assign('validateUrl', '/centreon-configuration/servicecategory/add');
         parent::addAction();
-    }
-    
-    /**
-     * Update a servicecategory
-     *
-     *
-     * @method get
-     * @route /servicecategory/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /servicecategory/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /servicecategory/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /servicecategory/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /servicecategory/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for servicecategory
-     *
-     * @method post
-     * @route /servicecategory/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**
