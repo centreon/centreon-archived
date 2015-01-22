@@ -183,18 +183,6 @@ class HostTemplateController extends FormController
     }
     
     /**
-     * Add a host template
-     *
-     * @method get
-     * @route /hosttemplate/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/hosttemplate/add');
-        parent::addAction();
-    }
-    
-    /**
      * Get inheritance value
      *
      * @method get

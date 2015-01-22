@@ -76,18 +76,6 @@ class UserController extends FormController
     }
     
     /**
-     * Add a user
-     *
-     * @method get
-     * @route /user/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-administration/user/add');
-        parent::addAction();
-    }
-    
-    /**
      * lock action for user
      * 
      * @method post

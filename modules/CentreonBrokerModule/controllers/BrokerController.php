@@ -56,37 +56,6 @@ class BrokerController extends FormController
     public static $relationMap = array();
     
     /**
-     * List brokers
-     *
-     * @method get
-     * @route /broker
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
      * Update a broker
      *
      *
@@ -121,18 +90,6 @@ class BrokerController extends FormController
     }
     
     /**
-     * Add a broker
-     *
-     *
-     * @method post
-     * @route /add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
      * Update a broker
      *
      *
@@ -160,72 +117,5 @@ class BrokerController extends FormController
         $this->tpl->assign('formName', 'broker_full_form');
         $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
         $this->tpl->display('file:[CentreonConfigurationModule]edit.tpl');
-    }
-    
-    /**
-     * Add a broker
-     *
-     * @method get
-     * @route /add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-broker/broker/add');
-        parent::addAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method post
-     * @route /duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method post
-     * @route /massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for hosttemplate
-     *
-     * @method post
-     * @route /delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
 }

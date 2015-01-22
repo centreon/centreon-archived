@@ -82,18 +82,6 @@ class HostGroupController extends FormController
     }
     
     /**
-     * Add a hostgroup
-     *
-     * @method get
-     * @route /hostgroup/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/hostgroup/add');
-        parent::addAction();
-    }
-    
-    /**
      * Get list of hostgroups for a specific host
      *
      *

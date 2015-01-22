@@ -52,18 +52,6 @@ class TrapController extends FormController
     );
 
     /**
-     * Add a trap
-     *
-     * @method get
-     * @route /trap/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/trap/add');
-        parent::addAction();
-    }
-
-    /**
      * Manufacturer for specific trap
      *
      * @method get

@@ -55,18 +55,6 @@ class TimeperiodController extends FormController
     );
 
     /**
-     * Add a timeperiod
-     *
-     * @method get
-     * @route /timeperiod/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/timeperiod/add');
-        parent::addAction();
-    }
-    
-    /**
      * 
      * @method get
      * @route /timeperiod/[i:id]/include

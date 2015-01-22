@@ -46,16 +46,4 @@ class ManufacturerController extends FormController
     protected $objectClass = '\CentreonConfiguration\Models\Manufacturer';
     protected $repository = '\CentreonConfiguration\Repository\ManufacturerRepository';
     public static $relationMap = array();
-
-    /**
-     * Add a manufacturer
-     *
-     * @method get
-     * @route /manufacturer/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/manufacturer/add');
-        parent::addAction();
-    }
 }

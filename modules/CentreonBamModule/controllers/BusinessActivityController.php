@@ -113,18 +113,6 @@ class BusinessActivityController extends FormController
     }
     
     /**
-     * Add a business activity
-     *
-     * @method get
-     * @route /business-activity/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-bam/business-activity/add');
-        parent::addAction();
-    }
-    
-    /**
      * Update a business activity
      *
      * @method get

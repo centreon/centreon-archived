@@ -176,18 +176,6 @@ class ServiceTemplateController extends FormController
     }
     
     /**
-     * Add a servicetemplate
-     *
-     * @method get
-     * @route /servicetemplate/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/servicetemplate/add');
-        parent::addAction();
-    }
-    
-    /**
      * Get list of Timeperiods for a specific service
      *
      *

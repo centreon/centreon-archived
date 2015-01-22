@@ -50,20 +50,6 @@ class CommandController extends FormController
     public static $relationMap = array();
 
     /**
-     * Add a command
-     *
-     *
-     * @method get
-     * @route /command/add
-     * @acl add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/command/add');
-        parent::addAction();
-    }
-    
-    /**
      * Connector for a specific command
      *
      * @method get

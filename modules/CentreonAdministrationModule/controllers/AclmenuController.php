@@ -178,19 +178,6 @@ class AclmenuController extends FormController
     }
     
     /**
-     * Add a aclmenu
-     *
-     *
-     * @method get
-     * @route /aclmenu/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-administration/aclmenu/add');
-        parent::addAction();
-    }
-    
-    /**
      * Update a aclmenu
      *
      *

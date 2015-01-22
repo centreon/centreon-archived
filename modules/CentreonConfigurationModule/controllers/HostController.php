@@ -161,7 +161,7 @@ class HostController extends FormController
             CustomMacroRepository::saveHostCustomMacro($id, $macroList);
         }
         
-        \CentreonConfiguration\Models\Host::deployServices($id);
+        Host::deployServices($id);
         
         $this->router->response()->json(array('success' => true));
     }
@@ -213,18 +213,6 @@ class HostController extends FormController
         if ($givenParameters['host_create_services_from_template']) {
             Host::deployServices($givenParameters['object_id']);
         }
-    }
-    
-    /**
-     * Add a host
-     *
-     * @method get
-     * @route /host/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/host/add');
-        parent::addAction();
     }
     
     /**

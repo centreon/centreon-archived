@@ -54,38 +54,6 @@ class AclactionController extends FormController
     public static $isDisableable = true;
 
     /**
-     * List aclaction
-     *
-     * @method get
-     * @route /aclaction
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /aclaction/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * Create a new acl action
-     *
-     * @method post
-     * @route /aclaction/create
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-
-    /**
      * Update an acl action
      *
      * @method post
@@ -96,19 +64,6 @@ class AclactionController extends FormController
         $params = $this->getParams('post');
         AclactionRepository::updateRules($params['object_id'], $params);
         parent::updateAction();
-    }
-    
-    /**
-     * Add a aclaction
-     *
-     *
-     * @method get
-     * @route /aclaction/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-administration/aclaction/add');
-        parent::addAction();
     }
     
     /**
@@ -150,17 +105,6 @@ class AclactionController extends FormController
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('validateUrl', $objectFormUpdateUrl);
         $tpl->display('file:[CentreonConfigurationModule]edit.tpl');
-    }
-
-    /**
-     * Retrieve list of acl action for a form
-     *
-     * @method get
-     * @route /aclaction/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
     }
 
     /**

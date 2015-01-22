@@ -58,37 +58,6 @@ class EngineController extends FormController
     public static $relationMap = array();
     
     /**
-     * List engines
-     *
-     * @method get
-     * @route /engine
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
      * Update a engine
      *
      *
@@ -126,18 +95,6 @@ class EngineController extends FormController
     }
     
     /**
-     * Add a engine
-     *
-     *
-     * @method post
-     * @route /add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
      * Update a engine
      *
      *
@@ -152,73 +109,6 @@ class EngineController extends FormController
             'formRedirectRoute' => '/centreon-configuration/poller/' . $requestParam['id']
         );
         parent::editAction($additionnalParams);
-    }
-    
-    /**
-     * Add a engine
-     *
-     * @method get
-     * @route /add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-engine/add');
-        parent::addAction();
-    }
-
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Duplicate a hosts
-     *
-     * @method POST
-     * @route /duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
-
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-
-    /**
-     * Delete action for hosttemplate
-     *
-     * @method post
-     * @route /delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
     }
     
     /**

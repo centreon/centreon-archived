@@ -85,18 +85,6 @@ class ServiceCategoryController extends FormController
     }
     
     /**
-     * Add a servicecategory
-     *
-     * @method get
-     * @route /servicecategory/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/servicecategory/add');
-        parent::addAction();
-    }
-    
-    /**
      * Services for a specific category
      *
      * @method get

@@ -53,20 +53,6 @@ class ConnectorController extends FormController
     );
 
     /**
-     * Add a connector
-     *
-     *
-     * @method get
-     * @route /connector/add
-     * @acl add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/connector/add');
-        parent::addAction();
-    }
-    
-    /**
      * Commands for specific connector
      *
      * @method get

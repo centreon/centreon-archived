@@ -79,19 +79,6 @@ class ServiceGroupController extends FormController
     }
 
     /**
-     * Add a servicegroup
-     *
-     *
-     * @method get
-     * @route /servicegroup/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/servicegroup/add');
-        parent::addAction();
-    }
-    
-    /**
      * Get services for a specific service group
      *
      * @method get

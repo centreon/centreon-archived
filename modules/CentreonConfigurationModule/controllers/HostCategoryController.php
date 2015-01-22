@@ -58,19 +58,6 @@ class HostCategoryController extends FormController
     public static $isDisableable = true;
 
     /**
-     * Add a hostcategory
-     *
-     *
-     * @method get
-     * @route /hostcategory/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/hostcategory/add');
-        parent::addAction();
-    }
-    
-    /**
      * Host for specific host category
      *
      * @method get

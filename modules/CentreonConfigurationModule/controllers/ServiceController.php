@@ -217,18 +217,6 @@ class ServiceController extends FormController
     /**
      * Add a service
      *
-     * @method get
-     * @route /service/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-configuration/service/add');
-        parent::addAction();
-    }
-    
-    /**
-     * Add a service
-     *
      * @method post
      * @route /service/add
      */

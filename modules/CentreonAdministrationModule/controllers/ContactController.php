@@ -55,27 +55,6 @@ class ContactController extends FormController
     public static $isDisableable = true;
     
     /**
-     * List contact
-     *
-     * @method get
-     * @route /contact
-     */
-    public function listAction()
-    {
-        parent::listAction();
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /contact/formlist
-     */
-    public function formListAction()
-    {
-        parent::formListAction();
-    }
-    
-    /**
      * 
      * @method get
      * @route /contact/contact-info/formlist
@@ -105,27 +84,6 @@ class ContactController extends FormController
     }
 
     /**
-     * 
-     * @method get
-     * @route /contact/list
-     */
-    public function datatableAction()
-    {
-        parent::datatableAction();
-    }
-    
-    /**
-     * Update a contact
-     *
-     * @method post
-     * @route /contact/update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
      * Update a contact
      *
      * @method post
@@ -144,30 +102,6 @@ class ContactController extends FormController
             'origin' => $givenParameters['contact_info_key'],
             'removeurl' => $removeUrl
         ));
-    }
-    
-    /**
-     * Add a contact
-     *
-     *
-     * @method get
-     * @route /contact/add
-     */
-    public function addAction()
-    {
-        $this->tpl->assign('validateUrl', '/centreon-administration/contact/add');
-        parent::addAction();
-    }
-
-    /**
-     * Add a contact
-     *
-     * @method post
-     * @route /contact/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
     }
     
     /**
