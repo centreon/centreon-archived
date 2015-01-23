@@ -4,8 +4,8 @@
         <column name="custom_view_id" phpName="CustomViewId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="user_id" phpName="UserId" primaryKey="true" type="INTEGER" required="true"/>
         <column name="is_default" phpName="IsDefault" primaryKey="false" type="BOOLEAN" required="true"/>
-        <foreign-key foreignTable="cfg_contacts" name="fk_custom_views_user_id" onDelete="CASCADE" onUpdate="RESTRICT">
-            <reference local="user_id" foreign="contact_id"/>
+        <foreign-key foreignTable="cfg_users" name="fk_custom_views_user_id" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="user_id" foreign="user_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_custom_views" name="fk_custom_view_user_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="custom_view_id" foreign="custom_view_id"/>
