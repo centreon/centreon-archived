@@ -40,7 +40,7 @@ use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Di;
 use Centreon\Internal\Install\Db;
-use Centreon\Internal\Form\Installer;
+use Centreon\Internal\Form\Installer as FormInstaller;
 use Centreon\Internal\Hook;
 use Centreon\Models\Module;
 
@@ -158,7 +158,7 @@ abstract class Installer
     {
         $formsFiles = $this->moduleDirectory . '/install/forms/*.xml';
         foreach (glob($formsFiles) as $xmlFile) {
-            Installer::installFromXml($this->moduleId, $xmlFile);
+            FormInstaller::installFromXml($this->moduleId, $xmlFile);
         }
     }
     
