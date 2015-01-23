@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
+
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -48,7 +51,7 @@ class File extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl = Di::getDefault()->get('template');
         
         // Load CssFile
         $tpl->addCss('jquery.fileupload.css')
@@ -65,7 +68,7 @@ class File extends Customobject
             ->addJs('jquery.fileupload-ui.js')
             ->addJs('centreon-wizard.js');
         
-        $uploadUrl = \Centreon\Internal\Di::getDefault()
+        $uploadUrl = Di::getDefault()
                             ->get('router')
                             ->getPathFor('/file/upload');
         

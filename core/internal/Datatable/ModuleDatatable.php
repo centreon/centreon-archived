@@ -36,12 +36,15 @@
 
 namespace Centreon\Internal\Datatable;
 
+use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Di;
+
 /**
  * Description of ModuleDatatable
  *
  * @author lionel
  */
-class ModuleDatatable extends \Centreon\Internal\Datatable
+class ModuleDatatable extends Datatable
 {
     /**
      *
@@ -276,8 +279,8 @@ class ModuleDatatable extends \Centreon\Internal\Datatable
     private static function getFilesystemModule(& $resultSet)
     {
         // Get current moduleName
-        $moduleNameList = \Centreon\Internal\Module\Informations::getModuleList();
-        $path = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
+        $moduleNameList = Informations::getModuleList();
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_path'), '/');
         $rawModuleList = glob($path."/modules/*Module/");
         foreach ($rawModuleList as $module) {
             if (file_exists(realpath($module . 'install/config.json'))) {

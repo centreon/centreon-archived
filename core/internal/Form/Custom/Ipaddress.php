@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
+
+use Centreon\Internal\Di;
 
 class Ipaddress extends Customobject
 {
@@ -94,11 +97,11 @@ class Ipaddress extends Customobject
     {
         $validations = parent::addValidation($element);
         
-        $resolveUrl = \Centreon\Internal\Di::getDefault()
+        $resolveUrl = Di::getDefault()
                         ->get('router')
                         ->getPathFor('/validator/resolvedns');
         
-        $ipAddressValidationUrl = \Centreon\Internal\Di::getDefault()
+        $ipAddressValidationUrl = Di::getDefault()
                             ->get('router')
                             ->getPathFor('/validator/ipaddress');
         

@@ -35,7 +35,9 @@
 
 namespace CentreonAdministration\Controllers;
 
-class TimezoneController extends \CentreonAdministration\Controllers\ObjectAbstract
+use Centreon\Controllers\FormController;
+
+class TimezoneController extends FormController
 {
     protected $objectDisplayName = 'Timezone';
     public static $objectName = 'timezone';

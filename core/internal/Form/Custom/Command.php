@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
+
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -56,7 +59,7 @@ class Command extends Customobject
         
         $myHtml .='<div id="'.$element['name'].'_command_args" class="row"></div>';
         
-        $commandArgumentsUrl = \Centreon\Internal\Di::getDefault()
+        $commandArgumentsUrl = Di::getDefault()
                             ->get('router')
                             ->getPathFor('/centreon-configuration/command/[i:id]/arguments');
         

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,6 +34,10 @@
  */
 
 namespace Centreon\Internal\Db;
+
+use Centreon\Internal\Di;
+use Centreon\Models\Module;
+use Centreon\Internal\Module\Informations;
 
 class Installer
 {
@@ -109,7 +112,7 @@ class Installer
     public static function getDbFromXml(& $myAppData, $operation, $targetDbName)
     {
         // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $targetDb = 'db_' . $targetDbName;
         $db = $di->get($targetDb);
         
@@ -137,7 +140,7 @@ class Installer
     private static function getAllXmlFiles($operationType = 'update', $targetDbName = 'centreon')
     {
         // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         $centreonPath = $config->get('global', 'centreon_path');
         
@@ -145,11 +148,11 @@ class Installer
         
         // Module
         if ($operationType == 'update') {
-            $registeredModules = \Centreon\Models\Module::getList('name');
+            $registeredModules = Module::getList('name');
             $registeredModules(
                 array_merge(
                     $registeredModules,
-                    \Centreon\Internal\Module\Informations::getCoreModuleList()
+                    Informations::getCoreModuleList()
                 )
             );
             foreach ($registeredModules as $module) {
@@ -202,7 +205,7 @@ class Installer
     public static function buildTargetDbSchema($targetDbName = 'centreon')
     {
         // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         $centreonPath = $config->get('global', 'centreon_path');
         

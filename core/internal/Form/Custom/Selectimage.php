@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
+
+use Centreon\Internal\Di;
 
 class Selectimage extends Customobject
 {
@@ -54,7 +57,7 @@ class Selectimage extends Customobject
             'label_object_type' => $element['label_object_type']
         );
         
-        $addImageUrl = \Centreon\Internal\Di::getDefault()
+        $addImageUrl = Di::getDefault()
                         ->get('router')
                         ->getPathFor($element['label_wizardRoute']);
         

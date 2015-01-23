@@ -37,6 +37,12 @@
 namespace Centreon\Internal\Module;
 
 use Centreon\Internal\Utils\CommandLine\Colorize;
+use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Di;
+use Centreon\Internal\Install\Db;
+use Centreon\Internal\Form\Installer;
+use Centreon\Internal\Hook;
+use Centreon\Models\Module;
 
 /**
  * Module Abstract Install
@@ -126,14 +132,14 @@ abstract class Installer
     public function installDb($installDefault = true)
     {
         // Initialize configuration
-        $di = \Centreon\Internal\Di::getDefault();
+        $di = Di::getDefault();
         $config = $di->get('config');
         $dbName = $config->get('db_centreon', 'dbname');
         echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
-        \Centreon\Internal\Install\Db::update($dbName);
+        Db::update($dbName);
         echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
         if ($installDefault) {
-            \Centreon\Internal\Install\Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
+            Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
         }
     }
     
@@ -152,7 +158,7 @@ abstract class Installer
     {
         $formsFiles = $this->moduleDirectory . '/install/forms/*.xml';
         foreach (glob($formsFiles) as $xmlFile) {
-            \Centreon\Internal\Form\Installer::installFromXml($this->moduleId, $xmlFile);
+            Installer::installFromXml($this->moduleId, $xmlFile);
         }
     }
     
@@ -166,14 +172,14 @@ abstract class Installer
         if (file_exists($hooksFile)) {
             $hooks = json_decode(file_get_contents($hooksFile), true);
             foreach ($hooks as $hook) {
-                \Centreon\Internal\Hook::insertHook($hook['name'], $hook['description']);
+                Hook::insertHook($hook['name'], $hook['description']);
             }
         }
         
         if (file_exists($moduleHooksFile)) {
             $moduleHooks = json_decode(file_get_contents($moduleHooksFile), true);
             foreach ($moduleHooks as $moduleHook) {
-                \Centreon\Internal\Hook::register(
+                Hook::register(
                     $this->moduleId,
                     $moduleHook['name'],
                     $moduleHook['moduleHook'],
@@ -192,7 +198,7 @@ abstract class Installer
         $dependenciesSatisfied = true;
         $missingDependencies = array();
         foreach ($this->moduleInfo['dependencies'] as $module) {
-            if (!\Centreon\Internal\Module\Informations::checkDependency($module)) {
+            if (!Informations::checkDependency($module)) {
                 $dependenciesSatisfied = false;
                 $missingDependencies[] = $module['name'];
             }
@@ -210,7 +216,7 @@ abstract class Installer
      */
     public function preInstall()
     {
-        $newModuleId = \Centreon\Models\Module::getIdByParameter('name', $this->moduleInfo['shortname']);
+        $newModuleId = Module::getIdByParameter('name', $this->moduleInfo['shortname']);
         if (count($newModuleId) == 0) {
             $params = array(
                 'name' => $this->moduleInfo['shortname'],
@@ -222,8 +228,8 @@ abstract class Installer
                 'isactivated' => '0',
                 'isinstalled' => '0',
             );
-            \Centreon\Models\Module::insert($params);
-            $newModuleId = \Centreon\Models\Module::getIdByParameter('name', $this->moduleInfo['shortname']);
+            Module::insert($params);
+            $newModuleId = Module::getIdByParameter('name', $this->moduleInfo['shortname']);
             $this->moduleId = $newModuleId[0];
         } else {
             throw new \Exception("Module already installed");
@@ -246,7 +252,7 @@ abstract class Installer
             $isactivated = 2;
         }
         
-        \Centreon\Models\Module::update(
+        Module::update(
             $this->moduleId,
             array('isactivated' => $isactivated,'isinstalled' => $isinstalled)
         );
@@ -278,7 +284,7 @@ abstract class Installer
      */
     public function postRemove()
     {
-        \Centreon\Models\Module::delete($this->moduleId);
+        Module::delete($this->moduleId);
     }
     
     /**
@@ -290,7 +296,7 @@ abstract class Installer
         if (file_exists($moduleHooksFile)) {
             $moduleHooks = json_decode(file_get_contents($moduleHooksFile), true);
             foreach ($moduleHooks as $moduleHook) {
-                \Centreon\Internal\Hook::unregister(
+                Hook::unregister(
                     $this->moduleId,
                     $moduleHook['name'],
                     $moduleHook['moduleHook']
@@ -314,7 +320,7 @@ abstract class Installer
                 $menu['parent'] = $parent;
             }
             $menu['module'] = $moduleId;
-            \Centreon\Internal\Module\Informations::setMenu($menu);
+            Informations::setMenu($menu);
             if (isset($menu['menus']) && count($menu['menus'])) {
                 self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
             }

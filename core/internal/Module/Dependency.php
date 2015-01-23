@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -35,6 +34,8 @@
  */
 
 namespace Centreon\Internal\Module;
+
+use Centreon\Internal\Utils\Dependency\Graph;
 
 /**
  * Dependencies resolver for entreon modules
@@ -80,7 +81,7 @@ class Dependency
             $this->modules[$n] = $module['infos']['dependencies'];
         }
         $this->moduleNameList = array_keys($this->modules);
-        $this->dependencyGraph = new \Centreon\Internal\Utils\Dependency\Graph();
+        $this->dependencyGraph = new Graph();
         $this->buildDependenciesGraph();
     }
     

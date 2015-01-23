@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
+
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -73,7 +76,7 @@ abstract class Customobject
                 if (strstr(strtolower($validator['validator_action']), 'jquery') !== false) {
 
                 } else {
-                    $validatorRoute = \Centreon\Internal\Di::getDefault()
+                    $validatorRoute = Di::getDefault()
                         ->get('router')
                         ->getPathFor($validator['validator_action']);
 

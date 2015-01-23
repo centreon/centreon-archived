@@ -32,7 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
+
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@merethis.com>
@@ -99,7 +102,7 @@ class Email extends Customobject
     {
         $validations = parent::addValidation($element);
         
-        $validationUrl = \Centreon\Internal\Di::getDefault()
+        $validationUrl = Di::getDefault()
                             ->get('router')
                             ->getPathFor('/validator/email');
         
