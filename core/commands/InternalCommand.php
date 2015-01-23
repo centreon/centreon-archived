@@ -39,7 +39,6 @@ use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Install\Install;
 use Centreon\Internal\Install\Upgrade;
 use Centreon\Internal\Install\Migrate;
-use Centreon\Internal\Install\Install;
 
 /**
  * Command Line for Centreon Internal actions
