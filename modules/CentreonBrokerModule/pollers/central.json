@@ -68,9 +68,14 @@
                         "path" : "%global_broker_data_directory%/central-sql.failover"
                       },
                       {
-                        "type": "local_client",
+                        "type": "ipv4",
                         "name": "central-rrd",
-                        "path": "%global_broker_data_directory%/central-rrd.pipe",
+                        "port": "5670",
+                        "host": "localhost",
+                        "protocol": "bbdo",
+                        "tls": "no",
+                        "negociation": "yes",
+                        "compression": "no",
                         "failover": "failover-central-rrd"
                       },
                       {
@@ -98,9 +103,13 @@
                     },
                     "input": [
                       {
-                        "type": "local_server",
+                        "type": "ipv4",
                         "name": "central-rrd",
-                        "path": "%global_broker_data_directory%/central-rrd.pipe"
+                        "port": "5670",
+                        "protocol": "bbdo",
+                        "tls": "auto",
+                        "negociation": "yes",
+                        "compression": "auto"
                       }
                     ],
                     "output": [

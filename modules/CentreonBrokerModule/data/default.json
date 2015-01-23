@@ -24,16 +24,6 @@
         "max_size": 200000000,
         "protocol": "bbdo"
       },
-      "local_client": {
-        "one_peer_retention_mode": "no",
-        "protocol": "bbdo",
-        "negociation": "yes"
-      },
-      "local_server": {
-        "one_peer_retention_mode": "no",
-        "protocol": "bbdo",
-        "negociation": "yes"
-      },
       "rrd": {
         "metrics_path": "%global_rrd_metrics%",
         "status_path": "%global_rrd_status%",
@@ -86,16 +76,6 @@
       "file": {
         "max_size": 200000000,
         "protocol": "bbdo"
-      },
-      "local_client": {
-        "one_peer_retention_mode": "no",
-        "protocol": "bbdo",
-        "negociation": "yes"
-      },
-      "local_server": {
-        "one_peer_retention_mode": "no",
-        "protocol": "bbdo",
-        "negociation": "yes"
       },
       "rrd": {
         "metrics_path": "%global_rrd_metrics%",
