@@ -36,11 +36,11 @@
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Di;
-use CentreonAdministration\Controllers\ObjectAbstract;
 use CentreonAdministration\Models\Domain;
 use Centreon\Models\Image;
+use Centreon\Controllers\FormController;
 
-class DomainController extends ObjectAbstract
+class DomainController extends FormController
 {
     protected $objectDisplayName = 'Domain';
     public static $objectName = 'domain';

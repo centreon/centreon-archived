@@ -35,7 +35,6 @@
 
 namespace CentreonAdministration\Controllers;
 
-use CentreonAdministration\Controllers\ObjectAbstract;
 use Centreon\Controllers\FormController;
 
 class LanguageController extends FormController
