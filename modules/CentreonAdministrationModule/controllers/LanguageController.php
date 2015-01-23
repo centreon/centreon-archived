@@ -36,8 +36,9 @@
 namespace CentreonAdministration\Controllers;
 
 use CentreonAdministration\Controllers\ObjectAbstract;
+use Centreon\Controllers\FormController;
 
-class LanguageController extends ObjectAbstract
+class LanguageController extends FormController
 {
     protected $objectDisplayName = 'Language';
     public static $objectName = 'language';
