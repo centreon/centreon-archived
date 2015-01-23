@@ -36,6 +36,7 @@
 namespace Centreon\Internal\Form;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Form;
 
 /**
  * Manage wizard for object
