@@ -68,7 +68,7 @@ abstract class Repository extends FormRepository
         $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
         $name = $name[$objClass::getUniqueLabelField()];
         /* Add change log */
-        if (isset($_SESSION['user'])) {
+        /*if (isset($_SESSION['user'])) {
             AuditlogRepository::addLog(
                 $actionList[$action],
                 static::$objectName,
@@ -76,7 +76,7 @@ abstract class Repository extends FormRepository
                 $name,
                 array()
             );
-        }
+        }*/
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class Repository extends FormRepository
         $objClass = static::$objectClass;
         $name = $objClass::getParameters($id, $objClass::getUniqueLabelField());
         $name = $name[$objClass::getUniqueLabelField()];
-        if (isset($_SESSION['user'])) {
+        /*if (isset($_SESSION['user'])) {
             AuditlogRepository::addLog(
                 $actionList[$action],
                 static::$objectName,
@@ -116,7 +116,7 @@ abstract class Repository extends FormRepository
                 $name,
                 $params
             );
-        }
+        }*/
     }
 
     /**
