@@ -1,6 +1,6 @@
 <li>
     <a class="accordion-toggle collapsed">
-        <i></i>
+        <i class="fa fa-bookmark"></i>
         <span>{t}Bookmarked views{/t}</span>
     </a>
     <ul class="nav submenu collapse in" style="height: auto;">
@@ -17,7 +17,7 @@
 </li>
 <li>
     <a class="accordion-toggle collapsed">
-        <i></i>
+        <i class="fa fa-users"></i>
         <span>{t}Public views{/t}</span>
     </a>
     <ul class="nav submenu collapse in" style="height: auto;">
