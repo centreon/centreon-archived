@@ -296,7 +296,7 @@ CREATE TABLE `auth_ressource_host` (
 CREATE TABLE `auth_ressource_info` (
   `ar_id` int(11) NOT NULL,
   `ari_name` varchar(100) NOT NULL,
-  `ari_value` varchar(255) NOT NULL,
+  `ari_value` varchar(1024) NOT NULL,
   PRIMARY KEY (`ar_id`,`ari_name`),
   CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
