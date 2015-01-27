@@ -6,6 +6,8 @@
         <column name="route" phpName="Route" type="VARCHAR" size="255" required="true"/>
         <column name="label" phpName="Label" type="VARCHAR" size="255" required="true"/>
         <column name="searchText" phpName="Search" type="LONGVARCHAR" required="true"/>
+        <column name="is_bookmarked" phpName="isBookmarked" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="is_always_visible" phpName="isAlwaysVisible" type="TINYINT" required="true" defaultValue="0"/>
         <unique name="searches_idx01">
             <unique-column name="user_id"/>
             <unique-column name="label"/>

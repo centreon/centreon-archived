@@ -40,7 +40,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Form;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

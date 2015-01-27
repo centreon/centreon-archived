@@ -42,7 +42,7 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Model for domain
  *
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  */
 class Search extends CentreonBaseModel
 {

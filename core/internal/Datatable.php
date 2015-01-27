@@ -37,7 +37,7 @@
 namespace Centreon\Internal;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

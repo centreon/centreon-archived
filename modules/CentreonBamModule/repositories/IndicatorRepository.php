@@ -38,7 +38,7 @@ namespace CentreonBam\Repository;
 use Centreon\Repository\FormRepository;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package CentreonBam
  * @subpackage Repository
  */

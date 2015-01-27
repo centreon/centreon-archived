@@ -40,7 +40,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Session;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */
@@ -64,7 +64,7 @@ class SearchRepository
      * @param type $label
      * @param type $searchText
      */
-    public static function saveSearch($route, $label, $searchText)
+    public static function saveSearch($route, $label, $searchText, $bookmark = 0)
     {
         $searchId = Search::getIdByParameter(
             'route',
@@ -81,7 +81,8 @@ class SearchRepository
                 Search::update(
                     $searchId[0],
                     array(
-                        'searchText' => $searchText
+                        'searchText' => $searchText,
+                        'is_bookmarked' => $bookmark
                     )
                 );
             }
@@ -91,7 +92,8 @@ class SearchRepository
                     'user_id' => $_SESSION['user']->getId(),
                     'label' => $label,
                     'route' => $route,
-                    'searchText' => $searchText
+                    'searchText' => $searchText,
+                    'is_bookmarked' => $bookmark
                 )
             );
         }
@@ -171,5 +173,24 @@ class SearchRepository
             );
         }
         return $finalList;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public static function getBookmark()
+    {
+        $bookmarkList = Search::getList(
+            array('search_id', 'searchText', 'route', 'label', 'is_always_visible'),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('user_id' => $_SESSION['user']->getId(), 'is_bookmarked' => 1),
+            "AND"
+        );
+        
+        return $bookmarkList;
     }
 }

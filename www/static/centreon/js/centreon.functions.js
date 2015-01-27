@@ -163,6 +163,39 @@ function loadMenu(menuUrl, envId, subLevelId, childId) {
     });
 }
 
+/* Load menu */
+function loadBookmark(bookmarkUrl) {
+    $.ajax({
+        'url': bookmarkUrl,
+        'dataType': 'json',
+        'type': 'GET',
+        'success': function(data, textStatus, jqXHR) {
+            if (!data.success) {
+                // @todo flash error
+                return;
+            }
+            var $bookmarkUl = $('#bookmark1');
+            $bookmarkUl.html("");
+            generateBookmark($bookmarkUl, data.bookmark);
+        }
+    });
+}
+
+/* Generate bookmark */
+function generateBookmark($elParent, bookmark) {
+    var lenBookmark= bookmark.length;
+    
+    for (var i = 0; i < lenBookmark; i++) {
+        var $li = $('<li></li>');
+        $li.appendTo($elParent);
+        
+        var $link = $('<a></a>').attr('href', bookmark[i].route + '?search=' + encodeURIComponent(bookmark[i].searchText));
+        $link.append(" ");
+        $('<span></span>').text(bookmark[i].label).appendTo($link);
+        $li.append($link);
+    }
+}
+
 /* Add a 0 before if < 10 */
 function stringTwoDigit(val) {
     if (val < 10) {

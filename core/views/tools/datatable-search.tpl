@@ -6,7 +6,7 @@
                 {$searchAdv=true}
                 {if true }
                 <div class="col-md-8 form-group">
-                    <div class=" input-group">
+                    <div class="input-group">
                         <input type="text" name="advsearch" class="form-control">
                         <div class="input-group-btn">
                             <button class="btn btn-default" type="button" id="btnSearch"><i class="fa fa-search"></i></button>
@@ -46,12 +46,13 @@
                     <div class="row">
                       <div class="col-xs-11">
                         <div class=" input-group">
+                            <input type="text" name="filters" class="form-control">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="loadView" data-original-title="Load"><i class="fa fa-upload"></i></button>
                                 <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="saveView" data-original-title="Save"><i class="fa fa-floppy-o"></i></button>
                                 <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="deleteView" data-original-title="Delete"><i class="fa fa-trash-o"></i></button>
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="bookmarkView" data-original-title="Bookmark"><i id="bookmarkStatus" class="fa fa-star-o"></i></button>
                             </span>
-                            <input type="text" name="filters" class="form-control">
                         </div>
                       </div>
                       <div class="col-xs-1">

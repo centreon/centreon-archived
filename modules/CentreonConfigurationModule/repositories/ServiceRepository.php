@@ -41,7 +41,7 @@ use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\Repository;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */

@@ -25,6 +25,7 @@ ALTER TABLE cfg_widgets_preferences DROP FOREIGN KEY fk_widget_view_id;
 ALTER TABLE `cfg_options` ADD COLUMN `group` VARCHAR(255) NOT NULL DEFAULT 'default' FIRST;
 ALTER TABLE `cfg_widgets_models` DROP `url`;
 ALTER TABLE `cfg_custom_views_users_relations` DROP FOREIGN KEY fk_custom_views_usergroup_id;
+ALTER TABLE `cfg_custom_views_users_relations` DROP FOREIGN KEY fk_custom_views_user_id;
 ALTER TABLE `cfg_meta_services` DROP FOREIGN KEY cfg_meta_services_ibfk_3;
 ALTER TABLE `cfg_searches` DROP FOREIGN KEY search_ibfk_1;
 ALTER TABLE `cfg_tags` DROP FOREIGN KEY cfg_tags_fk_01;

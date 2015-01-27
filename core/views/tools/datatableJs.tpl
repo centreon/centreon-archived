@@ -673,6 +673,37 @@
             }
           });
         });
+        
+        /* Bookmark search action */
+        $( "#bookmarkView" ).on( "click", function( e ) {
+          alertClose();
+          if ( $( "input[name='filters']" ).val().trim() === "" ) {
+            alertMessage( "{t}The filters name must be set.{/t}", "alert-danger" );
+            return;
+          } else if ( $( "input[name='advsearch']" ).val().trim() === "" ) {
+            alertMessage( "{t}The search must be set.{/t}", "alert-danger" );
+            return;
+          }
+          $.ajax({
+            url: "{url_for url='/centreon-administration/search/bookmark'}",
+            dataType: "json",
+            method: "post",
+            data: {
+              route: "{$currentRoute}",
+              label: $( "input[name='filters']" ).val().trim(),
+              searchText: $( "input[name='advsearch']" ).val().trim()
+            },
+            success: function( data, textStatus, jqXHR ) {
+              if ( data.success ) {
+                alertMessage( "{t}Your search is bookmarked.{/t}", "alert-success", 3 );
+                $( "#bookmarkStatus" ).removeClass('fa-star-o');
+                $( "#bookmarkStatus" ).addClass('fa-star');
+              } else {
+                alertMessage( data.error, "alert-danger" );
+              }
+            }
+          });
+        });
 
         /* Delete search action */
         $( "#deleteView" ).on( "click", function( e ) {

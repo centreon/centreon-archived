@@ -41,7 +41,7 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Model for language
  *
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  */
 class Language extends CentreonBaseModel
 {

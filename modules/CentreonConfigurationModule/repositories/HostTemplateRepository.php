@@ -42,7 +42,7 @@ use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */

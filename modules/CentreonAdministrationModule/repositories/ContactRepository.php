@@ -40,7 +40,7 @@ use CentreonAdministration\Models\ContactInfo;
 use Centreon\Internal\Di;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */

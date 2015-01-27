@@ -37,7 +37,7 @@ namespace Centreon\Internal\Form\Custom;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

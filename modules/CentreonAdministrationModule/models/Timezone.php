@@ -41,7 +41,7 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Model for timezone
  *
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  */
 class Timezone extends CentreonBaseModel
 {

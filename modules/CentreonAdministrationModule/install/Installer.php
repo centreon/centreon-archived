@@ -37,6 +37,7 @@
 namespace CentreonAdministration\Install;
 
 use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 
 /**
@@ -75,7 +76,7 @@ class Installer extends ModuleInstaller
             $repository::setObjectClass($this->objectClass);
             $repository::setSaveEvents(false);
             $user = $repository::checkUser('admin', 'centreon');
-        } catch (Centreon\Internal\Exception $e) {
+        } catch (Exception $e) {
             $adminUser = array(
                 'firstname' => 'admin',
                 'lastname' => 'admin',

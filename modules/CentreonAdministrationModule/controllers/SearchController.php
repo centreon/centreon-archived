@@ -71,6 +71,35 @@ class SearchController extends Controller
     }
     
     /**
+     * Save search
+     *
+     * @method post
+     * @route /search/bookmark
+     */
+    public function bookmarkAction()
+    {
+        $saveSuccess = false;
+        $error = '';
+        
+        $params = $this->getParams();
+        
+        try {
+            SearchRepository::saveSearch($params['route'], $params['label'], $params['searchText'], 1);
+            $saveSuccess = true;
+        } catch(Exception $e) {
+            
+        }
+        
+        $this->router->response()->json(
+            array(
+                'success' => $saveSuccess,
+                'error' => $error
+            )
+        );
+        
+    }
+    
+    /**
      * Load search
      * 
      * @method post
@@ -154,5 +183,21 @@ class SearchController extends Controller
                 'error' => $error
             )
         );
+    }
+    
+    /**
+     * Save search
+     *
+     * @method get
+     * @route /search/getbookmark
+     */
+    public function getBookmarkAction()
+    {
+        $bookmarkList = SearchRepository::getBookmark();
+        $result = array(
+            'success' => 1,
+            'bookmark' => $bookmarkList
+        );
+        echo json_encode($result);
     }
 }

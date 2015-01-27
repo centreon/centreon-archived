@@ -36,7 +36,7 @@
 namespace Centreon\Internal\Form\Validator;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

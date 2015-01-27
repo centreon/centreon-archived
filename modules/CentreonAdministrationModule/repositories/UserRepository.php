@@ -44,7 +44,7 @@ use CentreonSecurity\Internal\Sso;
 use Centreon\Internal\Exception\Authentication\BadCredentialException;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */

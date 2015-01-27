@@ -46,7 +46,7 @@ use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Di;
 
 /**
- * @author Lionel Assepo <lassepo@merethis.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package CentreonRealtime
  * @subpackage Repository
  */
