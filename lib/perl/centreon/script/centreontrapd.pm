@@ -90,7 +90,12 @@ sub new {
        log_trap_db => 0,
        log_transaction_request_max => 500,
        log_transaction_timeout => 10,
-       log_purge_time => 600
+       log_purge_time => 600,
+       # unknown
+       unknown_trap_enable => 0,
+       unknown_trap_mode => 0,
+       unknown_trap_file => '/var/log/centreon/centreontrapd_unknown.log',
+       unknown_trap_facility => undef,
     );
    
     # save trap_data
@@ -189,6 +194,16 @@ sub init {
     } else {
         $self->{logger}->writeLogInfo("Can't find extra config file $self->{opt_extra}");
     }
+    
+    $self->{logger}->withpid(1);
+    if ($self->{centreontrapd_config}->{unknown_trap_enable} == 1) {
+        $self->{logger}->writeLogInfo("icii====\n");
+        $self->{logger_unknown} = centreon::common::logger->new();
+        if ($self->{centreontrapd_config}->{unknown_trap_mode} == 1) {
+            $self->{logger_unknown}->file_mode($self->{centreontrapd_config}->{unknown_trap_file});
+        }
+        $self->{logger_unknown}->severity("info");
+    }
 
     $self->{centreontrapd_config} = {%{$self->{centreontrapd_default_config}}, %centreontrapd_config};
     
@@ -269,8 +284,8 @@ sub handle_DIE {
     for (my $i = 0; $i < $self->{centreontrapd_config}->{timeout_end}; $i++) {
         $self->manage_pool(0);
         if (keys %{$self->{running_processes}} == 0 && $self->{logdb_pipes}{running} == 0) {
-                $self->{logger}->writeLogInfo("Main process exit.");
-                exit(0);
+            $self->{logger}->writeLogInfo("Main process exit.");
+            exit(0);
         }
         sleep 1;
     }
@@ -323,6 +338,9 @@ sub reload {
         $self->{logger}->file_mode($self->{logger}->{file_name});
     }
     $self->{logger}->redirect_output();
+    if ($self->{centreontrapd_config}->{unknown_trap_enable} == 1 && $self->{centreontrapd_config}->{unknown_trap_mode} == 1) {
+        $self->{logger_unknown}->file_mode($self->{centreontrapd_config}->{unknown_trap_file});
+    }
     
     centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb}, $self->{csdb});
     centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
@@ -1098,7 +1116,9 @@ sub run {
                 
                 if ($readtrap_result == 1) {
                     if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
+                                                               logger_unknown => $self->{logger_unknown},
                                                                config => $self->{centreontrapd_config},
+                                                               trap_data => $self->{trap_data},
                                                                oid2verif => ${$self->{trap_data}->{var}}[3],      
                                                                cdb => $self->{cdb},
                                                                last_cache_time => \$self->{last_cache_time},
