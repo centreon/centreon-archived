@@ -393,6 +393,36 @@ sub get_cache_oids {
     return 0;
 }
 
+sub display_unknown_traps {
+    my %options = @_;
+    
+    $options{logger}->writeLogInfo("Unknown trap");
+    if ($options{config}->{unknown_trap_enable} == 1) {
+        $options{logger_unknown}->writeLogInfo("Trap received from $options{trap_data}->{var}->[0]: $options{trap_data}->{var}->[3]");
+        my @labels = ('hostname                  ',
+                      'ip address                ',
+                      'uptime                    ',
+                      'trapname / OID            ', 
+                      'ip address from trap agent',
+                      'trap community string     ',
+                      'enterprise                ',
+                      'securityEngineID (not use)', 
+                      'securityName     (not use)',
+                      'contextEngineID  (not use)',
+                      'contextName      (not)    '); 
+        #print out all standard variables
+        for (my $i=0;$i <= $#{$options{trap_data}->{var}};$i++) {
+            $options{logger_unknown}->writeLogInfo("$labels[$i]: " . $options{trap_data}->{var}->[$i]);
+        }
+
+        #print out all enterprise specific variables
+        for (my $i=0;$i <= $#{$options{trap_data}->{entvar}};$i++) {
+            $options{logger_unknown}->writeLogInfo("Ent Value $i (\$" . ($i+1) . "): " . $options{trap_data}->{entvarname}->[$i] . "=" . $options{trap_data}->{entvar}->[$i]);
+        }
+        $options{logger_unknown}->writeLogInfo("");
+    }
+}
+
 sub check_known_trap {
     # logger => obj
     # config => hash
@@ -413,7 +443,8 @@ sub check_known_trap {
         if (defined(${$args{oids_cache}}->{$oid2verif})) {
             return 1;
         } else {
-            $args{logger}->writeLogInfo("Unknown trap");
+            display_unknown_traps(logger => $args{logger}, logger_unknown => $args{logger_unknown}, 
+                                  config => $args{config}, trap_data => $args{trap_data});
             return 0;
         }
     } else {
@@ -421,7 +452,8 @@ sub check_known_trap {
         my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps WHERE traps_oid = " . $args{cdb}->quote($oid2verif));
         return 0 if ($status == -1);
         if (!$sth->fetchrow_hashref()) {
-            $args{logger}->writeLogInfo("Unknown trap");
+            display_unknown_traps(logger => $args{logger}, logger_unknown => $args{logger_unknown},
+                                  config => $args{config}, trap_data => $args{trap_data});
             return 0;
         }
     }
@@ -810,7 +842,7 @@ sub readtrap {
 
     $args{logger}->writeLogDebug("Trap received from $tempvar[0]: $tempvar[5]");
 
-   if ($args{logger}->is_debug()) {
+    if ($args{logger}->is_debug()) {
         $args{logger}->writeLogDebug("0:		hostname");
         $args{logger}->writeLogDebug("1:		ip address");
         $args{logger}->writeLogDebug("2:		uptime");

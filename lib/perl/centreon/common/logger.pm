@@ -81,6 +81,8 @@ sub new {
        old_severity => 3,
        # 0 = stdout, 1 = file, 2 = syslog
        log_mode => 0,
+       # Output pid of current process
+       withpid => 0,
        # syslog
        log_facility => undef,
        log_option => LOG_PID,
@@ -145,31 +147,39 @@ sub redirect_output {
 sub set_default_severity {
     my $self = shift;
 
-    $self->{"severity"} = $self->{"old_severity"};
+    $self->{severity} = $self->{old_severity};
 }
 
 # Getter/Setter Log severity
 sub severity {
     my $self = shift;
     if (@_) {
-        my $save_severity = $self->{"severity"};
+        my $save_severity = $self->{severity};
         if ($_[0] =~ /^[012347]$/) {
-            $self->{"severity"} = $_[0];
+            $self->{severity} = $_[0];
         } elsif ($_[0] eq "none") {
-            $self->{"severity"} = 0;
+            $self->{severity} = 0;
         } elsif ($_[0] eq "error") {
-            $self->{"severity"} = 1;
+            $self->{severity} = 1;
         } elsif ($_[0] eq "info") {
-            $self->{"severity"} = 3;
+            $self->{severity} = 3;
         } elsif ($_[0] eq "debug") {
-            $self->{"severity"} = 7;
+            $self->{severity} = 7;
         } else {
             $self->writeLogError("Wrong severity value set.");
             return -1;
         }
-        $self->{"old_severity"} = $save_severity;
+        $self->{old_severity} = $save_severity;
     }
-    return $self->{"severity"};
+    return $self->{severity};
+}
+
+sub withpid {
+    my $self = shift;
+    if (@_) {
+        $self->{withpid} = $_[0];
+    }
+    return $self->{withpid};
 }
 
 sub get_date {
@@ -182,6 +192,7 @@ sub get_date {
 sub writeLog($$$%) {
     my ($self, $severity, $msg, %options) = @_;
     my $withdate = (defined $options{withdate}) ? $options{withdate} : 1;
+    $msg = ($self->{withpid} == 1) ? "$$ - $msg " : $msg;
     my $newmsg = ($withdate) 
       ? $self->get_date . " - $msg" : $msg;
 
