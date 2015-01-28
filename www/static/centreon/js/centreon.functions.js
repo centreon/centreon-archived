@@ -191,7 +191,6 @@ function generateBookmark($elParent, bookmark) {
         var $link = $('<a></a>').attr('href', bookmark[i].route + '?search=' + encodeURIComponent(bookmark[i].searchText));
         $link.append(" ");
         $('<span></span>').text(bookmark[i].label).appendTo($link);
-        $('<i></i>').addClass("fa fa-eye-slash").appendTo($link);
         $li.append($link);
     }
 }

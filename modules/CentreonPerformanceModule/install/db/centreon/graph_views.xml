@@ -4,9 +4,9 @@
         <column name="graph_view_id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true" />
         <column name="name" type="VARCHAR" size="255" required="true" />
         <column name="privacy" type="INTEGER" size="1" required="true" defaultValue="0" />
-        <column name="owner_id" type="INTEGER" required="true" />
-        <foreign-key foreignTable="cfg_contacts" name="graph_views_fk_1" onDelete="CASCADE">
-            <reference local="owner_id" foreign="contact_id" />
+        <column name="owner_id" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true" />
+        <foreign-key foreignTable="cfg_users" name="graph_views_fk_1" onDelete="CASCADE">
+            <reference local="owner_id" foreign="user_id" />
         </foreign-key>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
