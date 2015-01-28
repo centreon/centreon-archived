@@ -296,7 +296,7 @@ CREATE TABLE `auth_ressource_host` (
 CREATE TABLE `auth_ressource_info` (
   `ar_id` int(11) NOT NULL,
   `ari_name` varchar(100) NOT NULL,
-  `ari_value` varchar(255) NOT NULL,
+  `ari_value` varchar(1024) NOT NULL,
   PRIMARY KEY (`ar_id`,`ari_name`),
   CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1398,9 +1398,9 @@ CREATE TABLE `escalation_servicegroup_relation` (
 CREATE TABLE `extended_host_information` (
   `ehi_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_host_id` int(11) DEFAULT NULL,
-  `ehi_notes` varchar(200) DEFAULT NULL,
-  `ehi_notes_url` varchar(200) DEFAULT NULL,
-  `ehi_action_url` varchar(200) DEFAULT NULL,
+  `ehi_notes` TEXT DEFAULT NULL,
+  `ehi_notes_url` TEXT DEFAULT NULL,
+  `ehi_action_url` TEXT DEFAULT NULL,
   `ehi_icon_image` int(11) DEFAULT NULL,
   `ehi_icon_image_alt` varchar(200) DEFAULT NULL,
   `ehi_vrml_image` int(11) DEFAULT NULL,
@@ -1424,9 +1424,9 @@ CREATE TABLE `extended_host_information` (
 CREATE TABLE `extended_service_information` (
   `esi_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_service_id` int(11) DEFAULT NULL,
-  `esi_notes` varchar(200) DEFAULT NULL,
-  `esi_notes_url` varchar(200) DEFAULT NULL,
-  `esi_action_url` varchar(200) DEFAULT NULL,
+  `esi_notes` TEXT DEFAULT NULL,
+  `esi_notes_url` TEXT DEFAULT NULL,
+  `esi_action_url` TEXT DEFAULT NULL,
   `esi_icon_image` int(11) DEFAULT NULL,
   `esi_icon_image_alt` varchar(200) DEFAULT NULL,
   `graph_id` int(11) DEFAULT NULL,
