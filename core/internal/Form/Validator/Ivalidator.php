@@ -36,7 +36,7 @@
 namespace Centreon\Internal\Form\Validator;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

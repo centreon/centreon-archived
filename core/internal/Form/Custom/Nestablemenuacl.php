@@ -39,7 +39,7 @@ use Centreon\Internal\Di;
 use CentreonAdministration\Repository\AclmenuRepository;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

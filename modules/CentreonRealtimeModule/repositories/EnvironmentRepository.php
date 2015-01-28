@@ -40,7 +40,7 @@ use Centreon\Internal\Di;
 /**
  * Repository for environment status
  *
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @version 3.0.0
  */
 class EnvironmentRepository

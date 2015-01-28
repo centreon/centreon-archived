@@ -39,7 +39,7 @@ use Centreon\Internal\Di;
 /**
  * Handles audit logs
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  */
 class AuditlogRepository
 {

@@ -38,7 +38,7 @@ namespace CentreonConfiguration\Events;
 /**
  * Parameters for events centreon-configuration.broker.poller.conf
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  * @package Centreon
  * @subpackage CentreonConfiguration

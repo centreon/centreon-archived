@@ -41,7 +41,7 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Used for interacting with engine configuration objects
  *
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreo
  * @subpackage Engine
  * @version 3.0.0

@@ -42,7 +42,7 @@ use Centreon\Internal\Controller;
 /**
  * Controller for tag action
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  * @package Centreon
  * @subpackage CentreonAdministration

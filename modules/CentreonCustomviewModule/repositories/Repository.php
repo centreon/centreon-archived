@@ -39,7 +39,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Datatable;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Repository
  * @todo refactor, this class will extend the Core repository dedicated to datatable structures

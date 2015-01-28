@@ -42,7 +42,7 @@ use Centreon\Internal\Exception;
 /**
  * Factory for ConfigGenerate Engine
  *
- * @author Julien Mathis <jmathis@merethis.com>
+ * @author Julien Mathis <jmathis@centreon.com>
  * @version 3.0.0
  */
 

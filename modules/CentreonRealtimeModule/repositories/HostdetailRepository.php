@@ -40,7 +40,7 @@ use Centreon\Internal\Di;
 /**
  * Repository for host data
  *
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @version 3.0.0
  */
 class HostdetailRepository extends ObjectdetailRepository

@@ -39,7 +39,7 @@ namespace CentreonPerformance\Repository\Graph\Storage;
 /**
  * Abstract class for storage metrics
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  * @package Centreon
  */

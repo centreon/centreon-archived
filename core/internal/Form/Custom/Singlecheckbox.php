@@ -38,7 +38,7 @@ namespace Centreon\Internal\Form\Custom;
  * Html Checkobox element
  * Checkbox with no label
  * 
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

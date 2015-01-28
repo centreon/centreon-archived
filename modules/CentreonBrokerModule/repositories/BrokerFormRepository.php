@@ -44,7 +44,7 @@ use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateMana
 use Centreon\Internal\Form;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package CentreonEngine
  * @subpackage Repository
  */

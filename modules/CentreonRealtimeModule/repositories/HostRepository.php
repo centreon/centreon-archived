@@ -41,7 +41,7 @@ use Centreon\Internal\Utils\Status as UtilStatus;
 use CentreonRealtime\Repository\Repository;
 
 /**
- * @author Julien Mathis <jmathis@merethis.com>
+ * @author Julien Mathis <jmathis@centreon.com>
  * @package CentreonRealtime
  * @subpackage Repository
  */

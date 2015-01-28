@@ -42,7 +42,7 @@ use Centreon\Internal\Exception;
  * Abstact class for configuration repository
  *
  * @version 3.0.0
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  */
 abstract class FormRepository
 {

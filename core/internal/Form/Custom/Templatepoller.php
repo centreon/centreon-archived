@@ -35,7 +35,7 @@
 namespace Centreon\Internal\Form\Custom;
 
 /**
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

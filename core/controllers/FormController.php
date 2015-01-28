@@ -46,7 +46,7 @@ use Centreon\Internal\Exception;
  * Abstact class for configuration controller
  *
  * @version 3.0.0
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  */
 abstract class FormController extends ListController
 {

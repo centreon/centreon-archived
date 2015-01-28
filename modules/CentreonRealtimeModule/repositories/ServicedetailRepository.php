@@ -41,7 +41,7 @@ use Centreon\Internal\Exception;
 /**
  * Repository for service data
  *
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @version 3.0.0
  */
 class ServicedetailRepository extends ObjectdetailRepository

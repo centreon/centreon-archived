@@ -41,7 +41,7 @@ use CentreonConfiguration\Events\CopyFiles;
 /**
  * Factory for ConfigTest Engine
  *
- * @author Julien Mathis <jmathis@merethis.com>
+ * @author Julien Mathis <jmathis@centreon.com>
  * @version 3.0.0
  */
 

@@ -38,7 +38,7 @@ namespace CentreonMain\Hooks;
 /**
  * Hook for synchronize the interface clock with the server time
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  * @package Centreon
  * @subpackage CentreonMain

@@ -43,7 +43,7 @@ use CentreonConfiguration\Repository\ServicetemplateRepository as Servicetemplat
 use CentreonConfiguration\Repository\CustomMacroRepository;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */

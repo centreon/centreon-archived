@@ -40,7 +40,7 @@ use Centreon\Repository\FormRepository;
 use Centreon\Internal\Di;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package CentreonEngine
  * @subpackage Repository
  */

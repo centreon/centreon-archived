@@ -41,7 +41,7 @@ use Centreon\Internal\Form;
 /**
  * Manage wizard for object
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

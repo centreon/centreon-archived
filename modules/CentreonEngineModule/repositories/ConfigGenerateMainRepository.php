@@ -44,7 +44,7 @@ use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateMana
 /**
  * Factory for ConfigGenerate Engine For centengine.cfg
  *
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @version 3.0.0
  */
 

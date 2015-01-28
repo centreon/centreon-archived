@@ -42,7 +42,7 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Model for organization
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  */
 class Organization extends CentreonBaseModel
 {

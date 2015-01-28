@@ -43,7 +43,7 @@ use CentreonAdministration\Repository\AuditlogRepository;
  * Abstact class for administration repository
  *
  * @version 3.0.0
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  */
 abstract class Repository
 {

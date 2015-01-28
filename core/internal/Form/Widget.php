@@ -43,7 +43,7 @@ use Centreon\Internal\Form;
 /**
  * Manage widget settings
  *
- * @author Sylvetre Ho <sho@merethis.com>
+ * @author Sylvetre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

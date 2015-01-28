@@ -40,7 +40,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Module\Informations;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */

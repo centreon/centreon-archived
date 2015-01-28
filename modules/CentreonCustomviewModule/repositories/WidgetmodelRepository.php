@@ -40,7 +40,7 @@ use Centreon\Internal\Datatable;
 use CentreonCustomview\Repository\Repository;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package CentreonCustomview
  * @subpackage Repository
  */

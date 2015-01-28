@@ -40,7 +40,7 @@ use CentreonMain\Events\Status as StatusEvent;
 /**
  * Event to add sync clock to status
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  * @package Centreon
  * @subpackage CentreonMain

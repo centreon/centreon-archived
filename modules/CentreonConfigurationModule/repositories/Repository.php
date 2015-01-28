@@ -44,7 +44,7 @@ use CentreonConfiguration\Repository\AuditlogRepository;
  * Abstact class for configuration repository
  *
  * @version 3.0.0
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  */
 abstract class Repository extends FormRepository
 {

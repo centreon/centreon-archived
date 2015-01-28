@@ -40,7 +40,7 @@ use CentreonAdministration\Repository\OptionRepository;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package CentreonEngine
  * @subpackage Repository
  */

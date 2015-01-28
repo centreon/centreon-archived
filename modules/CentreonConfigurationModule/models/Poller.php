@@ -41,7 +41,7 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Used for interacting with pollers
  *
- * @author Maximilien Bersoult <mbersoult@merethis.com>
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @package Centreon
  * @subpackage Configuration
  * @version 3.0.0

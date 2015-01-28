@@ -43,7 +43,7 @@ use CentreonConfiguration\Repository\HostRepository as HostConfigurationReposito
 use CentreonConfiguration\Repository\CustomMacroRepository;
 
 /**
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */

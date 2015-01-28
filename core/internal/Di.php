@@ -47,7 +47,7 @@ namespace Centreon\Internal;
  * 
  * $test = $di->get('test');
  *
- * @authors Maximilien Bersoult <mbersoult@merethis.com>
+ * @authors Maximilien Bersoult <mbersoult@centreon.com>
  * @package Centreon
  * @subpackage Core
  */

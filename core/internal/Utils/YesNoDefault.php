@@ -37,7 +37,7 @@ namespace Centreon\Internal\Utils;
 /**
  * Utils class 
  *
- * @author Sylvestre Ho <sho@merethis.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Utils
  */
