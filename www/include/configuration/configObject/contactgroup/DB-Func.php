@@ -208,7 +208,7 @@
 	}
 
 	function updateContactGroupContacts($cg_id, $ret = array()) {
-		global $form, $pearDB;
+		global $centreon, $form, $pearDB;
 		if (!$cg_id)
 			return;
 
@@ -224,6 +224,8 @@
 			$rq = "INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) ";
 			$rq .= "VALUES ('".$ret[$i]."', '".$cg_id."')";
 			$DBRESULT = $pearDB->query($rq);
+			
+			CentreonCustomView::syncContactGroupCustomView($centreon, $pearDB, $ret[$i]);
 		}
 	}
 

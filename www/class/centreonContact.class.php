@@ -81,4 +81,25 @@ class CentreonContact
         }
         return $arr;
     }
+
+    /**
+     * Get contactgroup from contact id
+     *
+     * @param CentreonDB $db
+     * @param int $contactId
+     */
+    public static function getContactGroupsFromContact($db, $contactId)
+    {
+        $sql = "SELECT cg_id, cg_name
+            FROM contactgroup_contact_relation r, contactgroup cg 
+            WHERE cg.cg_id = r.contactgroup_cg_id
+            AND r.contact_contact_id = " . $db->escape($contactId);
+        $stmt = $db->query($sql);
+
+        $cgs = array();
+        while ($row = $stmt->fetchRow()) {
+            $cgs[$row['cg_id']] = $row['cg_name'];
+        }
+        return $cgs;
+    }
 }
