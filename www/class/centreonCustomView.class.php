@@ -58,11 +58,16 @@ class CentreonCustomView
      *
      * @param Centreon $centreon
      * @param CentreonDB $db
+     * @param int $userId
      * @return void
      */
-    public function __construct($centreon, $db)
+    public function __construct($centreon, $db, $userId = null)
     {
-        $this->userId = $centreon->user->user_id;
+        if (is_null($userId)) {
+            $this->userId = $centreon->user->user_id;
+        } else {
+            $this->userId = $userId;
+        }
         $this->db = $db;
         $this->userGroups = array();
         $query = "SELECT contactgroup_cg_id
@@ -335,23 +340,31 @@ class CentreonCustomView
      * Sync custom view with locked users
      *
      * @param int custom_view_id
+     * @param int $userId
      * @return void
      */
-    public function syncCustomView($custom_view_id) {
+    public function syncCustomView($custom_view_id, $userId = null)
+    {
         if (!$this->checkOwnership($custom_view_id)) {
-	    return null;
-	}
-        $sql = "SELECT user_id, usergroup_id FROM custom_view_user_relation 
-		WHERE custom_view_id = ".$this->db->escape($custom_view_id)."
-		AND locked = 1";
-	$res = $this->db->query($sql);
-	while ($row = $res->fetchRow()) {
-            $this->copyPreferences(
-		    $custom_view_id, 
-		    $row['user_id'], 
-		    $row['usergroup_id']
-	    );
-	}
+	        return null;
+        }
+
+        if (!is_null($userId)) {
+            $this->copyPreferences($custom_view_id, $userId);
+        } else {
+            $sql = "SELECT user_id, usergroup_id FROM custom_view_user_relation 
+	        	WHERE custom_view_id = ".$this->db->escape($custom_view_id)."
+		        AND locked = 1";
+            $res = $this->db->query($sql);
+
+	        while ($row = $res->fetchRow()) {
+                $this->copyPreferences(
+		            $custom_view_id, 
+    		        $row['user_id'], 
+    	    	    $row['usergroup_id']
+	            );
+            }
+        }
     }
 
     /**
@@ -363,6 +376,7 @@ class CentreonCustomView
     public function shareCustomView($params)
     {
         if ($this->checkPermission($params['custom_view_id'])) {
+            // share with users
             $str = "";
             if (isset($params['user_id']) && is_array($params['user_id'])) {
                 foreach ($params['user_id'] as $userId) {
@@ -376,6 +390,8 @@ class CentreonCustomView
             if ($str != "") {
                 $this->db->query("REPLACE INTO custom_view_user_relation (custom_view_id, user_id, locked) VALUES $str");
             }
+
+            // share with user groups
             $str = "";
             if (isset($params['usergroup_id']) && is_array($params['usergroup_id'])) {
                 foreach ($params['usergroup_id'] as $usergroupId) {
@@ -489,5 +505,33 @@ class CentreonCustomView
         		  WHERE usergroup_id = " . $this->db->escape($params['usergroup_id']) . "
         		  AND custom_view_id = " . $this->db->escape($params['custom_view_id']);
         $this->db->query($query);
+    }
+
+    /**
+     * This is called when a contact is added into a contact group
+     *
+     * @param CentreonDB $db
+     * @param int $contactId
+     */
+    public static function syncContactGroupCustomView($centreon, $db, $contactId)
+    {
+        $contactgroups = CentreonContact::getContactGroupsFromContact($db, $contactId);
+        if (!count($contactgroups)) {
+            return null;
+        }
+        $cgString = implode(',', array_keys($contactgroups));
+
+        $sql = "SELECT c1.custom_view_id, c1.user_id as owner_id, c2.usergroup_id 
+            FROM custom_view_user_relation c1, custom_view_user_relation c2  
+            WHERE c1.custom_view_id = c2.custom_view_id 
+            AND c1.is_owner = 1 
+            AND c2.usergroup_id in ($cgString) 
+            GROUP BY custom_view_id";
+        $stmt = $db->query($sql);
+        while ($row = $stmt->fetchRow()) {
+            $customView = new CentreonCustomView($centreon, $db, $row['owner_id']);
+            $customView->syncCustomView($row['custom_view_id'], $contactId);
+            unset($customView);
+        }
     }
 }

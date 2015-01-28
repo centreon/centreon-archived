@@ -851,7 +851,7 @@
 	}
 
 	function updateContactContactGroup($contact_id = null, $ret = array())	{
-		global $form, $pearDB;
+		global $centreon, $form, $pearDB;
 		if (!$contact_id)
 			return;
 		$rq = "DELETE FROM contactgroup_contact_relation
@@ -873,13 +873,14 @@
 			$rq .= "('".$contact_id."', '".$ret[$i]."')";
 			$DBRESULT = $pearDB->query($rq);
 		}
+		CentreonCustomView::syncContactGroupCustomView($centreon, $pearDB, $contact_id);
 	}
 
 	/*
 	 * For massive change. We just add the new list if the elem doesn't exist yet
 	 */
 	function updateContactContactGroup_MC($contact_id = null, $ret = array())	{
-		global $form, $pearDB;
+		global $centreon, $form, $pearDB;
 		if (!$contact_id)
 			return;
 		$rq = "SELECT * FROM contactgroup_contact_relation ";
@@ -899,6 +900,7 @@
 				$DBRESULT = $pearDB->query($rq);
 			}
 		}
+		CentreonCustomView::syncContactGroupCustomView($centreon, $pearDB, $contact_id);
 	}
 
 	function insertLdapContactInDB($tmpContacts = array())	{
