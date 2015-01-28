@@ -160,7 +160,8 @@ class GraphController extends Controller
                 $viewId = GraphView::add($viewName, $viewPrivacy);
             } catch (\Exception $e) {
                 $router->response()->json(array(
-                    'success' => false
+                    'success' => false,
+                    'error' => $e->getMessage()
                 ));
                 return;
             }
@@ -169,7 +170,8 @@ class GraphController extends Controller
             GraphView::update($viewId, $listGraph);
         } catch (\Exception $e) {
             $router->response()->json(array(
-                'success' => false
+                'success' => false,
+                'error' => $e->getMessage()
             ));
             return;
         }
