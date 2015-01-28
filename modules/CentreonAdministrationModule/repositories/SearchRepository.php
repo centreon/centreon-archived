@@ -161,7 +161,7 @@ class SearchRepository
             0,
             null,
             "ASC",
-            array('route' => $route, 'label' => $searchStr.'%'),
+            array('user_id' => $_SESSION['user']->getId(), 'route' => $route, 'label' => $searchStr.'%'),
             "AND"
         );
 

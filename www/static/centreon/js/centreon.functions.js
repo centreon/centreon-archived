@@ -174,7 +174,7 @@ function loadBookmark(bookmarkUrl) {
                 // @todo flash error
                 return;
             }
-            var $bookmarkUl = $('#bookmark1');
+            var $bookmarkUl = $('#myBookmark');
             $bookmarkUl.html("");
             generateBookmark($bookmarkUl, data.bookmark);
         }
@@ -188,10 +188,10 @@ function generateBookmark($elParent, bookmark) {
     for (var i = 0; i < lenBookmark; i++) {
         var $li = $('<li></li>');
         $li.appendTo($elParent);
-        
         var $link = $('<a></a>').attr('href', bookmark[i].route + '?search=' + encodeURIComponent(bookmark[i].searchText));
         $link.append(" ");
         $('<span></span>').text(bookmark[i].label).appendTo($link);
+        $('<i></i>').addClass("fa fa-eye-slash").appendTo($link);
         $li.append($link);
     }
 }

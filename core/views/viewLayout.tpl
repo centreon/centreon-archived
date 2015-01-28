@@ -6,12 +6,6 @@
     </ul>
   </nav>
   {hook name='displayLeftMenu' container='<nav><ul class="nav" id="hook-menu">[hook]</ul></nav>'}
-  <hr />
-  &nbsp;&nbsp;<i class="fa fa-star"></i> Bookmarks
-  <nav>
-    <ul class="nav" id="bookmark1">
-    </ul>
-  </nav>
   <div class="toggle-button">
     <a href="#"><i class="fa fa-angle-double-left"></i></a>
   </div>

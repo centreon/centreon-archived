@@ -20,6 +20,12 @@
       {environment}
       <div class="navbar-right">
         <ul class="nav navbar-nav navbar-left">
+            <li class="bookmark">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-star"></i>
+                </a>
+                <ul id="myBookmark" class="dropdown-menu"></ul>
+            </li>
           <li class="top-counter top-counter-host">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-desktop"></i>
