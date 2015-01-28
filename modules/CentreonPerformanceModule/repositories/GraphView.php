@@ -68,7 +68,7 @@ class GraphView
         $stmt->bindParam(':owner_id', $ownerId, \PDO::PARAM_INT);
         $stmt->execute();
         $stmt = $dbconn->prepare("SELECT graph_view_id
-            FROM graph_views
+            FROM cfg_graph_views
             WHERE name = :name
                 AND owner_id = :owner_id");
         $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
