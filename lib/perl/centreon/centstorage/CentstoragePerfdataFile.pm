@@ -54,7 +54,7 @@ sub new {
 sub compute {
     my $self = shift;
     $self->{filename} = shift;
-    my ($pool_pipes, $routing_services, $roundrobin_pool_current, $total_pool, $auto_duplicate, $duplicate_file) = @_;
+    my ($pool_pipes, $routing_services, $roundrobin_pool_current, $total_pool, $auto_duplicate, $duplicate_file, $file_error_time, $file_error_current) = @_;
     my $do_duplicate = 0;
     
     if (defined($auto_duplicate) && int($auto_duplicate) == 1 &&
@@ -65,8 +65,16 @@ sub compute {
             $do_duplicate = 1;
         }
     }
-    
+        
     if ($self->{filename} !~ /_read$/) {
+        if (! -f $self->{filename}) {
+            if (time() - $$file_error_current > $$file_error_time) {
+                $self->{logger}->writeLogError("No such file '" . $self->{filename} . "'");
+                $$file_error_current = time();
+            }
+            return -1;
+        }
+    
         if (!(File::Copy::move($self->{filename}, $self->{filename} . "_read"))) {
             $self->{logger}->writeLogError("Cannot move " . $self->{filename} . " file : $!");
             return -1;
@@ -82,6 +90,8 @@ sub compute {
             return -1;
         }
     }
+    
+    $$file_error_current = time();
 
     # Get offset if exist
     if (-e $self->{filename} . "_read.offset") {

@@ -74,6 +74,9 @@ sub new {
     %{$self->{fileno_save_read}} = ();
     $self->{centreon_db_centreon} = undef;
     $self->{centstorage_perfdata_file} = undef;
+    
+    $self->{file_error_time} = 300;
+    $self->{file_error_current} = time();
 
     # When you lost a pool: to say that a rebuild in progress
     $self->{rebuild_progress} = 0;
@@ -493,7 +496,8 @@ sub run {
         ###
         $self->{centstorage_perfdata_file} = centreon::centstorage::CentstoragePerfdataFile->new($self->{logger});
         $self->{centstorage_perfdata_file}->compute($main_perfdata, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs},
-                                                    $self->{centstorage_config}->{auto_duplicate}, $self->{centstorage_config}->{duplicate_file});
+                                                    $self->{centstorage_config}->{auto_duplicate}, $self->{centstorage_config}->{duplicate_file},
+                                                    \$self->{file_error_time}, \$self->{file_error_current});
 
         ###
         # Check response from rebuild
