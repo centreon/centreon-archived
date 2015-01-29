@@ -644,13 +644,15 @@ class CustomviewController extends Controller
      */
     protected function getJsInitGrid($jsonPosition, $jsonWidgets)
     {
+        $maxCol = 14;
+
         return 'var jsonPosition = '.$jsonPosition.'
                 var widgets = '.$jsonWidgets.'
-                var w = Math.ceil($(".content").width() / 6.5);
+                var w = Math.ceil($(".content").width() / '.$maxCol.');
                 var h = 220;
         
                 var gridster = $(".gridster ul").gridster({
-                    max_cols: 6,
+                    max_cols: '.$maxCol.',
                     widget_margins: [3, 3],
                     widget_base_dimensions: [w, h],
                     draggable: {
