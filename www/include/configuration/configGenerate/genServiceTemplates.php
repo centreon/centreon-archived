@@ -261,12 +261,12 @@ while ($service = $DBRESULT->fetchRow()) {
                 if ($strTMPTemp != "") {
                     $strTMPTemp .= ",";
                 }
+                if ($service['cg_additive_inheritance']) {
+                    $strTMPTemp .= "+";
+                }
                 $strTMPTemp .= $cg_name;
             }
             if ($strTMPTemp) {
-                if ($service['cg_additive_inheritance']) {
-                    $strTMPTemp = "+".$strTMPTemp;
-                }
                 $strTMP .= print_line("contact_groups", str_replace(" ", "_", $strTMPTemp));
             }
         }
@@ -276,17 +276,20 @@ while ($service = $DBRESULT->fetchRow()) {
          */
         $DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id AND c.contact_activate = '1' AND c.contact_register = 1 ORDER BY `contact_name`");
         $contact = array();
-        $strTMPTemp = NULL;
+        $strTMPTemp = "";
         while ($contact = $DBRESULT2->fetchRow())	{
             if (isset($gbArr[0][$contact["contact_id"]])) {
-                $strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
+                if ($strTMPTemp) {
+                    $strTMPTemp .= ",";
+                }
+                if ($service['contact_additive_inheritance']) {
+                    $strTMPTemp .= "+";
+                }
+                $strTMPTemp .= $contact['contact_name'];
             }
         }
         $DBRESULT2->free();
         if ($strTMPTemp) {
-            if ($service['contact_additive_inheritance']) {
-                $strTMPTemp = "+".$strTMPTemp;
-            }
             $strTMP .= print_line("contacts", $strTMPTemp);
         }
         unset($contact);
