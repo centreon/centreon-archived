@@ -382,12 +382,12 @@ while ($host = $DBRESULT->fetchRow())	{
                 foreach ($cgCache[$host["host_id"]] as $cg) {
                     if ($strTemp != "")
                         $strTemp .= ",";
+                    if ($host['cg_additive_inheritance']) {
+                        $strTemp .= "+";
+                    }
                     $strTemp .= $cg;
                 }
                 if ($strTemp) {
-                    if ($host['cg_additive_inheritance']) {
-                        $strTemp = "+".$strTemp;
-                    }
                     $str .= print_line("contact_groups", str_replace(" ", "_", $strTemp));
                 }
                 unset($strTemp);
@@ -401,12 +401,12 @@ while ($host = $DBRESULT->fetchRow())	{
                 foreach ($cctCache[$host["host_id"]] as $contact) {
                     if ($strTemp != "")
                         $strTemp .= ",";
+                    if ($host['contact_additive_inheritance']) {
+                        $strTemp .= "+";
+                    }
                     $strTemp .= $contact;
                 }
                 if ($strTemp) {
-                    if ($host['contact_additive_inheritance']) {
-                        $strTemp = "+".$strTemp;
-                    }
                     $str .= print_line("contacts", $strTemp);
                 }
                 unset($strTemp);

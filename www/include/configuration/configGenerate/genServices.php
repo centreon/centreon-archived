@@ -364,12 +364,12 @@ if ($oreon->CentreonGMT->used() == 1) {
                         if ($strTMPTemp != "") {
                             $strTMPTemp .= ",";
                         }
+                        if ($service['cg_additive_inheritance']) {
+                            $strTMPTemp .= "+";
+                        }
                         $strTMPTemp .= $cg_name;
                     }
                     if ($strTMPTemp) {
-                        if ($service['cg_additive_inheritance']) {
-                            $strTMPTemp = "+".$strTMPTemp;
-                        }
                         $strTMP .= print_line("contact_groups", str_replace(" ", "_", $strTMPTemp));
                     }
                     unset($strTMPTemp);
@@ -388,12 +388,12 @@ if ($oreon->CentreonGMT->used() == 1) {
                         if ($strTMPTemp != "") {
                             $strTMPTemp .= ",";
                         }
+                        if ($service['contact_additive_inheritance']) {
+                            $strTMPTemp .= "+";
+                        }
                         $strTMPTemp .= $cct_name;
                     }
                     if ($strTMPTemp) {
-                        if ($service['contact_additive_inheritance']) {
-                            $strTMPTemp = "+".$strTMPTemp;
-                        }
                         $strTMP .= print_line("contacts", $strTMPTemp);
                     }
                     unset($strTMPTemp);
@@ -745,12 +745,12 @@ if ($oreon->CentreonGMT->used() == 1) {
                         if ($strTMPTemp != "") {
                             $strTMPTemp .= ",";
                         }
+                        if ($service['cg_additive_inheritance']) {
+                            $strTMPTemp .= "+";
+                        }
                         $strTMPTemp .= $cg_name;
                     }
                     if ($strTMPTemp) {
-                        if ($service['cg_additive_inheritance']) {
-                            $strTMPTemp = "+".$strTMPTemp;
-                        }
                         $strTMP .= print_line("contact_groups", str_replace(" ", "_", $strTMPTemp));
                     }
                     unset($strTMPTemp);
@@ -769,12 +769,12 @@ if ($oreon->CentreonGMT->used() == 1) {
                         if ($strTMPTemp != "") {
                             $strTMPTemp .= ",";
                         }
+                        if ($service['contact_additive_inheritance']) {
+                            $strTMPTemp .= "+";
+                        }
                         $strTMPTemp .= $cct_name;
                     }
                     if ($strTMPTemp) {
-                        if ($service['contact_additive_inheritance']) {
-                            $strTMPTemp = "+".$strTMPTemp;
-                        }
                         $strTMP .= print_line("contacts", $strTMPTemp);
                     }
                     unset($strTMPTemp);
