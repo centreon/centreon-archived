@@ -86,27 +86,30 @@ while ($row = $DBRES->fetchRow()) {
 
 
 if (isset($_POST["searchO"])) {
-    $searchO = $_POST["searchO"];
-} elseif (isset($_GET["searchO"])) {
-    $searchO = $_GET["searchO"];
+  $searchO = $_POST["searchO"];
+  $_SESSION['searchO'] = $searchO;
+} elseif (isset($_SESSION["searchO"])) {
+    $searchO = $_SESSION["searchO"];
 } else {
     $searchO = NULL;
 }
 
 if (isset($_POST["searchU"])) {
-    $searchU = $_POST["searchU"];
-} elseif (isset($_GET["searchU"])) {
-    $searchU = $_GET["searchU"];
+  $searchU = $_POST["searchU"];
+  $_SESSION['searchU'] = $searchU;
+} elseif (isset($_SESSION["searchU"])) {
+  $searchU = $_SESSION["searchU"];
 } else {
-    $searchU = NULL;
+  $searchU = NULL;
 }
 
 if (isset($_POST["otype"])) {
-    $otype = $_POST["otype"];
-} elseif (isset($_GET["otype"])) {
-    $otype = $_GET["otype"];
+  $otype = $_POST["otype"];
+  $_SESSION['otype'] = $otype;
+} elseif (isset($_SESSION["otype"])) {
+  $otype = $_SESSION["otype"];
 } else {
-    $otype = NULL;
+  $otype = NULL;
 }
 
 /*
