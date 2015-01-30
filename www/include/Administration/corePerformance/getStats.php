@@ -76,7 +76,7 @@
 	 */
 
 	function escape_command($command) {
-		return preg_replace("/(\\\$|`)/", "", $command);
+		return preg_replace("/[\\\$|`]/", "", $command);
 	}
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
