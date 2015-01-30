@@ -120,7 +120,7 @@ try {
     $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, severity_id, traps_submit_result_enable, 
         traps_execution_command, traps_reschedule_svc_enable, traps_execution_command_enable, traps_args, 
         traps_routing_mode, traps_routing_value, traps_routing_filter_services, traps_log, traps_name, traps_exec_method, traps_downtime, traps_routing_filter_services, traps_advanced_treatment, traps_advanced_treatment_default,
-        traps_timeout, traps_exec_interval, traps_exec_interval_type, manufacturer_id 
+        traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type, manufacturer_id 
         FROM traps");
     $stmt->execute();
     $result_traps = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -260,7 +260,8 @@ try {
                     `traps_routing_value` varchar(255) DEFAULT NULL,
 					`traps_routing_filter_services` varchar(255) DEFAULT NULL,
 					`traps_output_transform` varchar(255) DEFAULT NULL,
-                    `traps_exec_method` int(11) DEFAULT '0'
+                    `traps_exec_method` int(11) DEFAULT '0',
+                    `traps_customcode` text DEFAULT NULL
                     );
 
             CREATE INDEX IF NOT EXISTS idx_t_traps_oid ON traps (traps_oid);
@@ -427,12 +428,12 @@ try {
             // Insert traps
             $stmt = $dbh_sqlite->prepare("INSERT INTO traps (traps_id, traps_name, traps_oid, traps_args, traps_status, severity_id, manufacturer_id,
                                             traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, traps_submit_result_enable, 
-                                            traps_advanced_treatment, traps_advanced_treatment_default, traps_timeout,
+                                            traps_advanced_treatment, traps_advanced_treatment_default, traps_timeout, traps_customcode,
                                             traps_exec_interval, traps_exec_interval_type, traps_log,
                                             traps_routing_mode, traps_routing_value, traps_exec_method, traps_downtime, traps_output_transform, traps_routing_filter_services) VALUES (
                     :traps_id, :traps_name, :traps_oid, :traps_args, :traps_status, :severity_id, :manufacturer_id,
                     :traps_reschedule_svc_enable, :traps_execution_command, :traps_execution_command_enable, :traps_submit_result_enable,
-                    :traps_advanced_treatment, :traps_advanced_treatment_default, :traps_timeout,
+                    :traps_advanced_treatment, :traps_advanced_treatment_default, :traps_timeout, :traps_customcode,
                     :traps_exec_interval, :traps_exec_interval_type, :traps_log,
                     :traps_routing_mode, :traps_routing_value,
                     :traps_exec_method, :traps_downtime, :traps_output_transform, :traps_routing_filter_services)");
@@ -451,6 +452,7 @@ try {
                 $stmt->bindParam(':traps_advanced_treatment', $value['traps_advanced_treatment'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_advanced_treatment_default', $value['traps_advanced_treatment_default'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_timeout', $value['traps_timeout'], PDO::PARAM_INT);
+                $stmt->bindParam(':traps_customcode', $value['traps_customcode'], PDO::PARAM_STR);
                 $stmt->bindParam(':traps_exec_interval', $value['traps_exec_interval'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_exec_interval_type', $value['traps_exec_interval_type'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_log', $value['traps_log'], PDO::PARAM_INT);

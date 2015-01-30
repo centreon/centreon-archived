@@ -356,6 +356,8 @@
                 $attrsLongText
                 );
         
+        $form->addElement('textarea', 'traps_customcode', _("Custom code"), $attrsTextarea);
+        
         $form->addElement(
                 'checkbox',
                 'traps_advanced_treatment_default',

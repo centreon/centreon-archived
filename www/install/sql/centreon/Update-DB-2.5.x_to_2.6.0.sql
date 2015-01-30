@@ -2,6 +2,7 @@
 ALTER TABLE `traps` ADD COLUMN `traps_downtime` enum('0','1','2') DEFAULT '0' AFTER `traps_exec_method`;
 ALTER TABLE `traps` ADD COLUMN `traps_output_transform` varchar(255) DEFAULT NULL AFTER `traps_downtime`;
 ALTER TABLE `traps` ADD COLUMN `traps_routing_filter_services` varchar(255) DEFAULT NULL AFTER `traps_routing_value`;
+ALTER TABLE `traps` ADD COLUMN `traps_customcode` TEXT DEFAULT NULL AFTER `traps_output_transform`;
 
 -- #4436
 ALTER TABLE `extended_host_information` MODIFY ehi_notes TEXT, MODIFY ehi_notes_url TEXT, MODIFY ehi_action_url TEXT;

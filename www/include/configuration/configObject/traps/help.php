@@ -27,5 +27,6 @@ $help["traps_downtime"] = dgettext("help", "Skip trap if host or service is in d
 $help["traps_output_transform"] = dgettext("help", "Regexp for removing or change some characters in output message (Example: s/\|/-/g).");
 $help["traps_advanced_treatment_default"] = dgettext("help", "Will not submit result in case no rules match");
 $help["traps_timeout"] = dgettext("help", "Maximum execution time of trap processing. This includes Preexec commands, submit command and special command");
-?>
+$help["traps_customcode"] = dgettext("help", "Custom Perl code. Will be executed with no change (security issue. Need to set centreontrapd secure_mode to '1')");
+// ?>
 

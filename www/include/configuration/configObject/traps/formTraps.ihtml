@@ -125,6 +125,10 @@
                         <td class="FormRowField"><img class="helpTooltip" name="traps_output_transform">&nbsp;{$form.traps_output_transform.label}</td>
                         <td class="FormRowValue">{$form.traps_output_transform.html}</td>
                     </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_customcode">&nbsp;{$form.traps_customcode.label}</td>
+                        <td class="FormRowValue">{$form.traps_customcode.html}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

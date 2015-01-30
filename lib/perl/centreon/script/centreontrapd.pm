@@ -80,6 +80,8 @@ sub new {
        date_time_format => "",
        cache_unknown_traps_enable => 1,
        cache_unknown_traps_retention => 600,
+       # secure mode: 1 => cannot use customcode option for traps
+       secure_mode => 1,
        # 0 = central, 1 = poller
        mode => 0,
        cmd_timeout => 10,
@@ -197,7 +199,6 @@ sub init {
     
     $self->{logger}->withpid(1);
     if ($self->{centreontrapd_config}->{unknown_trap_enable} == 1) {
-        $self->{logger}->writeLogInfo("icii====\n");
         $self->{logger_unknown} = centreon::common::logger->new();
         if ($self->{centreontrapd_config}->{unknown_trap_mode} == 1) {
             $self->{logger_unknown}->file_mode($self->{centreontrapd_config}->{unknown_trap_file});
@@ -737,6 +738,23 @@ sub execute_preexec {
     }
 }
 
+sub execute_customcode {
+    my ($self, %options) = @_;
+
+    if ($self->{centreontrapd_config}->{secure_mode} == 1) {
+        $self->{logger}->writeLogInfo("Cannot exec customcode with secure_mode option to '1'. Need to change the option.");
+        return ;
+    }
+    {
+        my $error;
+        local $SIG{__DIE__} = sub { $error = $_[0]; };
+        eval "$self->{trap_data}->{ref_oids}->{ $self->{trap_data}->{current_trap_id} }->{traps_customcode}";
+        if (defined($error)) {
+            $self->{logger}->writeLogError("Customcode execution problem: " . $error);
+        }
+    }    
+}
+
 ##########################
 ## REPLACE
 #
@@ -1006,6 +1024,12 @@ sub getTrapsInfos {
                 defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_execution_command}) && $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_execution_command} =~ /\$_HOST.*?\$/) {
                 ($fstatus, $self->{trap_data}->{ref_macro_hosts}) = centreon::trapd::lib::get_macros_host($self->{cdb}, $host_id);
                 return 0 if ($fstatus == -1);
+            }
+            
+            # Eval custom code
+            if (defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_customcode}) && 
+                $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_customcode} ne '') {
+                $self->execute_customcode();
             }
             
             foreach my $service_id (keys %{$self->{trap_data}->{ref_services}}) {

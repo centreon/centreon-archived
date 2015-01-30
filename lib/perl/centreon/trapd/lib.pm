@@ -111,7 +111,7 @@ sub get_oids {
     
     my ($dstatus, $sth) = $cdb->query("SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
                                         traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
-                                        traps_timeout, traps_exec_interval, traps_exec_interval_type,
+                                        traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type,
                                         traps_routing_mode, traps_routing_value, traps_routing_filter_services,
                                         traps_exec_method, traps_downtime, traps_output_transform,
                                         service_categories.level, service_categories.sc_name, service_categories.sc_id
@@ -183,7 +183,7 @@ sub get_hosts {
     # Get server_id
     foreach (keys %$ref_result) {
         ($dstatus, $sth) = $args{cdb}->query("SELECT ns_host_relation.nagios_server_id, nagios_server.ns_ip_address FROM ns_host_relation, nagios_server WHERE 
-                                            ns_host_relation.host_host_id = " . $ref_result->{$_}->{host_id} . " AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+                                              ns_host_relation.host_host_id = " . $ref_result->{$_}->{host_id} . " AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
         return -1 if ($dstatus == -1);
         my $data = $sth->fetchrow_hashref();
         $ref_result->{$_}->{nagios_server_id} = $data->{nagios_server_id};

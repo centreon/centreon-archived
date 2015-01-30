@@ -254,6 +254,7 @@ class Centreon_Traps {
             $rq .= "`traps_exec_method` = '".$this->_db->escape($ret["traps_exec_method"])."', ";
             $rq .= "`traps_output_transform` = '".$this->_db->escape($ret["traps_output_transform"])."', ";
             $rq .= "`traps_advanced_treatment_default` = '".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
+            $rq .= "`traps_customcode` = '".$this->_db->escape($ret["traps_customcode"])."', ";
             $rq .= "`traps_timeout` = '".$this->_db->escape($ret["traps_timeout"])."' ";
             $rq .= "WHERE `traps_id` = '".$traps_id."'";
             $this->_db->query($rq);
@@ -419,7 +420,7 @@ class Centreon_Traps {
                 traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
                 traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, traps_routing_filter_services, manufacturer_id,
                 traps_log, traps_exec_interval, traps_exec_interval_type, traps_exec_method, traps_downtime, traps_output_transform, traps_advanced_treatment_default,
-                traps_timeout) ";
+                traps_timeout, traps_customcode) ";
             $rq .= "VALUES ";
             $rq .= "('".$this->_db->escape($ret["traps_name"])."',";
             $rq .= "'".$this->_db->escape($ret["traps_oid"])."', ";
@@ -443,7 +444,8 @@ class Centreon_Traps {
             $rq .= "'".$this->_db->escape($ret["traps_downtime"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_output_transform"])."', ";
             $rq .= "'".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
-            $rq .= "'".$this->_db->escape($ret["traps_timeout"])."') ";
+            $rq .= "'".$this->_db->escape($ret["traps_timeout"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_customcode"])."') ";
             $this->_db->query($rq);
             $res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
             $traps_id = $res->fetchRow();
