@@ -38,7 +38,7 @@ namespace CentreonPerformance\Hooks;
 use Centreon\Internal\Di;
 use CentreonPerformance\Repository\GraphView;
 
-class DisplayBookmarkedViews
+class DisplayBookmarkedGraphViews
 {
     /**
      * Execute hook
