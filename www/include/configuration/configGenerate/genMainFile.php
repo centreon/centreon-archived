@@ -112,6 +112,7 @@
             else if (($key == "log_rotation_method") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
             else if (($key == "log_archive_path") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
             else if (($key == "lock_file") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
+            else if (($key == "daemon_dumps_core") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
