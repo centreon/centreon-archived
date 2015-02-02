@@ -99,7 +99,7 @@ class WidgetDatatable extends Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-administration/extensions/widgets/[i:id]',
+                    'route' => '/centreon-customview/extensions/widgets/[i:id]',
                     'routeParams' => array(
                         'id' => '::widget_model_id::'
                     ),
@@ -192,14 +192,14 @@ class WidgetDatatable extends Datatable
                     'data' => array(
                         'urlEnabled' => array(
                             'type' => 'url',
-                            'route' => '/centreon-administration/extensions/widgets/[i:id]/enable',
+                            'route' => '/centreon-customview/extensions/widgets/[i:id]/enable',
                             'routeParams' => array(
                                 'id' => '::widget_model_id::'
                             )
                         ),
                         'urlDisabled' => array(
                             'type' => 'url',
-                            'route' => '/centreon-administration/extensions/widgets/[i:id]/disable',
+                            'route' => '/centreon-customview/extensions/widgets/[i:id]/disable',
                             'routeParams' => array(
                                 'id' => '::widget_model_id::'
                             )
@@ -226,7 +226,7 @@ class WidgetDatatable extends Datatable
                         '0' => array(
                             'parameters' => array(
                                 'tmpl' => '<a class="btn btn-sm btn-primary" href="::link::">Install</a>',
-                                'route' => '/centreon-administration/extensions/widgets/[*:shortname]/install',
+                                'route' => '/centreon-customview/extensions/widgets/[*:shortname]/install',
                                 'routeParams' => array(
                                     'shortname' => '::shortname::'
                                 )
@@ -235,7 +235,7 @@ class WidgetDatatable extends Datatable
                         '1' => array(
                             'parameters' => array(
                                 'tmpl' => '<a class="btn btn-sm btn-danger" href="::link::">Uninstall</a>',
-                                'route' => '/centreon-administration/extensions/widgets/[i:id]/uninstall',
+                                'route' => '/centreon-customview/extensions/widgets/[i:id]/uninstall',
                                 'routeParams' => array(
                                     'id' => '::widget_model_id::'
                                 )

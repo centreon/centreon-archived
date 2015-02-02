@@ -56,7 +56,7 @@ class ExtensionsController extends Controller
     /**
      * 
      * @method get
-     * @route /centreon-administration/extensions/widgets
+     * @route /extensions/widgets
      */
     public function widgetAction()
     {
@@ -70,14 +70,14 @@ class ExtensionsController extends Controller
         /* Display variable */
         $this->tpl->assign('objectName', self::$objectDisplayName);
         $this->tpl->assign('moduleName', self::$moduleName);
-        $this->tpl->assign('objectListUrl', '/centreon-administration/extensions/widgets/list');
+        $this->tpl->assign('objectListUrl', '/centreon-customview/extensions/widgets/list');
         $this->tpl->display('administration/module.tpl');
     }
     
     /**
      * 
      * @method get
-     * @route /centreon-administration/extensions/widgets/[i:id]
+     * @route /extensions/widgets/[i:id]
      */
     public function displayWidgetAction()
     {
@@ -89,7 +89,7 @@ class ExtensionsController extends Controller
     /**
      * 
      * @method get
-     * @route /centreon-administration/extensions/widgets/[*:shortname]/install
+     * @route /extensions/widgets/[*:shortname]/install
      */
     public function installWidgetAction()
     {
@@ -124,14 +124,14 @@ class ExtensionsController extends Controller
             throw new Exception("Could not install widget. Error: " . $e->getMessage(), 0, $e);
         }
         
-        $backUrl = $router->getPathFor('/centreon-administration/extensions/widgets');
+        $backUrl = $router->getPathFor('/centreon-customview/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /centreon-administration/extensions/widgets/[i:id]/uninstall
+     * @route /extensions/widgets/[i:id]/uninstall
      */
     public function uninstallWidgetAction()
     {
@@ -140,14 +140,14 @@ class ExtensionsController extends Controller
         
         WidgetRepository::uninstall($params['id']);
 
-        $backUrl = $router->getPathFor('/centreon-administration/extensions/widgets');
+        $backUrl = $router->getPathFor('/centreon-customview/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /centreon-administration/extensions/widgets/[i:id]/enable
+     * @route /extensions/widgets/[i:id]/enable
      */
     public function enableModuleAction()
     {
@@ -155,14 +155,14 @@ class ExtensionsController extends Controller
         
         $params = $this->getParams();
         WidgetModel::update($params['id'], array('isactivated' => '1'));
-        $backUrl = $router->getPathFor('/centreon-administration/extensions/widgets');
+        $backUrl = $router->getPathFor('/centreon-customview/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /centreon-administration/extensions/widgets/[i:id]/disable
+     * @route /extensions/widgets/[i:id]/disable
      */
     public function disableModuleAction()
     {
@@ -170,14 +170,14 @@ class ExtensionsController extends Controller
         
         $params = $this->getParams();
         WidgetModel::update($params['id'], array('isactivated' => '0'));
-        $backUrl = $router->getPathFor('/centreon-administration/extensions/widgets');
+        $backUrl = $router->getPathFor('/centreon-customview/extensions/widgets');
         $router->response()->redirect($backUrl, 200);
     }
     
     /**
      * 
      * @method get
-     * @route /centreon-administration/extensions/widgets/list
+     * @route /extensions/widgets/list
      */
     public function datatableAction()
     {

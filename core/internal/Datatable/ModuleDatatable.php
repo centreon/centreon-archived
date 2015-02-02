@@ -38,6 +38,7 @@ namespace Centreon\Internal\Datatable;
 
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Di;
+use Centreon\Internal\Datatable;
 
 /**
  * Description of ModuleDatatable
