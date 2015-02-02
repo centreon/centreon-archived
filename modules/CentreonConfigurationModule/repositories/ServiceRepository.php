@@ -245,7 +245,7 @@ class ServiceRepository extends Repository
                 "SELECT b.filename, s.service_template_model_stm_id "
                 . "FROM cfg_services s, cfg_services_images_relations sir, cfg_binaries b "
                 . "WHERE s.service_id = '$service_id' "
-                . "AND s.service_id = sir.service_id"
+                . "AND s.service_id = sir.service_id AND sir.binary_id = b.binary_id"
             );
             $esiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
 
