@@ -9,7 +9,7 @@ $centreon_config = {
        "centstorage_db" => "--STORAGEDB--",
        "db_host" => "--ADDRESS--:--DBPORT--",
        "db_user" => "--DBUSER--",
-       "db_passwd" => "--DBPASS--"
+       "db_passwd" => '--DBPASS--'
 };
 
 # Central or Poller ?
@@ -20,7 +20,7 @@ $cmdFile = "--CENTREON_VARLIB--/centcore.cmd";
 
 # Deprecated format of Config file. 
 $mysql_user = "--DBUSER--";
-$mysql_passwd = "--DBPASS--";
+$mysql_passwd = '--DBPASS--';
 $mysql_host = "--ADDRESS--:--DBPORT--";
 $mysql_database_oreon = "--CONFDB--";
 $mysql_database_ods = "--STORAGEDB--";
