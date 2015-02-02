@@ -1,7 +1,12 @@
 [
-  {
-    "name": "displaySvcTooltipGraph",
-    "moduleHook": "displaySvcGraph",
-    "moduleHookDescription": "Display a service graph"
-  }
+    {
+        "name": "displaySvcTooltipGraph",
+        "moduleHook": "displaySvcGraph",
+        "moduleHookDescription": "Display a service graph"
+    },
+    {
+        "name": "displayLeftMenu",
+        "moduleHook": "displayBookmarkedViews",
+        "moduleHookDescription": "Display bookmarked views in left menu"
+    }
 ]
