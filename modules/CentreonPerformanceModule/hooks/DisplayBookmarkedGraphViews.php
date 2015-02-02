@@ -54,7 +54,7 @@ class DisplayBookmarkedGraphViews
         
         $bookmarkedGraphs = GraphView::getList();
         return array(
-            'template' => 'displayLeftMenu.tpl',
+            'template' => 'displayLeftMenuForGraph.tpl',
             'variables' => array(
                 'bookmarkedGraphs' => $bookmarkedGraphs
             )
