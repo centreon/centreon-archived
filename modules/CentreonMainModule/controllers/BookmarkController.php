@@ -45,13 +45,11 @@ class BookmarkController extends Controller
     public function listAction()
     {
         $bookmarkList = BookmarkRepository::getBookmarkList();
-        $this->router->response()->json(
-            array(
-                'success' => true,
-                'data' => $bookmarkList,
-                'error' => ''
-            )
+        $result = array(
+            'success' => 1,
+            'bookmark' => $bookmarkList
         );
+        $this->router->response()->json($result);
     }
     
     /**
