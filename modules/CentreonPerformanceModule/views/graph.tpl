@@ -392,6 +392,32 @@ $(function() {
       }
     });
   });
+  
+  /* Bookmark search action */
+    $( "#bookmarkView" ).on( "click", function( e ) {
+      alertClose();
+      var viewId = $("#view").val();
+      $.ajax({
+        url: "{url_for url='/bookmark'}",
+        dataType: "json",
+        method: "post",
+        data: {
+          route: "{url_for url="/centreon-performance/view"}",
+          type: "graph",
+          label: $("input[name='name']").val().trim(),
+          params: viewId
+        },
+        success: function( data, textStatus, jqXHR ) {
+          if ( data.success ) {
+            alertMessage( "{t}Your graph is bookmarked.{/t}", "alert-success", 3 );
+            $( "#bookmarkStatus" ).removeClass('fa-star-o');
+            $( "#bookmarkStatus" ).addClass('fa-star');
+          } else {
+            alertMessage( data.error, "alert-danger" );
+          }
+        }
+      });
+    });
 });
 
 $( document ).ready(function() {
