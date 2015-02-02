@@ -92,8 +92,7 @@ class SearchRepository
                     'user_id' => $_SESSION['user']->getId(),
                     'label' => $label,
                     'route' => $route,
-                    'searchText' => $searchText,
-                    'is_bookmarked' => $bookmark
+                    'searchText' => $searchText
                 )
             );
         }
@@ -182,12 +181,12 @@ class SearchRepository
     public static function getBookmark()
     {
         $bookmarkList = Search::getList(
-            array('search_id', 'searchText', 'route', 'label', 'is_always_visible'),
+            array('search_id', 'searchText', 'route', 'label'),
             -1,
             0,
             null,
             "ASC",
-            array('user_id' => $_SESSION['user']->getId(), 'is_bookmarked' => 1),
+            array('user_id' => $_SESSION['user']->getId()),
             "AND"
         );
         
