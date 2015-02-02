@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_main" defaultIdMethod="native">
+    <table name="cfg_bookmarks" phpName="Bookmark" idMethod="native">
+        <column name="bookmark_id" phpName="bookmarkId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true" autoIncrement="true"/>
+        <column name="user_id" phpName="userId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
+        <column name="label" phpName="label" type="VARCHAR" size="255" required="true"/>
+        <column name="quick_access" phpName="quickAccess" type="VARCHAR" size="255" required="true"/>
+        <column name="short_url_code" phpName="short_url_code" type="VARCHAR" size="255" required="true"/>
+        <column name="route" phpName="Route" type="VARCHAR" size="255" required="true"/>
+        <column name="is_always_visible" phpName="isAlwaysVisible" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
+        <column name="is_public" phpName="isPublic" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
