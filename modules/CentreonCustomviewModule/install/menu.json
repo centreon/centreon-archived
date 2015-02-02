@@ -20,7 +20,7 @@
             {
                 "name": "Widgets",
                 "short_name": "adminwidgets",
-                "route": "/centreon-administration/extensions/widgets"
+                "route": "/centreon-customview/extensions/widgets"
             }
         ]
     }
