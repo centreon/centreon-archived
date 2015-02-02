@@ -188,7 +188,7 @@ function generateBookmark($elParent, bookmark) {
     for (var i = 0; i < lenBookmark; i++) {
         var $li = $('<li></li>');
         $li.appendTo($elParent);
-        var $link = $('<a></a>').attr('href', bookmark[i].route + '?quick-access-'+ encodeURIComponent(bookmark[i].quick_access));
+        var $link = $('<a></a>').attr('href', bookmark[i].route + '?quick-access-'+ bookmark[i].type + '=' + encodeURIComponent(bookmark[i].quick_access));
         $link.append(" ");
         $('<span></span>').text(bookmark[i].label).appendTo($link);
         $li.append($link);

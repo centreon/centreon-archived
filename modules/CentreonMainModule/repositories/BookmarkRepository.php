@@ -76,7 +76,8 @@ class BookmarkRepository
             $bookmarkInfos = array(
                 'label' => $label,
                 'route' => $route,
-                'quick_access' => $type . '=' . $bookmarkParam,
+                'type' => $type,
+                'quick_access' => $bookmarkParam,
                 'is_always_visible' => $isAlwaysVisible,
                 'is_public' => $isPublic,
                 'user_id' => $_SESSION['user']->getId(),
