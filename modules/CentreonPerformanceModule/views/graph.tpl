@@ -404,7 +404,7 @@ $(function() {
         data: {
           route: "{url_for url="/centreon-performance/graph"}",
           type: "graph",
-          label: $("input[name='name']").val().trim(),
+          label: $("#view").val().trim(),
           params: viewId
         },
         success: function( data, textStatus, jqXHR ) {
