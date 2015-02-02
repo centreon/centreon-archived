@@ -394,8 +394,8 @@ $(function() {
 });
 
 $( document ).ready(function() {
-    $graphId = getUriParametersByName('quick-access-graph');
-    if ($graphId) {
+    graphId = getUriParametersByName('quick-access-graph');
+    if (graphId) {
         $.ajax({
             url: "{url_for url="/centreon-performance/view"}/" + graphId,
             dataType: "json",
