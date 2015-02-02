@@ -42,13 +42,13 @@ use CentreonMain\Repository\BookmarkRepository;
 
 class BookmarkController extends Controller
 {
+    /**
+     * 
+     * @route /bookmark/list
+     * @method get
+     */
     public function listAction()
     {
-        /**
-         * 
-         * @route /bookmark/list
-         * @method get
-         */
         $bookmarkList = BookmarkRepository::getBookmarkList();
         $result = array(
             'success' => 1,
