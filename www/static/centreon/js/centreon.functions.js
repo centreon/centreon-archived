@@ -183,7 +183,7 @@ function loadBookmark(bookmarkUrl) {
 
 /* Generate bookmark */
 function generateBookmark($elParent, bookmark) {
-    var lenBookmark= bookmark.length;
+    var lenBookmark = bookmark.length;
     
     for (var i = 0; i < lenBookmark; i++) {
         var $li = $('<li></li>');

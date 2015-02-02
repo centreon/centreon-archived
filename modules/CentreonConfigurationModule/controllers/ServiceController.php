@@ -267,7 +267,7 @@ class ServiceController extends FormController
      */
     public function environmentForServiceAction()
     {
-        parent::getSimpleRelation('environment_id', '\CentreonConfiguration\Models\Environment');
+        parent::getSimpleRelation('environment_id', '\CentreonAdministration\Models\Environment');
     }
     
     /**
