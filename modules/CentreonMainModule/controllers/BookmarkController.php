@@ -45,16 +45,29 @@ class BookmarkController extends Controller
     public function listAction()
     {
         $bookmarkList = BookmarkRepository::getBookmarkList();
-        
-        foreach ($bookmarkList as &$bookmark) {
-            
-        }
+        $this->router->response()->json(
+            array(
+                'success' => true,
+                'data' => $bookmarkList,
+                'error' => ''
+            )
+        );
     }
     
-    
+    /**
+     * 
+     * @route /bookmark
+     * @method post
+     */
     public function saveAction()
     {
         $requestParams = $this->getParams();
-        BookmarkRepository::saveBookmark($label, $route, $type, $bookmarkParam);
+        
+        BookmarkRepository::saveBookmark(
+            $requestParams['label'],
+            $requestParams['route'],
+            $requestParams['type'],
+            $requestParams['params']
+        );
     }
 }

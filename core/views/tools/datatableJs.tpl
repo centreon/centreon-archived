@@ -685,13 +685,14 @@
             return;
           }
           $.ajax({
-            url: "{url_for url='/centreon-administration/search/bookmark'}",
+            url: "{url_for url='/bookmark'}",
             dataType: "json",
             method: "post",
             data: {
               route: "{$currentRoute}",
+              type: "search",
               label: $( "input[name='filters']" ).val().trim(),
-              searchText: $( "input[name='advsearch']" ).val().trim()
+              params: $( "input[name='filters']" ).val().trim()
             },
             success: function( data, textStatus, jqXHR ) {
               if ( data.success ) {
@@ -778,5 +779,31 @@
     });
     
     
-    
+$( document ).ready(function() {
+    searchFilter = getUriParametersByName('quick-access-search');
+    if (searchFilter) {
+        $.ajax({
+            url: "{url_for url='/centreon-administration/search/load'}",
+            dataType: "json",
+            method: "post",
+            data: {
+              route: "{$currentRoute}",
+              label: searchFilter,
+            },
+            success: function( data, textStatus, jqXHR ) {
+              if ( data.success ) {
+                $( "input[name='advsearch']" ).val( data.data );
+                $( "input[name='advsearch']" ).centreonsearch( "fillAssociateFields" );
+                $( ".centreon-search" ).each( function( idx, element ) {
+                    oTable.api().column( $( element ).data( "column-index" ) )
+                        .search( $( element ).val()) ;
+                });
+                oTable.api().draw();
+              } else {
+                alertMessage( data.error, "alert-danger" );
+              }
+            }
+        });
+    }
+});
 </script>

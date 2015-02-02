@@ -42,7 +42,6 @@ class BusinessActivityController extends FormController
 {
     protected $objectDisplayName = 'BusinessActivity';
     public static $objectName = 'BusinessActivity';
-    protected $objectBaseUrl = '/centreon-bam/business-activity';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
@@ -72,7 +71,7 @@ class BusinessActivityController extends FormController
     /**
      * 
      * @method get
-     * @route /business-activity/formlist
+     * @route /BusinessActivity/formlist
      */
     public function formListAction()
     {
@@ -82,7 +81,7 @@ class BusinessActivityController extends FormController
     /**
      * 
      * @method get
-     * @route /business-activity/list
+     * @route /BusinessActivity/list
      */
     public function datatableAction()
     {
@@ -94,7 +93,7 @@ class BusinessActivityController extends FormController
      *
      *
      * @method post
-     * @route /business-activity/update
+     * @route /BusinessActivity/update
      */
     public function updateAction()
     {
@@ -105,7 +104,7 @@ class BusinessActivityController extends FormController
      * Create a new business activity
      *
      * @method post
-     * @route /business-activity/add
+     * @route /BusinessActivity/add
      */
     public function createAction()
     {
@@ -116,7 +115,7 @@ class BusinessActivityController extends FormController
      * Update a business activity
      *
      * @method get
-     * @route /business-activity/[i:id]
+     * @route /BusinessActivity/[i:id]
      */
     public function editAction()
     {
@@ -127,7 +126,7 @@ class BusinessActivityController extends FormController
      * Duplicate a business activity
      *
      * @method post
-     * @route /business-activity/duplicate
+     * @route /BusinessActivity/duplicate
      */
     public function duplicateAction()
     {
@@ -138,7 +137,7 @@ class BusinessActivityController extends FormController
      * Apply massive change
      *
      * @method POST
-     * @route /business-activity/massive_change
+     * @route /BusinessActivity/massive_change
      */
     public function massiveChangeAction()
     {
@@ -149,7 +148,7 @@ class BusinessActivityController extends FormController
      * Get the list of massive change fields
      *
      * @method get
-     * @route /business-activity/mc_fields
+     * @route /BusinessActivity/mc_fields
      */
     public function getMassiveChangeFieldsAction()
     {
@@ -160,7 +159,7 @@ class BusinessActivityController extends FormController
      * Get the html of attribute filed
      *
      * @method get
-     * @route /business-activity/mc_fields/[i:id]
+     * @route /BusinessActivity/mc_fields/[i:id]
      */
     public function getMcFieldAction()
     {
@@ -171,7 +170,7 @@ class BusinessActivityController extends FormController
      * Delete action for business activity
      *
      * @method post
-     * @route /business-activity/delete
+     * @route /BusinessActivity/delete
      */
     public function deleteAction()
     {

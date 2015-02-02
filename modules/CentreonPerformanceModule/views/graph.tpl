@@ -29,12 +29,13 @@
           </div>
           <div class="form-group col-md-4">
             <div class="input-group">
+              <input type="text" id="view" name="view" class="form-control">
               <span class="input-group-btn">
                 <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Load{/t}" id="loadView"><i class="fa fa-upload"></i></button>
                 <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Save{/t}" id="saveView"><i class="fa fa-floppy-o"></i></button>
                 <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{t}Delete{/t}" id="deleteView"><i class="fa fa-trash-o"></i></button>
+                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" id="bookmarkView" data-original-title="Bookmark"><i id="bookmarkStatus" class="fa fa-star-o"></i></button>
               </span>
-              <input type="text" id="view" name="view" class="form-control">
             </div>
           </div>
         </form>
