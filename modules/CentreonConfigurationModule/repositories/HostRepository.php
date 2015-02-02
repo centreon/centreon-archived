@@ -40,13 +40,14 @@ use CentreonConfiguration\Models\Host;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
 use Centreon\Internal\Utils\YesNoDefault;
+use CentreonConfiguration\Repository\Repository;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Repository
  */
-class HostRepository extends \CentreonConfiguration\Repository\Repository
+class HostRepository extends Repository
 {
     /**
      * List of column for inheritance

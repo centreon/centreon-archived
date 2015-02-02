@@ -38,7 +38,7 @@ namespace CentreonConfiguration\Models\Relation\Connector;
 
 use Centreon\Internal\Di;
 use Centreon\Models\CentreonRelationModel;
-use CentreonConfiguration\Models\Command;
+use CentreonConfiguration\Models\Command as ExternalCommand;
 
 class Command extends CentreonRelationModel
 {
@@ -57,7 +57,7 @@ class Command extends CentreonRelationModel
      */
     public static function insert($fkey, $skey = null)
     {
-        Command::update($skey, array('connector_id' => $fkey));
+        ExternalCommand::update($skey, array('connector_id' => $fkey));
     }
     
     /**

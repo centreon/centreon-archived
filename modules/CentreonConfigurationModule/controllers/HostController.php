@@ -205,6 +205,8 @@ class HostController extends FormController
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         
+        var_dump($macroList);
+        die();
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
         }
