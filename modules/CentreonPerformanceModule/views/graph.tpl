@@ -402,7 +402,7 @@ $(function() {
         dataType: "json",
         method: "post",
         data: {
-          route: "{url_for url="/centreon-performance/view"}",
+          route: "{url_for url="/centreon-performance/graph"}",
           type: "graph",
           label: $("input[name='name']").val().trim(),
           params: viewId
