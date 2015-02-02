@@ -105,7 +105,7 @@ $(document).ready(function() {
       $( "#menu1" ).find( ".toggle" ).toggle();
     });
     
-    loadBookmark('{url_for url="/centreon-administration/search/getbookmark"}');
+    loadBookmark('{url_for url="/bookmark/list"}');
 
   /* Init tooltips */
   $( ".bottombar a" ).tooltip();

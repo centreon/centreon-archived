@@ -44,6 +44,11 @@ class BookmarkController extends Controller
 {
     public function listAction()
     {
+        /**
+         * 
+         * @route /bookmark/list
+         * @method get
+         */
         $bookmarkList = BookmarkRepository::getBookmarkList();
         $result = array(
             'success' => 1,
