@@ -26,7 +26,7 @@
 					<attributes>
 						<object_type>object</object_type>
 						<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-                                                <listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/eventhandler</listValuesRoute>
+                        <listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/icon</listValuesRoute>
 						<multiple>false</multiple>
 						<wizardRoute>/media/image/add</wizardRoute>
 					</attributes>
