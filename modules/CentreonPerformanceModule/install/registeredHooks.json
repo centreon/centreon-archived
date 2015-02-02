@@ -6,7 +6,7 @@
     },
     {
         "name": "displayLeftMenu",
-        "moduleHook": "displayBookmarkedViews",
-        "moduleHookDescription": "Display bookmarked views in left menu"
+        "moduleHook": "DisplayBookmarkedGraphViews",
+        "moduleHookDescription": "Display bookmarked graph views in left menu"
     }
 ]
