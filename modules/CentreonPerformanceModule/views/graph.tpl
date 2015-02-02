@@ -392,5 +392,27 @@ $(function() {
     });
   });
 });
+
+$( document ).ready(function() {
+    $graphId = getUriParametersByName('quick-access-graph');
+    if ($graphId) {
+        $.ajax({
+            url: "{url_for url="/centreon-performance/view"}/" + graphId,
+            dataType: "json",
+            method: "GET",
+            success: function(data, textStatus, jqXHR) {
+              charts = [];
+              nbGraph = 0;
+              $(".graph").each(function(idx, element) {
+                $(element).remove();
+              });
+              $.each(data.graphs, function(idx, graph) {
+                createGraph(graph['id']);
+              });
+            }
+        });
+    }
+});
+
 </script>
 {/block}
