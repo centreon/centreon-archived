@@ -6,10 +6,10 @@
     <ul class="nav submenu collapse in" style="height: auto;">
         {foreach from=$variables.bookmarkedGraphs item=view key=k}
         <li>
-            {assign var=view_url value="/centreon-performance/graph/"|cat:$view.graph_view_id}
-            <a href="{url_for url=$view_url}">
+            {assign var=view_url value="/centreon-performance/graph"}
+            <a href="{url_for url=$view_url}?quick-access-graph={$k}">
                 <i></i>
-                <span>{$view.name}</span>
+                <span>{$view}</span>
             </a>
         </li>
         {/foreach}
