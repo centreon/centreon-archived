@@ -209,7 +209,11 @@ abstract class FormRepository
             $db->commit();
             unset($givenParameters[$k]);
         }
-        static::postSave($id, 'add', $givenParameters);
+        
+        if (method_exists(get_called_class(), 'postSave')) {
+            static::postSave($id, 'add', $givenParameters);
+        }
+        
         return $id;
     }
 
@@ -279,7 +283,10 @@ abstract class FormRepository
         }
         
         $class::update($id, $givenParameters);
-        static::postSave($id, 'update', $givenParameters);
+        
+        if (method_exists(get_called_class(), 'postSave')) {
+            static::postSave($id, 'update', $givenParameters);
+        }
     }
 
     /**
@@ -291,9 +298,15 @@ abstract class FormRepository
     {
         $objClass = static::$objectClass;
         foreach ($ids as $id) {
-            static::preSave($id, 'delete');
+            if (method_exists(get_called_class(), 'preSave')) {
+                static::postSave($id, 'delete', $givenParameters);
+            }
+            
             $objClass::delete($id);
-            static::postSave($id, 'delete');
+            
+            if (method_exists(get_called_class(), 'preSave')) {
+                static::postSave($id, 'delete', $givenParameters);
+            }
         }
     }
 

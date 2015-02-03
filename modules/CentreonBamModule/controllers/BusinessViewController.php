@@ -41,8 +41,7 @@ use Centreon\Controllers\FormController;
 class BusinessViewController extends FormController
 {
     protected $objectDisplayName = 'BusinessView';
-    public static $objectName = 'BusinessView';
-    protected $objectBaseUrl = '/centreon-bam/business-view';
+    public static $objectName = 'businessview';
     protected $objectClass = '\CentreonBam\Models\BusinessView';
     protected $datatableObject = '\CentreonBam\Internal\BusinessViewDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessViewRepository';     

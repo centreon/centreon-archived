@@ -11,12 +11,12 @@
                     {
                         "name": "Business Activity",
                         "short_name": "conf_ba_list",
-                        "route": "/centreon-bam/business-activity"
+                        "route": "/centreon-bam/businessactivity"
                     },
                     {
                         "name": "Business views",
                         "short_name": "conf_bv_lists",
-                        "route": "/centreon-bam/business-view"
+                        "route": "/centreon-bam/businessview"
                     },
                     {
                         "name": "Indicators",

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
     <form>
-        <route>/centreon-bam/business-view/update</route>
+        <route>/centreon-bam/businessview/update</route>
 		<redirect>1</redirect>
-		<redirect_route>/centreon-bam/business-view</redirect_route>
+		<redirect_route>/centreon-bam/businessview</redirect_route>
         <section name="Configuration">
             <block name="Information">
                 <field name="ba_group_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
@@ -26,28 +26,17 @@
                 <field name="bv_ba" label="Linked Business Activity" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-bam/business-activity/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
+						<defaultValuesRoute>/centreon-bam/businessactivity/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-bam/businessview/[i:id]/businessactivty</listValuesRoute>
 						<multiple>true</multiple>
 					</attributes>
 					<help>List of business activities that belong to this view</help>
 				</field>
             </block>
-            <block name="Access Control List">
-                <field name="bv_acl" label="Authorized Access Groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-administration/aclgroup/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-					<help>ACL groups that can access this view</help>
-				</field>
-            </block>
         </section>
     </form>
     <wizard name="add_bv">
-        <route>/centreon-bam/business-view/add</route>
+        <route>/centreon-bam/businessview/add</route>
 		<step name="General">
 			<field name="ba_group_name" mandatory="1"></field>
 			<field name="ba_group_description" mandatory="0"></field>
