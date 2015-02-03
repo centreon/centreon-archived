@@ -68,7 +68,9 @@ abstract class FormController extends ListController
         if (!empty($this->secondaryObjectClass)) {
             $repository::setSecondaryObjectClass($this->secondaryObjectClass);
         }
-        $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . static::$objectName;
+        if (is_null($this->objectBaseUrl) || $this->objectBaseUrl === '') {
+            $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . static::$objectName;
+        }
     }
 
     /**

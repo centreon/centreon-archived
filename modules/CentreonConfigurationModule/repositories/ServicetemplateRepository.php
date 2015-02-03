@@ -227,4 +227,30 @@ class ServicetemplateRepository extends Repository
                 return $value;
         }
     }
+
+    /**
+     * Get all services using a service template
+     *
+     * @param int $tmplId The service template id
+     * @return array The list of service 
+     */
+    public static function getServices($tmplId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $query = "SELECT service_id, service_register
+            FROM cfg_services
+            WHERE service_activate = '1'
+                AND service_template_model_stm_id = :svc_tmpl_id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':svc_tmpl_id', $tmplId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $services = array();
+        while ($row = $stmt->fetch()) {
+            if ($row['service_register'] == 0) {
+                $services = array_merge($services, static::getServices($row['service_id']));
+            }
+            $services[] = $row['service_id'];
+        }
+        return array_unique($services);
+    }
 }

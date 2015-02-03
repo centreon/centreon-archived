@@ -37,6 +37,7 @@
 namespace CentreonPerformance\Repository;
 
 use Centreon\Internal\Di;
+use CentreonConfiguration\Repository\ServicetemplateRepository;
 
 /**
  * Manage the list of views for graph
@@ -200,5 +201,36 @@ class GraphView
         $stmt = $dbconn->prepare("DELETE FROM cfg_graph_views WHERE graph_view_id = :view_id");
         $stmt->bindParam(':view_id', $viewId, \PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    /**
+     * Get the list of metric name by a service template id
+     *
+     * @param int $tmplId The service template id
+     * @return array
+     */
+    public static function getMetricsNameByServiceTemplate($tmplId)
+    {
+        $services = ServicetemplateRepository::getServices($tmplId);
+        if (count($services) == 0) {
+            return array();
+        }
+        /* Check if all data are integer */
+        array_map(function($value) {
+            if (false === is_numeric($value)) {
+                throw new \Exception('The value is not numeric');
+            }
+        }, $services);
+        $dbconn = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $query = "SELECT m.metric_name
+            FROM rt_metrics m, rt_index_data i
+            WHERE m.index_id = i.id
+                AND i.service_id IN (" . join(', ', $services) . ")";
+        $stmt = $dbconn->query($query);
+        $metrics = array();
+        while ($row = $stmt->fetch()) {
+            $metrics[] = $row['metric_name'];
+        }
+        return array_unique($metrics);
     }
 }

@@ -1,9 +1,15 @@
 (function($) {
   function CentreonClone(settings, $elem) {
-    var pos = 0, self = this;
+    var self = this;
 
     this.settings = settings;
     this.$elem = $elem;
+
+    /* Count number of already in page */
+    this.pos = this.$elem.find('cloned_element').length;
+    if (this.pos == 0) {
+      this.pos = 1;
+    }
 
     if ('addBtn' in this.settings) {
       this.$addBtn = $(this.settings.addBtn);
@@ -29,7 +35,8 @@
 
   CentreonClone.prototype = {
     addElement: function(values) {
-      var $newEl = this.$template.clone().css('display', 'block')
+      var self = this,
+          $newEl = this.$template.clone().css('display', 'block')
                      .removeClass('clone_template')
                      .addClass('cloned_element')
                      .appendTo(this.$elem);
@@ -39,6 +46,11 @@
           $newEl.find(key).val(value);
         });
       }
+
+      $newEl.find('input,textarea').each(function(idx, el) {
+        $(el).attr('name', $(el).attr('name').replace('#index#', self.pos));
+      });
+      self.pos += 1;
 
       $.each(this.settings.events.add, function(idx, fct) {
         fct($newEl);
