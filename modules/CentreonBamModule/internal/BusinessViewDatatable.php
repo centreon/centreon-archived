@@ -94,7 +94,7 @@ class BusinessViewDatatable extends Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-bam/business-view/[i:id]',
+                    'route' => '/centreon-bam/businessview/[i:id]',
                     'routeParams' => array(
                         'id' => '::id_ba_group::'
                     ),

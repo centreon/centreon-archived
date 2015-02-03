@@ -36,6 +36,7 @@
 namespace CentreonBam\Repository;
 
 use Centreon\Repository\FormRepository;
+use Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -44,4 +45,43 @@ use Centreon\Repository\FormRepository;
  */
 class BusinessActivityRepository extends FormRepository
 {
+    /**
+     * 
+     * @param string $name
+     * @return string
+     */
+    public static function getIconImage($name)
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
+        
+        $finalRoute = "";
+        
+        $stmt = $dbconn->query(
+            "SELECT b.filename "
+            . "FROM cfg_bam ba, cfg_binaries b "
+            . "WHERE ba.name = '$name' "
+            . "AND ba.icon_id = b.binary_id "
+        );
+        $baIconResult = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!is_null($baIconResult['filename'])) {
+            $filenameExploded = explode('.', $baIconResult['filename']);
+            $nbOfOccurence = count($filenameExploded);
+            $fileFormat = $filenameExploded[$nbOfOccurence-1];
+            $filenameLength = strlen($baIconResult['filename']);
+            $routeAttr = array(
+                'image' => substr($baIconResult['filename'], 0, ($filenameLength - (strlen($fileFormat) + 1))),
+                'format' => '.'.$fileFormat
+            );
+            $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
+            $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
+        } elseif (is_null($baIconResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
+            $finalRoute .= "<i class='fa fa-university'></i>";
+        }
+        
+        return $finalRoute;
+    }
 }

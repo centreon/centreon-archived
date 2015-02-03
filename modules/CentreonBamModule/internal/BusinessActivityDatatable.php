@@ -38,6 +38,7 @@ namespace CentreonBam\Internal;
 
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
+use CentreonBam\Repository\BusinessActivityRepository;
 
 /**
  * Description of BaDatatable
@@ -104,7 +105,7 @@ class BusinessActivityDatatable extends Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-bam/business-activity/[i:id]',
+                    'route' => '/centreon-bam/businessactivity/[i:id]',
                     'routeParams' => array(
                         'id' => '::ba_id::'
                     ),
@@ -149,4 +150,16 @@ class BusinessActivityDatatable extends Datatable
     protected static $hookParams = array(
         'resourceType' => 'ba'
     );
+    
+    /**
+     * 
+     * @param array $resultSet
+     */
+    protected function formatDatas(&$resultSet)
+    {
+        foreach ($resultSet as &$myBaSet) {
+            $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
+        }
+        
+    }
 }

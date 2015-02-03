@@ -37,20 +37,25 @@ namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
+use CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren;
+use CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents;
 
 class BusinessActivityController extends FormController
 {
     protected $objectDisplayName = 'BusinessActivity';
-    public static $objectName = 'BusinessActivity';
+    public static $objectName = 'businessactivity';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
-    public static $relationMap = array();
+    public static $relationMap = array(
+        'parent_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren',
+        'child_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents',
+    );
     
     /**
      * 
      * @method get
-     * @route /business-activity
+     * @route /businessactivity
      */
     public function listAction()
     {
@@ -69,111 +74,111 @@ class BusinessActivityController extends FormController
     }
     
     /**
+     * Get list of Timeperiods for a specific business activity
+     *
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/checkperiod
+     */
+    public function checkPeriodForHostAction()
+    {
+        parent::getSimpleRelation('id_check_period', '\CentreonConfiguration\Models\Timeperiod');
+    }
+    
+    /**
+     * Get list of Timeperiods for a specific business activity
+     *
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/notificationperiod
+     */
+    public function notificationPeriodForHostAction()
+    {
+        parent::getSimpleRelation('id_notification_period', '\CentreonConfiguration\Models\Timeperiod');
+    }
+
+    /**
+     * Get reporting period for a specific business activity
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/reportingperiod
+     */
+    public function reportingPeriodForHostAction()
+    {
+        parent::getSimpleRelation('id_reporting_period', '\CentreonConfiguration\Models\Timeperiod');
+    }
+    
+    /**
      * 
      * @method get
-     * @route /BusinessActivity/formlist
+     * @route /businessactivity/[i:id]/parent
      */
-    public function formListAction()
+    public function parentForBusinessActivityAction()
     {
-        parent::formListAction();
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $BusinessActivityparentsList = BusinessActivityparents::getMergedParameters(
+            array('ba_id', 'name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('cfg_bam_dep_parents_relations.id_ba' => $requestParam['id']),
+            "AND"
+        );
+
+        $finalBusinessActivityList = array();
+        foreach ($BusinessActivityparentsList as $BusinessActivityparents) {
+            $finalBusinessActivityList[] = array(
+                "id" => $BusinessActivityparents['ba_id'],
+                "text" => $BusinessActivityparents['name'],
+                "theming" => BusinessActivityRepository::getIconImage(
+                    $BusinessActivityparents['name']
+                ).' '.$BusinessActivityparents['name']
+            );
+        }
+        
+        $router->response()->json($finalBusinessActivityList);
     }
-    
+
     /**
      * 
      * @method get
-     * @route /BusinessActivity/list
+     * @route /businessactivity/[i:id]/child
      */
-    public function datatableAction()
+    public function childForBusinessActivityAction()
     {
-        parent::datatableAction();
-    }
-    
-    /**
-     * Update a business activity
-     *
-     *
-     * @method post
-     * @route /BusinessActivity/update
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-    
-    /**
-     * Create a new business activity
-     *
-     * @method post
-     * @route /BusinessActivity/add
-     */
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    /**
-     * Update a business activity
-     *
-     * @method get
-     * @route /BusinessActivity/[i:id]
-     */
-    public function editAction()
-    {
-        parent::editAction();
-    }
-    
-    /**
-     * Duplicate a business activity
-     *
-     * @method post
-     * @route /BusinessActivity/duplicate
-     */
-    public function duplicateAction()
-    {
-        parent::duplicateAction();
-    }
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $BusinessActivitychildrenList = BusinessActivitychildren::getMergedParameters(
+            array('ba_id', 'name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('cfg_bam_dep_children_relations.id_dep' => $requestParam['id']),
+            "AND"
+        );
 
-    /**
-     * Apply massive change
-     *
-     * @method POST
-     * @route /BusinessActivity/massive_change
-     */
-    public function massiveChangeAction()
-    {
-        parent::massiveChangeAction();
-    }
-    
-    /**
-     * Get the list of massive change fields
-     *
-     * @method get
-     * @route /BusinessActivity/mc_fields
-     */
-    public function getMassiveChangeFieldsAction()
-    {
-        parent::getMassiveChangeFieldsAction();
-    }
-
-    /**
-     * Get the html of attribute filed
-     *
-     * @method get
-     * @route /BusinessActivity/mc_fields/[i:id]
-     */
-    public function getMcFieldAction()
-    {
-        parent::getMcFieldAction();
-    }
-
-    /**
-     * Delete action for business activity
-     *
-     * @method post
-     * @route /BusinessActivity/delete
-     */
-    public function deleteAction()
-    {
-        parent::deleteAction();
+        $finalBusinessActivityList = array();
+        foreach ($BusinessActivitychildrenList as $BusinessActivitychildren) {
+            $finalBusinessActivityList[] = array(
+                "id" => $BusinessActivitychildren['ba_id'],
+                "text" => $BusinessActivitychildren['name'],
+                "theming" => BusinessActivityRepository::getIconImage(
+                    $BusinessActivitychildren['name']
+                ).' '.$BusinessActivitychildren['name']
+            );
+        }
+        
+        $router->response()->json($finalBusinessActivityList);
     }
 }
