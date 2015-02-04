@@ -299,13 +299,13 @@ abstract class FormRepository
         $objClass = static::$objectClass;
         foreach ($ids as $id) {
             if (method_exists(get_called_class(), 'preSave')) {
-                static::postSave($id, 'delete', $givenParameters);
+                static::postSave($id, 'delete', array());
             }
             
             $objClass::delete($id);
             
             if (method_exists(get_called_class(), 'preSave')) {
-                static::postSave($id, 'delete', $givenParameters);
+                static::postSave($id, 'delete', array());
             }
         }
     }
