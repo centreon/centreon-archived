@@ -43,14 +43,16 @@
 	 * @return	int		0 			(return 0 if the table exists)
 	 */
 	function isUserAdmin($sid = NULL){
-		if (!isset($sid))
-			return ;
 		global $pearDB;
-		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		if (!isset($sid)) {
+			return ;
+        }
+        
+		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", $id);
 		$admin = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
-		$DBRESULT = $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
+		$DBRESULT = $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = ? ", $admin["contact_id"]);
 		$admin2 = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
@@ -74,7 +76,7 @@
 		if (!isset($sid))
 			return ;
 		global $pearDB;
-		$DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", $sid);
 		$admin = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		if (isset($admin["contact_id"]))
