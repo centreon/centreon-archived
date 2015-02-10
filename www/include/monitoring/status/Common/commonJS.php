@@ -108,15 +108,46 @@ if (navigator.appName.substring(0, 3) == "Net") {
 document.onmousemove = position;
 
 
+/* Global event */
+/*  Graph */
+jQuery('body').delegate(
+  '#forAjax a .graph-volant',
+  'mouseenter',
+  function(e) { func_displayIMG(e); }
+);
+jQuery('body').delegate(
+  '#forAjax a .graph-volant',
+  'mouseleave',
+  function() { func_hideIMG(); }
+);
+/*  Popup */
+jQuery('body').delegate(
+  '#forAjax .link_popup_volante',
+  'mouseenter',
+  function(e) { func_displayPOPUP(e); }
+);
+jQuery('body').delegate(
+  '#forAjax .link_popup_volante',
+  'mouseleave',
+  function(e) { func_hidePOPUP(e); }
+);
+/*  Generic info */
+jQuery('body').delegate(
+  '#forAjax .link_generic_info_volante',
+  'mouseenter',
+  function(e) { func_displayGenericInfo(e); }
+);
+jQuery('body').delegate(
+  '#forAjax .link_generic_info_volante',
+  'mouseleave',
+  function(e) { func_hidePOPUP(e); }
+);
+
 function monitoringCallBack(t)
 {
 	resetSelectedCheckboxes();
 	mk_pagination(t.getXmlDocument());
 	set_header_title();
-
-    set_displayIMG();
-    set_displayPOPUP();
-    set_displayGenericInfo();
 }
 
 function resetSelectedCheckboxes()
@@ -773,30 +804,27 @@ function set_page(page)	{
 }
 
 // Popin images
-function set_displayIMG() {
-    jQuery('#forAjax').delegate('a .graph-volant', 'mouseenter', func_displayIMG);
-    jQuery('#forAjax').delegate('a .graph-volant', 'mouseleave', func_hideIMG);
-}
 
 var func_displayIMG = function(event) {
-        var NewImage = new Image();
+        var NewImage = new Image(),
+            self = event.currentTarget;
 
         jQuery('.img_volante').html('<img class="mimgload" src="img/misc/ajax-loader.gif" />');
         jQuery('.img_volante').css('left', event.pageX + 20);
         jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
         jQuery('.img_volante').show();
 
-        var elements = $(this).id.split('-');
+        var elements = $(self).id.split('-');
         var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
         jQuery('.img_volante').append('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
         NewImage.onload = function(){
                 jQuery('.img_volante .mimgload').remove();
                 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-                jQuery('.img_volante').stop(true, true).animate({width: this.width, height: this.height, top: (jQuery(window).height() / 2) - (this.height / 2)}, 25);
+                jQuery('.img_volante').stop(true, true).animate({width: self.width, height: self.height, top: (jQuery(window).height() / 2) - (self.height / 2)}, 25);
                 jQuery('.img_volante img').stop(true, true).fadeIn(1000);
                 <?php } else { ?>
                 jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
-                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (this.height / 2));
+                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (self.height / 2));
                 jQuery('.img_volante img').show();
                 <?php } ?>
         };
@@ -824,11 +852,6 @@ var func_hideIMG = function(event) {
 // Poppin Function
 var popup_counter = {};
 
-function set_displayPOPUP() {
-    jQuery('#forAjax').delegate('.link_popup_volante', 'mouseenter', func_displayPOPUP);
-    jQuery('#forAjax').delegate('.link_popup_volante', 'mouseleave', func_hidePOPUP);
-}
-
 var func_popupXsltCallback = function(trans_obj) {
         var target_element = trans_obj.getTargetElement();
         if (popup_counter[target_element] == 0) {
@@ -848,20 +871,21 @@ var func_popupXsltCallback = function(trans_obj) {
 };
 
 var func_displayPOPUP = function(event) {
-        var position = jQuery('#' + $(this).id).offset();
+        var self = event.currentTarget,
+            position = jQuery('#' + $(self).id).offset();
 
-        if (jQuery('#popup-container-display-' + $(this).id).length == 0) {
-                popup_counter['popup-container-display-' + $(this).id] = 1;
-                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(this).id + '" style="display: none"></div>');
+        if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
+                popup_counter['popup-container-display-' + $(self).id] = 1;
+                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
         } else {
-                popup_counter['popup-container-display-' + $(this).id] += 1;
+                popup_counter['popup-container-display-' + $(self).id] += 1;
         }
         jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(this).id).width() + 10);
+        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
         jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
         jQuery('.popup_volante').show();
 
-        var elements = $(this).id.split('-');
+        var elements = $(self).id.split('-');
         var proc_popup = new Transformation();
         proc_popup.setCallback(func_popupXsltCallback);
         if (elements[0] == "host") {
@@ -871,46 +895,42 @@ var func_displayPOPUP = function(event) {
                 proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id=' + elements[1] + '_' + elements[2]);
                 proc_popup.setXslt(_addrXSLSpanSvc);
         }
-        proc_popup.transform('popup-container-display-' + $(this).id);
+        proc_popup.transform('popup-container-display-' + $(self).id);
 };
 
 var func_hidePOPUP = function(event) {
-        popup_counter['popup-container-display-' + $(this).id] -= 1;
+        var self = event.currentTarget;
+        popup_counter['popup-container-display-' + $(self).id] -= 1;
         jQuery('.popup_volante .container-load').empty();
-        jQuery('#popup-container-display-' + $(this).id).hide();
+        jQuery('#popup-container-display-' + $(self).id).hide();
         jQuery('.popup_volante').hide();
         jQuery('.popup_volante').css('width', 'auto');
         jQuery('.popup_volante').css('height', 'auto');
 };
 
-function set_displayGenericInfo() {
-        jQuery('.link_generic_info_volante').mouseenter(func_displayGenericInfo);
-        // Same func. no need for a new one
-        jQuery('.link_generic_info_volante').mouseleave(func_hidePOPUP);
-}
-
 /* Use 'id' attribute to get element */
 /* Use 'name' attribute to get xml/xsl infos */
 var func_displayGenericInfo = function(event) {
-        var position = jQuery('#' + $(this).id).offset();
+        var self = event.currentTarget,
+            position = jQuery('#' + $(self).id).offset();
 
-        if (jQuery('#popup-container-display-' + $(this).id).length == 0) {
-                popup_counter['popup-container-display-' + $(this).id] = 1;
-                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(this).id + '" style="display: none"></div>');
+        if (jQuery('#popup-container-display-' + $(self).id).length == 0) {
+                popup_counter['popup-container-display-' + $(self).id] = 1;
+                jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).id + '" style="display: none"></div>');
         } else {
-                popup_counter['popup-container-display-' + $(this).id] += 1;
+                popup_counter['popup-container-display-' + $(self).id] += 1;
         }
         jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(this).id).width() + 10);
+        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).id).width() + 10);
         jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
         jQuery('.popup_volante').show();
 
-        var elements = $(this).name.split('|');
+        var elements = $(self).name.split('|');
         var proc_popup = new Transformation();
         proc_popup.setCallback(func_popupXsltCallback);
         proc_popup.setXml(elements[0]);
         proc_popup.setXslt(elements[1]);
-        proc_popup.transform('popup-container-display-' + $(this).id);
+        proc_popup.transform('popup-container-display-' + $(self).id);
 };
 
 // Monitoring Refresh management Options
