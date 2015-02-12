@@ -4,7 +4,7 @@
 A partir des paquets
 ====================
 
-Merethis fournit RPM pour ses produits au travers de la solution Centreon 
+Centreon fournit RPM pour ses produits au travers de la solution Centreon 
 Entreprise Server (CES) en version Open Sources et disponible gratuitement 
 sur notre dépôt.
 
@@ -55,7 +55,7 @@ Depuis CES 2.2, deux choix d'installation sont disponibles
 +--------------------------------------+-----------------------+-----------------+
 
 Vous devez choisir entre l'un des deux processus de configuration de votre 
-plate-forme de supervision. Merethis recommande le premier choix basé sur le 
+plate-forme de supervision. Centreon recommande le premier choix basé sur le 
 moteur "Centreon Engine" et le multiplexeur de flux "Centreon Broker".
 
 Installer un serveur central

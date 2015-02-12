@@ -3,7 +3,7 @@ A propos
 ==========================
 
 Centreon est un logiciel libre de supervision Open Source, édité par la 
-société française Merethis. Il mesure la disponibilité et la performance 
+société française Centreon. Il mesure la disponibilité et la performance 
 des couches applicatives, du service utilisateur jusqu’aux ressources matérielles.
 
 

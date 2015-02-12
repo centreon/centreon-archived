@@ -11,7 +11,7 @@ A view may contain 1 to 3 columns. Each column can contain widgets.
 
 A widget is a module allowing certain information to be viewed on certain objects.
 It is possible to insert multiple widgets of different types in the same view.
-By default, MERETHIS offers widgets allowing to obtain information on: hosts, host groups, services, service groups.
+By default, Centreon offers widgets allowing to obtain information on: hosts, host groups, services, service groups.
 Finally, the last widget allows to view real time performance graphs.
 
 ****************

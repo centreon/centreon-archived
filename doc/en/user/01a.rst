@@ -37,7 +37,7 @@ Why choose Centreon Engine and Broker ?
 
 Performances
 ------------
-The tests carried out by the MERETHIS teams and some independent users show clearly that the Centreon Engine and Centreon Broker pair performs 8 to 9 times better than the Nagios/NDOUtils pair.
+The tests carried out by the Centreon teams and some independent users show clearly that the Centreon Engine and Centreon Broker pair performs 8 to 9 times better than the Nagios/NDOUtils pair.
 
 Better  integration into Centreon
 ---------------------------------

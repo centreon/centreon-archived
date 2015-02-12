@@ -11,7 +11,7 @@ Une vue peut contenir de 1 à 3 colonnes. Chaque colonne peut contenir des widge
 
 Un widget est un module permettant de visualiser certaines informations sur certains objets.
 Il est possible d'insérer au sein d'une même vue plusieurs widgets de différents types.
-Par défaut, MERETHIS propose des widgets permettant d'obtenir des informations sur : les hôtes, les groupes d'hôtes,
+Par défaut, Centreon propose des widgets permettant d'obtenir des informations sur : les hôtes, les groupes d'hôtes,
 les services, les groupes de services. Enfin, un dernier widget permet de visualiser les graphiques de performances en temps réel.
 
 ****************

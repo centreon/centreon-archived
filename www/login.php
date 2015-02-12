@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give Centreon
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -37,7 +37,7 @@
 <head>
 <title>Centreon - IT & Network Monitoring</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2013 Open Source Matters. All rights reserved." />
+<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2015 Open Source Matters. All rights reserved." />
 <meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="./img/favicon.ico">
@@ -104,7 +104,7 @@
                 </td>
             </tr>
             <tr>
-                <td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2014 <a href="mailto:infos@centreon.com">Centreon</a></td>
+                <td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2015 <a href="mailto:infos@centreon.com">Centreon</a></td>
             </tr>
         </table>
     </div>

@@ -8,14 +8,14 @@ Téléchargements
 Formats
 *******
 
-De manière générale, les logiciels Open Sources fournis par Merethis sont disponibles sous 3 formats :
+De manière générale, les logiciels Open Sources fournis par Centreon sont disponibles sous 3 formats :
 
 * paquets RPM (recommandé)
 * archives contenant les sources
 * dépôts git
 
 Les paquets RPM sont le meilleur format pour obtenir nos logiciels.
-Ces derniers ont été packagés par des experts Merethis et permettent
+Ces derniers ont été packagés par des experts Centreon et permettent
 de ne pas se soucier du processus d'installation.
 
 Si votre plate-forme ne supporte pas les paquets RPMs, vous devrez
@@ -28,7 +28,7 @@ bêta-testeurs. Aucun support officiel ne pourra être délivré sur ces
 versions logicielles considérées comme en cours de développement.
 
 .. note::
-    Merethis recommande l'utilisation de la version packagée Centreon Enterprise Server. L'installation est détaillée au chapitre :ref:`Premier pas avec CES 3.0<firststepsces3>`
+    Centreon recommande l'utilisation de la version packagée Centreon Enterprise Server. L'installation est détaillée au chapitre :ref:`Premier pas avec CES 3.0<firststepsces3>`
 
 .. _download_web_src:
 

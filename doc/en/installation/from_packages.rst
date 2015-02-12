@@ -4,7 +4,7 @@
 Using packages
 ==============
 
-Merethis supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
+Centreon supplies RPM for its products via the Centreon Enterprise Server (CES) solution Open Sources version available free of charge on our repository.
 
 These packages have been successfully tested on CentOS and Red Hat environments in 5.x and 6.x versions
 
@@ -67,7 +67,7 @@ From CES 2.2, two installation choices are available
 | centreon-base-config-nagios           | Nagios            | NDOutils        |
 +---------------------------------------+-------------------+-----------------+
 
-You should choose between one of the two configuration processes of your monitoring platform. Merethis recommends the first choice based on the “Centreon Engine” scheduler and the “Centreon Broker” stream multiplexer.
+You should choose between one of the two configuration processes of your monitoring platform. Centreon recommends the first choice based on the “Centreon Engine” scheduler and the “Centreon Broker” stream multiplexer.
 
 Install a central server
 ------------------------
