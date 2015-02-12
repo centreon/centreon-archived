@@ -442,12 +442,24 @@ SELECT `instance_name` FROM `instance` WHERE `instance_id` = '$ns_server->{id}' 
 EOQ
         $self->log_and_exit("Cannot read instance name from database") if $status == -1;
         if (!$sth->rows()) {
-            $status = $self->{csdb}->do(<<"EOQ");
+            # Test if the instance name is already registered
+            ($status, $sth) = $self->{csdb}->query(<<"EOQ");
+SELECT `instance_id` FROM `instance` WHERE `instance_name` = '$ns_server->{name}'
+EOQ
+            $self->log_and_exit("Cannot read instance namd from database") if $status == -1;
+            if (!$sth->rows()) {
+                $status = $self->{csdb}->do(<<"EOQ");
 INSERT INTO `instance` 
 (`instance_id`, `instance_name`, `log_flag`)
     VALUES ('$ns_server->{id}', '$ns_server->{name}', '0')
 EOQ
-            $self->log_and_exit("Cannot save instance to database") if $status == -1;
+                $self->log_and_exit("Cannot save instance to database") if $status == -1;
+            } else {
+                $status = $self->{csdb}->do(<<"EOQ");
+UPDATE `instance` SET `instance_id` = '$ns_server->{id}' WHERE `instance_name` = '$ns_server->{name}'
+EOQ
+                $self->log_and_exit("Cannot update instance to database") if $status == -1;
+            }
         } else {
             $status = $self->{csdb}->do(<<"EOQ");
 UPDATE `instance` SET `instance_name` = '$ns_server->{name}' 

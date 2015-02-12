@@ -1194,6 +1194,20 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
      *  Update multiple templates
      */
     if (isset($_REQUEST['tpSelect'])) {
+        /* Cleanup host service link to host template to be removed */
+        $newTp = array();
+        foreach ($_POST['tpSelect'] as $tmpl) {
+            $newTp[$tmpl] = $tmpl;
+        }
+
+        $DBRESULT = $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id` = '" . $host_id . "'");
+        while ($hst = $DBRESULT->fetchRow()) {
+            if (!isset($newTp[$hst['host_tpl_id']])) {
+                deleteHostServiceMultiTemplate($host_id, $hst['host_tpl_id'], $newTp);
+            }
+        }
+
+        /* Set template */
         $hostObj->setTemplates($host_id, $_REQUEST['tpSelect']);
     } elseif (isset($ret["use"]) && $ret["use"]) {
         $already_stored = array();
@@ -1209,6 +1223,19 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
                 $already_stored[$tplId] = 1;
             }
         }
+    } else {
+        /* Cleanup host service link to host template to be removed */
+        $newTp = array();
+
+        $DBRESULT = $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id` = '" . $host_id . "'");
+        while ($hst = $DBRESULT->fetchRow()) {
+            if (!isset($newTp[$hst['host_tpl_id']])) {
+                deleteHostServiceMultiTemplate($host_id, $hst['host_tpl_id'], $newTp);
+            }
+        }
+
+        /* Set template */
+        $hostObj->setTemplates($host_id, array());
     }
 
     /*
