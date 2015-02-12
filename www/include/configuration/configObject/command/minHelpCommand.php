@@ -92,7 +92,7 @@
 	$command = str_replace("#S#", "/", $command);
 	$command = str_replace("#BS#", "\\", $command);
 
-	if (!strncmp($command, "/usr/lib/nagios/", strlen("/usr/lib/nagios/"))) {
+	if (strncmp($command, "/usr/lib/nagios/", strlen("/usr/lib/nagios/"))) {
 	    if (is_dir("/usr/lib64/nagios/")) {
 	        $command = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $command);
 	        $oreon->optGen["nagios_path_plugins"] = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $oreon->optGen["nagios_path_plugins"]);
