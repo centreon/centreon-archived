@@ -315,7 +315,7 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     }
                     $fields['host_childs'] = trim($fields['host_childs'], ",");
 
-# We need to duplicate the entire Service and not only create a new relation for it in the DB / Need Service functions
+                    // We need to duplicate the entire Service and not only create a new relation for it in the DB / Need Service functions
                     if (file_exists($path."../service/DB-Func.php"))
                         require_once($path."../service/DB-Func.php");
                     else if (file_exists($path."../service/DB-Func.php"))
@@ -323,10 +323,10 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     $hostInf = $maxId["MAX(host_id)"];
                     $serviceArr = array();
                     $serviceNbr = array();
-# Get all Services link to the Host
+                    // Get all Services link to the Host
                     $DBRESULT = $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
                     while($service = $DBRESULT->fetchRow())	{
-# If the Service is link with several Host, we keep this property and don't duplicate it, just create a new relation with the new Host
+                        // If the Service is link with several Host, we keep this property and don't duplicate it, just create a new relation with the new Host
                         $DBRESULT2 = $pearDB->query("SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '".$service["service_service_id"]."'");
                         $mulHostSv = $DBRESULT2->fetchrow();
                         if ($mulHostSv["COUNT(*)"] > 1)	{
@@ -337,12 +337,11 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                             $serviceNbr[$service["service_service_id"]] = 1;
                         }
                     }
-# Register Host -> Duplicate the Service list
+                    // Register Host -> Duplicate the Service list
                     if ($row["host_register"] == 1) {
                         multipleServiceInDB($serviceArr, $serviceNbr, $hostInf, 0);
-                    }
-# Host Template -> Link to the existing Service Template List
-                    else {
+                    } else {
+                        // Host Template -> Link to the existing Service Template List
                         $DBRESULT = $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
                         while($svs = $DBRESULT->fetchRow()){
                             $DBRESULT1 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$svs["service_service_id"]."')");
@@ -450,10 +449,10 @@ function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
                     $centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
                 }
             }
+            $centreon->user->access->updateACL(array("type" => 'HOST', 'id' => $host_id, "action" => "ADD"));
         }
     }
     CentreonACL::duplicateHostAcl($hostAcl);
-    $centreon->user->access->updateACL();
 }
 
 function updateHostInDB ($host_id = NULL, $from_MC = false, $cfg = NULL) {
@@ -1159,20 +1158,12 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     isset($ret["host_retain_status_information"]["host_retain_status_information"]) && $ret["host_retain_status_information"]["host_retain_status_information"] != 2 ? $rq .= "'".$ret["host_retain_status_information"]["host_retain_status_information"]."', " : $rq .= "'2', ";
     $rq .= "host_retain_nonstatus_information = ";
     isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]) && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]."', " : $rq .= "'2', ";
-	/*	$rq .= "host_notification_interval = ";
-     isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL ? $rq .= "'".$ret["host_notification_interval"]."', " : $rq .= "NULL, ";*/
-	/*	$rq .= "host_first_notification_delay = ";
-     isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= "NULL, ";
-     $rq .= "host_notification_options = ";
-     isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";*/
     $rq .= "host_notifications_enabled = ";
     isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', " : $rq .= "'2', ";
     $rq.= "contact_additive_inheritance = ";
     $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
     $rq.= "cg_additive_inheritance = ";
     $rq .= (isset($ret['cg_additive_inheritance']) ? 1 : 0) . ', ';
-    /*$rq .= "host_first_notification_delay = ";
-     isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= " NULL, ";*/
     $rq .= "host_stalking_options = ";
     isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
     $rq .= "host_snmp_community = ";
@@ -1281,14 +1272,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     if (isset($ret["host_process_perf_data"])) $fields["host_process_perf_data"] = $ret["host_process_perf_data"]["host_process_perf_data"];
     if (isset($ret["host_retain_status_information"])) $fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
     if (isset($ret["host_retain_nonstatus_information"])) $fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
-	//	if (isset($ret["host_notification_interval"])) $fields["host_notification_interval"] = $ret["host_notification_interval"];
-	//	if (isset($ret["host_first_notification_delay"])) $fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
-	/*	$fields["host_notifOpts"] = "";
-     if (isset($ret["host_notifOpts"]))
-     $fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));*/
     if (isset($ret["host_notifications_enabled"])) $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
-	//	if (isset($ret["host_first_notification_delay"]))
-	//		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
     $fields["host_stalOpts"] = "";
     if (isset($ret["host_stalOpts"]))
         $fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
@@ -1378,10 +1362,6 @@ function updateHost_MC($host_id = null)	{
         $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
         $fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
     }
-	/*	if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
-     $rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
-     $fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-     }*/
     if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL) {
         $rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
         $fields["command_command_id2"] = $ret["command_command_id2"];
@@ -1458,18 +1438,6 @@ function updateHost_MC($host_id = null)	{
         $rq .= "host_retain_nonstatus_information = '".$ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]."', ";
         $fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
     }
-    /*if (isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL) {
-     $rq .= "host_notification_interval = '".$ret["host_notification_interval"]."', ";
-     $fields["host_notification_interval"] = $ret["host_notification_interval"];
-     }*/
-    /* if (isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL) {
-     $rq .= "host_first_notification_delay = '".$ret["host_first_notification_delay"]."', ";
-     $fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
-     }*/
-    /*if (isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL) {
-     $rq .= "host_notification_options = '".implode(",", array_keys($ret["host_notifOpts"]))."', ";
-     $fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
-     }*/
     if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
         $rq .= "host_notifications_enabled = '".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', ";
         $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
@@ -2420,5 +2388,3 @@ function setHostCriticality($hostId, $criticalityId) {
                                 VALUES (".$pearDB->escape($criticalityId).", ".$pearDB->escape($hostId).")");
     }
 }
-
-?>
