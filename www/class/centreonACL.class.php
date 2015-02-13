@@ -1209,6 +1209,18 @@ class CentreonACL
                             $pearDBO->query($request2);
                         }
                     }
+                } else if (isset($data['type']) && $data["type"] == 'SERVICE' && $data['action'] == 'ADD') {
+                    $hosts = getMyServiceHosts($data["id"]);
+                    print_r($hosts);
+                    $svc_name = getMyServiceName($data["id"]); 
+                    foreach ($hosts as $host_id => $host_name) {
+                        $request = "SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id IN (SELECT acl_res_id FROM acl_resources_host_relations WHERE host_host_id = '".$host_id."')";
+                        $DBRESULT = $pearDB->query($request);
+                        while ($row = $DBRESULT->fetchRow()) {
+                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$host_id."', '".$data["id"]."', '$host_name', '$svc_name', ".$row['acl_group_id'].")";
+                            $pearDBO->query($request2);
+                        }
+                    }
                 }
             }
         } else {

@@ -442,37 +442,39 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
     // Foreach Service
     $maxId["MAX(service_id)"] = null;
     
-    foreach($services as $key=>$value)	{
+    foreach ($services as $key => $value)	{
         // Get all information about it
         $DBRESULT = $pearDB->query("SELECT * FROM service WHERE service_id = '".$key."' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["service_id"] = '';
+        
         // Loop on the number of Service we want to duplicate
         for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
             $val = null;
-            # Create a sentence which contains all the value
-                foreach ($row as $key2=>$value2) {
-                    if ($key2 == "service_description" && $descKey) {
-                        $service_description = $value2 = $value2."_".$i;
-                    } elseif ($key2 == "service_description") {
-                        $service_description = null;
-                    }
-                    $val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'") : ", NULL") : $val .= ($value2 !=NULL ? ("'".$pearDB->escape($value2)."'") : "NULL");
-                    if ($key2 != "service_id") {
-                        $fields[$key2] = $value2;
-                    }
-                    if (isset($service_description)) {
-                        $fields["service_description"] = $service_description;
-                    }
+            
+            // Create a sentence which contains all the value
+            foreach ($row as $key2=>$value2) {
+                if ($key2 == "service_description" && $descKey) {
+                    $service_description = $value2 = $value2."_".$i;
+                } elseif ($key2 == "service_description") {
+                    $service_description = null;
                 }
-
+                $val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'") : ", NULL") : $val .= ($value2 !=NULL ? ("'".$pearDB->escape($value2)."'") : "NULL");
+                if ($key2 != "service_id") {
+                    $fields[$key2] = $value2;
+                }
+                if (isset($service_description)) {
+                    $fields["service_description"] = $service_description;
+                }
+            }
+            
             if (!count($hPars)) {
                 $hPars = getMyServiceHosts($key);
             }
             if (!count($hgPars)) {
                 $hgPars = getMyServiceHostGroups($key);
             }
-
+            
             if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params)) ||
                 (!$row["service_register"] && testServiceTemplateExistence($service_description))) {
                 $hPars = array();
@@ -625,6 +627,7 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
                     }
                 }
             }
+            $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $maxId["MAX(service_id)"], "action" => "ADD"));
         }
     }
     return ($maxId["MAX(service_id)"]);
