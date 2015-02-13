@@ -11,4 +11,4 @@ ALTER TABLE `extended_service_information` MODIFY esi_notes TEXT, MODIFY esi_not
 ALTER TABLE auth_ressource_info CHANGE ari_value ari_value VARCHAR(1024);
 
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '2.6.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.5.x' LIMIT 1;
+UPDATE `informations` SET `value` = '2.6.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.5.4' LIMIT 1;
