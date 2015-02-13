@@ -68,7 +68,7 @@
     <div style='text-align:center;align:center;padding-top:90px;'>
         <table id="logintab1" style="text-align:center;" align="center">
         <tr>
-            <td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
+            <td class="LoginInvitLogo" colspan="2"><img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
         </tr>
         <tr>
             <td class="LoginInvitVersion"><br />
