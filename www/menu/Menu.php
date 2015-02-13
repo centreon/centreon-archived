@@ -90,7 +90,7 @@
 	$color["DOWN"] =  		$oreon->optGen["color_down"];
 	$color["UNREACHABLE"] = $oreon->optGen["color_unreachable"];
 
-	$tpl->assign("urlLogo", 'img/centreon.gif');
+	$tpl->assign("urlLogo", 'img/centreon.png');
 
 	/**
 	 * ACL
