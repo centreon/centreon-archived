@@ -2,7 +2,7 @@
     <tr height="83" style="background-image: url('../img/bg_banner.gif');">
         <th width="400" height="83">{$step} - {$title}</th>
         <th width="200" height="83" style="text-align: right; padding: 0px;">
-            <a href="http://www.centreon.com" target="_blank"><img src="../img/centreon.gif" alt="Centreon" border="0" style='padding-right:15px;padding-top:10px;'></a>
+            <a href="http://www.centreon.com" target="_blank"><img src="../img/centreon.png" alt="Centreon" border="0" style='padding-right:15px;padding-top:10px;'></a>
         </th>
     </tr>
     <tr>

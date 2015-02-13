@@ -148,7 +148,7 @@ class CentreonDB {
                 <body>
                   <center>
                   <div style="padding-top:150px;padding-bottom:50px;">
-                        <img src="./img/centreon.gif" alt="Centreon"/><br/>
+                        <img src="./img/centreon.png" alt="Centreon"/><br/>
                   </div>
                   <div class="Error">' . $msg . '</div>
                   <div style="padding: 50px;"><a href="#" onclick="location.reload();">Refresh Here</a></div>
