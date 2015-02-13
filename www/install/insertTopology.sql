@@ -261,16 +261,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (26,20104,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (27,202,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (28,203,NULL,'./include/common/javascript/changetab.js','initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (29,203,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (31,3,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (32,307,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (33,30701,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (34,30702,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (35,30703,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (36,30704,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (37,4,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (38,402,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (39,40201,NULL,'./include/common/javascript/datePicker.js','');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (40,3,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (41,307,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (42,30701,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
@@ -402,7 +392,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (168,60701,NULL,'./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (169,60708,NULL,'./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (170,102,NULL,'./include/common/javascript/changetab.js','initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (171,20301,NULL,'./include/common/javascript/datePicker.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (172,203,NULL,'./include/common/javascript/codebase/dhtmlxtree.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (173,203,NULL,'./include/common/javascript/codebase/dhtmlxcommon.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (174,4,NULL,'./include/common/javascript/codebase/dhtmlxtree.js',NULL);
@@ -416,8 +405,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (182,60101,'a','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (183,60101,'c','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (184,60101,'mc','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (185,30703,NULL,'./include/common/javascript/datePicker.js','');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (186,30704,NULL,'./include/common/javascript/datePicker.js','');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (187,50202,'a','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (188,50202,'c','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (189,50202,'w','./include/common/javascript/changetab.js','initChangeTab');
