@@ -1185,20 +1185,34 @@ class CentreonACL
     /*
      * Function that sets the changed flag to 1 for the cron centAcl.php
      */
-    public function updateACL()
+    public function updateACL($data = null)
     {
-        global $pearDB, $centreon_path;
+        global $pearDB, $pearDBO, $centreon_path;
 
         if (!$this->admin) {
             $groupIds = array_keys($this->accessGroups);
             if (is_array($groupIds) && count($groupIds)) {
-                $DBRESULT = $pearDB->query("UPDATE acl_groups 
-                    SET acl_group_changed = '1' 
-                    WHERE acl_group_id IN (".implode(",", $groupIds).")");
-                passthru("php " . $centreon_path . "/cron/centAcl.php");
+                $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id IN (".implode(",", $groupIds).")");
+                if (isset($data['type']) && $data["type"] == 'HOST' && $data['action'] == 'ADD') {
+                    $host_name = getMyHostName($data["id"]);
+                    $request = "SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id IN (SELECT acl_res_id FROM acl_resources_host_relations WHERE host_host_id = '".$data['id']."')";
+                    $DBRESULT = $pearDB->query($request);
+                    while ($row = $DBRESULT->fetchRow()) {
+                        // Insert New Host
+                        $request1 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$data["id"]."', NULL, '$host_name', NULL, ".$row['acl_group_id'].")";
+                        $pearDBO->query($request1);
+                        
+                        // Insert services
+                        $svc = getMyHostServices($data['id']);
+                        foreach ($svc as $svc_id => $svc_name) {
+                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$data["id"]."', $svc_id, '$host_name', '$svc_name', ".$row['acl_group_id'].")";
+                            $pearDBO->query($request2);
+                        }
+                    }
+                }
             }
         } else {
-            $DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+            $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
         }
     }
 

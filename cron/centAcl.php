@@ -136,7 +136,7 @@ try {
         programExit($errorMessage);
     }
 
-    /*     * **********************************************
+    /** **********************************************
      * Sync ACL with ldap
      */
     $queryOptions = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
@@ -152,7 +152,7 @@ try {
         }
     }
 
-    /*     * ********************************************
+    /** ********************************************
      * If the ldap is enable and the last check
      * is more than update period
      */

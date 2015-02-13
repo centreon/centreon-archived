@@ -261,7 +261,7 @@ function deleteHostInDB ($hosts = array())	{
                 $centreon->CentreonLogAction->insertLog("service", $row["service_service_id"], $hostname['host_name']."/".$svcname["service_description"], "d");
             }
         }
-        $centreon->user->access->updateACL();
+        $centreon->user->access->updateACL(array("type" => 'HOST', 'id' => $key, "action" => "DELETE"));
         $DBRESULT = $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
         $DBRESULT = $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
         $DBRESULT = $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");
@@ -640,11 +640,11 @@ function insertHostInDB ($ret = array(), $macro_on_demand = NULL)	{
     updateHostHostCategory($host_id, $ret);
     updateHostTemplateService($host_id, $ret);
     updateNagiosServerRelation($host_id, $ret);
-    $centreon->user->access->updateACL();
     $ret = $form->getSubmitValues();
     if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
         createHostTemplateService($host_id);
     }
+    $centreon->user->access->updateACL(array("type" => 'HOST', 'id' => $host_id, "action" => "ADD", "access_grp_id" => $ret["acl_groups"]));
     insertHostExtInfos($host_id, $ret);
     return ($host_id);
 }
@@ -1328,7 +1328,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     if (isset($ret["nagios_server_id"]))
         $fields["nagios_server_id"] = $ret["nagios_server_id"];
     $centreon->CentreonLogAction->insertLog("host", $host_id, CentreonDB::escape($ret["host_name"]), "c", $fields);
-    $centreon->user->access->updateACL();
+    $centreon->user->access->updateACL(array("type" => 'HOST', 'id' => $host_id, "action" => "UPDATE"));
 }
 
 function updateHost_MC($host_id = null)	{

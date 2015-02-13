@@ -347,7 +347,7 @@ function deleteServiceInDB ($services = array())
         $DBRESULT = $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
         $DBRESULT = $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
     }
-    $centreon->user->access->updateACL();
+    $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $key, "action" => "DELETE"));
 }
 
 function divideGroupedServiceInDB($service_id = null, $service_arr = array(), $toHost = null) {
@@ -786,7 +786,7 @@ function insertServiceInDB ($ret = array(), $macro_on_demand = null)
     insertServiceExtInfos($service_id, $ret);
     updateServiceTrap($service_id, $ret);
     updateServiceCategories($service_id, $ret);
-    $centreon->user->access->updateACL();
+    $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $service_id, "action" => "ADD"));
     $fields = $tmp_fields['fields'];
     $centreon->CentreonLogAction->insertLog("service", $service_id, $fields["service_description"], "a", $fields);
     return ($service_id);
@@ -1284,7 +1284,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     if (isset($ret["service_traps"]))
         $fields["service_traps"] = implode(",", $ret["service_traps"]);
     $centreon->CentreonLogAction->insertLog("service", $service_id, $ret["service_description"], "c", $fields);
-    $centreon->user->access->updateACL();
+    $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $service_id, "action" => "UPDATE"));
 }
 
 function updateService_MC($service_id = null, $params = array()) 
