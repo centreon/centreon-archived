@@ -1,7 +1,7 @@
 [
     {
         "alias": "Centreon Main",
-        "author": "Merethis",
+        "author": "Centreon",
         "description": "Centreon Main Module",
         "id": "1",
         "isactivated": "2",
@@ -11,7 +11,7 @@
     },
     {
         "alias": "Centreon Administration",
-        "author": "Merethis",
+        "author": "Centreon",
         "description": "Centreon Administration Module",
         "id": "2",
         "isactivated": "2",
@@ -21,7 +21,7 @@
     },
     {
         "alias": "Centreon Configuration",
-        "author": "Merethis",
+        "author": "Centreon",
         "description": "Centreon Configuration Module",
         "id": "3",
         "isactivated": "1",
@@ -31,7 +31,7 @@
     },
     {
         "alias": "Centreon Realtime",
-        "author": "Merethis",
+        "author": "Centreon",
         "description": "Realtime module for Centreon",
         "id": "4",
         "isactivated": "1",
@@ -41,7 +41,7 @@
     },
     {
         "alias": "Centreon Bam",
-        "author": "Merethis",
+        "author": "Centreon",
         "description": "Centreon Business Activity Monitoring module",
         "id": "5",
         "isactivated": "1",
@@ -51,7 +51,7 @@
     },
     {
         "alias": "Centreon Custom Views",
-        "author": "Merethis",
+        "author": "Centreon",
         "description": "Centreon Custom Views Module",
         "id": "6",
         "isactivated": "1",
@@ -61,7 +61,7 @@
     },
     {
         "alias": "Centreon Security",
-        "author": "Merethis",
+        "author": "Centreon",
         "description": "Centreon Security Module",
         "id": "7",
         "isactivated": "2",

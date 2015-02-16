@@ -1,7 +1,7 @@
 {
     "name": "Google Map",
     "shortname": "CentreonGoogleMap",
-    "author": "Merethis",
+    "author": "Centreon",
     "email": "contact@centreon.com",
     "website": "http://www.centreon.com",
     "description": "Google Map Widget for displaying geographical position of hosts.",

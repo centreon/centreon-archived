@@ -106,7 +106,7 @@
         <div>
             <ul class="center-block list-inline">
                 <li><a href="http://www.centreon.com/">Centreon</a></li>
-                <li><a href="http://www.centreon.com/">Merethis</a></li>
+                <li><a href="http://www.centreon.com/">Centreon</a></li>
             </ul>
         </div>
         <div>

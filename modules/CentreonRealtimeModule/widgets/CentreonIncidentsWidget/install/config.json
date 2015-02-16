@@ -1,7 +1,7 @@
 {
     "name": "Centreon Incidents",
     "shortname": "CentreonIncidents",
-    "author": "Merethis",
+    "author": "Centreon",
     "email": "contact@centreon.com",
     "website": "http://www.centreon.com",
     "description": "Widget that displays the last 10 Incidents ",
