@@ -48,7 +48,7 @@
 			return ;
         }
         
-		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", $id);
+		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = ? AND contact.contact_id = session.user_id", $sid);
 		$admin = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
