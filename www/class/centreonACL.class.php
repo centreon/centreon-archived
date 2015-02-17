@@ -1211,7 +1211,6 @@ class CentreonACL
                     }
                 } else if (isset($data['type']) && $data["type"] == 'SERVICE' && $data['action'] == 'ADD') {
                     $hosts = getMyServiceHosts($data["id"]);
-                    print_r($hosts);
                     $svc_name = getMyServiceName($data["id"]); 
                     foreach ($hosts as $host_id => $host_name) {
                         $request = "SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id IN (SELECT acl_res_id FROM acl_resources_host_relations WHERE host_host_id = '".$host_id."')";
