@@ -3,7 +3,7 @@
     <table name="cfg_forms_wizards" phpName="FormWizard" idMethod="native">
         <column name="wizard_id" phpName="WizardId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="45" required="true"/>
-        <column name="route" phpName="Route" type="VARCHAR" size="45" required="true"/>
+        <column name="route" phpName="Route" type="VARCHAR" size="255" required="true"/>
         <column name="module_id" phpName="ModuleId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <foreign-key foreignTable="cfg_modules" name="fk_wizard_module_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="module_id" foreign="id"/>
