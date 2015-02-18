@@ -101,25 +101,24 @@ class HostRepository extends Repository
         $router = $di->get('router');
         
         $finalRoute = "";
-        
-        while (1) {
+        $templates = array();
+        $alreadyProcessed = false;
+        $hostIdTab = Host::getIdByParameter('host_name', array($host_name));
+        if (count($hostIdTab) == 0) {
+            $finalRoute = "<i class='fa fa-hdd-o'></i>";
+        } else {
+            $hostId = $hostIdTab[0];
+        }
+
+        while (empty($finalRoute)) {
             $stmt = $dbconn->query(
-                "SELECT b.filename, h.host_id "
+                "SELECT b.filename "
                 . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
-                . "WHERE h.host_name = '$host_name' "
+                . "WHERE h.host_id = '$hostId' "
                 . "AND h.host_id = hir.host_id "
                 . "AND hir.binary_id = b.binary_id"
             );
             $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
-            $stmtTpl = $dbconn->query(
-                "SELECT host_tpl_id, host_name "
-                . "FROM cfg_hosts, cfg_hosts_templates_relations "
-                . "WHERE host_host_id = '$ehiResult[host_id]' "
-                . "AND host_id = host_host_id "
-                . "LIMIT 1"
-            );
-            $tplResult = $stmtTpl->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($ehiResult['filename'])) {
                 $filenameExploded = explode('.', $ehiResult['filename']);
@@ -131,17 +130,20 @@ class HostRepository extends Repository
                     'format' => '.'.$fileFormat
                 );
                 $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
-                $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
-                break;
-            } elseif (is_null($ehiResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
-                $finalRoute .= "<i class='fa fa-hdd-o'></i>";
-                break;
+                $finalRoute = '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
+            } else {
+                if (count($templates) == 0 && !$alreadyProcessed) {
+                    $templates = static::getTemplateChain($hostId);
+                    $alreadyProcessed = true;
+                } else if (count($templates) == 0 && $alreadyProcessed) {
+                    $finalRoute = "<i class='fa fa-hdd-o'></i>";
+                }
+                $currentHost = array_shift($templates);
+                $hostId = $currentHost['id'];
             }
-            
-            $host_name = $tplResult['host_name'];
         }
-        
-        return $finalRoute;
+
+        return $finalRoute;    
     }
 
     /**
@@ -236,10 +238,7 @@ class HostRepository extends Repository
     public static function getInheritanceValues($hostId)
     {
         $values = array();
-        $templates = static::getRelations(
-            '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-            $hostId
-        );
+        $templates = static::getTemplateChain($hostId);
         foreach ($templates as $template) {
             $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
             $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
@@ -250,5 +249,20 @@ class HostRepository extends Repository
             $values = array_merge($tmplValues, $values);
         }
         return $values;
+    }
+
+    /**
+     * Get template list (id, text)
+     *
+     * @param int $hostId The host template Id
+     * @return array
+     */
+    public static function getTemplateChain($hostId)
+    {
+        $templates = static::getRelations(
+            '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
+            $hostId
+        );
+        return $templates;
     }
 }

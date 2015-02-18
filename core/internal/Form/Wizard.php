@@ -65,8 +65,6 @@ class Wizard extends Generator
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
         $route = $this->formRoute;
-        $baseUrl = rtrim($di->get('config')->get('global', 'base_url'), '/');
-        $route = str_replace($baseUrl, '', $route);
 
         $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, 
             s.rank as step_rank, sf.mandatory as mandatory,

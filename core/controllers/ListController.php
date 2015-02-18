@@ -123,7 +123,9 @@ abstract class ListController extends Controller
         static::$moduleName = Informations::getModuleFromPath($rc->getFileName());
         static::$moduleShortName = Informations::getModuleSlugName(static::$moduleName);
 
-        $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . static::$objectName;
+        if ($this->objectBaseUrl === '' || is_null($this->objectBaseUrl)) {
+            $this->objectBaseUrl = '/' . static::$moduleShortName . '/' . static::$objectName;
+        }
     }
 
     /**
