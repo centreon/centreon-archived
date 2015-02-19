@@ -1,5 +1,4 @@
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
-<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <div id="div1">
 <form {$form.attributes}>
 	<table class="ajaxOption">
