@@ -32,52 +32,23 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Internal\Form\Custom;
+
+namespace Centreon\Internal\Form\Validators;
 
 /**
- * @author Lionel Assepo <lassepo@centreon.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Text extends Customobject
+interface ValidatorInterface
 {
     /**
-     * 
-     * @param array $element
-     * @return array
+     * Validate a value
+     *
+     * @param mixed $value
+     * @param string $objectName
+     * @param int $id
+     * @return bool
      */
-    public static function renderHtmlInput(array $element)
-    {
-        $value = (isset($element['html']) ? 'value="'.$element['html'].'" ' : '');
-        
-        $placeholder = 'placeholder="'.$element['name'].'" ';
-        if (isset($element['label_label']) && (!empty($element['label_label']))) {
-            $placeholder = 'placeholder="'.$element['label_label'].'" ';
-        }
-        
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
-        }
-        
-        $addClass = '';
-        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
-        }
-        
-        $myJs = '';
-
-        $inputHtml = '<span><input '.
-                        'id="'.$element['id'].'" '.
-                        'type="text" '.
-                        'name="'.$element['name'].'" '.
-                        $value.
-                        'class="form-control input-sm '.$addClass.'" '.
-                        $placeholder.
-                        '/><span>';
-        
-        return array(
-            'html' => $inputHtml,
-            'js' => $myJs
-        );
-    }
+    public static function validate($value, $params);
 }

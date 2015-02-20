@@ -32,14 +32,12 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
 
-/**
- * @author Lionel Assepo <lassepo@centreon.com>
- * @package Centreon
- * @subpackage Core
- */
-class Textarea extends Customobject
+use Centreon\Internal\Di;
+
+class Selectimage extends Component
 {
     /**
      * 
@@ -48,38 +46,52 @@ class Textarea extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        $value = (isset($element['html']) ? ''.$element['html'].' ' : '');
+        $selectImageParameters = array(
+            'label_label' => $element['label_label'],
+            'label_multiple' => false,
+            'name' => $element['name'],
+            'label_object_type' => $element['label_object_type'],
+            'label_defaultValuesRoute' => $element['label_defaultValuesRoute'],
+            'label_listValuesRoute' => $element['label_listValuesRoute'],
+            'label_extra' => $element['label_extra'],
+            'label_object_type' => $element['label_object_type']
+        );
         
-        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
-            $element['label'] = $element['name'];
-        }
+        $addImageUrl = Di::getDefault()
+                        ->get('router')
+                        ->getPathFor($element['label_wizardRoute']);
         
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
-        }
+        $selectForImage = Select::renderHtmlInput($selectImageParameters);
+        $fileUploadForImage = File::renderHtmlInput($element);
         
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
-        }
+        $finalHtml = '<div class="row">'
+                . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
+                . '<div class="col-sm-2">'
+                    . '<button '
+                        . 'class="btn btn-default btn-sm" '
+                        . 'id="modalAdd_'.$element['name'].'" '
+                        . 'type="button">'
+                        . 'Add Files...'
+                    . '</button>'
+                . '</div>'
+            . '</div>';
         
-        $addClass = '';
-        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
-        }
-        
-        $inputHtml = '<textarea '.
-                    'id="'.$element['id'].'" '.
-                    'name="'.$element['name'].'" '.
-                    'class="form-control '.$addClass.'" '.
-                    'rows="3" '.
-                    $placeholder.
-                    '>'.$value.'</textarea>';
-        
-        $myJs = '';
+        $finalJs = $selectForImage['js'].' '.$fileUploadForImage['js'].' ';
+        $finalJs .= '$("#modalAdd_'.$element['name'].'").on("click", function(e) {
+            $("#modal").removeData("bs.modal");
+            $("#modal").removeData("centreonWizard");
+            $("#modal .modal-content").text("");
+            $("#modal").one("loaded.bs.modal", function(e) {
+                $(this).centreonWizard();
+            });
+            $("#modal").modal({
+                "remote": "'.$addImageUrl.'"
+            });
+        });';
         
         return array(
-            'html' => $inputHtml,
-            'js' => $myJs
+            'html' => $finalHtml,
+            'js' => $finalJs
         );
     }
 }

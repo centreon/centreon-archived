@@ -37,8 +37,7 @@
 namespace Centreon\Controllers;
 
 use Centreon\Internal\Form;
-use Centreon\Internal\Form\Wizard;
-use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form\Generator\Web\Wizard;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Controller;
@@ -337,10 +336,6 @@ abstract class ListController extends Controller
      */
     public function getMcFieldAction()
     {
-        $di = Di::getDefault();
-        $this->router = $di->get('router');
-        $dbconn = $di->get('db_centreon');
-        
         $requestParam = $this->getParams('named');
 
         $stmt = $this->routeprepare(

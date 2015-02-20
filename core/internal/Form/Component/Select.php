@@ -41,7 +41,7 @@ use Centreon\Internal\Di;
  * @package Centreon
  * @subpackage Core
  */
-class Select extends Customobject
+class Select extends Component
 {
     /**
      * 

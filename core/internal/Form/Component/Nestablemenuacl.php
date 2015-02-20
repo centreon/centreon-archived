@@ -43,7 +43,7 @@ use CentreonAdministration\Repository\AclmenuRepository;
  * @package Centreon
  * @subpackage Core
  */
-class Nestablemenuacl extends Customobject
+class Nestablemenuacl extends Component
 {
     private static $aclmenudata = array();
 

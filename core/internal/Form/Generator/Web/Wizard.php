@@ -33,7 +33,7 @@
  *
  */
 
-namespace Centreon\Internal\Form;
+namespace Centreon\Internal\Form\Generator\Web;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Form;
@@ -45,12 +45,12 @@ use Centreon\Internal\Form;
  * @package Centreon
  * @subpackage Core
  */
-class Wizard extends Generator
+class Wizard extends Full
 {
     /**
      * Constructor
      *
-     * @see \Centreon\Form\Generator::__construct
+     * @see \Centreon\Internal\Form\Generator\Web\Full::__construct
      */
     public function __construct($formRoute, $extraParams = array())
     {
@@ -119,47 +119,5 @@ class Wizard extends Generator
         $tpl->assign('formElements', $formElements);
         $tpl->assign('steps', $this->formComponents);
         return $tpl->fetch('tools/modalWizard.tpl');
-    }
-    
-    /**
-     * 
-     * @param type $route
-     */
-    public function getFormFieldsWithValidators($route)
-    {
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        $route = $this->formRoute;
-        $baseUrl = rtrim($di->get('config')->get('global', 'base_url'), '/');
-        $route = str_replace($baseUrl, '', $route);
-
-        $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, 
-            s.rank as step_rank, sf.mandatory as mandatory,
-            sf.rank as field_pos, f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
-            FROM cfg_forms_wizards w, cfg_forms_steps s, cfg_forms_steps_fields_relations sf, cfg_forms_fields f
-            WHERE w.route = :route
-                AND w.wizard_id = s.wizard_id
-                AND s.step_id = sf.step_id
-                AND sf.field_id = f.field_id
-            ORDER BY s.rank, sf.rank";
-        $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':route', $route);
-        $stmt->execute();
-        
-        $fieldsForApi = array();
-        while ($row = $stmt->fetch()) {
-            // Get validators
-            $validatorQuery = "SELECT v.action as validator_action, vr.client_side_event as events "
-                        . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
-                        . "WHERE vr.field_id = $row[field_id] "
-                        . "AND vr.validator_id = v.validator_id";
-            $validatorStmt = $dbconn->query($validatorQuery);
-            $row['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
-            
-            
-            $fieldsForApi[] = $row;
-        }
-        
-        echo '<pre>'; var_dump($fieldsForApi); echo '</pre>';
     }
 }

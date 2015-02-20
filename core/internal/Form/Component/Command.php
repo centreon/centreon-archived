@@ -32,14 +32,17 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace Centreon\Internal\Form\Custom;
+
+use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Customarguments extends Customobject
+class Command extends Component
 {
     /**
      * 
@@ -48,27 +51,41 @@ class Customarguments extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
+        // Select for Commands
+        $commandSelect = Select::renderHtmlInput($element);
         
-        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
-            $element['label'] = $element['name'];
-        }
+        $myHtml = '<div class="row"><div class="col-sm-12">'.$commandSelect['html'].'</div></div>';
+        $myJs = $commandSelect['js'];
         
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
-        }
+        $myHtml .='<div id="'.$element['name'].'_command_args" class="row"></div>';
         
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
-        }
+        $commandArgumentsUrl = Di::getDefault()
+                            ->get('router')
+                            ->getPathFor('/centreon-configuration/command/[i:id]/arguments');
         
-        $myJs = "";
-        
-        $myHtml = '<div class="row">
-                    <div class="col-sm-5"><input class="form-control" name="" /></div>
-                    <div class="col-sm-2" style="text-align:center;"><i class="fa fa-arrow-left"></i></div>
-                    <div class="col-sm-5"><input class="form-control" name="" /></div>
-                   </div>';
+        $myJs .= ' '
+            . '$("#'.$element['name'].'").on("change", function() { '
+                . '$("#'.$element['name'].'_command_args").empty(); '
+                . 'var commandId = $("#'.$element['name'].'").val(); '
+                . 'var realCommandArgumentsUrl = "'.$commandArgumentsUrl.'"; '
+                . 'var computedCommandArgumentsUrl = realCommandArgumentsUrl.replace("[i:id]", commandId);'
+                . '$.ajax({ '
+                    . 'url: computedCommandArgumentsUrl,'
+                    . 'type: "GET", '
+                    . 'dataType: "json" '
+                . '})'
+                . '.success(function(data, status, jqxhr) { '
+                    . 'var argumentsHtml = ""; '
+                    . '$.each(data, function(key, value){ '
+                        . 'argumentsHtml += "<div class=\"row\"><div class=\"col-sm-3\">"+value.name+"</div>'
+                        . '<div class=\"col-sm-4\">'
+                            . '<input class=\"form-control\" type=\"text\" value=\""+value.value+"\">'
+                            . '</div>'
+                        . '<div class=\"col-sm-3\">"+value.example+"</div></div>" '
+                    . '}); '
+                    . '$("#'.$element['name'].'_command_args").append(argumentsHtml); '
+                . '});'
+            . '});';
         
         return array(
             'html' => $myHtml,

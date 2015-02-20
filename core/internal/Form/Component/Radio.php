@@ -32,17 +32,14 @@
  * For more information : contact@centreon.com
  *
  */
-
 namespace Centreon\Internal\Form\Custom;
-
-use Centreon\Internal\Di;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Command extends Customobject
+class Radio extends Component
 {
     /**
      * 
@@ -51,44 +48,39 @@ class Command extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        // Select for Commands
-        $commandSelect = Select::renderHtmlInput($element);
+        (isset($element['html']) ? $value = $element['html'] :  $value = '');
         
-        $myHtml = '<div class="row"><div class="col-sm-12">'.$commandSelect['html'].'</div></div>';
-        $myJs = $commandSelect['js'];
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
+        }
         
-        $myHtml .='<div id="'.$element['name'].'_command_args" class="row"></div>';
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
         
-        $commandArgumentsUrl = Di::getDefault()
-                            ->get('router')
-                            ->getPathFor('/centreon-configuration/command/[i:id]/arguments');
+        $inputHtml = '';
+        $myJs = '';
+        $i = 1;
         
-        $myJs .= ' '
-            . '$("#'.$element['name'].'").on("change", function() { '
-                . '$("#'.$element['name'].'_command_args").empty(); '
-                . 'var commandId = $("#'.$element['name'].'").val(); '
-                . 'var realCommandArgumentsUrl = "'.$commandArgumentsUrl.'"; '
-                . 'var computedCommandArgumentsUrl = realCommandArgumentsUrl.replace("[i:id]", commandId);'
-                . '$.ajax({ '
-                    . 'url: computedCommandArgumentsUrl,'
-                    . 'type: "GET", '
-                    . 'dataType: "json" '
-                . '})'
-                . '.success(function(data, status, jqxhr) { '
-                    . 'var argumentsHtml = ""; '
-                    . '$.each(data, function(key, value){ '
-                        . 'argumentsHtml += "<div class=\"row\"><div class=\"col-sm-3\">"+value.name+"</div>'
-                        . '<div class=\"col-sm-4\">'
-                            . '<input class=\"form-control\" type=\"text\" value=\""+value.value+"\">'
-                            . '</div>'
-                        . '<div class=\"col-sm-3\">"+value.example+"</div></div>" '
-                    . '}); '
-                    . '$("#'.$element['name'].'_command_args").append(argumentsHtml); '
-                . '});'
-            . '});';
+        if (isset($element['label_choices'])) {
+            foreach ($element['label_choices'] as $key => $choice) {
+                $htmlSelected = '';
+                if ($value == $choice) {
+                    $htmlSelected = 'checked=checked';
+                }
+                $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">&nbsp;'.
+                            '<input '.'id="'.$element['id']. $i . '" '.
+                            'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
+                            'value=' . $choice . ' '.$htmlSelected.' '.
+                            '/>'.' '.$key.
+                            '</label>'.'&nbsp;&nbsp;';
+                $i++;
+            }
+        }
         
         return array(
-            'html' => $myHtml,
+            'html' => $inputHtml,
             'js' => $myJs
         );
     }

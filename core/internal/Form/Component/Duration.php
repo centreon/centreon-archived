@@ -39,7 +39,7 @@ namespace Centreon\Internal\Form\Custom;
  * @package Centreon
  * @subpackage Core
  */
-class Radio extends Customobject
+class Duration extends Component
 {
     /**
      * 
@@ -48,7 +48,12 @@ class Radio extends Customobject
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['html']) ? $value = $element['html'] :  $value = '');
+        $value = (isset($element['html']) ? 'value="'.$element['html'].'" ' : '');
+        
+        $placeholder = 'placeholder="'.$element['name'].'" ';
+        if (isset($element['label_label']) && (!empty($element['label_label']))) {
+            $placeholder = 'placeholder="'.$element['label_label'].'" ';
+        }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
@@ -59,28 +64,55 @@ class Radio extends Customobject
             $addClass .= 'mandatory-field ';
         }
         
-        $inputHtml = '';
         $myJs = '';
-        $i = 1;
+
+        $durationInput = '<input '
+            . 'id="'.$element['id'].'" '
+            . 'type="number" '
+            . 'name="'.$element['name'].'" '
+            . $value
+            . 'class="form-control input-sm '.$addClass.'" '
+            . $placeholder
+            . '/>';
+            
+        $durationScaleSelector = '<button '
+            . 'id="'.$element['id'].'_scale_selector" '
+            . 'type="button" '
+            . 'class="btn btn-default btn-sm dropdown-toggle" '
+            . 'data-toggle="dropdown">'
+            . 'Seconds '
+            . '<span class="caret"></span></button>'
+            . ''
+            . ''
+            . '<ul class="dropdown-menu" role="menu">'
+            . '<li class="'.$element['name'].'_scale_values"><a href="#">Seconds</a></li>'
+            . '<li class="'.$element['name'].'_scale_values"><a href="#">Minutes</a></li>'
+            . '<li class="'.$element['name'].'_scale_values"><a href="#">Hours</a></li>'
+            . '<li class="'.$element['name'].'_scale_values"><a href="#">Years</a></li>'
+            . '</ul>'
+            . '';
         
-        if (isset($element['label_choices'])) {
-            foreach ($element['label_choices'] as $key => $choice) {
-                $htmlSelected = '';
-                if ($value == $choice) {
-                    $htmlSelected = 'checked=checked';
-                }
-                $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">&nbsp;'.
-                            '<input '.'id="'.$element['id']. $i . '" '.
-                            'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
-                            'value=' . $choice . ' '.$htmlSelected.' '.
-                            '/>'.' '.$key.
-                            '</label>'.'&nbsp;&nbsp;';
-                $i++;
-            }
-        }
+        $durationInputScaleValue = '<input '
+            . 'id="'.$element['id'].'_scale" '
+            . 'type="hidden" '
+            . 'name="'.$element['name'].'_scale" '
+            . $value
+            . '/>';
+        
+        
+         $finalHtml = '<div class="input-group">'
+            .$durationInput
+            . '<span class="input-group-btn">' . $durationScaleSelector . ' ' . $durationInputScaleValue . '</span>'
+            . '</div>';
+         
+         
+         $myJs = '$(".'.$element['name'].'_scale_values").on("click", function(){'
+             . '$("#'.$element['id'].'_scale").val($(this).text()); '
+             . '$("#'.$element['id'].'_scale_selector").text($(this).text());'
+             . '});';
         
         return array(
-            'html' => $inputHtml,
+            'html' => $finalHtml,
             'js' => $myJs
         );
     }

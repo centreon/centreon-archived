@@ -35,45 +35,35 @@
 namespace Centreon\Internal\Form\Custom;
 
 /**
+ * Html Submit element
+ * 
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Password extends Customobject
+class Submit extends Component
 {
     /**
+     * Return the HTMLrepresentation of the submit field
      * 
      * @param array $element
      * @return array
      */
-    public static function renderHtmlInput(array $element, $repeat = false)
+    public static function renderHtmlInput(array $element)
     {
         (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
-        
-        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
-            $element['label'] = $element['name'];
-        }
-        
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
-        }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
-        $myJs = '';
-        $inputHtml = '<input '.
-                        'id="'.$element['id'].'" '.
-                        'type="password" '.
-                        'name="'.$element['name'].'" '.
-                        $value.
-                        'class="form-control input-sm" '.
-                        $placeholder.
-                        '/>';
         
-        return array(
-            'html' => $inputHtml,
-            'js' => $myJs
-        );
+        $inputHtml = '<input '.
+                    'id="'.$element['id'].'" '.
+                    'type="sbumit" '.
+                    'name="'.$element['name'].'" '.
+                    $value.
+                    'class="btn btn-default btn-sm" '.
+                    '/>';
+        return $inputHtml;
     }
 }

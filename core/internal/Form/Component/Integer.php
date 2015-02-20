@@ -39,7 +39,7 @@ namespace Centreon\Internal\Form\Custom;
  * @package Centreon
  * @subpackage Core
  */
-class Integer extends Customobject
+class Integer extends Component
 {
     /**
      * 

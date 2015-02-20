@@ -42,7 +42,7 @@ use Centreon\Internal\Di;
  * @package Centreon
  * @subpackage Core
  */
-class File extends Customobject
+class File extends Component
 {
     /**
      * 

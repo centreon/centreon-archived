@@ -37,7 +37,7 @@ namespace Centreon\Internal\Form\Custom;
 
 use Centreon\Internal\Di;
 
-class Ipaddress extends Customobject
+class Ipaddress extends Component
 {
     /**
      * 

@@ -41,7 +41,7 @@ use CentreonConfiguration\Repository\CustomMacroRepository;
  * @package Centreon
  * @subpackage Core
  */
-class Custommacro extends Customobject
+class Custommacro extends Component
 {
     /**
      * 

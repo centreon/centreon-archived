@@ -32,66 +32,57 @@
  * For more information : contact@centreon.com
  *
  */
-
 namespace Centreon\Internal\Form\Custom;
 
-use Centreon\Internal\Di;
-
-class Selectimage extends Customobject
+/**
+ * Html Checkobox element
+ * 
+ * @author Lionel Assepo <lassepo@centreon.com>
+ * @package Centreon
+ * @subpackage Core
+ */
+class Checkbox extends Component
 {
     /**
+     * Return the HTML representation of the checkbox field
      * 
      * @param array $element
      * @return array
      */
     public static function renderHtmlInput(array $element)
     {
-        $selectImageParameters = array(
-            'label_label' => $element['label_label'],
-            'label_multiple' => false,
-            'name' => $element['name'],
-            'label_object_type' => $element['label_object_type'],
-            'label_defaultValuesRoute' => $element['label_defaultValuesRoute'],
-            'label_listValuesRoute' => $element['label_listValuesRoute'],
-            'label_extra' => $element['label_extra'],
-            'label_object_type' => $element['label_object_type']
-        );
+        (isset($element['html']) ? $value = $element['html'] :  $value = '');
         
-        $addImageUrl = Di::getDefault()
-                        ->get('router')
-                        ->getPathFor($element['label_wizardRoute']);
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
+        }
         
-        $selectForImage = Select::renderHtmlInput($selectImageParameters);
-        $fileUploadForImage = File::renderHtmlInput($element);
+        $addClass = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+        }
         
-        $finalHtml = '<div class="row">'
-                . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
-                . '<div class="col-sm-2">'
-                    . '<button '
-                        . 'class="btn btn-default btn-sm" '
-                        . 'id="modalAdd_'.$element['name'].'" '
-                        . 'type="button">'
-                        . 'Add Files...'
-                    . '</button>'
-                . '</div>'
-            . '</div>';
+        $inputHtml = '';
+        $myJs = '';
+        $i = 1;
         
-        $finalJs = $selectForImage['js'].' '.$fileUploadForImage['js'].' ';
-        $finalJs .= '$("#modalAdd_'.$element['name'].'").on("click", function(e) {
-            $("#modal").removeData("bs.modal");
-            $("#modal").removeData("centreonWizard");
-            $("#modal .modal-content").text("");
-            $("#modal").one("loaded.bs.modal", function(e) {
-                $(this).centreonWizard();
-            });
-            $("#modal").modal({
-                "remote": "'.$addImageUrl.'"
-            });
-        });';
+        foreach ($element['label_choices'] as $key => $choice) {
+            $htmlSelected = '';
+            if ($value == $choice) {
+                $htmlSelected = 'checked=checked';
+            }
+            $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">&nbsp;'.
+                        '<input '.'id="'.$element['id']. $i . '" '.
+                        'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
+                        'value=' . $choice . ' '.$htmlSelected.' '.
+                        '/>'.' '.$key.
+                        '</label>'.'&nbsp;&nbsp;';
+            $i++;
+        }
         
         return array(
-            'html' => $finalHtml,
-            'js' => $finalJs
+            'html' => $inputHtml,
+            'js' => $myJs
         );
     }
 }

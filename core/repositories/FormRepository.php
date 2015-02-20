@@ -88,8 +88,12 @@ abstract class FormRepository
      * @param array $givenParameters
      * @return int id of created object
      */
-    public static function create($givenParameters)
+    public static function create($givenParameters, $origin = "", $route = "", $moduleName = "")
     {
+        $generatorNamespace = '\Centreon\Internal\Form\Generator' . $origin;
+        $FormGenObject = new $generatorNamespace($route);
+        $FormGenObject->validateDatas($givenParameters);
+        
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
         $db = Di::getDefault()->get('db_centreon');
@@ -149,8 +153,12 @@ abstract class FormRepository
      * @param array $givenParameters
      * @throws \Centreon\Internal\Exception
      */
-    public static function update($givenParameters)
+    public static function update($givenParameters, $origin = "", $route = "", $moduleName = "")
     {
+        $generatorNamespace = '\Centreon\Internal\Form\Generator' . $origin;
+        $FormGenObject = new $generatorNamespace($route);
+        $FormGenObject->validateDatas($givenParameters);
+        
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
         $givenParameters[$pk] = $givenParameters['object_id'];

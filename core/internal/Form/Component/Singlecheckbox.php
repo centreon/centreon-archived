@@ -35,35 +35,41 @@
 namespace Centreon\Internal\Form\Custom;
 
 /**
- * Html Submit element
+ * Html Checkobox element
+ * Checkbox with no label
  * 
- * @author Lionel Assepo <lassepo@centreon.com>
+ * @author Sylvestre Ho <sho@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Submit extends Customobject
+class Singlecheckbox extends Component
 {
     /**
-     * Return the HTMLrepresentation of the submit field
+     * Return the HTML ouput of the checkbox field
      * 
      * @param array $element
      * @return array
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
+        (isset($element['html']) ? $value = $element['html'] :  $value = '');
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
         
-        $inputHtml = '<input '.
-                    'id="'.$element['id'].'" '.
-                    'type="sbumit" '.
-                    'name="'.$element['name'].'" '.
-                    $value.
-                    'class="btn btn-default btn-sm" '.
-                    '/>';
-        return $inputHtml;
+        $htmlSelected = '';
+        if ($value) {
+            $htmlSelected = 'checked=checked';
+        }
+        $inputHtml = '<label class="label-controller" for="'. $element['id'] . '">&nbsp;' .
+                    '<input id="' . $element['id'] . '" ' .
+                    'type="checkbox" name="' . $element['name'] . '" ' .
+                    'value=1 ' . $htmlSelected . ' />' .
+                    '</label>&nbsp;&nbsp;';
+        return array(
+            'html' => $inputHtml,
+            'js' => ''
+        );
     }
 }

@@ -1,0 +1,75 @@
+## Host Forms
+---
+name: centreon-configuration:host
+label: Host
+redirect: false
+
+fields:
+    - name: centreon-configuration:host_name
+      label: Name
+      type: text
+      validators: "minlength=3;maxlength=255;unique=CentreonConfiguration:Host;forbiddenChar;"
+      mandatory: true
+      advanced: false
+      help: >
+            The host name defined here is used in host group and service definitions to reference this particular host.
+      
+    - name: centreon-configuration:host_alias
+      label: Alias
+      type: text
+      validators: "minlength=3;maxlength=255;"
+      mandatory: false
+      advanced: false
+      help: >
+            The alias is used to define a longer name or description for the host.
+            
+    - name: centreon-configuration:host_address
+      label: "IP address / DNS"
+      type: text
+      validators: "minlength=3;maxlength=255;"
+      mandatory: true
+      advanced: false
+      help: >
+            The alias is used to define a longer name or description for the host.
+            
+    - name: centreon-configuration:host_hosttemplates
+      label: "Host templates"
+      type: select
+      typeAttributes:
+          listValues: "CentreonConfiguration:Hosttemplates"
+          defaultValues: ~
+          ordered: true
+          multiple: true
+      validators: ~
+      mandatory: false
+      advanced: false
+      help: >
+            This is where you specify the template that you want to inherit properties/variables from.
+            Inherited properties doesn't need to be specified again.
+            "Local" object variables always take precedence over variables defined in the template object.
+            Objects can inherit properties/variables from multiple levels of template objects.
+            When defining multiple sources, the first template specified takes precedence over the later one, in the case where a property is defined in both.
+            
+web:
+    - name: "Host configuration"
+      rank: 1
+      blocks:
+          - name: "General Information"
+            fields:
+                - centreon-configuration:host_name
+                - centreon-configuration:host_alias
+                - centreon-configuration:host_address
+                
+wizard:
+    name: centreon-configuration:host
+    steps:
+        - name: "General"
+          fields:
+            - centreon-configuration:host_name
+            - centreon-configuration:host_address
+            - centreon-configuration:host_hosttemplates
+            
+api:
+    - centreon-configuration:host_name
+    - centreon-configuration:host_address
+    - centreon-configuration:host_hosttemplates

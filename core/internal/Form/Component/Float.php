@@ -39,7 +39,7 @@ namespace Centreon\Internal\Form\Custom;
  * @package Centreon
  * @subpackage Core
  */
-class Float extends Customobject
+class Float extends Component
 {
     /**
      * 

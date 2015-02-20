@@ -35,41 +35,45 @@
 namespace Centreon\Internal\Form\Custom;
 
 /**
- * Html Checkobox element
- * Checkbox with no label
- * 
- * @author Sylvestre Ho <sho@centreon.com>
+ * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Singlecheckbox extends Customobject
+class Password extends Component
 {
     /**
-     * Return the HTML ouput of the checkbox field
      * 
      * @param array $element
      * @return array
      */
-    public static function renderHtmlInput(array $element)
+    public static function renderHtmlInput(array $element, $repeat = false)
     {
-        (isset($element['html']) ? $value = $element['html'] :  $value = '');
+        (isset($element['value']) ? $value = 'value="'.$element['value'].'" ' :  $value = '');
+        
+        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
+            $element['label'] = $element['name'];
+        }
+        
+        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
+            $placeholder = 'placeholder="'.$element['name'].'" ';
+        }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
+        $myJs = '';
+        $inputHtml = '<input '.
+                        'id="'.$element['id'].'" '.
+                        'type="password" '.
+                        'name="'.$element['name'].'" '.
+                        $value.
+                        'class="form-control input-sm" '.
+                        $placeholder.
+                        '/>';
         
-        $htmlSelected = '';
-        if ($value) {
-            $htmlSelected = 'checked=checked';
-        }
-        $inputHtml = '<label class="label-controller" for="'. $element['id'] . '">&nbsp;' .
-                    '<input id="' . $element['id'] . '" ' .
-                    'type="checkbox" name="' . $element['name'] . '" ' .
-                    'value=1 ' . $htmlSelected . ' />' .
-                    '</label>&nbsp;&nbsp;';
         return array(
             'html' => $inputHtml,
-            'js' => ''
+            'js' => $myJs
         );
     }
 }

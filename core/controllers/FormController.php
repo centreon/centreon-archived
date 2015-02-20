@@ -36,9 +36,7 @@
 
 namespace Centreon\Controllers;
 
-use Centreon\Internal\Form;
-use Centreon\Internal\Form\Wizard;
-use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 
@@ -96,27 +94,24 @@ abstract class FormController extends ListController
      */
     public function editAction($additionnalParamsForSmarty = array())
     {
-        $router = Di::getDefault()->get('router');
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
         $inheritanceUrl = null;
         if (false === is_null($this->inheritanceUrl)) {
-            $inheritanceUrl = $router->getPathFor(
+            $inheritanceUrl = $this->router->getPathFor(
                 $this->inheritanceUrl,
                 array('id' => $requestParam['id'])
             );
         }
         
-        $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
+        $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id']));
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', static::$objectName);
         
         // get object Current Values
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
         
-        $formModeUrl = Di::getDefault()
-                        ->get('router')
-                        ->getPathFor(
+        $formModeUrl = $this->router->getPathFor(
                             $this->objectBaseUrl.'/[i:id]',
                             array(
                                 'id' => $requestParam['id']
@@ -140,7 +135,7 @@ abstract class FormController extends ListController
         if (isset($this->inheritanceTmplUrl)) {
             $this->tpl->assign(
                 'inheritanceTmplUrl',
-                $router->getPathFor(
+                $this->router->getPathFor(
                     $this->inheritanceTmplUrl
                 )
             );
@@ -164,7 +159,7 @@ abstract class FormController extends ListController
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = Form::validate("form", $this->getUri(), static::$moduleName, $givenParameters);
+        /*$validationResult = Form::validate("form", $this->getUri(), static::$moduleName, $givenParameters);
         if ($validationResult['success']) {
             $repository = $this->repository;
             try {
@@ -176,9 +171,8 @@ abstract class FormController extends ListController
         } else {
             $updateSuccessful = false;
             $updateErrorMessage = $validationResult['error'];
-        }
+        }*/
         
-        $this->router = Di::getDefault()->get('router');
         if ($updateSuccessful) {
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);

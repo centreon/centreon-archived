@@ -39,7 +39,7 @@ namespace Centreon\Internal\Form\Custom;
  * @package Centreon
  * @subpackage Core
  */
-class Duration extends Customobject
+class Text extends Component
 {
     /**
      * 
@@ -66,53 +66,17 @@ class Duration extends Customobject
         
         $myJs = '';
 
-        $durationInput = '<input '
-            . 'id="'.$element['id'].'" '
-            . 'type="number" '
-            . 'name="'.$element['name'].'" '
-            . $value
-            . 'class="form-control input-sm '.$addClass.'" '
-            . $placeholder
-            . '/>';
-            
-        $durationScaleSelector = '<button '
-            . 'id="'.$element['id'].'_scale_selector" '
-            . 'type="button" '
-            . 'class="btn btn-default btn-sm dropdown-toggle" '
-            . 'data-toggle="dropdown">'
-            . 'Seconds '
-            . '<span class="caret"></span></button>'
-            . ''
-            . ''
-            . '<ul class="dropdown-menu" role="menu">'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Seconds</a></li>'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Minutes</a></li>'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Hours</a></li>'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Years</a></li>'
-            . '</ul>'
-            . '';
-        
-        $durationInputScaleValue = '<input '
-            . 'id="'.$element['id'].'_scale" '
-            . 'type="hidden" '
-            . 'name="'.$element['name'].'_scale" '
-            . $value
-            . '/>';
-        
-        
-         $finalHtml = '<div class="input-group">'
-            .$durationInput
-            . '<span class="input-group-btn">' . $durationScaleSelector . ' ' . $durationInputScaleValue . '</span>'
-            . '</div>';
-         
-         
-         $myJs = '$(".'.$element['name'].'_scale_values").on("click", function(){'
-             . '$("#'.$element['id'].'_scale").val($(this).text()); '
-             . '$("#'.$element['id'].'_scale_selector").text($(this).text());'
-             . '});';
+        $inputHtml = '<span><input '.
+                        'id="'.$element['id'].'" '.
+                        'type="text" '.
+                        'name="'.$element['name'].'" '.
+                        $value.
+                        'class="form-control input-sm '.$addClass.'" '.
+                        $placeholder.
+                        '/><span>';
         
         return array(
-            'html' => $finalHtml,
+            'html' => $inputHtml,
             'js' => $myJs
         );
     }

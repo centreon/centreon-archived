@@ -33,80 +33,20 @@
  *
  */
 
-namespace Centreon\Internal\Form;
+namespace Centreon\Internal\Form\Generator\Web;
 
 use Centreon\Internal\Exception;
 use Centreon\Internal\Di;
 use Centreon\Internal\Form;
+use Centreon\Internal\Form\Generator\Generator;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Generator
+class Full extends Generator
 {
-    /**
-     *
-     * @var string 
-     */
-    protected $formName = '';
-    
-    /**
-     *
-     * @var string 
-     */
-    protected $formRoute;
-    
-    /**
-     *
-     * @var string 
-     */
-    private $formRedirect;
-    
-    /**
-     *
-     * @var string 
-     */
-    private $formRedirectRoute;
-    
-    /**
-     *
-     * @var array 
-     */
-    protected $formComponents = array();
-    
-    /**
-     *
-     * @var array 
-     */
-    protected $formDefaults = array();
-    
-    /**
-     *
-     * @var \Centreon\Internal\Form 
-     */
-    protected $formHandler;
-    
-    /**
-     *
-     * @var type 
-     */
-    private $firstSection;
-    
-    /**
-     *
-     * @var array 
-     */
-    protected $extraParams;
-
-    /**
-     * The product version
-     *
-     * @var string
-     */
-    protected $productVersion = '';
-
 
     /**
      * 
@@ -116,17 +56,14 @@ class Generator
      */
     public function __construct($formRoute, $extraParams = array(), $productVersion = '')
     {
-        $this->formRoute = $formRoute;
-        $this->extraParams = $extraParams;
-        $this->productVersion = $productVersion;
-        $this->getFormFromDatabase();
+        parent::__construct($formRoute, $extraParams, $productVersion);
     }
     
     /**
      * 
      * @param boolean $advanced
      */
-    protected function getFormFromDatabase()
+    public function getFormFromDatabase()
     {
         // Initializing connection
         $di = Di::getDefault();

@@ -42,7 +42,7 @@ use Centreon\Internal\Di;
  * @package Centreon
  * @subpackage Core
  */
-class Email extends Customobject
+class Email extends Component
 {
     /**
      * 
