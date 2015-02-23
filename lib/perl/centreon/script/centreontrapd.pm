@@ -198,6 +198,9 @@ sub init {
     }
     
     $self->{logger}->withpid(1);
+
+    $self->{centreontrapd_config} = {%{$self->{centreontrapd_default_config}}, %centreontrapd_config};
+    
     if ($self->{centreontrapd_config}->{unknown_trap_enable} == 1) {
         $self->{logger_unknown} = centreon::common::logger->new();
         if ($self->{centreontrapd_config}->{unknown_trap_mode} == 1) {
@@ -205,8 +208,6 @@ sub init {
         }
         $self->{logger_unknown}->severity("info");
     }
-
-    $self->{centreontrapd_config} = {%{$self->{centreontrapd_default_config}}, %centreontrapd_config};
     
     ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
                                     centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
