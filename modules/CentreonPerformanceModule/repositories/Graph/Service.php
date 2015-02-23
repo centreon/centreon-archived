@@ -39,6 +39,7 @@ namespace CentreonPerformance\Repository\Graph;
 use Centreon\Internal\Di;
 use CentreonPerformance\Repository\Graph;
 use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonPerformance\Repository\GraphTemplate;
 
 /**
  * Class for generate values for graph service
@@ -77,7 +78,7 @@ class Service extends Graph
         $graphInfos = null;
         foreach ($svcTmpls as $svcTmplId) {
             $graphInfos = GraphTemplate::getByServiceTemplate($svcTmplId);
-            if (count($graphInfos > 0) {
+            if (count($graphInfos > 0)) {
                 break;
             }
         }

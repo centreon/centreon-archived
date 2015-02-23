@@ -419,9 +419,9 @@ class ServiceRepository extends Repository
      */
     public static function getListTemplates($svcId)
     {
-        $dbconn = $di->get('db_centreon');
+        $dbconn = Di::getDefault()->get('db_centreon');
         $svcTmpl = array();
-        $query = "SELECT service_template_model_stm_id FROM service WHERE service_id = :id";
+        $query = "SELECT service_template_model_stm_id FROM cfg_services WHERE service_id = :id";
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
         $stmt->execute();
@@ -429,7 +429,7 @@ class ServiceRepository extends Repository
             $row = $stmt->fetch();
             $stmt->closeCursor();
             $svcTmpl = self::getListTemplates($row['service_template_model_stm_id']);
-            array_unshift($row['service_template_model_stm_id']);
+            array_unshift($svcTmpl, $row['service_template_model_stm_id']);
         }
         return $svcTmpl;
     }

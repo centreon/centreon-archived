@@ -116,7 +116,7 @@ class GraphTemplate extends FormRepository
      */
     public static function getByServiceTemplate($svcTmplId)
     {
-        $dbconn = $di->get('db_centreon');
+        $dbconn = Di::getDefault()->get('db_centreon');
         $query = "SELECT gt.stackable, c.fill, c.metric_name, c.color, c.is_negative
             FROM cfg_graph_template gt, cfg_curve_config c
             WHERE gt.svc_tmpl_id = :id";
