@@ -10,5 +10,23 @@
             "icon_class": "fa fa-bar-chart-o",
             "route" : "/centreon-performance/graph"
 	}]
+    },
+    {
+      "name": "Configuration",
+      "short_name": "configuration",
+      "menus": [
+        {
+          "name": "Performance",
+          "short_name": "configuration_performance",
+          "icon_class": "fa fa-bar-chart",
+          "menus": [
+            {
+              "name": "Graph Template",
+              "short_name": "config_graph_template",
+              "route": "/centreon-performance/configuration/graphtemplate"
+            }
+          ]
+        }
+      ]
     }
 ]
