@@ -76,6 +76,11 @@ abstract class Graph
         $values = array();
         foreach ($this->metrics as $metric) {
             $metric['data'] = $storage->getValues($metric['id'], $nbPoints);
+            if ($metric['is_negative']) {
+                array_walk($metric['data'], function(&$value, $key) {
+                    $value = $value * -1;
+                });
+            }
             $values[] = $metric;
         }
         return $values;

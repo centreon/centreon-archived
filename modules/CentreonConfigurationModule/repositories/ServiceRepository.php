@@ -410,4 +410,27 @@ class ServiceRepository extends Repository
 
         return $arr;
     }
+
+    /**
+     * Return the list of template
+     *
+     * @param int $svcId The service ID
+     * @return array
+     */
+    public static function getListTemplates($svcId)
+    {
+        $dbconn = $di->get('db_centreon');
+        $svcTmpl = array();
+        $query = "SELECT service_template_model_stm_id FROM service WHERE service_id = :id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->rowCount()) {
+            $row = $stmt->fetch();
+            $stmt->closeCursor();
+            $svcTmpl = self::getListTemplates($row['service_template_model_stm_id']);
+            array_unshift($row['service_template_model_stm_id']);
+        }
+        return $svcTmpl;
+    }
 }
