@@ -208,7 +208,7 @@ abstract class ListController extends Controller
      */
     public function addAction()
     {
-        $this->tpl->assign('validateUrl', "/" . static::$moduleShortName . "/" . static::$objectName  . "/add");
+        $this->tpl->assign('validateUrl', $this->objectBaseUrl . "/add");
         $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
         $form->addHiddenComponent('object', static::$objectName);
         $form->addHiddenComponent('module', static::$moduleName);

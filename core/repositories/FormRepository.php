@@ -273,16 +273,18 @@ abstract class FormRepository
             }
         }
         $columns = $class::getColumns();
+        $updateValues = array();
         foreach ($givenParameters as $key => $value) {
-            if (is_string($value)) {
-                $givenParameters[$key] = trim($value);
-            }
-            if (!in_array($key, $columns)) {
-                unset($givenParameters[$key]);
+            if (in_array($key, $columns)) {
+                if (is_string($value)) {
+                    $updateValues[$key] = trim($value);
+                } else {
+                    $updateValues[$key] = $value;
+                }
             }
         }
         
-        $class::update($id, $givenParameters);
+        $class::update($id, $updateValues);
         
         if (method_exists(get_called_class(), 'postSave')) {
             static::postSave($id, 'update', $givenParameters);
