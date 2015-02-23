@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+    <form name="graphtemplate">
+        <route>/centreon-performance/configuration/graphtemplate/update</route>
+        <redirect>1</redirect>
+        <redirect_route>/centreon-performance/configuration/graphtemplate</redirect_route>
+        <section name="Graph configuration">
+            <block name="General information">
+		            <field name="svc_tmpl_id" label="Service Template" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
+		              <attributes>
+		            	<object_type>object</object_type>
+		            	<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+                  <listValuesRoute>/centreon-performance/configuration/graphtemplate/[i:id]/servicetemplate</listValuesRoute>
+		            	<multiple>false</multiple>
+		              </attributes>
+                      <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
+		            </field>
+                <field name="stackable" label="Stackable" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
+                    <attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
+                    </attributes>
+                </field>
+                <field name="scale" label="Scale" default_value="1" advanced="0" type="radio" parent_field="" mandatory="0">
+                    <attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
+                    </attributes>
+                </field>
+                <field name="fill" label="Fill curves" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
+                    <attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
+                    </attributes>
+                </field>
+            </block>
+            <block name="Curves">
+                <field name="curves" label="Curves" default_value="" advanced="0" type="customcurvegraphcustomgraph" parent_field="" mandatory="0"></field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_customgraph">
+      <route>/centreon-performance/configuration/graphtemplate/add</route>
+        <step name="General">
+            <field name="svc_tmpl_id" mandatory="1" />
+            <field name="stackable" mandatory="1" />
+            <field name="scale" mandatory="1" />
+            <field name="fill" mandatory="1" />
+        </step>
+        <step name="Curves">
+            <field name="curves" mandatory="0"/>
+        </step>
+    </wizard>
+</forms>
