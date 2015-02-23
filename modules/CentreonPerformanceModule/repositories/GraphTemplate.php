@@ -64,8 +64,8 @@ class GraphTemplate extends FormRepository
             $stmt->bindValue(':tmpl_id', $id, \PDO::PARAM_INT);
             $stmt->execute();
         }
-        $query = "INSERT INTO cfg_curve_config (graph_template_id, metric_name, color, is_negative)
-            VALUES (:tmpl_id, :name, :color, :neg)";
+        $query = "INSERT INTO cfg_curve_config (graph_template_id, metric_name, color, is_negative, fill)
+            VALUES (:tmpl_id, :name, :color, :neg, :fill)";
         $stmt = $dbconn->prepare($query);
         /* Insert metrics */
         for ($i = 1; $i < count($params['metric_id']); $i++) {
@@ -73,10 +73,15 @@ class GraphTemplate extends FormRepository
             if (isset($params['negative'][$i])) {
                 $negative = $params['negative'][$i];
             }
+            $fill = 0;
+            if (isset($params['fill'][$i])) {
+                $fill = $params['fill'][$i];
+            }
             $stmt->bindValue(':tmpl_id', $id, \PDO::PARAM_INT);
             $stmt->bindValue(':name', $params['metric_id'][$i], \PDO::PARAM_STR);
             $stmt->bindValue(':color', $params['color'][$i], \PDO::PARAM_STR);
             $stmt->bindValue(':neg', $negative, \PDO::PARAM_INT);
+            $stmt->bindValue(':fill', $fill, \PDO::PARAM_INT);
             $stmt->execute();
         }
     } 
@@ -101,5 +106,38 @@ class GraphTemplate extends FormRepository
             $metrics[] = $row;
         }
         return $metrics;
+    }
+
+    /**
+     * Get the graph template information with a service template id 
+     *
+     * @param int $id The service template id
+     * @return array
+     */
+    public static function getByServiceTemplate($svcTmplId)
+    {
+        $dbconn = $di->get('db_centreon');
+        $query = "SELECT gt.stackable, c.fill, c.metric_name, c.color, c.is_negative
+            FROM cfg_graph_template gt, cfg_curve_config c
+            WHERE gt.svc_tmpl_id = :id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':id', $svcTmplId, \PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->rowCount()) {
+            return array();
+        }
+        $metrics = array();
+        while ($row = $stmt->fetchRow()) {
+            $metrics[$row['metric_name']] = array(
+                'line' => (0 === $row['fill']) ? 'line' : 'spine',
+                'color' => (is_null($row['color']) || $row['color'] === '') ? null : $row['color'],
+                'is_negative' => (0 === $row['is_negative']) ? false : true
+            );
+        }
+        $graphInfos = array(
+            'stackable' => (0 === $row['stackable']) ? false : true ,
+            'metrics' => $metrics
+        );
+        return $graphInfos;
     }
 }

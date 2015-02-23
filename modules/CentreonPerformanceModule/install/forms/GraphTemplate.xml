@@ -31,14 +31,6 @@
                         </choices>
                     </attributes>
                 </field>
-                <field name="fill" label="Fill curves" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
-                    <attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                        </choices>
-                    </attributes>
-                </field>
             </block>
             <block name="Curves">
                 <field name="curves" label="Curves" default_value="" advanced="0" type="customcurvegraphcustomgraph" parent_field="" mandatory="0"></field>
@@ -51,7 +43,6 @@
             <field name="svc_tmpl_id" mandatory="1" />
             <field name="stackable" mandatory="1" />
             <field name="scale" mandatory="1" />
-            <field name="fill" mandatory="1" />
         </step>
         <step name="Curves">
             <field name="curves" mandatory="0"/>
