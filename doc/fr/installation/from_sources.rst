@@ -53,7 +53,7 @@ Vous pouvez maintenant installer les dépendances nécessaires :
 
     $ yum update
     $ yum upgrade
-    $ yum install httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
+    $ yum install httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD \
         openssl-devel perl-DBD-MySQL mysql-server mysql-devel php php-mysql php-gd php-ldap php-xml php-mbstring \
         perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
         perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs php-snmp \
