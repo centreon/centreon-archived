@@ -18,7 +18,7 @@
     <hr style="margin: 2px">
     <div class="row clone-cell">
       <div class="col-sm-2"><label class="label-controller">{t}Metric{/t}</label></div>
-      <div class="col-sm-4"><input class="form-control" name="metric_id[#index#]"></div>
+      <div class="col-sm-4"><input class="form-control metric_id" name="metric_id[#index#]"></div>
       <div class="col-sm-2"><label class="label-controller">{t}Color{/t}</label></div>
       <div class="col-sm-4"><input class="color-picker" name="color[#index#]"></div>
       <div class="clearfix"></div>
@@ -52,7 +52,7 @@
     <hr style="margin: 2px">
     <div class="row clone-cell">
       <div class="col-sm-2"><label class="label-controller">{t}Metric{/t}</label></div>
-      <div class="col-sm-4"><input class="form-control" name="metric_id[{$metricIndex}]" value="{$metric['metric_name']}"></div>
+      <div class="col-sm-4"><input class="form-control metric_id" name="metric_id[{$metricIndex}]" value="{$metric['metric_name']}"></div>
       <div class="col-sm-2"><label class="label-controller">{t}Color{/t}</label></div>
       <div class="col-sm-4"><input class="color-picker" name="color[{$metricIndex}]" value="{$metric['color']}"></div>
       <div class="clearfix"></div>

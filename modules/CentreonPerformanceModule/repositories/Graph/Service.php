@@ -78,7 +78,7 @@ class Service extends Graph
         $graphInfos = null;
         foreach ($svcTmpls as $svcTmplId) {
             $graphInfos = GraphTemplate::getByServiceTemplate($svcTmplId);
-            if (count($graphInfos > 0)) {
+            if (count($graphInfos) > 0) {
                 break;
             }
         }

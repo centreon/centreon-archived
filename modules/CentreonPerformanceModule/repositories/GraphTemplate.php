@@ -123,15 +123,15 @@ class GraphTemplate extends FormRepository
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':id', $svcTmplId, \PDO::PARAM_INT);
         $stmt->execute();
-        if ($stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return array();
         }
         $metrics = array();
         while ($row = $stmt->fetchRow()) {
             $metrics[$row['metric_name']] = array(
-                'line' => (0 === $row['fill']) ? 'line' : 'spine',
+                'line' => (0 == $row['fill']) ? 'line' : 'area',
                 'color' => (is_null($row['color']) || $row['color'] === '') ? null : $row['color'],
-                'is_negative' => (0 === $row['is_negative']) ? false : true
+                'is_negative' => (0 == $row['is_negative']) ? false : true
             );
         }
         $graphInfos = array(

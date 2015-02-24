@@ -99,7 +99,7 @@ abstract class Customcurvegraph extends Customobject
   });
     
   $("#load_metrics").on("click", function() {
-    var tmplId = $("#service_template_id").val();
+    var tmplId = $("#svc_tmpl_id").val();
     if (tmplId == "") {
       return;
     }
@@ -111,13 +111,13 @@ abstract class Customcurvegraph extends Customobject
       success: function(data, statusText, jqXHR) {
         var listMetrics = [];
         if (data.success) {
-          $("input[name=\'metric_id[]\']").each(function(idx, el) {
+          $("input.metric_id").each(function(idx, el) {
             listMetrics.push($(el).val());
           });
           $.each(data.data, function(idx, metric) {
             if (-1 == $.inArray(metric, listMetrics)) {
               $(".clonable").centreonClone("addElement", {
-                "input[name=\'metric_id[]\']": metric
+                "input.metric_id": metric
               });
             }
           });
