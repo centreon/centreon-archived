@@ -2200,7 +2200,7 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null) 
                 $service = array(
                                  "service_template_model_stm_id" => $hTpl2["service_service_id"],
                                  "service_description" => $alias,
-                                 "service_register" => array("service_register" => ($hTpl2["service_register"] + 1)),
+                                 "service_register" => ($hTpl2["service_register"] + 1),
                                  "service_activate" => array("service_activate" => 1),
                                  "service_hPars" => array("0" => $hID), 
                                  "service_sgs" => $service_sgs);

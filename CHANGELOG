@@ -1,3 +1,16 @@
+## Centreon 2.6.0
+
+Bug fixes
+=========
+#3239: PHP-5.4 Compatibility
+#5795: ACL and configuration modification with admin users
+
+Features
+========
+#5334, #6114, #6120 : Optimisation and customization on centreontrapd
+#5952: Add possibility to rebuild partially Events informations
+#6160: New Centreon logo
+
 ## Centreon 2.5.4
 
 Bug fixes

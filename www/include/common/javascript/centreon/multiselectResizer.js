@@ -16,7 +16,7 @@ jQuery(function() {
     // get maximum width of all multiselect boxes
     // we want them to have the same size
     jQuery("select[multiple=multiple]").each(function() {
-        if(!jQuery(this).width()) {
+        if(!jQuery(this).width() || jQuery(this).css('visibility') == 'hidden') {
             return;
         }
 
@@ -46,7 +46,7 @@ jQuery(function() {
    
     // resize all boxes 
     jQuery("select[multiple=multiple]").each(function() {
-        if(!jQuery(this).width()) {
+        if(!jQuery(this).width() || jQuery(this).css('visibility') == 'hidden') {
             return;
         }
 

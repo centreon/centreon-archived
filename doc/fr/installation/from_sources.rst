@@ -86,8 +86,8 @@ Installez les dépendances nécessaires :
 
   ::
 
-    $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev \
-        apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd \
+    $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev libdatetime-perl \
+        apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd php5-sqlite \
         rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
         libdigest-sha1-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
 
