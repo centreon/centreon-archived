@@ -139,6 +139,28 @@ class GraphController extends Controller
         $router->response()->json($data);
     }
 
+
+    /**
+     * Get list of service with metrics
+     *
+     * @route /service/withmetrics
+     * @method get
+     */
+    public function getServiceWithMetricsAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $requestParams = $this->getParams('get');
+
+        $list = GraphView::getServiceWithMetrics($requestParams['q']);
+        foreach ($list as $infos) {
+            $finalList[] = array(
+                'id' => $infos['service_id'],
+                'text' => $infos['name'] . ' ' . $infos['description']
+            );
+        }
+        $router->response()->json($finalList);
+    }
+
     /**
      * Save a graph view
      *

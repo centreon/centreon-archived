@@ -233,4 +233,36 @@ class GraphView
         }
         return array_unique($metrics);
     }
+
+    /**
+     * Get the list of services with metrics
+     *
+     * @param string $filter The filter search
+     * @return array
+     */
+    public static function getServiceWithMetrics($filter = null)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $query = "SELECT DISTINCT h.host_id, h.name, s.service_id, s.description
+            FROM rt_hosts h, rt_services s, rt_index_data i, rt_metrics m
+            WHERE h.host_id = s.host_id
+                AND (h.name LIKE :name OR s.description LIKE :name)
+                AND h.host_id = i.host_id
+                AND s.service_id = i.service_id
+                AND i.id = m.index_id";
+
+        if (is_null($filter) || $filter == '') {
+            $filterStr = "%";
+        } else {
+            $filterStr = "%" . $filter . "%";
+        }
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':name', $filterStr, \PDO::PARAM_STR);
+        $stmt->execute();
+        $list = array();
+        while ($row = $stmt->fetch()) {
+            $list[] = $row;
+        }
+        return $list;
+    }
 }
