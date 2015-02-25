@@ -123,7 +123,7 @@ $handle = opendir("./modules/");
 $elemArr = array();
 $i = 0;
 while (false !== ($filename = readdir($handle))) {
-    if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".svn" && $filename != ".CSV")	{
+    if (is_dir($centreon_path . "www/modules/" . $filename) && $filename != "." && $filename != "..") {
         $moduleinfo = getModuleInfoInDB($filename, NULL);
 
         /*
