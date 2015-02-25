@@ -33,19 +33,23 @@
  *
  */
 
-namespace Centreon\Internal\Form\Validator;
+namespace Centreon\Internal\Form\Validators;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class ForbiddenChar implements Ivalidator
+class ForbiddenChar implements ValidatorInterface
 {
+    public function __construct()
+    {
+        
+    }
     /**
      * 
      */
-    public static function validate($value, $module = "", $objectName = "", $id = null, $fieldname = '')
+    public function validate($value, $params = array())
     {
         $forbiddenCharDetected = false;
         $illegalCharsStr = "~!$%^&|<>?,;()=";

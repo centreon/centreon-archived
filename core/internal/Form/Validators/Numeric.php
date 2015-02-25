@@ -33,23 +33,44 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal\Form\Generator;
+namespace Centreon\Internal\Form\Validators;
 
 /**
- * Description of Cli
+ * Description of String
  *
  * @author lionel
  */
-class Cli extends Generator
+class Numeric extends RespectValidationAbstract
 {
     /**
-     * 
-     * @param type $formRoute
-     * @param type $extraParams
-     * @param type $productVersion
+     *
+     * @var type 
      */
-    public function __construct($formRoute, $extraParams = array(), $productVersion = '')
+    protected $validators = array(
+        'between',
+        'bool',
+        'even',
+        'float',
+        'int',
+        'multiple',
+        'negative',
+        'notEmpty',
+        'numeric',
+        'odd',
+        'perfectSquare',
+        'positive',
+        'primeNumber',
+        'roman',
+        'xdigit',
+    );
+    
+
+    /**
+     * 
+     * @param type $params
+     */
+    public function __construct($params)
     {
-        parent::__construct($formRoute, $extraParams, $productVersion);
+        parent::__construct($params);
     }
 }

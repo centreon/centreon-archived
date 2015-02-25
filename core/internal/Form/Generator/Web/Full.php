@@ -113,7 +113,7 @@ class Full extends Generator
                 
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
-                    . 'f.type, f.help, f.help_url, f.advanced, mandatory, parent_field, child_actions '
+                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, parent_field, child_actions '
                     . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
 		    . 'AND bfr.field_id = f.field_id ' 
@@ -126,7 +126,7 @@ class Full extends Generator
                 
                 foreach ($fieldList as $field) {
                     
-                    $validatorQuery = "SELECT v.action as validator_action, vr.client_side_event as events "
+                    $validatorQuery = "SELECT v.route as validator_action, vr.client_side_event as events "
                         . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $field[field_id] "
                         . "AND vr.validator_id = v.validator_id";
@@ -360,8 +360,100 @@ class Full extends Generator
         }
     }
     
-    public function getFormFieldsWithValidators($route)
+    /**
+     * 
+     * @param type $origin
+     * @param type $uri
+     */
+    public function getValidators()
     {
+        $validatorsQuery = $this->buildValidatorsQuery();
         
+        $stmt = $this->dbconn->query($validatorsQuery);
+        $validatorsRawList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $validatorsFinalList = array();
+        
+        foreach ($validatorsRawList as $validator) {
+            $validatorsFinalList[$validator['field_name']][] = array(
+                'call' => $validator['validator_name'],
+                'params' => $validator['params']
+            );
+        }
+        
+        $mandatoryFields = $this->getMandatoryFields();
+        
+        return array('mandatory' => $mandatoryFields, 'fieldScheme' => $validatorsFinalList);
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getMandatoryFields()
+    {
+        $di = Di::getDefault();
+        $baseUrl = $di->get('config')->get('global', 'base_url');
+        $uri = substr($this->formRoute, strlen($baseUrl));
+        $mandatoryQuery = "SELECT name FROM cfg_forms_fields WHERE mandatory = '1'"
+            . "AND field_id IN (
+                    SELECT
+                        fi.field_id
+                    FROM
+                        cfg_forms_fields fi, cfg_forms_blocks fb, cfg_forms_blocks_fields_relations fbf, cfg_forms_sections fs, cfg_forms f
+                    WHERE
+                        fi.field_id = fbf.field_id
+                    AND
+                        fbf.block_id = fb.block_id
+                    AND
+                        fb.section_id = fs.section_id
+                    AND
+                        fs.form_id = f.form_id
+                    AND
+                        f.route = '$uri'
+            )";
+        $stmt = $this->dbconn->query($mandatoryQuery);
+        $mandatoryFieldList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return array_column($mandatoryFieldList, 'name');
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    protected function buildValidatorsQuery()
+    {
+        $di = Di::getDefault();
+        $baseUrl = $di->get('config')->get('global', 'base_url');
+        $uri = substr($this->formRoute, strlen($baseUrl));
+        $validatorsQuery = "SELECT
+                fv.`name` as validator_name, `route` as `validator`, ffv.`params` as `params`,
+                ff.`name` as `field_name`, ff.`label` as `field_label`
+            FROM
+                cfg_forms_validators fv, cfg_forms_fields_validators_relations ffv, cfg_forms_fields ff
+            WHERE
+                ffv.validator_id = fv.validator_id
+            AND
+                ff.field_id = ffv.field_id
+            AND
+                ffv.field_id IN (
+                    SELECT
+                        fi.field_id
+                    FROM
+                        cfg_forms_fields fi, cfg_forms_blocks fb, cfg_forms_blocks_fields_relations fbf, cfg_forms_sections fs, cfg_forms f
+                    WHERE
+                        fi.field_id = fbf.field_id
+                    AND
+                        fbf.block_id = fb.block_id
+                    AND
+                        fb.section_id = fs.section_id
+                    AND
+                        fs.form_id = f.form_id
+                    AND
+                        f.route = '$uri'
+            );";
+        
+        return $validatorsQuery;
     }
 }

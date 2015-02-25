@@ -33,13 +33,16 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Form\Component;
+
+use Centreon\Internal\Di;
 
 /**
  * Description of FormComponent
  *
  * @author lionel
  */
-class Component implements ComponentInterface
+class Component
 {
     /**
      * Render Html for input field

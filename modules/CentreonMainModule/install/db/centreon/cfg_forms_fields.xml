@@ -7,6 +7,7 @@
         <column name="default_value" phpName="DefaultValue" type="VARCHAR" size="45" required="true"/>
         <column name="attributes" phpName="Attributes" type="VARCHAR" size="255" required="false"/>
         <column name="advanced" phpName="Advanced" type="CHAR" required="true" defaultValue="0"/>
+        <column name="mandatory" phpName="Mandatory" type="CHAR" required="true" defaultValue="0"/>
         <column name="type" phpName="Type" type="VARCHAR" size="45" required="true"/>
         <column name="help" phpName="Help" type="LONGVARCHAR" required="false"/>
         <column name="help_url" phpName="HelpUrl" type="VARCHAR" size="255" required="false"/>

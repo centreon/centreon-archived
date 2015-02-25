@@ -33,23 +33,41 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal\Form\Generator;
+namespace Centreon\Internal\Form\Validators;
 
 /**
- * Description of Cli
+ * Description of String
  *
  * @author lionel
  */
-class Cli extends Generator
+class Misc extends RespectValidationAbstract
 {
     /**
-     * 
-     * @param type $formRoute
-     * @param type $extraParams
-     * @param type $productVersion
+     *
+     * @var type 
      */
-    public function __construct($formRoute, $extraParams = array(), $productVersion = '')
+    protected $validators = array(
+        'cnh',
+        'cnpj',
+        'cpf',
+        'domain',
+        'email',
+        'hexRgbColor',
+        'ip',
+        'json',
+        'macAddress',
+        'nfeAccessKey',
+        'phone',
+        'url',
+    );
+    
+
+    /**
+     * 
+     * @param type $params
+     */
+    public function __construct($params)
     {
-        parent::__construct($formRoute, $extraParams, $productVersion);
+        parent::__construct($params);
     }
 }

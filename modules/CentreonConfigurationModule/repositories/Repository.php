@@ -37,7 +37,7 @@ namespace CentreonConfiguration\Repository;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
-use Centreon\Repository\FormRepository;
+use CentreonMain\Repository\FormRepository;
 use CentreonConfiguration\Repository\AuditlogRepository;
 
 /**

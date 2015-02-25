@@ -32,21 +32,21 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Internal\Form\Validator;
+namespace Centreon\Internal\Form\Validators;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class CircularDependency implements Ivalidator
+class CircularDependency implements ValidatorInterface
 {
     /**
      * 
      */
-    public static function validate($value, $module = "", $objectName = '', $id = null, $fieldname = '')
+    public function validate($value, $module = "", $objectName = '', $id = null, $fieldname = '')
     {
-        $controller = '\\' . $module . '\Controllers\\' . ucfirst($objectName) . 'Controller';
+        /*$controller = '\\' . $module . '\Controllers\\' . ucfirst($objectName) . 'Controller';
         $result = true;
         $resultError = 'Redondance circulaire détectée';
         
@@ -76,6 +76,9 @@ class CircularDependency implements Ivalidator
         return array(
             'success' => $result,
             'error' => $resultError
-        );
+        );*/
+        
+        $result = array('success' => true);
+        return $result;
     }
 }

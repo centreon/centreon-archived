@@ -216,7 +216,7 @@ class Form
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
             case 'static':
-                $className = "\\Centreon\\Internal\\Form\\Custom\\".ucfirst($element['label_type']);
+                $className = "\\Centreon\\Internal\\Form\\Component\\".ucfirst($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
                     $element['label'] = $element['label_label'];
                     $in = $className::renderHtmlInput($element);
@@ -246,6 +246,29 @@ class Form
                 }
                 break;
         }
+    }
+    
+    /**
+     * 
+     * @param array $inputElement
+     * @return string
+     */
+    public function renderHtmlButton($inputElement)
+    {
+        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<input '.
+                            'id="'.$inputElement['id'].'" '.
+                            'type="'.$inputElement['type'].'" '.
+                            'name="'.$inputElement['name'].'" '.
+                            $value.
+                            'class="btn btn-default" '.
+                            '/>';
+        return $inputHtml;
     }
     
     /**
@@ -411,6 +434,20 @@ class Form
         $_SESSION['form_token'] = $token;
         $_SESSION['form_token_time'] = time();
         return $token;
+    }
+    
+    /**
+     * Add a submit to the form
+     *
+     * @param string $name The name of submit
+     * @param string $label The value of submit
+     * @param array $params Additionnal param
+     * @return \HTML_QuickForm_Element_InputSubmit
+     */
+    public function addSubmit($name, $label, $params = array())
+    {
+        $this->formProcessor->addElement('submit', $name, $label, $params)
+                ->updateAttributes(array('id'=>$name, 'class'=>'btn-primary'));
     }
     
     /**

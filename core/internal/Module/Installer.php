@@ -40,7 +40,7 @@ use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Di;
 use Centreon\Internal\Install\Db;
-use Centreon\Internal\Form\Installer as FormInstaller;
+use Centreon\Internal\Form\Install\Installer as FormInstaller;
 use Centreon\Internal\Hook;
 use Centreon\Models\Module;
 

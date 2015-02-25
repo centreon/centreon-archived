@@ -35,7 +35,7 @@
  */
 
 
-namespace Centreon\Internal\Form;
+namespace Centreon\Internal\Form\Install;
 
 class Installer
 {
@@ -257,9 +257,9 @@ class Installer
         if (!isset(self::$fields[$key])) {
             $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
-                help, module_id, parent_field, child_actions) VALUES 
+                help, module_id, parent_field, child_actions, mandatory) VALUES 
                 (:name, :label, :default_value, :attributes, :advanced, 
-                :type, :help, :module_id, :parent_field, :child_actions)';
+                :type, :help, :module_id, :parent_field, :child_actions, :mandatory)';
         } else {
             $sql = 'UPDATE cfg_forms_fields SET label = :label,
                 default_value = :default_value,
@@ -270,6 +270,7 @@ class Installer
                 module_id = :module_id,
                 parent_field = :parent_field,
                 child_actions = :child_actions
+                mandatory = :mandatory
                 WHERE name = :name
                 AND field_id = :field_id';
         }
@@ -287,6 +288,12 @@ class Installer
         $stmt->bindParam(':module_id', $data['module_id']);
         $stmt->bindParam(':parent_field', $data['parent_field']);
         $stmt->bindParam(':child_actions', $data['child_actions']);
+        
+        if (!isset($data['mandatory'])) {
+            $data['mandatory'] = '0';
+        }
+        
+        $stmt->bindParam(':mandatory', $data['mandatory']);
         $stmt->execute();
         if (!isset(self::$fields[$key])) {
             self::$fields[$key] = $db->lastInsertId('cfg_forms_fields', 'field_id');
@@ -315,13 +322,12 @@ class Installer
 
             foreach ($data['versions'] as $version) {
                 $stmt = $db->prepare(
-                    'REPLACE INTO cfg_forms_blocks_fields_relations (block_id, field_id, rank, mandatory, product_version) '
-                    . 'VALUES (:block_id, :field_id, :rank, :mandatory, :product_version)'
+                    'REPLACE INTO cfg_forms_blocks_fields_relations (block_id, field_id, rank, product_version) '
+                    . 'VALUES (:block_id, :field_id, :rank, :product_version)'
                 );
                 $stmt->bindParam(':block_id', self::$blocks[$key]);
                 $stmt->bindParam(':field_id', self::$fields[$fname]);
                 $stmt->bindParam(':rank', $data['rank']);
-                $stmt->bindParam(':mandatory', $data['mandatory']);
                 $stmt->bindParam(':product_version', $version);
                 $stmt->execute();
             }
@@ -351,12 +357,22 @@ class Installer
                     $stmt->execute();
 
                     $stmt = $db->prepare(
-                        'REPLACE INTO cfg_forms_fields_validators_relations (validator_id, field_id, client_side_event) '
-                        . 'VALUES (:validator_id, :field_id, :client_side_event)'
+                        'REPLACE INTO cfg_forms_fields_validators_relations (validator_id, field_id, client_side_event, params) '
+                        . 'VALUES (:validator_id, :field_id, :client_side_event, :params)'
                     );
                     $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
                     $stmt->bindParam(':client_side_event', $validator['events']);
+                    
+                    unset($validator['events']);
+                    $validatorParams = '';
+                    foreach ($validator as $key=>$value) {
+                        if (!empty($validatorParams)) {
+                            $validatorParams .= ';';
+                        }
+                        $validatorParams .= $key . '=' . $value;
+                    }
+                    $stmt->bindParam(':params', $validatorParams);
                     $stmt->execute();
                 }
             }
@@ -454,13 +470,12 @@ class Installer
         if (isset(self::$steps[$key]) && isset(self::$fields[$fname])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
             $stmt = $db->prepare(
-                'REPLACE INTO cfg_forms_steps_fields_relations (step_id, field_id, rank, mandatory) '
-                . 'VALUES (:step_id, :field_id, :rank, :mandatory)'
+                'REPLACE INTO cfg_forms_steps_fields_relations (step_id, field_id, rank) '
+                . 'VALUES (:step_id, :field_id, :rank)'
             );
             $stmt->bindParam(':step_id', self::$steps[$key]);
             $stmt->bindParam(':field_id', self::$fields[$fname]);
             $stmt->bindParam(':rank', $data['rank']);
-            $stmt->bindParam(':mandatory', $data['mandatory']);
             $stmt->execute();
         }
         $tmp = $key . ';' . $fname;
@@ -498,7 +513,6 @@ class Installer
                     'wizard_name' => $wizard['name'],
                     'step_name' => $step['name'],
                     'field_name' => $field['name'],
-                    'mandatory' => $field['mandatory'],
                     'rank' => $fieldRank
                 );
                 self::addFieldToStep(array_map('strval', $stepFieldData));
@@ -575,6 +589,7 @@ class Installer
                         'module_id' => $moduleId,
                         'child_actions' => $field->child_actions,
                         'attributes' => $attributes,
+                        'mandatory' => $field['mandatory'],
                         'help' => $field->help,
                     );
                     self::insertField(array_map('strval', $fieldData));
@@ -583,7 +598,6 @@ class Installer
                         'section_name' => strval($section['name']),
                         'block_name' => strval($block['name']),
                         'field_name' => strval($field['name']),
-                        'mandatory' => strval($field['mandatory']),
                         'rank' => $fieldRank,
                         'versions' => $versions
                     );

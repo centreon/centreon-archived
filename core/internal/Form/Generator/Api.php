@@ -33,13 +33,23 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Form\Generator;
 
 /**
  * Description of Api
  *
  * @author lionel
  */
-class Api
+class Api extends Generator
 {
-    //put your code here
+    /**
+     * 
+     * @param type $formRoute
+     * @param type $extraParams
+     * @param type $productVersion
+     */
+    public function __construct($formRoute, $extraParams = array(), $productVersion = '')
+    {
+        parent::__construct($formRoute, $extraParams, $productVersion);
+    }
 }

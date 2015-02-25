@@ -33,23 +33,16 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal\Form\Generator;
+namespace Centreon\Internal\Form\Exception;
+
+use Centreon\Internal\Exception;
 
 /**
- * Description of Cli
+ * Description of InvalidToken
  *
  * @author lionel
  */
-class Cli extends Generator
+class InvalidTokenException extends Exception
 {
-    /**
-     * 
-     * @param type $formRoute
-     * @param type $extraParams
-     * @param type $productVersion
-     */
-    public function __construct($formRoute, $extraParams = array(), $productVersion = '')
-    {
-        parent::__construct($formRoute, $extraParams, $productVersion);
-    }
+    //put your code here
 }

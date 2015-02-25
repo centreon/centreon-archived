@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Internal\Form\Custom;
+namespace Centreon\Internal\Form\Component;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>

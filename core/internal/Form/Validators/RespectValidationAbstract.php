@@ -33,23 +33,66 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal\Form\Generator;
+namespace Centreon\Internal\Form\Validators;
+
+use Respect\Validation\Validator as v;
 
 /**
- * Description of Cli
+ * Description of RespectValidationAbstract
  *
  * @author lionel
  */
-class Cli extends Generator
+abstract class RespectValidationAbstract implements ValidatorInterface
 {
     /**
-     * 
-     * @param type $formRoute
-     * @param type $extraParams
-     * @param type $productVersion
+     *
+     * @var type 
      */
-    public function __construct($formRoute, $extraParams = array(), $productVersion = '')
+    protected $validators = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $submittedValidators;
+
+
+    /**
+     * 
+     * @param type $params
+     */
+    protected function __construct($params)
     {
-        parent::__construct($formRoute, $extraParams, $productVersion);
+        $this->submittedValidators = explode(';', $params);
+    }
+    
+    /**
+     * 
+     * @param type $value
+     * @return type
+     */
+    public function validate($value)
+    {
+        $validationChainCall = $this->buildValidationChain() . '->validate' ;
+        return v::$validationChainCall($value);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    protected function buildValidationChain()
+    {
+        $validationChainCall = '';
+        foreach ($this->submittedValidators as $stringValidator) {
+            $validatorParamsAndValue = explode('=', $stringValidator);
+            if (in_array($validatorParamsAndValue[0], $this->validators)) {
+                if (!empty($validationChainCall)) {
+                    $validationChainCall .= '->';
+                }
+                $validationChainCall .= $validatorParamsAndValue[0] . '(' . $validatorParamsAndValue[1] . ')';
+            }
+        }
+        return $validationChainCall;
     }
 }

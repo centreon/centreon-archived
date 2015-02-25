@@ -33,10 +33,11 @@
  *
  */
 
-namespace Centreon\Repository;
+namespace CentreonMain\Repository;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
+use Centreon\Internal\Form\Validators\Validator;
 
 /**
  * Abstact class for configuration repository
@@ -44,7 +45,7 @@ use Centreon\Internal\Exception;
  * @version 3.0.0
  * @author Sylvestre Ho <sho@centreon.com>
  */
-abstract class FormRepository
+abstract class FormRepository extends ListRepository
 {
     /**
      * Get list of objects
@@ -81,6 +82,22 @@ abstract class FormRepository
         }
         return $finalList;
     }
+    
+    /**
+     * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     */
+    protected static function validateForm($givenParameters, $origin = "", $route = "")
+    {
+        $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
+        if ($origin == 'wizard' || $origin == 'form') {
+            $formValidator->csrf($givenParameters['token']);
+            unset($givenParameters['token']);
+        }
+        $formValidator->validate($givenParameters->all());
+    }
 
     /**
      * Generic create action
@@ -88,11 +105,9 @@ abstract class FormRepository
      * @param array $givenParameters
      * @return int id of created object
      */
-    public static function create($givenParameters, $origin = "", $route = "", $moduleName = "")
+    public static function create($givenParameters, $origin = "", $route = "")
     {
-        $generatorNamespace = '\Centreon\Internal\Form\Generator' . $origin;
-        $FormGenObject = new $generatorNamespace($route);
-        $FormGenObject->validateDatas($givenParameters);
+        self::validateForm($givenParameters, $origin, $route);
         
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();
@@ -153,11 +168,9 @@ abstract class FormRepository
      * @param array $givenParameters
      * @throws \Centreon\Internal\Exception
      */
-    public static function update($givenParameters, $origin = "", $route = "", $moduleName = "")
+    public static function update($givenParameters, $origin = "", $route = "")
     {
-        $generatorNamespace = '\Centreon\Internal\Form\Generator' . $origin;
-        $FormGenObject = new $generatorNamespace($route);
-        $FormGenObject->validateDatas($givenParameters);
+        self::validateForm($givenParameters, $origin, $route);
         
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();

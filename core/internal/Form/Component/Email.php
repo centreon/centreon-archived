@@ -33,7 +33,7 @@
  *
  */
 
-namespace Centreon\Internal\Form\Custom;
+namespace Centreon\Internal\Form\Component;
 
 use Centreon\Internal\Di;
 

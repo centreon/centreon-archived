@@ -35,6 +35,8 @@
  */
 namespace Centreon\Internal\Form\Generator;
 
+use Centreon\Internal\Di;
+
 /**
  * Description of Generator
  *
@@ -42,6 +44,12 @@ namespace Centreon\Internal\Form\Generator;
  */
 abstract class Generator
 {
+    /**
+     *
+     * @var type 
+     */
+    protected $dbconn;
+    
     /**
      *
      * @var string 
@@ -58,13 +66,13 @@ abstract class Generator
      *
      * @var string 
      */
-    private $formRedirect;
+    protected $formRedirect;
     
     /**
      *
      * @var string 
      */
-    private $formRedirectRoute;
+    protected $formRedirectRoute;
     
     /**
      *
@@ -88,7 +96,7 @@ abstract class Generator
      *
      * @var type 
      */
-    private $firstSection;
+    protected $firstSection;
     
     /**
      *
@@ -114,67 +122,18 @@ abstract class Generator
         $this->formRoute = $formRoute;
         $this->extraParams = $extraParams;
         $this->productVersion = $productVersion;
+        $di = Di::getDefault();
+        $this->dbconn = $di->get('db_centreon');
     }
+    
     /**
      * 
-     * @return string
+     * @return array
      */
-    protected function getValidationScheme()
+    public function getValidationScheme()
     {
-        $mandatory = array('name');
-        $fieldScheme = array(
-            'name' => array(
-                'string' => 'minlength=3,maxlength=255',
-                'unique' => 'object=CentreonConfiguration:Host'
-            )
-        );
-        
-        $validationScheme = array('mandatory' => $mandatory, 'fieldScheme' => $fieldScheme);
+        $validatorsScheme = $this->getValidators();
+        $validationScheme = array('mandatory' => $validatorsScheme['mandatory'], 'fieldScheme' => $validatorsScheme['fieldScheme']);
         return $validationScheme;
-    }
-    
-    /**
-     * 
-     * @param type $datas
-     * @throws Exception
-     */
-    public function validateDatas($datas)
-    {
-        $success = true;
-        $errors = array();
-        $validationScheme = $this->getValidationScheme();
-        
-        // If not all mandatory parameters are in the dataset, throw an exception
-        $datasKeys = array_keys($datas);
-        if (count(array_diff($datasKeys, $validationScheme['mandatory'])) > 0) {
-            throw new \Exception("missing parameters", $code, $previous);
-        }
-        
-        // Validate each field according to its validators
-        foreach ($datas as $key => $value) {
-            foreach ($validationScheme['fieldScheme'][$key] as $fieldValidatorName => $fieldValidatorParams) {
-                $result = $fieldValidatorName::validate($value, $fieldValidatorParams);
-                if ($result['success'] === false) {
-                    $errors[] = $result['error'];
-                }
-            }
-        }
-        
-        if (count($errors) > 0) {
-            $this->raiseValidationException($errors);
-        }
-    }
-    
-    /**
-     * 
-     * @param type $errors
-     * @throws \Exception
-     */
-    private function raiseValidationException($errors)
-    {
-        $message = "";
-        $code = 401;
-        
-        throw new \Exception($message, $code);
     }
 }

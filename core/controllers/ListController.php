@@ -207,6 +207,7 @@ abstract class ListController extends Controller
     {
         $this->tpl->assign('validateUrl', "/" . static::$moduleShortName . "/" . static::$objectName  . "/add");
         $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
+        $form->getFormFromDatabase();
         $form->addHiddenComponent('object', static::$objectName);
         $form->addHiddenComponent('module', static::$moduleName);
         $this->tpl->assign('formName', $form->getName());
@@ -229,17 +230,14 @@ abstract class ListController extends Controller
     public function createAction($sendResponse = true)
     {
         $givenParameters = clone $this->getParams('post');
-        
-        $validationResult = Form::validate("wizard", $this->getUri(), static::$moduleName, $givenParameters);
-        if ($validationResult['success']) {
-            $repository = $this->repository;
-            try {
-                $id = $repository::create($givenParameters);
-            } catch (Exception $e) {
+        $repository = $this->repository;
+        try {
+            $id = $repository::create($givenParameters, 'wizard', $this->getUri());
+        } catch (Exception $e) {
+            if ($sendResponse) {
                 $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
             }
-        } else {
-            $this->router->response()->json(array('success' => false, 'error' => $validationResult['error']));
+            return false;
         }
         
         if ($sendResponse) {

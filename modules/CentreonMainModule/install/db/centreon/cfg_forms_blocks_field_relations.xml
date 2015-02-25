@@ -4,7 +4,6 @@
         <column name="block_id" phpName="BlockId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="rank" phpName="Rank" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
-        <column name="mandatory" phpName="Mandatory" type="CHAR" required="true" defaultValue="0"/>
         <column name="product_version" phpName="ProductVersion" type="VARCHAR" size="20" primaryKey="true" defaultValue=""/>
         <foreign-key foreignTable="cfg_forms_blocks" name="fk_form_block_field_relation_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="block_id" foreign="block_id"/>

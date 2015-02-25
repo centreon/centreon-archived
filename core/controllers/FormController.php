@@ -37,6 +37,7 @@
 namespace Centreon\Controllers;
 
 use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
+use Centreon\Internal\Form\Validators\Validator\Validator;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 
@@ -105,6 +106,7 @@ abstract class FormController extends ListController
         }
         
         $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id']));
+        $myForm->getFormFromDatabase();
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', static::$objectName);
         
@@ -159,25 +161,16 @@ abstract class FormController extends ListController
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        /*$validationResult = Form::validate("form", $this->getUri(), static::$moduleName, $givenParameters);
-        if ($validationResult['success']) {
+        try {
             $repository = $this->repository;
-            try {
-                $repository::update($givenParameters);
-            } catch (Exception $e) {
-                $updateSuccessful = false;
-                $updateErrorMessage = $e->getMessage();
-            }
-        } else {
-            $updateSuccessful = false;
-            $updateErrorMessage = $validationResult['error'];
-        }*/
-        
-        if ($updateSuccessful) {
+            $repository::update($givenParameters, 'form', $this->getUri());
+            
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
-        } else {
+        } catch (\Centreon\Internal\Exception $e) {
+            $updateSuccessful = false;
+            $updateErrorMessage = $e->getMessage();
             $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }

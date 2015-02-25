@@ -3,6 +3,7 @@
     <table name="cfg_forms_fields_validators_relations" phpName="FormFieldValidatorRelation" idMethod="native">
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="validator_id" phpName="ValidatorId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
+        <column name="params" phpName="Params" type="VARCHAR" size="255" required="true"/>
         <column name="client_side_event" phpName="ClientSideEvent" type="VARCHAR" size="45" required="false"/>
         <foreign-key foreignTable="cfg_forms_fields" name="fk_form_field_validator_relation_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="field_id" foreign="field_id"/>
