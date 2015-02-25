@@ -46,22 +46,26 @@ $tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
                                                   'keys'       => array('id'),
                                                   'conditions' => array('ns_activate' => 1)));
 $n = count($tab_nagios_server);
+$newTabNagiosServer = array();
 
 /*
  * Display null option
  */
 if ($n > 1) {
-    $tab_nagios_server[-1] = "";
+    $newTabNagiosServer[-1] = "";
 }
 
 /*
  * Display all server options
  */
 if ($n > 1) {
-    $tab_nagios_server[0] = _("All Pollers");
+    $newTabNagiosServer[0] = _("All Pollers");
 }
 
-ksort($tab_nagios_server);
+/* Sort the list of poller server */
+foreach ($tab_nagios_server as $key => $name) {
+    $newTabNagiosServer[$key] = $name;
+}
 
 /*
  * Form begin
@@ -74,7 +78,7 @@ $form->addElement('header', 'infos', _("Implied Server"));
 $form->addElement('header', 'opt', _("Export Options"));
 $form->addElement('header', 'result', _("Actions"));
 
-$form->addElement('select', 'host', _("Poller"), $tab_nagios_server, array("id" => "nhost", "style" => "width: 220px;"));
+$form->addElement('select', 'host', _("Poller"), $newTabNagiosServer, array("id" => "nhost", "style" => "width: 220px;"));
 
 $form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
 
