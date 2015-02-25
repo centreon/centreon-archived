@@ -2126,7 +2126,7 @@ CREATE TABLE `traps` (
   `traps_exec_method` enum('0', '1') DEFAULT '0',
   `traps_downtime` enum('0','1','2') DEFAULT '0',
   `traps_output_transform` varchar(255) DEFAULT NULL,
-  `traps_customcode` text DEFAULT NULL,
+  `traps_customcode` text,
   `traps_comments` text,
   UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
   KEY `traps_id` (`traps_id`),
