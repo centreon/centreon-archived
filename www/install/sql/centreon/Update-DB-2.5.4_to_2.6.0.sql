@@ -13,5 +13,10 @@ ALTER TABLE auth_ressource_info CHANGE ari_value ari_value VARCHAR(1024);
 -- Remove datePicker
 DELETE FROM topology_JS WHERE PathName_js = "./include/common/javascript/datePicker.js";
 
+-- Fix problem in Centreon Broker form
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+(14, 42, 1, 13),
+(14, 43, 1, 14);
+
 -- Change version of Centreon
 UPDATE `informations` SET `value` = '2.6.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.5.4' LIMIT 1;
