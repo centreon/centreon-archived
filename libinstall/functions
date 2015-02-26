@@ -1715,14 +1715,19 @@ function check_httpd_directory()
 		elif [ -d /etc/apache2 ] ; then
 			DIR_APACHE="/etc/apache2"			
 			DIR_APACHE_CONF="/etc/apache2/conf-available"
+			if [ -d '/etc/apache2/conf-avaible' ]; then
+				DIR_APACHE_CONF="/etc/apache2/conf-available"
+			elif [ -d '/etc/apache2/conf.d' ]; then
+				DIR_APACHE_CONF="/etc/apache2/conf.d"
+			fi
 			if [ ! -d "$DIR_APACHE_CONF" ] ; then
 				mkdir "$DIR_APACHE_CONF"
 				echo_success "$(gettext "Created Apache configuration directory")" "$ok"
 			fi
-           	if [ -d '/etc/apache2/conf-enabled' ] ; then
-                echo_success "$(gettext "Enable Apache configuration")" "$ok"
-                a2enconf centreon.conf
-            fi
+			if [ -d '/etc/apache2/conf-enabled' -a -x "$(type -p a2enconf 2>/dev/null)" ] ; then
+				echo_success "$(gettext "Enable Apache configuration")" "$ok"
+				a2enconf centreon.conf
+			fi
 		elif [ -d /etc/httpd/conf ] ; then
 			DIR_APACHE="/etc/httpd/conf"
 			DIR_APACHE_CONF="/etc/httpd/conf.d"
