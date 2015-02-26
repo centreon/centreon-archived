@@ -9,7 +9,7 @@
 		            <field name="svc_tmpl_id" label="Service Template" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 		              <attributes>
 		            	<object_type>object</object_type>
-		            	<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+                  <defaultValuesRoute>/centreon-performance/configuration/servicetemplate/withoutgraphtemplate</defaultValuesRoute>
                   <listValuesRoute>/centreon-performance/configuration/graphtemplate/[i:id]/servicetemplate</listValuesRoute>
 		            	<multiple>false</multiple>
 		              </attributes>

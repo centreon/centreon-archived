@@ -162,4 +162,30 @@ class ConfigGraphTemplateController extends FormController
     {
         parent::getSimpleRelation('svc_tmpl_id', '\CentreonConfiguration\Models\Servicetemplate');
     }
+
+    /**
+     * Get the list of service template without graph template
+     *
+     * @method get
+     * @route /configuration/servicetemplate/withoutgraphtemplate
+     */
+    public function getServiceTemplateWithoutGraphtemplateAction()
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $router = Di::getDefault()->get('router');
+        $query = "SELECT service_id, service_description
+            FROM cfg_services
+            WHERE service_register = '0'
+                AND service_id NOT IN (SELECT svc_tmpl_id FROM cfg_graph_template)";
+        $stmt = $dbconn->prepare($query);
+        $stmt->execute();
+        $list = array();
+        while ($row = $stmt->fetch()) {
+            $list[] = array(
+                'id' => $row['service_id'],
+                'text' => $row['service_description']
+            );
+        }
+        $router->response()->json($list);
+    }
 }
