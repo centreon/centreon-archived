@@ -36,6 +36,7 @@
 
 namespace Centreon\Internal;
 
+use Centreon\Internal\Di;
 use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Module\Informations;
 
@@ -103,6 +104,25 @@ class Command
             $module = $requestLineExploded[0];
             $this->displayCommandList($this->commandList[$module], $module);
         }
+    }
+
+    /**
+     * Display the current installed version
+     */
+    public function getVersion()
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        try {
+            $stmt = $dbconn->query('SELECT value FROM cfg_informations where `key` = "version"');
+        } catch (\Exception $e) {
+            throw new \Exception("Version not present.");
+        }
+        if (0 === $stmt->rowCount()) {
+            throw new \Exception("Version not present.");
+        }
+        $row = $stmt->fetch();
+        $stmt->closeCursor();
+        echo $row['value'] . "\n";
     }
     
     /**
