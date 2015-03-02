@@ -46,9 +46,9 @@ class CircularDependency implements ValidatorInterface
      */
     public function validate($value, $module = "", $objectName = '', $id = null, $fieldname = '')
     {
-        /*$controller = '\\' . $module . '\Controllers\\' . ucfirst($objectName) . 'Controller';
+        $controller = '\\' . $module . '\Controllers\\' . ucfirst($objectName) . 'Controller';
         $result = true;
-        $resultError = 'Redondance circulaire détectée';
+        $resultError = _("Circular redundancy detected");
         
         $object = $controller::$relationMap[$fieldname];
         $objectStack = explode(',', trim($value));
@@ -76,9 +76,6 @@ class CircularDependency implements ValidatorInterface
         return array(
             'success' => $result,
             'error' => $resultError
-        );*/
-        
-        $result = array('success' => true);
-        return $result;
+        );
     }
 }

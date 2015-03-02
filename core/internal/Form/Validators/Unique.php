@@ -53,7 +53,7 @@ class Unique implements ValidatorInterface
      */
     public function validate($value, $module = "", $objectName = "", $id = null, $fieldname = '')
     {
-        /*$callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
+        $callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
         if ($callableObject::isUnique($value, $id)) {
             $result = array('success' => true);
         } else {
@@ -61,8 +61,7 @@ class Unique implements ValidatorInterface
                 'success' => false,
                 'error' => _("\"<i>$value</i>\" is already in use for another $objectName")
             );
-        }*/
-        $result = array('success' => true);
+        }
         return $result;
     }
 }

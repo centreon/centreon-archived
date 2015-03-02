@@ -44,12 +44,35 @@ class Api extends Generator
 {
     /**
      * 
-     * @param type $formRoute
-     * @param type $extraParams
-     * @param type $productVersion
+     * @param string $formRoute
+     * @param array $extraParams
+     * @param string $productVersion
      */
     public function __construct($formRoute, $extraParams = array(), $productVersion = '')
     {
         parent::__construct($formRoute, $extraParams, $productVersion);
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getValidators()
+    {
+        $validatorsQuery = $this->buildValidatorsQuery();
+        
+        $stmt = $this->dbconn->query($validatorsQuery);
+        $validatorsRawList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $validatorsFinalList = array();
+        
+        foreach ($validatorsRawList as $validator) {
+            $validatorsFinalList[$validator['field_name']][] = array(
+                'call' => $validator['validator_name'],
+                'params' => $validator['params']
+            );
+        }
+        
+        return array('fieldScheme' => $validatorsFinalList);
     }
 }

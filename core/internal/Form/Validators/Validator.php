@@ -117,7 +117,6 @@ class Validator
     {
         $validationScheme = $this->formGenerator->getValidationScheme(array_keys($submittedDatas));
         $this->validateDatas($validationScheme, $submittedDatas);
-        
     }
     
     /**

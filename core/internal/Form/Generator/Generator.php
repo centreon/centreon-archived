@@ -133,7 +133,40 @@ abstract class Generator
     public function getValidationScheme()
     {
         $validatorsScheme = $this->getValidators();
+        $validatorsScheme['mandatory'] = $this->getMandatoryFields();
         $validationScheme = array('mandatory' => $validatorsScheme['mandatory'], 'fieldScheme' => $validatorsScheme['fieldScheme']);
         return $validationScheme;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getMandatoryFields()
+    {
+        $di = Di::getDefault();
+        $baseUrl = $di->get('config')->get('global', 'base_url');
+        $uri = substr($this->formRoute, strlen($baseUrl));
+        $mandatoryQuery = "SELECT name FROM cfg_forms_fields WHERE mandatory = '1'"
+            . "AND field_id IN (
+                    SELECT
+                        fi.field_id
+                    FROM
+                        cfg_forms_fields fi, cfg_forms_blocks fb, cfg_forms_blocks_fields_relations fbf, cfg_forms_sections fs, cfg_forms f
+                    WHERE
+                        fi.field_id = fbf.field_id
+                    AND
+                        fbf.block_id = fb.block_id
+                    AND
+                        fb.section_id = fs.section_id
+                    AND
+                        fs.form_id = f.form_id
+                    AND
+                        f.route = '$uri'
+            )";
+        $stmt = $this->dbconn->query($mandatoryQuery);
+        $mandatoryFieldList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        return array_column($mandatoryFieldList, 'name');
     }
 }
