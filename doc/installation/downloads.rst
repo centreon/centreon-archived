@@ -8,7 +8,7 @@ Downloads
 Formats
 *******
 
-Generally speaking, Open Source softwares by Merethis are provided in three possible formats:
+Generally speaking, Open Source softwares by Centreon are provided in three possible formats:
 
 * binary RPM packages (recommended)
 * tarballs with sources
@@ -16,7 +16,7 @@ Generally speaking, Open Source softwares by Merethis are provided in three poss
 
 RPM packages are the best format you can get as you would not
 have to worry about compilation and installation, everything is
-already made by Merethis' experts.
+already made by Centreon' experts.
 
 If your platform is not currently supported by RPMs you might
 consider using tarball sources which are always provided for stable

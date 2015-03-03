@@ -4,7 +4,6 @@
         <column name="step_id" phpName="StepId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="field_id" phpName="FieldId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="rank" phpName="Rank" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
-        <column name="mandatory" phpName="Mandatory" type="CHAR" required="true" defaultValue="0"/>
         <foreign-key foreignTable="cfg_forms_steps" name="fk_form_step_field_relation_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="step_id" foreign="step_id"/>
         </foreign-key>

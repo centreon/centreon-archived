@@ -37,10 +37,9 @@ namespace CentreonMain\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Controller;
-use Centreon\Internal\Form\Validator\Ipaddress;
-use Centreon\Internal\Form\Validator\Unique;
-use Centreon\Internal\Form\Validator\ForbiddenChar;
-use Centreon\Internal\Form\Validator\CircularDependency;
+use Centreon\Internal\Form\Validators\Unique;
+use Centreon\Internal\Form\Validators\ForbiddenChar;
+use Centreon\Internal\Form\Validators\CircularDependency;
 
 /**
  * Validators controller

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -103,7 +103,7 @@ class OrganizationModuleTest extends DbTestCase
                 'alias' => 'Centreon Main',
                 'description' => 'Centreon Main Module',
                 'version' => '3.0.0',
-                'author' => 'Merethis',
+                'author' => 'Centreon',
                 'isactivated' => '2',
                 'isinstalled' => '2',
                 'is_activated' => '0',
@@ -119,7 +119,7 @@ class OrganizationModuleTest extends DbTestCase
                 'alias' => 'Centreon Administration',
                 'description' => 'Centreon Administration Module',
                 'version' => '3.0.0',
-                'author' => 'Merethis',
+                'author' => 'Centreon',
                 'isactivated' => '2',
                 'isinstalled' => '2',
                 'is_activated' => '0',
@@ -135,7 +135,7 @@ class OrganizationModuleTest extends DbTestCase
                 'alias' => 'Centreon Administration',
                 'description' => 'Centreon Administration Module',
                 'version' => '3.0.0',
-                'author' => 'Merethis',
+                'author' => 'Centreon',
                 'isactivated' => '2',
                 'isinstalled' => '2',
                 'is_activated' => '0',
@@ -156,7 +156,7 @@ class OrganizationModuleTest extends DbTestCase
                 'alias' => 'Centreon Main',
                 'description' => 'Centreon Main Module',
                 'version' => '3.0.0',
-                'author' => 'Merethis',
+                'author' => 'Centreon',
                 'isactivated' => '2',
                 'isinstalled' => '2',
                 'is_activated' => '0',
@@ -177,7 +177,7 @@ class OrganizationModuleTest extends DbTestCase
                 'alias' => 'Centreon Administration',
                 'description' => 'Centreon Administration Module',
                 'version' => '3.0.0',
-                'author' => 'Merethis',
+                'author' => 'Centreon',
                 'isactivated' => '2',
                 'isinstalled' => '2',
                 'is_activated' => '0',

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -37,8 +37,7 @@
 namespace Centreon\Controllers;
 
 use Centreon\Internal\Form;
-use Centreon\Internal\Form\Wizard;
-use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form\Generator\Web\Wizard;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Controller;
@@ -210,6 +209,7 @@ abstract class ListController extends Controller
     {
         $this->tpl->assign('validateUrl', $this->objectBaseUrl . "/add");
         $form = new Wizard($this->objectBaseUrl . '/add', array('id' => 0));
+        $form->getFormFromDatabase();
         $form->addHiddenComponent('object', static::$objectName);
         $form->addHiddenComponent('module', static::$moduleName);
         $this->tpl->assign('formName', $form->getName());
@@ -232,17 +232,14 @@ abstract class ListController extends Controller
     public function createAction($sendResponse = true)
     {
         $givenParameters = clone $this->getParams('post');
-        
-        $validationResult = Form::validate("wizard", $this->getUri(), static::$moduleName, $givenParameters);
-        if ($validationResult['success']) {
-            $repository = $this->repository;
-            try {
-                $id = $repository::create($givenParameters);
-            } catch (Exception $e) {
+        $repository = $this->repository;
+        try {
+            $id = $repository::create($givenParameters, 'wizard', $this->getUri());
+        } catch (Exception $e) {
+            if ($sendResponse) {
                 $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
             }
-        } else {
-            $this->router->response()->json(array('success' => false, 'error' => $validationResult['error']));
+            return false;
         }
         
         if ($sendResponse) {
@@ -339,10 +336,6 @@ abstract class ListController extends Controller
      */
     public function getMcFieldAction()
     {
-        $di = Di::getDefault();
-        $this->router = $di->get('router');
-        $dbconn = $di->get('db_centreon');
-        
         $requestParam = $this->getParams('named');
 
         $stmt = $this->routeprepare(

@@ -1,7 +1,7 @@
 {
     "name": "Service Matrix",
     "shortname": "CentreonServiceMatrix",
-    "author": "Merethis",
+    "author": "Centreon",
     "email": "contact@centreon.com",
     "website": "http://www.centreon.com",
     "description": "Widget that displays monitored services into a matrix",

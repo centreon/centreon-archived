@@ -3,7 +3,7 @@
     <table name="cfg_forms_validators" phpName="FormValidator" idMethod="native">
         <column name="validator_id" phpName="ValidatorId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="name" phpName="Name" type="VARCHAR" size="45" required="true"/>
-        <column name="action" phpName="Action" type="VARCHAR" size="255" required="true"/>
+        <column name="route" phpName="Action" type="VARCHAR" size="255" required="true"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
