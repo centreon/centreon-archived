@@ -35,7 +35,7 @@
 namespace CentreonCustomview\Controllers;
 
 use Centreon\Internal\Di;
-use Centreon\Internal\Form\Wizard;
+use Centreon\Internal\Form\Generator\Web\Wizard;
 use Centreon\Internal\Form\Widget;
 use CentreonCustomview\Repository\CustomviewRepository;
 use CentreonCustomview\Repository\WidgetRepository;

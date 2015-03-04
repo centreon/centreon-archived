@@ -33,12 +33,13 @@
  *
  */
 
-namespace Centreon\Internal\Form;
+namespace Centreon\Internal\Form\Generator;
 
 use CentreonCustomview\Repository\WidgetRepository;
 use CentreonCustomview\Repository\CustomviewRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Form;
+use Centreon\Internal\Form\Generator\Generator;
 
 /**
  * Manage widget settings
