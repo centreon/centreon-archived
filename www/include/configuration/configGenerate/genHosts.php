@@ -42,6 +42,7 @@ if (!isset($centreon)) {
 require_once ($centreon_path . "/www/class/centreonHost.class.php");
 require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
+$criticality = new CentreonCriticality($pearDB);
 /*
  * Create table for host / instance list.
  */
