@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Internal\Form\Custom;
+namespace Centreon\Internal\Form\Component;
 
 use CentreonPerformance\Repository\GraphTemplate;
 
@@ -43,7 +43,7 @@ use CentreonPerformance\Repository\GraphTemplate;
  * @package Centreon
  * @subpackage Core
  */
-abstract class Customcurvegraph extends Customobject
+abstract class Customcurvegraph extends Component
 {
     /**
      * @var string The template name for render input

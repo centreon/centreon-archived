@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Internal\Form\Custom;
+namespace Centreon\Internal\Form\Component;
 
 /**
  * Astract for custom form for graph
