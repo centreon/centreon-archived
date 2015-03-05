@@ -83,19 +83,16 @@ class OptionsController extends Controller
     {
         $givenParameters = clone $this->getParams('post');
         
-        $validationResult = Form::validate("form", $this->getUri(), self::$moduleName, $givenParameters);
-        if ($validationResult['success']) {
+        try {
+            OptionRepository::update($givenParameters, "default", "form", $this->getUri());
+            
             if (isset($givenParameters['token'])) {
                 unset($givenParameters['token']);
             }
             
-            OptionRepository::update($givenParameters);
-            
-            unset($_SESSION['form_token']);
-            unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
-        } else {
-            $this->router->response()->json(array('success' => false,'error' => $validationResult['error']));
+        } catch (Exception $ex) {
+            $this->router->response()->json(array('success' => false,'error' => $ex->getMessage()));
         }
     }
 }
