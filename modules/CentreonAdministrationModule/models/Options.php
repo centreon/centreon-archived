@@ -44,6 +44,10 @@ use Centreon\Internal\Di;
  */
 class Options
 {
+    /**
+     * 
+     * @return type
+     */
     public static function getOptionsKeysList()
     {
         $db = Di::getDefault()->get('db_centreon');
@@ -58,6 +62,12 @@ class Options
         return $finalList;
     }
     
+    /**
+     * 
+     * @param type $group
+     * @param array $options
+     * @return type
+     */
     public static function getList($group = null, array $options = array())
     {
         $db = Di::getDefault()->get('db_centreon');
@@ -109,6 +119,7 @@ class Options
     /**
      * 
      * @param type $values
+     * @param type $group
      */
     public static function insert($values, $group = "default")
     {

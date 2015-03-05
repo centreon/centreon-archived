@@ -36,7 +36,7 @@
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Form;
-use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form\Generator\Web\Full;
 use CentreonAdministration\Repository\AclactionRepository;
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
