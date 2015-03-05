@@ -36,7 +36,7 @@
 namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Options;
-use Centreon\Internal\Form;
+use Centreon\Internal\Form\Validators\Validator;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -47,11 +47,28 @@ class OptionRepository
 {
     /**
      * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     */
+    protected static function validateForm($givenParameters, $origin = "", $route = "")
+    {
+        $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
+        if ($origin == 'wizard' || $origin == 'form') {
+            $formValidator->csrf($givenParameters['token']);
+            unset($givenParameters['token']);
+        }
+        $formValidator->validate($givenParameters->all());
+    }
+    
+    /**
+     * 
      * @param type $submittedValues
      * @param type $group
      */
-    public static function update($submittedValues, $group = "default")
+    public static function update($submittedValues, $group = "default", $origin = "", $route = "")
     {
+        self::validateForm($submittedValues, $origin, $route);
         $currentOptionsList = Options::getOptionsKeysList();
 
         $optionsToSave = array();

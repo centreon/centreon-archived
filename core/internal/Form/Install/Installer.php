@@ -638,7 +638,18 @@ class Installer
             }
             
             if (count($attr->children()) > 0) {
-                $finalAttributes[$attrName] = self::parseAttributes($attr);
+                if ($attrName == 'selectData') {
+                    $values = self::parseAttributes($attr);
+                    $finalAttributes[$attrName] = array();
+                    foreach ($values as $key => $value) {
+                        $finalAttributes[$attrName][] = array(
+                            'id' => $key,
+                            'text' => $value
+                        );
+                    }
+                } else {
+                    $finalAttributes[$attrName] = self::parseAttributes($attr);
+                }
             } else {
                 $finalAttributes[$attrName] = $attr->__toString();
                 if ($finalAttributes[$attrName] == "true") {
