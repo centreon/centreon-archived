@@ -59,7 +59,8 @@ class OptionsController extends Controller
         //
         $objectFormUpdateUrl = '/centreon-administration/options/centreon/update';
         
-        $myForm = new Generator($objectFormUpdateUrl);
+        $myForm = new Full($objectFormUpdateUrl);
+        $myForm->getFormFromDatabase();
         
         // get object Current Values
         $myForm->setDefaultValues(Options::getList());
