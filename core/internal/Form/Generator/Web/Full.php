@@ -61,7 +61,7 @@ class Full extends Generator
     
     /**
      * 
-     * @param boolean $advanced
+     * @throws Exception
      */
     public function getFormFromDatabase()
     {

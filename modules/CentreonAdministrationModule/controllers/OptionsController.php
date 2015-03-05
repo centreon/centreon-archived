@@ -36,7 +36,7 @@
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Form;
-use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form\Generator\Web\Full;
 use CentreonAdministration\Models\Options;
 use CentreonAdministration\Repository\OptionRepository;
 use Centreon\Internal\Controller;
@@ -59,7 +59,8 @@ class OptionsController extends Controller
         //
         $objectFormUpdateUrl = '/centreon-administration/options/centreon/update';
         
-        $myForm = new Generator($objectFormUpdateUrl);
+        $myForm = new Full($objectFormUpdateUrl);
+        $myForm->getFormFromDatabase();
         
         // get object Current Values
         $myForm->setDefaultValues(Options::getList());
