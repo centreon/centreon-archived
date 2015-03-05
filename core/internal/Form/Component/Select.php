@@ -108,7 +108,12 @@ class Select extends Component
                 . 'formatResult: select2_formatResult, '
                 . 'formatSelection: select2_formatSelection, ';
         if (isset($element['label_selectData'])) {
-            $myJs .= 'data: { results: '.$element['label_selectData'].' },';
+            if (is_array($element['label_selectData'])) {
+                $datas = json_encode($element['label_selectData']);
+            } else {
+                $datas = $element['label_selectData'];
+            }
+            $myJs .= 'data: { results: ' . $datas . ' },';
         } elseif (isset($element['label_defaultValuesRoute'])) {
             $myJs .= ''
                 . 'ajax: {'
