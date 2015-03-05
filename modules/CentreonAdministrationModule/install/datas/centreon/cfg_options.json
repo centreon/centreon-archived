@@ -226,5 +226,21 @@
     {
         "key": "interval_length",
         "value": 60
+    },
+    {
+        "key": "es_url",
+        "value": "http://localhost:9200"
+    },
+    {
+        "key": "es_security",
+        "value": "none"
+    },
+    {
+        "key": "es_user",
+        "value": ""
+    },
+    {
+        "key": "es_pass",
+        "value": ""
     }
 ]
