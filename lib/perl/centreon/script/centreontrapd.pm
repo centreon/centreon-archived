@@ -456,6 +456,8 @@ sub set_current_values {
     $self->{current_server_ip_address} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{ns_ip_address};
     $self->{current_hostname} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{host_name};
     $self->{current_service_desc} = $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{service_description};
+    $self->{current_user_arg1} = defined($self->{user_arg1}) ? $self->{user_arg1} : '';
+    $self->{current_user_arg2} = defined($self->{user_arg2}) ? $self->{user_arg2} : '';
 }
 
 sub check_sequential_can_exec {
@@ -829,6 +831,8 @@ sub substitute_centreon_var {
     $str =~ s/\@POLLERID\@/$self->{current_server_id}/g;
     $str =~ s/\@POLLERADDRESS\@/$self->{current_server_ip_address}/g;
     $str =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
+    $str =~ s/\@USERARG1\@/$self->{current_user_arg1}/g;
+    $str =~ s/\@USERARG2\@/$self->{current_user_arg2}/g;
     $str = $self->substitute_host_macro($str);
     return $str;
 }
