@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install script for CentPluginsTraps
 ## @Copyright	Copyright 2008, Guillaume Watteeux
