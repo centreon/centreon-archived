@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #----
 ## @Synopsis	Install Script for Centreon project
 ## @Copyright	Copyright 2008, Guillaume Watteeux

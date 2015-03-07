@@ -225,7 +225,7 @@
 	 */
 	function writeShellHeaders($fd, $oreonInstallPath, $patchPath) {
 		global $lang;
-		fwrite($fd, "#!/bin/bash\n\n");
+		fwrite($fd, "#!/usr/bin/env bash\n\n");
 		fwrite($fd, "PATH_OREON=" . $oreonInstallPath . "\n");
 		fwrite($fd, "PATH_PATCH=" . $patchPath . "\n\n");
 		fwrite($fd, "PATH_OLD=`pwd`\n\n");

@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/usr/bin/env bash 
 
 #----
 ## @Synopsis	This file contains functions to be used by Centreon install scripts
