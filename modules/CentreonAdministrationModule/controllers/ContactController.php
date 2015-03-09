@@ -84,7 +84,7 @@ class ContactController extends FormController
     }
 
     /**
-     * Update a contact
+     * Update a contact info
      *
      * @method post
      * @route /contact/add/info
@@ -94,7 +94,7 @@ class ContactController extends FormController
         $givenParameters = $this->getParams();
         unset($givenParameters['token']);
         $repository = $this->repository;
-        $contactId = $repository::addContactInfo($givenParameters);
+        $contactId = $repository::updateContact($givenParameters);
         $removeUrl = $this->router->getPathFor('/centreon-administration/contact/info/remove/[i:id]', array('id' => $contactId));
         $this->router->response()->json(array(
             'success' => true,
@@ -104,8 +104,27 @@ class ContactController extends FormController
         ));
     }
     
-    /**
+    
+     /**
      * Update a contact
+     *
+     * @method post
+     * @route /contact/update
+     */
+    public function updateContactAction()
+    {
+        $givenParameters = $this->getParams();
+
+        unset($givenParameters['token']);
+        $repository = $this->repository;
+        $contactId = $repository::updateContact($givenParameters);
+        
+        $this->router->service()->back();
+
+    }
+    
+    /**
+     * Edit a contact
      *
      *
      * @method get
@@ -121,6 +140,13 @@ class ContactController extends FormController
             'defaultValuesRoute' =>  '/centreon-administration/contact/contact-info/formlist',
             'listValuesRoute' =>  '/centreon-administration/contact/contact-info/default'
         ));
+        
+        // Add selector
+        $aSelectTimezones = json_encode(array(
+            'defaultValuesRoute' =>  '/centreon-administration/timezone/formlist',
+            'listValuesRoute' =>  '/centreon-administration/timezone/default'
+        ));
+        
         $customForm->addStatic(array(
             'name' => 'contact_info_key',
             'label' => _('Notification way'),
@@ -138,6 +164,15 @@ class ContactController extends FormController
             'advanced' => false,
         ));
         
+        $customForm->addStatic(array(
+            'name' => 'contact_timezone',
+            'label' => _('Timezone'),
+            'type' => 'select',
+            'mandatory' => false,
+            'advanced' => false,
+            'attributes' => $aSelectTimezones,
+        ));
+        
         $customForm->addSubmit('add_button', 'Add');
         $customForm->addHidden('object_id', $requestParam['id']);
         
@@ -145,10 +180,13 @@ class ContactController extends FormController
         $repository = $this->repository;
         $contactInfos =  $repository::getContactInfo($requestParam['id'], true);
         
+        
         $objectFormUpdateUrl = $this->objectBaseUrl.'/add/info';
+        $objectFormupdateContact = $this->objectBaseUrl.'/update';
         $deleteUrl = $this->router->getPathFor('/centreon-administration/contact/info/remove/[i:id]', array('id' => $requestParam['id']));
         $this->tpl->assign('deleteUrl', $deleteUrl);
         $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
+        $this->tpl->assign('updateContact', $objectFormupdateContact);
         $this->tpl->assign('formName', 'ContactInfoForm');
         $this->tpl->assign('contactInfos', $contactInfos);
         $this->tpl->assign('form', $customForm->toSmarty());

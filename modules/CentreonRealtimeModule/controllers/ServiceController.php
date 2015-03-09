@@ -91,13 +91,14 @@ class ServiceController extends Controller
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
-            ->addJs('moment-with-langs.min.js')
+            ->addJs('moment-with-locales.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('daterangepicker.js')
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js')
             ->addJs('centreon.overlay.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('moment-timezone-with-data.min.js');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');

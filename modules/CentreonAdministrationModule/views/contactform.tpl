@@ -9,6 +9,7 @@
         <form class="form-horizontal" role="form" {$form.attributes}>
             <div>{$form.contact_info_key.html}</div>
             <div>{$form.contact_info_value.html}</div>
+            <div>{$form.contact_timezone.html}</div>
             <div>{$form.add_button.html}</div>
             {$form.hidden}
         </form>
@@ -96,5 +97,25 @@
             });
             return false;
         });
+        $("#contact_timezone").on('change', function(event){
+           //if (this.value > 0 && $("input[name$='object_id']").val() > 0) { 
+                $.ajax({
+                     url: "{url_for url=$updateContact}",
+                     type: "POST",
+                     dataType: 'json',
+                     data: {
+                         'timezone_id':this.value, 
+                         'token' : $("input[name$='token']").val(),
+                         'object_id': $("input[name$='object_id']").val()
+                     },
+                     context: document.body
+                 })
+                 .success(function(data, status, jqxhr) {
+                     alertClose();
+                 });
+                 return false;
+           // }
+        }); 
+                
     </script>
 {/block}

@@ -51,10 +51,10 @@
             <div class="longoutput"></div>
           </div>
           <div class="col-xs-12">
-            {t}Last check{/t} : <span id="last_check"></span>
+            {t}Last check{/t} : <span id="last_check" data-time=""></span>
           </div>
           <div class="col-xs-12">
-            {t}Next check{/t} : <span id="next_check"></span>
+            {t}Next check{/t} : <span id="next_check" data-time=""></span>
           </div>
         </div>
       </div>
@@ -221,8 +221,10 @@ $(function() {
       }
     });
   }
+  
 
   $(document).on('centreon.host_detail', function(e) {
+   
     /* Update block name */
     $('#name').removeClass(function(index, css) {
       return (css.match(/(^|\s)status-\S+/g) || []).join(' ');
@@ -239,9 +241,11 @@ $(function() {
       moment.duration(diffDate, 'seconds').humanize()
     );
 
-    $('#last_check').text(moment.unix(hostData.lastCheck).format('llll'));
-    $('#next_check').text(moment.unix(hostData.nextCheck).format('llll'));
-
+    
+    $('#last_check').text(moment.unix(hostData.lastCheck).format(sDefaultFormatDate));
+    $('#next_check').text(moment.unix(hostData.nextCheck).format(sDefaultFormatDate));
+    
+    
     /* Update block network */
     if (hostData.network !== undefined) {
       var $in, $out, $networkList = $("#network ul");
@@ -409,9 +413,9 @@ $(function() {
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
         $.each(data, function(idx, values) {
-          var type, state, colorCss, borderCss;
+          var type, state, colorCss, borderCss, sDate, sTimestamp, date;
           var isService = false;
-
+          
           if (values.service != "") {
             isService = true;
           }
@@ -457,11 +461,11 @@ $(function() {
             colorCss = 'centreon-status-s-';
             borderCss = 'centreon-border-status-s-';
           }
-
+          
           $('<tr></tr>')
             .addClass(borderCss + values.status)
             .append(
-              $('<td></td>').text(values.datetime)
+              $('<td data-time="'+values.datetime+'"></td>').text(values.datetime)
             )
             .append(
               $('<td></td>').html(values.service)
@@ -482,6 +486,8 @@ $(function() {
   });
 
   loadData();
+  
+  displayDate();
 });
 </script>
 {/block}

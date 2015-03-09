@@ -58,7 +58,10 @@
             </a>
           </li>
           <li class="time">
-            <span class="clock"></span>
+            <a class="account dropdown-toggle" data-toggle="dropdown" href="#"><span class="clock"></span></a>
+            <ul class="dropdown-menu">
+                <li class="last"><a href="">{t}Add timezone{/t}</a></li>
+            </ul>
           </li>
           <li class="user">
             <a class="account dropdown-toggle" data-toggle="dropdown" href="#">
@@ -161,7 +164,12 @@ $(document).ready(function() {
         }
       });
     }
+    /*
 
+    $(".clock").on('click', function(){
+        displayDate();
+    });
+    */
     /* Timer */
     topClock();
 

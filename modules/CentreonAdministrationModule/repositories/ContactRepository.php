@@ -108,4 +108,17 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
         
         return $finalInfos;
     }
+    /**
+     * Update contact
+     * @param array $givenParameters
+     */
+    public static function updateContact($givenParameters)
+    {
+        $infoToUpdate = array(
+            'contact_id'   => $givenParameters['object_id'],
+            'timezone_id'  => $givenParameters['timezone_id']
+        );
+        return Contact::update($infoToUpdate);
+    }
+            
 }

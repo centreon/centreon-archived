@@ -89,10 +89,12 @@ class HostController extends Controller
             ->addJs('additional-methods.min.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.search.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            //->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js');
 
+        
+        
         /* Datatable */
         $this->tpl->assign('moduleName', 'CentreonRealtime');
         $this->tpl->assign('datatableObject', $this->datatableObject);
@@ -159,7 +161,8 @@ class HostController extends Controller
         $this->tpl->addJs('d3.min.js')
              ->addJs('jquery.sparkline.min.js')
              ->addJs('cal-heatmap.min.js')
-             ->addJs('jquery.knob.min.js');
+             ->addJs('jquery.knob.min.js')
+             ->addJs('moment-timezone-with-data.min.js');
 
         $this->tpl->display('file:[CentreonRealtimeModule]host_detail.tpl');
     }

@@ -19,6 +19,17 @@
 				<field name="host_address" label="IP address / DNS" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
 					<help>Define the address of the host here. Normally, this should be an IP address, but a FQDN can be used to identify the host instead. If DNS services are not reachable a FQDN could cause problems.</help>
 				</field>
+                                
+                                <field name="timezone_id" label="Timezone" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                                    <help>Define the timezone</help>
+                                    <attributes>
+                                            <object_type>object</object_type>
+                                            <defaultValuesRoute>/centreon-administration/timezone/formlist</defaultValuesRoute>
+                                            <listValuesRoute>/centreon-configuration/host/[i:id]/timezone</listValuesRoute>
+                                            <multiple>false</multiple>
+                                    </attributes>
+				</field>
+                                
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help>This is where you specify the template that you want to inherit properties/variables from. Inherited properties doesn't need to be specified again. "Local" object variables always take precedence over variables defined in the template object. Objects can inherit properties/variables from multiple levels of template objects. When defining multiple sources, the first template specified takes precedence over the later one, in the case where a property is defined in both.</help>
 					<attributes>
@@ -323,6 +334,7 @@
 		<step name="General">
 			<field name="host_name" mandatory="1"></field>
 			<field name="host_address" mandatory="1"></field>
+                        <field name="timezone_id" mandatory="0"></field>
 			<field name="host_hosttemplates" mandatory="0"></field>
 			<field name="host_custommacros" mandatory="0"></field>
 			<field name="environment_id" mandatory="0"></field>
