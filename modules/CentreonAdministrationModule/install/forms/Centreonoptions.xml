@@ -33,6 +33,17 @@
             </block>
 		</section>
     <section name="Eventlogs engine">
+      <block name="Eventlogs storage engine">
+        <field name="eventlogs" label="Storage engine" advanced="0" type="select" parent_field="" mandatory="1">
+          <attributes>
+            <multiple>false</multiple>
+            <selectData>
+              <database>Database</database>
+              <elasticsearch>Elastic Search</elasticsearch>
+            </selectData>
+          </attributes>
+        </field>
+      </block>
       <block name="Elastic search">
         <field name="es_host" label="Elastic Search URL" default_value="http://localhost:9200" advanced="0" type="text" parent_field="" mandatory="1">
           <help></help>
