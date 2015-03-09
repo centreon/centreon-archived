@@ -113,7 +113,7 @@ class Full extends Generator
                 
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
-                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, parent_field, child_actions '
+                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, parent_field, parent_value, child_actions '
                     . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
 		    . 'AND bfr.field_id = f.field_id ' 
@@ -225,7 +225,7 @@ class Full extends Generator
             . 'An error occured'
             . '</div>';
         
-        $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].'>';
+        $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].' novalidate>';
         
         $formRendering = '';
 

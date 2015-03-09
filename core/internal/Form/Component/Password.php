@@ -61,14 +61,23 @@ class Password extends Component
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
+
+        $addClass = '';
+        $required = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+            $required .= ' required';
+        }
+
         $myJs = '';
         $inputHtml = '<input '.
                         'id="'.$element['id'].'" '.
                         'type="password" '.
                         'name="'.$element['name'].'" '.
                         $value.
-                        'class="form-control input-sm" '.
+                        'class="form-control input-sm ' . $addClass . '" '.
                         $placeholder.
+                        $required .
                         '/>';
         
         return array(

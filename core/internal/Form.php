@@ -363,11 +363,10 @@ class Form
         
         $mandatorySign = "";
         if (isset($inputElement['label_mandatory']) && $inputElement['label_mandatory'] == "1") {
-            $mandatorySign .= ' <span style="color:red">*</span>';
+            $mandatorySign .= ' required';
         }
         
-        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>'.
-            $mandatorySign;
+        $inputHtml = '<label class="label-controller required" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
         
         return $inputHtml;
     }
@@ -643,6 +642,9 @@ class Form
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
+        $params['parent_field'] = $field['parent_field'];
+        $params['parent_value'] = $field['parent_value'];
+        $params['child_actions'] = $field['child_actions'];
         
         if (isset($field['advanced']) && $field['advanced'] != null) {
             $params['advanced'] = $field['advanced'];

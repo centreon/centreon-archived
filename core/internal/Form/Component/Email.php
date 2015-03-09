@@ -66,8 +66,10 @@ class Email extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required = ' required';
         }
         
         $myJs = "";
@@ -77,11 +79,12 @@ class Email extends Component
         
         $myHtml .= '<input '.
                 'id="'.$element['id'].'" '.
-                'type="text" '.
+                'type="email" '.
                 'name="'.$element['name'].'" '.
                 $value.
                 'class="form-control '.$addClass.'" '.
                 $placeholder.
+                $required .
                 '/>';
                     
         $myHtml .= '<span id="'.$element['name'].'_email_span" class=""></span>'
