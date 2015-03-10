@@ -59,8 +59,8 @@
           </li>
           <li class="time">
             <a class="account dropdown-toggle" data-toggle="dropdown" href="#"><span class="clock"></span></a>
-            <ul class="dropdown-menu">
-                <li class="last"><a href="">{t}Add timezone{/t}</a></li>
+            <ul class="dropdown-menu" id="list_timezone">
+                <li class="last" id="modalAdd_timezone"><a href="#">{t}Add horloge{/t}</a></li>
             </ul>
           </li>
           <li class="user">
@@ -150,6 +150,25 @@ $(document).ready(function() {
             }
         });
     });
+    
+    $( document ).unbind( "finished" );
+    $( document ).on( "finished", function( event ) {
+        $('#modal').modal('hide');
+    });
+    
+  
+    $("#modalAdd_timezone").on("click", function(e) {
+        $("#modal").removeData("bs.modal");
+        $("#modal").removeData("centreonWizard");
+        $("#modal .modal-content").text("");
+        $("#modal").one("loaded.bs.modal", function(e) {
+            $(this).centreonWizard();
+        });
+        $("#modal").modal({
+            "remote": "/centreon-administration/timezone/addtouser"
+        });
+    });
+        
     $(window).on('resize', function() {
         resizeContent();
     });
@@ -179,6 +198,10 @@ $(document).ready(function() {
         loadStatusData();
     }, 5000);
     loadStatusData();
+});
+
+$(function() {
+    
 });
 </script>
 {block name="javascript-bottom"}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_administration" defaultIdMethod="native">
+    <table name="cfg_users_timezones_relations" phpName="UsersTimezonesRelation" idMethod="native">
+        <column name="user_id" phpName="UserId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
+        <column name="timezone_id" phpName="TimezonesId" type="INTEGER" primaryKey="true" required="true"/>
+        <column name="is_default" phpName="IsDefault" type="TINYINT" default="0"/>
+        <foreign-key foreignTable="cfg_users" name="cfg_users_timezones_relations_fk01" onDelete="CASCADE">
+            <reference local="user_id" foreign="user_id" />
+        </foreign-key>
+        <foreign-key foreignTable="cfg_timezones" name="cfg_users_timezones_relations_fk02" onDelete="CASCADE">
+            <reference local="timezone_id" foreign="timezone_id" />
+        </foreign-key>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

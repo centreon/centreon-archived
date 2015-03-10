@@ -35,9 +35,11 @@
 
 namespace CentreonAdministration\Controllers;
 
+use Centreon\Internal\Di;
 use CentreonAdministration\Models\User as UserModel;
 use CentreonAdministration\Internal\User;
 use Centreon\Controllers\FormController;
+use CentreonAdministration\Models\Relation\User\Timezone;
 
 class UserController extends FormController
 {
@@ -48,7 +50,8 @@ class UserController extends FormController
     protected $datatableObject = '\CentreonAdministration\Internal\UserDatatable';
     protected $objectClass = '\CentreonAdministration\Models\User';
     protected $repository = '\CentreonAdministration\Repository\UserRepository';
-    public static $relationMap = array();
+    
+    public static $relationMap = array('user_timezone' => "\CentreonAdministration\Models\Relation\User\Timezone");
     
     public static $isDisableable = true;
 
@@ -108,4 +111,34 @@ class UserController extends FormController
     {
         parent::getSimpleRelation('language_id', '\CentreonAdministration\Models\Language');
     }
+    
+    /**
+     * Get list of timezones for a specific user
+     * 
+     * @method get
+     * @route /user/[i:id]/timezonesForUser
+     */
+    public function timezonesForUserAction()
+    {
+        return parent::getRelations(static::$relationMap['user_timezone'], 'user_id');
+    }
+    /**
+     * @method post
+     * @route /user/settimezone
+     */
+    public function settimezoneAction()
+    {
+        
+        $givenParameters = $this->getParams('post');
+        $user = $_SESSION['user'];
+        $userId = $user->getId();
+        $infoToInsert = array(
+            'is_default' => 1
+        );
+        Timezone::insert($userId, $givenParameters['select_name'], $infoToInsert);
+        $router = Di::getDefault()->get('router');
+        //echo "<pre>".var_dump($this->timezonesForUserAction($userId))."</pre>";
+        $router->response()->json($this->timezonesForUserAction());
+    }
+    
 }

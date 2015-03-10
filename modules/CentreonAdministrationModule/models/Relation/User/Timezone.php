@@ -31,43 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonAdministration\Controllers;
+namespace CentreonAdministration\Models\Relation\User;
 
-use Centreon\Internal\Form\Wizard;
-use Centreon\Controllers\FormController;
-use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
-class TimezoneController extends FormController
+/**
+ * Relation between timezone and user;
+ *
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Administration
+ */
+class Timezone extends CentreonRelationModel
 {
-    protected $objectDisplayName = 'Timezone';
-    public static $objectName = 'timezone';
-    protected $objectBaseUrl = '/centreon-administration/timezone';
-    protected $objectClass = '\CentreonAdministration\Models\Timezone';
-    protected $repository = '\CentreonAdministration\Repository\TimezoneRepository';
-    
-    public static $relationMap = array();
-    
-    protected $datatableObject = '\CentreonAdministration\Internal\TimezoneDatatable';
-    public static $isDisableable = true;
-    
-    /**
-     * addtouser a timezone
-     *
-     * @method get
-     * @route /timezone/addtouser
-     */
-    public function addtouserAction()
-    {
-
-        $di = Di::getDefault();
-        $config = $di->get('config');
-        $form = new Wizard(
-            '/centreon-administration/timezone/addtouser',
-            array('id' => '')
-        );
-        $this->tpl->assign('validateUrl', '/centreon-administration/user/settimezone');
-        echo $form->generate();
-    }
+    protected static $relationTable = "cfg_users_timezones_relations";
+    protected static $firstKey = "user_id";
+    protected static $secondKey = "timezone_id";
+    public static $firstObject = "\\CentreonAdministration\\Models\\User";
+    public static $secondObject = "\\CentreonAdministration\\Models\\Timezone";
 }
