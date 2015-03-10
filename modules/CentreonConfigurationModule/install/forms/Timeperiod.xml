@@ -8,8 +8,10 @@
 	  <block name="General information">
 		<field name="tp_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 			<validators>
-				<validator rules="remote">unique</validator>
-				<validator rules="forbiddenChar" characters="~!$%^&|<>?,;()=&quot;">forbiddenChar</validator>
+                <validator rules="remote" serverside="unique" />
+                <validator rules="forbiddenChar" serverside="forbiddenChar">
+                    <argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                </validator>
 			</validators>
 		</field>
 		<field name="tp_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>

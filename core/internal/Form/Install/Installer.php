@@ -358,13 +358,13 @@ class Installer
         $validators = $data['validators'];
         if (isset(self::$fields[$fname]) && !is_null($validators->validator)) {
             foreach ($validators->validator as $validator) {
-                if (isset(self::$validators[(string)$validator])) {
+                if (isset(self::$validators[$validator['serverside']])) {
                     $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
                     $stmt = $db->prepare(
                         'DELETE FROM cfg_forms_fields_validators_relations '
                         . 'WHERE validator_id = :validator_id AND field_id = :field_id'
                     );
-                    $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
+                    $stmt->bindParam(':validator_id', self::$validators[$validator[serverside]]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
                     $stmt->execute();
 
@@ -372,21 +372,21 @@ class Installer
                         'REPLACE INTO cfg_forms_fields_validators_relations (validator_id, field_id, client_side_event, params, server_side) '
                         . 'VALUES (:validator_id, :field_id, :client_side_event, :params, :server_side)'
                     );
-                    $stmt->bindParam(':validator_id', self::$validators[(string)$validator]);
+                    $stmt->bindParam(':validator_id', self::$validators[$validator['serverside']]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
                     $stmt->bindParam(':client_side_event', $validator['rules']);
                     
-                    if (isset($validator['noserverside'])) {
+                    if (!isset($validator['serverside'])) {
                         $stmt->bindParam(':server_side', '0');
                     }
                     
                     unset($validator['rules']);
                     $validatorParams = '';
-                    foreach ($validator as $key=>$value) {
+                    foreach ($validator->argument as $argument->$value) {
                         if (!empty($validatorParams)) {
                             $validatorParams .= ';';
                         }
-                        $validatorParams .= $key . '=' . $value;
+                        $validatorParams .= $argument['name'] . '=' . $value;
                     }
                     $stmt->bindParam(':params', $validatorParams);
                     $stmt->execute();

@@ -8,8 +8,10 @@
 			<block name="General information">
 				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 				    <validators>
-				        <validator rules="remote">unique</validator>
-						<validator rules="forbiddenChar" characters="~!$%^&|<>?,;()=&quot;">forbiddenChar</validator>
+                    	<validator rules="remote" serverside="unique" />
+                        <validator rules="forbiddenChar" serverside="forbiddenChar">
+                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                        </validator>
 				    </validators>
 				</field>
 				<field name="traps_oid" label="OID" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>

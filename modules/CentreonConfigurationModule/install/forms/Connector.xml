@@ -8,8 +8,10 @@
 	  <block name="General information">
 		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 			<validators>
-				<validator rules="remote">unique</validator>
-				<validator rules="forbiddenChar" characters="~!$%^&|<>?,;()=&quot;">forbiddenChar</validator>
+				<validator rules="remote" serverside="unique" />
+        <validator rules="forbiddenChar" serverside="forbiddenChar">
+          <argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+        </validator>
 			</validators>
           <help>Name which will be used for identifying the connector.</help>
         </field>
