@@ -119,8 +119,8 @@ try {
     // get trap info
     $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, severity_id, traps_submit_result_enable, 
         traps_execution_command, traps_reschedule_svc_enable, traps_execution_command_enable, traps_args, 
-        traps_routing_mode, traps_routing_value, traps_routing_filter_services, traps_log, traps_name, traps_exec_method, traps_downtime, traps_routing_filter_services, traps_advanced_treatment, traps_advanced_treatment_default,
-        traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type, manufacturer_id 
+        traps_routing_mode, traps_routing_value, traps_log, traps_name, traps_exec_method, traps_downtime, traps_routing_filter_services, traps_advanced_treatment, traps_advanced_treatment_default,
+        traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type, manufacturer_id, traps_output_transform
         FROM traps");
     $stmt->execute();
     $result_traps = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -258,8 +258,8 @@ try {
                     `traps_log` int(11) DEFAULT '0',
                     `traps_routing_mode` int(11) DEFAULT '0',
                     `traps_routing_value` varchar(255) DEFAULT NULL,
-					`traps_routing_filter_services` varchar(255) DEFAULT NULL,
-					`traps_output_transform` varchar(255) DEFAULT NULL,
+                    `traps_routing_filter_services` varchar(255) DEFAULT NULL,
+                    `traps_output_transform` varchar(255) DEFAULT NULL,
                     `traps_exec_method` int(11) DEFAULT '0',
                     `traps_customcode` text DEFAULT NULL
                     );
