@@ -80,7 +80,7 @@ class Component
                         ->get('router')
                         ->getPathFor($validator['validator_action']);
 
-                    $ajaxCall = '$.ajax({
+                    /*$ajaxCall = '$.ajax({
                             url: "'.$validatorRoute.'",
                             type: "POST",
                             data: {
@@ -108,7 +108,24 @@ class Component
                                });
                             });';
                         }
-                    }
+                    }*/
+                    $rules = array(
+                        'remote' => array(
+                            'url' => $validatorRoute,
+                            'type' => 'post',
+                            'data' => array(
+                                'module' => 'function () {
+                                    return $("[name=\'module\']").val();
+                                });',
+                                'object' => 'function () {
+                                    return $("[name=\'object\']").val();
+                                });',
+                                'object_id' => 'function () {
+                                    return $("[name=\'object_id\']").val();
+                                });'
+                            )
+                        )
+                    );
                 }
             }
         }

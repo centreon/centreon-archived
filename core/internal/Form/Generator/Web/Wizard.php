@@ -69,8 +69,9 @@ class Wizard extends Full
         $route = str_replace($baseUrl, '', $route);*/
 
         $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, 
-            s.rank as step_rank, f.mandatory as mandatory,
-            sf.rank as field_pos, f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
+            s.rank as step_rank, f.mandatory as mandatory, f.parent_field as parent_field, f.parent_value as parent_value,
+            f.child_actions as child_actions, sf.rank as field_pos, f.name as name, f.label, f.default_value,
+            f.attributes, f.type, f.help
             FROM cfg_forms_wizards w, cfg_forms_steps s, cfg_forms_steps_fields_relations sf, cfg_forms_fields f
             WHERE w.route = :route
                 AND w.wizard_id = s.wizard_id

@@ -70,7 +70,7 @@ class Integer extends Component
         
         $inputHtml = '<span><input '.
                         'id="'.$element['id'].'" '.
-                        'type="text" '.
+                        'type="number" '.
                         'name="'.$element['name'].'" '.
                         $value.
                         'class="form-control input-sm '.$addClass.'" '.

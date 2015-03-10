@@ -109,7 +109,7 @@ class Form
      *
      * @var string 
      */
-    private $eventValidation = '';
+    private $eventValidation = 'var rules = {};';
     
     /**
      *
@@ -366,7 +366,7 @@ class Form
             $mandatorySign .= ' required';
         }
         
-        $inputHtml = '<label class="label-controller required" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
+        $inputHtml = '<label class="label-controller' . $mandatorySign . '" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
         
         return $inputHtml;
     }
