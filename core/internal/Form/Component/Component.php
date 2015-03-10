@@ -71,68 +71,82 @@ class Component
             $label = $element['name'];
         }
         
+        $rules = array();
+        
         if (isset($element['label_validators'])) {
+            $remote = false;
             foreach ($element['label_validators'] as $validator) {
-                if (strstr(strtolower($validator['validator_action']), 'jquery') !== false) {
-
-                } else {
-                    $validatorRoute = Di::getDefault()
-                        ->get('router')
-                        ->getPathFor($validator['validator_action']);
-
-                    /*$ajaxCall = '$.ajax({
-                            url: "'.$validatorRoute.'",
-                            type: "POST",
-                            data: {
-                                "value":$(this).val(),
-                                "module":$("[name=\'module\']").val(),
-                                "object":$("[name=\'object\']").val(),
-                                "object_id":$("[name=\'object_id\']").val()
-                            },
-                            dataType: "json",
-                            context: document.body
-                        })';
-                    $eventList = explode(',', trim($validator['events']));
-                    foreach ($eventList as $event) {
-                        if (!empty($event)) {
-                            $eventValidation .= '$("#'.$element['name'].'").on ("'.$event.'" , function(){ '.
-                               $ajaxCall.
-                               '.success(function(data, status, jqxhr) {
-                                    if (data["success"]) {
-                                        alertClose();
-                                        $(this).val(data["value"]);
-                                    } else {
-                                        alertClose();
-                                        alertMessage("<b>'.$label.'</b> " + data["error"], "alert-danger");
-                                    }
-                               });
-                            });';
+                $rule = null;
+                switch ($validator['rules']) {
+                    case 'remote':
+                        if ($remote) {
+                            // @todo log warning message more than one remote
+                            break;
                         }
-                    }*/
-                    $rules = array(
-                        'remote' => array(
-                            'url' => $validatorRoute,
-                            'type' => 'post',
-                            'data' => array(
-                                'module' => 'function () {
-                                    return $("[name=\'module\']").val();
-                                });',
-                                'object' => 'function () {
-                                    return $("[name=\'object\']").val();
-                                });',
-                                'object_id' => 'function () {
-                                    return $("[name=\'object_id\']").val();
-                                });'
+                        $validatorRoute = Di::getDefault()
+                            ->get('router')
+                            ->getPathFor($validator['validator_action']);
+                        $rule = array(
+                            'remote' => array(
+                                'url' => $validatorRoute,
+                                'type' => 'post',
+                                'data' => array(
+                                    'module' => 'function () {
+                                        return $("[name=\'module\']").val();
+                                    });',
+                                    'object' => 'function () {
+                                        return $("[name=\'object\']").val();
+                                    });',
+                                    'object_id' => 'function () {
+                                        return $("[name=\'object_id\']").val();
+                                    });'
+                                )
                             )
-                        )
-                    );
+                        );
+                        $remote = true;
+                        break;
+                    case 'size':
+                        list($minlength, $maxlength) = explode(',', $validator['length']);
+                        if (is_null($maxlength)) {
+                            // @todo log Warning bad format
+                            break;
+                        }
+                        $rule = array(
+                            'minlength' => $minlength,
+                            'maxlength' => $maxlength
+                        );
+                        break;
+                    case 'forbiddenChar':
+                        if (!isset($validator['charaters'])) {
+                            break;
+                        }
+                        // @todo write js function
+                    default:
+                        // @todo log warning rules not found
+                        break;
+                }
+                if (false === is_null($rule)) {
+                    $rules = array_merge($rules, $rule);
                 }
             }
         }
         
+        if ((isset($element['parent_fields']) && $element['parent_fields'] != '')
+            && (isset($element['parent_value']) && $element['parent_value'] != '')
+            && (isset($element['child_mandatory']) && $element['child_mandatory'] == 1)) {
+                
+            $rules = array(
+                'required' => array(
+                    'depends' => "function(element) {
+                        return $('#" .  $element['parent_fields'] . "').val() != '" . $element['parent_value'] . "';
+                    }"
+                )
+            );
+        }
+        
         return array(
             'submitValidation' => $submitValidation,
-            'eventValidation' => $eventValidation
+            'eventValidation' => array($element['name'] => $rules)
         );
     }
 }

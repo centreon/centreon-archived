@@ -8,8 +8,8 @@
 			<block name="General information">
 				<field name="traps_name" label="Trap name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 				    <validators>
-				        <validator events="blur">unique</validator>
-						<validator events="blur">forbiddenChar</validator>
+				        <validator rules="remote">unique</validator>
+						<validator rules="forbiddenChar" characters="~!$%^&|<>?,;()=&quot;">forbiddenChar</validator>
 				    </validators>
 				</field>
 				<field name="traps_oid" label="OID" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>

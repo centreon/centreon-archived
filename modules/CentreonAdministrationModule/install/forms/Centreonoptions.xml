@@ -45,10 +45,10 @@
         </field>
       </block>
       <block name="Elastic search">
-        <field name="es_host" label="Elastic Search URL" default_value="http://localhost:9200" advanced="0" type="text" parent_field="" mandatory="1">
+        <field name="es_host" label="Elastic Search URL" default_value="http://localhost:9200" advanced="0" type="text" parent_field="eventlogs" parent_value="elasticsearch" child_mandatory="1" mandatory="0">
           <help></help>
         </field>
-        <field name="es_security" label="Elastic Search security type" default_value="none" advanced="0" type="select" parent_field="" mandatory="1">
+        <field name="es_security" label="Elastic Search security type" default_value="none" advanced="0" type="select" parent_field="eventlogs" parent_value="elasticsearch" child_mandatory="1" mandatory="0">
           <attributes>
             <multiple>false</multiple>
             <selectData>
@@ -58,10 +58,10 @@
           </attributes>
           <help></help>
         </field>
-        <field name="es_user" label="Elastic Search username" default_value="" advanced="0" type="text" parent_field="es_security" mandatory="0">
+        <field name="es_user" label="Elastic Search username" default_value="" advanced="0" type="text" parent_field="es_security" parent_value="http" mandatory="0">
           <help></help>
         </field>
-        <field name="es_pass" label="Elastic Search password" default_value="" advanced="0" type="password" parent_field="es_security" mandatory="0">
+        <field name="es_pass" label="Elastic Search password" default_value="" advanced="0" type="password" parent_field="es_security" parent_value="http" mandatory="0">
           <help></help>
         </field>
       </block>
