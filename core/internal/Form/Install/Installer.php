@@ -354,17 +354,22 @@ class Installer
      */
     public static function addValidatorsToField($data)
     {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $fname = (string)$data['field_name'];
         $validators = $data['validators'];
         if (isset(self::$fields[$fname]) && !is_null($validators->validator)) {
             foreach ($validators->validator as $validator) {
-                if (isset(self::$validators[$validator['serverside']])) {
-                    $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+                if (isset($validator['serverside'])) {
+                    $serverside = (string)$validator['serverside'];
+                } else {
+                    $serverside = null;
+                }
+                if (isset(self::$validators[$serverside])) {
                     $stmt = $db->prepare(
                         'DELETE FROM cfg_forms_fields_validators_relations '
                         . 'WHERE validator_id = :validator_id AND field_id = :field_id'
                     );
-                    $stmt->bindParam(':validator_id', self::$validators[$validator[serverside]]);
+                    $stmt->bindParam(':validator_id', self::$validators[$serverside]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
                     $stmt->execute();
 
@@ -372,21 +377,23 @@ class Installer
                         'REPLACE INTO cfg_forms_fields_validators_relations (validator_id, field_id, client_side_event, params, server_side) '
                         . 'VALUES (:validator_id, :field_id, :client_side_event, :params, :server_side)'
                     );
-                    $stmt->bindParam(':validator_id', self::$validators[$validator['serverside']]);
+                    $stmt->bindParam(':validator_id', self::$validators[$serverside]);
                     $stmt->bindParam(':field_id', self::$fields[$fname]);
-                    $stmt->bindParam(':client_side_event', $validator['rules']);
+                    $stmt->bindValue(':client_side_event', (string)$validator['rules']);
                     
-                    if (!isset($validator['serverside'])) {
-                        $stmt->bindParam(':server_side', '0');
+                    if (is_null($serverside)) {
+                        $stmt->bindValue(':server_side', '0');
+                    } else {
+                        $stmt->bindValue(':server_side', '1');
                     }
                     
                     unset($validator['rules']);
                     $validatorParams = '';
-                    foreach ($validator->argument as $argument->$value) {
+                    foreach ($validator->argument as $argument) {
                         if (!empty($validatorParams)) {
                             $validatorParams .= ';';
                         }
-                        $validatorParams .= $argument['name'] . '=' . $value;
+                        $validatorParams .= (string)$argument['name'] . '=' . $argument;
                     }
                     $stmt->bindParam(':params', $validatorParams);
                     $stmt->execute();
