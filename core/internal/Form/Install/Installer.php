@@ -257,9 +257,9 @@ class Installer
         if (!isset(self::$fields[$key])) {
             $sql = 'INSERT INTO cfg_forms_fields 
                 (name, label, default_value, attributes, advanced, type, 
-                help, module_id, parent_field, child_actions, mandatory, child_mandatory) VALUES 
+                help, module_id, parent_field, parent_value, child_actions, mandatory, child_mandatory) VALUES 
                 (:name, :label, :default_value, :attributes, :advanced, 
-                :type, :help, :module_id, :parent_field, :child_actions, :mandatory, :child_mandatory)';
+                :type, :help, :module_id, :parent_field, :parent_value, :child_actions, :mandatory, :child_mandatory)';
         } else {
             $sql = 'UPDATE cfg_forms_fields SET label = :label,
                 default_value = :default_value,
@@ -269,9 +269,10 @@ class Installer
                 help = :help,
                 module_id = :module_id,
                 parent_field = :parent_field,
+                parent_value = :parent_value,
                 child_actions = :child_actions
                 mandatory = :mandatory
-                :child_mandatory = :child_actions
+                child_mandatory = :child_mandatory
                 WHERE name = :name
                 AND field_id = :field_id';
         }
@@ -289,13 +290,22 @@ class Installer
         $stmt->bindParam(':module_id', $data['module_id']);
         $stmt->bindParam(':parent_field', $data['parent_field']);
         $stmt->bindParam(':child_actions', $data['child_actions']);
-        $stmt->bindParam(':child_mandatory', $data['child_mandatory']);
         
         if (!isset($data['mandatory'])) {
             $data['mandatory'] = '0';
         }
-        
         $stmt->bindParam(':mandatory', $data['mandatory']);
+
+        if (!isset($data['child_mandatory'])) {
+            $data['child_mandatory'] = '0';
+        }
+        $stmt->bindParam(':child_mandatory', $data['child_mandatory']);
+
+        if (!isset($data['parent_value'])) {
+            $data['parent_value'] = null;
+        }
+        $stmt->bindParam(':parent_value', $data['parent_value']);
+        
         $stmt->execute();
         if (!isset(self::$fields[$key])) {
             self::$fields[$key] = $db->lastInsertId('cfg_forms_fields', 'field_id');
