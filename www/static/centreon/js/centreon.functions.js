@@ -205,11 +205,16 @@ function stringTwoDigit(val) {
 
 /* Clock top */
 function topClock() {
-    var clock;
+    var clock, sHeure;
     clockTimestamp++;
-    clock = moment.unix(clockTimestamp);
-
-    $('.time .clock').text(clock.local().format("HH:mm:ss"));
+    clock = moment.unix(clockTimestamp).local();
+    
+    if (sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != "") {
+       sHeure = clock.tz(sessionStorage.getItem("sTimezone"));
+    }  else {
+        sHeure = clock;
+    }
+    $('.time .clock').text(sHeure.format("HH:mm:ss"));
     setTimeout(function() { topClock(); }, 1000);
 }
 

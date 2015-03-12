@@ -3,7 +3,6 @@
     <table name="cfg_users_timezones_relations" phpName="UsersTimezonesRelation" idMethod="native">
         <column name="user_id" phpName="UserId" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true" required="true"/>
         <column name="timezone_id" phpName="TimezonesId" type="INTEGER" primaryKey="true" required="true"/>
-        <column name="is_default" phpName="IsDefault" type="TINYINT" default="0"/>
         <foreign-key foreignTable="cfg_users" name="cfg_users_timezones_relations_fk01" onDelete="CASCADE">
             <reference local="user_id" foreign="user_id" />
         </foreign-key>

@@ -120,7 +120,7 @@ class UserController extends FormController
      */
     public function timezonesForUserAction()
     {
-        return parent::getRelations(static::$relationMap['user_timezone'], 'user_id');
+        parent::getRelations(static::$relationMap['user_timezone']);
     }
     /**
      * @method post
@@ -128,17 +128,69 @@ class UserController extends FormController
      */
     public function settimezoneAction()
     {
+        $insertSuccess = true;
+        $errorMessage = '';
         
         $givenParameters = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+        $repository = $this->repository;
         $user = $_SESSION['user'];
         $userId = $user->getId();
+
         $infoToInsert = array(
-            'is_default' => 1
+            'user_id' => $userId,
+            'timezone_id' => $givenParameters['select_name']
         );
-        Timezone::insert($userId, $givenParameters['select_name'], $infoToInsert);
+        
+        try {
+            $repository::settimezone($infoToInsert);
+        }  catch (\Exception $e) {
+            $insertSuccess = false;
+            $errorMessage = $e->getMessage();
+        }
+
+        $this->router->response()->json(
+            array(
+                'success' => $insertSuccess,
+                'error' => $errorMessage
+            )
+        );
+    }
+   
+    /**
+     * @method post
+     * @route /user/deletetimezone
+     */
+    public function deletetimezoneAction()
+    {
+        $deleteSuccessful = true;
+        $errorMessage = '';
+        
+        $givenParameters = $this->getParams('post');
         $router = Di::getDefault()->get('router');
-        //echo "<pre>".var_dump($this->timezonesForUserAction($userId))."</pre>";
-        $router->response()->json($this->timezonesForUserAction());
+        $repository = $this->repository;
+        $user = $_SESSION['user'];
+        $userId = $user->getId();
+
+        $infoToDelete = array(
+            'user_id' => $userId,
+            'timezone_id' => $givenParameters['id']
+        );
+
+       
+        try {
+            $repository::deletetimezone($infoToDelete);
+        }  catch (\Exception $e) {
+            $deleteSuccessful = false;
+            $errorMessage = $e->getMessage();
+        }
+
+        $this->router->response()->json(
+            array(
+                'success' => $deleteSuccessful,
+                'errorMessage' => $errorMessage
+            )
+        );
     }
     
 }

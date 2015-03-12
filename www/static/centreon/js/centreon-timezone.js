@@ -2,21 +2,35 @@ var sDefaultFormatDate = "YYYY-MM-DD hh:mm:ss";
 
 function displayDate()
 {
-
     var aFieldTime = $.find('[data-time]');
     
-    if (aFieldTime.length > 0) {
-        $.each(aFieldTime, function(idx, el) {
-            var oldDate = $(el).text();
-            
-            if (sessionStorage.getItem("sTimezone") != undefined) {
-                var oldDate = $(el).text();
-                var sDate = moment.unix(moment(oldDate).unix());
-                var newDate =  sDate.utcOffset(sessionStorage.getItem("sTimezone")).format(sDefaultFormatDate);
-                $(el).text(newDate+" ("+oldDate+")");
+    $.each(aFieldTime, function(idx, el) {
+        var unixtime = $(el).data('time');
+        if (unixtime != '') {
+            if (sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
+                var sDate = moment.unix(unixtime);
+                var localDate = sDate.format(sDefaultFormatDate);
+                var newDate =  sDate.tz(sessionStorage.getItem("sTimezone")).format(sDefaultFormatDate);
+                $(el).text(newDate+" ("+localDate+")");
             } else {
-                $(el).text(oldDate+" ("+oldDate+")");
+                var sDate = moment.unix(unixtime);
+                var localDate = sDate.format(sDefaultFormatDate);
+                $(el).text(localDate);
             }
-        });
+        }
+    });
+       
+}
+/**
+ * 
+ * @param string sTimezone
+ */
+function changeTimezone(sTimezone)
+{
+    if (sTimezone == '') {
+        sessionStorage.clear();
+    } else {
+        sessionStorage.setItem("sTimezone", sTimezone);
     }
+    displayDate();
 }

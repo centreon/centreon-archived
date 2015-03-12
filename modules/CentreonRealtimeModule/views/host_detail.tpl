@@ -51,10 +51,10 @@
             <div class="longoutput"></div>
           </div>
           <div class="col-xs-12">
-            {t}Last check{/t} : <span id="last_check" data-time=""></span>
+            {t}Last check{/t} : <span id="last_check"></span>
           </div>
           <div class="col-xs-12">
-            {t}Next check{/t} : <span id="next_check" data-time=""></span>
+            {t}Next check{/t} : <span id="next_check"></span>
           </div>
         </div>
       </div>
@@ -242,9 +242,8 @@ $(function() {
     );
 
     
-    $('#last_check').text(moment.unix(hostData.lastCheck).format(sDefaultFormatDate));
-    $('#next_check').text(moment.unix(hostData.nextCheck).format(sDefaultFormatDate));
-    
+    $('#last_check').text(moment.unix(hostData.lastCheck).format(sDefaultFormatDate)).attr('data-time', hostData.lastCheck);
+    $('#next_check').text(moment.unix(hostData.nextCheck).format(sDefaultFormatDate)).attr('data-time', hostData.nextCheck);
     
     /* Update block network */
     if (hostData.network !== undefined) {
@@ -465,7 +464,7 @@ $(function() {
           $('<tr></tr>')
             .addClass(borderCss + values.status)
             .append(
-              $('<td data-time="'+values.datetime+'"></td>').text(values.datetime)
+              $('<td data-time="'+values.datetime+'"></td>').text(moment.unix(values.datetime).format(sDefaultFormatDate))
             )
             .append(
               $('<td></td>').html(values.service)

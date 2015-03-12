@@ -73,7 +73,10 @@ class HostController extends Controller
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('dataTables.bootstrap.css')
-            ->addCss('centreon.tag.css', 'centreon-administration');
+            ->addCss('centreon.tag.css', 'centreon-administration')
+            ->addCss('select2.css')
+            ->addCss('select2-bootstrap.css')
+            ->addCss('centreon-wizard.css');
 
         /* Load js */
         $this->tpl->addJs('jquery.min.js')
@@ -91,7 +94,8 @@ class HostController extends Controller
             ->addJs('centreon.search.js')
             //->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('bootstrap3-typeahead.js')
-            ->addJs('centreon.search.js');
+            ->addJs('centreon.search.js')
+            ->addJs('centreon-wizard.js');
 
         
         
@@ -157,7 +161,8 @@ class HostController extends Controller
         ));
 
         $this->tpl->addCss('cal-heatmap.css')
-             ->addCss('centreon.status.css');
+             ->addCss('centreon.status.css')
+             ->addCss('centreon-wizard.css');
         $this->tpl->addJs('d3.min.js')
              ->addJs('jquery.sparkline.min.js')
              ->addJs('cal-heatmap.min.js')
@@ -289,13 +294,13 @@ class HostController extends Controller
         /* Last check */
         $data[] = array(
             'label' => _('Last check'),
-            'value' => Datetime::format($rawdata['last_check'])
+            'value' => $rawdata['last_check']
         );
 
         /* Next check */
         $data[] = array(
             'label' => _('Next check'),
-            'value' => Datetime::format($rawdata['next_check'])
+            'value' => $rawdata['next_check']
         );
 
         return $data;

@@ -7,14 +7,16 @@
     </h4>
     <table class="table table-striped table-condensed">
 	{foreach from=$data item=d}
-		<tr>
-                        <td>{$d.label}</td>
-                        {if $d.label == 'Last check' || $d.label == 'Next check'}
-                            <td data-time="">{$d.value}</td>
-                        {else}
-                            <td>{$d.value}</td>
-                        {/if}
-		</tr>
+            <tr>
+                <td>{$d.label}</td>
+                {if $d.label == 'Last check'}
+                    <td id="last_check" data-time="{$d.value}"></td>
+                {elseif $d.label == 'Next check'}
+                    <td id="next_check" data-time="{$d.value}"></td>
+                {else}
+                    <td>{$d.value}</td>
+                {/if}
+            </tr>
 	{/foreach}
     </table>
 </div>
@@ -22,17 +24,10 @@
 {hook name="displayHostTooltipDetail" container="" params=$params}
 {block name="javascript-bottom" append}
 <script>
-/*
 $(function() {
-    var aFieldTime = $.find('[data-time]');
-    if (aFieldTime.length > 0) {
-        $.each(aFieldTime, function(idx, el) {
-            $(el).text(displayDate($(el).text(), 'date')+" ("+$(el).text()+")");
-        });
-    }
-        
+    $('#last_check').text(moment.unix($('#last_check').data('time')).format(sDefaultFormatDate));
+    $('#next_check').text(moment.unix($('#next_check').data('time')).format(sDefaultFormatDate));
 });
-*/
 displayDate();
 </script>
 {/block}

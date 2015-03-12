@@ -58,9 +58,9 @@
             </a>
           </li>
           <li class="time">
-            <a class="account dropdown-toggle" data-toggle="dropdown" href="#"><span class="clock"></span></a>
+              <a class="account dropdown-toggle" data-toggle="dropdown" href="#"><span class="clock"></span></a><a href="#" id="undotimezone" onclick="changeTimezone()"><span class="fa fa-undo"></span></a>
             <ul class="dropdown-menu" id="list_timezone">
-                <li class="last" id="modalAdd_timezone"><a href="#">{t}Add horloge{/t}</a></li>
+                <li ><a href="#" id="modalAdd_timezone">{t}Add horloge{/t}<i class="fa fa-clock-o"></i></a></li>
             </ul>
           </li>
           <li class="user">
@@ -94,6 +94,14 @@
   <div id="main">
   </div>
   {/block}
+  
+  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      </div>
+    </div>
+  </div>
+
   <!-- <div class="bottombar">
       <div class="label-button pull-right">
         Centreon &copy; 2005-2014 <a href="#" id="footer-button"><i class="fa fa-chevron-circle-up"></i></a>
@@ -150,14 +158,16 @@ $(document).ready(function() {
             }
         });
     });
-    
+    /*
     $( document ).unbind( "finished" );
     $( document ).on( "finished", function( event ) {
         $('#modal').modal('hide');
     });
     
+  */
   
-    $("#modalAdd_timezone").on("click", function(e) {
+  
+    $("body").on("click", "#modalAdd_timezone", function(e) {
         $("#modal").removeData("bs.modal");
         $("#modal").removeData("centreonWizard");
         $("#modal .modal-content").text("");
@@ -167,6 +177,77 @@ $(document).ready(function() {
         $("#modal").modal({
             "remote": "/centreon-administration/timezone/addtouser"
         });
+    });
+    
+    
+     $(document).on('click', '.modalDelete', function(e) {
+        e.preventDefault();
+        $('#modal .modal-content').text('');
+        var id = $(this).data('id');
+
+        /* Delete modal header */
+        var $deleteHeader = $('<div></div>').addClass('modal-header');
+        $('<button></button>')
+            .attr('type', 'button')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('close')
+            .html('&times;')
+            .appendTo($deleteHeader);
+        $('<h4></h4>').addClass('modal-title').text("{t}Delete{/t}").appendTo($deleteHeader);
+        $deleteHeader.appendTo('#modal .modal-content');
+
+        /* Delete modal body */
+        var $deleteBody = $('<div></div>').addClass('modal-body');
+        $('<span></span>').text('{t}Are you sure to delete ?{/t}').appendTo($deleteBody);
+        var $listElement = $('<ul></ul>').addClass('list-unstyled');
+        $('table[id^="datatable"] tbody tr[class*="selected"]').each(function(k, v) {
+            $('<li></li>').html($(v).data('name')).appendTo($listElement);
+        });
+        $listElement.appendTo($deleteBody);
+        $deleteBody.appendTo('#modal .modal-content');
+
+        var $deleteFooter = $('<div></div>').addClass('modal-footer');
+        $('<a></a>')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('btn').addClass('btn-default')
+            .text('{t}Cancel{/t}')
+            .appendTo($deleteFooter);
+        var $deleteBtn = $('<button></button>')
+            .attr('type', 'button')
+            .addClass('btn')
+            .addClass('btn-danger')
+            .text('{t}Delete{/t}')
+            .appendTo($deleteFooter);
+        $deleteFooter.appendTo('#modal .modal-content');
+        
+        var objectDeleteUrl =  "/centreon-administration/user/deletetimezone";
+
+        $deleteBtn.on('click', function(e) {
+            $.ajax({
+                url: objectDeleteUrl,
+                type: 'POST',
+                data: {
+                    'id': id
+                },
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    $('#modal').modal('hide');
+                    alertClose();
+                    if (data.success) {
+                        oTable.fnDraw();
+                        alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success', 3);
+                    } else {
+                        alertMessage(data.errorMessage, 'alert-danger');
+                    }
+                }
+            });
+        });
+
+         $('#modal')
+            .removeData('bs.modal')
+            .modal();
     });
         
     $(window).on('resize', function() {
@@ -183,12 +264,7 @@ $(document).ready(function() {
         }
       });
     }
-    /*
-
-    $(".clock").on('click', function(){
-        displayDate();
-    });
-    */
+    
     /* Timer */
     topClock();
 
@@ -198,11 +274,9 @@ $(document).ready(function() {
         loadStatusData();
     }, 5000);
     loadStatusData();
+   
 });
 
-$(function() {
-    
-});
 </script>
 {block name="javascript-bottom"}
 <script>{get_custom_js}</script>
