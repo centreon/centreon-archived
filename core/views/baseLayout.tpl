@@ -158,15 +158,8 @@ $(document).ready(function() {
             }
         });
     });
-    /*
-    $( document ).unbind( "finished" );
-    $( document ).on( "finished", function( event ) {
-        $('#modal').modal('hide');
-    });
-    
-  */
   
-  
+
     $("body").on("click", "#modalAdd_timezone", function(e) {
         $("#modal").removeData("bs.modal");
         $("#modal").removeData("centreonWizard");

@@ -5,9 +5,13 @@ $(document).on('centreon.refresh_status', function(e) {
     listUserTimezone = statusData.usertimezone;
     $('#list_timezone').prepend("<li class='divider'></li>");
     $.each(listUserTimezone, function(id, element) {
-        if (element.text != '' && clockTimestamp != '') {    
+        if (element.text != '' && clockTimestamp != '') {
+            var color = '';
+            if (element.text == sessionStorage.getItem("sTimezone")) {
+                color = '#ADD8E6';
+            }
             var sText =  element.text+ " (" + moment.unix(clockTimestamp).tz(element.text).format('HH:mm:ss')+")";
-            $('#list_timezone').prepend("<li><a href='#' onclick='changeTimezone(\""+element.text+"\")'>"+sText+"</a><a href='#' class='modalDelete' data-id='"+element.id+"'><i class='fa fa-times-circle'></i></a></li>");
+            $('#list_timezone').prepend("<li style='background-color: "+color+"'><a href='#' onclick='changeTimezone(\""+element.text+"\")'>"+sText+"</a><a href='#' class='modalDelete' data-id='"+element.id+"'><i class='fa fa-times-circle'></i></a></li>");
         }
     });
 });
