@@ -188,6 +188,10 @@ function hasNoInfiniteLoop($hostId, $templateId) {
     global $pearDB;
     static $antiTplLoop = array();
 
+    if ($hostId === $templateId) {
+        return false;
+    }
+
     if (!count($antiTplLoop)) {
         $query = "SELECT * FROM host_template_relation";
         $res = $pearDB->query($query);
@@ -202,6 +206,9 @@ function hasNoInfiniteLoop($hostId, $templateId) {
     if (isset($antiTplLoop[$hostId])) {
         foreach ($antiTplLoop[$hostId] as $hId) {
             if ($hId == $templateId) {
+                return false;
+            }
+            if (false === hasNoInfiniteLoop($hId, $templateId) {
                 return false;
             }
         }

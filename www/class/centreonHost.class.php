@@ -601,7 +601,7 @@ class CentreonHost
         $str = "";
         $i = 1;
         foreach ($templates as $templateId) {
-            if (!isset($templateId) || !$templateId || isset($stored[$templateId])) {
+            if (!isset($templateId) || !$templateId || isset($stored[$templateId]) || !hasNoInfiniteLoop($hostId, $templateId)) {
                 continue;
             }
             if ($str != "") {
