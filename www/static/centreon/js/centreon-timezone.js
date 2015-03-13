@@ -7,7 +7,7 @@ function displayDate()
     $.each(aFieldTime, function(idx, el) {
         var unixtime = $(el).data('time');
         if (unixtime != '') {
-            if (sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
+            if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
                 var sDate = moment.unix(unixtime);
                 var localDate = sDate.format(sDefaultFormatDate);
                 var newDate =  sDate.tz(sessionStorage.getItem("sTimezone")).format(sDefaultFormatDate);

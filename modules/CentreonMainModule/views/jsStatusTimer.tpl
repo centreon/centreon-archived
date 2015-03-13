@@ -7,7 +7,7 @@ $(document).on('centreon.refresh_status', function(e) {
     $.each(listUserTimezone, function(id, element) {
         if (element.text != '' && clockTimestamp != '') {
             var color = '';
-            if (element.text == sessionStorage.getItem("sTimezone")) {
+            if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && element.text == sessionStorage.getItem("sTimezone")) {
                 color = '#ADD8E6';
             }
             var sText =  element.text+ " (" + moment.unix(clockTimestamp).tz(element.text).format('HH:mm:ss')+")";
