@@ -9,7 +9,7 @@
         <form class="form-horizontal" role="form" {$form.attributes}>
             <div>{$form.contact_info_key.html}</div>
             <div>{$form.contact_info_value.html}</div>
-            <div>{$form.contact_timezone.html}</div>
+            <div>{$form.timezone_id.html}</div>
             <div>{$form.add_button.html}</div>
             {$form.hidden}
         </form>

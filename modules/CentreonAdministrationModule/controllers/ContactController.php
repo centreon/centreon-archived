@@ -165,7 +165,7 @@ class ContactController extends FormController
         ));
         
         $customForm->addStatic(array(
-            'name' => 'contact_timezone',
+            'name' => 'timezone_id',
             'label' => _('Timezone'),
             'type' => 'select',
             'mandatory' => false,
