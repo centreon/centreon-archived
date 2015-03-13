@@ -155,7 +155,6 @@
                 $loopBreak = array();
 		while (1) {
                     if (isset($svcTplCache[$service_id]) && 
-                            $svcTplCache[$service_id] &&
                             !isset($loopBreak[$service_id])) {
                         if (isset($svcCatCache[$service_id])) {
                             foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
