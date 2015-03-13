@@ -175,8 +175,10 @@ class Template extends \Smarty
         $this->addJs('centreon.help.tooltip.js');
         $this->addJs('bootstrap.min.js');
         $this->addJs('jquery.ba-resize.js');
-        $this->addJs('moment-with-langs.min.js');
+        $this->addJs('moment-with-locales.js');
+        $this->addJs('moment-timezone-with-data.min.js');
         $this->addJs('centreon.functions.js');
+        $this->addJs('centreon-timezone.js');
     }
     
     /**

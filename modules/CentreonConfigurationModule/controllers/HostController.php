@@ -420,6 +420,18 @@ class HostController extends FormController
     {
         parent::getSimpleRelation('command_command_id2', '\CentreonConfiguration\Models\Command');
     }
+    
+    /**
+     * Get list of Commands for a specific host
+     *
+     *
+     * @method get
+     * @route /host/[i:id]/timezone
+     */
+    public function timezoneForHostAction()
+    {
+        parent::getSimpleRelation('timezone_id', '\CentreonAdministration\Models\Timezone');
+    }
 
     /**
      * Get list of pollers for a specific host

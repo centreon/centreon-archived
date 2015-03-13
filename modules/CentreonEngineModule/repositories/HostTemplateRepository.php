@@ -186,7 +186,7 @@ class HostTemplateRepository
             . "host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, "
             . "host_notification_interval, host_notification_options, "
             . "timeperiod_tp_id2 AS notification_period, "
-            . "host_stalking_options, host_register ";
+            . "host_stalking_options, host_register, timezone_id ";
 
         return $fields;
     }
