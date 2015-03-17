@@ -208,7 +208,7 @@ function hasNoInfiniteLoop($hostId, $templateId) {
             if ($hId == $templateId) {
                 return false;
             }
-            if (false === hasNoInfiniteLoop($hId, $templateId) {
+            if (false === hasNoInfiniteLoop($hId, $templateId)) {
                 return false;
             }
         }
