@@ -127,12 +127,15 @@ class Full extends Generator
                 
                 foreach ($fieldList as $field) {
                     
-                    $validatorQuery = "SELECT v.route as validator_action, vr.client_side_event as events "
+                    $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
                         . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $field[field_id] "
                         . "AND vr.validator_id = v.validator_id";
                     $validatorStmt = $dbconn->query($validatorQuery);
-                    $field['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    while ($validator = $validatorStmt->fetch()) {
+                        $validator['params'] = json_decode($validator['params'], true);
+                        $field['validators'][] = $validator;
+                    }
                     
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;

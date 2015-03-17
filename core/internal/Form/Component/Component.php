@@ -83,50 +83,37 @@ class Component
                             // @todo log warning message more than one remote
                             break;
                         }
-                        $validatorRoute = Di::getDefault()
-                            ->get('router')
-                            ->getPathFor($validator['validator_action']);
                         $rule = array(
-                            'remote' => array(
-                                'url' => $validatorRoute,
-                                'type' => 'post',
-                                'data' => array(
-                                    'module' => 'function () {
-                                        return $("[name=\'module\']").val();
-                                    });',
-                                    'object' => 'function () {
-                                        return $("[name=\'object\']").val();
-                                    });',
-                                    'object_id' => 'function () {
-                                        return $("[name=\'object_id\']").val();
-                                    });'
-                                )
-                            )
+                            'action' => $validator['validator_action']
                         );
                         $remote = true;
                         break;
                     case 'size':
-                        list($minlength, $maxlength) = explode(',', $validator['length']);
-                        if (is_null($maxlength)) {
+                        if (false === isset($validator['params']['minlength'])
+                            && false === isset($validator['params']['maxlength'])) {
                             // @todo log Warning bad format
                             break;
                         }
-                        $rule = array(
-                            'minlength' => $minlength,
-                            'maxlength' => $maxlength
-                        );
+                        if (isset($validator['params']['minlength'])) {
+                            $rule['minlength'] = $validator['params']['minlength'];
+                        }
+                        if (isset($validator['params']['maxlength'])) {
+                            $rule['maxlength'] = $validator['params']['maxlength'];
+                        }
                         break;
                     case 'forbiddenChar':
-                        if (!isset($validator['charaters'])) {
+                        if (false === isset($validator['params']['charaters'])) {
                             break;
                         }
-                        // @todo write js function
+                        $rule['characters'] = $validator['params']['characters'];
                     default:
                         // @todo log warning rules not found
                         break;
                 }
                 if (false === is_null($rule)) {
-                    $rules = array_merge($rules, $rule);
+                    $rules = array_merge($rules, array(
+                        $validator['rules'] => $rule
+                    ));
                 }
             }
         }
@@ -135,12 +122,9 @@ class Component
             && (isset($element['parent_value']) && $element['parent_value'] != '')
             && (isset($element['child_mandatory']) && $element['child_mandatory'] == 1)) {
                 
-            $rules = array(
-                'required' => array(
-                    'depends' => "function(element) {
-                        return $('#" .  $element['parent_fields'] . "').val() != '" . $element['parent_value'] . "';
-                    }"
-                )
+            $rules['required'] = array(
+                'parent_id' => $element['parent_fields'],
+                'parent_value' => $element['parent_value']
             );
         }
         

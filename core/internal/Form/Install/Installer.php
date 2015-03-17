@@ -388,14 +388,14 @@ class Installer
                     }
                     
                     unset($validator['rules']);
-                    $validatorParams = '';
+                    $validatorParams = array();
                     foreach ($validator->argument as $argument) {
-                        if (!empty($validatorParams)) {
-                            $validatorParams .= ';';
-                        }
-                        $validatorParams .= (string)$argument['name'] . '=' . $argument;
+                        //$validatorParams = (string)$argument['name'] . '=' . $argument;
+                        $validatorName = (string)$argument['name'];
+                        $validatorValue = (string)$argument;
+                        $validatorParams[$validatorName] = $validatorValue;
                     }
-                    $stmt->bindParam(':params', $validatorParams);
+                    $stmt->bindParam(':params', json_encode($validatorParams));
                     $stmt->execute();
                 }
             }

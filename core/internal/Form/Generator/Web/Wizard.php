@@ -84,12 +84,15 @@ class Wizard extends Full
         $stmt->execute();
         while ($row = $stmt->fetch()) {
             // Get validators
-            $validatorQuery = "SELECT v.route as validator_action, vr.client_side_event as events "
+            $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
                         . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $row[field_id] "
                         . "AND vr.validator_id = v.validator_id";
             $validatorStmt = $dbconn->query($validatorQuery);
-            $row['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
+            while ($validator = $validatorStmt->fetch()) {
+                $validator['params'] = json_decode($validator['params'], true);
+                $row['validators'][] = $validator;
+            }
             
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];

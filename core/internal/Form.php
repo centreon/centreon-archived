@@ -109,13 +109,23 @@ class Form
      *
      * @var string 
      */
-    private $eventValidation = 'var rules = {};';
+    private $eventValidation = array(
+        'validators' => array(),
+        'formId' => '',
+        'extraJs' => ''
+    );
     
     /**
      *
      * @var string 
      */
     private $submitValidation = '';
+
+    /** 
+     *
+     * @var string The form name
+     */
+    private $formName;
     
     /**
      * Constructor
@@ -126,6 +136,7 @@ class Form
     public function __construct($name, $options = null)
     {
         $this->formProcessor = new \HTML_QuickForm($name, 'post');
+        $this->formName = $name;
         $this->options = $options;
         $this->init();
         $this->di = Di::getDefault();
@@ -144,7 +155,7 @@ class Form
         $this->formRenderer->setErrorTemplate('<font color="red">{error}</font><br />{html}');
         $this->formProcessor->accept($this->formRenderer);
         $smartyArrayFormat = $this->formatForSmarty();
-        $this->tpl->addCustomJs($this->eventValidation);
+        $this->tpl->assign('eventValidation', $this->eventValidation);
         $this->tpl->assign('submitValidation', $this->submitValidation);
         return $smartyArrayFormat;
     }
@@ -183,6 +194,8 @@ class Form
             'errors' => $smartyArray['errors'],
             'hidden' => $smartyArray['hidden']
         );
+
+        $this->eventValidation['formId'] = $this->formName;
         
         if (isset($smartyArray['elements'])) {
             foreach ($smartyArray['elements'] as $element) {
@@ -237,7 +250,14 @@ class Form
                     }
                     
                     if (isset($inVal['eventValidation'])) {
-                        $this->eventValidation .= $inVal['eventValidation'];
+                        if (isset($inVal['eventValidation']['extraJs'])) {
+                            $this->eventValidation['extraJs'] .= $inVal['eventValidation']['extraJs'];
+                            unset($inVal['eventValidation']['extraJs']);
+                        }
+                        $this->eventValidation['validators'] = array_merge(
+                            $this->eventValidation['validators'],
+                            $inVal['eventValidation']
+                        );
                     }
                     
                     if (isset($inVal['submitValidation'])) {
