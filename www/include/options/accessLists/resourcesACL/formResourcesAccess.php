@@ -223,7 +223,7 @@
 	 * All ressources
 	 */
 	$allHosts[] = HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "", array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id, "hostAdvancedSelect")'));
-	$form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;', '');
+	$form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;');
 
 	$allHostgroups[] = HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "", array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id, "hostgroupAdvancedSelect")'));
 	$form->addGroup($allHostgroups, 'all_hostgroups', _("Include all hostgroups"), '&nbsp;&nbsp;');
