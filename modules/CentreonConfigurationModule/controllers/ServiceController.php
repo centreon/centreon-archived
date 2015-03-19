@@ -42,6 +42,7 @@ use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Host;
 use CentreonConfiguration\Models\Relation\Host\Service as HostService;
 use Centreon\Controllers\FormController;
+use CentreonAdministration\Repository\TagsRepository;
 
 class ServiceController extends FormController
 {
@@ -211,6 +212,20 @@ class ServiceController extends FormController
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
         }
+        
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+        }
+        
         parent::updateAction();
     }
     

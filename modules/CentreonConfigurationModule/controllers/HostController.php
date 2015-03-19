@@ -46,6 +46,7 @@ use CentreonConfiguration\Internal\HostDatatable;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
 
 class HostController extends FormController
@@ -177,7 +178,9 @@ class HostController extends FormController
     {
         $givenParameters = $this->getParams('post');
         $macroList = array();
-        
+        $aTagList = array();
+        $aTags = array();
+ 
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
             
             $macroName = $givenParameters['macro_name'];
@@ -200,13 +203,26 @@ class HostController extends FormController
                 }
             }
         }
-        
+
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
+        }
+        
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
         }
         
         parent::updateAction();

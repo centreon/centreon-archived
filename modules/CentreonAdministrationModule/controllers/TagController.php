@@ -87,12 +87,46 @@ class TagController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $post = $router->request()->paramsPost();
-
+        
         TagsRepository::delete(
             $post['tagId'],
             $post['resourceName'],
             $post['resourceId']
         );
         return $router->response()->json(array('success' => true));
+    }
+    
+    /**
+     * get list tag
+     * 
+     * @method get
+     * @route /tag/[i:id]/[a:objectName]/formlist
+     */
+    public function listAction()
+    {
+        $data = '';
+        $get = $this->getParams('named');
+        
+        if (isset($get['objectName']) && isset($get['id'])) {
+            $data = TagsRepository::getList($get['objectName'], $get['id'], true);
+        }
+        $this->router->response()->json($data);
+    }
+    
+    /**
+     * get all tag
+     * 
+     * @method get
+     * @route /tag/[a:objectName]/all
+     */
+    public function allAction()
+    {
+        $data = '';
+        $get = $this->getParams('named');
+        
+        if (isset($get['objectName'])) {
+            $data = TagsRepository::getList($get['objectName'], 0, true);
+        }
+        $this->router->response()->json($data);
     }
 }

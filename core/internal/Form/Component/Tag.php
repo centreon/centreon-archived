@@ -41,7 +41,7 @@ use Centreon\Internal\Di;
  * @package Centreon
  * @subpackage Core
  */
-class Select extends Component
+class Tag extends Component
 {
     /**
      * 
@@ -100,13 +100,20 @@ class Select extends Component
             . '" id="'.$element['name']
             . '" name="' . $element['name']
             . '" style="width: 100%;" type="hidden" value=" " />';
+        
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
                 . 'multiple:'.(int)$element['label_multiple'].', '
-                . 'allowClear: true, '
-                . 'formatResult: select2_formatResult, '
-                . 'formatSelection: select2_formatSelection, ';
+                . 'tags: true, '
+                . 'tokenSeparators: [","],'
+                . 'createSearchChoice: function (term) {
+                        return {
+                            id: $.trim(term),
+                            text: $.trim(term)
+                        };
+                    } ,';
+        
         if (isset($element['label_selectData'])) {
             if (is_array($element['label_selectData'])) {
                 $datas = json_encode($element['label_selectData']);
@@ -129,6 +136,7 @@ class Select extends Component
                     .'}'
                 .'},';
         }
+        
         $initCallback = '';
         if (isset($element['label_initCallback']) && $element['label_initCallback'] != '') {
             $initCallback = '
@@ -140,7 +148,7 @@ class Select extends Component
                 }
             ';
         }
-
+        
         if (isset($element['label_selectDefault']) && $element['label_selectDefault'] != "[]") {
             $myJs .= ''
                 .'initSelection: function(element, callback) {'
@@ -174,8 +182,20 @@ class Select extends Component
                      }
                 },';
         }
+        
+         
         $myJs .= ''
             .'});'."\n";
+    
+        $myJs .= '
+            $("#'.$element['name'].'").on("change", function (e) {
+                if (e.added) {
+                    //var retour = addTagToResource(e.added.text);
+                    //e.added.id = retour;
+                } else if (e.removed) {
+                    deleteTagToResource(e.removed.id);
+                }
+            })';
         
         $myJs .= $addJs;
         return array(

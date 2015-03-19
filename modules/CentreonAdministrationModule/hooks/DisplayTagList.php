@@ -58,16 +58,19 @@ class DisplayTagList
         if (isset($params['_ids'])) {
             foreach ($params['_ids'] as $id) {
                 $tagList = TagsRepository::getList($params['resourceType'], $id);
+                
                 $rows[$id] = '';
                 foreach ($tagList as $tagId => $tagName) {
-                    $rows[$id] .= static::getTag($params['resourceType'], $id, $tagId, $tagName);
+                    $rows[$id] .= static::getTag($params['resourceType'], $id, $tagName['id'], $tagName['text']);
                 }
                 $rows[$id] .= static::getAddTag($params['resourceType'], $id);
             }
         }
         return array(
             'columnName' => 'Tags',
-            'values' => $rows
+            'width'      => '150px',
+            'max-width'  => '150px',
+            'values'     =>  $rows
         );
     }
 
