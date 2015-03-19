@@ -21,7 +21,7 @@ jQuery(function() {
         }
 
         var htmlText = jQuery('<span style="display:none;"></span>');
-        htmlText.appendTo(jQuery(this).parent());
+        htmlText.appendTo(jQuery('body'));
 
         jQuery(this).children("option").each(function() {
             var curLen;

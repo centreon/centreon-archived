@@ -63,6 +63,7 @@ table {border-collapse:collapse;empty-cells:show;border-spacing:0;}
 img 		{margin:0 0 -4px;padding:0;}
 checkbox 	{border:0px;margin:0;padding:0px;}
 select 		{border-style:none;padding-left:1px;padding-right:1px;}
+select[multiple="multiple"] 	{overflow:auto;}
 hr 			{background-color:#CCC;height:1px;margin-bottom:10px;margin-top:3px;}
 form		{padding-bottom:10px;}
 
