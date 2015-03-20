@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU 
  * General Public License cover the whole combination.
  * 
- * As a special exception, the copyright holders of this program give MERETHIS 
+ * As a special exception, the copyright holders of this program give CENTREON 
  * permission to link this program with independent modules to produce an executable, 
  * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * distribute the resulting executable under terms of CENTREON choice, provided that 
+ * CENTREON also meet, for each linked independent module, the terms  and conditions 
  * of the license of that module. An independent module is a module which is not 
  * derived from this program. If you modify this program, you may extend this 
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -36,7 +36,7 @@
 namespace CentreonAdministration\Controllers;
 
 use Centreon\Internal\Form;
-use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form\Generator\Web\Full;
 use CentreonAdministration\Models\Options;
 use CentreonAdministration\Repository\OptionRepository;
 use Centreon\Internal\Controller;
@@ -59,7 +59,8 @@ class OptionsController extends Controller
         //
         $objectFormUpdateUrl = '/centreon-administration/options/centreon/update';
         
-        $myForm = new Generator($objectFormUpdateUrl);
+        $myForm = new Full($objectFormUpdateUrl);
+        $myForm->getFormFromDatabase();
         
         // get object Current Values
         $myForm->setDefaultValues(Options::getList());
@@ -82,19 +83,16 @@ class OptionsController extends Controller
     {
         $givenParameters = clone $this->getParams('post');
         
-        $validationResult = Form::validate("form", $this->getUri(), self::$moduleName, $givenParameters);
-        if ($validationResult['success']) {
+        try {
+            OptionRepository::update($givenParameters, "default", "form", $this->getUri());
+            
             if (isset($givenParameters['token'])) {
                 unset($givenParameters['token']);
             }
             
-            OptionRepository::update($givenParameters);
-            
-            unset($_SESSION['form_token']);
-            unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
-        } else {
-            $this->router->response()->json(array('success' => false,'error' => $validationResult['error']));
+        } catch (Exception $ex) {
+            $this->router->response()->json(array('success' => false,'error' => $ex->getMessage()));
         }
     }
 }

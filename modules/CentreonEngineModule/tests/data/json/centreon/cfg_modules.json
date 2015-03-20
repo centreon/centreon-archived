@@ -4,7 +4,7 @@
     "alias": "Centreon Engine",
     "description": "Centreon Engine Module",
     "version": "2.0.0",
-    "author": "Merethis",
+    "author": "Centreon",
     "isactivated": "1",
     "isinstalled": "1"
   }

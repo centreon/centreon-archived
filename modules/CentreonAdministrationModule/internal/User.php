@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -38,6 +38,7 @@ namespace CentreonAdministration\Internal;
 use Centreon\Internal\Di;
 use CentreonAdministration\Models\User as UserModel;
 use Centreon\Internal\Exception;
+use CentreonAdministration\Repository\UserRepository;
 
 /**
  * Object that represents the logged in user
@@ -74,6 +75,10 @@ class User
      * @const string
      */
     public static $notInit = 'User not initialized properly';
+    /**
+     * @var array
+     */
+    private $timezone;
 
     /**
      * Constructor
@@ -98,6 +103,7 @@ class User
         $this->name = $params['firstname'] . ' ' . $params['lastname'];
         $this->login = $params['login'];
         $this->admin = $params['is_admin'];
+        $this->timezone = $this->getTimezone();
     }
 
     /**
@@ -191,5 +197,16 @@ class User
         $router = $di->get('router');
         $homePage = $router->getPathFor('/centreon-customview');
         return $homePage;
+    }
+    /**
+     * 
+     * @return array
+     */
+    public function getTimezone()
+    {
+        $repository = '\CentreonAdministration\Repository\UserRepository';
+        $repository::setObjectClass('\CentreonAdministration\Models\User');
+        $aTimezone = $repository::getRelations("\CentreonAdministration\Models\Relation\User\Timezone", $this->id);
+        return $aTimezone;
     }
 }

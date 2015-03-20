@@ -41,7 +41,7 @@ NOTES
     case.
 
 AUTHOR
-    Merethis (Alexandru Vilau)
+    Centreon (Alexandru Vilau)
 ";
 
 $getHelp = "

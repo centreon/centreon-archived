@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -409,5 +409,28 @@ class ServiceRepository extends Repository
         }
 
         return $arr;
+    }
+
+    /**
+     * Return the list of template
+     *
+     * @param int $svcId The service ID
+     * @return array
+     */
+    public static function getListTemplates($svcId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $svcTmpl = array();
+        $query = "SELECT service_template_model_stm_id FROM cfg_services WHERE service_id = :id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->rowCount()) {
+            $row = $stmt->fetch();
+            $stmt->closeCursor();
+            $svcTmpl = self::getListTemplates($row['service_template_model_stm_id']);
+            array_unshift($svcTmpl, $row['service_template_model_stm_id']);
+        }
+        return $svcTmpl;
     }
 }

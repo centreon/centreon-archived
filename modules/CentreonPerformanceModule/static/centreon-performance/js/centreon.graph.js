@@ -24,6 +24,7 @@ function addChart( graphId, serviceId, startTime, endTime ) {
           axes = {},
           axis = {},
           metrics = {},
+          types = {},
           colors = [],
           columns = convertColumns( data );
 
@@ -37,6 +38,7 @@ function addChart( graphId, serviceId, startTime, endTime ) {
         } else {
           metrics[ metric.unit ] = [ metric.legend ];
         }
+        types[ metric.legend ] = metric.line;
       });
       /* Check for multi axes */
       if ( Object.keys( metrics ).length == 2 ) {
@@ -72,7 +74,9 @@ function addChart( graphId, serviceId, startTime, endTime ) {
         data: {
           x: "x",
           columns: columns,
-          axes: axes
+          axes: axes,
+          types: types,
+          colors: colors
         },
         axis: axis,
         point: {
