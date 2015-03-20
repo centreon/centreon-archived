@@ -35,12 +35,24 @@
 
 if (!isset($centreon)) {
     exit();
- }
+}
+
+$transcoKey = array(
+    "enable_autologin" => "yes",
+    "display_autologin_shortcut" => "yes",
+    "sso_enable" => "yes",
+    "enable_gmt" => "yes",
+    "strict_hostParent_poller_management" => "yes"
+);
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
-    $gopt[$opt["key"]] = myDecode($opt["value"]);
- }
+    if (isset($transcoKey[$opt["key"]])) {
+        $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
+    } else {
+        $gopt[$opt["key"]] = myDecode($opt["value"]);
+    }
+}
 
 
 /*
