@@ -1,0 +1,42 @@
+[
+	{
+		"name": "Sales",
+		"description": "Sales",
+		"ba_type_id": 1
+	},
+	{
+        "name": "Service Desk",
+        "description": "Service Desk",
+		"ba_type_id": 1
+    },
+	{
+        "name": "R&D",
+        "description": "R&D",
+        "ba_type_id": 1
+    },
+	{
+        "name": "Kayako",
+        "description": "Kayako",
+		"ba_type_id": 2
+    },
+	{
+        "name": "SugarCRM",
+        "description": "SugarCRM",
+		"ba_type_id": 2
+    },
+	{
+        "name": "Website",
+        "description": "Website",
+        "ba_type_id": 2
+    },
+    {
+        "name": "LDAP",
+        "description": "LDAP",
+		"ba_type_id": 3
+    },
+    {
+        "name": "Web server",
+        "description": "Web server",
+        "ba_type_id": 3
+    }
+]

@@ -31,36 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonBam\Repository;
+namespace CentreonConfiguration\Models\Relation\Host;
 
 use Centreon\Internal\Di;
-use Centreon\Repository\FormRepository;
-use CentreonBam\Models\BusinessActivity;
+use Centreon\Models\CentreonRelationModel;
 
-/**
- * @author Sylvestre Ho <sho@centreon.com>
- * @package CentreonBam
- * @subpackage Repository
- */
-class BusinessViewRepository extends FormRepository
+class Service extends CentreonRelationModel
 {
-
-    /**
-     *
-     * @param string $name
-     * @return string
-     */
-    public static function getBuList()
-    {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        #$router = $di->get('router');
-
-        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
-
-		return $buList;
-	}
+    protected static $relationTable = "cfg_hosts_services_relations";
+    protected static $firstKey = "host_host_id";
+    protected static $secondKey = "service_service_id";
+    public static $firstObject = "\CentreonConfiguration\Models\Host";
+    public static $secondObject = "\CentreonConfiguration\Models\Service";
 }

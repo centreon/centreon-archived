@@ -1,0 +1,17 @@
+[
+	{
+		"ba_type_id": 1,
+		"name": "Business Unit",
+		"description": "Business Unit"
+	},
+	{
+        "ba_type_id": 2,
+        "name": "Applications",
+        "description": "Applications"
+    },
+	{
+        "ba_type_id": 3,
+        "name": "Middlewares",
+        "description": "Middlewares"
+    }
+]

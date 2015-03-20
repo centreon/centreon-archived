@@ -28,6 +28,7 @@
         <column name="activate" phpName="Activate" type="CHAR" required="false" defaultValue="1"/>
         <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true" defaultValue="1"/>
+       	<column name="ba_type_id" phpName="BaTypeId" type="INTEGER" required="false"/>
         <foreign-key foreignTable="cfg_timeperiods" name="bam_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="id_notification_period" foreign="tp_id"/>
         </foreign-key>
@@ -42,6 +43,9 @@
         </foreign-key>
         <foreign-key foreignTable="cfg_organizations" name="bam_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_bam_ba_type" name="bam_ibfk_7" onDelete="CASCADE" onUpdate="RESTRICT">
+        	<reference local="ba_type_id" foreign="ba_type_id"/>
         </foreign-key>
         <unique name="unique_name">
             <unique-column name="name"/>

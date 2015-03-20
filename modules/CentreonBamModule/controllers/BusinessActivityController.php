@@ -72,7 +72,52 @@ class BusinessActivityController extends FormController
         $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
-    
+
+	    /**
+     *
+     * @method get
+     * @route /businessactivity/realtime
+     */
+    public function displayAction()
+    {
+        $repository = $this->repository;
+        $buList = $repository::getBuList();
+
+        // Add css
+        $this->tpl->addCss('select2.css')
+            ->addCss('select2-bootstrap.css')
+            ->addCss('gridstack.css','centreon-bam')
+            ->addCss('bam.css','centreon-bam');
+
+        // Add js
+        $this->tpl->addJs('jquery.min.js')
+            ->addJs('jquery-ui.min.js')
+            ->addJs('d3.min.js')
+            ->addJs('underscore-min.js','bottom','centreon-bam')
+            ->addJs('jquery.easing.min.js','bottom','centreon-bam')
+            ->addJs('gridstack.js','bottom','centreon-bam')
+            ->addJs('bam.js','bottom','centreon-bam');
+
+        // Send values to Smarty
+        $this->tpl->assign('buList', $buList);
+
+        // Display template
+        $this->tpl->display("businessview.tpl");
+    }
+   
+	/**
+     * Get list of Types for a specific business activity
+     *
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/type
+     */
+    public function typeForHostAction()
+    {
+        parent::getSimpleRelation('ba_type_id', '\CentreonBam\Models\BusinessActivityType');
+    }
+
+ 
     /**
      * Get list of Timeperiods for a specific business activity
      *

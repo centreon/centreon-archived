@@ -31,36 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonBam\Repository;
+namespace CentreonBam\Models;
 
-use Centreon\Internal\Di;
-use Centreon\Repository\FormRepository;
-use CentreonBam\Models\BusinessActivity;
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * @author Sylvestre Ho <sho@centreon.com>
- * @package CentreonBam
- * @subpackage Repository
+ * Used for interacting with business activity types
+ *
+ * @author kevin
  */
-class BusinessViewRepository extends FormRepository
+class BusinessActivityType extends CentreonBaseModel
 {
-
-    /**
-     *
-     * @param string $name
-     * @return string
-     */
-    public static function getBuList()
-    {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        #$router = $di->get('router');
-
-        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
-
-		return $buList;
-	}
+    protected static $table = "cfg_bam_ba_type";
+    protected static $primaryKey = "ba_type_id";
+    protected static $uniqueLabelField = "name";
 }

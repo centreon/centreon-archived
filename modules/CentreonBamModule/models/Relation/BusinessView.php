@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -34,44 +33,18 @@
  * 
  */
 
-namespace CentreonBam\Controllers;
+namespace CentreonBam\Models;
 
-use Centreon\Internal\Di;
-use Centreon\Controllers\FormController;
+use Centreon\Models\CentreonBaseModel;
 
-class IndicatorController extends FormController
+/**
+ * Used for interacting with host categories
+ *
+ * @author sylvestre
+ */
+class BusinessView extends CentreonBaseModel
 {
-    protected $objectDisplayName = 'Indicator';
-    public static $objectName = 'indicator';
-    protected $objectBaseUrl = '/centreon-bam/indicator';
-    protected $objectClass = '\CentreonBam\Models\Indicator';
-    protected $datatableObject = '\CentreonBam\Internal\IndicatorDatatable';
-    protected $repository = '\CentreonBam\Repository\IndicatorRepository';     
-    public static $relationMap = array();
-
-    /**
-    *
-    * @method get
-    * @route /indicator
-    */
-    public function listAction()
-    {
-        $router = Di::getDefault()->get('router');
-        $this->tpl->addJs('hogan-3.0.0.min.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
-            ->addJs('jquery.select2/select2.min.js');
-
-        $this->tpl->addCss('centreon.tag.css', 'centreon-administration')
-                  ->addCss('select2.css')
-                  ->addCss('select2-bootstrap.css');
-
-        $urls = array(
-            'tag' => array(
-                'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
-            )
-        );
-        $this->tpl->append('jsUrl', $urls, true);
-        parent::listAction();
-    }
+    protected static $table = "cfg_bam_bagroups";
+    protected static $primaryKey = "id_ba_group";
+    protected static $uniqueLabelField = "ba_group_name";
 }

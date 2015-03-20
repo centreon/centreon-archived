@@ -35,19 +35,17 @@
 
 namespace CentreonBam\Repository;
 
-use Centreon\Internal\Di;
 use Centreon\Repository\FormRepository;
-use CentreonBam\Models\BusinessActivity;
+use Centreon\Internal\Di;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
  * @package CentreonBam
  * @subpackage Repository
  */
-class BusinessViewRepository extends FormRepository
+class BusinessActivityTypeRepository extends FormRepository
 {
-
-    /**
+	/**
      *
      * @param string $name
      * @return string
@@ -59,8 +57,8 @@ class BusinessViewRepository extends FormRepository
         $dbconn = $di->get('db_centreon');
         #$router = $di->get('router');
 
-        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
+        $buList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
 
-		return $buList;
-	}
+        return $buList;
+    }
 }

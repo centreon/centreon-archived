@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="indicator_form">
+        <route>/centreon-bam/indicator/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/centreon-bam/indicator</redirect_route>
+        <section name="Configuration">
+            <block name="Information">
+                <field name="config_type" label="Type" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+                    <attributes>
+                        <choices>
+                            <normal>1</normal>
+                            <boolean>2</boolean>
+                        </choices>
+                    </attributes>
+                    <help></help>
+                </field>
+                <field name="kpi_type" label="Object" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+                     <attributes>
+                         <choices>
+                             <service>0</service>
+                             <metaservice>1</metaservice>
+                             <BA>2</BA>
+                         </choices>
+                     </attributes>
+                </field>
+                <field name="service_id" label="Linked with service" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/service/formlistcomplete</defaultValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+                <field name="meta_id" label="Linked with metaservice" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/metaservice/formlist</defaultValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+                <field name="id_indicator_ba" label="Linked with BA" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-bam/businessactivity/formlist</defaultValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+                <field name="drop_warning" label="Warning Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="drop_critical" label="Critical Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="drop_unknown" label="Unknown Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_indicator">
+		<route>/centreon-bam/indicator/add</route>
+		<step name="General">
+			<field name="config_type" mandatory="1"></field>
+			<field name="kpi_type" mandatory="1"></field>
+		</step>
+		<step name="Parameters">
+		    <field name="service_id" mandatory="0"></field>
+		    <field name="meta_id" mandatory="0"></field>
+		    <field name="id_indicator_ba" mandatory="0"></field>
+		    <field name="drop_warning" mandatory="0"></field>
+		    <field name="drop_critical" mandatory="0"></field>
+		    <field name="drop_unknown" mandatory="0"></field>
+		</step>
+	</wizard>
+</forms>

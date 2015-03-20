@@ -8,6 +8,15 @@
             <block name="Information">
                 <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
                 <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+				<field name="type" label="Type" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
+					<attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-bam/businessactivitytype/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-bam/businessactivity/[i:id]/type</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                    <help></help>
+				</field>
                 <field name="level_w" label="Monitoring Warning Threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
                 <field name="level_c" label="Monitoring Critical Threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
             </block>
@@ -163,6 +172,7 @@
 		<step name="General">
 			<field name="name" mandatory="1"></field>
 			<field name="description" mandatory="0"></field>
+			<field name="type" mandatory="1"></field>
 		</step>
 	</wizard>
 </forms>

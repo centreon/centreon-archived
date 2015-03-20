@@ -45,13 +45,13 @@ use CentreonBam\Repository\BusinessActivityRepository;
  *
  * @author lionel
  */
-class BusinessActivityDatatable extends Datatable
+class BusinessActivityTypeDatatable extends Datatable
 {
     /**
      *
      * @var type 
      */
-    protected static $objectId = 'ba_id';
+    protected static $objectId = 'ba_type_id';
     
     /**
      *
@@ -63,13 +63,13 @@ class BusinessActivityDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonBam\Models\BusinessActivity';
-   
+    protected static $datasource = '\CentreonBam\Models\Type';
+    
     /**
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'ba_id', 'name' => 'name');
+    protected static $rowIdColumn = array('id' => 'ba_type_id', 'name' => 'name');
     
     /**
      *
@@ -87,24 +87,15 @@ class BusinessActivityDatatable extends Datatable
     public static $columns = array(
         array (
             'title' => "Id",
-            'name' => 'ba_id',
-            'data' => 'ba_id',
+            'name' => 'ba_type_id',
+            'data' => 'ba_type_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
         ),
-		array (
-            'title' => 'Type',
-            'name' => 'ba_type_id',
-            'data' => 'ba_type_id',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true
-        ),
         array (
-            'title' => 'Business Activity',
+            'title' => 'Business Activity type',
             'name' => 'name',
             'data' => 'name',
             'orderable' => true,
@@ -116,7 +107,7 @@ class BusinessActivityDatatable extends Datatable
                 'parameters' => array(
                     'route' => '/centreon-bam/businessactivity/[i:id]',
                     'routeParams' => array(
-                        'id' => '::ba_id::'
+                        'id' => '::ba_type_id::'
                     ),
                     'linkName' => '::name::'
                 )
@@ -148,38 +139,4 @@ class BusinessActivityDatatable extends Datatable
             )
         ),
     );
-
-    protected static $extraParams = array(
-        'addToHook' => array(
-            'objectType' => 'ba'
-        )
-    );
-
-    protected static $hook = 'displayTagList';
-    protected static $hookParams = array(
-        'resourceType' => 'ba'
-    );
-    
-    /**
-     * 
-     * @param array $resultSet
-     */
-    protected function formatDatas(&$resultSet)
-    {
-        $previousType = '';
-        foreach ($resultSet as &$myBaSet) {
-            // Set business activity type
-            $baType = \CentreonBam\Models\BusinessActivityType::getParameters($myBaSet['ba_type_id'], array('name'));
-            $myBaSet['ba_type_id'] = $baType['name'];
-            if ($myBaSet['ba_type_id'] === $previousType) {
-                $myBaSet['ba_type_id'] = '';
-            } else {
-                $previousType = $myBaSet['ba_type_id'];
-            }
-
-			// set business activity name
-            $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
-        }
-        
-    }
 }

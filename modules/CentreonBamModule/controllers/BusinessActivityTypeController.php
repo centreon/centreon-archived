@@ -33,34 +33,34 @@
  *
  */
 
-namespace CentreonBam\Repository;
+namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
-use Centreon\Repository\FormRepository;
-use CentreonBam\Models\BusinessActivity;
+#use CentreonBam\Models\BusinessActivityType;
+use Centreon\Controllers\FormController;
 
-/**
- * @author Sylvestre Ho <sho@centreon.com>
- * @package CentreonBam
- * @subpackage Repository
- */
-class BusinessViewRepository extends FormRepository
+class BusinessActivityTypeController extends FormController
 {
-
-    /**
+    protected $objectDisplayName = 'BusinessActivityType';
+    public static $objectName = 'businessactivitytype';
+    protected $objectBaseUrl = '/centreon-bam/businessactivitytype';
+	public static $relationMap = array();
+#    protected $datatableObject = '\CentreonConfiguration\Internal\TimeperiodDatatable';
+    protected $objectClass = '\CentreonBam\Models\BusinessActivityType';
+    protected $repository = '\CentreonBam\Repository\BusinessActivityTypeRepository';
+	
+	/**
      *
-     * @param string $name
-     * @return string
+     * @method get
+     * @route /businessactivitytype/configuration
      */
-    public static function getBuList()
+    public function listAction()
     {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        #$router = $di->get('router');
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('hogan-3.0.0.min.js');
+        $urls = array();
+        $this->tpl->append('jsUrl', $urls, true);
+        parent::listAction();
+    }
 
-        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
-
-		return $buList;
-	}
 }

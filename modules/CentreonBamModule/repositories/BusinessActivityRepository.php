@@ -84,4 +84,38 @@ class BusinessActivityRepository extends FormRepository
         
         return $finalRoute;
     }
+
+	 /**
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function getBaList()
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        #$router = $di->get('router');
+
+        $baList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 2));
+
+        return $baList;
+    }
+
+	/**
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function getBuList()
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        #$router = $di->get('router');
+
+        $buList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
+
+        return $buList;
+    }
 }
