@@ -35,7 +35,7 @@
 
 namespace CentreonAdministration\Controllers;
 
-use Centreon\Internal\Form\Wizard;
+use Centreon\Internal\Form\Generator\Wizard;
 use Centreon\Controllers\FormController;
 use Centreon\Internal\Di;
 
