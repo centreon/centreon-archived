@@ -47,8 +47,6 @@
 	  $hostgroup = $_POST["hostgroup"];
 	else if (isset($_GET["hostgroup"]))
 	   $hostgroup = $_GET["hostgroup"];
-	else if (isset($centreon->hostgroup) && $centreon->hostgroup)
-	   $hostgroup = $centreon->hostgroup;
 	else
 	   $hostgroup = 0;
 
@@ -175,7 +173,7 @@
 				(isset($view_all) && !$view_all ? "AND d.cancelled = 0 " : "") .
 				(isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND d.comment_data LIKE '%$search_output%'" : "") .
-				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = hgm.host_id AND hgm.hostgroup_id = $hostgroup " : "") .
+				(isset($hostgroup) && $hostgroup != 0 ? " AND d.host_id = hgm.host_id AND hgm.hostgroup_id = $hostgroup " : "") .
 				"AND d.host_id = h.host_id " .
         		"AND h.enabled = 1 ";
         if (!$is_admin) {
