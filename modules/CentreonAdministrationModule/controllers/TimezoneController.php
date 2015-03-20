@@ -60,13 +60,13 @@ class TimezoneController extends FormController
      */
     public function addtouserAction()
     {
-
         $di = Di::getDefault();
         $config = $di->get('config');
         $form = new Wizard(
             '/centreon-administration/timezone/addtouser',
             array('id' => '')
         );
+        $form->getFormFromDatabase();
         $this->tpl->assign('validateUrl', '/centreon-administration/user/settimezone');
         echo $form->generate();
     }
