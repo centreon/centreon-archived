@@ -35,7 +35,7 @@
 
 namespace CentreonBroker\Repository;
 
-use Centreon\Repository\FormRepository;
+use CentreonMain\Repository\FormRepository;
 use CentreonConfiguration\Models\Poller;
 use CentreonBroker\Repository\BrokerRepository;
 use CentreonConfiguration\Repository\PollerRepository;
