@@ -63,3 +63,16 @@ InnoDB optimizations
 ====================
 
 This section is not documented yet.
+
+Databases schema
+================
+
+Centreon database schema can be view here :
+
+.. image:: ../database/centreon.png
+
+
+Centreon storage database schema can be view here :
+
+.. image:: ../database/centreon-storage.png
+
