@@ -64,3 +64,18 @@ Optimisations InnoDB
 ====================
 
 Cette section n'est pas encore documentée.
+
+Schema des Bases de données
+===========================
+
+Le schema de la base de données Centreon peut être consulté ici : 
+
+.. image:: ../database/centreon.png
+
+
+Le schéma de la base de données Centreon_storage ici :
+
+.. image:: ../database/centreon-storage.png
+
+
+
