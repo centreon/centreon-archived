@@ -14,6 +14,7 @@ ALTER TABLE auth_ressource_info CHANGE ari_value ari_value VARCHAR(1024);
 DELETE FROM topology_JS WHERE PathName_js = "./include/common/javascript/datePicker.js";
 
 -- Fix problem in Centreon Broker form
+DELETE FROM `cb_type_field_relation` WHERE `cb_type_id` = 14 AND `cb_field_id` IN (42, 43);
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
 (14, 42, 1, 13),
 (14, 43, 1, 14);
