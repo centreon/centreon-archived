@@ -9,6 +9,40 @@ Notice
 If you are upgrading from a version prior to 2.5.4, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
+***********
+What's new?
+***********
+
+Compatibility with PHP 5.4.x
+============================
+
+Centreon is now compatible with php in version 5.4.x. So, you do not need to downgrade to PHP 5.3.x version when you install it on Debian 6.
+Centreon proprietary module (Centreon BAM, Centreon BI, Centreon MAP, Centreon KB) are for now not compatible with this php version.
+
+
+New options for Centreontrapd
+=============================
+
+It's now possible with centreontrapd to :
+
+- Filter services on same host ;
+- Transform output (to remove pipe for example) ;
+- Skip trap for hosts in downtime ;
+- Add custom code execution ;
+- Put unknown trap in another file. 
+
+Integration of Centreon new logo
+================================
+
+The centreon new logo has been integrated to this new version.
+
+
+Partial rebuild of events information
+=====================================
+
+It's now possible to partially rebuild events information with eventsRebuild script.
+
+
 *********
 CHANGELOG
 *********
