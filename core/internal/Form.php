@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -91,27 +91,6 @@ class Form
      * @var string
      */
     private $basicSeparator;
-    
-    /**
-     * Javascript rules register
-     *
-     * @var array
-     */
-    private $jsRulesRegister = array(
-        'required',
-        'min',
-        'max',
-        'range',
-        'email',
-        'url',
-        'date',
-        'dateISO',
-        'number',
-        'digits',
-        'creditcard',
-        'equalTo',
-        'phoneUS'
-    );
     
     /**
      * Javascript rules 
@@ -237,7 +216,7 @@ class Form
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
             case 'static':
-                $className = "\\Centreon\\Internal\\Form\\Custom\\".ucfirst($element['label_type']);
+                $className = "\\Centreon\\Internal\\Form\\Component\\".ucfirst($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
                     $element['label'] = $element['label_label'];
                     $in = $className::renderHtmlInput($element);
@@ -267,6 +246,29 @@ class Form
                 }
                 break;
         }
+    }
+    
+    /**
+     * 
+     * @param array $inputElement
+     * @return string
+     */
+    public function renderHtmlButton($inputElement)
+    {
+        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<input '.
+                            'id="'.$inputElement['id'].'" '.
+                            'type="'.$inputElement['type'].'" '.
+                            'name="'.$inputElement['name'].'" '.
+                            $value.
+                            'class="btn btn-default" '.
+                            '/>';
+        return $inputHtml;
     }
     
     /**
@@ -370,167 +372,7 @@ class Form
         return $inputHtml;
     }
     
-    /**
-     * 
-     * @param array $inputElement
-     * @param string $parentName
-     * @param boolean $selected
-     * @return string
-     */
-    public function renderHtmlRadio($inputElement, $parentName, $selected = false)
-    {
-        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
-        
-        $htmlSelected = '';
-        if ($selected) {
-            $htmlSelected = 'checked=checked';
-        }
-        
-        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
-            $inputElement['label'] = $inputElement['name'];
-        }
-        
-        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
-            $inputElement['id'] = $inputElement['name'];
-        }
-        
-        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">&nbsp;'.
-                        '<input '.'id="'.$inputElement['id'].'" '.
-                        'type="'.$inputElement['type'].'" '.'name="'.$parentName.'" '.
-                        $value.' '.$htmlSelected.' '.
-                        '/>'.' '.$inputElement['label'].
-                        '</label>';
-        return $inputHtml;
-    }
     
-    /**
-     * 
-     * @param array $inputElement
-     * @return string
-     */
-    public function renderHtmlButton($inputElement)
-    {
-        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
-        
-        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
-            $inputElement['id'] = $inputElement['name'];
-        }
-        
-        $inputHtml = '<input '.
-                            'id="'.$inputElement['id'].'" '.
-                            'type="'.$inputElement['type'].'" '.
-                            'name="'.$inputElement['name'].'" '.
-                            $value.
-                            'class="btn btn-default" '.
-                            '/>';
-        return $inputHtml;
-    }
-    
-    /**
-     * 
-     * @param array $inputElement
-     * @return string
-     */
-    public function renderHtmlTextarea($inputElement)
-    {
-        (isset($inputElement['value']) ? $value = $inputElement['value']:  $value = '');
-        
-        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
-            $inputElement['label'] = $inputElement['name'];
-        }
-        
-        if (!isset($inputElement['placeholder'])
-            || (isset($inputElement['placeholder'])
-            && empty($inputElement['placeholder']))) {
-            $placeholder = 'placeholder="'.$inputElement['name'].'" ';
-        }
-        
-        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
-            $inputElement['id'] = $inputElement['name'];
-        }
-        
-        $inputHtml = '<textarea '.
-                            'id="'.$inputElement['id'].'" '.
-                            'name="'.$inputElement['name'].'" '.
-                            'class="form-control" '.
-                            'rows="3" '.
-                            $placeholder.
-                            '>'.$value.'</textarea>';
-        return $inputHtml;
-    }
-    
-    /**
-     * 
-     * @param array $inputElement
-     * @param boolean $useValue
-     * @param boolean $usePlaceholder
-     * @return string
-     */
-    public function renderHtmlCheckbox($inputElement)
-    {
-        (isset($inputElement['value']) && $inputElement['value']) ? $value = 'checked=checked' :  $value = '';
-        
-        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
-            $inputElement['label'] = $inputElement['name'];
-        }
-        
-        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
-            $inputElement['id'] = $inputElement['name'];
-        }
-        
-        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
-        
-        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">&nbsp;'.
-                        '<input '.
-                        'id="'.$inputElement['id'].'" '.
-                        'type="'.$inputElement['type'].'" '.
-                        'name="'.$inputElement['name'].'" '.
-                        $value.' '.
-                        '/>'.' '.$inputElement['label'].
-                        '</label>&nbsp;';
-        return $inputHtml;
-    }
-
-
-    /**
-     * 
-     * @param array $inputElement
-     * @param boolean $useValue
-     * @param boolean $usePlaceholder
-     * @return string
-     */
-    public function renderHtmlInput($inputElement, $useValue = true, $usePlaceholder = true, $selected = false)
-    {
-        ((isset($inputElement['value']) && $useValue) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
-        
-        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
-            $inputElement['label'] = $inputElement['name'];
-        }
-        
-        if ($usePlaceholder) {
-            if (!isset($inputElement['placeholder'])
-                || (isset($inputElement['placeholder'])
-                && empty($inputElement['placeholder']))) {
-                $placeholder = 'placeholder="'.$inputElement['name'].'" ';
-            }
-        } else {
-            $placeholder = '';
-        }
-        
-        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
-            $inputElement['id'] = $inputElement['name'];
-        }
-        
-        $inputHtml = '<input '.
-                        'id="'.$inputElement['id'].'" '.
-                        'type="'.$inputElement['type'].'" '.
-                        'name="'.$inputElement['name'].'" '.
-                        $value.
-                        'class="form-control" '.
-                        $placeholder.
-                        '/>';
-        return $inputHtml;
-    }
 
     /**
      * 
@@ -595,9 +437,24 @@ class Form
     }
     
     /**
+     * Add a submit to the form
+     *
+     * @param string $name The name of submit
+     * @param string $label The value of submit
+     * @param array $params Additionnal param
+     * @return \HTML_QuickForm_Element_InputSubmit
+     */
+    public function addSubmit($name, $label, $params = array())
+    {
+        $this->formProcessor->addElement('submit', $name, $label, $params)
+                ->updateAttributes(array('id'=>$name, 'class'=>'btn-primary'));
+    }
+    
+    /**
      * 
-     * @param string $uri
-     * @return string
+     * @param type $origin
+     * @param type $uri
+     * @return type
      */
     public static function getValidatorsQuery($origin, $uri)
     {
@@ -664,6 +521,12 @@ class Form
         return $validatorsQuery;
     }
     
+    /**
+     * 
+     * @param type $origin
+     * @param type $uri
+     * @return type
+     */
     public static function getValidators($origin, $uri)
     {
         $di = Di::getDefault();
@@ -687,9 +550,9 @@ class Form
     
     /**
      * 
-     * @param string $name
-     * @param string $fieldType
-     * @param array $additionalParameters
+     * @param type $field
+     * @param type $extraParams
+     * @return \Centreon\Internal\Form
      */
     public function add($field, $extraParams = array())
     {
@@ -801,191 +664,6 @@ class Form
     }
     
     /**
-     * Add a checkbox to the form
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param array $params The list of options in option group
-     * @return \HTML_QuickForm_Container_Group
-     */
-    public function addCheckBox($name, $label, $separators = '&nbsp;', $params = array())
-    {
-        if (isset($params['list']) && count($params['list'])) {
-            $cbList = array();
-            foreach ($params['list'] as $cb) {
-                $cbList[] = $this->formProcessor->createElement(
-                    "checkbox",
-                    $cb['name'],
-                    $cb['label'],
-                    $cb['label']
-                );
-            }
-            $cbg = $this->formProcessor->addGroup($cbList, $name, $label, $separators);
-        } else {
-            $cbg = $this->formProcessor->addElement(
-                'checkbox',
-                $name,
-                $label,
-                $label
-            );
-        }
-        return $cbg;
-    }
-    
-    /**
-     * 
-     * @param string $name
-     * @param string $label
-     * @param string $separators
-     * @param array $params
-     * @return type
-     */
-    public function addRadio($name, $label, $value, $separators = '&nbsp;', $params = array())
-    {
-        if (isset($params['list']) && count($params['list'])) {
-            $cbList = array();
-            foreach ($params['list'] as $cb) {
-
-                $cbList[] = $this->formProcessor->createElement(
-                    'radio',
-                    $cb['name'],
-                    $cb['label'],
-                    $separators,
-                    $cb['value']
-                );
-            }
-            $cbg = $this->formProcessor->addGroup($cbList, $name, $label, $separators);
-        } else {
-            $cbg = $this->formProcessor->addElement(
-                'radio',
-                $name,
-                $label,
-                null,
-                $value
-            );
-        }
-        return $cbg;
-    }
-
-    /**
-     * Add a textarea to the form
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @return \HTML_QuickForm_Element_Textarea
-     */
-    public function addTextarea($name, $label)
-    {
-        $elem = $this->formProcessor
-                    ->addElement('textarea', $name, $label, $this->template['textarea'])
-                    ->updateAttributes(array('id'=>$name, 'label'=>$label));
-        return $elem;
-    }
-    
-    /**
-     * Add a button to the form
-     *
-     * @param string $name The name of button
-     * @param string $value The value of button
-     * @param array $param Additionnal param
-     * @return \HTML_QuickForm_Element_Button
-     */
-    public function addButton($name, $label, $params = array())
-    {
-        $params['id'] = $name;
-        $this->formProcessor->addElement('button', $name, $label, $params);
-    }
-
-    /**
-     * Add a submit to the form
-     *
-     * @param string $name The name of submit
-     * @param string $value The value of submit
-     * @param array $param Additionnal param
-     * @return \HTML_QuickForm_Element_InputSubmit
-     */
-    public function addSubmit($name, $label, $params = array())
-    {
-        $this->formProcessor->addElement('submit', $name, $label, $params)
-                ->updateAttributes(array('id'=>$name, 'class'=>'btn-primary'));
-    }
-
-    /**
-     * Add a reset to the form
-     *
-     * @param string $name The name of reset
-     * @param string $value The value of reset
-     * @param array $param Additionnal param
-     * @return \HTML_QuickForm_Element_InputReset
-     */
-    public function addReset($name, $label, $params = array())
-    {
-        $elem = $this->formProcessor
-                        ->addElement('reset', $name, $label, $params)
-                        ->updateAttributes(array('id'=>$name));
-        return $elem;
-    }
-    
-    /**
-     * Add the submit bar to a form
-     * 
-     * @param string $name The name of bar
-     * @param boolean $cancel If include the cancel button
-     * @return Centreon_SubmitBar
-     */
-    public function addSubmitBar($name = 'submitbar', $cancel = true)
-    {
-        $submitbar = $this->formProcessor
-                            ->addElement('submitbar', $name)
-                            ->updateAttributes(array('id'=>$name));
-        
-        $submitbar
-            ->addElement('submit', 'submit')
-            ->updateAttributes(array('id'=>'submit', 'label'=>_('Save changes'), 'class'=>'btn-primary'));
-        
-        if ($cancel) {
-            $submitbar
-                ->addElement('reset', 'reset')
-                ->updateAttributes(array('id'=>'reset', 'label'=>_('Cancel')));
-        }
-        
-        return $submitbar;
-    }
-    
-    /**
-     * Add clonable element
-     * 
-     * @param string $type
-     * @param string $name
-     * @param string $label
-     * @param array $options
-     * @param string $style
-     * @return \HTML_QuickForm_Element
-     */
-    public function addClonableElement($type, $name, $label, $options = array(), $style = null)
-    {
-        switch (strtolower($type)) {
-            case 'text':
-                $elem = $this->addText($name, $label, $style);
-                break;
-            case 'select':
-                $elem = $this->addSelect($name, $label, $options, $style);
-                break;
-            case 'checkbox':
-                $elem = $this->addCheckBox($name, $label, $options);
-                break;
-            default:
-                throw new Centreon_Exception_Core('Element type cannot be cloned');
-        }
-        
-        $elem
-            ->updateAttributes(array('id'=>$name."_#index#"))
-            ->setName($name."[#index#]");
-        
-        return $elem;
-    }
-    
-    /**
      * Return the array for smarty
      * 
      * @return type
@@ -1000,98 +678,12 @@ class Form
         
         return $this->rulesToArray($renderer->toArray());
     }
-
-    /**
-     * Add help by block
-     *
-     * The array help format :
-     *
-     *     array(
-     *       'elementname' => 'help string'
-     *     )
-     *
-     * @param array $helps The helps
-     */
-    public function addHelps($helps)
-    {
-        foreach ($helps as $element => $help) {
-            $formEl = $this->formProcessor->getElementsByName($element);
-            if (count($formEl) > 0) {
-                $formEl[0]->setAttribute('_help', $help);
-            }
-        }
-    }
-
-    /**
-     * Register a rule
-     * 
-     * @param string $name The rule name
-     * @param string|array $function The callback
-     */
-    public function registerRule($name, $function)
-    {
-        \HTML_QuickForm_Factory::registerRule(
-            $name,
-            '\HTML_QuickForm_Rule_Callback',
-            'HTML/QuickForm/Rule/Callback.php',
-            $function
-        );
-    }
-
-    /**
-     * Register a javascript rule
-     *
-     * @param string $name The rule name
-     * @param string $file The javascript file who add the rule
-     */
-    public function registerJsRule($name, $file)
-    {
-        if (!in_array($name, $this->jsRulesRegister)) {
-            $this->tpl->addJs($file);
-            $this->jsRulesRegister[] = $name;
-        }
-    }
-
-
-    /**
-     * Add rule for form
-     *
-     * @param string $ruleName The rule name
-     * @param string $field The field name
-     * @param string $msg The message
-     * @param string|null $jsExt Extended information for javascript
-     */
-    public function addRule($ruleName, $field, $msg, $jsExt = null)
-    {
-        /* If Quickform rule exists */
-        if (\HTML_QuickForm_Factory::isRuleRegistered($ruleName)) {
-            $elements = $this->formProcessor->getElementsByName($field);
-            foreach ($elements as $element) {
-                $this->formProcessor->addRule($ruleName, $msg);
-            }
-        }
-        /* If javascript rule exists */
-        if (in_array($ruleName, $this->jsRulesRegister)) {
-            if (is_null($jsExt)) {
-                $jsExt = 'true';
-            }
-            $this->jsRules[$field][] = array(
-                'rule' => $ruleName,
-                'message' => $msg,
-                'info' => $jsExt
-            );
-            /* Add javascript for initialize the form rules */
-            $this->tpl->addJs('jquery/validate/jquery.validate.min.js')
-                      ->addJs('centreon/formRules.js');
-        }
-    }
     
-    public function applyFilter($field, $function)
-    {
-        //$this->formProcessor->applyFilter($field, array($this, $function));
-        //$this->formProcessor->addFilter($field, array($this, $function));
-    }
-     
+    /**
+     * 
+     * @param type $defaultValues
+     * @param type $filter
+     */
     public function setDefaults($defaultValues = null, $filter = null)
     {
         $this->formProcessor->setDefaults($defaultValues, $filter);
@@ -1164,6 +756,10 @@ class Form
     
     /**
      * 
+     * @param type $origin
+     * @param type $uri
+     * @param type $moduleName
+     * @param type $submittedValues
      * @return type
      */
     public static function validate($origin, $uri, $moduleName, &$submittedValues)

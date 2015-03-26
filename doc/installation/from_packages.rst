@@ -4,7 +4,7 @@
 Using packages
 ==============
 
-Merethis provides RPM for its products through Centreon Entreprise
+Centreon provides RPM for its products through Centreon Entreprise
 Server (CES). Open source products are freely available from our
 repository.
 

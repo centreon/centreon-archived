@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -36,9 +36,8 @@
 
 namespace Centreon\Controllers;
 
-use Centreon\Internal\Form;
-use Centreon\Internal\Form\Wizard;
-use Centreon\Internal\Form\Generator;
+use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
+use Centreon\Internal\Form\Validators\Validator\Validator;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 
@@ -96,27 +95,25 @@ abstract class FormController extends ListController
      */
     public function editAction($additionnalParamsForSmarty = array())
     {
-        $router = Di::getDefault()->get('router');
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
         $inheritanceUrl = null;
         if (false === is_null($this->inheritanceUrl)) {
-            $inheritanceUrl = $router->getPathFor(
+            $inheritanceUrl = $this->router->getPathFor(
                 $this->inheritanceUrl,
                 array('id' => $requestParam['id'])
             );
         }
         
-        $myForm = new Generator($objectFormUpdateUrl, array('id' => $requestParam['id']));
+        $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id']));
+        $myForm->getFormFromDatabase();
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', static::$objectName);
         
         // get object Current Values
         $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
         
-        $formModeUrl = Di::getDefault()
-                        ->get('router')
-                        ->getPathFor(
+        $formModeUrl = $this->router->getPathFor(
                             $this->objectBaseUrl.'/[i:id]',
                             array(
                                 'id' => $requestParam['id']
@@ -140,7 +137,7 @@ abstract class FormController extends ListController
         if (isset($this->inheritanceTmplUrl)) {
             $this->tpl->assign(
                 'inheritanceTmplUrl',
-                $router->getPathFor(
+                $this->router->getPathFor(
                     $this->inheritanceTmplUrl
                 )
             );
@@ -164,26 +161,16 @@ abstract class FormController extends ListController
         $updateSuccessful = true;
         $updateErrorMessage = '';
         
-        $validationResult = Form::validate("form", $this->getUri(), static::$moduleName, $givenParameters);
-        if ($validationResult['success']) {
+        try {
             $repository = $this->repository;
-            try {
-                $repository::update($givenParameters);
-            } catch (Exception $e) {
-                $updateSuccessful = false;
-                $updateErrorMessage = $e->getMessage();
-            }
-        } else {
-            $updateSuccessful = false;
-            $updateErrorMessage = $validationResult['error'];
-        }
-        
-        $this->router = Di::getDefault()->get('router');
-        if ($updateSuccessful) {
+            $repository::update($givenParameters, 'form', $this->getUri());
+            
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
-        } else {
+        } catch (\Centreon\Internal\Exception $e) {
+            $updateSuccessful = false;
+            $updateErrorMessage = $e->getMessage();
             $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }

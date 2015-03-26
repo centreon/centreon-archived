@@ -60,12 +60,16 @@ class Installer extends ModuleInstaller
     protected static function setUpFormValidators()
     {
         $validators = array(
-            "INSERT INTO cfg_forms_validators(name, action) VALUES ('email', '/validator/email')",
-            "INSERT INTO cfg_forms_validators(name, action) VALUES ('resolveDns', '/validator/resolvedns')",
-            "INSERT INTO cfg_forms_validators(name, action) VALUES ('ipAddress', '/validator/ipaddress')",
-            "INSERT INTO cfg_forms_validators(name, action) VALUES ('unique', '/validator/unique')",
-            "INSERT INTO cfg_forms_validators(name, action) VALUES ('forbiddenChar', '/validator/forbiddenchar')",
-            "INSERT INTO cfg_forms_validators(name, action) VALUES ('circularDependency', '/validator/circular')"
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('email', '/validator/email')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('resolveDns', '/validator/resolvedns')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('ipAddress', '/validator/ipaddress')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('unique', '/validator/unique')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('forbiddenChar', '/validator/forbiddenchar')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('circularDependency', '/validator/circular')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('String', '/validator/string')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('Numeric', '/validator/numeric')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('Misc', '/validator/misc')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('Datetime', '/validator/datetime')",
         );
         
         $db = Di::getDefault()->get('db_centreon');

@@ -53,7 +53,7 @@ NOTES
     lot of space
 
 AUTHOR
-    Merethis (Alexandru Vilau)
+    Centreon (Alexandru Vilau)
 ";
 
 $getHelp = "

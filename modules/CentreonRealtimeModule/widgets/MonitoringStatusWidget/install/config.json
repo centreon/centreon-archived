@@ -1,7 +1,7 @@
 {
     "name": "Monitoring Status",
     "shortname": "monitoring-status",
-    "author": "Merethis",
+    "author": "Centreon",
     "email": "contact@centreon.com",
     "website": "http://www.centreon.com",
     "description": "Display monitoring status",

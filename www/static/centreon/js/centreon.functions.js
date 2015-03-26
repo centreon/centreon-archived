@@ -207,9 +207,16 @@ function stringTwoDigit(val) {
 function topClock() {
     var clock;
     clockTimestamp++;
-    clock = moment.unix(clockTimestamp);
-
-    $('.time .clock').text(clock.local().format("HH:mm:ss"));
+    clock = moment.unix(clockTimestamp).local();
+    var sHeure;
+    if (sessionStorage.length > 0 && sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != "") {
+        $(".fa-undo").show();
+       sHeure = clock.tz(sessionStorage.getItem("sTimezone"));
+    }  else {
+        sHeure = clock
+        $(".fa-undo").hide();
+    }
+    $('.time .clock').text(sHeure.format("HH:mm:ss"));
     setTimeout(function() { topClock(); }, 1000);
 }
 

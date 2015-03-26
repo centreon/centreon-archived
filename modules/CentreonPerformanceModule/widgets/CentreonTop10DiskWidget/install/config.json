@@ -1,7 +1,7 @@
 {
     "name": "Centreon Top 10 Disk",
     "shortname": "CentreonTop10Disk",
-    "author": "Merethis",
+    "author": "Centreon",
     "email": "contact@centreon.com",
     "website": "http://www.centreon.com",
     "description": "Widget that displays top 10 of disk services ",

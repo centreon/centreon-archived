@@ -75,7 +75,10 @@ class ServiceController extends Controller
             ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('dataTables.bootstrap.css')
             ->addCss('daterangepicker-bs3.css')
-            ->addCss('centreon.tag.css', 'centreon-administration');
+            ->addCss('centreon.tag.css', 'centreon-administration')
+            ->addCss('select2.css')
+            ->addCss('select2-bootstrap.css')
+            ->addCss('centreon-wizard.css');
 
         /* Load js */
         $tpl->addJs('jquery.min.js')
@@ -91,13 +94,15 @@ class ServiceController extends Controller
             ->addJs('jquery.validate.min.js')
             ->addJs('additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
-            ->addJs('moment-with-langs.min.js')
+            ->addJs('moment-with-locales.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('daterangepicker.js')
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js')
             ->addJs('centreon.overlay.js')
-            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration');
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('moment-timezone-with-data.min.js')
+            ->addJs('centreon-wizard.js');
 
         /* Datatable */
         $tpl->assign('moduleName', 'CentreonRealtime');
@@ -285,13 +290,13 @@ class ServiceController extends Controller
         /* Last check */
         $data[] = array(
             'label' => _('Last check'),
-            'value' => Datetime::format($rawdata['last_check'])
+            'value' => $rawdata['last_check']
         );
 
         /* Next check */
         $data[] = array(
             'label' => _('Next check'),
-            'value' => Datetime::format($rawdata['next_check'])
+            'value' => $rawdata['next_check']
         );
 
         return $data;

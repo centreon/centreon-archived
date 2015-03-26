@@ -3,7 +3,7 @@
     "shortname" : "centreon-performance",
     "version": "3.0.0",
     "author" : [
-        "Merethis"
+        "Centreon"
     ],
     "isuninstallable" : false,
     "isdisableable" : true,

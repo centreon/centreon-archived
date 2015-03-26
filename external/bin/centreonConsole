@@ -9,10 +9,11 @@
     $parametersLine = null;
     $helpMode = false;
     $listMode = false;
+    $getVersion = false;
     $requireAuthentication = false;
 
     // Get Options
-    $shortOpts = "hlu::p::";
+    $shortOpts = "hvlu::p::";
     $options = getopt($shortOpts);
 
     // Remove options from the list of arguments
@@ -49,12 +50,18 @@
         $requireAuthentication = true;
     }
 
+    if (isset($options['v'])) {
+        $getVersion = true;
+    }
+
     try {
         $commandeLineManager = new \Centreon\Internal\Command($requestLine, $parametersLine);
         if ($helpMode) {
             $commandeLineManager->getHelp();
         } elseif ($listMode) {
             $commandeLineManager->getCommandList();
+        } elseif ($getVersion) {
+            $commandeLineManager->getVersion();
         } else {
             if ($requireAuthentication) {
                 $password = '';

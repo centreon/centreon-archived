@@ -46,5 +46,5 @@ checkpoints, the architecture could be like something below.
    :align: center
 
 Almost anything is possible with Centreon software. If you feel like
-you might need some help though, feel free to checkout `Merethis
+you might need some help though, feel free to checkout `Centreon
 services <http://www.centreon.com/en/services/services>`_.

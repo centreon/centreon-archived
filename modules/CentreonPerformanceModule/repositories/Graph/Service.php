@@ -38,6 +38,8 @@ namespace CentreonPerformance\Repository\Graph;
 
 use Centreon\Internal\Di;
 use CentreonPerformance\Repository\Graph;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonPerformance\Repository\GraphTemplate;
 
 /**
  * Class for generate values for graph service
@@ -70,14 +72,30 @@ class Service extends Graph
         $stmt->bindParam(':service_id', $serviceId);
         $stmt->execute();
 
+        /* List of service template */
+        $svcTmpls = ServiceRepository::getListTemplates($serviceId);
+        /* Get the graph template */
+        $graphInfos = null;
+        foreach ($svcTmpls as $svcTmplId) {
+            $graphInfos = GraphTemplate::getByServiceTemplate($svcTmplId);
+            if (count($graphInfos) > 0) {
+                break;
+            }
+        }
+
         while ($row = $stmt->fetch()) {
-            $this->metrics[] = array(
+            $metric = array(
                 'id' => $row['metric_id'],
                 'unit' => $row['unit_name'],
                 'color' => null,
                 'legend' => $row['metric_name'],
+                'is_negative' => false,
                 'graph_type' => 'line'
             );
+            if (count($graphInfos) > 0 && isset($graphInfos['metrics'][$row['metric_name']])) {
+                $metric = array_merge($metric, $graphInfos['metrics'][$row['metric_name']]);
+            }
+            $this->metrics[] = $metric;
         }
 
         parent::__construct($startTime, $endTime);

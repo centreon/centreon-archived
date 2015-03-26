@@ -34,10 +34,3 @@
 </div>
 
 {include file="tools/datatable-table.tpl"}
-
-<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-    </div>
-  </div>
-</div>

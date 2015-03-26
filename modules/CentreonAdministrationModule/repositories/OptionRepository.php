@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU 
  * General Public License cover the whole combination.
  * 
- * As a special exception, the copyright holders of this program give MERETHIS 
+ * As a special exception, the copyright holders of this program give CENTREON 
  * permission to link this program with independent modules to produce an executable, 
  * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * distribute the resulting executable under terms of CENTREON choice, provided that 
+ * CENTREON also meet, for each linked independent module, the terms  and conditions 
  * of the license of that module. An independent module is a module which is not 
  * derived from this program. If you modify this program, you may extend this 
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -36,7 +36,7 @@
 namespace CentreonAdministration\Repository;
 
 use CentreonAdministration\Models\Options;
-use Centreon\Internal\Form;
+use Centreon\Internal\Form\Validators\Validator;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -47,11 +47,28 @@ class OptionRepository
 {
     /**
      * 
+     * @param type $givenParameters
+     * @param type $origin
+     * @param type $route
+     */
+    protected static function validateForm($givenParameters, $origin = "", $route = "")
+    {
+        $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
+        if ($origin == 'wizard' || $origin == 'form') {
+            $formValidator->csrf($givenParameters['token']);
+            unset($givenParameters['token']);
+        }
+        $formValidator->validate($givenParameters->all());
+    }
+    
+    /**
+     * 
      * @param type $submittedValues
      * @param type $group
      */
-    public static function update($submittedValues, $group = "default")
+    public static function update($submittedValues, $group = "default", $origin = "", $route = "")
     {
+        self::validateForm($submittedValues, $origin, $route);
         $currentOptionsList = Options::getOptionsKeysList();
 
         $optionsToSave = array();
