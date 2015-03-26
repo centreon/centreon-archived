@@ -34,16 +34,51 @@
  *
  */
 
-namespace CentreonConfiguration\Models\Relation\Host;
+namespace CentreonBam\Models\Relation\Indicator;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Exception;
 use Centreon\Models\CentreonRelationModel;
 
 class Service extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_hosts_services_relations";
-    protected static $firstKey = "host_host_id";
-    protected static $secondKey = "service_service_id";
-    public static $firstObject = "\CentreonConfiguration\Models\Host";
-    public static $secondObject = "\CentreonConfiguration\Models\Service";
+    protected static $relationTable = "cfg_servicegroups_relations";
+    protected static $firstKey = "kpi_id";
+    //protected static $secondKey = "service_id";
+    //public static $firstObject = "\CentreonConfiguration\Models\Servicegroup";
+    //public static $secondObject = "\CentreonConfiguration\Models\Service";
+
+    /**
+     * Get Host id service id from kpi id
+     *
+     * @param int $kpiId
+     * @return array multidimentional array with host_id and service_id indexes
+     */
+    public static function getHostIdServiceIdFromKpiId($kpiId)
+    {
+        $sql = "SELECT host_id, service_id "
+            . "FROM cfg_bam_kpi "
+            . "WHERE ".static::$firstKey." = ?";
+        $result = self::getResult($sql, array($kpiId));
+        $tab = array();
+        $i = 0;
+        foreach ($result as $rez) {
+            $tab[$i]['host_id'] = $rez['host_id'];
+            $tab[$i]['service_id'] = $rez['service_id'];
+            $i++;
+        }
+        return $tab;
+    }
+
+    /**
+     * This call will directly throw an exception
+     *
+     * @param string $name
+     * @param array $arg
+     * @throws \Centreon\Internal\Exception
+     */
+    public function __call($name, $arg)
+    {
+        throw new Exception('Unknown method');
+    }
 }

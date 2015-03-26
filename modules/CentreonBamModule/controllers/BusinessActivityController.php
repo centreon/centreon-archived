@@ -37,6 +37,8 @@ namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
+use CentreonBam\Repository\BusinessActivityRepository;
+use CentreonBam\Repository\IndicatorRepository;
 use CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren;
 use CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents;
 
@@ -50,6 +52,7 @@ class BusinessActivityController extends FormController
     public static $relationMap = array(
         'parent_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren',
         'child_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents',
+        'normal_kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator'
     );
     
     /**
@@ -73,7 +76,7 @@ class BusinessActivityController extends FormController
         parent::listAction();
     }
 
-	    /**
+    /**
      *
      * @method get
      * @route /businessactivity/realtime
@@ -105,7 +108,7 @@ class BusinessActivityController extends FormController
         $this->tpl->display("businessview.tpl");
     }
    
-	/**
+    /**
      * Get list of Types for a specific business activity
      *
      *
@@ -117,6 +120,29 @@ class BusinessActivityController extends FormController
         parent::getSimpleRelation('ba_type_id', '\CentreonBam\Models\BusinessActivityType');
     }
 
+    /**
+     * Get list of Types for a specific business activity
+     *
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/normalindicator
+     */
+    public function indicatorForBaAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+
+        $indicatorList = BusinessActivityRepository::getIndicatorsForBa($requestParam['id']);
+        $finalList = array();
+        foreach ($indicatorList as $indicator) {
+            //var_dump($indicator);
+            $finalList[] = IndicatorRepository::getNormalIndicatorName($indicator['kpi_id']);
+        }
+
+        $router->response()->json($finalList);
+    }
  
     /**
      * Get list of Timeperiods for a specific business activity

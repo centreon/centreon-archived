@@ -85,7 +85,32 @@ class BusinessActivityRepository extends FormRepository
         return $finalRoute;
     }
 
-	 /**
+    /**
+     *
+     *
+     * @return string
+     */
+    public static function getIndicatorsForBa($id)
+    {
+        // Get datatabases connections
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $sql = "SELECT k.kpi_id "
+            . "FROM cfg_bam_kpi k "
+            . "WHERE k.id_ba='$id' ";
+        $stmt = $dbconn->query($sql);
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $resultIndicators = array();
+        foreach ($result as $indicator) {
+            array_push($resultIndicators, $indicator);
+        }
+
+        return $resultIndicators;
+    }
+
+    /**
      *
      * @param string $name
      * @return string

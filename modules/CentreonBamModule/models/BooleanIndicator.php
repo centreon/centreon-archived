@@ -40,11 +40,11 @@ use Centreon\Models\CentreonBaseModel;
 /**
  * Used for interacting with host categories
  *
- * @author sylvestre
+ * @author kevin
  */
-class Indicator extends CentreonBaseModel
+class BooleanIndicator extends CentreonBaseModel
 {
-    protected static $table = "cfg_bam_kpi";
-    protected static $primaryKey = "kpi_id";
-    protected static $uniqueLabelField = "kpi_id";
+    protected static $table = "cfg_bam_boolean";
+    protected static $primaryKey = "boolean_id";
+    protected static $uniqueLabelField = "name";
 }

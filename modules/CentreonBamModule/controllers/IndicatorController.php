@@ -38,6 +38,9 @@ namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
+use CentreonBam\Repository\IndicatorRepository;
+use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Host;
 
 class IndicatorController extends FormController
 {
@@ -47,7 +50,26 @@ class IndicatorController extends FormController
     protected $objectClass = '\CentreonBam\Models\Indicator';
     protected $datatableObject = '\CentreonBam\Internal\IndicatorDatatable';
     protected $repository = '\CentreonBam\Repository\IndicatorRepository';     
-    public static $relationMap = array();
+    public static $relationMap = array(
+        'indicator_service' => '\CentreonBam\Models\Relation\Indicator\Service',
+        'businessactivity_normalindicator' => '\CentreonBam\Models\Relation\BusinessActivity\NormalIndicator'
+    );
+
+    /**
+    * Create a new indicator
+    *
+    * @method post
+    * @route /indicator/add
+    */
+    public function createAction()
+    {
+        $givenParameters = $this->getParams('post');
+
+        IndicatorRepository::createIndicator($givenParameters);
+
+        $this->router->response()->json(array('success' => true));
+        //$this->router->response()->json(array('success' => false, 'error' => 'problem'));
+    }
 
     /**
     *
@@ -73,5 +95,84 @@ class IndicatorController extends FormController
         );
         $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
+    }
+
+    /**
+     * Get service for a specific kpi
+     *
+     *
+     * @method get
+     * @route /indicator/[i:id]/service
+     */
+    public function serviceForIndicatorAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+
+        $relObj = static::$relationMap['indicator_service'];
+        $listOfServices = $relObj::getHostIdServiceIdFromKpiId($requestParam['id']);
+
+        $finalList = array();
+        if (isset($listOfServices[0])) {
+            $serviceDescription = Service::getParameters(
+                $listOfServices[0]['service_id'],
+                'service_description'
+            );
+            $hostName = Host::getParameters($listOfServices[0]['host_id'], 'host_name');
+            $finalList = array(
+                "id" => $listOfServices[0]['service_id'] . '_' . $listOfServices[0]['host_id'],
+                "text" => $hostName['host_name'] . ' ' . $serviceDescription['service_description']
+            );
+        }
+        $router->response()->json($finalList);
+    }
+
+    /**
+     * Get business activity for a specific kpi
+     *
+     *
+     * @method get
+     * @route /indicator/[i:id]/businessactivity
+     */
+    public function businessActivityForIndicatorAction()
+    {
+        parent::getSimpleRelation('id_indicator_ba', '\CentreonBam\Models\BusinessActivity');
+        //parent::getRelations(static::$relationMap['service_traps']);
+    }
+
+    /**
+     *
+     * @method get
+     * @route /indicator/normal/formlist
+     */
+    public function formListNormalIndicatorAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        
+        $finalList = IndicatorRepository::getNormalIndicatorsName();
+        //$relObj = static::$relationMap['businessactivity_normalindicator'];
+        //$finalList = $relObj::getKpiIdKpiName();
+
+        $router->response()->json($finalList);
+    }
+
+    /**
+     *
+     * @method get
+     * @route /indicator/boolean/formlist
+     */
+    public function formListBooleanIndicatorAction()
+    {
+        /*$di = Di::getDefault();
+        $router = $di->get('router');
+
+        $finalList = IndicatorRepository::getNormalIndicatorsName();
+
+        $router->response()->json($finalList);*/
+
+        //parent::getRelations('\CentreonBam\Models\BooleanIndicator');
     }
 }

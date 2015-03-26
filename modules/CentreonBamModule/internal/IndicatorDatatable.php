@@ -41,20 +41,27 @@ use Centreon\Internal\Datatable;
 use Centreon\Internal\Di;
 
 /**
- * Description of BaDatatable
+ * Description of IndicatorDatatable
  *
  * @author lionel
  */
 class IndicatorDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
-    
+    //protected static $dataprovider = '\CentreonBam\Internal\Datatable\Dataprovider\CentreonDb';
+
     /**
      *
      * @var type 
      */
     protected static $datasource = '\CentreonBam\Models\Indicator';
-    
+
+    /**
+     *
+     * @var type
+     */
+    //protected static $additionnalDatasource = '\CentreonBam\Models\BooleanIndicator';
+
     /**
      *
      * @var type 
@@ -84,27 +91,15 @@ class IndicatorDatatable extends Datatable
             'type' => 'string',
             'visible' => false,
         ),
-        array (
-            'title' => 'Object',
-            'name' => 'object',
-            'data' => 'object',
+        /*array (
+            'title' => 'Boolean Id',
+            'name' => 'boolean_id',
+            'data' => 'boolean_id',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true,
-            'source' => 'other',
-/*            'cast' => array(
-                'type' => 'url',
-                'parameters' => array(
-                    'route' => '/centreon-configuration/[i:service_id]',
-                    'routeParams' => array(
-                        'service_id' => '::additional_route::',
-                        'advanced' => '0'
-                    ),
-                    'linkName' => '::object::'
-                )
-            ),*/
-        ),
+            'visible' => false,
+        ),*/
         array (
             'title' => 'Type',
             'name' => 'kpi_type',
@@ -113,6 +108,7 @@ class IndicatorDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'width' => 50,
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
@@ -126,6 +122,16 @@ class IndicatorDatatable extends Datatable
             )
         ),
         array (
+            'title' => 'Indicator',
+            'name' => 'object',
+            'data' => 'object',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'source' => 'other',
+        ),
+        array (
             'title' => 'Impact (Warning/Critical/Unknown)',
             'name' => 'impact',
             'data' => 'impact',
@@ -135,34 +141,7 @@ class IndicatorDatatable extends Datatable
             'visible' => true,
             'source' => 'other',
         ),
-/*        array (
-            'title' => 'Warning Impact',
-            'name' => 'drop_warning',
-            'data' => 'drop_warning',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-        ),
-         array (
-            'title' => 'Critical Impact',
-            'name' => 'drop_critical',
-            'data' => 'drop_critical',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-        ),
-         array (
-            'title' => 'Unknown Impact',
-            'name' => 'drop_unknown',
-            'data' => 'drop_unknown',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-        ),
-*/        array (
+        array (
             'title' => 'Status',
             'name' => 'activate',
             'data' => 'activate',
@@ -192,7 +171,7 @@ class IndicatorDatatable extends Datatable
 
         // Add object column
         // Can be service, metaservice or BA
-        $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_description
+        $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_id, s.service_description
             FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, cfg_bam_kpi k 
             WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id';
         $stmtKpiService = $dbconn->query($sqlKpiService);
@@ -210,31 +189,41 @@ class IndicatorDatatable extends Datatable
         $stmtKpiBa = $dbconn->query($sqlKpiBa);
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
+        $sqlKpiBoolean = 'SELECT b.boolean_id,b.name
+            FROM cfg_bam_boolean b';
+        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
+
         foreach ($resultSet as &$kpi) {
-            if ($kpi['kpi_type'] == '0') {
-                foreach ($resultKpiService as $kpiObject) {
-                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
-                        $kpi['object'] = '<a href="/centreon-configuration/service/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
+            //if ($kpi['kpi_object'] == '0') {
+                if ($kpi['kpi_type'] == '0') {
+                    foreach ($resultKpiService as $kpiObject) {
+                        if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                            $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
+                        }
+                    }
+                } else if ($kpi['kpi_type'] == '1') {
+                    foreach ($resultKpiMetaservice as $kpiObject) {
+                        if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                            $kpi['object'] = 'metaservice';
+                        }
+                    }
+                } else if ($kpi['kpi_type'] == '2') {
+                    foreach ($resultKpiBa as $kpiObject) {
+                        if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                            $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
+                        }
                     }
                 }
-            } else if ($kpi['kpi_type'] == '1') {
-                foreach ($resultKpiMetaservice as $kpiObject) {
+            //} else if ($kpi['kpi_object'] == '1') {
+                else {
+                foreach ($resultKpiBoolean as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
-                        $kpi['object'] = 'metaservice';
+                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
                     }
                 }
-            } else if ($kpi['kpi_type'] == '2') {
-                foreach ($resultKpiBa as $kpiObject) {
-                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
-                        $kpi['object'] = '<a href="/centreon-bam/businessactivity/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
-                    }
-                }
-            }
-            if (!isset($kpi['object'])) {
-                $kpi['object']= '<span class="label label-danger">' . 'null' . '</span>';
             }
         }
-
 
         // Add impact column
         $sqlKpiImpact = 'SELECT kpi_id, drop_warning, drop_critical, drop_unknown
@@ -245,7 +234,7 @@ class IndicatorDatatable extends Datatable
         foreach ($resultSet as &$kpi) {
             foreach ($resultKpiImpact as $kpiImpact) {
                 if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
-                   $kpi['impact'] = $kpiImpact['drop_warning'] . ' / ' . $kpiImpact['drop_critical'] . ' / ' . $kpiImpact['drop_unknown'];
+                    $kpi['impact'] = $kpiImpact['drop_warning'] . '% / ' . $kpiImpact['drop_critical'] . '% / ' . $kpiImpact['drop_unknown']. '%';
                 }
             }
         }
