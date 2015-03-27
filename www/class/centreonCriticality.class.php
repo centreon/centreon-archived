@@ -282,17 +282,17 @@ class CentreonCriticality {
      */
     public function criticitiesConfigOnSTpl($service_id) {
         global $pearDB, $critCache;
-        
+
         if (!count($this->tree)) {
             $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' ORDER BY service_template_model_stm_id ASC";
             $RES = $pearDB->query($request);
             while ($data = $RES->fetchRow()) {
                 $this->tree[$data['service_id']] = $this->getServiceCriticality($data["service_id"]);
             }
-        }        
-        if (isset($this->tree[$service_id])) {
+        }
+        if (isset($this->tree[$service_id]) && $this->tree[$service_id] != 0) {
             return $this->tree[$service_id];
-        } 
+        }
         return array();
     }
     
@@ -303,24 +303,32 @@ class CentreonCriticality {
      * return array
      */
     protected function getServiceCriticality($service_id) {
-        global $pearDB, $critCache;
-        
+        global $pearDB;
+
         if (!isset($service_id) || $service_id == 0) {
             return 0;
         }
 
-        if (isset($critCache[$data['service_id']])) {
-            return $critCache[$data['service_id']];
-        } else {
-            $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' AND service_id = $service_id ORDER BY service_template_model_stm_id ASC";
-            $RES = $pearDB->query($request);
-            if (isset($RES) && $RES->numRows()) {
-                while ($data = $RES->fetchRow()) {
+        $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' AND service_id = $service_id ORDER BY service_template_model_stm_\
+id ASC";
+        $RES = $pearDB->query($request);
+        if (isset($RES) && $RES->numRows()) {
+           while ($data = $RES->fetchRow()) {
+               $request2 = "select sr.* FROM service_categories_relation sr, service_categories sc WHERE sr.sc_id = sc.sc_id AND sr.service_service_id = '".$data['service_id']."' AND sc.level IS NOT NULL\
+";
+                $RES2 = $pearDB->query($request2);
+                if ($RES2->numRows() != 0) {
+                    $criticity = $RES2->fetchRow();
+                    if ($criticity['sc_id'] && isset($criticity['sc_id']) {
+                        return $criticity["sc_id"];
+                    } else {
+                        return 0;
+                    }
+                } else {
                     return $this->getServiceCriticality($data["service_template_model_stm_id"]);
                 }
             }
         }
         return 0;
     }
-
 }
