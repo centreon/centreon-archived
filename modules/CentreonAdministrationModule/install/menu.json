@@ -24,33 +24,7 @@
                     }
                 ]
             },
-            {
-                "name": "ACL",
-                "short_name": "acl",
-                "icon_class": "fa fa-filter",
-                "menus" : [
-                    {
-                        "name" : "ACL action",
-                        "short_name" : "acl_action",
-                        "route" : "/centreon-administration/aclaction"
-                    },
-                    {
-                        "name" : "ACL group",
-                        "short_name" : "acl_group",
-                        "route" : "/centreon-administration/aclgroup"
-                    },
-                    {
-                        "name" : "ACL menu",
-                        "short_name" : "acl_menu",
-                        "route" : "/centreon-administration/aclmenu"
-                    },
-                    {
-                        "name" : "ACL resource",
-                        "short_name" : "acl_resource",
-                        "route" : "/centreon-administration/aclresource"
-                    }
-                ]
-            },
+
             {
                 "name": "Extensions",
                 "short_name": "extensions",

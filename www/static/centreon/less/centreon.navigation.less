@@ -1,0 +1,89 @@
+@import "variables.less";
+@import "centreon.variables.less";
+
+/*-- Navs --*/
+.bodyCntr .navbarSide, .bodyCntr .nav-header, .bodyCntr li.active, .bodyCntr #page-wrapper, .bodyCntr .footer {
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+/*-- Top NavBar --*/
+.GlobalNavbar {
+  background-color : @navbar-default-bg;
+  border-radius: @border-radius-base;
+  color : @lightGray;
+  max-height: @navbar-height;
+  /*-- Profil Menu --*/
+  .userProfil {
+    background-color: @darkBlue;
+    border-left: 2px solid @black;
+    max-width: @navbar-height;
+
+    a.dropdown-toggle {
+      padding: @paddingElem;
+      background-color: @darkBlue;
+      display: block;
+      &:hover {
+        background: linear-gradient(to bottom, lighten(@darkBlue,5%) 0%, @darkBlue 80%);
+      }
+    }
+    .profilSubmenu {
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+      background-color: @darkBlue;
+      border: none;
+      border-bottom: 2px solid @black;
+      padding: 0;
+
+      .adminList{
+        background-color: lighten(@darkBlue,8%);
+        border-top: 2px solid @black;
+
+          a {
+            display: block;
+            color: @lightGray;
+            padding : @paddingElem @paddingElem*2;
+              &:hover {
+                  text-decoration: none;
+                  background-color: @darkBlue;
+              }
+          }
+      }
+      .media {
+        padding : @paddingElem * 2;
+          ul {
+            text-align: right;
+            li {
+              padding-right: 0;
+            }
+          }
+      }
+    }
+  }
+}
+
+/*-- Side NavBar --*/
+.navbarSide {
+  background-color : @lightGray;
+  height: 100%;
+}
+
+body.mini-navbar .navbarSide {
+  width: 70px;
+}
+body.fixed-sidebar .navbarSide {
+  position: fixed;
+  width: @sidebar-width;
+  z-index: 101;
+  height: 100%;
+}
+body.fixed-sidebar.mini-navbar .navbarSide {
+  width: 0px;
+}
+
+body.body-small.fixed-sidebar.mini-navbar .navbarSide {
+  width: @sidebar-width;
+}
