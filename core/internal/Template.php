@@ -98,6 +98,8 @@ class Template extends \Smarty
         $this->customJs = "";
         parent::__construct();
         $this->initConfig();
+        $menu = new Menu();
+        $this->assign('appMenu', $menu->getMenu());
     }
     
     /**

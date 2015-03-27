@@ -23,6 +23,7 @@
                 </li>
                 <li>
                     <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span> <span class="fa arrow"></span></a>
+
                     {foreach $appMenu as $menuLevel1}
                            <li> {$menuLevel1.name}
                                 <ul>
