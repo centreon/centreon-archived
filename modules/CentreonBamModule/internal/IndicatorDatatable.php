@@ -99,6 +99,7 @@ class IndicatorDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => false,
+            'source' => 'other',
         ),*/
         array (
             'title' => 'Type',
@@ -115,6 +116,7 @@ class IndicatorDatatable extends Datatable
                     '0' => '<span class="label label-success">Service</span>',
                     '1' => '<span class="label label-warning">Metaservice</span>',
                     '2' => '<span class="label label-danger">BA</span>',
+                    '3' => '<span class="label label-danger">Boolean</span>',
                 ),
                 'extra' => array (
                     //'groupable' => true,
@@ -155,7 +157,7 @@ class IndicatorDatatable extends Datatable
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
                 )
-            )
+            ),
         ),
     );
 
@@ -189,34 +191,32 @@ class IndicatorDatatable extends Datatable
         $stmtKpiBa = $dbconn->query($sqlKpiBa);
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiBoolean = 'SELECT b.boolean_id,b.name
-            FROM cfg_bam_boolean b';
+        $sqlKpiBoolean = 'SELECT k.kpi_id,b.boolean_id,b.name
+            FROM cfg_bam_boolean b,cfg_bam_kpi k
+            WHERE b.boolean_id=k.boolean_id';
         $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($resultSet as &$kpi) {
-            //if ($kpi['kpi_object'] == '0') {
-                if ($kpi['kpi_type'] == '0') {
-                    foreach ($resultKpiService as $kpiObject) {
-                        if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
-                            $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
-                        }
-                    }
-                } else if ($kpi['kpi_type'] == '1') {
-                    foreach ($resultKpiMetaservice as $kpiObject) {
-                        if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
-                            $kpi['object'] = 'metaservice';
-                        }
-                    }
-                } else if ($kpi['kpi_type'] == '2') {
-                    foreach ($resultKpiBa as $kpiObject) {
-                        if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
-                            $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
-                        }
+            if ($kpi['kpi_type'] == 0) {
+                foreach ($resultKpiService as $kpiObject) {
+                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
                     }
                 }
-            //} else if ($kpi['kpi_object'] == '1') {
-                else {
+            } else if ($kpi['kpi_type'] == 1) {
+                foreach ($resultKpiMetaservice as $kpiObject) {
+                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object'] = 'metaservice';
+                    }
+                }
+            } else if ($kpi['kpi_type'] == 2) {
+                foreach ($resultKpiBa as $kpiObject) {
+                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
+                    }
+                }
+            } else if ($kpi['kpi_type'] == 3) {
                 foreach ($resultKpiBoolean as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
@@ -233,8 +233,14 @@ class IndicatorDatatable extends Datatable
 
         foreach ($resultSet as &$kpi) {
             foreach ($resultKpiImpact as $kpiImpact) {
-                if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
-                    $kpi['impact'] = $kpiImpact['drop_warning'] . '% / ' . $kpiImpact['drop_critical'] . '% / ' . $kpiImpact['drop_unknown']. '%';
+                if ($kpi['kpi_type'] == 3) {
+                    if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['impact'] = $kpiImpact['drop_critical'] . '%';
+                    }
+                } else {
+                    if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['impact'] = $kpiImpact['drop_warning'] . '% / ' . $kpiImpact['drop_critical'] . '% / ' . $kpiImpact['drop_unknown']. '%';
+                    }
                 }
             }
         }

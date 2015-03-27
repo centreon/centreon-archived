@@ -6,21 +6,13 @@
 		<redirect_route>/centreon-bam/indicator</redirect_route>
         <section name="Configuration">
             <block name="Information">
-                <field name="kpi_object" label="Type" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
-                    <attributes>
-                        <choices>
-                            <normal>0</normal>
-                            <boolean>1</boolean>
-                        </choices>
-                    </attributes>
-                    <help></help>
-                </field>
                 <field name="kpi_type" label="Object" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
                      <attributes>
                          <choices>
                              <service>0</service>
                              <metaservice>1</metaservice>
                              <BA>2</BA>
+                             <boolean>3</boolean>
                          </choices>
                      </attributes>
                 </field>
@@ -47,9 +39,9 @@
                         <multiple>false</multiple>
                     </attributes>
                 </field>
-                <field name="drop_warning" label="Warning Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-                <field name="drop_critical" label="Critical Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-                <field name="drop_unknown" label="Unknown Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="drop_warning" label="Warning Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="drop_critical" label="Critical Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="drop_unknown" label="Unknown Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
                 <field name="boolean_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
                 <field name="boolean_expression" label="Expression" advanced="0" type="textarea" parent_field="" mandatory="0">
                     <attributes>
@@ -64,27 +56,24 @@
                         </choices>
                     </attributes>
                 </field>
-                <field name="boolean_impact" label="Impact" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
             </block>
         </section>
     </form>
     <wizard name="add_indicator">
 		<route>/centreon-bam/indicator/add</route>
 		<step name="General">
-			<field name="kpi_object" mandatory="1"></field>
 			<field name="kpi_type" mandatory="1"></field>
+			<field name="service_id" mandatory="0"></field>
+			<field name="meta_id" mandatory="0"></field>
+			<field name="id_indicator_ba" mandatory="0"></field>
+			<field name="boolean_name" mandatory="0"></field>
+			<field name="boolean_expression" mandatory="0"></field>
+			<field name="bool_state" mandatory="0"></field>
 		</step>
 		<step name="Parameters">
-		    <field name="service_id" mandatory="0"></field>
-		    <field name="meta_id" mandatory="0"></field>
-		    <field name="id_indicator_ba" mandatory="0"></field>
 		    <field name="drop_warning" mandatory="0"></field>
 		    <field name="drop_critical" mandatory="0"></field>
 		    <field name="drop_unknown" mandatory="0"></field>
-		    <field name="boolean_name" mandatory="0"></field>
-		    <field name="boolean_expression" mandatory="0"></field>
-		    <field name="bool_state" mandatory="0"></field>
-		    <field name="boolean_impact" mandatory="0"></field>
 		</step>
 	</wizard>
 </forms>

@@ -72,6 +72,23 @@ class IndicatorController extends FormController
     }
 
     /**
+     *
+     * @method get
+     * @route /indicator/[i:id]
+     */
+    public function editAction($additionnalParamsForSmarty = array())
+    {
+        $params = $this->getParams('named');
+        $typeId = IndicatorRepository::getType($params['id']);
+       
+        $additionnalParams = array(
+            'boolean_expression' => 'toto'
+        );
+ 
+        parent::editAction($additionnalParams);
+    }
+
+    /**
     *
     * @method get
     * @route /indicator
@@ -145,34 +162,15 @@ class IndicatorController extends FormController
     /**
      *
      * @method get
-     * @route /indicator/normal/formlist
+     * @route /indicator/formlist
      */
-    public function formListNormalIndicatorAction()
+    public function formListIndicatorAction()
     {
         $di = Di::getDefault();
         $router = $di->get('router');
         
-        $finalList = IndicatorRepository::getNormalIndicatorsName();
-        //$relObj = static::$relationMap['businessactivity_normalindicator'];
-        //$finalList = $relObj::getKpiIdKpiName();
+        $finalList = IndicatorRepository::getIndicatorsName();
 
         $router->response()->json($finalList);
-    }
-
-    /**
-     *
-     * @method get
-     * @route /indicator/boolean/formlist
-     */
-    public function formListBooleanIndicatorAction()
-    {
-        /*$di = Di::getDefault();
-        $router = $di->get('router');
-
-        $finalList = IndicatorRepository::getNormalIndicatorsName();
-
-        $router->response()->json($finalList);*/
-
-        //parent::getRelations('\CentreonBam\Models\BooleanIndicator');
     }
 }

@@ -94,14 +94,15 @@ class BusinessActivityDatatable extends Datatable
             'type' => 'string',
             'visible' => false,
         ),
-		array (
+        array (
             'title' => 'Type',
             'name' => 'ba_type_id',
             'data' => 'ba_type_id',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true
+            'visible' => true,
+            'width' => 70
         ),
         array (
             'title' => 'Business Activity',
@@ -177,9 +178,8 @@ class BusinessActivityDatatable extends Datatable
                 $previousType = $myBaSet['ba_type_id'];
             }
 
-			// set business activity name
+            // set business activity name
             $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
         }
-        
     }
 }

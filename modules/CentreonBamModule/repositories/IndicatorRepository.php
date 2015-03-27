@@ -47,6 +47,28 @@ class IndicatorRepository extends FormRepository
 {
     /**
      *
+     * @param int $id
+     * @return string
+     */
+    public static function getType($id)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $selectRequest = "SELECT k.kpi_type"
+            . " FROM cfg_bam_kpi k"
+            . " WHERE k.kpi_id=:id";
+        $stmtSelect = $dbconn->prepare($selectRequest);
+        $stmtSelect->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmtSelect->execute();
+        $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
+
+        $typeId = $result[0]['kpi_type'];
+
+        return $typeId;
+    }
+
+    /**
+     *
      * @param string $givenParameters
      * @return string
      */
@@ -62,26 +84,14 @@ class IndicatorRepository extends FormRepository
         $parameters['drop_unknown'] = (isset($parameters['drop_unknown'])) ? $parameters['drop_unknown'] : 0;
         $parameters['boolean_impact'] = (isset($parameters['boolean_impact'])) ? $parameters['boolean_impact'] : 0;
 
-        if ($parameters['kpi_object'] == 0) {
-            self::createNormalIndicator($parameters);
-        } else if ($parameters['kpi_object'] == 1) {
-            self::createBooleanIndicator($parameters);
-        }
-    }
-
-    /**
-     *
-     * @param string $parameters
-     * @return string
-     */
-    public static function createNormalIndicator($parameters)
-    {
         if ($parameters['kpi_type'] == 0) {
             self::createServiceIndicator($parameters);
         } else if ($parameters['kpi_type'] == 1) {
             self::createMetaserviceIndicator($parameters);
         } else if ($parameters['kpi_type'] == 2) {
             self::createBaIndicator($parameters);
+        } else if ($parameters['kpi_type'] == 3) {
+            self::createBooleanIndicator($parameters);
         }
     }
 
@@ -154,14 +164,21 @@ class IndicatorRepository extends FormRepository
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
-        $insertRequest = "INSERT INTO cfg_bam_boolean(name, impact, expression, bool_state)"
-                . " VALUES(:boolean_name, :boolean_impact, :boolean_expression, :bool_state)";
-        $stmtInsert = $dbconn->prepare($insertRequest);
-        $stmtInsert->bindParam(':boolean_name', $parameters['boolean_name'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':boolean_impact', $parameters['boolean_impact'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':boolean_expression', $parameters['boolean_expression'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':bool_state', $parameters['bool_state'], \PDO::PARAM_INT);
-        $stmtInsert->execute();
+        $insertBooleanRequest = "INSERT INTO cfg_bam_boolean(name, expression, bool_state)"
+                . " VALUES(:boolean_name, :boolean_expression, :bool_state)";
+        $stmtBooleanInsert = $dbconn->prepare($insertBooleanRequest);
+        $stmtBooleanInsert->bindParam(':boolean_name', $parameters['boolean_name'], \PDO::PARAM_INT);
+        $stmtBooleanInsert->bindParam(':boolean_expression', $parameters['boolean_expression'], \PDO::PARAM_INT);
+        $stmtBooleanInsert->bindParam(':bool_state', $parameters['bool_state'], \PDO::PARAM_INT);
+        $stmtBooleanInsert->execute();
+        $lastBooleanId = $dbconn->lastInsertId('cfg_bam_boolean','boolean_id');
+
+        $insertIndicatorRequest = "INSERT INTO cfg_bam_kpi(kpi_type, boolean_id, drop_critical)"
+            . " VALUES('3', :boolean_id, :drop_critical)";
+        $stmtIndicatorInsert = $dbconn->prepare($insertIndicatorRequest);
+        $stmtIndicatorInsert->bindParam(':boolean_id', $lastBooleanId, \PDO::PARAM_INT);
+        $stmtIndicatorInsert->bindParam('drop_critical', $parameters['drop_critical'], \PDO::PARAM_INT);
+        $stmtIndicatorInsert->execute();
     }
 
     /**
@@ -169,14 +186,12 @@ class IndicatorRepository extends FormRepository
      *
      * @return string
      */
-    public static function getNormalIndicatorsName()
+    public static function getIndicatorsName()
     {
         // Get datatabases connections
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
-        // Add object column
-        // Can be service, metaservice or BA
         $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_id, s.service_description
             FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, cfg_bam_kpi k
             WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id';
@@ -194,6 +209,12 @@ class IndicatorRepository extends FormRepository
             WHERE b.ba_id=k.id_indicator_ba';
         $stmtKpiBa = $dbconn->query($sqlKpiBa);
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
+
+        $sqlKpiBoolean = "SELECT k.kpi_id,b.boolean_id,b.name
+            FROM cfg_bam_boolean b,cfg_bam_kpi k
+            WHERE b.boolean_id=k.boolean_id";
+        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
 
         $resultPki = array();
         foreach ($resultKpiService as $kpiObject) {
@@ -214,6 +235,12 @@ class IndicatorRepository extends FormRepository
                 "text" => $kpiObject['name']
             );
         }
+        foreach ($resultKpiBoolean as $kpiObject) {
+            $resultPki[] = array(
+                "id" => $kpiObject['kpi_id'],
+                "text" => $kpiObject['name']
+            );
+        }
 
         return $resultPki;
     }
@@ -223,7 +250,7 @@ class IndicatorRepository extends FormRepository
      *
      * @return string
      */
-    public static function getNormalIndicatorName($id)
+    public static function getIndicatorName($id)
     {
         // Get datatabases connections
         $di = Di::getDefault();
@@ -249,6 +276,12 @@ class IndicatorRepository extends FormRepository
         $stmtKpiBa = $dbconn->query($sqlKpiBa);
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
+        $sqlKpiBoolean = "SELECT k.kpi_id,b.boolean_id,b.name
+            FROM cfg_bam_boolean b,cfg_bam_kpi k
+            WHERE b.boolean_id=k.boolean_id and k.kpi_id='$id'";
+        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
+
         $resultPki = array();
         foreach ($resultKpiService as $kpiObject) {
             $resultPki = array(
@@ -263,6 +296,12 @@ class IndicatorRepository extends FormRepository
             );
         }
         foreach ($resultKpiBa as $kpiObject) {
+            $resultPki = array(
+                "id" => $kpiObject['kpi_id'],
+                "text" => $kpiObject['name']
+            );
+        }
+        foreach ($resultKpiBoolean as $kpiObject) {
             $resultPki = array(
                 "id" => $kpiObject['kpi_id'],
                 "text" => $kpiObject['name']

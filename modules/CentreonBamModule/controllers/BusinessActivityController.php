@@ -52,7 +52,7 @@ class BusinessActivityController extends FormController
     public static $relationMap = array(
         'parent_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren',
         'child_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents',
-        'normal_kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator'
+        'kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator'
     );
     
     /**
@@ -121,11 +121,11 @@ class BusinessActivityController extends FormController
     }
 
     /**
-     * Get list of Types for a specific business activity
+     * Get list of Indicators for a specific business activity
      *
      *
      * @method get
-     * @route /businessactivity/[i:id]/normalindicator
+     * @route /businessactivity/[i:id]/indicator
      */
     public function indicatorForBaAction()
     {
@@ -137,25 +137,12 @@ class BusinessActivityController extends FormController
         $indicatorList = BusinessActivityRepository::getIndicatorsForBa($requestParam['id']);
         $finalList = array();
         foreach ($indicatorList as $indicator) {
-            //var_dump($indicator);
-            $finalList[] = IndicatorRepository::getNormalIndicatorName($indicator['kpi_id']);
+            $finalList[] = IndicatorRepository::getIndicatorName($indicator['kpi_id']);
         }
 
         $router->response()->json($finalList);
     }
  
-    /**
-     * Get list of Timeperiods for a specific business activity
-     *
-     *
-     * @method get
-     * @route /businessactivity/[i:id]/checkperiod
-     */
-    public function checkPeriodForHostAction()
-    {
-        parent::getSimpleRelation('id_check_period', '\CentreonConfiguration\Models\Timeperiod');
-    }
-    
     /**
      * Get list of Timeperiods for a specific business activity
      *
