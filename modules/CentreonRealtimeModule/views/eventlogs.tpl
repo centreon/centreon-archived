@@ -62,7 +62,7 @@
       </div>
     </div>
   </div>
-  <div class="row facets" style="display: none">
+  {* <div class="row facets" style="display: none">
   </div>
   <table class="table table-striped table-condensed table-bordered" id="eventlogs">
   <thead>
@@ -79,14 +79,20 @@
   </thead>
   <tbody>
   </tbody>
-  </table>
+  </table> *}
+  <div class="row">
+    <div class="col-xs-12 col-sm-9">
+    </div>
+    <div class="col-sm-3 hidden-xs">
+    </div>
+  </div>
 </div>
 {/block}
 
 {block name="javascript-bottom" append}
 <script>
 $(function() {
-  $('#eventlogs').centreonTableInfiniteScroll({
+  /*$('#eventlogs').centreonTableInfiniteScroll({
     ajaxUrlGetScroll: "{url_for url="/centreon-realtime/eventlogs"}",
     ajaxUrlGetNew: "{url_for url="/centreon-realtime/eventlogs/refresh"}",
     formFilter: "#filters",{literal}
@@ -99,7 +105,12 @@ $(function() {
       <td class='span-1' style='text-align:center;'>{{{type}}}</td> \
       <td class='span-5'>{{{output}}}</td> \
     </tr>"{/literal}
-  });
+  });*/
+
+  var eventlogTmpl = '<div class="row"> \
+    <div class="col-xs-2"> \
+    </div>
+  </div>';
 
   $("input[name='period']").daterangepicker({
     timePicker: true,

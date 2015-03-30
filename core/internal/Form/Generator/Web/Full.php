@@ -114,7 +114,7 @@ class Full extends Generator
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
                     . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, f.parent_field, '
-                    . 'f.parent_value, f.child_actions, f.child_mandatory'
+                    . 'f.parent_value, f.child_actions, f.child_mandatory '
                     . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
 		    . 'AND bfr.field_id = f.field_id ' 

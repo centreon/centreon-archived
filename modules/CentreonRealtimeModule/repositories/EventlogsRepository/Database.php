@@ -44,7 +44,7 @@ use Centreon\Internal\Di;
  * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  */
-class Database
+class Database extends Storage
 {
     /**
      * Return the list of events
