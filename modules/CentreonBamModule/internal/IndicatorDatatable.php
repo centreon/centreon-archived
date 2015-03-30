@@ -134,6 +134,16 @@ class IndicatorDatatable extends Datatable
             'source' => 'other',
         ),
         array (
+            'title' => 'Impacted BA',
+            'name' => 'impacted_ba',
+            'data' => 'impacted_ba',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'source' => 'other',
+        ),
+        array (
             'title' => 'Impact (Warning/Critical/Unknown)',
             'name' => 'impact',
             'data' => 'impact',
@@ -241,6 +251,21 @@ class IndicatorDatatable extends Datatable
                     if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
                         $kpi['impact'] = $kpiImpact['drop_warning'] . '% / ' . $kpiImpact['drop_critical'] . '% / ' . $kpiImpact['drop_unknown']. '%';
                     }
+                }
+            }
+        }
+
+        // Add impacted BA column
+        $sqlKpiImpactedBa = 'SELECT k.kpi_id, k.id_ba, b.name'
+            . ' FROM cfg_bam_kpi k, cfg_bam b'
+            . ' WHERE k.id_ba=b.ba_id';
+        $stmtKpiImpactedBa = $dbconn->query($sqlKpiImpactedBa);
+        $resultKpiImpactedBa = $stmtKpiImpactedBa->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($resultSet as &$kpi) {
+            foreach ($resultKpiImpactedBa as $kpiImpactedBa) {
+                if ($kpiImpactedBa['kpi_id'] === $kpi['kpi_id']) {
+                    $kpi['impacted_ba'] = '<a href="/centreon-bam/businessactivity/' . $kpiImpactedBa['id_ba'] . '">' . $kpiImpactedBa['name'] . '</a>';
                 }
             }
         }
