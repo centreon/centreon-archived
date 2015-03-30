@@ -144,7 +144,8 @@ if ($instance != -1) {
 
 $searchHost = "";
 if ($search_host) {
-    $searchHost .= " AND h.name LIKE '%$search_host%' ";
+    $searchHost .= " AND (h.name LIKE '%$search_host%' ";
+    $searchHost .= " AND h.alias LIKE '%$search_host%') ";
 }
 
 $searchService = "";
