@@ -35,7 +35,7 @@
 
 namespace CentreonAdministration\Controllers;
 
-use Centreon\Internal\Form\Wizard;
+use Centreon\Internal\Form\Generator\Web\Wizard;
 use Centreon\Controllers\FormController;
 use Centreon\Internal\Di;
 
@@ -60,13 +60,13 @@ class TimezoneController extends FormController
      */
     public function addtouserAction()
     {
-
         $di = Di::getDefault();
         $config = $di->get('config');
         $form = new Wizard(
             '/centreon-administration/timezone/addtouser',
             array('id' => '')
         );
+        $form->getFormFromDatabase();
         $this->tpl->assign('validateUrl', '/centreon-administration/user/settimezone');
         echo $form->generate();
     }
