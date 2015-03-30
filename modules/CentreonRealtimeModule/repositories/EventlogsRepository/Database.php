@@ -129,7 +129,8 @@ class Database extends Storage
         $data = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $data[] = array(
-                'datetime' => Datetime::format($row['ctime']),
+                //'datetime' => Datetime::format($row['ctime']),
+                'datetime' => $row['ctime'],
                 'host_id' => $row['host_id'],
                 'host' => $row['host_name'],
                 'service_id' => $row['service_id'],

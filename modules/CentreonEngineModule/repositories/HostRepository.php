@@ -126,6 +126,13 @@ class HostRepository extends HostTemplateRepository
                         if ($key == 'check_period' || $key == 'notification_period') {
                             $value = TimeperiodConfigurationRepository::getPeriodName($value);
                         }
+                        if ($key == 'timezone_id') {
+                            $key = 'timezone';
+                            if ($value != 'NULL') {
+                                $tName = \CentreonAdministration\Models\Timezone::getParameters($value, array('name'));
+                                $value = ':'.$tName['name'];
+                            }
+                        }
                         $tmpData[$key] = $value;
                     }
                 }

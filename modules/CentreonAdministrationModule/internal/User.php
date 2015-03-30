@@ -38,6 +38,7 @@ namespace CentreonAdministration\Internal;
 use Centreon\Internal\Di;
 use CentreonAdministration\Models\User as UserModel;
 use Centreon\Internal\Exception;
+use CentreonAdministration\Repository\UserRepository;
 
 /**
  * Object that represents the logged in user
@@ -74,6 +75,10 @@ class User
      * @const string
      */
     public static $notInit = 'User not initialized properly';
+    /**
+     * @var array
+     */
+    private $timezone;
 
     /**
      * Constructor
@@ -98,6 +103,7 @@ class User
         $this->name = $params['firstname'] . ' ' . $params['lastname'];
         $this->login = $params['login'];
         $this->admin = $params['is_admin'];
+        $this->timezone = $this->getTimezone();
     }
 
     /**
@@ -191,5 +197,16 @@ class User
         $router = $di->get('router');
         $homePage = $router->getPathFor('/centreon-customview');
         return $homePage;
+    }
+    /**
+     * 
+     * @return array
+     */
+    public function getTimezone()
+    {
+        $repository = '\CentreonAdministration\Repository\UserRepository';
+        $repository::setObjectClass('\CentreonAdministration\Models\User');
+        $aTimezone = $repository::getRelations("\CentreonAdministration\Models\Relation\User\Timezone", $this->id);
+        return $aTimezone;
     }
 }

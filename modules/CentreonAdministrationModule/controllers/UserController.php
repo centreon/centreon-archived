@@ -35,9 +35,11 @@
 
 namespace CentreonAdministration\Controllers;
 
+use Centreon\Internal\Di;
 use CentreonAdministration\Models\User as UserModel;
 use CentreonAdministration\Internal\User;
 use Centreon\Controllers\FormController;
+use CentreonAdministration\Models\Relation\User\Timezone;
 
 class UserController extends FormController
 {
@@ -48,7 +50,8 @@ class UserController extends FormController
     protected $datatableObject = '\CentreonAdministration\Internal\UserDatatable';
     protected $objectClass = '\CentreonAdministration\Models\User';
     protected $repository = '\CentreonAdministration\Repository\UserRepository';
-    public static $relationMap = array();
+    
+    public static $relationMap = array('user_timezone' => "\CentreonAdministration\Models\Relation\User\Timezone");
     
     public static $isDisableable = true;
 
@@ -108,4 +111,86 @@ class UserController extends FormController
     {
         parent::getSimpleRelation('language_id', '\CentreonAdministration\Models\Language');
     }
+    
+    /**
+     * Get list of timezones for a specific user
+     * 
+     * @method get
+     * @route /user/[i:id]/timezonesForUser
+     */
+    public function timezonesForUserAction()
+    {
+        parent::getRelations(static::$relationMap['user_timezone']);
+    }
+    /**
+     * @method post
+     * @route /user/settimezone
+     */
+    public function settimezoneAction()
+    {
+        $insertSuccess = true;
+        $errorMessage = '';
+        
+        $givenParameters = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+        $repository = $this->repository;
+        $user = $_SESSION['user'];
+        $userId = $user->getId();
+
+        $infoToInsert = array(
+            'user_id' => $userId,
+            'timezone_id' => $givenParameters['select_name']
+        );
+        
+        try {
+            $repository::settimezone($infoToInsert);
+        }  catch (\Exception $e) {
+            $insertSuccess = false;
+            $errorMessage = $e->getMessage();
+        }
+
+        $this->router->response()->json(
+            array(
+                'success' => $insertSuccess,
+                'error' => $errorMessage
+            )
+        );
+    }
+   
+    /**
+     * @method post
+     * @route /user/deletetimezone
+     */
+    public function deletetimezoneAction()
+    {
+        $deleteSuccessful = true;
+        $errorMessage = '';
+        
+        $givenParameters = $this->getParams('post');
+        $router = Di::getDefault()->get('router');
+        $repository = $this->repository;
+        $user = $_SESSION['user'];
+        $userId = $user->getId();
+
+        $infoToDelete = array(
+            'user_id' => $userId,
+            'timezone_id' => $givenParameters['id']
+        );
+
+       
+        try {
+            $repository::deletetimezone($infoToDelete);
+        }  catch (\Exception $e) {
+            $deleteSuccessful = false;
+            $errorMessage = $e->getMessage();
+        }
+
+        $this->router->response()->json(
+            array(
+                'success' => $deleteSuccessful,
+                'errorMessage' => $errorMessage
+            )
+        );
+    }
+    
 }

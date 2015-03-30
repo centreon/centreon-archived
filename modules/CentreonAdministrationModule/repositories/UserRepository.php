@@ -42,6 +42,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonSecurity\Internal\Sso;
 use Centreon\Internal\Exception\Authentication\BadCredentialException;
+use CentreonAdministration\Models\Relation\User\Timezone;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -328,4 +329,23 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         }
         return $tokenOk;
     }
+    /**
+     * 
+     * @param array $givenParameters
+     */
+    public static function settimezone($givenParameters)
+    {
+        Timezone::insert($givenParameters['user_id'], $givenParameters['timezone_id']);
+    }
+    
+    /**
+     * 
+     * @param array $givenParameters
+     */
+    public static function deletetimezone($givenParameters)
+    {
+        Timezone::delete($givenParameters['user_id'], $givenParameters['timezone_id']);
+    }
+    
+    
 }

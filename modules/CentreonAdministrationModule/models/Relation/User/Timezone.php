@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give MERETHIS
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,43 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonAdministration\Controllers;
+namespace CentreonAdministration\Models\Relation\User;
 
-use Centreon\Internal\Form\Wizard;
-use Centreon\Controllers\FormController;
-use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
-class TimezoneController extends FormController
+/**
+ * Relation between timezone and user;
+ *
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage Administration
+ */
+class Timezone extends CentreonRelationModel
 {
-    protected $objectDisplayName = 'Timezone';
-    public static $objectName = 'timezone';
-    protected $objectBaseUrl = '/centreon-administration/timezone';
-    protected $objectClass = '\CentreonAdministration\Models\Timezone';
-    protected $repository = '\CentreonAdministration\Repository\TimezoneRepository';
-    
-    public static $relationMap = array();
-    
-    protected $datatableObject = '\CentreonAdministration\Internal\TimezoneDatatable';
-    public static $isDisableable = true;
-    
-    /**
-     * addtouser a timezone
-     *
-     * @method get
-     * @route /timezone/addtouser
-     */
-    public function addtouserAction()
-    {
-
-        $di = Di::getDefault();
-        $config = $di->get('config');
-        $form = new Wizard(
-            '/centreon-administration/timezone/addtouser',
-            array('id' => '')
-        );
-        $this->tpl->assign('validateUrl', '/centreon-administration/user/settimezone');
-        echo $form->generate();
-    }
+    protected static $relationTable = "cfg_users_timezones_relations";
+    protected static $firstKey = "user_id";
+    protected static $secondKey = "timezone_id";
+    public static $firstObject = "\\CentreonAdministration\\Models\\User";
+    public static $secondObject = "\\CentreonAdministration\\Models\\Timezone";
 }
