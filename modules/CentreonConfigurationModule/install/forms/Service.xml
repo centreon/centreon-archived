@@ -131,7 +131,7 @@
             </field>
 	  </block>
           <block name="Tags">
-                <field name="host_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                <field name="service_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
                         <defaultValuesRoute>/centreon-administration/tag/[a:objectName]/all</defaultValuesRoute>

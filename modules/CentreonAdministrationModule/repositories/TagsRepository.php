@@ -79,7 +79,7 @@ class TagsRepository
         $dbconn = Di::getDefault()->get('db_centreon');
         /* Get or create a tagname */
         try {
-            $tagId = static::getTagId($tagName);
+            $tagId = static::getTagId($tagName, $bGlobal);
         } catch (Exception $e) {
             $tagId = Tag::insert(
                 array(
@@ -108,6 +108,10 @@ class TagsRepository
             throw new Exception("This resource type does not support tags.");
         }
         $dbconn = Di::getDefault()->get('db_centreon');
+        
+        if (!is_int($tagId)) {
+            $tagId = static::getTagId($tagId, true);
+        }
         /* Get current user id */
         $query = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE
             tag_id = :tag_id
@@ -182,23 +186,32 @@ class TagsRepository
      * Get the tag id
      *
      * @param string $tagName The tag
+     * @param boolean $bGlobal
      * @return int
      */
-    public static function getTagId($tagName)
+    public static function getTagId($tagName, $bGlobal = false)
     {
-        $userId = $_SESSION['user']->getId();
+        if ($bGlobal === false) {
+           $userId = $_SESSION['user']->getId();
+           $aFilter = array(
+                'user_id' => $userId,
+                'tagname' => $tagName
+            );
+        } else {
+            $aFilter = array(
+                'tagname' => $tagName
+            );
+        }
         $tag = Tag::getList(
             'tag_id',
             1,
             0,
             null,
             'ASC',
-            array(
-                'user_id' => $userId,
-                'tagname' => $tagName
-            ),
+            $aFilter,
             'AND'
         );
+        
         if (count($tag) === 0) {
             throw new Exception("The tag is not found for user");
         }
@@ -248,41 +261,13 @@ class TagsRepository
             throw new Exception("This resource type does not support tags.");
         }
         $dbconn = Di::getDefault()->get('db_centreon');
-        
-        $aListIdToNotDelete = array();
-        /*
-        echo "<pre>";
-        print_r($submittedValues);
-        echo "</pre>";
-        die;
-          
-         */
+              
+        $dbconn->query("DELETE FROM cfg_tags_" . $resourceName . "s WHERE
+                     resource_id = ".$objectId);  
 
         foreach ($submittedValues as $s => $tagName) {
-            
-            self::add($tagName, $resourceName, $objectId, true);
-                        
-            /*
-            if (!empty($sTag)) {
-                //array_push($aListIdToNotDelete, $customTag['id']);
-                Tag::update($sTag['id'], array('tagname' => $sTag));
-            } else {
-                self::add($sTag, $resourceName, $objectId, true);
-            }
-             
-             */
+            self::add($tagName, $resourceName, $objectId, true);                
         }
-/*
-        if (($aListIdToNotDelete) > 0) {
-            $sListIdToNotDelete = implode(", ",$aListIdToNotDelete);
-            
-            $stmtTpl = $dbconn->query("DELETE FROM cfg_tags_" . $resourceName . "s WHERE
-                     resource_id = ".$objectId." AND tag_id NOT IN (".$sListIdToNotDelete.")");            
-            if (!static::isUsed($tagId)) {
-                Tag::delete($tagId);
-            }
-        }
-        */
       
     }
 }

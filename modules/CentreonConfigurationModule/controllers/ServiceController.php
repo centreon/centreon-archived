@@ -182,6 +182,8 @@ class ServiceController extends FormController
     public function updateAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -213,8 +215,8 @@ class ServiceController extends FormController
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
         }
         
-        if (isset($givenParameters['host_tags'])) {
-            $aTagList = explode(",", $givenParameters['host_tags']);
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
             foreach ($aTagList as $var) {
                 if (strlen($var)>1) {
                     array_push($aTags, $var);
