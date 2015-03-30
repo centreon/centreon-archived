@@ -59,6 +59,7 @@
           </li>
           <li class="time">
               <a class="account dropdown-toggle" data-toggle="dropdown" href="#"><span class="clock"></span></a>
+
             <ul class="dropdown-menu" id="list_timezone">
                 <li >
                     <a href="#" id="modalAdd_timezone">{t}Add horloge{/t}<i class="fa fa-clock-o"></i></a>

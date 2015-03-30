@@ -36,8 +36,8 @@
 
 namespace CentreonPerformance\Repository;
 
-use Centreon\Repository\FormRepository,
-    Centreon\Internal\Di;
+use CentreonMain\Repository\FormRepository;
+use Centreon\Internal\Di;
 
 /**
  * Repository for template graph

@@ -168,6 +168,7 @@ class Template extends \Smarty
         $this->addCss('centreon.css');
         $this->addCss('jquery-ui.min.css');
         $this->addCss('centreon.qtip.css');
+        $this->addCss('centreon-wizard.css');
         /* Load javascript */
         $this->addJs('jquery.min.js');
         $this->addJs('jquery-ui.min.js');
@@ -179,6 +180,7 @@ class Template extends \Smarty
         $this->addJs('moment-timezone-with-data.min.js');
         $this->addJs('centreon.functions.js');
         $this->addJs('centreon-timezone.js');
+        $this->addJs('centreon-wizard.js');
     }
     
     /**

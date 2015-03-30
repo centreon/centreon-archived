@@ -35,7 +35,7 @@
 
 namespace CentreonBam\Repository;
 
-use Centreon\Repository\FormRepository;
+use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
 
 /**
