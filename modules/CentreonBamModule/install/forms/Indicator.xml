@@ -58,6 +58,18 @@
                 </field>
             </block>
         </section>
+        <section name="Relations">
+            <block name="Information">
+                <field name="id_ba" label="Impacted BA" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-bam/businessactivity/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-bam/indicator/[i:id]/linkedbusinessactivity</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+            </block>
+        </section>
     </form>
     <wizard name="add_indicator">
 		<route>/centreon-bam/indicator/add</route>
@@ -66,6 +78,7 @@
 			<field name="service_id" mandatory="0"></field>
 			<field name="meta_id" mandatory="0"></field>
 			<field name="id_indicator_ba" mandatory="0"></field>
+			<field name="id_ba" mandatory="0"></field>
 			<field name="boolean_name" mandatory="0"></field>
 			<field name="boolean_expression" mandatory="0"></field>
 			<field name="bool_state" mandatory="0"></field>

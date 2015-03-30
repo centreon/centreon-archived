@@ -118,6 +118,15 @@ class IndicatorRepository extends FormRepository
         } else if ($parameters['kpi_type'] == 3) {
             self::createBooleanIndicator($parameters);
         }
+
+        if (isset($parameters['id_ba'])) {
+            $dbconn = Di::getDefault()->get('db_centreon');
+            $baId = array();
+            $baId['id_ba'] = $parameters['id_ba'];
+            $lastIndicatorId = $dbconn->lastInsertId('cfg_bam_kpi','kpi_id');
+            $class = static::$objectClass;
+            $class::update($lastIndicatorId, $baId);
+        }
     }
 
     /**
@@ -204,6 +213,86 @@ class IndicatorRepository extends FormRepository
         $stmtIndicatorInsert->bindParam(':boolean_id', $lastBooleanId, \PDO::PARAM_INT);
         $stmtIndicatorInsert->bindParam('drop_critical', $parameters['drop_critical'], \PDO::PARAM_INT);
         $stmtIndicatorInsert->execute();
+    }
+
+    /**
+     * Generic update function
+     *
+     * @param array $givenParameters
+     * @throws \Centreon\Internal\Exception
+     */
+    public static function updateServiceIndicator($givenParameters, $origin = "", $route = "")
+    {
+        self::validateForm($givenParameters, $origin, $route);
+
+        $class = static::$objectClass;
+        $pk = $class::getPrimaryKey();
+        $givenParameters[$pk] = $givenParameters['object_id'];
+        if (!isset($givenParameters[$pk])) {
+            throw new \Exception('Primary key of object is not defined');
+        }
+        $db = Di::getDefault()->get('db_centreon');
+        $id = $givenParameters[$pk];
+        unset($givenParameters[$pk]);
+        foreach (static::$relationMap as $k => $rel) {
+            try {
+                if (!isset($givenParameters[$k])) {
+                    continue;
+                }
+                try {
+                    if ($rel::$firstObject == static::$objectClass) {
+                        $rel::delete($id);
+                    } else {
+                        $rel::delete(null, $id);
+                    }
+                } catch (Exception $e) {
+                    ; // it's okay if nothing got deleted
+                }
+                $arr = explode(',', ltrim($givenParameters[$k], ','));
+                $db->beginTransaction();
+
+                foreach ($arr as $relId) {
+                    $relId = trim($relId);
+                    if (is_numeric($relId)) {
+                        if ($rel::$firstObject == static::$objectClass) {
+                            $rel::insert($id, $relId);
+                        } else {
+                            $rel::insert($relId, $id);
+                        }
+                    } elseif (!empty($relId)) {
+                        $complexeRelId = explode('_', $relId);
+                        if ($rel::$firstObject == static::$objectClass) {
+                            $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
+                        }
+                    }
+                }
+                $db->commit();
+                unset($givenParameters[$k]);
+            } catch (Exception $e) {
+                throw new Exception('Error while updating', 0, $e);
+            }
+        }
+        $columns = $class::getColumns();
+        $updateValues = array();
+        foreach ($givenParameters as $key => $value) {
+            if (in_array($key, $columns)) {
+                if (is_string($value)) {
+                    $updateValues[$key] = trim($value);
+                } else {
+                    $updateValues[$key] = $value;
+                }
+            }
+        }
+
+        $serviceHostId = explode('_',$updateValues['service_id']);
+        $updateValues['service_id'] = $serviceHostId[0];
+        $updateValues['host_id'] = $serviceHostId[1];
+
+        $class::update($id, $updateValues);
+
+        if (method_exists(get_called_class(), 'postSave')) {
+            static::postSave($id, 'update', $givenParameters);
+        }
     }
 
     /**

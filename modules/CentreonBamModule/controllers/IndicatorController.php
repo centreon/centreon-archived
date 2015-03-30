@@ -66,11 +66,19 @@ class IndicatorController extends FormController
     public function createAction()
     {
         $givenParameters = $this->getParams('post');
+        $updateSuccessful = true;
+        $updateErrorMessage = '';
 
-        IndicatorRepository::createIndicator($givenParameters);
-
-        $this->router->response()->json(array('success' => true));
-        //$this->router->response()->json(array('success' => false, 'error' => 'problem'));
+        try {
+            IndicatorRepository::createIndicator($givenParameters);
+            unset($_SESSION['form_token']);
+            unset($_SESSION['form_token_time']);
+            $this->router->response()->json(array('success' => true));
+        } catch (\Centreon\Internal\Exception $e) {
+            $updateSuccessful = false;
+            $updateErrorMessage = $e->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+        }
     }
 
     /**
@@ -152,9 +160,23 @@ class IndicatorController extends FormController
     {
         $requestParam = $this->getParams();
         $typeId = $requestParam['kpi_type'];
-        if ($typeId !== '3') {
-            parent::updateAction();
-        } else {
+        if ($typeId === '0') {
+            $givenParameters = $this->getParams('post');
+            $updateSuccessful = true;
+            $updateErrorMessage = '';
+
+            try {
+                IndicatorRepository::updateServiceIndicator($givenParameters, 'form', $this->getUri());
+
+                unset($_SESSION['form_token']);
+                unset($_SESSION['form_token_time']);
+                $this->router->response()->json(array('success' => true));
+            } catch (\Centreon\Internal\Exception $e) {
+                $updateSuccessful = false;
+                $updateErrorMessage = $e->getMessage();
+                $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+            }
+        } elseif ($typeId === '3') {
             $givenParameters = $this->getParams('post');
             $updateSuccessful = true;
             $updateErrorMessage = '';
@@ -171,6 +193,8 @@ class IndicatorController extends FormController
                 $updateErrorMessage = $e->getMessage();
                 $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
             }
+        } else {
+            parent::updateAction();
         }
     }
 
@@ -243,6 +267,18 @@ class IndicatorController extends FormController
     {
         parent::getSimpleRelation('id_indicator_ba', '\CentreonBam\Models\BusinessActivity');
         //parent::getRelations(static::$relationMap['service_traps']);
+    }
+
+    /**
+     * Get linked business activity for a specific kpi
+     *
+     *
+     * @method get
+     * @route /indicator/[i:id]/linkedbusinessactivity
+     */
+    public function linkedBusinessActivityForIndicatorAction()
+    {
+        parent::getSimpleRelation('id_ba', '\CentreonBam\Models\BusinessActivity');
     }
 
     /**
