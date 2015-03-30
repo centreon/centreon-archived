@@ -263,6 +263,7 @@ class IndicatorDatatable extends Datatable
         $resultKpiImpactedBa = $stmtKpiImpactedBa->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($resultSet as &$kpi) {
+            $kpi['impacted_ba'] = "";
             foreach ($resultKpiImpactedBa as $kpiImpactedBa) {
                 if ($kpiImpactedBa['kpi_id'] === $kpi['kpi_id']) {
                     $kpi['impacted_ba'] = '<a href="/centreon-bam/businessactivity/' . $kpiImpactedBa['id_ba'] . '">' . $kpiImpactedBa['name'] . '</a>';

@@ -119,7 +119,7 @@ class IndicatorRepository extends FormRepository
             self::createBooleanIndicator($parameters);
         }
 
-        if (isset($parameters['id_ba'])) {
+        if (isset($parameters['id_ba']) && is_numeric($parameters['id_ba'])) {
             $dbconn = Di::getDefault()->get('db_centreon');
             $baId = array();
             $baId['id_ba'] = $parameters['id_ba'];
