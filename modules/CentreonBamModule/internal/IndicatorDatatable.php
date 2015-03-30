@@ -102,21 +102,21 @@ class IndicatorDatatable extends Datatable
             'source' => 'other',
         ),*/
         array (
-            'title' => 'Type',
+            'title' => 'T',
             'name' => 'kpi_type',
             'data' => 'kpi_type',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => 50,
+            'width' => 10,
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
-                    '0' => '<span class="label label-success">Service</span>',
-                    '1' => '<span class="label label-warning">Metaservice</span>',
-                    '2' => '<span class="label label-danger">BA</span>',
-                    '3' => '<span class="label label-danger">Boolean</span>',
+                    '0' => "<i class='fa fa-rss'></i>",
+                    '1' => "<i class='fa fa-superscript'></i>",
+                    '2' => "<i class='fa fa-suitcase'></i>",
+                    '3' => "<i class='fa fa-comment-o'></i>",
                 ),
                 'extra' => array (
                     //'groupable' => true,

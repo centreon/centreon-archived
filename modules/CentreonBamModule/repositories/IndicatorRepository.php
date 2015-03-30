@@ -50,7 +50,7 @@ class IndicatorRepository extends FormRepository
      * @param int $id
      * @return string
      */
-    public static function getType($id)
+    public static function getIndicatorType($id)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
@@ -65,6 +65,31 @@ class IndicatorRepository extends FormRepository
         $typeId = $result[0]['kpi_type'];
 
         return $typeId;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return array
+     */
+    public static function getBooleanParameters($id)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $selectRequest = "SELECT k.kpi_type, b.name, b.expression, b.bool_state"
+            . " FROM cfg_bam_kpi k, cfg_bam_boolean b"
+            . " WHERE k.kpi_id=:id and k.boolean_id=b.boolean_id";
+        $stmtSelect = $dbconn->prepare($selectRequest);
+        $stmtSelect->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmtSelect->execute();
+        $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
+
+        $booleanParameters = array();
+        $booleanParameters['boolean_name'] = $result[0]['name'];
+        $booleanParameters['boolean_expression'] = $result[0]['expression'];
+        $booleanParameters['bool_state'] = $result[0]['bool_state'];
+
+        return $booleanParameters;
     }
 
     /**
@@ -179,6 +204,26 @@ class IndicatorRepository extends FormRepository
         $stmtIndicatorInsert->bindParam(':boolean_id', $lastBooleanId, \PDO::PARAM_INT);
         $stmtIndicatorInsert->bindParam('drop_critical', $parameters['drop_critical'], \PDO::PARAM_INT);
         $stmtIndicatorInsert->execute();
+    }
+
+    /**
+     * Generic update function
+     *
+     * @param array $givenParameters
+     * @throws \Centreon\Internal\Exception
+     */
+    public static function updateBooleanIndicator($givenParameters, $origin = "", $route = "")
+    {
+
+        $class = static::$objectClass;
+        $booleanId = $class::getParameters($givenParameters['object_id'], 'boolean_id');
+
+        $relBooleanIndicator = '\CentreonBam\Models\BooleanIndicator';
+        $updateValuesBoolean = array();
+        $updateValuesBoolean['expression'] = $givenParameters['boolean_expression'];
+        $updateValuesBoolean['name'] = $givenParameters['boolean_name'];
+        $updateValuesBoolean['bool_state'] = $givenParameters['bool_state'];
+        $relBooleanIndicator::update($booleanId['boolean_id'], $updateValuesBoolean);
     }
 
     /**
