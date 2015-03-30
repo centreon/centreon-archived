@@ -41,6 +41,7 @@
               <database>Database</database>
               <elasticsearch>Elastic Search</elasticsearch>
             </selectData>
+            <listValuesRoute>/centreon-administration/eventlogs/storage</listValuesRoute>
           </attributes>
         </field>
       </block>
@@ -55,6 +56,7 @@
               <none>None</none>
               <http>HTTP Authentication</http>
             </selectData>
+            <listValuesRoute>/centreon-administration/eventlogs/es_security</listValuesRoute>
           </attributes>
           <help></help>
         </field>
