@@ -4,6 +4,7 @@
 
 {block name="content"}
 <div class="content-container">
+  <!-- Search block -->
   <div class="panel panel-default">
     <div class="panel-heading">
       <div class="row search">
@@ -61,7 +62,7 @@
         </form>
       </div>
     </div>
-  </div>
+  </div><!-- End search block -->
   {* <div class="row facets" style="display: none">
   </div>
   <table class="table table-striped table-condensed table-bordered" id="eventlogs">
@@ -81,7 +82,7 @@
   </tbody>
   </table> *}
   <div class="row">
-    <div class="col-xs-12 col-sm-9">
+    <div class="infinite-scroll col-xs-12 col-sm-9">
     </div>
     <div class="col-sm-3 hidden-xs">
     </div>
@@ -92,25 +93,46 @@
 {block name="javascript-bottom" append}
 <script>
 $(function() {
-  /*$('#eventlogs').centreonTableInfiniteScroll({
+  {literal}
+  var eventlogTmpl = '<div class="row event">' +
+    '<div class="col-xs-1 logo">' +
+    '  {{{logo}}}' +
+    '</div>' +
+    '<div class="col-xs-11">' +
+    '  <div class="row">' +
+    '    <div class="col-xs-12">' +
+    '     <span class="object-name">{{{object_name}}}</span>' +
+    '     <span class="pull-right duration" data-duration="{{{datetime}}}"></span>' +
+    '   </div>' +
+    '    <div class="col-xs-12 description">' +
+  	'      {{{description}}}' +
+    '    </div>' +
+    '    <div class="action">' + 
+    '      <div class="row">' +
+    '        <div class="pull-right">' +
+    '         <a href="#" class="readmore">More</a>' +
+    '        </div>' +
+    '      </div>' +
+    '    </div>' +
+    '  </div>' +
+    '</div>' +
+  '</div>';
+  {/literal}
+
+  $('.infinite-scroll').on("loaded", function () {
+    var now = moment();
+    $('.duration[data-duration]').each(function(e, elem) {
+      var datetime = moment.unix($(elem).data('duration'));
+      $(elem).text(moment.duration(now - datetime).humanize());
+    });
+  });
+
+  $('.infinite-scroll').centreonInfiniteScroll({
     ajaxUrlGetScroll: "{url_for url="/centreon-realtime/eventlogs"}",
     ajaxUrlGetNew: "{url_for url="/centreon-realtime/eventlogs/refresh"}",
-    formFilter: "#filters",{literal}
-    templateRows: "<tr class='{{{border_color}}}'> \
-      <td class='span-1'>{{{datetime}}}</td> \
-      <td class='span-2'>{{{host_logo}}} {{{host}}}</td> \
-      <td class='span-2'>{{{service_logo}}} {{{service}}}</td> \
-<!--  <td class='span-2'>{{{instance}}}</td>--> \
-      <td class='span-1 {{{status_css}}}' style='text-align:center;'>{{{status_text}}}</td> \
-      <td class='span-1' style='text-align:center;'>{{{type}}}</td> \
-      <td class='span-5'>{{{output}}}</td> \
-    </tr>"{/literal}
-  });*/
-
-  var eventlogTmpl = '<div class="row"> \
-    <div class="col-xs-2"> \
-    </div>
-  </div>';
+    formFilter: "#filters",
+    template: eventlogTmpl 
+  });
 
   $("input[name='period']").daterangepicker({
     timePicker: true,

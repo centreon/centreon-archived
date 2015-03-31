@@ -66,7 +66,7 @@ class EventlogsController extends Controller
         $tmpl->addJs('moment-with-langs.min.js');
         $tmpl->addJs('daterangepicker.js');
         $tmpl->addJs('jquery.select2/select2.min.js');
-        $tmpl->addJs('centreon-table-infinite-scroll.js');
+        $tmpl->addJs('centreon-infinite-scroll.js');
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
@@ -243,6 +243,26 @@ class EventlogsController extends Controller
                 $log['status_css'] = 'centreon-status-s-' . $log['status'];
                 $log['border_color'] = 'centreon-border-status-s-' . $log['status'];
             }
+            /* For test */
+            $log['object_name'] = "";
+            $object_name = array();
+            if (isset($log['host']) && false === is_null($log['host'])) {
+                $object_name[] = $log['host'];
+            }
+            if (isset($log['service']) && false === is_null($log['service'])) {
+                $object_name[] = $log['service'];
+            }
+            $log['object_name'] = join(' - ', $object_name);
+            $log['logo'] = '';
+            if (isset($log['service_logo'])) {
+                $log['logo'] = $log['service_logo'];
+            } else if (isset($log['host_logo'])) {
+                $log['logo'] = $log['host_logo'];
+            }
+            if (isset($log['output'])) {
+                $log['description'] = $log['output'];
+            }
+            
             $data[] = $log;
         }
 

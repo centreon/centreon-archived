@@ -784,3 +784,39 @@ td.incident-extended-info {
     background-color: @gray-lighter;
   }
 }
+
+.infinite-scroll {
+  height: 700px; /* @todo min-height 100% */
+  overflow-y: scroll;
+}
+
+.event {
+  background-color: @gray-lighter;
+  .logo {
+    font-size: 20px;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
+
+    img {
+      height: 20px;
+    }
+  }
+
+  .object-name {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+  }
+
+  .duration {
+    color: @gray-light;
+  }
+
+  .description {
+    margin-top: 10px;
+  }
+
+  margin-bottom: 10px;
+  padding: 10px 5px;
+}
