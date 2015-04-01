@@ -319,7 +319,7 @@ id ASC";
                 $RES2 = $pearDB->query($request2);
                 if ($RES2->numRows() != 0) {
                     $criticity = $RES2->fetchRow();
-                    if ($criticity['sc_id'] && isset($criticity['sc_id']) {
+                    if ($criticity['sc_id'] && isset($criticity['sc_id'])) {
                         return $criticity["sc_id"];
                     } else {
                         return 0;
