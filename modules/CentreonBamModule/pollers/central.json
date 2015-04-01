@@ -1,0 +1,61 @@
+{
+  "name": "Central",
+  "content": {
+    "broker": {
+      "setup": [
+        {
+          "name": "Broker Module",
+          "params": {
+            "mode": [
+              {
+                "normal": [
+                  {
+                    "general": {
+                      "name": "central-broker"
+                    },
+                    "output": [
+                      {
+                        "type": "bam",
+                        "name": "centreon-bam-monitoring",
+                        "failover": "failover-bam-monitoring",
+                        "queries_per_transaction": "0",
+                        "command_file": "/var/lib/centreon-engine/rw/centengine.cmd",
+                      },
+                      {
+                        "type": "file",
+                        "name": "failover-bam-monitoring",
+                        "path": "%global_broker_data_directory%/centreon-bam-monitoring.failover",
+                        "max_size": "500000000",
+                        "compression": "no",
+                        "protocol": "bbdo"
+                      },
+                      {
+                        "type": "bam_bi",
+                        "name": "centreon-bam-reporting",
+                        "failover": "failover-bam-reporting",
+                        "queries_per_transaction": "0",
+                        "filters": [
+                          {
+                            "category": bam
+                          }
+                        ]
+                      },
+                      {
+                        "type": "file",
+                        "name": "failover-bam-reporting",
+                        "path": "%global_broker_data_directory%/centreon-bam-reporting.failover",
+                        "max_size": "500000000",
+                        "compression": "no",
+                        "protocol": "bbdo"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
