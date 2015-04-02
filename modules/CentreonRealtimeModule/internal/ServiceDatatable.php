@@ -70,7 +70,7 @@ class ServiceDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
-            array('h.name', 'asc'),
+            array('name', 'asc'),
             array('s.description', 'asc')
         ),
         'searchCols' => array(),
@@ -85,12 +85,6 @@ class ServiceDatatable extends Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonRealtime\Models\Service';
-    
-    /**
-     *
-     * @var type 
-     */
-    protected static $additionnalDatasource = '\CentreonRealtime\Models\Relation\Service\Host';
     
     /**
      *
