@@ -98,7 +98,7 @@ class ServiceDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
-            'className' => 'datatable-align-center',
+            'className' => 'cell_center',
             'width' => '15px',
             'className' => 'cell_center'
         ),
@@ -181,7 +181,7 @@ class ServiceDatatable extends Datatable
                 )
             ),
             'width' => '50px',
-            'className' => 'datatable-align-center'
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Last Check',
