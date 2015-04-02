@@ -36,6 +36,7 @@
 
 namespace CentreonBam\Controllers;
 
+use Centreon\Internal\Form;
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
 use CentreonBam\Repository\IndicatorRepository;
@@ -53,8 +54,8 @@ class IndicatorController extends FormController
     protected $repository = '\CentreonBam\Repository\IndicatorRepository';     
     public static $relationMap = array(
         'indicator_service' => '\CentreonBam\Models\Relation\Indicator\Service',
-        'businessactivity_normalindicator' => '\CentreonBam\Models\Relation\BusinessActivity\NormalIndicator',
-        'indicator_booleanindicator' => '\CentreonBam\Models\Relation\Indicator\BooleanIndicator',
+   //     'businessactivity_normalindicator' => '\CentreonBam\Models\Relation\BusinessActivity\NormalIndicator',
+   //     'indicator_booleanindicator' => '\CentreonBam\Models\Relation\Indicator\BooleanIndicator',
     );
 
     /**
@@ -160,13 +161,13 @@ class IndicatorController extends FormController
     {
         $requestParam = $this->getParams();
         $typeId = $requestParam['kpi_type'];
-        if ($typeId === '0') {
+        //if ($typeId === '0') {
             $givenParameters = $this->getParams('post');
             $updateSuccessful = true;
             $updateErrorMessage = '';
 
             try {
-                IndicatorRepository::updateServiceIndicator($givenParameters, 'form', $this->getUri());
+                IndicatorRepository::updateIndicator($givenParameters, 'form', $this->getUri());
 
                 unset($_SESSION['form_token']);
                 unset($_SESSION['form_token_time']);
@@ -176,7 +177,7 @@ class IndicatorController extends FormController
                 $updateErrorMessage = $e->getMessage();
                 $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
             }
-        } elseif ($typeId === '3') {
+        /*} elseif ($typeId === '3') {
             $givenParameters = $this->getParams('post');
             $updateSuccessful = true;
             $updateErrorMessage = '';
@@ -195,7 +196,7 @@ class IndicatorController extends FormController
             }
         } else {
             parent::updateAction();
-        }
+        }*/
     }
 
     /**
@@ -266,7 +267,6 @@ class IndicatorController extends FormController
     public function businessActivityForIndicatorAction()
     {
         parent::getSimpleRelation('id_indicator_ba', '\CentreonBam\Models\BusinessActivity');
-        //parent::getRelations(static::$relationMap['service_traps']);
     }
 
     /**

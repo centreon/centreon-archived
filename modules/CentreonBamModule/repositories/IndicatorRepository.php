@@ -104,28 +104,16 @@ class IndicatorRepository extends FormRepository
             $parameters[$k] = $v;
         }
 
-        $parameters['drop_warning'] = (isset($parameters['drop_warning'])) ? $parameters['drop_warning'] : 0;
-        $parameters['drop_critical'] = (isset($parameters['drop_critical'])) ? $parameters['drop_critical'] : 0;
-        $parameters['drop_unknown'] = (isset($parameters['drop_unknown'])) ? $parameters['drop_unknown'] : 0;
-        $parameters['boolean_impact'] = (isset($parameters['boolean_impact'])) ? $parameters['boolean_impact'] : 0;
+        $lastIndicatorId = self::createBasicIndicator($parameters);
 
         if ($parameters['kpi_type'] == 0) {
-            self::createServiceIndicator($parameters);
+            self::createServiceIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] == 1) {
-            self::createMetaserviceIndicator($parameters);
+            self::createMetaserviceIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] == 2) {
-            self::createBaIndicator($parameters);
+            self::createBaIndicator($lastIndicatorId, $parameters);
         } else if ($parameters['kpi_type'] == 3) {
-            self::createBooleanIndicator($parameters);
-        }
-
-        if (isset($parameters['id_ba']) && is_numeric($parameters['id_ba'])) {
-            $dbconn = Di::getDefault()->get('db_centreon');
-            $baId = array();
-            $baId['id_ba'] = $parameters['id_ba'];
-            $lastIndicatorId = $dbconn->lastInsertId('cfg_bam_kpi','kpi_id');
-            $class = static::$objectClass;
-            $class::update($lastIndicatorId, $baId);
+            self::createBooleanIndicator($lastIndicatorId, $parameters);
         }
     }
 
@@ -134,20 +122,43 @@ class IndicatorRepository extends FormRepository
      * @param string $parameters
      * @return string
      */
-    public static function createServiceIndicator($parameters)
+    public static function createBasicIndicator($parameters)
+    {
+        foreach ($parameters as $k => $v) {
+            if ($k !== 'kpi_type' && $k !== 'drop_warning' && $k !== 'drop_critical' && $k !== 'drop_unknown' && $k !== 'id_ba') {
+                unset($parameters[$k]);
+            }
+        }
+
+        if (trim($parameters['id_ba']) == "") {
+            unset($parameters['id_ba']);
+        }
+
+        $class = static::$objectClass;
+        $lastIndicatorId = $class::insert($parameters);
+        if (is_null($lastIndicatorId)) {
+            throw new \Exception('Could not create object');
+        }
+
+        return $lastIndicatorId;
+    }
+
+    /**
+     *
+     * @param string $parameters
+     * @return string
+     */
+    public static function createServiceIndicator($lastIndicatorId, $parameters)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
         list($serviceId, $hostId) = explode('_', $parameters['service_id']);
 
-        $insertRequest = "INSERT INTO cfg_bam_kpi(kpi_type, host_id, service_id, drop_warning, drop_critical, drop_unknown)"
-                . " VALUES('0', :host_id, :service_id, :drop_warning, :drop_critical, :drop_unknown)";
+        $insertRequest = "UPDATE cfg_bam_kpi"
+            . " SET host_id=:host_id, service_id=:service_id";
         $stmtInsert = $dbconn->prepare($insertRequest);
         $stmtInsert->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
         $stmtInsert->bindParam(':service_id', $serviceId, \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':drop_warning', $parameters['drop_warning'], \PDO::PARAM_STR);
-        $stmtInsert->bindParam(':drop_critical', $parameters['drop_critical'], \PDO::PARAM_STR);
-        $stmtInsert->bindParam(':drop_unknown', $parameters['drop_unknown'], \PDO::PARAM_STR);
         $stmtInsert->execute();
     }
 
@@ -156,17 +167,14 @@ class IndicatorRepository extends FormRepository
      * @param string $parameters
      * @return string
      */
-    public static function createMetaserviceIndicator($parameters)
+    public static function createMetaserviceIndicator($lastIndicatorId, $parameters)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
-        $insertRequest = "INSERT INTO cfg_bam_kpi(kpi_type, meta_id, drop_warning, drop_critical, drop_unknown)"
-                . " VALUES('1', :meta_id, :drop_warning, :drop_critical, :drop_unknown)";
+        $insertRequest = "UPDATE cfg_bam_kpi"
+            . "SET meta_id=:meta_id";
         $stmtInsert = $dbconn->prepare($insertRequest);
         $stmtInsert->bindParam(':meta_id', $parameters['meta_id'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':drop_warning', $parameters['drop_warning'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':drop_critical', $parameters['drop_critical'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':drop_unknown', $parameters['drop_unknown'], \PDO::PARAM_INT);
         $stmtInsert->execute();
     }
 
@@ -175,17 +183,14 @@ class IndicatorRepository extends FormRepository
      * @param string $parameters
      * @return string
      */
-    public static function createBaIndicator($parameters)
+    public static function createBaIndicator($lastIndicatorId, $parameters)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
-        $insertRequest = "INSERT INTO cfg_bam_kpi(kpi_type, id_indicator_ba, drop_warning, drop_critical, drop_unknown)"
-                . " VALUES('2', :id_indicator_ba, :drop_warning, :drop_critical, :drop_unknown)";
+        $insertRequest = "UPDATE cfg_bam_kpi"
+            . " SET id_indicator_ba=:id_indicator_ba";
         $stmtInsert = $dbconn->prepare($insertRequest);
         $stmtInsert->bindParam(':id_indicator_ba', $parameters['id_indicator_ba'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':drop_warning', $parameters['drop_warning'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':drop_critical', $parameters['drop_critical'], \PDO::PARAM_INT);
-        $stmtInsert->bindParam(':drop_unknown', $parameters['drop_unknown'], \PDO::PARAM_INT);
         $stmtInsert->execute();
     }
 
@@ -194,7 +199,7 @@ class IndicatorRepository extends FormRepository
      * @param string $parameters
      * @return string
      */
-    public static function createBooleanIndicator($parameters)
+    public static function createBooleanIndicator($lastIndicatorId, $parameters)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
 
@@ -207,11 +212,10 @@ class IndicatorRepository extends FormRepository
         $stmtBooleanInsert->execute();
         $lastBooleanId = $dbconn->lastInsertId('cfg_bam_boolean','boolean_id');
 
-        $insertIndicatorRequest = "INSERT INTO cfg_bam_kpi(kpi_type, boolean_id, drop_critical)"
-            . " VALUES('3', :boolean_id, :drop_critical)";
+        $insertIndicatorRequest = "UPDATE cfg_bam_kpi"
+            . " SET boolean_id=:boolean_id";
         $stmtIndicatorInsert = $dbconn->prepare($insertIndicatorRequest);
         $stmtIndicatorInsert->bindParam(':boolean_id', $lastBooleanId, \PDO::PARAM_INT);
-        $stmtIndicatorInsert->bindParam('drop_critical', $parameters['drop_critical'], \PDO::PARAM_INT);
         $stmtIndicatorInsert->execute();
     }
 
@@ -221,7 +225,7 @@ class IndicatorRepository extends FormRepository
      * @param array $givenParameters
      * @throws \Centreon\Internal\Exception
      */
-    public static function updateServiceIndicator($givenParameters, $origin = "", $route = "")
+    public static function updateIndicator($givenParameters, $origin = "", $route = "")
     {
         self::validateForm($givenParameters, $origin, $route);
 
@@ -233,45 +237,6 @@ class IndicatorRepository extends FormRepository
         }
         $db = Di::getDefault()->get('db_centreon');
         $id = $givenParameters[$pk];
-        unset($givenParameters[$pk]);
-        foreach (static::$relationMap as $k => $rel) {
-            try {
-                if (!isset($givenParameters[$k])) {
-                    continue;
-                }
-                try {
-                    if ($rel::$firstObject == static::$objectClass) {
-                        $rel::delete($id);
-                    } else {
-                        $rel::delete(null, $id);
-                    }
-                } catch (Exception $e) {
-                    ; // it's okay if nothing got deleted
-                }
-                $arr = explode(',', ltrim($givenParameters[$k], ','));
-                $db->beginTransaction();
-
-                foreach ($arr as $relId) {
-                    $relId = trim($relId);
-                    if (is_numeric($relId)) {
-                        if ($rel::$firstObject == static::$objectClass) {
-                            $rel::insert($id, $relId);
-                        } else {
-                            $rel::insert($relId, $id);
-                        }
-                    } elseif (!empty($relId)) {
-                        $complexeRelId = explode('_', $relId);
-                        if ($rel::$firstObject == static::$objectClass) {
-                            $rel::insert($id, $complexeRelId[1], $complexeRelId[0]);
-                        }
-                    }
-                }
-                $db->commit();
-                unset($givenParameters[$k]);
-            } catch (Exception $e) {
-                throw new Exception('Error while updating', 0, $e);
-            }
-        }
         $columns = $class::getColumns();
         $updateValues = array();
         foreach ($givenParameters as $key => $value) {
@@ -284,35 +249,55 @@ class IndicatorRepository extends FormRepository
             }
         }
 
-        $serviceHostId = explode('_',$updateValues['service_id']);
-        $updateValues['service_id'] = $serviceHostId[0];
-        $updateValues['host_id'] = $serviceHostId[1];
+        $relBooleanIndicator = '\CentreonBam\Models\BooleanIndicator';
 
-        $class::update($id, $updateValues);
+        if ($givenParameters['kpi_type'] === '0') {
+            $serviceHostId = explode('_',$updateValues['service_id']);
+            $updateValues['service_id'] = $serviceHostId[0];
+            $updateValues['host_id'] = $serviceHostId[1];
+            $updateValues['boolean_id'] = null;
+            $updateValues['id_indicator_ba'] = null;
+            $updateValues['meta_id'] = null;
+        } elseif ($givenParameters['kpi_type'] === '1') {
+            $updateValues['host_id'] = null;
+            $updateValues['service_id'] = null;
+            $updateValues['boolean_id'] = null;
+            $updateValues['id_indicator_ba'] = null;
+        } elseif ($givenParameters['kpi_type'] === '2') {
+            $updateValues['host_id'] = null;
+            $updateValues['service_id'] = null;
+            $updateValues['boolean_id'] = null;
+            $updateValues['meta_id'] = null;
+        } elseif ($givenParameters['kpi_type'] === '3') {
+            $updateValues['host_id'] = null;
+            $updateValues['service_id'] = null;
+            $updateValues['meta_id'] = null;
+            $updateValues['id_indicator_ba'] = null;
+            $updateValuesBoolean = array();
+            $updateValuesBoolean['expression'] = $givenParameters['boolean_expression'];
+            $updateValuesBoolean['name'] = $givenParameters['boolean_name'];
+            $updateValuesBoolean['bool_state'] = $givenParameters['bool_state'];
+            if (!isset($givenParameters['boolean_id'])) {
+                $updateValues['boolean_id'] = $relBooleanIndicator::insert($updateValuesBoolean);
+            } else {
+                $updateValues['boolean_id'] = $givenParameters['boolean_id'];
+                $relBooleanIndicator::update($updateValues['boolean_id'], $updateValuesBoolean);
+            }
+        }
+
+        if ($givenParameters['kpi_type'] !== '3') {
+            $booleanId = $class::getParameters($givenParameters['kpi_id'], 'boolean_id');
+            $class::update($id, $updateValues);
+            if (isset($booleanId['boolean_id'])) {
+                $relBooleanIndicator::delete($booleanId['boolean_id']);
+            }
+        } else {
+            $class::update($id, $updateValues);
+        }
 
         if (method_exists(get_called_class(), 'postSave')) {
             static::postSave($id, 'update', $givenParameters);
         }
-    }
-
-    /**
-     * Generic update function
-     *
-     * @param array $givenParameters
-     * @throws \Centreon\Internal\Exception
-     */
-    public static function updateBooleanIndicator($givenParameters, $origin = "", $route = "")
-    {
-
-        $class = static::$objectClass;
-        $booleanId = $class::getParameters($givenParameters['object_id'], 'boolean_id');
-
-        $relBooleanIndicator = '\CentreonBam\Models\BooleanIndicator';
-        $updateValuesBoolean = array();
-        $updateValuesBoolean['expression'] = $givenParameters['boolean_expression'];
-        $updateValuesBoolean['name'] = $givenParameters['boolean_name'];
-        $updateValuesBoolean['bool_state'] = $givenParameters['bool_state'];
-        $relBooleanIndicator::update($booleanId['boolean_id'], $updateValuesBoolean);
     }
 
     /**
@@ -444,5 +429,34 @@ class IndicatorRepository extends FormRepository
 
         return $resultPki;
     }
-    
+
+    /**
+     * Delete an object
+     *
+     * @param array $ids | array of ids to delete
+     */
+    public static function delete($ids)
+    {
+        // Get datatabases connections
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $booleanClass = 'CentreonBam\Models\BooleanIndicator';
+
+        $sqlKpiBoolean = "SELECT k.kpi_id, k.boolean_id "
+            . "FROM cfg_bam_kpi k "
+            . "WHERE k.kpi_type='3'";
+        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
+
+        parent::delete($ids);
+
+        foreach ($ids as $id) {
+            foreach ($resultKpiBoolean as $kpiObject) {
+                if ($kpiObject['kpi_id'] == $id) {
+                    $booleanClass::delete($kpiObject['boolean_id']);
+                }
+            }
+        }
+    }
 }

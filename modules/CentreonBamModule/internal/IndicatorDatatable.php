@@ -48,19 +48,12 @@ use Centreon\Internal\Di;
 class IndicatorDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
-    //protected static $dataprovider = '\CentreonBam\Internal\Datatable\Dataprovider\CentreonDb';
 
     /**
      *
      * @var type 
      */
     protected static $datasource = '\CentreonBam\Models\Indicator';
-
-    /**
-     *
-     * @var type
-     */
-    //protected static $additionnalDatasource = '\CentreonBam\Models\BooleanIndicator';
 
     /**
      *
