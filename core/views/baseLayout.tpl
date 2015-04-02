@@ -155,7 +155,6 @@
     </div>
 </div>
 <!-- Wrapper -->
-<!--
 <div id="wrapper">
 
   <div class="bottombar">
@@ -184,7 +183,7 @@
              </ul>
          </div>
       </div>
-   </div> -->
+   </div>
 {foreach from=$jsBottomFileList item='jsFile'}
 {$jsFile|js}
 {/foreach}

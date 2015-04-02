@@ -69,22 +69,22 @@
   }
   /*-- Time Zone --*/
   .clock{
-    padding: @paddingElem @paddingElem*2;
+    padding: @paddingElem+4 @paddingElem*2;
     display: block;
-    font-size: 18px;;
+    font-size: 12px;;
     color: @lightGray;
   }
   /*-- Indicators --*/
   .indicators {
 
     [class^="icon-"], [class*=" icon-"] {
-        font-size : 34px;
+        font-size : 20px;
     }
     li{
         float: right;
         a {
-            color : darken(@lightGray,30%);
-            padding : @paddingElem/2 @paddingElem ;
+            color : lighten(@lightGray,0%);
+            padding : @paddingElem @paddingElem ;
 
         &:hover {
             background-color: transparent;
@@ -104,7 +104,7 @@
   &:hover, &:focus {
     background-color: transparent;
     text-decoration: none;
-    //color: lighten(@black,40%);
+    //color: lighten(@black,80%);
   }
 }
 
@@ -127,9 +127,6 @@ vertical-align: middle;
     transition: height 0.5s;
 }
 
-
-
-
 .navbarSide {
   background-color : #e7e7e8;
   height: 100%;
@@ -142,16 +139,18 @@ vertical-align: middle;
         padding-left: 0;
     }
     a {
-        padding : @paddingElem @paddingElem*2;
+        padding : @paddingElem @paddingElem+6;
         color : @navbar-default-bg;
-        font-weight: 600;
+        font-weight: normal;
+        font-size: 14px;
+
         display: block;
         &:hover, &:focus {
-            background-color: darken(@lightGray,10%);
+            background-color: lighten(@lightGray,5%);
         }
       i {
-         margin-right: @paddingElem;
-         font-size : 18px;
+         margin-right: @paddingElem/2;
+         font-size : 14px;
       }
     }
   }
@@ -234,12 +233,26 @@ body.body-small.fixed-sidebar.mini-navbar .navbarSide {
 .nav-third-level li {
   border-bottom: none !important;
 }
-.nav-second-level li a {
+.navbarSide #side-menu .nav-second-level li a {
   padding: 7px 10px 7px 10px;
   padding-left: 52px;
+  font-size: 13px;
+
+  &:hover, &:focus {
+    background-color: lighten(@lightGray,7%);
+  }
 }
-.nav-third-level li a {
-  padding-left: 62px;
+.navbarSide #side-menu .nav-third-level {
+  li {
+    background-color: lighten(@lightGray, 7%);
+    a {
+      padding-left: 62px;
+
+      &:hover, &:focus {
+        background-color: lighten(@lightGray, 9%);
+      }
+    }
+  }
 }
 .nav-second-level li:last-child {
   margin-bottom: 0px;
@@ -258,8 +271,13 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
 .fixed-nav .slimScrollDiv #side-menu {
   padding-bottom: 60px;
 }
-.mini-navbar .nav-second-level li a {
-  padding: 10px 10px 10px 15px;
+.mini-navbar .navbarSide #side-menu .nav-second-level li a {
+  padding: @paddingElem 22px;
+
+
+  i{
+    font-size: 20px;
+  }
 }
 .mini-navbar .nav-second-level {
   position: absolute;
@@ -284,12 +302,12 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
   color: #1ab394;
 }
 .navbar-default .landing_link a {
-  background: #1cc09f;
-  color: white;
+  background: #00ccbf;
+  color: white !important;
 }
 .navbar-default .landing_link a:hover {
-  background: #1ab394 !important;
-  color: white;
+  background: #007f77 !important;
+  color: white !important;
 }
 .navbar-default .landing_link a span.label {
   background: #fff;
