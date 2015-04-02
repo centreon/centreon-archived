@@ -87,6 +87,12 @@ class ServiceDatatable extends Datatable
     
     /**
      *
+     * @var type 
+     */
+    protected static $additionnalDatasource = '\CentreonRealtime\Models\Relation\Service\Host';
+    
+    /**
+     *
      * @var array 
      */
     public static $columns = array(
@@ -104,20 +110,14 @@ class ServiceDatatable extends Datatable
         ),
          array (
             'title' => 'Name',
-            'name' => 'h.name',
+            'name' => 'host_id',
             'data' => 'name',
             'orderable' => true,
             'searchable' => true,
             'searchLabel' => 'host',
             'type' => 'string',
             'visible' => true,
-            'source' => array(
-                'table' => 'rt_hosts h',
-                'condition' => array(
-                    'first' => 'h.host_id',
-                    'second' => 's.host_id'
-                )
-            ),
+            'source' => 'relation',
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
@@ -186,11 +186,6 @@ class ServiceDatatable extends Datatable
                     'Disabled' => '0',
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                                    ),
             'width' => '50px',
             'className' => 'datatable-align-center'
         ),
@@ -271,6 +266,7 @@ class ServiceDatatable extends Datatable
         $previousHost = '';
         foreach ($resultSet as &$myServiceSet) {
             // Set host_name
+            var_dump($resultSet);
             if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {
