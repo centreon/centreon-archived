@@ -2,7 +2,7 @@
     {
         "name": "Configuration",
         "short_name": "configuration",
-        "icon_class": "fa fa-gears",
+        "icon_class": "icon-config",
         "bgcolor": "#CCC",
         "menus": [
             {

@@ -2,7 +2,7 @@
     {
         "name": "Realtime",
         "short_name": "realtime",
-        "icon_class": "fa fa-clock-o",
+        "icon_class": "icon-real-time",
         "bgcolor": "lightblue",
         "menus": [
             {

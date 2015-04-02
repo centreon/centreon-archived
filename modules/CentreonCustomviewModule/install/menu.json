@@ -2,7 +2,7 @@
     {
         "name": "Dashboard",
         "short_name": "home",
-        "icon_class": "fa fa-home",
+        "icon_class": "icon-home-dashboard",
         "bgcolor": "#CCC",
         "route": "/centreon-customview"
     },

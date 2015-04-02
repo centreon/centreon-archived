@@ -18,21 +18,36 @@
     <nav class="navbar-default navbarSide navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav" id="side-menu">
-                <li>
-                    <a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}<i class="fa fa-cube"></i> Centreon{/block}</a>
+                <li class="logo">
+                    <!--<a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}<i class="fa fa-cube"></i> Centreon{/block}</a>-->
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2" href="#">
+                            <img src="static/centreon/img/icons/ico-centreon.svg" alt="Centreon" />
+                            <span class="nav-label">Centreon</span> </a>
+                    </div>
                 </li>
-                <li>
-                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span> <span class="fa arrow"></span></a>
-
                     {foreach $appMenu as $menuLevel1}
-                           <li> {$menuLevel1.name}
-                                <ul>
+                           <li>
+                                <a href="#">
+                                    <i class="{$menuLevel1.icon_class}"></i>
+                                        <span class="nav-label">{$menuLevel1.name}</span>
+                                        {if count($menuLevel1.children) > 0}
+                                            <span class="fa arrow"></span>
+                                        {/if}
+                                </a>
+                                <ul class="nav nav-second-level">
                                     {foreach $menuLevel1.children as $menuLevel2}
-                                    <li> {$menuLevel2.name}
-                                        <ul>
+                                    <li>
+                                        <a href="#">
+                                            {$menuLevel2.name}
+                                            {if count($menuLevel2.children) > 0}
+                                                <span class="fa arrow"></span>
+                                            {/if}
+                                        </a>
+                                        <ul class="nav nav-third-level">
                                             {foreach $menuLevel2.children as $menuLevel3}
                                                 <li>
-                                                    {$menuLevel3.name}
+                                                    <a href="#">{$menuLevel3.name}</a>
                                                 </li>
                                             {/foreach}
                                         </ul>
@@ -42,55 +57,23 @@
                            </li>
                     {/foreach}
                 </li>
+                <li class="landing_link">
+                    <a href="#"><i class="fa fa-star"></i> <span class="nav-label">Bookmark</span></a>
 
-                <li>
-                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Configuration</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="#">Graphs</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Performance</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="#">Hosts</a>
-                            <ul class="nav nav-third-level">
-                                <li>
-                                    <a href="#">hosts</a>
-                                </li>
-                                <li>
-                                    <a href="#">Hosts templates</a>
-                                </li>
-                                <li>
-                                    <a href="#">Host groups</a>
-                                </li>
-                                <li>
-                                    <a href="#">Host categories</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Performance</a></li>
-                        <li><a href="#">Services</a></li>
-                        <li><a href="#">Commands</a></li>
-                        <li><a href="#">Traps</a></li>
-                        <li><a href="#">Time Periods</a></li>
-                        <li><a href="#">Pollers</a></li>
-                    </ul>
+                    {hook name='displayLeftMenu' container='<ul class="nav" id="hook-menu">[hook]</ul>'}
+                    <div class="toggle-button">
+                        <a href="#"><i class="fa fa-angle-double-left"></i></a>
+                    </div>
                 </li>
             </ul>
         </div>
     </nav>
 
-        <!--
-        {hook name='displayLeftMenu' container='<ul class="nav" id="hook-menu">[hook]</ul>'}
-        <div class="toggle-button">
-            <a href="#"><i class="fa fa-angle-double-left"></i></a>
-        </div>-->
-
     <div class="viewCntr" id="pageWrapper"> <!-- Page Wrapper -->
 
-            <nav class="navbar-default navbar-static-top GlobalNavbar">
-                <div class="container-fluid">
+        <div class="row">
+        <nav class="navbar-default navbar-static-top GlobalNavbar">
+
                     <ul class="userProfil nav navbar-right">
                         <li class="dropdown">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -134,45 +117,41 @@
                              <span class="clock"></span>
                          </li>
                     </ul>
-                    <ul class="timeZone nav navbar-right">
-                        <li class="top-counter top-counter-poller">
+                    <ul class="indicators nav navbar-right">
+                        <li class="top-counter top-counter-service">
+                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                               <i class="icon-critical-incident"></i>
+                             </a>
+                             <span class="label label-danger hide">42</span>
+                             <ul class="dropdown-menu">
+                             </ul>
+                         </li>
+                         <li class="top-counter top-counter-service">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="icon-incident"></i>
+                              </a>
+                              <span class="label label-warning hide"></span>
+                              <ul class="dropdown-menu">
+                              </ul>
+                          </li>
+
+                        <li class="top-counter top-counter-service">
+                            <a href="#" class="dropdown-toggle drop-avatar">
+                                <i class="icon-pollers"></i>
+                            </a>
+                        </li>
+
+                        <li class="top-counter top-counter-bam">
                             <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
-                                <i class="fa fa-gears"></i>
+                                <i class="icon-BAM"></i>
                             </a>
                             <span class="label label-danger hide"></span>
                             <span class="label label-warning hide"></span>
                             <ul class="dropdown-menu"></ul>
                         </li>
-                        <li class="notif">
-                            <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
-                                <i class="fa fa-envelope"></i>
-                            </a>
-                        </li>
                     </ul>
-
-                     <ul class="nav navbar-nav navbar-right">
-                         <li class="bookmark">
-                             <a href="#">
-                                 <i class="fa fa-star"></i>
-                             </a>
-                         </li>
-                         <li class="bookmark">
-                             <a href="#">
-                                 <i class="fa fa-desktop"></i>
-                             </a>
-                         </li>
-                         <li class="top-counter top-counter-service">
-                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                               <i class="fa fa-rss"></i>
-                             </a>
-                             <span class="label label-danger hide"></span>
-                             <span class="label label-warning hide"></span>
-                             <ul class="dropdown-menu">
-                             </ul>
-                           </li>
-                     </ul>
-                </div>
             </nav>
+        </div>
     </div>
 </div>
 <!-- Wrapper -->

@@ -1,8 +1,9 @@
 @import "variables.less";
 @import "centreon.variables.less";
+@import "centreon.icons.less";
 
 /*-- Navs --*/
-.bodyCntr .navbarSide, .bodyCntr .nav-header, .bodyCntr li.active, .bodyCntr #page-wrapper, .bodyCntr .footer {
+.bodyCntr .navbarSide, .bodyCntr .nav-header, .bodyCntr li.active, .bodyCntr #pageWrapper, .bodyCntr .footer {
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;
@@ -15,11 +16,13 @@
   border-radius: @border-radius-base;
   color : @lightGray;
   max-height: @navbar-height;
+  height: @navbar-height;
   /*-- Profil Menu --*/
   .userProfil {
     background-color: @darkBlue;
     border-left: 2px solid @black;
     max-width: @navbar-height;
+    margin-right: 16px;
 
     a.dropdown-toggle {
       padding: @paddingElem;
@@ -54,6 +57,7 @@
       }
       .media {
         padding : @paddingElem * 2;
+
           ul {
             text-align: right;
             li {
@@ -63,12 +67,94 @@
       }
     }
   }
+  /*-- Time Zone --*/
+  .clock{
+    padding: @paddingElem @paddingElem*2;
+    display: block;
+    font-size: 18px;;
+    color: @lightGray;
+  }
+  /*-- Indicators --*/
+  .indicators {
+
+    [class^="icon-"], [class*=" icon-"] {
+        font-size : 34px;
+    }
+    li{
+        float: right;
+        a {
+            color : darken(@lightGray,30%);
+            padding : @paddingElem/2 @paddingElem ;
+
+        &:hover {
+            background-color: transparent;
+            border-bottom: 3px solid darken(@lightGray,30%);
+        }
+        }
+    }
+  }
 }
 
 /*-- Side NavBar --*/
+
+.navbarSide #side-menu .logo a.minimalize-styl-2 {
+  padding: 12px 20px;
+  float: left;
+
+  &:hover, &:focus {
+    background-color: transparent;
+    text-decoration: none;
+    //color: lighten(@black,40%);
+  }
+}
+
+.logo a.minimalize-styl-2 img[alt="Centreon"]{
+    height: 24px;
+    margin-right: @paddingElem/2;
+}
+.logo a.minimalize-styl-2 .nav-label {
+vertical-align: middle;
+  font-size: 20px;
+}
+.mini-navbar .navbarSide #side-menu .logo a.minimalize-styl-2 {
+  padding: 10px 20px;
+  float: left;
+}
+
+.mini-navbar .logo a.minimalize-styl-2 img[alt="Centreon"]{
+    height: 30px;
+    margin-right: 0;
+    transition: height 0.5s;
+}
+
+
+
+
 .navbarSide {
-  background-color : @lightGray;
+  background-color : #e7e7e8;
   height: 100%;
+
+
+  #side-menu {
+        list-style: none;
+    ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    a {
+        padding : @paddingElem @paddingElem*2;
+        color : @navbar-default-bg;
+        font-weight: 600;
+        display: block;
+        &:hover, &:focus {
+            background-color: darken(@lightGray,10%);
+        }
+      i {
+         margin-right: @paddingElem;
+         font-size : 18px;
+      }
+    }
+  }
 }
 
 body.mini-navbar .navbarSide {
@@ -86,4 +172,241 @@ body.fixed-sidebar.mini-navbar .navbarSide {
 
 body.body-small.fixed-sidebar.mini-navbar .navbarSide {
   width: @sidebar-width;
+}
+.pace-done .nav-header {
+  transition: all 0.5s;
+}
+.nav > li.active {
+  border-left: 4px solid @firstGreen;
+  background-color: lighten(@lightGray,5%);
+}
+.nav.nav-second-level > li.active {
+  border: none;
+}
+.nav.nav-second-level.collapse[style] {
+  height: auto !important;
+}
+.nav-header a {
+  color: #DFE4ED;
+}
+.nav-header .text-muted {
+  color: #8095a8;
+}
+
+.navbar-form-custom {
+  float: left;
+  height: 50px;
+  padding: 0;
+  width: 200px;
+  display: inline-table;
+}
+.navbar-form-custom .form-group {
+  margin-bottom: 0;
+}
+.nav.navbar-top-links a {
+  font-size: 14px;
+}
+.navbar-form-custom .form-control {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+  border: medium none;
+  font-size: 14px;
+  height: 60px;
+  margin: 0;
+  z-index: 2000;
+}
+.count-info .label {
+  line-height: 12px;
+  padding: 2px 5px;
+  position: absolute;
+  right: 6px;
+  top: 12px;
+}
+.arrow {
+  float: right;
+}
+.fa.arrow:before {
+  content: "\f104";
+}
+.active > a > .fa.arrow:before {
+  content: "\f107";
+}
+.nav-second-level li,
+.nav-third-level li {
+  border-bottom: none !important;
+}
+.nav-second-level li a {
+  padding: 7px 10px 7px 10px;
+  padding-left: 52px;
+}
+.nav-third-level li a {
+  padding-left: 62px;
+}
+.nav-second-level li:last-child {
+  margin-bottom: 0px;
+}
+body:not(.fixed-sidebar).mini-navbar .nav li:hover > .nav-second-level,
+.mini-navbar .nav li:focus > .nav-second-level {
+  display: block;
+  min-width: 140px;
+  height: auto;
+}
+body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
+  font-size: 12px;
+  box-shadow: 3px 0px 0px @firstGreen;
+  line-height: 22px;
+}
+.fixed-nav .slimScrollDiv #side-menu {
+  padding-bottom: 60px;
+}
+.mini-navbar .nav-second-level li a {
+  padding: 10px 10px 10px 15px;
+}
+.mini-navbar .nav-second-level {
+  position: absolute;
+  left: 70px;
+  top: 0px;
+  background-color: lighten(@lightGray,5%);
+  font-size: 14px;
+}
+.mini-navbar li.active .nav-second-level {
+  left: 65px;
+}
+.navbar-default .special_link a {
+  background: #1ab394;
+  color: @black;
+}
+.navbar-default .special_link a:hover {
+  background: #17987e !important;
+  color: @black;
+}
+.navbar-default .special_link a span.label {
+  background: #fff;
+  color: #1ab394;
+}
+.navbar-default .landing_link a {
+  background: #1cc09f;
+  color: white;
+}
+.navbar-default .landing_link a:hover {
+  background: #1ab394 !important;
+  color: white;
+}
+.navbar-default .landing_link a span.label {
+  background: #fff;
+  color: #1cc09f;
+}
+.logo-element {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  display: none;
+  padding: 18px 0;
+}
+.pace-done .navbar-static-side,
+.pace-done .nav-header,
+.pace-done li.active,
+.pace-done #pageWrapper,
+.pace-done .footer {
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.navbar-fixed-top {
+  background: #fff;
+  transition-duration: 0.5s;
+  border-bottom: 1px solid #e7eaec !important;
+}
+.fixed-nav #wrapper {
+  margin-top: 60px;
+}
+.fixed-nav .minimalize-styl-2 {
+  margin: 14px 5px 5px 15px;
+}
+.body-small .navbar-fixed-top {
+  margin-left: 0px;
+}
+body.mini-navbar .navbar-static-side {
+  width: 70px;
+}
+body.mini-navbar .profile-element,
+body.mini-navbar .nav-label,
+body.mini-navbar .navbar-default .nav li a span {
+  display: none;
+}
+li.active .nav-second-level li a span {
+    display: block;
+}
+body:not(.fixed-sidebar).mini-navbar .nav-second-level {
+  display: none;
+}
+body.mini-navbar .navbar-default .nav > li > a {
+  font-size: 16px;
+}
+body.mini-navbar .logo-element {
+  display: block;
+}
+body.mini-navbar .nav-header {
+  padding: 0;
+  background-color: #1ab394;
+}
+body.mini-navbar #pageWrapper {
+  margin: 0 0 0 70px;
+}
+body.fixed-sidebar.mini-navbar .footer {
+  margin: 0 0 0 0px;
+}
+body.mini-navbar #pageWrapper {
+  margin: 0 0 0 70px;
+}
+body.fixed-sidebar .navbar-static-side {
+  position: fixed;
+  width: 220px;
+  z-index: 101;
+  height: 100%;
+}
+body.fixed-sidebar.mini-navbar .navbar-static-side {
+  width: 0px;
+}
+body.fixed-sidebar.mini-navbar #pageWrapper {
+  margin: 0 0 0 0px;
+}
+body.body-small.fixed-sidebar.mini-navbar #pageWrapper {
+  margin: 0 0 0 220px;
+}
+body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
+  width: 220px;
+}
+.fixed-sidebar.mini-navbar .nav li:focus > .nav-second-level {
+  display: block;
+  height: auto;
+}
+body.fixed-sidebar.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
+  font-size: 12px;
+  border-radius: 3px;
+}
+.fixed-sidebar.mini-navbar .nav-second-level li a {
+  padding: 10px 10px 10px 15px;
+}
+.fixed-sidebar.mini-navbar .nav-second-level {
+  position: relative;
+  padding: 0;
+  font-size: 13px;
+}
+.fixed-sidebar.mini-navbar li.active .nav-second-level {
+  left: 0px;
+}
+body.fixed-sidebar.mini-navbar .navbar-default .nav > li > a {
+  font-size: 13px;
+}
+body.fixed-sidebar.mini-navbar .nav-label,
+body.fixed-sidebar.mini-navbar .navbar-default .nav li a span {
+  display: inline;
+}
+.fixed-sidebar.mini-navbar .nav-second-level li a {
+  padding: 7px 10px 7px 52px;
+}
+.fixed-sidebar.mini-navbar .nav-second-level {
+  left: 0px;
 }

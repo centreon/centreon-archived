@@ -4,6 +4,8 @@
 @import "centreon.media.less";
 @import "centreon.navigation.less";
 
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 
 /* Variables for login panel */
 @login-panel-radius: 0;
@@ -158,14 +160,6 @@ hr {
 }
 
 /* Clock */
-.time .clock {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    line-height: 20px;
-    display: block;
-    color: @topbar-color;
-    font-weight: bold;
-}
 
 .user .btn-group {
     padding: 3px 30px;
@@ -177,13 +171,15 @@ hr {
         position: absolute;
         font-size: 60%;
         top: 10px;
+        left: 28px;
+        background-color: @lightGray;
 
         &.label-danger {
-            left: 2px;
+              color: @danger;
         }
 
         &.label-warning {
-            right: 2px;
+            color: @warning;
         }
     }
 
