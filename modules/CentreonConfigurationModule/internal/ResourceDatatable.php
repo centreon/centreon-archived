@@ -69,7 +69,7 @@ class ResourceDatatable extends Datatable
         'order' => array(
             array('resource_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

@@ -64,7 +64,7 @@ class ServiceDatatable extends Datatable
         'searchCols' => array(
             'service_activate' => '1',
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

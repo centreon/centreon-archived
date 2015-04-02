@@ -55,7 +55,7 @@ class ServiceCategoryDatatable extends Datatable
         'order' => array(
             array('sc_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

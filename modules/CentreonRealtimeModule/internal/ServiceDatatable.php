@@ -74,7 +74,7 @@ class ServiceDatatable extends Datatable
             array('s.description', 'asc')
         ),
         'searchCols' => array(),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

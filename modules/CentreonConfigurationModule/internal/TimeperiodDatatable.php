@@ -69,7 +69,7 @@ class TimeperiodDatatable extends Datatable
         'order' => array(
             array('tp_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

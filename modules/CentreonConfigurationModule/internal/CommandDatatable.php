@@ -70,7 +70,7 @@ class CommandDatatable extends Datatable
         'order' => array(
             array('command_name', 'asc'),
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

@@ -70,7 +70,7 @@ class HostGroupDatatable extends Datatable
         'order' => array(
             array('hg_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

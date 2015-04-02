@@ -63,7 +63,7 @@ class AclactionDatatable extends Datatable
             array('acl_action_name', 'asc'),
             array('acl_action_id', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

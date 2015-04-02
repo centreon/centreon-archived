@@ -73,7 +73,7 @@ class HostTemplateDatatable extends Datatable
             array('host_name', 'asc'),
             array('host_id', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

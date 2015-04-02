@@ -68,7 +68,7 @@ class TrapDatatable extends Datatable
         'order' => array(
             array('traps_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     
