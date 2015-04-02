@@ -309,17 +309,15 @@ class CentreonCriticality {
             return 0;
         }
 
-        $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' AND service_id = $service_id ORDER BY service_template_model_stm_\
-id ASC";
+        $request = "SELECT service_id, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_activate = '1' AND service_id = $service_id ORDER BY service_template_model_stm_id ASC";
         $RES = $pearDB->query($request);
         if (isset($RES) && $RES->numRows()) {
            while ($data = $RES->fetchRow()) {
-               $request2 = "select sr.* FROM service_categories_relation sr, service_categories sc WHERE sr.sc_id = sc.sc_id AND sr.service_service_id = '".$data['service_id']."' AND sc.level IS NOT NULL\
-";
+               $request2 = "select sr.* FROM service_categories_relation sr, service_categories sc WHERE sr.sc_id = sc.sc_id AND sr.service_service_id = '".$data['service_id']."' AND sc.level IS NOT NULL";
                 $RES2 = $pearDB->query($request2);
                 if ($RES2->numRows() != 0) {
                     $criticity = $RES2->fetchRow();
-                    if ($criticity['sc_id'] && isset($criticity['sc_id']) {
+                    if ($criticity['sc_id'] && isset($criticity['sc_id'])) {
                         return $criticity["sc_id"];
                     } else {
                         return 0;
