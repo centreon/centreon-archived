@@ -57,7 +57,7 @@ class HostDatatable extends Datatable
         'order' => array(
             array('name', 'asc')
         ),
-        'stateSave' => false,
+        'stateSave' => true,
         'paging' => true,
     );
     
@@ -131,7 +131,7 @@ class HostDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'Status',
+            'title' => 'State',
             'name' => 'state',
             'data' => 'state',
             'orderable' => true,
@@ -146,13 +146,11 @@ class HostDatatable extends Datatable
                     '2' => '<span class="label label-default">Unreachable</span>'
                 )
             ),
-            'searchParam' => array(
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Up' => 0,
-                    'Down' => 1,
-                    'Unreachable' => 2
-                )
+            'searchtype' => 'select',
+            'searchvalues' => array(
+                'Up' => 0,
+                'Down' => 1,
+                'Unreachable' => 2
             ),
             'width' => "50px",
             'className' => 'cell_center'
