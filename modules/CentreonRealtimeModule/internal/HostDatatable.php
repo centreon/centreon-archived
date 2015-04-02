@@ -61,7 +61,7 @@ class HostDatatable extends Datatable
         'paging' => true,
     );
     
-    protected static $dataprovider = '\CentreonRealtime\Internal\CentreonStorageDb';
+    protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
      *
@@ -131,7 +131,7 @@ class HostDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'State',
+            'title' => 'Status',
             'name' => 'state',
             'data' => 'state',
             'orderable' => true,
@@ -146,11 +146,13 @@ class HostDatatable extends Datatable
                     '2' => '<span class="label label-default">Unreachable</span>'
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Up' => 0,
-                'Down' => 1,
-                'Unreachable' => 2
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Up' => 0,
+                    'Down' => 1,
+                    'Unreachable' => 2
+                )
             ),
             'width' => "50px",
             'className' => 'cell_center'

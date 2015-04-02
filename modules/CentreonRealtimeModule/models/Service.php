@@ -36,17 +36,65 @@
 
 namespace CentreonRealtime\Models;
 
-use Centreon\Models\CentreonStorageBaseModel;
+use Centreon\Models\CentreonBaseModel;
 
 /**
  * Used for interacting with services
  *
  * @author sylvestre
  */
-class Service extends CentreonStorageBaseModel
+class Service extends CentreonBaseModel
 {
     protected static $table = "rt_services s";
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "description";
     protected static $simpleRelation = array('host_id' => '\CentreonRealtime\Models\Host');
+    
+    /** 
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $filters['enabled'] = '1';
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+    }
+
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset  
+     * @param type $order
+     * @param type $sort
+     * @param array $filters  
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $filters['enabled'] = '1';
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+    }
 }

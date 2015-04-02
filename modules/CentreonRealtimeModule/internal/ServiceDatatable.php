@@ -179,6 +179,13 @@ class ServiceDatatable extends Datatable
                     '4' => '<span class="label label-info">Pending</span>',
                 )
             ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0',
+                )
+            ),
             'searchtype' => 'select',
             'searchvalues' => array(
                 'Enabled' => '1',
@@ -192,7 +199,7 @@ class ServiceDatatable extends Datatable
             'name' => '(unix_timestamp(NOW())-s.last_check) AS last_check',
             'data' => 'last_check',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '10%'
@@ -202,7 +209,7 @@ class ServiceDatatable extends Datatable
             'name' => '(unix_timestamp(NOW())-s.last_hard_state_change) AS duration',
             'data' => 'duration',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '10%',
@@ -213,7 +220,7 @@ class ServiceDatatable extends Datatable
             'name' => 'CONCAT(s.check_attempt, " / ", s.max_check_attempts) as retry',
             'data' => 'retry',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '25px',
@@ -236,27 +243,7 @@ class ServiceDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => false,
-        ),
-        array (
-            'title' => 'Host Enabled',
-            'dbName' => 'h.enabled as host_enabled',
-            'name' => 'h.enabled',
-            'data' => 'host_enabled',
-            'orderable' => false,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false,
-        ),
-        array (
-            'title' => 'Service enabled',
-            'dbName' => 's.enabled as service_enabled',
-            'name' => 's.enabled',
-            'data' => 'service_enabled',
-            'orderable' => false,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false,
-        ),
+        )
     );
 
     protected static $extraParams = array(
