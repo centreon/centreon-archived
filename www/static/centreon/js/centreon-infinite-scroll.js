@@ -13,6 +13,7 @@
     this.hasEvent = true;
     this.lastScroll = 0;
     this.newNotSee = 0;
+    this.inLoading = false;
 
     /* Prepare templates */
     this.template = null;
@@ -55,6 +56,12 @@
         return;
       }
 
+      if (this.inLoading) {
+        return;
+      }
+
+      this.inLoading = true;
+
       data = this.prepareData();
       data.startTime = this.lastTime;
 
@@ -68,6 +75,7 @@
             self.hasEvent = false;
             self.loading = false;
             self.recentTime = new Date().getTime() / 1000;
+            self.inLoading = false;
             return;
           }
           $.each(data.data, function (idx, values) {
@@ -107,6 +115,7 @@
           if (!self.loading) {
             self.$elem.trigger("loaded");
           }
+          self.inLoading = false;
         }
       });
     },
