@@ -38,6 +38,7 @@ namespace CentreonRealtime\Internal;
 
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use CentreonRealtime\Models\Host;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
 
@@ -266,10 +267,14 @@ class ServiceDatatable extends Datatable
         $previousHost = '';
         foreach ($resultSet as &$myServiceSet) {
             // Set host_name
-            var_dump($resultSet);
+            $myHostName = Host::get($myServiceSet['host_id'], array('name'));
+            $myServiceSet['name'] = $myHostName['name'];
+            
             if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {
+                $myServiceSet['name'] = Host::get($myServiceSet['host_id'], array('name'));
+                var_dump($myServiceSet['name']);
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
                 $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'.
