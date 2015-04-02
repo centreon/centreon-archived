@@ -577,23 +577,13 @@ if ($oreon->CentreonGMT->used() == 1) {
             } else {
                 // Check if criticities is configured on service templates
                 $buff = $criticality->criticitiesConfigOnSTpl($service['service_template_model_stm_id']);
-                if (count($buff) != 0 && $buff['crit']) {
-                    if (isset($buff["crit"]) && $buff["crit"]) {
-                        $critDataTmp = $criticality->getData($buff["crit"], true);
-                        $strTMP .= print_line("_CRITICALITY_LEVEL", $critDataTmp['level']);
-                        $strTMP .= print_line("_CRITICALITY_ID", $critDataTmp['sc_id']);
-                        unset($critDataTmp);
-                    }
-                } else {
-                    // Get Criticities From hosts                                                                                                                                                             
+                if ($buff == 0) {
+                    // Get Criticities From hosts
                     global $critCacheName;
-                    $t = explode(',', $hostNameTmp);
-                    if (count($t) == 1) {
-                        if (isset($critCacheName[$hostNameTmp])) {
-                            $name = $critCacheName[$hostNameTmp]['name'];
-                            $strTMP .= print_line("_CRITICALITY_LEVEL", $critSData[$name]['level']);
-                            $strTMP .= print_line("_CRITICALITY_ID", $critSData[$name]['id']);
-                        }
+                    if (isset($critCacheName[$host_name])) {
+                        $name = $critCacheName[$host_name]['name'];
+                        $strTMP .= print_line("_CRITICALITY_LEVEL", $critSData[$name]['level']);
+                        $strTMP .= print_line("_CRITICALITY_ID", $critSData[$name]['id']);
                     }
                 }
             }
