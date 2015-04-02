@@ -267,8 +267,6 @@ class ServiceDatatable extends Datatable
             if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {
-                $myServiceSet['name'] = Host::get($myServiceSet['host_id'], array('name'));
-                var_dump($myServiceSet['name']);
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
                 $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'.
