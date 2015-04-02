@@ -176,8 +176,11 @@ class ServiceDatatable extends Datatable
             'searchParam' => array(
                 'type' => 'select',
                 'additionnalParams' => array(
-                    'Enabled' => '1',
-                    'Disabled' => '0',
+                    'OK' => '0',
+                    'Warning' => '1',
+                    'Critical' => '2',
+                    'Unknown' => '3',
+                    'Pending' => '4'
                 )
             ),
             'width' => '50px',
