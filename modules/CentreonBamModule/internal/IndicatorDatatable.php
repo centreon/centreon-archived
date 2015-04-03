@@ -59,7 +59,7 @@ class IndicatorDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'kpi_id', 'name' => 'kpi_type');
+    protected static $rowIdColumn = array('id' => 'kpi_id', 'name' => 'object_name');
     
     /**
      *
@@ -95,7 +95,7 @@ class IndicatorDatatable extends Datatable
             'source' => 'other',
         ),*/
         array (
-            'title' => 'T',
+            'title' => 'Type',
             'name' => 'kpi_type',
             'data' => 'kpi_type',
             'orderable' => true,
@@ -103,6 +103,7 @@ class IndicatorDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'width' => 10,
+            'class' => 'cell_center',
             'cast' => array(
                 'type' => 'select',
                 'parameters' => array(
@@ -204,24 +205,28 @@ class IndicatorDatatable extends Datatable
             if ($kpi['kpi_type'] == 0) {
                 foreach ($resultKpiService as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = $kpiObject['host_name'].' '.$kpiObject['service_description'];
                         $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
                     }
                 }
             } else if ($kpi['kpi_type'] == 1) {
                 foreach ($resultKpiMetaservice as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = 'metaservice';
                         $kpi['object'] = 'metaservice';
                     }
                 }
             } else if ($kpi['kpi_type'] == 2) {
                 foreach ($resultKpiBa as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = $kpiObject['name'];
                         $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
                     }
                 }
             } else if ($kpi['kpi_type'] == 3) {
                 foreach ($resultKpiBoolean as $kpiObject) {
                     if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = $kpiObject['name'];
                         $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
                     }
                 }

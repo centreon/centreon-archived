@@ -106,13 +106,13 @@ class IndicatorRepository extends FormRepository
 
         $lastIndicatorId = self::createBasicIndicator($parameters);
 
-        if ($parameters['kpi_type'] == 0) {
+        if ($parameters['kpi_type'] === '0') {
             self::createServiceIndicator($lastIndicatorId, $parameters);
-        } else if ($parameters['kpi_type'] == 1) {
+        } else if ($parameters['kpi_type'] === '1') {
             self::createMetaserviceIndicator($lastIndicatorId, $parameters);
-        } else if ($parameters['kpi_type'] == 2) {
+        } else if ($parameters['kpi_type'] === '2') {
             self::createBaIndicator($lastIndicatorId, $parameters);
-        } else if ($parameters['kpi_type'] == 3) {
+        } else if ($parameters['kpi_type'] === '3') {
             self::createBooleanIndicator($lastIndicatorId, $parameters);
         }
     }
@@ -155,10 +155,12 @@ class IndicatorRepository extends FormRepository
         list($serviceId, $hostId) = explode('_', $parameters['service_id']);
 
         $insertRequest = "UPDATE cfg_bam_kpi"
-            . " SET host_id=:host_id, service_id=:service_id";
+            . " SET host_id=:host_id, service_id=:service_id"
+            . " WHERE kpi_id=:kpi_id";
         $stmtInsert = $dbconn->prepare($insertRequest);
         $stmtInsert->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
         $stmtInsert->bindParam(':service_id', $serviceId, \PDO::PARAM_INT);
+        $stmtInsert->bindParam(':kpi_id', $lastIndicatorId, \PDO::PARAM_INT);
         $stmtInsert->execute();
     }
 
@@ -172,9 +174,11 @@ class IndicatorRepository extends FormRepository
         $dbconn = Di::getDefault()->get('db_centreon');
 
         $insertRequest = "UPDATE cfg_bam_kpi"
-            . "SET meta_id=:meta_id";
+            . " SET meta_id=:meta_id"
+            . " WHERE kpi_id=:kpi_id";
         $stmtInsert = $dbconn->prepare($insertRequest);
         $stmtInsert->bindParam(':meta_id', $parameters['meta_id'], \PDO::PARAM_INT);
+        $stmtInsert->bindParam(':kpi_id', $lastIndicatorId, \PDO::PARAM_INT);
         $stmtInsert->execute();
     }
 
@@ -188,9 +192,11 @@ class IndicatorRepository extends FormRepository
         $dbconn = Di::getDefault()->get('db_centreon');
 
         $insertRequest = "UPDATE cfg_bam_kpi"
-            . " SET id_indicator_ba=:id_indicator_ba";
+            . " SET id_indicator_ba=:id_indicator_ba"
+            . " WHERE kpi_id=:kpi_id";
         $stmtInsert = $dbconn->prepare($insertRequest);
         $stmtInsert->bindParam(':id_indicator_ba', $parameters['id_indicator_ba'], \PDO::PARAM_INT);
+        $stmtInsert->bindParam(':kpi_id', $lastIndicatorId, \PDO::PARAM_INT);
         $stmtInsert->execute();
     }
 
@@ -227,6 +233,8 @@ class IndicatorRepository extends FormRepository
      */
     public static function updateIndicator($givenParameters, $origin = "", $route = "")
     {
+        //var_dump($givenParameters);
+        //die();
         self::validateForm($givenParameters, $origin, $route);
 
         $class = static::$objectClass;
