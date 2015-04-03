@@ -788,10 +788,63 @@ td.incident-extended-info {
 .infinite-scroll {
   height: 700px; /* @todo min-height 100% */
   overflow-y: scroll;
+  width: 100%;
+  transition: width 1s;
+
+  &.active {
+    width: 60%;
+  }
+}
+
+.event-detail {
+  width: 0;
+  transition: width 1s;
+  padding-left: 25px;
+
+  &.active {
+    width: 40%;
+  }
+
+  & > .row {
+    background-color: @gray-lighter;
+    padding: 10px 5px;
+  }
+
+  .object-name {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+  }
+
+  .date {
+    color: @gray-light;
+  }
+
+  .description {
+    margin-top: 10px;
+  }
 }
 
 .event {
-  background-color: @gray-lighter;
+  pointer: pointer;	
+
+  &.active {
+    background-color: @gray-lighter;
+  }
+
+  &.status-0,&.status-1,&.status-2 {
+    border-left: 4px solid;
+  }
+  &.status-0 {
+    border-left-color: @brand-success;
+  }
+  &.status-1 {
+    border-left-color: @brand-warning;
+  }
+  &.status-2 {
+    border-left-color: @brand-danger;
+  }
+
   .logo {
     font-size: 20px;
     text-align: center;
@@ -817,6 +870,6 @@ td.incident-extended-info {
     margin-top: 10px;
   }
 
-  margin-bottom: 10px;
   padding: 10px 5px;
+  border-bottom: 1px @gray-lighter solid;
 }

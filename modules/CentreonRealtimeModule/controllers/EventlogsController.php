@@ -41,6 +41,7 @@ use CentreonRealtime\Repository\EventlogsRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\ServiceRepository;
 use Centreon\Internal\Controller;
+use Centreon\Internal\Module\Informations as Module;
 
 /**
  * Display the logs of engine
@@ -66,11 +67,74 @@ class EventlogsController extends Controller
         $tmpl->addJs('moment-with-langs.min.js');
         $tmpl->addJs('daterangepicker.js');
         $tmpl->addJs('jquery.select2/select2.min.js');
+        $tmpl->addJs('centreon.search.js');
         $tmpl->addJs('centreon-infinite-scroll.js');
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
         $tmpl->addCss('centreon.status.css');
+        if (Module::isModuleReachable('centreon-performance')) {
+            $tmpl->addJs('d3.min.js');
+            $tmpl->addJs('c3.min.js');
+            $tmpl->addJs('centreon.graph.js', 'bottom', 'centreon-performance');
+            $tmpl->addCss('c3.css');
+        }
+        /* Prepare field for search */
+        $searchField = array(
+            'header' => array(
+                'columnSearch' => array(
+                    'host' => array(
+                        'main' => true,
+                        'title' => _("Host name"),
+                        'type' => 'text',
+                        'searchLabel' => 'host',
+                        'colIndex' => 1
+                    ),
+                    'service' => array(
+                        'main' => true,
+                        'title' => _("Service"),
+                        'type' => 'text',
+                        'searchLabel' => 'service',
+                        'colIndex' => 2
+                    ),
+                    'output' => array(
+                        'main' => false,
+                        'title' => _("Message"),
+                        'type' => 'text',
+                        'searchLabel' => 'output',
+                        'colIndex' => 3
+                    ),
+                    'status' => array(
+                        'main' => false,
+                        'title' => _("Status"),
+                        'type' => 'select',
+                        'searchLabel' => 'status',
+                        'colIndex' => 3,
+                        'additionnalParams' => array(
+                            'Ok' => 0,
+                            'Warning' => 1,
+                            'Critical' => 2
+                        )
+                    ),
+                    'eventtype' => array(
+                        'main' => false,
+                        'title' => _("Event Type"),
+                        'type' => 'select',
+                        'searchLabel' => 'eventtype',
+                        'colIndex' => 4,
+                        'additionnalParams' => array(
+                            'Alert' => 0,
+                            'Current State' => 6,
+                            'Initial State' => 8,
+                            'Notification' => 2,
+                            'Acknowledgement' => 10
+                        )
+                    )
+                )
+            )
+        );
+
+        $tmpl->assign('datatableParameters', $searchField);
         $tmpl->display('file:[CentreonRealtimeModule]eventlogs.tpl');
     }
 
@@ -213,19 +277,19 @@ class EventlogsController extends Controller
             }
             
             /* Translate the status id */
-            if (isset($log['service_id']) && isset($log['host_id'])) {
+            if (isset($log['service_id']) && isset($log['host_id']) && $log['status'] !== '') {
                 $log['status_text'] = Status::numToString(
                     $log['status'],
                     Status::TYPE_SERVICE,
                     true
                 );
-            } elseif (!isset($log['service_id'])) {
+            } elseif (!isset($log['service_id']) && $log['status'] !== '') {
                 $log['status_text'] = Status::numToString(
                     $log['status'],
                     Status::TYPE_HOST,
                     true
                 );
-            } else {
+            } else if ($log['status'] !== '') {
                 $log['status_text'] = Status::numToString(
                     $log['status'],
                     Status::TYPE_EVENT,

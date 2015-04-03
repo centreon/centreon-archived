@@ -62,30 +62,52 @@ class ElasticSearch extends Storage
         $timeField = array('period');
 
         $di = Di::getDefault();
-        $options = $di->get('options');
+        $options = $di->get('config');
 
         /* Connection to the elastic search server */
-        $params['host'] = array();
-        $params['host'][] = $options->get('es_host', 'default');
+        $params['hosts'] = array();
+        $params['hosts'][] = $options->get('default', 'es_host');
         $esclient = new ESClient($params);
 
-        $queryFilters = ();
+        $queryFilters = [];
+        if (false === is_null($limit)) {
+            $queryFilters["filter"] = array(
+                "limit" => array(
+                    "value" => $limit
+                )
+            );
+        }
+        $queryQueries = [];
+        if (false === is_null($fromTime)) {
+            $queryQueries[] = array(
+                "range" => array(
+                    "@timestamp" => array(
+                        "to" => $fromTime
+                    )
+                )
+            );
+        }
         foreach ($filters as $key => $value) {
             if (in_array($key, $listFullsearch)) {
-                $queryFilters[] = array(
+                $queryQueries[] = array(
                     "term" => array(
                         "message" => $value
                     )
                 );
             } elseif (in_array($key, $timeField)) {
                 list($timeStart, $timeEnd) = explode(' - ', $value);
-                $queryFilters[] = array(
+                $queryQueries[] = array(
                     "range" => array(
-                        "from" => $timeStart,
-                        "to" => $timeEnd
+                        "@timestamp" => array(
+                            "from" => $timeStart,
+                            "to" => $timeEnd
+                        )
                     )
                 );
             }
+        }
+        if (count($queryQueries) > 0) {
+            $queryFilters["filter"]["and"] = $queryQueries;
         }
         if (count($queryFilters) > 0) {
             $esQuery = array(
@@ -100,24 +122,29 @@ class ElasticSearch extends Storage
                 )
             );
         }
-        $esQuery['sort'] = array(
-            array('@timestamp' => array('order', 'desc')
-        );
-        $results = $esclient->search($esQuery);
+        file_put_contents('/tmp/es_debug', var_export($esQuery, true));
+        /*$esQuery['sort'] = array(
+            array('@timestamp' => array('order', 'desc'))
+        );*/
+        $results = $esclient->search(array(
+            "body" => $esQuery
+        ));
         $data = [];
         foreach ($results['hits']['hits'] as $result) {
-            $data[] = array(
-                'datetime' => $result['@timestamp'],
-                'host_id' => '',
-                'host' => '',
-                'service_id' => '',
-                'service' => '',
-                'instance' => '',
-                'output' => $result['message'],
-                'status' => '',
-                'type' => '',
-                'msg_type' => ''
-            );
+            if (isset($result['_source']) && $result['_type'] == 'syslog') {
+                $data[] = array(
+                    'datetime' => strtotime($result['_source']['@timestamp']),
+                    'host_id' => '',
+                    'host' => '',
+                    'service_id' => '',
+                    'service' => '',
+                    'instance' => '',
+                    'output' => $result['_source']['message'],
+                    'status' => '',
+                    'type' => '',
+                    'msg_type' => ''
+                );
+            }
         }
         return $data;
     }
