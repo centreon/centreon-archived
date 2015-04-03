@@ -96,7 +96,12 @@ abstract class FormRepository extends ListRepository
             Validator::csrf($givenParameters['token']);
             unset($givenParameters['token']);
         }
-        $formValidator->validate($givenParameters->all());
+        
+        if (is_a($givenParameters, '\Klein\DataCollection\DataCollectio')) {
+            $givenParameters = $givenParameters->all();
+        }
+        
+        $formValidator->validate($givenParameters);
     }
 
     /**
