@@ -54,6 +54,21 @@ class ContactController extends FormController
     protected $datatableObject = '\CentreonAdministration\Internal\ContactDatatable';
     public static $isDisableable = true;
     
+     /**
+     * List contact
+     *
+     * @method get
+     * @route /contact
+     */
+    public function listAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        
+        parent::listAction();
+    }
+    
     /**
      * 
      * @method get

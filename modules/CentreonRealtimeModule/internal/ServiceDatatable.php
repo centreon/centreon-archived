@@ -89,6 +89,12 @@ class ServiceDatatable extends Datatable
      *
      * @var array 
      */
+    protected static  $aFieldNotAuthorized = array('tagname');
+    
+    /**
+     *
+     * @var array 
+     */
     public static $columns = array(
         array (
             'title' => "Id",

@@ -42,32 +42,38 @@ namespace Centreon\Internal\Datatable\Dataprovider;
  */
 class CentreonDb implements DataProviderInterface
 {
+
     public static function loadDatas(
         $params,
         array $columns,
         array $specialFields,
         $datatableClass,
         $modelClass = '',
-        $additionnalClass = null
+        $additionnalClass = null,
+        $aFieldNotAuthorized = array()
     ) {
+       
         // Get Fields to be request
         $fields = "";
         $otherFields = "";
+        $result = array();
         $specialFieldsKeys = array_keys($specialFields);
         foreach ($columns as $column) {
-            if (!in_array($column['name'], $specialFieldsKeys)) {
-                if (isset($column['source'])) {
-                    $otherFields .= $column['name'] . ',';
-                } else {
-                    $fields .= $column['name'] . ',';
+            if (!in_array($column['name'], $aFieldNotAuthorized)) {
+                if (!in_array($column['name'], $specialFieldsKeys)) {
+                    if (isset($column['source'])) {
+                        $otherFields .= $column['name'] . ',';
+                    } else {
+                        $fields .= $column['name'] . ',';
+                    }
+                } elseif (in_array($column['name'], $specialFieldsKeys) && $specialFields[$column['name']]['sameSource']) {
+                    $fields .= $specialFields[$column['name']]['source'] . ',';
                 }
-            } elseif (in_array($column['name'], $specialFieldsKeys) && $specialFields[$column['name']]['sameSource']) {
-                $fields .= $specialFields[$column['name']]['source'] . ',';
             }
         }
         $fields = rtrim($fields, ',');
         $otherFields = rtrim($otherFields, ',');
-        
+              
         
         // get fields for search
         $conditions = array();
@@ -76,32 +82,34 @@ class CentreonDb implements DataProviderInterface
                 $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
             }
         }
-        
-        if (isset($additionnalClass)) {
-                
-            $result = $additionnalClass::getMergedParametersBySearch(
-                explode(',', $fields),
-                explode(',', $otherFields),
-                $params['length'],
-                $params['start'],
-                $columns[$params['order'][0]['column']]['name'],
-                $params['order'][0]['dir'],
-                $conditions,
-                "AND"
-            );
+       /*         
+      if (isset($additionnalClass)) {
+            foreach ($additionnalClass as $class) {
+                $result[] = $class::getMergedParametersBySearch(
+                    explode(',', $fields),
+                    explode(',', $otherFields),
+                    $params['length'],
+                    $params['start'],
+                    $columns[$params['order'][0]['column']]['name'],
+                    $params['order'][0]['dir'],
+                    $conditions,
+                    "AND"
+                );
             
-            $result2 = $additionnalClass::getMergedParametersBySearch(
-                explode(',', $fields),
-                array(),
-                -1,
-                0,
-                null,
-                'ASC',
-                $conditions,
-                "AND"
-            );
+                $result2 = $class::getMergedParametersBySearch(
+                    explode(',', $fields),
+                    array(),
+                    -1,
+                    0,
+                    null,
+                    'ASC',
+                    $conditions,
+                    "AND"
+                );
+            }
             $a['nbOfTotalDatas'] = count($result2);
-        } else {
+        } else { 
+            */
             $result = $modelClass::getListBySearch(
                 $fields,
                 $params['length'],
@@ -122,8 +130,8 @@ class CentreonDb implements DataProviderInterface
                 "AND"
             );
             $a['nbOfTotalDatas'] = $result2[0]['count(*)'];
-        }
-        
+        //}
+
         $a['datas'] = $result;
         
         return $a;

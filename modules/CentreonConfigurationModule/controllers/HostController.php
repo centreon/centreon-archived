@@ -108,10 +108,10 @@ class HostController extends FormController
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        
+                
         $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
-        
+          
         $router->response()->json($myDataForDatatable);
     }
     

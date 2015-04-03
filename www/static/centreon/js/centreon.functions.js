@@ -211,9 +211,11 @@ function topClock() {
     var sHeure;
     if (sessionStorage.length > 0 && sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != "") {
         $(".fa-undo").show();
-       sHeure = clock.tz(sessionStorage.getItem("sTimezone"));
+        
+        var f = clock.format(sDefaultFormatDate);
+        sHeure = moment(f).tz(sessionStorage.getItem("sTimezone"));
     }  else {
-        sHeure = clock
+        sHeure = clock;
         $(".fa-undo").hide();
     }
     $('.time .clock').text(sHeure.format("HH:mm:ss"));

@@ -91,7 +91,7 @@ $(function() {
     ajaxUrlGetNew: "{url_for url="/centreon-realtime/eventlogs/refresh"}",
     formFilter: "#filters",{literal}
     templateRows: "<tr class='{{{border_color}}}'> \
-      <td class='span-1'>{{{datetime}}}</td> \
+      <td class='span-1' data-time='{{{datetime}}}'>{{{datetime}}}</td> \
       <td class='span-2'>{{{host_logo}}} {{{host}}}</td> \
       <td class='span-2'>{{{service_logo}}} {{{service}}}</td> \
 <!--  <td class='span-2'>{{{instance}}}</td>--> \
@@ -127,6 +127,7 @@ $(function() {
     placeholder: "{t}State type{/t}",
     allowClear: true
   });
+  displayDate();
 });
 </script>
 {/block}

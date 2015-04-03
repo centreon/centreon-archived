@@ -38,6 +38,7 @@ namespace CentreonRealtime\Internal;
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of HostDatatable
@@ -69,11 +70,18 @@ class HostDatatable extends Datatable
      */
     protected static $datasource = '\CentreonRealtime\Models\Host';
     
+     /**
+     *
+     * @var type 
+     */
+    //protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Host\Tag';
     /**
      *
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'name');
+    
+    protected static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
@@ -204,8 +212,19 @@ class HostDatatable extends Datatable
             'type' => 'string',
             'visible' => false,
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
-
+/*
     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'host'
@@ -216,7 +235,7 @@ class HostDatatable extends Datatable
     protected static $hookParams = array(
         'resourceType' => 'host'
     );
-    
+    */
     /**
      * 
      * @param array $params
@@ -253,6 +272,14 @@ class HostDatatable extends Datatable
                 Datetime::PRECISION_FORMAT,
                 2
             );
+            
+            /* Tags */
+            $myHostSet['tagname']  = "";
+            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
     }
 }

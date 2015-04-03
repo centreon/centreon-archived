@@ -42,6 +42,7 @@ use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Controllers\FormController;
 
+
 /**
  * 
  */
@@ -82,7 +83,9 @@ class ServiceTemplateController extends FormController
      */
     public function listAction()
     {
-        $this->tpl->addJs('centreon.overlay.js');
+        $this->tpl->addJs('centreon.overlay.js')
+                ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+                ->addCss('centreon.tag.css', 'centreon-administration');
         parent::listAction();
     }
 
@@ -96,6 +99,8 @@ class ServiceTemplateController extends FormController
     public function updateAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -125,6 +130,19 @@ class ServiceTemplateController extends FormController
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
+        }
+        
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var) > 1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource('service', $givenParameters['object_id'], $aTags);
         }
         parent::updateAction();
     }

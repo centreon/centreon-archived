@@ -50,7 +50,8 @@ class CentreonStorageDb implements DataProviderInterface
         array $specialFields,
         $datatableClass,
         $modelClass = '',
-        $additionnalClass = null
+        $additionnalClass = null,
+        $aFieldNotAuthorized = array()
     ) {
         // Get Fields to be request
         $fields = "";
@@ -63,21 +64,22 @@ class CentreonStorageDb implements DataProviderInterface
             if (isset($column['dbName'])) {
                 $column['name'] = $column['dbName'];
             }
-
-            if (!in_array($column['name'], $specialFieldsKeys)) {
-                if (isset($column['source'])) {
-                    if (is_array($column['source'])) {
-                        $otherTables .= $column['source']['table'] . ',';
-                        $conditionsForTable[$column['source']['condition']['first']] =
-                            $column['source']['condition']['second'];
+            if (!in_array($column['name'], $aFieldNotAuthorized)) {
+                if (!in_array($column['name'], $specialFieldsKeys)) {
+                    if (isset($column['source'])) {
+                        if (is_array($column['source'])) {
+                            $otherTables .= $column['source']['table'] . ',';
+                            $conditionsForTable[$column['source']['condition']['first']] =
+                                $column['source']['condition']['second'];
+                            $fields .= $column['name'] . ',';
+                        }
+                        $otherFields .= $column['name'] . ',';
+                    } else {
                         $fields .= $column['name'] . ',';
                     }
-                    $otherFields .= $column['name'] . ',';
-                } else {
-                    $fields .= $column['name'] . ',';
+                } elseif (in_array($column['name'], $specialFieldsKeys) && $specialFields[$column['name']]['sameSource']) {
+                    $fields .= $specialFields[$column['name']]['source'] . ',';
                 }
-            } elseif (in_array($column['name'], $specialFieldsKeys) && $specialFields[$column['name']]['sameSource']) {
-                $fields .= $specialFields[$column['name']]['source'] . ',';
             }
         }
         $fields = rtrim($fields, ',');

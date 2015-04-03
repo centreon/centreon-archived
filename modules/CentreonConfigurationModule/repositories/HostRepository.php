@@ -85,7 +85,8 @@ class HostRepository extends Repository
         'host_first_notification_delay',
         'host_stalking_options',
         'host_snmp_community',
-        'host_snmp_version'
+        'host_snmp_version',
+        'host_tags'
     );
 
     /**

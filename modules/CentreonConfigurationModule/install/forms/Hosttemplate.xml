@@ -33,12 +33,22 @@
 				</field>
 			</block>
 			<block name="Macros">
-				<field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
-                    <attributes>
-						<object>host</object>
-                    </attributes>
-                </field>
+                            <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
+                                <attributes>
+                                    <object>host</object>
+                                </attributes>
+                            </field>
 			</block>
+                        <block name="Tags">
+                            <field name="host_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                                <attributes>
+                                    <object_type>object</object_type>
+                                    <defaultValuesRoute>/centreon-administration/tag/host/all</defaultValuesRoute>
+                                    <listValuesRoute>/centreon-administration/tag/[i:id]/host/formlist</listValuesRoute>
+                                    <multiple>true</multiple>
+                                </attributes>
+                            </field>
+                        </block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>

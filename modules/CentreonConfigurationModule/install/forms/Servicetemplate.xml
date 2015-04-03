@@ -41,12 +41,22 @@
         		</field>
 			</block>
 			<block name="Macros">
-				<field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
-                    <attributes>
-						<object>service</object>
-                    </attributes>
-                </field>
+                            <field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
+                                <attributes>
+                                    <object>service</object>
+                                </attributes>
+                            </field>
 			</block>
+                        <block name="Tags">
+                            <field name="service_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                                <attributes>
+                                    <object_type>object</object_type>
+                                    <defaultValuesRoute>/centreon-administration/tag/service/all</defaultValuesRoute>
+                                    <listValuesRoute>/centreon-administration/tag/[i:id]/service/formlist</listValuesRoute>
+                                    <multiple>true</multiple>
+                                </attributes>
+                            </field>
+                        </block>
 			<block name="Check properties">
 				<field name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>

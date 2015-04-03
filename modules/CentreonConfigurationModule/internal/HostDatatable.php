@@ -41,6 +41,7 @@ use CentreonRealtime\Repository\HostRepository as RealTimeHostRepository;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of HostDatatable
@@ -69,21 +70,48 @@ class HostDatatable extends Datatable
     
     /**
      *
+     * @var array 
+     */
+   // protected static $additionnalDatasource = array('\CentreonConfiguration\Models\Relation\Host\Tag');
+    
+    /**
+     *
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'host_name');
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array('tagname');
 
     /**
      *
      * @var array 
      */
-    protected static $configuration = array(
+    public static $configuration = array(
         'autowidth' => false,
         'order' => array(
             array('host_name', 'asc')
         ),
         'stateSave' => true,
         'paging' => true,
+        'group' => array('tagname'),
+        'relation' => array(
+            array(
+                'first' => 'cfg_tags', 
+                'second' => 'cfg_tags_hosts',
+                'firstKey' => 'tag_id', 
+                'secondKey' => 'tag_id'
+            ),
+            array(
+                'first' => 'cfg_tags_hosts', 
+                'second' => 'cfg_hosts',
+                'firstKey' => 'resource_id', 
+                'secondKey' => 'host_id'
+            )
+        )
     );
     
     /**
@@ -214,7 +242,19 @@ class HostDatatable extends Datatable
             'className' => "cell_center",
             'width' => '50px'
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
+    /*
 
     protected static $extraParams = array(
         'addToHook' => array(
@@ -226,6 +266,7 @@ class HostDatatable extends Datatable
     protected static $hookParams = array(
         'resourceType' => 'host'
     );
+    */
     
     /**
      * 
@@ -243,7 +284,7 @@ class HostDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         $router = Di::getDefault()->get('router');
-            
+        
         foreach ($resultSet as &$myHostSet) {
             $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
                 '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/host/snapshot/').
@@ -268,7 +309,16 @@ class HostDatatable extends Datatable
                     '"><i class="fa '.
                     $template['ico'].
                     '"></i></a></span>';
-            } 
+            }
+            
+            /* Tags */
+            $myHostSet['tagname']  = "";
+            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
     }
+    
 }

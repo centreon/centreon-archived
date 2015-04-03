@@ -38,6 +38,7 @@ namespace CentreonAdministration\Controllers;
 use Centreon\Internal\Di;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Controller;
+use CentreonAdministration\Internal\TagDatatable;
 
 /**
  * Controller for tag action
@@ -49,6 +50,17 @@ use Centreon\Internal\Controller;
  */
 class TagController extends Controller
 {
+    protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
+    
+    protected $objectClass = '\CentreonAdministration\Models\Tag';
+    
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $objectBaseUrl = '/tag'; 
+    
     /**
      * Add a tag
      *
@@ -66,6 +78,8 @@ class TagController extends Controller
         } else {
             $listResources = $post['resourceId'];
         }
+        
+     
         foreach ($listResources as $resourceId) {
             $tagId = TagsRepository::add(
                 $post['tagName'],
@@ -108,7 +122,7 @@ class TagController extends Controller
         $get = $this->getParams('named');
         
         if (isset($get['objectName']) && isset($get['id'])) {
-            $data = TagsRepository::getList($get['objectName'], $get['id'], true);
+            $data = TagsRepository::getList($get['objectName'], $get['id'], 1);
         }
         $this->router->response()->json($data);
     }
@@ -125,8 +139,24 @@ class TagController extends Controller
         $get = $this->getParams('named');
         
         if (isset($get['objectName'])) {
-            $data = TagsRepository::getList($get['objectName'], 0, true);
+            $data = TagsRepository::getList($get['objectName'], 0, 1);
         }
         $this->router->response()->json($data);
+    }
+        
+    /**
+     * 
+     * @method get
+     * @route /tag
+     */
+    public function datatableAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        
+        $myDatatable = new TagDatatable($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+          
+        $router->response()->json($myDataForDatatable);
     }
 }

@@ -94,6 +94,11 @@
                         "name" : "Timezones",
                         "short_name" : "centreon-timezones",
                         "route" : "/centreon-administration/timezone"
+                    },
+                    {
+                        "name" : "Tags",
+                        "short_name" : "centreon-tag",
+                        "route" : "/centreon-administration/tag"
                     }
                 ]
             }

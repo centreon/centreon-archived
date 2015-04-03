@@ -57,11 +57,11 @@ class DisplayTagList
         $rows = array();
         if (isset($params['_ids'])) {
             foreach ($params['_ids'] as $id) {
-                $tagList = TagsRepository::getList($params['resourceType'], $id);
+                $tagList = TagsRepository::getList($params['resourceType'], $id, 2);
                 
                 $rows[$id] = '';
                 foreach ($tagList as $tagId => $tagName) {
-                    $rows[$id] .= static::getTag($params['resourceType'], $id, $tagName['id'], $tagName['text']);
+                    $rows[$id] .= static::getTag($params['resourceType'], $id, $tagName['id'], $tagName['text'], $tagName['user_id']);
                 }
                 $rows[$id] .= static::getAddTag($params['resourceType'], $id);
             }
@@ -70,16 +70,24 @@ class DisplayTagList
             'columnName' => 'Tags',
             'width'      => '150px',
             'max-width'  => '150px',
+            'searchable' => true,
             'values'     =>  $rows
         );
     }
 
-    private static function getTag($resourceType, $resourceId, $tagId, $tagName)
+    private static function getTag($resourceType, $resourceId, $tagId, $tagName, $iUserId)
     {
-        $html = '<div class="tag" data-resourceid="' . $resourceId . '" data-resourcetype="'
+        if ($iUserId != '') {
+            $sClass = 'tag';
+            $sDivRemove = '<div class="remove"><a href="#">&times;</a></div>';
+        } else {
+            $sClass = 'tagGlobal';
+            $sDivRemove = '';
+        }
+        $html = '<div class="'.$sClass.'" data-resourceid="' . $resourceId . '" data-resourcetype="'
             . $resourceType .'" data-tagid="' . $tagId . '">
-            <div class="title">' . $tagName . '</div>
-            <div class="remove"><a href="#">&times;</a></div>
+            <div class="tagname">' . $tagName . '</div>
+            '.$sDivRemove.'
         </div> ';
         return $html;
     }
