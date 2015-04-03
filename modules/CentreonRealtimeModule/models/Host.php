@@ -48,8 +48,8 @@ class Host extends CentreonBaseModel
     protected static $table = "rt_hosts";
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "name";
-    
-    /** 
+
+    /**
      * 
      * @param type $parameterNames
      * @param type $count
@@ -70,7 +70,7 @@ class Host extends CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['enabled'] = '1';
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+	return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 
     /**

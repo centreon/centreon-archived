@@ -143,17 +143,20 @@ class HostDatatable extends Datatable
                 'parameters' =>array(
                     '0' => '<span class="label label-success">Up</span>',
                     '1' => '<span class="label label-danger">Down</span>',
-                    '2' => '<span class="label label-default">Unreachable</span>'
+                    '2' => '<span class="label label-primary">Unreachable</span>',
+                    '4' => '<span class="label label-info">Pending</span>'
                 )
             ),
             'searchParam' => array(
                 'type' => 'select',
                 'additionnalParams' => array(
-                    'Up' => 0,
-                    'Down' => 1,
-                    'Unreachable' => 2
+                    'UP' => '0',
+                    'Down' => '1',
+                    'Unreachable' => '2',
+                    'Pending' => '4'
                 )
             ),
+
             'width' => "50px",
             'className' => 'cell_center'
         ),
