@@ -498,7 +498,7 @@ abstract class ListController extends Controller
 
             $repository = $this->repository;
             foreach ($params['ids'] as $id) {
-                $repository::update(
+                $repository::disable(
                     array(
                         'object_id' => $id,
                         $field => $value,
