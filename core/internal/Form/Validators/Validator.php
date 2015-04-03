@@ -91,7 +91,7 @@ class Validator
      * @return boolean
      * @throws Exception
      */
-    public function csrf($token)
+    public static function csrf($token)
     {
         if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
             if ($token == $_SESSION['form_token']) {
