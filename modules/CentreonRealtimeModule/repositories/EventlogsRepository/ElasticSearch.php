@@ -104,6 +104,39 @@ class ElasticSearch extends Storage
                         )
                     )
                 );
+            } elseif ($key == 'host') {
+                $queryQueries[] = array(
+                    "or" => array(
+                        "term" => array(
+                            "host" => $value
+                        ),
+                        "term" => array(
+                            "centreon_hostname" => $value
+                        )
+                    )
+                );
+            } elseif ($key == 'service') {
+                $queryQueries[] = array(
+                    "term" => array(
+                        "centreon_service" => $value
+                    )
+                );
+            } elseif ($key == 'eventtype') {
+                $queryQueries[] = self::queryEventtype($value);
+            } elseif ($key == 'status') {
+                $queryQueries[] = array(
+                    "or" => array(
+                        "term" => array(
+                            "centreon_status" => Status::numToString($value, Status::TYPE_SERVICE);
+                        ),
+                        "term" => array(
+                            "centreon_status" => Status::numToString($value, Status::TYPE_HOST);
+                        ),
+                        "term" => array(
+                            "centreon_status" => Status::numToString($value, Status::TYPE_EVENT);
+                        )
+                    )
+                );
             }
         }
         if (count($queryQueries) > 0) {
@@ -122,7 +155,6 @@ class ElasticSearch extends Storage
                 )
             );
         }
-        file_put_contents('/tmp/es_debug', var_export($esQuery, true));
         /*$esQuery['sort'] = array(
             array('@timestamp' => array('order', 'desc'))
         );*/
@@ -147,5 +179,37 @@ class ElasticSearch extends Storage
             }
         }
         return $data;
+    }
+
+    /**
+     * Get the query for event type
+     *
+     * @param int $eventtype The event type ID
+     * @return array
+     */
+    protected static function queryEventtype($eventtype)
+    {
+        switch ($eventtype) {
+            case 0:
+                $value = "ALERT";
+                break;
+            case 2:
+                $value = "NOTIFICATION";
+                break;
+            case 6:
+                $value = "CURRENT";
+                break;
+            case 8:
+                $value = "INITIAL";
+                break;
+            case 10:
+                $value = "ACKNOWLEDGE_";
+                break;
+        }
+        return array(
+            "term" => array(
+                "centreon_type" => $value
+            )
+        );
     }
 }
