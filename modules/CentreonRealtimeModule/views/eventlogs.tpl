@@ -12,7 +12,7 @@
   <div class="row">
     <div class="infinite-scroll col-sm-1">
     </div>
-    <div class="event-detail col-sm-1">
+    <div class="event-detail col-sm-1" style="display: none;">
       <div class="row">
         <div class="col-sm-10 object-name">
         </div>
@@ -109,10 +109,14 @@ $(function() {
       $(this).removeClass("active");
       $(".infinite-scroll").removeClass("active");
       $(".event-detail").removeClass("active");
+      $(".event-detail").one("transitionend", function () {
+        $(".event-detail").hide();
+      });
     } else {
       $(".infinite-scroll").find(".event").removeClass("active");
       $(this).addClass("active");
       $(".infinite-scroll").addClass("active");
+      $(".event-detail").show();
       $(".event-detail").addClass("active");
       $(".event-detail .object-name").text($(this).find(".object-name").text());
       var time = $(this).find('.duration').data('duration');
