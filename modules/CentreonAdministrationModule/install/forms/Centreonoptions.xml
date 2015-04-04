@@ -57,6 +57,26 @@
             </block>
         </section>
         <section name="Broker Options">
+      <block name="Path configuration">
+        <field name="broker_etc_directory" label="Configuration directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The configuration directory for Centreon Broker</help>
+        </field>
+        <field name="broker_module_directory" label="Module directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The module directory for Centreon Broker. This directory content the .so module.</help>
+        </field>
+        <field name="broker_logs_directory" label="Logs directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The log directory for Centreon Broker</help>
+        </field>
+        <field name="broker_data_directory" label="Data directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The data directory for Centreon Broker</help>
+        </field>
+        <field name="broker_cbmod_directory" label="cbmod directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The CBMOD directory for Centreon Broker</help>
+        </field>
+        <field name="broker_init_script" label="Init script path" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The init script path for Centreon Broker</help>
+        </field>
+      </block>
             <block name="Storage">
                 <field name="storage_interval" label="interval" default_value="60" advanced="0" type="text" parent_field="" mandatory="0">
                   <help>The interval.</help>
