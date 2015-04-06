@@ -59,11 +59,11 @@
       <div class="col-sm-2"><label class="label-controller">{t}Fill{/t}</label></div>
       <div class="col-sm-4">
         <div class="btn-group btn-toggle" data-toggle="buttons">
-          <label class="btn btn-sm btn-default{if $metric['fill'] == 1} active{/if}">
-            <input type="radio" name="fill[#index#]" value="1"{if $metric['fill'] == 1} checked{/if}> {t}Yes{/t}
+          <label class="btn btn-sm{if $metric['fill'] == 1} btn-primary active{else} btn-default{/if}">
+            <input type="radio" name="fill[{$metricIndex}]" value="1"{if $metric['fill'] == 1} checked{/if}> {t}Yes{/t}
           </label>
-          <label class="btn btn-sm btn-primary{if $metric['fill'] == 0} active{/if}">
-            <input type="radio" name="fill[#index#]" value="0"{if $metric['fill'] == 0} checked{/if}> {t}No{/t}
+          <label class="btn btn-sm{if $metric['fill'] == 0} btn-primary active{else} btn-default{/if}">
+            <input type="radio" name="fill[{$metricIndex}]" value="0"{if $metric['fill'] == 0} checked{/if}> {t}No{/t}
           </label>
         </div>
       </div>
