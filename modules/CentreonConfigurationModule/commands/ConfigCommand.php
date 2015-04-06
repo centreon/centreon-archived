@@ -37,6 +37,8 @@ namespace CentreonConfiguration\Commands;
 
 use Centreon\Internal\Command\AbstractCommand;
 use CentreonConfiguration\Repository\ConfigGenerateRepository;
+use CentreonConfiguration\Repository\ConfigMoveRepository;
+use CentreonConfiguration\Repository\ConfigTestRepository;
 
 /**
  * @authors Lionel Assepo
@@ -47,27 +49,31 @@ class ConfigCommand extends AbstractCommand
 {
     /**
      * Action for Generating configuration files
-     * @param type $id
+     * @param type $id Poller id
      */
     public function generateAction($id)
     {
         $obj = new ConfigGenerateRepository($id);
-        echo $obj->getStepStatus();
+        echo $obj->generate();
     }
 
     /**
      * Action for Move configuration files
+     * @param type $id Poller id
      */
-    public function moveAction()
+    public function moveAction($id)
     {
-        echo "Not implemented yet";
+        $obj = new ConfigMoveRepository($id);
+        echo $obj->moveConfig();
     }
 
     /**
      * Action for testing configuration files
+     * @param type $id Poller id
      */
-    public function testAction()
+    public function testAction($id)
     {
-        echo "Not implemented yet";
+        $obj = new ConfigTestRepository($id);
+        echo $obj->checkConfig();
     }
 }
