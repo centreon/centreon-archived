@@ -58,11 +58,11 @@ class HostDatatable extends Datatable
         'order' => array(
             array('name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     
-    protected static $dataprovider = '\CentreonRealtime\Internal\CentreonStorageDb';
+    protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
      *
@@ -139,7 +139,7 @@ class HostDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'State',
+            'title' => 'Status',
             'name' => 'state',
             'data' => 'state',
             'orderable' => true,
@@ -151,15 +151,20 @@ class HostDatatable extends Datatable
                 'parameters' =>array(
                     '0' => '<span class="label label-success">Up</span>',
                     '1' => '<span class="label label-danger">Down</span>',
-                    '2' => '<span class="label label-default">Unreachable</span>'
+                    '2' => '<span class="label label-primary">Unreachable</span>',
+                    '4' => '<span class="label label-info">Pending</span>'
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Up' => 0,
-                'Down' => 1,
-                'Unreachable' => 2
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'UP' => '0',
+                    'Down' => '1',
+                    'Unreachable' => '2',
+                    'Pending' => '4'
+                )
             ),
+
             'width' => "50px",
             'className' => 'cell_center'
         ),

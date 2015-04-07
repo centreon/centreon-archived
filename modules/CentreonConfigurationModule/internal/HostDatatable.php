@@ -95,7 +95,7 @@ class HostDatatable extends Datatable
         'order' => array(
             array('host_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
         'group' => array('tagname'),
         'relation' => array(
@@ -235,8 +235,7 @@ class HostDatatable extends Datatable
                 'type' => 'select',
                 'additionnalParams' => array(
                     'Enabled' => '1',
-                    'Disabled' => '0',
-                    'Trash' => '2'
+                    'Disabled' => '0'
                 )
             ),
             'className' => "cell_center",

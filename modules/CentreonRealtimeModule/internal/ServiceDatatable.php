@@ -38,6 +38,7 @@ namespace CentreonRealtime\Internal;
 
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
+use CentreonRealtime\Models\Host;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
 use CentreonAdministration\Repository\TagsRepository;
@@ -71,15 +72,14 @@ class ServiceDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
-            array('h.name', 'asc'),
             array('s.description', 'asc')
         ),
         'searchCols' => array(),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     
-    protected static $dataprovider = '\CentreonRealtime\Internal\CentreonStorageDb';
+    protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
     /**
      *
@@ -106,26 +106,20 @@ class ServiceDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
-            'className' => 'datatable-align-center',
+            'className' => 'cell_center',
             'width' => '15px',
             'className' => 'cell_center'
         ),
          array (
             'title' => 'Name',
-            'name' => 'h.name',
+            'name' => 'host_id',
             'data' => 'name',
             'orderable' => true,
             'searchable' => true,
             'searchLabel' => 'host',
             'type' => 'string',
             'visible' => true,
-            'source' => array(
-                'table' => 'rt_hosts h',
-                'condition' => array(
-                    'first' => 'h.host_id',
-                    'second' => 's.host_id'
-                )
-            ),
+            'source' => 'relation',
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
@@ -187,20 +181,25 @@ class ServiceDatatable extends Datatable
                     '4' => '<span class="label label-info">Pending</span>',
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                                    ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'OK' => '0',
+                    'Warning' => '1',
+                    'Critical' => '2',
+                    'Unknown' => '3',
+                    'Pending' => '4'
+                )
+            ),
             'width' => '50px',
-            'className' => 'datatable-align-center'
+            'className' => 'cell_center'
         ),
         array (
             'title' => 'Last Check',
             'name' => '(unix_timestamp(NOW())-s.last_check) AS last_check',
             'data' => 'last_check',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '10%'
@@ -210,7 +209,7 @@ class ServiceDatatable extends Datatable
             'name' => '(unix_timestamp(NOW())-s.last_hard_state_change) AS duration',
             'data' => 'duration',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '10%',
@@ -221,7 +220,7 @@ class ServiceDatatable extends Datatable
             'name' => 'CONCAT(s.check_attempt, " / ", s.max_check_attempts) as retry',
             'data' => 'retry',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '25px',
@@ -244,6 +243,7 @@ class ServiceDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => false,
+        )
         ),
         array (
             'title' => 'Host Enabled',
@@ -303,6 +303,9 @@ class ServiceDatatable extends Datatable
         $previousHost = '';
         foreach ($resultSet as &$myServiceSet) {
             // Set host_name
+            $myHostName = Host::get($myServiceSet['host_id'], array('name'));
+            $myServiceSet['name'] = $myHostName['name'];
+            
             if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {

@@ -59,7 +59,7 @@ class ServiceTemplateDatatable extends Datatable
         'order' => array(
             array('service_description', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

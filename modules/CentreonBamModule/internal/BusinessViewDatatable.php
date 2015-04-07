@@ -69,7 +69,7 @@ class BusinessViewDatatable extends Datatable
         'order' => array(
             array('ba_group_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

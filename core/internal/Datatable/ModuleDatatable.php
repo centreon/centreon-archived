@@ -74,7 +74,7 @@ class ModuleDatatable extends Datatable
         'order' => array(
             array('name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

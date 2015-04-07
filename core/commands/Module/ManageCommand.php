@@ -58,7 +58,10 @@ class ManageCommand extends AbstractCommand
         switch ($type) {
             default:
             case 'all':
-                echo "Not implemented yet";
+                $moduleList = Informations::getModuleList();
+                foreach ($moduleList as $module) {
+                    echo $module."\n";
+                }
                 break;
             case 'core':
                 echo "centreon-main\ncentreon-configuration";

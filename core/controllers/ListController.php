@@ -494,15 +494,15 @@ abstract class ListController extends Controller
         $field = static::$enableDisableFieldName;
 
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $this->router->request()->paramsPost();
 
             $repository = $this->repository;
             foreach ($params['ids'] as $id) {
-                $repository::update(
+                $repository::disable(
                     array(
                         'object_id' => $id,
-                        $field => $value
+                        $field => $value,
+                        'token' => filter_input(INPUT_COOKIE, 'ajaxToken')
                     )
                 );
             }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+  <form name="resource_form">
+	<route>/centreon-configuration/resource/update</route>
+	<redirect>1</redirect>
+	<redirect_route>/centreon-configuration/resource</redirect_route>
+	<section name="General">
+	  <block name="General information">
+		<field name="resource_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+			<validators>
+			</validators>
+          <help>Name which will be used for identifying the resource.</help>
+        </field>
+		<field name="resource_line" label="MACRO Expression" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
+          <help>A short description of the resource.</help>
+        </field>
+		<field name="resource_pollers" label="Linked instances" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		  <attributes>
+			<object_type>object</object_type>
+			<defaultValuesRoute>/centreon-configuration/poller/formlist</defaultValuesRoute>
+			<listValuesRoute>/centreon-configuration/resource/[i:id]/poller</listValuesRoute>
+			<multiple>true</multiple>
+			<ordered>false</ordered>
+		  </attributes>
+          <help>This is the list of all pollers using this resource.</help>
+		</field>
+        <field name="resource_comment" label="Comment" default_value="" advanced="0" type="textarea" parent_field="" mandatory="1">
+          <help>This will be executed by Centreon Engine, note that this line contains macros that will be replaced before execution. e.g: centreon_resource_perl.</help>
+        </field>
+		<field name="resource_activate" label="Status" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+		  <attributes>
+            <choices>
+              <Enabled>1</Enabled>
+              <Disabled>0</Disabled>
+            </choices>
+		  </attributes>
+          <help>Whether or not the resource is enabled.</help>
+		</field>
+	  </block>
+	</section>
+  </form>
+  <wizard name="add_resource">
+	<route>/centreon-configuration/resource/add</route>
+	<step name="General">
+	  <field name="resource_name" mandatory="1"></field>
+	  <field name="resource_line" mandatory="1"></field>
+	  <field name="resource_comment" mandatory="0"></field>
+	  <field name="resource_activate" mandatory="1"></field>
+	</step>
+	<step name="Relation">
+	  <field name="resource_pollers" mandatory="0"></field>
+	</step>
+  </wizard>
+</forms>

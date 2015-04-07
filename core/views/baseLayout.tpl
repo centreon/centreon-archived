@@ -174,7 +174,7 @@ $(document).ready(function() {
             $(this).centreonWizard();
         });
         $("#modal").modal({
-            "remote": "/centreon-administration/timezone/addtouser"
+            "remote": "{url_for url='/centreon-administration/timezone/addtouser'}"
         });
     });
     
@@ -221,7 +221,7 @@ $(document).ready(function() {
             .appendTo($deleteFooter);
         $deleteFooter.appendTo('#modal .modal-content');
         
-        var objectDeleteUrl =  "/centreon-administration/user/deletetimezone";
+        var objectDeleteUrl =  "{url_for for='/centreon-administration/user/deletetimezone'}";
 
         $deleteBtn.on('click', function(e) {
             $.ajax({

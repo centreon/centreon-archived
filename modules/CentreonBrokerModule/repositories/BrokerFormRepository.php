@@ -220,7 +220,7 @@ class BrokerFormRepository extends FormRepository
             'broker_module_directory' => 'directory_modules',
             'broker_data_directory' => 'directory_data',
             'broker_logs_directory' => 'directory_logs',
-            'init_script' => 'init_script'
+            'broker_init_script' => 'init_script'
         );
         
         $componentList = array();

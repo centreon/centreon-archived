@@ -77,7 +77,7 @@ class ContactDatatable extends Datatable
         'order' => array(
             array('description', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

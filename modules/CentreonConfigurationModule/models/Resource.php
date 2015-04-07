@@ -31,52 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Commands;
+namespace CentreonConfiguration\Models;
 
-use Centreon\Internal\Command\AbstractCommand;
-use CentreonConfiguration\Repository\ConfigGenerateRepository;
-use CentreonConfiguration\Repository\ConfigMoveRepository;
-use CentreonConfiguration\Repository\ConfigTestRepository;
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * @authors Lionel Assepo
- * @package CentreonConfiguration
- * @subpackage Commands                                 
+ * Used for interacting with Resource objects
+ *
+ * @author sylvestre
  */
-class ConfigCommand extends AbstractCommand
+class Resource extends CentreonBaseModel
 {
-    /**
-     * Action for Generating configuration files
-     * @param type $id Poller id
-     */
-    public function generateAction($id)
-    {
-        $obj = new ConfigGenerateRepository($id);
-        $obj->generate();
-        echo $obj->getOutput();
-    }
-
-    /**
-     * Action for Move configuration files
-     * @param type $id Poller id
-     */
-    public function moveAction($id)
-    {
-        $obj = new ConfigMoveRepository($id);
-        $obj->moveConfig();
-        echo $obj->getOutput();
-    }
-
-    /**
-     * Action for testing configuration files
-     * @param type $id Poller id
-     */
-    public function testAction($id)
-    {
-        $obj = new ConfigTestRepository($id);
-        $obj->checkConfig();
-        echo $obj->getOutput();
-    }
+    protected static $table = "cfg_resources";
+    protected static $primaryKey = "resource_id";
+    protected static $uniqueLabelField = "resource_name";
 }

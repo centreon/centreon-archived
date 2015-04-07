@@ -158,9 +158,7 @@ abstract class FormController extends ListController
     public function updateAction()
     {
         $givenParameters = clone $this->getParams('post');
-        $updateSuccessful = true;
-        $updateErrorMessage = '';
-        
+
         try {
             $repository = $this->repository;
             $repository::update($givenParameters, 'form', $this->getUri());
@@ -169,7 +167,6 @@ abstract class FormController extends ListController
             unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
         } catch (\Centreon\Internal\Exception $e) {
-            $updateSuccessful = false;
             $updateErrorMessage = $e->getMessage();
             $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
