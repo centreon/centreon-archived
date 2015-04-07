@@ -70,7 +70,7 @@ class UserDatatable extends Datatable
         'order' => array(
             array('firstname', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

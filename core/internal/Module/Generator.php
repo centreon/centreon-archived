@@ -244,7 +244,7 @@ class Generator
         $controllerClass .= $this->indent() . 'public static $moduleName = ' . "'$this->moduleCanonicalName';\n\n";
         $controllerClass .= $this->indent() . "/**\n";
         $controllerClass .= $this->indent() . " * @method get\n";
-        $controllerClass .= $this->indent() . " * @route /$this->moduleShortName/sample\n";
+        $controllerClass .= $this->indent() . " * @route /sample\n";
         $controllerClass .= $this->indent() . " */\n";
         $controllerClass .= $this->indent() . "public function sampleAction()\n";
         $controllerClass .= $this->indent() . "{\n";

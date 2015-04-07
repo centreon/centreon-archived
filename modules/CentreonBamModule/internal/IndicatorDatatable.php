@@ -70,7 +70,7 @@ class IndicatorDatatable extends Datatable
         'order' => array(
             array('kpi_id', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

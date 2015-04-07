@@ -63,7 +63,7 @@ class AclmenuDatatable extends Datatable
             array('name', 'asc'),
             array('acl_menu_id', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

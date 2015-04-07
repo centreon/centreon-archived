@@ -69,7 +69,7 @@ class HostCategoryDatatable extends Datatable
         'order' => array(
             array('hc_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

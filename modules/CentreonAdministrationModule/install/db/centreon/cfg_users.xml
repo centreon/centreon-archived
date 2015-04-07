@@ -6,7 +6,7 @@
         <column name="password" phpName="password" type="VARCHAR" size="255" required="true"/>
         <column name="is_admin" phpName="isAdmin" type="TINYINT" required="true" defaultValue="0"/>
         <column name="is_locked" phpName="isLocked" type="TINYINT" required="true" defaultValue="0"/>
-        <column name="is_activated" phpName="isActivated" type="TINYINT" required="true" defaultValue="0"/>
+        <column name="is_activated" phpName="isActivated" type="TINYINT" required="true" defaultValue="1"/>
         <column name="is_password_old" phpName="isPasswordOld" type="TINYINT" required="true" defaultValue="0"/>
         <column name="language_id" phpName="languageId" type="INTEGER" required="false"/>
         <column name="timezone_id" phpName="timezoneId" type="INTEGER" required="false"/>

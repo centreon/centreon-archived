@@ -103,7 +103,18 @@
                 "name": "Pollers",
                 "short_name": "conf_poller",
                 "icon_class": "fa fa-code-fork",
-                "route": "/centreon-configuration/poller"
+                "menus": [
+                    {
+                        "name": "Pollers",
+                        "short_name": "conf_pollers_list",
+                        "route": "/centreon-configuration/poller"
+                    },
+                    {
+                        "name": "Global Resources",
+                        "short_name": "conf_resources_list",
+                        "route": "/centreon-configuration/resource"
+                    }
+                ]
             }
         ]
     }

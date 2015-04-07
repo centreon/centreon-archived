@@ -63,7 +63,7 @@ class AclresourceDatatable extends Datatable
             array('acl_res_name', 'asc'),
             array('acl_res_id', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

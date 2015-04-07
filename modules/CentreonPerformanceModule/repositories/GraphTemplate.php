@@ -95,7 +95,7 @@ class GraphTemplate extends FormRepository
     public static function getMetrics($id)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
-        $query = "SELECT metric_name, color, is_negative
+        $query = "SELECT metric_name, color, is_negative, fill
             FROM cfg_curve_config
             WHERE graph_template_id = :id";
         $stmt = $dbconn->prepare($query);
