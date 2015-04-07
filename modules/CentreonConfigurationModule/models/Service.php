@@ -123,7 +123,10 @@ class Service extends CentreonBaseModel
         $order = null,
         $sort = "ASC",
         $filters = array(),
-        $filterType = "OR"
+        $filterType = "OR",
+        $tablesString = null,
+        $staticFilter = null,
+        $aAddFilters  = array()
     ) {
         $filters['service_register'] = '1';
         if (is_array($filterType)) {
@@ -166,6 +169,8 @@ class Service extends CentreonBaseModel
                 'service_register' => 'AND'
             );
         }
+        
+ 
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 

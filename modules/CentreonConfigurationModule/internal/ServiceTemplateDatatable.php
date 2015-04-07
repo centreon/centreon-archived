@@ -87,7 +87,7 @@ class ServiceTemplateDatatable extends Datatable
      *
      * @var array 
      */
-    protected static  $aFieldNotAuthorized = array('tagname');
+    protected static  $aFieldNotAuthorized = array();
     
     /**
      *

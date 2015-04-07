@@ -199,7 +199,8 @@ abstract class CentreonRelationModel extends CentreonModel
         $sort = "ASC",
         $filters = array(),
         $filterType = "OR",
-        $relationTableParams = array()
+        $relationTableParams = array(),
+        $aAddFilters = array()
     ) {
         /* Convert params for getList */
         $params = array();
@@ -217,7 +218,7 @@ abstract class CentreonRelationModel extends CentreonModel
         $staticFilter .= " AND ";
         $staticFilter .= $secondObject::getTableName() . "." . $secondObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$secondKey;
 
-        return static::getListBySearch($params, $count, $offset, $order, $sort, $filters, $filterType, $listTable, $staticFilter);
+        return static::getListBySearch($params, $count, $offset, $order, $sort, $filters, $filterType, $listTable, $staticFilter, $aAddFilters);
     }
 
     /**

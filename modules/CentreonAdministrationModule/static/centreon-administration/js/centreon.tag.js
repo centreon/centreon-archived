@@ -70,6 +70,8 @@ $(function () {
       saveTag( $newTag );
     }
   });
+  
+
 
   /* Event for delete a tag */
   $( document ).on( "click", ".tag:not(.addtag) .remove a", function() {

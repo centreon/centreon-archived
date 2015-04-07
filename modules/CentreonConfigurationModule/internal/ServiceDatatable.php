@@ -381,8 +381,7 @@ class ServiceDatatable extends Datatable
             );
             
             $myServiceSet['service_activate'] = $save;
-            
-            
+                   
             /* Tags */
             $myServiceSet['tagname']  = "";
             $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);

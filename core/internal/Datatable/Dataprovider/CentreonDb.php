@@ -72,8 +72,7 @@ class CentreonDb implements DataProviderInterface
             }
         }
         $fields = rtrim($fields, ',');
-        $otherFields = rtrim($otherFields, ',');
-              
+        $otherFields = rtrim($otherFields, ',');       
         
         // get fields for search
         $conditions = array();
@@ -82,34 +81,32 @@ class CentreonDb implements DataProviderInterface
                 $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
             }
         }
-       /*         
+         
       if (isset($additionnalClass)) {
-            foreach ($additionnalClass as $class) {
-                $result[] = $class::getMergedParametersBySearch(
-                    explode(',', $fields),
-                    explode(',', $otherFields),
-                    $params['length'],
-                    $params['start'],
-                    $columns[$params['order'][0]['column']]['name'],
-                    $params['order'][0]['dir'],
-                    $conditions,
-                    "AND"
-                );
-            
-                $result2 = $class::getMergedParametersBySearch(
-                    explode(',', $fields),
-                    array(),
-                    -1,
-                    0,
-                    null,
-                    'ASC',
-                    $conditions,
-                    "AND"
-                );
-            }
+            $result = $additionnalClass::getMergedParametersBySearch(
+                explode(',', $fields),
+                explode(',', $otherFields),
+                $params['length'],
+                $params['start'],
+                $columns[$params['order'][0]['column']]['name'],
+                $params['order'][0]['dir'],
+                $conditions,
+                "AND"
+            );
+
+            $result2 = $additionnalClass::getMergedParametersBySearch(
+                explode(',', $fields),
+                array(),
+                -1,
+                0,
+                null,
+                'ASC',
+                $conditions,
+                "AND"
+            );
             $a['nbOfTotalDatas'] = count($result2);
         } else { 
-            */
+     
             $result = $modelClass::getListBySearch(
                 $fields,
                 $params['length'],
@@ -130,7 +127,7 @@ class CentreonDb implements DataProviderInterface
                 "AND"
             );
             $a['nbOfTotalDatas'] = $result2[0]['count(*)'];
-        //}
+        }
 
         $a['datas'] = $result;
         
