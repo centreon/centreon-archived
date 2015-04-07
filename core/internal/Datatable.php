@@ -216,7 +216,7 @@ class Datatable
             get_class($this),
             $this->objectModelClass,
             static::$additionnalDatasource,
-            static::$aFieldNotAuthorized
+            isset(static::$aFieldNotAuthorized) ? static::$aFieldNotAuthorized : array()
         );
        
         
