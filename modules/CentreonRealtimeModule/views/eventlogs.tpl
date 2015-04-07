@@ -150,7 +150,7 @@ $(function() {
     }
   }).on("blur", function (e) {
     /* Fill the advanced search */
-    var advString = $("input['advsearch']").val();
+    var advString = $("input[name='advsearch']").val();
     var searchTag = $(this).data("searchtag");
     var tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" );
     var splitRegex = new RegExp( "(\\w+|\"[^\"]+\"|'[^']+')", "g" );
