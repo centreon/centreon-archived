@@ -97,7 +97,7 @@ abstract class FormRepository extends ListRepository
             unset($givenParameters['token']);
         }
         
-        if (is_a($givenParameters, '\Klein\DataCollection\DataCollectio')) {
+        if (is_a($givenParameters, '\Klein\DataCollection\DataCollection')) {
             $givenParameters = $givenParameters->all();
         }
         
