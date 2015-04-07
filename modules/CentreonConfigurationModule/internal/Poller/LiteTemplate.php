@@ -67,11 +67,13 @@ class LiteTemplate
      * @param string $enginePath
      * @param string $brokerPath
      */
-    public function __construct($name, $enginePath = "", $brokerPath = "")
+    public function __construct($name, $enginePath = "", $brokerPath = array())
     {
         $this->name = $name;
         $this->enginePath = $enginePath;
-        $this->brokerPath = $brokerPath;
+        if (count($brokerPath) > 0) {
+            $this->brokerPath[] = $brokerPath;
+        }
     }
     
     /**
@@ -134,7 +136,7 @@ class LiteTemplate
      */
     public function setBrokerPath($newBrokerPath)
     {
-        $this->brokerPath = $newBrokerPath;
+        $this->brokerPath[] = $newBrokerPath;
     }
     
     /**

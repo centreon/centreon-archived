@@ -52,9 +52,7 @@ class ForbiddenChar implements ValidatorInterface
     public function validate($value, $params = array())
     {
         $forbiddenCharDetected = false;
-        $illegalCharsStr = "~!$%^&|<>?,;()=";
-        $illegalCharsStr .= '"';
-        $illegalCharsArr = str_split($illegalCharsStr);
+        $illegalCharsStr = str_split($aparams['characters']);
 
         $forbiddenCharsList = '';
         foreach ($illegalCharsArr as $char) {

@@ -63,8 +63,10 @@ class Textarea extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required = ' required';
         }
         
         $inputHtml = '<textarea '.
@@ -73,6 +75,7 @@ class Textarea extends Component
                     'class="form-control '.$addClass.'" '.
                     'rows="3" '.
                     $placeholder.
+                    $required .
                     '>'.$value.'</textarea>';
         
         $myJs = '';

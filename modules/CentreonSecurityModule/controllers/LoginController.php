@@ -67,7 +67,6 @@ class LoginController extends Controller
         );
         $tmpl = $di->get('template');
         
-        $tmpl->assign('csrf', Form::getSecurityToken());
         $tmpl->assign('redirect', $redirectUrl);
         $tmpl->assign('base_url', $di->get('config')->get('global', 'base_url'));
         $tmpl->display('file:[CentreonSecurityModule]login.tpl');
@@ -85,10 +84,7 @@ class LoginController extends Controller
         $router = $di->get('router');
         $username = $router->request()->param('login');
         $password = $router->request()->param('passwd');
-        $csrf = $router->request()->param('csrf');
-        /* Validate CSRF */
         try {
-            Form::validateSecurity($csrf);
             $auth = new Sso($username, $password, 0);
             $user = new User($auth->userInfos['user_id']);
             $_SESSION['user'] = $user;

@@ -106,11 +106,15 @@ class BrokerRepository
             return;
         }
         
-        $fileTpl = $listTpl[$tmpl]->getBrokerPath();
-        $information = json_decode(file_get_contents($fileTpl), true);
+        $fileTplList = $listTpl[$tmpl]->getBrokerPath();
+        $information = array();
+        foreach ($fileTplList as $fileTpl) {
+            $information = static::mergeBrokerConf($information, $fileTpl);
+        }
+        
         $listType = array('output', 'input', 'logger');
         /* setup */
-        foreach ($information['content']['broker']['setup']  as $setup) {
+        foreach ($information['content']['broker']['setup'] as $setup) {
             /* mode */
             foreach ($setup['params']['mode'] as $mode) {
                 /* type */
@@ -119,14 +123,14 @@ class BrokerRepository
                     if ($type == 'normal') {
                         /* module */
                         foreach ($config as $module) {
-                           $configId =  static::insertConfig($pollerId, $module['general']['name'], $arr);
+                            $configId =  static::insertConfig($pollerId, $module['general']['name'], $arr);
                             foreach ($listType as $type) {
                                 if (isset($module[$type])) {
                                     $groupNb = 1;
                                     foreach ($module[$type] as $typeInfo) {
                                         /* Key */
                                         foreach ($typeInfo as $key => $value) {
-                                            if (preg_match("/%([\w_]+)%/", $value, $matches)) {
+                                            if (is_string($value) && preg_match("/%([\w_]+)%/", $value, $matches)) {
                                                 if (isset($params[$matches[1]]) && trim($params[$matches[1]]) !== "") {
                                                     static::insertPollerInfo($pollerId, $matches[1], $params[$matches[1]]);
                                                 }
@@ -140,8 +144,12 @@ class BrokerRepository
                                                     . $typeInfo['name']
                                                     . '-'
                                                     . $key;
-                                                if (in_array($finalKey, array_keys($arr))) {
-                                                    static::insertUserInfo($configId, $type, $groupNb, $finalKey, $arr[$finalKey]);
+                                                if (is_string($value)) {
+                                                    if (in_array($finalKey, array_keys($arr))) {
+                                                        static::insertUserInfo($configId, $type, $groupNb, $finalKey, $arr[$finalKey]);
+                                                    } else {
+                                                        static::insertUserInfo($configId, $type, $groupNb, $finalKey, $value);
+                                                    }
                                                 }
                                             }
                                         }
@@ -155,7 +163,122 @@ class BrokerRepository
             }
         }
     }
-    
+
+    /**
+     *
+     * @param type $finalFileTpl
+     * @param type $fileTpl
+     * @return $finalFileTpl
+     */
+    public static function mergeBrokerConf($finalFileTpl, $fileTpl)
+    {
+        $content = json_decode(file_get_contents($fileTpl), true);
+        if (count($finalFileTpl) > 0) {
+            //foreach ($finalFileTpl as &$finalConfBlock) {
+                //if ($finalFileTpl['name'] === $content['name']) {
+                    foreach ($content['content']['broker']['setup'] as $setup) {
+                        $finalFileTpl['content']['broker']['setup'] = static::mergeBrokerConfSetup($finalFileTpl['content']['broker']['setup'], $setup);
+                    }
+                    //$finalConfBlock['content']['broker']['setup'] = static::concatBrokerConfSetup($finalConfBlock['content']['broker']['setup'], $content['content']['broker']['setup']);
+                /*} else {
+                    $count = count($finalFileTpl);
+                    $finalConfBlock[$count]['name'] = $confBlock['name'];
+                    $finalConfBlock[$count]['content'] = $confBlock['content'];
+                }*/
+            //}
+        } else {
+            $finalFileTpl = $content;
+        }
+        return $finalFileTpl;
+    }
+
+    /**
+     *
+     * @param type $finalSetup
+     * @param type $tmpSetup
+     * @return $finalSetup
+     */
+    public static function mergeBrokerConfSetup($finalSetup, $tmpSetup)
+    {
+        //var_dump($tmpSetup);
+        //var_dump($finalSetup);
+        foreach ($finalSetup as &$setup) {
+            if ($setup['name'] === $tmpSetup['name']) {
+                foreach ($tmpSetup['params']['mode'] as $mode) {
+                    $setup['params']['mode'] = static::mergeBrokerConfMode($setup['params']['mode'], $mode);
+                }
+            } else {
+                $count = count($setup);
+                $setup[$count]['name'] = $tmpSetup['name'];
+                $setup[$count]['params'] = $tmpSetup['params'];
+            }
+        }
+        return $finalSetup;
+    }
+
+    /**
+     *
+     * @param type $finalMode
+     * @param type $tmpMode
+     * @return $finalMode
+     */
+    public static function mergeBrokerConfMode($finalMode, $tmpMode)
+    {
+        $tmpModeName = current(array_keys($tmpMode));
+        $tmpModeValue = $tmpMode[$tmpModeName];
+        $merged = false;
+        foreach ($finalMode as &$mode) {
+            $modeName = current(array_keys($mode));
+            if ($modeName === $tmpModeName) {
+                $merged = true;
+                foreach ($tmpMode[$tmpModeName] as $property) {
+                    $mode[$modeName] = static::mergeBrokerConfProperty($mode[$modeName], $property);
+                }
+            }
+        }
+        return $finalMode;
+    }
+
+    /**
+     *
+     * @param type $finalProperty
+     * @param type $tmpProperty
+     * @return $finalProperty
+     */
+    public static function mergeBrokerConfProperty($finalProperty, $tmpProperty)
+    {
+        $merged = false;
+        foreach ($finalProperty as &$property) {
+            if ($property['general']['name'] === $tmpProperty['general']['name']) {
+                $merged = true;
+                if (isset ($tmpProperty['input'])) {
+                    $property['input'] = isset($property['input']) ? $property['input'] : array();
+                    $property['input'] = array_merge($property['input'], $tmpProperty['input']);
+                }
+                if (isset ($tmpProperty['output'])) {
+                    $property['output'] = isset($property['output']) ? $property['output'] : array();
+                    $property['output'] = array_merge($property['output'], $tmpProperty['output']);
+                }
+                if (isset ($tmpProperty['logger'])) {
+                    $property['logger'] = isset($property['logger']) ? $property['logger'] : array();
+                    $property['logger'] = array_merge($property['logger'], $tmpProperty['logger']);
+                }
+                if (isset ($tmpProperty['correlation'])) {
+                    $property['correlation'] = isset($property['correlation']) ? $property['correlation'] : array();
+                    $property['correlation'] = array_merge($property['correlation'], $tmpProperty['correlation']);
+                }
+                if (isset ($tmpProperty['statistics'])) {
+                    $property['statistics'] = isset($property['statistics']) ? $property['statistics'] : array();
+                    $property['statistics'] = array_merge($property['statistics'], $tmpProperty['statistics']);
+                }
+            }
+        }
+        if (!$merged) {
+            $finalProperty[] = $tmpProperty;
+        }
+        return $finalProperty;
+    }
+
     /**
      * 
      * @param type $pollerId

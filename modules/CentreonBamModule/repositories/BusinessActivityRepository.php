@@ -84,4 +84,63 @@ class BusinessActivityRepository extends FormRepository
         
         return $finalRoute;
     }
+
+    /**
+     *
+     *
+     * @return string
+     */
+    public static function getIndicatorsForBa($id)
+    {
+        // Get datatabases connections
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $sql = "SELECT k.kpi_id "
+            . "FROM cfg_bam_kpi k "
+            . "WHERE k.id_ba='$id' ";
+        $stmt = $dbconn->query($sql);
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $resultIndicators = array();
+        foreach ($result as $indicator) {
+            array_push($resultIndicators, $indicator);
+        }
+
+        return $resultIndicators;
+    }
+
+    /**
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function getBaList()
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        #$router = $di->get('router');
+
+        $baList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 2));
+
+        return $baList;
+    }
+
+	/**
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function getBuList()
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        #$router = $di->get('router');
+
+        $buList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
+
+        return $buList;
+    }
 }

@@ -60,8 +60,10 @@ class Float extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required .= ' required';
         }
         
         $myJs = "";
@@ -73,6 +75,7 @@ class Float extends Component
                         $value.
                         'class="form-control input-sm '.$addClass.'" '.
                         $placeholder.
+                        $required .
                         '/><span>';
         
         

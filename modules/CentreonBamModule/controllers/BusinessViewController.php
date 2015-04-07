@@ -36,6 +36,7 @@
 
 namespace CentreonBam\Controllers;
 
+use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
 
 class BusinessViewController extends FormController
@@ -46,4 +47,58 @@ class BusinessViewController extends FormController
     protected $datatableObject = '\CentreonBam\Internal\BusinessViewDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessViewRepository';     
     public static $relationMap = array();
+
+    /**
+     *
+     * @method get
+     * @route /businessview/realtime
+     */
+    public function displayAction()
+    {
+        $repository = $this->repository;
+        $buList = $repository::getBuList();
+
+        // Add css
+        $this->tpl->addCss('select2.css')
+			->addCss('select2-bootstrap.css')
+            ->addCss('gridstack.css','centreon-bam')
+			->addCss('bam.css','centreon-bam');
+
+        // Add js
+        $this->tpl->addJs('jquery.min.js')
+            ->addJs('jquery-ui.min.js')
+			->addJs('d3.min.js')
+            ->addJs('underscore-min.js','bottom','centreon-bam')
+            ->addJs('jquery.easing.min.js','bottom','centreon-bam')
+        	->addJs('gridstack.js','bottom','centreon-bam')
+        	->addJs('bam.js','bottom','centreon-bam');
+
+        // Send values to Smarty
+        $this->tpl->assign('buList', $buList);
+
+        // Display template
+        $this->tpl->display("businessview.tpl");
+    }
+
+
+	/**
+     *
+     * @method get
+     * @route /businessview/configuration
+     */
+    public function listAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('hogan-3.0.0.min.js')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
+        parent::listAction();
+    }
 }

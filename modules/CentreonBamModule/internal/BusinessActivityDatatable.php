@@ -64,7 +64,7 @@ class BusinessActivityDatatable extends Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonBam\Models\BusinessActivity';
-    
+   
     /**
      *
      * @var type 
@@ -95,7 +95,17 @@ class BusinessActivityDatatable extends Datatable
             'visible' => false,
         ),
         array (
-            'title' => 'Name',
+            'title' => 'Type',
+            'name' => 'ba_type_id',
+            'data' => 'ba_type_id',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => 70
+        ),
+        array (
+            'title' => 'Business Activity',
             'name' => 'name',
             'data' => 'name',
             'orderable' => true,
@@ -157,9 +167,19 @@ class BusinessActivityDatatable extends Datatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $previousType = '';
         foreach ($resultSet as &$myBaSet) {
+            // Set business activity type
+            $baType = \CentreonBam\Models\BusinessActivityType::getParameters($myBaSet['ba_type_id'], array('name'));
+            $myBaSet['ba_type_id'] = $baType['name'];
+            if ($myBaSet['ba_type_id'] === $previousType) {
+                $myBaSet['ba_type_id'] = '';
+            } else {
+                $previousType = $myBaSet['ba_type_id'];
+            }
+
+            // set business activity name
             $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
         }
-        
     }
 }

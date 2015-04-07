@@ -58,7 +58,6 @@ abstract class Customcurvegraph extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        file_put_contents('/tmp/debug', var_export($element, true));
         $di = \Centreon\Internal\Di::getDefault();
         /* Add javascript file for clone */
         $tpl = $di->get('template');

@@ -64,6 +64,7 @@ abstract class RespectValidationAbstract implements ValidatorInterface
     protected function __construct($params)
     {
         $this->submittedValidators = explode(';', $params);
+        $this->prepareArguments();
     }
     
     /**
@@ -94,5 +95,12 @@ abstract class RespectValidationAbstract implements ValidatorInterface
             }
         }
         return $validationChainCall;
+    }
+    
+    /**
+     * Prepare custom arguments
+     */
+    protected function prepareArguments()
+    {
     }
 }

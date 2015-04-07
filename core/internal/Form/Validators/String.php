@@ -83,4 +83,22 @@ class String extends RespectValidationAbstract
     {
         parent::__construct($params);
     }
+    
+    /**
+     * Prepare custom arguments
+     */
+    protected function prepareArguments()
+    {
+        $length = array();
+        foreach ($this->submittedValidators as $stringValidator) {
+            $validatorParamsAndValue = explode('=', $stringValidator);
+            
+            if ($validatorParamsAndValue[0] == 'minlength' || $validatorParamsAndValue[0] == 'maxlength') {
+                $length[$validatorParamsAndValue[0]] = $validatorParamsAndValue[1];
+            }
+        }
+        if (isset($length['minlength']) && isset($length['maxlength'])) {
+            $this->submittedValidators[] = 'length=' . $length['minlength'] . ',' . $length['maxlength'];
+        }
+    }
 }

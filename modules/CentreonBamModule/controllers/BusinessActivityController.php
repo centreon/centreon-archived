@@ -37,6 +37,8 @@ namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
+use CentreonBam\Repository\BusinessActivityRepository;
+use CentreonBam\Repository\IndicatorRepository;
 use CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren;
 use CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents;
 
@@ -44,14 +46,18 @@ class BusinessActivityController extends FormController
 {
     protected $objectDisplayName = 'BusinessActivity';
     public static $objectName = 'businessactivity';
+    public static $enableDisableFieldName = 'activate';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
     public static $relationMap = array(
         'parent_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren',
         'child_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents',
+        'kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator'
     );
-    
+   
+    public static $isDisableable = true;
+ 
     /**
      * 
      * @method get
@@ -72,19 +78,74 @@ class BusinessActivityController extends FormController
         $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
-    
+
     /**
-     * Get list of Timeperiods for a specific business activity
+     *
+     * @method get
+     * @route /businessactivity/realtime
+     */
+    public function displayAction()
+    {
+        $repository = $this->repository;
+        $buList = $repository::getBuList();
+
+        // Add css
+        $this->tpl->addCss('select2.css')
+            ->addCss('select2-bootstrap.css')
+            ->addCss('gridstack.css','centreon-bam')
+            ->addCss('bam.css','centreon-bam');
+
+        // Add js
+        $this->tpl->addJs('jquery.min.js')
+            ->addJs('jquery-ui.min.js')
+            ->addJs('d3.min.js')
+            ->addJs('underscore-min.js','bottom','centreon-bam')
+            ->addJs('jquery.easing.min.js','bottom','centreon-bam')
+            ->addJs('gridstack.js','bottom','centreon-bam')
+            ->addJs('bam.js','bottom','centreon-bam');
+
+        // Send values to Smarty
+        $this->tpl->assign('buList', $buList);
+
+        // Display template
+        $this->tpl->display("businessview.tpl");
+    }
+   
+    /**
+     * Get list of Types for a specific business activity
      *
      *
      * @method get
-     * @route /businessactivity/[i:id]/checkperiod
+     * @route /businessactivity/[i:id]/type
      */
-    public function checkPeriodForHostAction()
+    public function typeForHostAction()
     {
-        parent::getSimpleRelation('id_check_period', '\CentreonConfiguration\Models\Timeperiod');
+        parent::getSimpleRelation('ba_type_id', '\CentreonBam\Models\BusinessActivityType');
     }
-    
+
+    /**
+     * Get list of Indicators for a specific business activity
+     *
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/indicator
+     */
+    public function indicatorForBaAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+
+        $indicatorList = BusinessActivityRepository::getIndicatorsForBa($requestParam['id']);
+        $finalList = array();
+        foreach ($indicatorList as $indicator) {
+            $finalList[] = IndicatorRepository::getIndicatorName($indicator['kpi_id']);
+        }
+
+        $router->response()->json($finalList);
+    }
+ 
     /**
      * Get list of Timeperiods for a specific business activity
      *
@@ -106,79 +167,5 @@ class BusinessActivityController extends FormController
     public function reportingPeriodForHostAction()
     {
         parent::getSimpleRelation('id_reporting_period', '\CentreonConfiguration\Models\Timeperiod');
-    }
-    
-    /**
-     * 
-     * @method get
-     * @route /businessactivity/[i:id]/parent
-     */
-    public function parentForBusinessActivityAction()
-    {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $BusinessActivityparentsList = BusinessActivityparents::getMergedParameters(
-            array('ba_id', 'name'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('cfg_bam_dep_parents_relations.id_ba' => $requestParam['id']),
-            "AND"
-        );
-
-        $finalBusinessActivityList = array();
-        foreach ($BusinessActivityparentsList as $BusinessActivityparents) {
-            $finalBusinessActivityList[] = array(
-                "id" => $BusinessActivityparents['ba_id'],
-                "text" => $BusinessActivityparents['name'],
-                "theming" => BusinessActivityRepository::getIconImage(
-                    $BusinessActivityparents['name']
-                ).' '.$BusinessActivityparents['name']
-            );
-        }
-        
-        $router->response()->json($finalBusinessActivityList);
-    }
-
-    /**
-     * 
-     * @method get
-     * @route /businessactivity/[i:id]/child
-     */
-    public function childForBusinessActivityAction()
-    {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $BusinessActivitychildrenList = BusinessActivitychildren::getMergedParameters(
-            array('ba_id', 'name'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('cfg_bam_dep_children_relations.id_dep' => $requestParam['id']),
-            "AND"
-        );
-
-        $finalBusinessActivityList = array();
-        foreach ($BusinessActivitychildrenList as $BusinessActivitychildren) {
-            $finalBusinessActivityList[] = array(
-                "id" => $BusinessActivitychildren['ba_id'],
-                "text" => $BusinessActivitychildren['name'],
-                "theming" => BusinessActivityRepository::getIconImage(
-                    $BusinessActivitychildren['name']
-                ).' '.$BusinessActivitychildren['name']
-            );
-        }
-        
-        $router->response()->json($finalBusinessActivityList);
     }
 }
