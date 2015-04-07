@@ -37,6 +37,7 @@ namespace CentreonBam\Repository;
 
 use Centreon\Internal\Di;
 use CentreonMain\Repository\FormRepository;
+use CentreonBam\Models\BooleanIndicator;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -233,8 +234,6 @@ class IndicatorRepository extends FormRepository
      */
     public static function updateIndicator($givenParameters, $origin = "", $route = "")
     {
-        //var_dump($givenParameters);
-        //die();
         self::validateForm($givenParameters, $origin, $route);
 
         $class = static::$objectClass;
@@ -305,6 +304,39 @@ class IndicatorRepository extends FormRepository
 
         if (method_exists(get_called_class(), 'postSave')) {
             static::postSave($id, 'update', $givenParameters);
+        }
+    }
+
+    /**
+     * Used for duplicating object
+     *
+     * @param int $sourceObjectId
+     * @param int $duplicateEntries
+     */
+    public static function duplicate($listDuplicate)
+    {
+        $class = static::$objectClass;
+        $db = Di::getDefault()->get('db_centreon');
+
+        foreach ($listDuplicate as $objectId => $duplicateEntries) {
+            $sourceParams = $class::getParameters($objectId, "*");
+            if (false === $sourceParams) {
+                throw new Exception($class::OBJ_NOT_EXIST);
+            }
+            $originalName = static::getIndicatorName($sourceParams['kpi_id']);
+            unset($sourceParams['kpi_id']);
+
+            $i = 1;
+            /* Add the number for new entries */
+            while ($i <= $duplicateEntries) {
+                if ($sourceParams['kpi_type'] === '3') {
+                    BooleanIndicator::duplicate($sourceParams['boolean_id']);
+                    $booleanId = $db->lastInsertId('cfg_bam_boolean','boolean_id');
+                    $sourceParams['boolean_id'] = $booleanId;
+                }
+                $class::insert($sourceParams);
+                $i++;
+            }
         }
     }
 
