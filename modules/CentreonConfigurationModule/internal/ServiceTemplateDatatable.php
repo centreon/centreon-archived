@@ -71,11 +71,7 @@ class ServiceTemplateDatatable extends Datatable
      */
     protected static $datasource = '\CentreonConfiguration\Models\Servicetemplate';
     
-    /**
-     *
-     * @var type 
-     */
-    protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Service\Tag';
+
     
     /**
      *

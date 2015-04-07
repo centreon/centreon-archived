@@ -240,6 +240,8 @@ class ServiceController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -267,12 +269,27 @@ class ServiceController extends FormController
             }
         }
         
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        
+        
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
         }
-
+        
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
+        }
         $this->router->response()->json(array('success' => true));
     }
 

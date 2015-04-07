@@ -50,9 +50,29 @@ use CentreonAdministration\Internal\TagDatatable;
  */
 class TagController extends Controller
 {
+    /*
     protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
     
     protected $objectClass = '\CentreonAdministration\Models\Tag';
+    */
+    
+    
+    
+    
+    
+    protected $objectDisplayName = 'Tag';
+    public static $objectName = 'tag';
+   // protected $objectBaseUrl = '/centreon-administration/tag';
+    protected $objectClass = '\CentreonAdministration\Models\Tag';
+    protected $repository = '\CentreonAdministration\Repository\TagRepository';
+    
+    public static $relationMap = array();
+    
+    protected $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
+    public static $isDisableable = true;
+    
+    
+    
     
     
     /**
@@ -131,16 +151,12 @@ class TagController extends Controller
      * get all tag
      * 
      * @method get
-     * @route /tag/[a:objectName]/all
+     * @route /tag/all
      */
     public function allAction()
     {
         $data = '';
-        $get = $this->getParams('named');
-        
-        if (isset($get['objectName'])) {
-            $data = TagsRepository::getList($get['objectName'], 0, 1);
-        }
+        $data = TagsRepository::getAllList();
         $this->router->response()->json($data);
     }
         

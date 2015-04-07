@@ -68,7 +68,7 @@ class HostTemplateDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Host\Tag';
+    //protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Host\Tag';
     
     /**
      *

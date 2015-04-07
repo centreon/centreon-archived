@@ -128,6 +128,8 @@ class HostTemplateController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -157,6 +159,15 @@ class HostTemplateController extends FormController
             }
         }
         
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
@@ -164,6 +175,9 @@ class HostTemplateController extends FormController
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($id, $macroList);
+        }
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource('host', $id, $aTags);
         }
         
         $this->router->response()->json(array('success' => true));

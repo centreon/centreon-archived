@@ -144,6 +144,9 @@ class TagsRepository
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
+        if (empty($resourceId)) {
+            return array();
+        }
         $userId = $_SESSION['user']->getId();
         $dbconn = Di::getDefault()->get('db_centreon');        
 
@@ -174,6 +177,8 @@ class TagsRepository
         }
         $stmt->execute();
         $tags = array();
+        
+        //echo $query;
         
         while ($row = $stmt->fetch()) {
             if ($bGlobaux == 0) {

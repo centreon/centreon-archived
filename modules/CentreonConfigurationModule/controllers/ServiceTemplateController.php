@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\ServicetemplateRepository;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Controllers\FormController;
+use CentreonAdministration\Repository\TagsRepository;
 
 
 /**
@@ -157,6 +158,8 @@ class ServiceTemplateController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -188,6 +191,19 @@ class ServiceTemplateController extends FormController
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
+        }
+        
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var) > 1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource('service', $id, $aTags);
         }
 
         $this->router->response()->json(array('success' => true));

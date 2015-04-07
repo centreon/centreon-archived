@@ -78,8 +78,8 @@
                 <field name="host_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
                     <attributes>
                         <object_type>object</object_type>
-                        <defaultValuesRoute>/centreon-administration/tag/[a:objectName]/all</defaultValuesRoute>
-                        <listValuesRoute>/centreon-administration/tag/[i:id]/[a:objectName]/formlist</listValuesRoute>
+                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/tag/[i:id]/host/formlist</listValuesRoute>
                         <multiple>true</multiple>
                     </attributes>
 		</field>
