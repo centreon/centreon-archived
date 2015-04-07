@@ -65,23 +65,19 @@ class ServiceCategoryController extends FormController
     {
         $givenParameters = $this->getParams('post');
         
-        if (Form::validateSecurity($givenParameters['token'])) {
-            $servicecategory = array(
-                'sc_name' => $givenParameters['sc_name'],
-                'sc_description' => $givenParameters['sc_description'],
-                'sc_activate' => $givenParameters['sc_activate'],
-            );
-            
-            $connObj = new \CentreonConfiguration\Models\Servicecategory();
-            try {
-                $connObj->update($givenParameters['sc_id'], $servicecategory);
-            } catch (Exception $e) {
-                echo "fail";
-            }
-            echo 'success';
-        } else {
+        $servicecategory = array(
+            'sc_name' => $givenParameters['sc_name'],
+            'sc_description' => $givenParameters['sc_description'],
+            'sc_activate' => $givenParameters['sc_activate'],
+        );
+        
+        $connObj = new \CentreonConfiguration\Models\Servicecategory();
+        try {
+            $connObj->update($givenParameters['sc_id'], $servicecategory);
+        } catch (Exception $e) {
             echo "fail";
         }
+        echo 'success';
     }
     
     /**

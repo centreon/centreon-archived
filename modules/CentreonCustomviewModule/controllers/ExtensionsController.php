@@ -226,9 +226,5 @@ class ExtensionsController extends Controller
             ->addJs('centreon-wizard.js');
         
         $this->tpl->assign('datatableObject', $this->datatableObject);
-
-        /* Set Cookie */
-        $token = Form::getSecurityToken();
-        setcookie("ajaxToken", $token, time()+15, '/');
     }
 }

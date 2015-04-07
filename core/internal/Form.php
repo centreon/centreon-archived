@@ -130,7 +130,6 @@ class Form
         $this->init();
         $this->di = Di::getDefault();
         $this->tpl = $this->di->get('template');
-        $this->addSecurity();
     }
     
     /**
@@ -370,70 +369,6 @@ class Form
             $mandatorySign;
         
         return $inputHtml;
-    }
-    
-    
-
-    /**
-     * 
-     */
-    private function addSecurity()
-    {
-        $token = self::getSecurityToken();
-        $this->addHidden('token', $token);
-    }
-    
-    /**
-     * 
-     * @param type $token
-     * @return boolean
-     * @throws Exception
-     */
-    public static function validateSecurity($token)
-    {
-        if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
-            if ($token == $_SESSION['form_token']) {
-                $oldTimestamp = time() - (15*60);
-                if ($_SESSION['form_token_time'] < $oldTimestamp) {
-                    throw new Exception('The validation is impossible due to expire form token');
-                }
-            } else {
-                throw new Exception('The validation is impossible due to wrong form token');
-            }
-        } else {
-            throw new Exception('The validation is impossible due to missing form token');
-        }
-        
-        return true;
-    }
-
-    /**
-     * 
-     * @return boolean
-     * @throws Exception
-     */
-    private function checkSecurity()
-    {
-        $submittedToken = $this->formProcessor->getSubmitValue('token');
-        return self::validateSecurity($submittedToken);
-    }
-    
-    /**
-     * 
-     * @return string
-     */
-    public static function getSecurityToken()
-    {
-        $token = md5(uniqid(Di::getDefault()->get('config')->get('global', 'secret'), true));
-        if (isset($_SESSION['form_token'])) {
-            unset($_SESSION['form_token']);
-        }
-        if (isset($_SESSION['form_token_time'])) {
-            unset($_SESSION['form_token_time']);
-        }
-        $_SESSION['form_token'] = $token;
-        $_SESSION['form_token_time'] = time();
-        return $token;
     }
     
     /**
@@ -767,7 +702,6 @@ class Form
         $isValidate = true;
         $errorMessage = '';
         try {
-            self::validateSecurity($submittedValues['token']);
             unset($submittedValues['token']);
             if (!isset($submittedValues['object_id'])) {
                 $submittedValues['object_id'] = null;

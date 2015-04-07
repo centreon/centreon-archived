@@ -175,9 +175,6 @@ abstract class ListController extends Controller
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon-wizard.js');
 
-        /* Set Cookie */
-        $token = Form::getSecurityToken();
-        setcookie("ajaxToken", $token, time()+15, '/');
         
         /* Display variable */
         $this->tpl->assign('objectName', $this->objectDisplayName);
@@ -263,14 +260,9 @@ abstract class ListController extends Controller
         $errorMessage = '';
         
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $this->router->request()->paramsPost();
             $repository = $this->repository;
             $repository::delete($params['ids']);
-            
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $deleteSuccess = false;
             $errorMessage = $e->getMessage();
@@ -367,16 +359,11 @@ abstract class ListController extends Controller
         $errorMessage = '';
         
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $listDuplicate = json_decode($this->router->request()->param('duplicate'));
 
             $objClass = $this->objectClass;
             $repository = $this->repository;
             $repository::duplicate($listDuplicate);
-            
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $duplicateSuccess = false;
             $errorMessage = $e->getMessage();
@@ -426,17 +413,12 @@ abstract class ListController extends Controller
         $errorMessage = '';
         
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $this->router->request()->paramsPost();
 
             $objClass = $this->objectClass;
             foreach ($params['ids'] as $id) {
                 $objClass::update($id, $params['values']);
             }
-            
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $massiveChangeSuccess = false;
             $errorMessage = $e->getMessage();
@@ -501,15 +483,10 @@ abstract class ListController extends Controller
                 $repository::disable(
                     array(
                         'object_id' => $id,
-                        $field => $value,
-                        'token' => filter_input(INPUT_COOKIE, 'ajaxToken')
+                        $field => $value
                     )
                 );
             }
-
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $success = false;
             $errorMessage = $e->getMessage();

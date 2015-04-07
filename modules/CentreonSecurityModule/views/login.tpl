@@ -73,6 +73,13 @@ function logIn() {
             } else {
                 $("#login_error").text(data.error).show();
             }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          if (jqXHR.status == '403') {
+            $("#login_error").text(jqXHR.responseJSON.message).show();
+          } else {
+            $("#login_error").text("An error when login").show();
+          }
         }
     });
 }
