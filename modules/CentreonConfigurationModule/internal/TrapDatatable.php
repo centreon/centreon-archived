@@ -107,7 +107,7 @@ class TrapDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'Description',
+            'title' => 'OID',
             'name' => 'traps_oid',
             'data' => 'traps_oid',
             'orderable' => true,
@@ -132,7 +132,16 @@ class TrapDatatable extends Datatable
                     '2' => '<span class="label label-danger">Critical</span>',
                     '3' => '<span>Unknown</span>',
                 )
-            )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'OK' => '1',
+                    'Warning' => '2',
+                    'Critical' => '3',
+                    'Unknown' => '4'
+                )
+            ),
         ),
     );
     

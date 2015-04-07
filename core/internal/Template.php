@@ -181,6 +181,7 @@ class Template extends \Smarty
         $this->addJs('centreon.functions.js');
         $this->addJs('centreon-timezone.js');
         $this->addJs('centreon-wizard.js');
+        $this->addJs('centreon.csrf.js');
     }
     
     /**

@@ -207,8 +207,14 @@ class Datatable
             $this->objectModelClass,
             static::$additionnalDatasource
         );
-      */   
+
+   
+
+        static::addAdditionnalDatas($datasFromDb['datas']);
+        static::processHooks($datasFromDb['datas']);
+        $this->formatDatas($datasFromDb['datas']);
         
+        */
         $datasFromDb = $provider::loadDatas(
             $this->params,
             static::$columns,
@@ -232,9 +238,6 @@ class Datatable
             }
         }
         
-        static::addAdditionnalDatas($datasFromDb['datas']);
-        static::processHooks($datasFromDb['datas']);
-        $this->formatDatas($datasFromDb['datas']);
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
         
         return $sendableDatas;
@@ -465,7 +468,11 @@ class Datatable
                     } else {
                         $a = $colName;
                     }
-                    $singleData[$a] =  self::$colCast['caster']($a, $originalData, $colCast['parameters']);
+                    $extra = array();
+                    if (isset($colCast['extra'])) {
+                        $extra = $colCast['extra'];
+                    }
+                    $singleData[$a] =  self::$colCast['caster']($a, $originalData, $colCast['parameters'], $extra);
                 }
             }
             
@@ -556,14 +563,22 @@ class Datatable
      * @param type $cast
      * @return type
      */
-    public static function addSelect($field, $values, $cast)
+    public static function addSelect($field, $values, $cast, $extra = array())
     {
         $myElement = "";
+        static $previousValue;
         if (isset($cast['selecttype']) && ($cast['selecttype'] != 'none')) {
             $subCaster = 'add'.ucwords($cast['selecttype']);
             $myElement = static::$subCaster($field, $values, $cast['parameters'][$values[$field]]['parameters']);
         } elseif (isset($values[$field])) {
             $myElement = $cast[$values[$field]];
+            if (isset($extra['groupable']) && $extra['groupable']) {
+                if ($myElement === $previousValue) {
+                    $myElement = "";
+                } else {
+                    $previousValue = $myElement;
+                }
+            }
         }
         
         return $myElement;

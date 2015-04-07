@@ -87,30 +87,6 @@ class Validator
     
     /**
      * 
-     * @param type $token
-     * @return boolean
-     * @throws Exception
-     */
-    public static function csrf($token)
-    {
-        if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
-            if ($token == $_SESSION['form_token']) {
-                $oldTimestamp = time() - (15*60);
-                if ($_SESSION['form_token_time'] < $oldTimestamp) {
-                    throw new InvalidTokenException('The validation is impossible due to expire form token');
-                }
-            } else {
-                throw new InvalidTokenException('The validation is impossible due to wrong form token');
-            }
-        } else {
-            throw new InvalidTokenException('The validation is impossible due to missing form token');
-        }
-        
-        return true;
-    }
-    
-    /**
-     * 
      * @param type $submittedDatas
      */
     public function validate($submittedDatas)

@@ -7,24 +7,30 @@
                 "name": "BAM",
                 "short_name": "conf_business_activity",
                 "icon_class": "fa fa-suitcase",
-                "menus": [
+				"menus": [
                     {
                         "name": "Business Activity",
                         "short_name": "conf_ba_list",
                         "route": "/centreon-bam/businessactivity"
                     },
                     {
-                        "name": "Business views",
-                        "short_name": "conf_bv_lists",
-                        "route": "/centreon-bam/businessview"
-                    },
-                    {
                         "name": "Indicators",
                         "short_name": "conf_indicators_lists",
                         "route": "/centreon-bam/indicator"
-                    }
+                    }	
                 ]
             }
         ]
-    }
+    }, {
+		"name": "Realtime",
+        "short_name": "realtime",
+        "menus": [
+            {
+                "name": "BAM",
+                "short_name": "view_ba_list",
+                "icon_class": "fa fa-suitcase",
+                "route": "/centreon-bam/businessactivity/realtime"
+            }
+        ]
+	}
 ]

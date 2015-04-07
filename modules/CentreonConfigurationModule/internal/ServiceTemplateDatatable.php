@@ -126,8 +126,8 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Interval',
             'name' => 'service_normal_check_interval',
             'data' => 'service_normal_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -137,8 +137,8 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Retry',
             'name' => 'service_retry_check_interval',
             'data' => 'service_retry_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -148,8 +148,8 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Atp',
             'name' => 'service_max_check_attempts',
             'data' => 'service_max_check_attempts',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -171,6 +171,15 @@ class ServiceTemplateDatatable extends Datatable
                     '2' => '<span class="label label-info">Default</span>',
                 )
             ),
+            'searchParam' => array(
+                'main' => 'true',
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0',
+                    'Default' => '2'
+                )
+            ),
             "className" => 'cell_center',
             "width" => '40px'
         ),
@@ -178,8 +187,8 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Parent Template',
             'name' => 'service_template_model_stm_id',
             'data' => 'service_template_model_stm_id',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
         ),
@@ -199,12 +208,13 @@ class ServiceTemplateDatatable extends Datatable
                     '2' => '<span class="label label-warning">Trash</span>',
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-                                    ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
+                )
+            ),
             "className" => 'cell_center',
             "width" => '40px'
         ),

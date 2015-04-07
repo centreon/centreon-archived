@@ -73,7 +73,7 @@ class Template
      * @param string $enginePath
      * @param string $brokerPath
      */
-    public function __construct($name, $enginePath = "", $brokerPath = "")
+    public function __construct($name, $enginePath = "", $brokerPath = array())
     {
         $this->name = $name;
         

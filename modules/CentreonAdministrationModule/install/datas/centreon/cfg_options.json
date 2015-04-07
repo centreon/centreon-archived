@@ -227,28 +227,44 @@
         "key": "interval_length",
         "value": 60
     },
-  {
-    "key": "broker_etc_directory",
-    "value": "/etc/centreon-broker"
-  },
-  {
-    "key": "broker_module_directory",
-    "value": "/usr/lib/centreon-broker"
-  },
-  {
-    "key": "broker_logs_directory",
-    "value": "/var/log/centreon-broker"
-  },
-  {
-    "key": "broker_data_directory",
-    "value": "/var/lib/centreon-broker"
-  },
-  {
-    "key": "broker_cbmod_directory",
-    "value": "/usr/lib/centreon-engine"
-  },
-  {
-    "key": "broker_init_script",
-    "value": "/etc/init.d/cbd"
-  }
+    {
+      "key": "broker_etc_directory",
+      "value": "/etc/centreon-broker"
+    },
+    {
+      "key": "broker_module_directory",
+      "value": "/usr/lib/centreon-broker"
+    },
+    {
+      "key": "broker_logs_directory",
+      "value": "/var/log/centreon-broker"
+    },
+    {
+      "key": "broker_data_directory",
+      "value": "/var/lib/centreon-broker"
+    },
+    {
+      "key": "broker_cbmod_directory",
+      "value": "/usr/lib/centreon-engine"
+    },
+    {
+      "key": "broker_init_script",
+      "value": "/etc/init.d/cbd"
+    },
+    {
+        "key": "es_url",
+        "value": "http://localhost:9200"
+    },
+    {
+        "key": "es_security",
+        "value": "none"
+    },
+    {
+        "key": "es_user",
+        "value": ""
+    },
+    {
+        "key": "es_pass",
+        "value": ""
+    }
 ]

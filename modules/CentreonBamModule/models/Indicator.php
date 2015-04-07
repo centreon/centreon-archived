@@ -46,4 +46,5 @@ class Indicator extends CentreonBaseModel
 {
     protected static $table = "cfg_bam_kpi";
     protected static $primaryKey = "kpi_id";
+    protected static $uniqueLabelField = "kpi_id";
 }

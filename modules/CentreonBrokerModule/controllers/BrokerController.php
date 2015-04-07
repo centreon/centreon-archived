@@ -69,7 +69,6 @@ class BrokerController extends FormController
         $updateErrorMessage = '';
         
         try {
-            Form::validateSecurity($givenParameters['token']);
             $pollerId = $givenParameters['poller_id'];
             unset($givenParameters['poller_id']);
             \CentreonBroker\Repository\BrokerRepository::save($pollerId, $givenParameters);

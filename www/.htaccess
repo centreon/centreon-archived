@@ -1,6 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine On
 
-RewriteBase /centreon-devel/
+RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]

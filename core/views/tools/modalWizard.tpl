@@ -10,6 +10,7 @@
 </div>
 <div class="flash alert fade in" id="modal-flash-message" style="display: none;">
   <button type="button" class="close" aria-hidden="true">&times;</button>
+  <ul id="{$name}_errors"></ul>
 </div>
 <div class="wizard" id="{$name}">
   <ul class="steps">
@@ -41,7 +42,7 @@ $(function() {
   $(document).unbind('finished');
   {if isset($validateUrl)}
   $(document).on('finished', function (event) {
-    var validateMandatory = true;
+    /*var validateMandatory = true;
     var errorText = "";
     $("input.mandatory-field").each(function(index) {
       if ($(this).val().trim() === "") {
@@ -54,32 +55,33 @@ $(function() {
     if (!validateMandatory) {
       alertMessage(errorText, "alert-danger");
       return false;
-    }
-
-    $.ajax({
-      url: "{url_for url=$validateUrl}",
-      type: "POST",
-      dataType: 'json',
-      data: $("#wizard_form").serializeArray(),
-      context: document.body
-    })
-    .success(function(data, status, jqxhr) {
-      alertModalClose();
-      if (data.success) {
-        {if isset($formRedirect) && $formRedirect}
-          window.location='{url_for url=$formRedirect}';
-        {else}
-          alertModalMessage("The object has been successfully saved", "alert-success");
-        {/if}
-        $('#modal').modal('hide');
-        if (typeof oTable != 'undefined') {
-          oTable.fnDraw();
+    } */
+    if ($('#wizard_form').valid()) {
+      $.ajax({
+        url: "{url_for url=$validateUrl}",
+        type: "POST",
+        dataType: 'json',
+        data: $("#wizard_form").serializeArray(),
+        context: document.body
+      })
+      .success(function(data, status, jqxhr) {
+        alertModalClose();
+        if (data.success) {
+          {if isset($formRedirect) && $formRedirect}
+            window.location='{url_for url=$formRedirect}';
+          {else}
+            alertModalMessage("The object has been successfully saved", "alert-success");
+          {/if}
+          $('#modal').modal('hide');
+          if (typeof oTable != 'undefined') {
+            oTable.fnDraw();
+          }
+        } else {
+          alertModalMessage(data.error, "alert-danger");
         }
-      } else {
-        alertModalMessage(data.error, "alert-danger");
-      }
-    });
-    return false;
+      });
+      return false;
+    }
   });
   {else}
   $(document).on('finished', function (event) {
@@ -89,3 +91,4 @@ $(function() {
   {get_custom_js}
 });
 </script>
+{include file="[Core]/form/validators.tpl"}
