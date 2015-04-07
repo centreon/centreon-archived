@@ -243,27 +243,6 @@ class ServiceDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => false,
-        )
-        ),
-        array (
-            'title' => 'Host Enabled',
-            'dbName' => 'h.enabled as host_enabled',
-            'name' => 'h.enabled',
-            'data' => 'host_enabled',
-            'orderable' => false,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false,
-        ),
-        array (
-            'title' => 'Service enabled',
-            'dbName' => 's.enabled as service_enabled',
-            'name' => 's.enabled',
-            'data' => 'service_enabled',
-            'orderable' => false,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false,
         ),
         array (
             'title' => 'Tags',
