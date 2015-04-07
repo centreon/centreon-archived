@@ -151,6 +151,13 @@ class PollerDatatable extends Datatable
                     '1' => '<span class="label label-success">Yes</span>'
                 )
             ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Yes' => '1',
+                    'No' => '0'
+                )
+            )
         ),
         array (
             'title' => 'Has changed',
@@ -168,31 +175,18 @@ class PollerDatatable extends Datatable
                     '1' => '<span class="label label-warning">Yes</span>'
                 )
             ),
-        ),
-        array (
-            'title' => 'Start time',
-            'name' => 'start_time',
-            'data' => 'start_time',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'source' => 'other'
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Yes' => '1',
+                    'No' => '0'
+                )
+            )
         ),
         array (
             'title' => 'Version',
             'name' => 'version',
             'data' => 'version',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'source' => 'other'
-        ),
-        array (
-            'title' => 'Last Update',
-            'name' => 'last_alive',
-            'data' => 'last_alive',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -212,6 +206,13 @@ class PollerDatatable extends Datatable
                 'parameters' =>array(
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
+                )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
                 )
             )
         ),

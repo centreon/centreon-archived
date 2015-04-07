@@ -126,8 +126,8 @@ class HostTemplateDatatable extends Datatable
             'title' => 'Interval',
             'name' => 'host_check_interval',
             'data' => 'host_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '50px',
@@ -137,8 +137,8 @@ class HostTemplateDatatable extends Datatable
             'title' => 'Retry',
             'name' => 'host_retry_check_interval',
             'data' => 'host_retry_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '40px',
@@ -148,8 +148,8 @@ class HostTemplateDatatable extends Datatable
             'title' => 'Atp',
             'name' => 'host_max_check_attempts',
             'data' => 'host_max_check_attempts',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '40px',
@@ -174,13 +174,21 @@ class HostTemplateDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-                            'type' => 'select',
-                            'parameters' => array(
-                                                  '0' => '<span class="label label-danger">Disabled</span>',
-                                                  '1' => '<span class="label label-success">Enabled</span>',
-                                                  '2' => 'Trash',
-                                                  )
-                            ),
+                'type' => 'select',
+                'parameters' => array(
+                    '0' => '<span class="label label-danger">Disabled</span>',
+                    '1' => '<span class="label label-success">Enabled</span>',
+                    '2' => 'Trash',
+                )
+            ),
+            'searchParam' => array(
+                'main' => 'true',
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
+                )
+            ),
             'className' => "cell_center",
             'width' => '50px'
         ),
