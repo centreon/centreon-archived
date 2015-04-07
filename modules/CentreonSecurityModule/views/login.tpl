@@ -16,7 +16,6 @@
             <div class="login-title">{t}Centreon{/t}</div>
             <div class="panel panel-default panel-login"> 
                 <form action="" method="POST" role="form">
-                <input type="hidden" name="csrf" value="{$csrf}">
                 <input type="hidden" name="redirect" value="{$redirect}">
                 <div class="panel-body">
                     <div class="alert alert-danger" style="display: none;" id="login_error"></div>
@@ -61,7 +60,6 @@ function logIn() {
         data: {
             login: $("#login").val(),
             passwd: $("#passwd").val(),
-            csrf: $("input[name='csrf']").val()
         },
         success: function(data, textStatus, jqXHR) {
             if (data.status) {

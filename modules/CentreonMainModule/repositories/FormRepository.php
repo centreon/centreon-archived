@@ -92,10 +92,6 @@ abstract class FormRepository extends ListRepository
     protected static function validateForm($givenParameters, $origin = "", $route = "")
     {
         $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
-        if ($origin == 'wizard' || $origin == 'form') {
-            Validator::csrf($givenParameters['token']);
-            unset($givenParameters['token']);
-        }
         
         if (is_a($givenParameters, '\Klein\DataCollection\DataCollectio')) {
             $givenParameters = $givenParameters->all();
@@ -169,8 +165,6 @@ abstract class FormRepository extends ListRepository
     
     public static function disable($givenParameters)
     {
-        Validator::csrf($givenParameters['token']);
-        unset($givenParameters['token']);
         static::update($givenParameters, '', '', false);
     }
 

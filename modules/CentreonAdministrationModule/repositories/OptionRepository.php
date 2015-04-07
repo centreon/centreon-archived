@@ -54,10 +54,6 @@ class OptionRepository
     protected static function validateForm($givenParameters, $origin = "", $route = "")
     {
         $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
-        if ($origin == 'wizard' || $origin == 'form') {
-            $formValidator->csrf($givenParameters['token']);
-            unset($givenParameters['token']);
-        }
         $formValidator->validate($givenParameters->all());
     }
     

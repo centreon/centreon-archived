@@ -84,8 +84,6 @@ class LoginController extends Controller
         $router = $di->get('router');
         $username = $router->request()->param('login');
         $password = $router->request()->param('passwd');
-        $csrf = $router->request()->param('csrf');
-        /* Validate CSRF */
         try {
             $auth = new Sso($username, $password, 0);
             $user = new User($auth->userInfos['user_id']);
