@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name="indicator_form">
+        <route>/centreon-bam/indicator/update</route>
+		<redirect>1</redirect>
+		<redirect_route>/centreon-bam/indicator</redirect_route>
+        <section name="Configuration">
+            <block name="Information">
+                <field name="kpi_type" label="Object" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+                     <attributes>
+                         <choices>
+                             <service>0</service>
+                             <BA>2</BA>
+                             <boolean>3</boolean>
+                         </choices>
+                     </attributes>
+                </field>
+                <field name="service_id" label="Linked with service" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-configuration/service/formlistcomplete</defaultValuesRoute>
+                        <listValuesRoute>/centreon-bam/indicator/[i:id]/service</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+                <field name="id_indicator_ba" label="Linked with BA" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-bam/businessactivity/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-bam/indicator/[i:id]/businessactivity</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+                <field name="boolean_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="boolean_expression" label="Expression" advanced="0" type="textarea" parent_field="" mandatory="0">
+                    <attributes>
+                        <object>Expression</object>
+                    </attributes>
+                </field>
+                <field name="bool_state" label="Is ok if returns" default_value="1" advanced="0" type="radio" parent_field="" mandatory="0">
+                    <attributes>
+                        <choices>
+                            <true>1</true>
+                            <false>0</false>
+                        </choices>
+                    </attributes>
+                </field>
+            </block>
+            <block name="Impacts">
+                <field name="id_ba" label="Impacted BA" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-bam/businessactivity/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-bam/indicator/[i:id]/linkedbusinessactivity</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+                <field name="drop_warning" label="Warning Impact" default_value="0" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="drop_critical" label="Critical Impact" default_value="0" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="drop_unknown" label="Unknown Impact" default_value="0" advanced="0" type="text" parent_field="" mandatory="0"></field>
+            </block>
+            <block name="Additional information">
+                <field name="activate" label="Status" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+                    <attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+                    </attributes>
+                </field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_indicator">
+        <route>/centreon-bam/indicator/add</route>
+        <step name="General">
+            <field name="kpi_type" mandatory="1"></field>
+            <field name="service_id" mandatory="0"></field>
+            <field name="id_indicator_ba" mandatory="0"></field>
+            <field name="boolean_name" mandatory="0"></field>
+            <field name="boolean_expression" mandatory="0"></field>
+            <field name="bool_state" mandatory="0"></field>
+        </step>
+        <step name="Impacts">
+            <field name="id_ba" mandatory="0"></field>
+            <field name="drop_warning" mandatory="0"></field>
+            <field name="drop_critical" mandatory="0"></field>
+            <field name="drop_unknown" mandatory="0"></field>
+        </step>
+    </wizard>
+</forms>

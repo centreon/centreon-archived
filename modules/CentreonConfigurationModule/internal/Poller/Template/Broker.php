@@ -73,12 +73,15 @@ class Broker
      */
     private function getBrokerPart()
     {
-        $tplContent = json_decode(file_get_contents($this->brokerPath), true);
-        if (!isset($tplContent['content']['broker'])) {
-            throw new \Exception("No Broker Part Found");
-        }
-        foreach($tplContent['content']['broker']['setup'] as $section) {
-            $this->setUp[] = new BrokerSetUp($section);
+        $uniqueTplContent = array();
+        foreach ($this->brokerPath as $uniqueBrokerPath) {
+            $tplContent = json_decode(file_get_contents($uniqueBrokerPath), true);
+            if (!isset($tplContent['content']['broker'])) {
+                throw new \Exception("No Broker Part Found");
+            }
+            foreach($tplContent['content']['broker']['setup'] as $section) {
+                $this->setUp[] = new BrokerSetUp($section);
+            }
         }
     }
     

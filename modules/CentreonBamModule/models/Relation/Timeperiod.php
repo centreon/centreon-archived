@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give MERETHIS
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,36 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonBam\Repository;
+namespace CentreonConfiguration\Models;
 
-use Centreon\Internal\Di;
-use Centreon\Repository\FormRepository;
-use CentreonBam\Models\BusinessActivity;
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * @author Sylvestre Ho <sho@centreon.com>
- * @package CentreonBam
- * @subpackage Repository
+ * Used for interacting with time periods
+ *
+ * @author sylvestre
  */
-class BusinessViewRepository extends FormRepository
+class Timeperiod extends CentreonBaseModel
 {
-
-    /**
-     *
-     * @param string $name
-     * @return string
-     */
-    public static function getBuList()
-    {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        #$router = $di->get('router');
-
-        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
-
-		return $buList;
-	}
+    protected static $table = "cfg_timeperiods";
+    protected static $primaryKey = "tp_id";
+    protected static $uniqueLabelField = "tp_name";
 }

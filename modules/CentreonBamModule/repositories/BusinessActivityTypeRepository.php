@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give MERETHIS
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -35,19 +35,17 @@
 
 namespace CentreonBam\Repository;
 
+use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
-use Centreon\Repository\FormRepository;
-use CentreonBam\Models\BusinessActivity;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
  * @package CentreonBam
  * @subpackage Repository
  */
-class BusinessViewRepository extends FormRepository
+class BusinessActivityTypeRepository extends FormRepository
 {
-
-    /**
+	/**
      *
      * @param string $name
      * @return string
@@ -59,8 +57,8 @@ class BusinessViewRepository extends FormRepository
         $dbconn = $di->get('db_centreon');
         #$router = $di->get('router');
 
-        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
+        $buList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
 
-		return $buList;
-	}
+        return $buList;
+    }
 }

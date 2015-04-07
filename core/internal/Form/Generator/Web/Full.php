@@ -359,6 +359,28 @@ class Full extends Generator
             $this->formHandler->setDefaults($defaultValues);
         }
     }
+
+    /**
+     *
+     * @param array $param
+     */
+    public function setValues($defaultValue, $objectId = "", $params)
+    {
+        // Get the mapped columns for the object
+        $objectColumns = $defaultValue::getColumns();
+        $fields = implode(',', array_intersect($objectColumns, array_keys($this->formDefaults)));
+
+        // Get the mapped values and if no value saved for the field, the default one is set
+        $myValues = $defaultValue::getParameters($objectId, $fields);
+
+        // Set value for parameter
+        foreach ($params as $key => $value) {
+            $myValues[$key] = $value;
+        }
+
+        // Merging with non-mapped form field and returend the values combined
+        $this->formHandler->setDefaults(array_merge($myValues, array_diff_key($this->formDefaults, $myValues)));
+    }
     
     /**
      * 

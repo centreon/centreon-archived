@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give MERETHIS
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,34 +33,34 @@
  *
  */
 
-namespace CentreonBam\Repository;
+namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
-use Centreon\Repository\FormRepository;
-use CentreonBam\Models\BusinessActivity;
+#use CentreonBam\Models\BusinessActivityType;
+use Centreon\Controllers\FormController;
 
-/**
- * @author Sylvestre Ho <sho@centreon.com>
- * @package CentreonBam
- * @subpackage Repository
- */
-class BusinessViewRepository extends FormRepository
+class BusinessActivityTypeController extends FormController
 {
-
-    /**
+    protected $objectDisplayName = 'BusinessActivityType';
+    public static $objectName = 'businessactivitytype';
+    protected $objectBaseUrl = '/centreon-bam/businessactivitytype';
+	public static $relationMap = array();
+#    protected $datatableObject = '\CentreonConfiguration\Internal\TimeperiodDatatable';
+    protected $objectClass = '\CentreonBam\Models\BusinessActivityType';
+    protected $repository = '\CentreonBam\Repository\BusinessActivityTypeRepository';
+	
+	/**
      *
-     * @param string $name
-     * @return string
+     * @method get
+     * @route /businessactivitytype/configuration
      */
-    public static function getBuList()
+    public function listAction()
     {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        #$router = $di->get('router');
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('hogan-3.0.0.min.js');
+        $urls = array();
+        $this->tpl->append('jsUrl', $urls, true);
+        parent::listAction();
+    }
 
-        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
-
-		return $buList;
-	}
 }

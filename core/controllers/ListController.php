@@ -456,7 +456,7 @@ abstract class ListController extends Controller
     {
         $requestParam = $this->getParams('named');
         $repository = $this->repository;
-        $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParam['id']);
+        $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParam['id'], $reverse);
         $this->router->response()->json($list);
     }
 

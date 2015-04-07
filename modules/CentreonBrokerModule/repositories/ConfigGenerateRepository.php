@@ -108,8 +108,13 @@ class ConfigGenerateRepository
         if (!isset($listTpl[$tmplName])) {
             throw new Exception('The template is not found on list of templates');
         }
-        $fileTpl = $listTpl[$tmplName]->getBrokerPath();
-        $this->tplInformation = json_decode(file_get_contents($fileTpl), true);
+        $fileTplList = $listTpl[$tmplName]->getBrokerPath();
+        //$this->tplInformation = json_decode(file_get_contents($fileTpl), true);
+
+        $this->tplInformation = array();
+        foreach ($fileTplList as $fileTpl) {
+            $this->tplInformation = BrokerRepository::mergeBrokerConf($this->tplInformation, $fileTpl);
+        }
 
         $this->loadMacros($pollerId);
 
@@ -270,7 +275,9 @@ class ConfigGenerateRepository
                         array_values($this->baseConfig),
                         $subvalue
                     );
-                    $file->writeElement($subkey, $subvalue);
+                    if (is_string($subkey)) {
+                        $file->writeElement($subkey, $subvalue);
+                    }
                 }
                 $file->endElement();
             } else {
@@ -279,6 +286,12 @@ class ConfigGenerateRepository
                     array_values($this->baseConfig),
                     $value
                 );
+                $key = str_replace(
+                    array_keys($this->baseConfig),
+                    array_values($this->baseConfig),
+                    $key
+                );
+                $key = str_replace(array('/','.'),'-',$key);
                 $file->writeElement($key, $value);
             }
         }
