@@ -2,7 +2,7 @@
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
   <table name="cfg_centreonbroker_pollervalues" phpName="CfgCentreonbrokerPollervalues" idMethod="native">
     <column name="poller_id" phpName="PollerId" type="INTEGER" required="true" primaryKey="true"/>
-    <column name="name" phpName="Name" type="VARCHAR" size="50" required="true" primaryKey="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255" required="true" primaryKey="true"/>
     <column name="value" phpName="Value" type="VARCHAR" size="255" required="true"/>
     <foreign-key foreignTable="cfg_pollers" onDelete="cascade">
       <reference local="poller_id" foreign="poller_id" />

@@ -2,7 +2,7 @@
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_centreonbroker_info" phpName="CfgCentreonbrokerInfo" idMethod="native">
         <column name="config_id" phpName="ConfigId" type="INTEGER" required="true"/>
-        <column name="config_key" phpName="ConfigKey" type="VARCHAR" size="50" required="true"/>
+        <column name="config_key" phpName="ConfigKey" type="VARCHAR" size="255" required="true"/>
         <column name="config_value" phpName="ConfigValue" type="VARCHAR" size="255" required="true"/>
         <column name="config_group" phpName="ConfigGroup" type="VARCHAR" size="50" required="true"/>
         <column name="config_group_id" phpName="ConfigGroupId" type="INTEGER" required="false"/>
