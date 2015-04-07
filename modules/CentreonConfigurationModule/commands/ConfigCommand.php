@@ -54,7 +54,8 @@ class ConfigCommand extends AbstractCommand
     public function generateAction($id)
     {
         $obj = new ConfigGenerateRepository($id);
-        echo $obj->generate();
+        $obj->generate();
+        echo $obj->getOutput();
     }
 
     /**
@@ -64,7 +65,8 @@ class ConfigCommand extends AbstractCommand
     public function moveAction($id)
     {
         $obj = new ConfigMoveRepository($id);
-        echo $obj->moveConfig();
+        $obj->moveConfig();
+        echo $obj->getOutput();
     }
 
     /**
@@ -74,6 +76,7 @@ class ConfigCommand extends AbstractCommand
     public function testAction($id)
     {
         $obj = new ConfigTestRepository($id);
-        echo $obj->checkConfig();
+        $obj->checkConfig();
+        echo $obj->getOutput();
     }
 }

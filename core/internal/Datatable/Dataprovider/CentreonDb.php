@@ -72,7 +72,7 @@ class CentreonDb implements DataProviderInterface
         // get fields for search
         $conditions = array();
         foreach ($params['columns'] as $columnSearch) {
-            if ($columnSearch['searchable'] === "true" && !empty($columnSearch['search']['value'])) {
+            if ($columnSearch['searchable'] === "true" && (!empty($columnSearch['search']['value']) || $columnSearch['search']['value'] == "0")) {
                 $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
             }
         }

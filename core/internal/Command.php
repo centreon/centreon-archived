@@ -55,7 +55,7 @@ class Command
     {
         try {
             $bootstrap = new Bootstrap();
-            $sectionToInit = array('configuration', 'database', 'cache', 'logger', 'organization');
+            $sectionToInit = array('configuration', 'database', 'cache', 'logger', 'organization', 'events');
             $bootstrap->init($sectionToInit);
             $this->requestLine = $requestLine;
             $this->parametersLine = $parametersLine;

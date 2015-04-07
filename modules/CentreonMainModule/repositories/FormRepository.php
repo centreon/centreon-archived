@@ -93,7 +93,7 @@ abstract class FormRepository extends ListRepository
     {
         $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
         
-        if (is_a($givenParameters, '\Klein\DataCollection\DataCollectio')) {
+        if (is_a($givenParameters, '\Klein\DataCollection\DataCollection')) {
             $givenParameters = $givenParameters->all();
         }
         
