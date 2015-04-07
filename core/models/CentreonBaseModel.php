@@ -255,9 +255,19 @@ abstract class CentreonBaseModel extends CentreonModel
             $originalName = array();
             foreach (static::$uniqueLabelField as $uniqueField) {
                 $originalName[$uniqueField] = $sourceParams[$uniqueField];
+                $explodeOriginalName = explode('_', $originalName[$uniqueField]);
+                $count = count($explodeOriginalName);
+                if (($count > 1) && (is_numeric($explodeOriginalName[$count - 1]))) {
+                    $originalName[$uniqueField] = preg_replace('/(.*)_\d+$/', '$1', $originalName[$uniqueField]);
+                }
             }
         } else {
             $originalName = $sourceParams[static::$uniqueLabelField];
+            $explodeOriginalName = explode('_', $originalName);
+            $count = count($explodeOriginalName);
+            if (($count > 1) && (is_numeric($explodeOriginalName[$count - 1]))) {
+                $originalName = preg_replace('/(.*)_\d+$/', '$1', $originalName);
+            }
         }
         /* Get relations */
         $firstKeyCopy = array();
@@ -288,14 +298,14 @@ abstract class CentreonBaseModel extends CentreonModel
                 $unique = true;
                 foreach (static::$uniqueLabelField as $uniqueField) {
                     $sourceParams[$uniqueField] = $originalName[$uniqueField] . '_' . $j;
-                    if (false === self::isUnique($originalName[$uniqueField] . '_' . $j, $sourceObjectId, $uniqueField)) {
+                    if (false === self::isUnique($originalName[$uniqueField] . '_' . $j, 0, $uniqueField)) {
                         $unique = false;
                     }
                 }
             } else {
                 $unique = false;
                 $sourceParams[static::$uniqueLabelField] = $originalName . '_' . $j;
-                if (self::isUnique($originalName . '_' . $j, $sourceObjectId)) {
+                if (self::isUnique($originalName . '_' . $j, 0)) {
                     $unique = true;
                 }
             }
