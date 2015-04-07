@@ -2,8 +2,7 @@
 {foreach from=$variables.paths item=mypath key=k}
 	<div class="form-group">
 		<div class="col-sm-2" style="text-align:right;">
-			<label class="label-controller" for="{$k}">{$mypath.label}</label>
-			<span style="color:red">*</span>
+			<label class="label-controller required" for="{$k}">{$mypath.label}</label>
 		</div>
 		<div class="col-sm-9">
 			<span>
