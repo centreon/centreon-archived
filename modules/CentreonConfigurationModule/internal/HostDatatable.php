@@ -207,8 +207,7 @@ class HostDatatable extends Datatable
                 'type' => 'select',
                 'additionnalParams' => array(
                     'Enabled' => '1',
-                    'Disabled' => '0',
-                    'Trash' => '2'
+                    'Disabled' => '0'
                 )
             ),
             'className' => "cell_center",
