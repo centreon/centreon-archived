@@ -44,3 +44,5 @@ ALTER TABLE `cfg_contacts` DROP `contact_address3`;
 ALTER TABLE `cfg_contacts` DROP `contact_address4`;
 ALTER TABLE `cfg_contacts` DROP `contact_address5`;
 ALTER TABLE `cfg_contacts` DROP `contact_address6`;
+ALTER TABLE `cfg_bam` DROP FOREIGN KEY `bam_ibfk_2`;
+ALTER TABLE `cfg_bam` CHANGE `sla_critical` `sla_month_percent_crit` FLOAT;
