@@ -44,7 +44,7 @@ use Centreon\Internal\Di;
  * @author Maximilien Bersoult <mbersoult@centreon.com>
  * @version 3.0.0
  */
-class Database
+class Database extends Storage
 {
     /**
      * Return the list of events
@@ -57,8 +57,17 @@ class Database
      */
     public static function getEventLogs($fromTime = null, $order = 'DESC', $limit = null, $filters = array())
     {
-        $listFullsearch = array('output');
+        $listFullsearch = array('output', 'host', 'service');
         $timeField = array('period');
+        $types = array(
+            0 => array(0, 1),
+            2 => array(2, 3),
+            4 => array(4),
+            5 => array(5),
+            6 => array(6, 7),
+            8 => array(8, 9),
+            10 => array(10, 11)
+        );
 
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
@@ -79,31 +88,49 @@ class Database
         }
         $values = array();
         foreach ($filters as $key => $value) {
-            if (in_array($key, $listFullsearch)) {
-                $clause = $key . ' LIKE :' . $key;
-                $values[$key] = $value;
-            } elseif (in_array($key, $timeField)) {
-                list($timeStart, $timeEnd) = explode(' - ', $value);
-                $clause = 'ctime >= :timeStart AND ctime <= :timeEnd';
-                $values['timeStart'] = strtotime($timeStart);
-                $values['timeEnd'] = strtotime($timeEnd);
-            } elseif ($key == 'status') {
-                $concatClause = "CONCAT(IF(ISNULL(service_id), 'h_', 's_'), status)";
-                if (is_array($value)) {
-                    $clause = "{$concatClause} IN ('" . implode("','", $value) . "')";
-                } else {
-                    $clause = "{$concatClause} = :status";
-                    $values['status'] = $value;
-                }
-            } else {
-                if (is_array($value)) {
-                    $clause = $key . ' IN (' . join(',', $value) . ')';
-                } else {
-                    $clause = $key . ' = :' . $key;
+            if ($value !== trim('')) { 
+                if (in_array($key, $listFullsearch)) {
+                    if ($key == 'host') {
+                        $dbkey = 'host_name';
+                    } elseif ($key == 'service') {
+                        $dbkey = 'service_description';
+                    } else {
+                        $dbkey = $key;
+                    }
+                    $clause = $dbkey . ' LIKE :' . $key;
                     $values[$key] = $value;
-                }
+                } elseif (in_array($key, $timeField)) {
+                    list($timeStart, $timeEnd) = explode(' - ', $value);
+                    $clause = 'ctime >= :timeStart AND ctime <= :timeEnd';
+                    $values['timeStart'] = strtotime($timeStart);
+                    $values['timeEnd'] = strtotime($timeEnd);
+                } elseif ($key == 'status') {
+                    /*$concatClause = "CONCAT(IF(ISNULL(service_id), 'h_', 's_'), status)";
+                    if (is_array($value)) {
+                        $clause = "{$concatClause} IN ('" . implode("','", $value) . "')";*/
+                    $clause = "status = :status";
+                    $values['status'] = $value;
+                } elseif ($key == 'eventtype') {
+                    if (isset($types[$value])) {
+                        if (count($types[$value]) == 2) {
+                            $clause = "type = :type1 OR type = :type2";
+                            $values['type1'] = $types[$value][0];
+                            $values['type2'] = $types[$value][1];
+                        } else {
+                            $clause = "type = :type";
+                            $values['type'] = $types[$value][0];
+                        }
+                    }
+                }/* else {
+                    if (is_array($value)) {
+                        $clause = $key . ' IN (' . join(',', $value) . ')';
+                    } else {
+                        $clause = $key . ' = :' . $key;
+                        $values[$key] = $value;
+                    }
+                }*/
+                $wheres[] = $clause;
             }
-            $wheres[] = $clause;
         }
         if (count($wheres) > 0) {
             $query .= ' WHERE ' . join(' AND ', $wheres);

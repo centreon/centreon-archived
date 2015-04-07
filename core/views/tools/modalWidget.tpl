@@ -72,7 +72,7 @@ $(function() {
   $(document).unbind('finished');
   {if isset($validateUrl)}
   $(document).on('finished', function (event) {
-    var validateMandatory = true;
+    /*var validateMandatory = true;
     var errorText = "";
     $("input.mandatory-field").each(function(index) {
       if ($(this).val().trim() === "") {
@@ -85,32 +85,34 @@ $(function() {
     if (!validateMandatory) {
       alertMessage(errorText, "alert-danger");
       return false;
-    }
+    }*/
 
-    $.ajax({
-      url: "{url_for url=$validateUrl}",
-      type: "POST",
-      dataType: 'json',
-      data: $("#wizard_form").serializeArray(),
-      context: document.body
-    })
-    .success(function(data, status, jqxhr) {
-      alertModalClose();
-      if (data.success) {
-        {if isset($formRedirect) && $formRedirect}
-          window.location='{url_for url=$formRedirect}';
-        {else}
-          alertModalMessage("The object has been successfully saved", "alert-success");
-        {/if}
-        $('#modal').modal('hide');
-        if ($('.dataTable').length) {
-          $('.dataTable').dataTable().fnDraw();
+    if ($('wizard_form').valid()) {
+      $.ajax({
+        url: "{url_for url=$validateUrl}",
+        type: "POST",
+        dataType: 'json',
+        data: $("#wizard_form").serializeArray(),
+        context: document.body
+      })
+      .success(function(data, status, jqxhr) {
+        alertModalClose();
+        if (data.success) {
+          {if isset($formRedirect) && $formRedirect}
+            window.location='{url_for url=$formRedirect}';
+          {else}
+            alertModalMessage("The object has been successfully saved", "alert-success");
+          {/if}
+          $('#modal').modal('hide');
+          if ($('.dataTable').length) {
+            $('.dataTable').dataTable().fnDraw();
+          }
+        } else {
+          alertModalMessage(data.error, "alert-danger");
         }
-      } else {
-        alertModalMessage(data.error, "alert-danger");
-      }
-    });
-    return false;
+      });
+      return false;
+    }
   });
   {/if}
   {get_custom_js}

@@ -113,7 +113,8 @@ class Full extends Generator
                 
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
-                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, parent_field, child_actions '
+                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, f.parent_field, '
+                    . 'f.parent_value, f.child_actions, f.child_mandatory '
                     . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
 		    . 'AND bfr.field_id = f.field_id ' 
@@ -126,12 +127,15 @@ class Full extends Generator
                 
                 foreach ($fieldList as $field) {
                     
-                    $validatorQuery = "SELECT v.route as validator_action, vr.client_side_event as events "
+                    $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
                         . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $field[field_id] "
                         . "AND vr.validator_id = v.validator_id";
                     $validatorStmt = $dbconn->query($validatorQuery);
-                    $field['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    while ($validator = $validatorStmt->fetch()) {
+                        $validator['params'] = json_decode($validator['params'], true);
+                        $field['validators'][] = $validator;
+                    }
                     
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;
@@ -225,7 +229,7 @@ class Full extends Generator
             . 'An error occured'
             . '</div>';
         
-        $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].'>';
+        $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].' novalidate>';
         
         $formRendering = '';
 
@@ -422,6 +426,8 @@ class Full extends Generator
                 cfg_forms_validators fv, cfg_forms_fields_validators_relations ffv, cfg_forms_fields ff
             WHERE
                 ffv.validator_id = fv.validator_id
+            AND
+                ffv.server_side = '1'
             AND
                 ff.field_id = ffv.field_id
             AND

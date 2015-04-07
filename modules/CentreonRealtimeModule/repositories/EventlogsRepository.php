@@ -66,15 +66,15 @@ class EventlogsRepository
         }
 
         /* Get configuration */
-        $storageType = 'db';
-        if ($storageType == 'db') {
+        $storageType = $di->get('config')->get('default', 'eventlogs', 'database');
+        if ($storageType == 'database') {
             return EventLogDatabase::getEventLogs(
                 $fromTime,
                 $order,
                 $limit,
                 $filters
             );
-        } elseif ($storageType == 'es') {
+        } elseif ($storageType == 'elasticsearch') {
             return ElasticSearch::getEventLogs(
                 $fromTime,
                 $order,

@@ -60,19 +60,22 @@ class Integer extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required .= ' required';
         }
         
         $myJs = "";
         
         $inputHtml = '<span><input '.
                         'id="'.$element['id'].'" '.
-                        'type="text" '.
+                        'type="number" '.
                         'name="'.$element['name'].'" '.
                         $value.
                         'class="form-control input-sm '.$addClass.'" '.
                         $placeholder.
+                        $required .
                         '/><span>';
         
         

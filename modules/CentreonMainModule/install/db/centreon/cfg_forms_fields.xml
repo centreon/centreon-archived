@@ -13,7 +13,9 @@
         <column name="help_url" phpName="HelpUrl" type="VARCHAR" size="255" required="false"/>
         <column name="module_id" phpName="ModuleId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
         <column name="parent_field" phpName="ParentField" type="VARCHAR" size="45" required="false"/>
+        <column name="parent_value" phpName="ParentValue" type="VARCHAR" size="45" required="false"/>
         <column name="child_actions" phpName="ChildActions" type="VARCHAR" size="45" required="false"/>
+        <column name="child_mandatory" phpName="ChildMandatory" type="CHAR" required="true" defaultValue="0"/>
         <foreign-key foreignTable="cfg_modules" name="fk_form_field_1" onDelete="CASCADE" onUpdate="CASCADE">
             <reference local="module_id" foreign="id"/>
         </foreign-key>

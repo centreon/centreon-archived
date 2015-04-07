@@ -253,13 +253,19 @@ class PollerController extends FormController
             'type' => 'text',
             'label' => 'Poller name',
             'name' => 'poller_name',
-            'mandatory' => true
+            'mandatory' => true,
+            'parent_field' => '',
+            'parent_value' => '',
+            'child_actions' => ''
         ));
         $form->add(array(
             'type' => 'text',
             'label' => 'IP Address',
             'name' => 'ip_address',
-            'mandatory' => true
+            'mandatory' => true,
+            'parent_field' => '',
+            'parent_value' => '',
+            'child_actions' => ''
         ));
         $selectParams = array(
             'object_type' => 'object',
@@ -273,6 +279,9 @@ class PollerController extends FormController
             'label' => 'Poller Template',
             'name' => 'poller_tmpl',
             'mandatory' => true,
+            'parent_field' => '',
+            'parent_value' => '',
+            'child_actions' => '',
             'attributes' => json_encode($selectParams)
         ), array(
             'id' => $pollerId

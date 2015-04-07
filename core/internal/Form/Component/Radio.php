@@ -55,8 +55,10 @@ class Radio extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required .= ' required';
         }
         
         $inputHtml = '';
@@ -73,6 +75,7 @@ class Radio extends Component
                             '<input '.'id="'.$element['id']. $i . '" '.
                             'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
                             'value=' . $choice . ' '.$htmlSelected.' '.
+                            $required . 
                             '/>'.' '.$key.
                             '</label>'.'&nbsp;&nbsp;';
                 $i++;
