@@ -7,7 +7,7 @@
         <section name="Configuration">
             <block name="Information">
                 <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-                <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
                 <field name="ba_type_id" label="Type" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
                     <attributes>
                         <object_type>object</object_type>
@@ -29,6 +29,16 @@
                         <multiple>false</multiple>
                     </attributes>
                     <help></help>
+                </field>
+            </block>
+            <block name="Additional information">
+                <field name="activate" label="Status" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+                    <attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+                    </attributes>
                 </field>
             </block>
         </section>
@@ -65,6 +75,8 @@
             <field name="name" mandatory="1"></field>
             <field name="description" mandatory="0"></field>
             <field name="ba_type_id" mandatory="1"></field>
+            <field name="level_w" mandatory="1"></field>
+            <field name="level_c" mandatory="1"></field>
         </step>
         <step name="Indicators">
             <field name="kpi" mandatory="0"></field>

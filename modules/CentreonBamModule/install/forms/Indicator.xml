@@ -59,11 +59,21 @@
                 <field name="drop_critical" label="Critical Impact" default_value="0" advanced="0" type="text" parent_field="" mandatory="0"></field>
                 <field name="drop_unknown" label="Unknown Impact" default_value="0" advanced="0" type="text" parent_field="" mandatory="0"></field>
             </block>
+            <block name="Additional information">
+                <field name="activate" label="Status" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+                    <attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+                    </attributes>
+                </field>
+            </block>
         </section>
     </form>
     <wizard name="add_indicator">
         <route>/centreon-bam/indicator/add</route>
-            <step name="General">
+        <step name="General">
             <field name="kpi_type" mandatory="1"></field>
             <field name="service_id" mandatory="0"></field>
             <field name="id_indicator_ba" mandatory="0"></field>

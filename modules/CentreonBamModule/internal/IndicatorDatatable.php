@@ -84,16 +84,6 @@ class IndicatorDatatable extends Datatable
             'type' => 'string',
             'visible' => false,
         ),
-        /*array (
-            'title' => 'Boolean Id',
-            'name' => 'boolean_id',
-            'data' => 'boolean_id',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => false,
-            'source' => 'other',
-        ),*/
         array (
             'title' => 'Type',
             'name' => 'kpi_type',

@@ -46,6 +46,7 @@ class BusinessActivityController extends FormController
 {
     protected $objectDisplayName = 'BusinessActivity';
     public static $objectName = 'businessactivity';
+    public static $enableDisableFieldName = 'activate';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
@@ -54,7 +55,9 @@ class BusinessActivityController extends FormController
         'child_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents',
         'kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator'
     );
-    
+   
+    public static $isDisableable = true;
+ 
     /**
      * 
      * @method get

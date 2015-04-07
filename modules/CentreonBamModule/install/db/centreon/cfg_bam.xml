@@ -30,7 +30,7 @@
         <column name="graph_id" phpName="GraphId" type="INTEGER"/>
         <column name="icon_id" phpName="IconId" type="INTEGER"/>
         <column name="graph_style" phpName="GraphStyle" type="VARCHAR" size="254"/>
-        <column name="activate" phpName="Activate" type="CHAR" sqlType="enum('1','0')"/>
+        <column name="activate" phpName="Activate" type="TINYINT" defaultValue="1"/>
         <column name="comment" phpName="Comment" type="LONGVARCHAR"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true" defaultValue="1"/>
         <column name="ba_type_id" phpName="BaTypeId" type="INTEGER" required="false"/>
