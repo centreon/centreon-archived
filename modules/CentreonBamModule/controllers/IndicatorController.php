@@ -48,6 +48,7 @@ class IndicatorController extends FormController
 {
     protected $objectDisplayName = 'Indicator';
     public static $objectName = 'indicator';
+    public static $enableDisableFieldName = 'activate';
     protected $objectBaseUrl = '/centreon-bam/indicator';
     protected $objectClass = '\CentreonBam\Models\Indicator';
     protected $datatableObject = '\CentreonBam\Internal\IndicatorDatatable';
@@ -57,6 +58,8 @@ class IndicatorController extends FormController
    //     'businessactivity_normalindicator' => '\CentreonBam\Models\Relation\BusinessActivity\NormalIndicator',
    //     'indicator_booleanindicator' => '\CentreonBam\Models\Relation\Indicator\BooleanIndicator',
     );
+
+    public static $isDisableable = true;
 
     /**
     * Create a new indicator
