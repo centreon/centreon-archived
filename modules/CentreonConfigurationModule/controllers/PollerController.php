@@ -114,12 +114,6 @@ class PollerController extends FormController
         $params = $this->getParams('post');
         $router = Di::getDefault()->get('router');
 
-        /* Check security */
-        /*try {
-            Form::validateSecurity($params['token']);
-        } catch (Exception $e) {
-            return $router->response()->json(array('success' => false, 'error' => $e->getMessage()));
-        }*/
         try {
             PollerRepository::create($params);
         } catch (Exception $e) {

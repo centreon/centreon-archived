@@ -291,9 +291,5 @@ class ExtensionsController extends Controller
         $this->tpl->assign('datatableObject', $this->datatableObject);
         
         parent::init();
-
-        /* Set Cookie */
-        $token = Form::getSecurityToken();
-        setcookie("ajaxToken", $token, time()+15, '/');
     }
 }

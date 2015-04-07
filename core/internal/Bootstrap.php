@@ -194,6 +194,30 @@ class Bootstrap
             'router',
             function () {
                 $router = new Router();
+                /* Add middleroute for CSRF token */
+                $router->respond(function ($request, $response, $service, $app)
+                    {
+                        /* Get the token */
+                        $headers = $request->headers();
+                        $tokenValue = '';
+                        foreach (Csrf::getHeaderNames() as $headerName) {
+                            if ($headers->exists($headerName)) {
+                                $tokenValue = $headers[$headerName];
+                                break;
+                            }
+                        }
+                        $toSend = false;
+                        if (false === Csrf::checkToken($tokenValue, $request->method())) {
+                            $toSend = true;
+                            $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), Csrf::getExpireTime());
+                            $response->code(403)->json(array("message" => "CSRF Token is no valid"));
+                        } else {
+                        /* Generate and send a new csrf cookie */
+                            $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), Csrf::getExpireTime());
+                        }
+                    }
+                );
+                /* Parsing route */
                 $router->parseRoutes();
                 return $router;
             }
