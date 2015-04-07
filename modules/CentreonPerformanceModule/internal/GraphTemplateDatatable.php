@@ -72,7 +72,7 @@ class GraphTemplateDatatable extends \Centreon\Internal\Datatable
         'order' => array(
             array('svc_tmpl_id', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true
     );
 

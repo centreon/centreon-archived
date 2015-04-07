@@ -82,7 +82,7 @@ class HostDatatable extends Datatable
         'order' => array(
             array('host_name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

@@ -29,54 +29,37 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
- * For more information : contact@centreon.com
+ * For more information : resource@centreon.com
  *
  */
 
-namespace CentreonConfiguration\Commands;
+namespace CentreonConfiguration\Controllers;
 
-use Centreon\Internal\Command\AbstractCommand;
-use CentreonConfiguration\Repository\ConfigGenerateRepository;
-use CentreonConfiguration\Repository\ConfigMoveRepository;
-use CentreonConfiguration\Repository\ConfigTestRepository;
+use Centreon\Controllers\FormController;
 
-/**
- * @authors Lionel Assepo
- * @package CentreonConfiguration
- * @subpackage Commands                                 
- */
-class ConfigCommand extends AbstractCommand
+class ResourceController extends FormController
 {
-    /**
-     * Action for Generating configuration files
-     * @param type $id Poller id
-     */
-    public function generateAction($id)
-    {
-        $obj = new ConfigGenerateRepository($id);
-        $obj->generate();
-        echo $obj->getOutput();
-    }
+    protected $objectDisplayName = 'Resource';
+    public static $objectName = 'resource';
+    public static $enableDisableFieldName = 'enabled';
+    protected $objectBaseUrl = '/centreon-configuration/resource';
+    protected $datatableObject = '\CentreonConfiguration\Internal\ResourceDatatable';
+    protected $objectClass = '\CentreonConfiguration\Models\Resource';
+    protected $repository = '\CentreonConfiguration\Repository\ResourceRepository';    
+    public static $isDisableable = true;
+    
+    public static $relationMap = array(
+        'resource_pollers' => '\CentreonConfiguration\Models\Relation\Resource\Poller'
+    );
 
     /**
-     * Action for Move configuration files
-     * @param type $id Poller id
+     * Commands for specific resource
+     *
+     * @method get
+     * @route /resource/[i:id]/poller
      */
-    public function moveAction($id)
+    public function commandsForResourceAction()
     {
-        $obj = new ConfigMoveRepository($id);
-        $obj->moveConfig();
-        echo $obj->getOutput();
-    }
-
-    /**
-     * Action for testing configuration files
-     * @param type $id Poller id
-     */
-    public function testAction($id)
-    {
-        $obj = new ConfigTestRepository($id);
-        $obj->checkConfig();
-        echo $obj->getOutput();
+        parent::getRelations(static::$relationMap['resource_pollers']);
     }
 }

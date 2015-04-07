@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2014 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,17 +34,17 @@
  * 
  */
 
-namespace CentreonAdministration\Internal;
+namespace CentreonConfiguration\Internal;
 
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 
 /**
- * Repository for Acl action listing
+ * Description of ResourceDatatable
  *
- * @author Sylvestre Ho
+ * @author lionel
  */
-class AclactionDatatable extends Datatable
+class ResourceDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -51,7 +52,13 @@ class AclactionDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonAdministration\Models\Aclaction';
+    protected static $datasource = '\CentreonConfiguration\Models\Resource';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $rowIdColumn = array('id' => 'resource_id', 'name' => 'resource_name');
     
     /**
      *
@@ -60,8 +67,7 @@ class AclactionDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('acl_action_name', 'asc'),
-            array('acl_action_id', 'asc')
+            array('resource_name', 'asc')
         ),
         'stateSave' => false,
         'paging' => true,
@@ -73,44 +79,47 @@ class AclactionDatatable extends Datatable
      */
     public static $columns = array(
         array (
-            'title' => 'Id',
-            'name' => 'acl_action_id',
-            'data' => 'acl_action_id',
+            'title' => "Id",
+            'name' => 'resource_id',
+            'data' => 'resource_id',
             'orderable' => true,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '5%',
-            'cast' => array(
-                'type' => 'checkbox',
-                'parameters' => array(
-                    'displayName' => '::acl_action_name::'
-                )
-            )
+            'visible' => false,
         ),
         array (
             'title' => 'Name',
-            'name' => 'acl_action_name',
-            'data' => 'acl_action_name',
+            'name' => 'resource_name',
+            'data' => 'resource_name',
             'orderable' => true,
             'searchable' => true,
+            'searchLabel' => 'resource',
             'type' => 'string',
             'visible' => true,
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-administration/aclaction/[i:id]',
+                    'route' => '/centreon-configuration/resource/[i:id]',
                     'routeParams' => array(
-                        'id' => '::acl_action_id::'
+                        'id' => '::resource_id::'
                     ),
-                    'linkName' => '::acl_action_name::'
+                    'linkName' => '::resource_name::'
                 )
             )
         ),
         array (
+            'title' => 'Values',
+            'name' => 'resource_line',
+            'data' => 'resource_line',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+        ),
+        array (
             'title' => 'Description',
-            'name' => 'acl_action_description',
-            'data' => 'acl_action_description',
+            'name' => 'resource_comment',
+            'data' => 'resource_comment',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
@@ -118,14 +127,14 @@ class AclactionDatatable extends Datatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'acl_action_activate',
-            'data' => 'acl_action_activate',
+            'name' => 'resource_activate',
+            'data' => 'resource_activate',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-                'type' => 'select',
+            'type' => 'select',
                 'parameters' =>array(
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
@@ -142,4 +151,5 @@ class AclactionDatatable extends Datatable
     {
         parent::__construct($params, $objectModelClass);
     }
+
 }

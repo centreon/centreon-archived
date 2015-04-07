@@ -63,7 +63,7 @@ class AclgroupDatatable extends Datatable
             array('acl_group_name', 'asc'),
             array('acl_group_id', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     

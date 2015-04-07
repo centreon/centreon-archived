@@ -31,52 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonConfiguration\Commands;
+namespace CentreonConfiguration\Models\Relation\Resource;
 
-use Centreon\Internal\Command\AbstractCommand;
-use CentreonConfiguration\Repository\ConfigGenerateRepository;
-use CentreonConfiguration\Repository\ConfigMoveRepository;
-use CentreonConfiguration\Repository\ConfigTestRepository;
+use Centreon\Internal\Di;
+use Centreon\Models\CentreonRelationModel;
 
-/**
- * @authors Lionel Assepo
- * @package CentreonConfiguration
- * @subpackage Commands                                 
- */
-class ConfigCommand extends AbstractCommand
+class Poller extends CentreonRelationModel
 {
-    /**
-     * Action for Generating configuration files
-     * @param type $id Poller id
-     */
-    public function generateAction($id)
-    {
-        $obj = new ConfigGenerateRepository($id);
-        $obj->generate();
-        echo $obj->getOutput();
-    }
-
-    /**
-     * Action for Move configuration files
-     * @param type $id Poller id
-     */
-    public function moveAction($id)
-    {
-        $obj = new ConfigMoveRepository($id);
-        $obj->moveConfig();
-        echo $obj->getOutput();
-    }
-
-    /**
-     * Action for testing configuration files
-     * @param type $id Poller id
-     */
-    public function testAction($id)
-    {
-        $obj = new ConfigTestRepository($id);
-        $obj->checkConfig();
-        echo $obj->getOutput();
-    }
+    protected static $relationTable = "cfg_resources_instances_relations";
+    protected static $firstKey = "resource_id";
+    protected static $secondKey = "instance_id";
+    public static $firstObject = "\CentreonConfiguration\Models\Resource";
+    public static $secondObject = "\CentreonConfiguration\Models\Poller";
 }

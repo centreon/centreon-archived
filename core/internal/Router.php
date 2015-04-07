@@ -130,6 +130,7 @@ class Router extends Klein
             '404',
             function ($request, $response) {
                 $tmpl = Di::getDefault()->get('template');
+                $response->code(404);
                 $response->body($tmpl->fetch('404.tpl'));
             }
         );
