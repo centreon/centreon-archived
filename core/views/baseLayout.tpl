@@ -191,41 +191,6 @@
     {$jsFile|js}
     {/foreach}
     <script>
-        $("body").on("click", "#modalAdd_timezone", function(e) {
-            $("#modal").removeData("bs.modal");
-            $("#modal").removeData("centreonWizard");
-            $("#modal .modal-content").text("");
-            $("#modal").one("loaded.bs.modal", function(e) {
-                $(this).centreonWizard();
-            });
-            $("#modal").modal({
-                "remote": "{url_for url='/centreon-administration/timezone/addtouser'}"
-            });
-        });
-        
-        $(document).on('click', '.modalDelete', function(e) {
-        e.preventDefault();
-        $('#modal .modal-content').text('');
-        var id = $(this).data('id');
-        
-        var $deleteFooter = $('<div></div>').addClass('modal-footer');
-        $('<a></a>')
-            .attr('aria-hidden', 'true')
-            .attr('data-dismiss', 'modal')
-            .addClass('btn').addClass('btn-default')
-            .text('{t}Cancel{/t}')
-            .appendTo($deleteFooter);
-        var $deleteBtn = $('<button></button>')
-            .attr('type', 'button')
-            .addClass('btn')
-            .addClass('btn-danger')
-            .text('{t}Delete{/t}')
-            .appendTo($deleteFooter);
-        $deleteFooter.appendTo('#modal .modal-content');
-        
-        var objectDeleteUrl =  "{url_for url='/centreon-administration/user/deletetimezone'}";
-        
-    
         $(document).ready(function() {
             var statusInterval, statusData,
                     eStatus = new $.Event('centreon.refresh_status');
@@ -249,7 +214,42 @@
                     }
                 });
             });
+            
+            $("body").on("click", "#modalAdd_timezone", function(e) {
+                $("#modal").removeData("bs.modal");
+                $("#modal").removeData("centreonWizard");
+                $("#modal .modal-content").text("");
+                $("#modal").one("loaded.bs.modal", function(e) {
+                    $(this).centreonWizard();
+                });
+                $("#modal").modal({
+                    "remote": "{url_for url='/centreon-administration/timezone/addtouser'}"
+                });
+            });
 
+            $(document).on('click', '.modalDelete', function(e) {
+                e.preventDefault();
+                $('#modal .modal-content').text('');
+                var id = $(this).data('id');
+
+                var $deleteFooter = $('<div></div>').addClass('modal-footer');
+                $('<a></a>')
+                    .attr('aria-hidden', 'true')
+                    .attr('data-dismiss', 'modal')
+                    .addClass('btn').addClass('btn-default')
+                    .text('{t}Cancel{/t}')
+                    .appendTo($deleteFooter);
+                var $deleteBtn = $('<button></button>')
+                    .attr('type', 'button')
+                    .addClass('btn')
+                    .addClass('btn-danger')
+                    .text('{t}Delete{/t}')
+                    .appendTo($deleteFooter);
+                $deleteFooter.appendTo('#modal .modal-content');
+        
+            var objectDeleteUrl =  "{url_for url='/centreon-administration/user/deletetimezone'}";
+        });
+        
             function loadStatusData() {
                 $.ajax({
                     url: "{url_for url='/status'}",
