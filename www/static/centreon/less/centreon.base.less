@@ -1,0 +1,70 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: @defaultFontSize;
+    overfolow-x : hidden;
+}
+#mainCntr {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#pageWrapper {
+  min-height: 568px;
+  position: relative;
+}
+.logo {
+    min-height: 50px;
+}
+/*.mini-navbar {
+  .logo {
+
+    &:after {
+      top: 0em;
+      opacity: 0;
+      position: absolute;
+      content: '';
+      transition: opacity .3s ease, top .3s ease;
+    }
+
+    &:hover {
+
+      &:after {
+        content: 'Open Me';
+        position: absolute;
+        top: .8em;
+        left: 6em;
+        width: 85px;
+        color: white;
+        background-color: black;
+        border-radius: 3px;
+        padding: 6px;
+        text-align: center;
+        font-size: 12px;
+        opacity: 1;
+        transition: opacity .3s ease .5s, top .3s ease .5s;
+      }
+    }
+  }
+}*/
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace-inactive {
+  display: none;
+}
+
+.pace .pace-progress {
+  background: #00ccbf;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: 100%;
+  width: 100%;
+  height: 2px;
+}
