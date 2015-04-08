@@ -48,13 +48,15 @@ class BrokerProcess
     {
         $action = $event->getAction();
         if (!in_array($action, array('reload', 'restart', 'forcereload'))) {
-            throw new Exception(sprintf('Unknown action %s', $action));
+            throw new Exception(sprintf('Invalid action for Broker: %s', $action));
         }
-        $command = "sudo /etc/init.d/cbd {$action}";
+        $command = "sudo /etc/init.d/cbd {$action} 2>&1";
         $status = 0;
         $output = array();
         exec($command, $output, $status);
-        $event->setOutput($output);
+        foreach ($output as $line) {
+            $event->setOutput($line);
+        }
         $event->setStatus(
             $status ? false : true
         );
