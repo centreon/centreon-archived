@@ -168,25 +168,7 @@
         <div class="row">
             {block name="content"}{/block}
         </div>
-
-
-    $("body").on("click", "#modalAdd_timezone", function(e) {
-        $("#modal").removeData("bs.modal");
-        $("#modal").removeData("centreonWizard");
-        $("#modal .modal-content").text("");
-        $("#modal").one("loaded.bs.modal", function(e) {
-            $(this).centreonWizard();
-        });
-        $("#modal").modal({
-            "remote": "{url_for url='/centreon-administration/timezone/addtouser'}"
-        });
-    });
-    
-    
-     $(document).on('click', '.modalDelete', function(e) {
-        e.preventDefault();
-        $('#modal .modal-content').text('');
-        var id = $(this).data('id');
+        
         <div class="row bottombar">
 
                 <div  class="footer_links col-sm-8 col-md-9">
@@ -201,8 +183,31 @@
                 </div>
 
                 <p class="col-sm-4 col-md-3"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2014</p>
+       </div>
 
+    </div>
 
+    {foreach from=$jsBottomFileList item='jsFile'}
+    {$jsFile|js}
+    {/foreach}
+    <script>
+        $("body").on("click", "#modalAdd_timezone", function(e) {
+            $("#modal").removeData("bs.modal");
+            $("#modal").removeData("centreonWizard");
+            $("#modal .modal-content").text("");
+            $("#modal").one("loaded.bs.modal", function(e) {
+                $(this).centreonWizard();
+            });
+            $("#modal").modal({
+                "remote": "{url_for url='/centreon-administration/timezone/addtouser'}"
+            });
+        });
+        
+        $(document).on('click', '.modalDelete', function(e) {
+        e.preventDefault();
+        $('#modal .modal-content').text('');
+        var id = $(this).data('id');
+        
         var $deleteFooter = $('<div></div>').addClass('modal-footer');
         $('<a></a>')
             .attr('aria-hidden', 'true')
@@ -219,14 +224,8 @@
         $deleteFooter.appendTo('#modal .modal-content');
         
         var objectDeleteUrl =  "{url_for url='/centreon-administration/user/deletetimezone'}";
-       </div>
-
-    </div>
-
-    {foreach from=$jsBottomFileList item='jsFile'}
-    {$jsFile|js}
-    {/foreach}
-    <script>
+        
+    
         $(document).ready(function() {
             var statusInterval, statusData,
                     eStatus = new $.Event('centreon.refresh_status');
@@ -292,11 +291,12 @@
           restartOnPushState: false,
           restartOnRequestAfter: false
         }
-    statusInterval = setInterval(function() {
+        
+        statusInterval = setInterval(function() {
+            loadStatusData();
+        }, 5000);
+
         loadStatusData();
-    }, 5000);
-    
-    loadStatusData();
    
 });
 
