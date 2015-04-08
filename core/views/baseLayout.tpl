@@ -41,32 +41,44 @@
                                         {/if}
                                 </a>
                                 <ul class="nav nav-second-level">
-                                    {foreach $menuLevel1.children as $menuLevel2}
-                                    <li>
-                                        {if $menuLevel2.url != ""}
-                                            <a href="{url_for url=$menuLevel2.url}">
-                                        {else}
-                                            <a href="#">
-                                        {/if}
-                                            {$menuLevel2.name}
-                                            {if count($menuLevel2.children) > 0}
-                                                <span class="fa arrow"></span>
+                                    {if count($menuLevel1.children > 0)}
+                                        {foreach $menuLevel1.children as $menuLevel2}
+
+                                        <li>
+                                            {if $menuLevel2.url != ""}
+                                                <a href="{url_for url=$menuLevel2.url}">
+                                            {else}
+                                                <a href="#">
                                             {/if}
-                                        </a>
-                                        <ul class="nav nav-third-level">
-                                            {foreach $menuLevel2.children as $menuLevel3}
-                                                <li>
-                                                    {if $menuLevel3.url != ""}
-                                                        <a href="{url_for url=$menuLevel3.url}">
-                                                    {else}
-                                                        <a href="#">
-                                                    {/if}
-                                                    {$menuLevel3.name}</a>
-                                                </li>
-                                            {/foreach}
-                                        </ul>
-                                    </li>
-                                    {/foreach}
+                                                {$menuLevel2.name}
+                                                {if count($menuLevel2.children) > 0}
+                                                    <span class="fa arrow"></span>
+                                                {/if}
+                                            </a>
+                                            <ul class="nav nav-third-level">
+                                                {foreach $menuLevel2.children as $menuLevel3}
+                                                    <li>
+                                                        {if $menuLevel3.url != ""}
+                                                            <a href="{url_for url=$menuLevel3.url}">
+                                                        {else}
+                                                            <a href="#">
+                                                        {/if}
+                                                        {$menuLevel3.name}</a>
+                                                    </li>
+                                                {/foreach}
+                                            </ul>
+                                        </li>
+                                        {/foreach}
+                                    {else}
+                                         <li>
+                                            {if $menuLevel1.url != ""}
+                                                <a href="{url_for url=$menuLevel1.url}">
+                                            {else}
+                                                <a href="#">
+                                            {/if}
+                                            {$menuLevel1.name}</a>
+                                        </li>
+                                    {/if}
                                 </ul>
                            </li>
                     {/foreach}
