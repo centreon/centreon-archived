@@ -42,6 +42,7 @@ use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Host;
 use CentreonConfiguration\Models\Relation\Host\Service as HostService;
 use Centreon\Controllers\FormController;
+use CentreonAdministration\Repository\TagsRepository;
 
 class ServiceController extends FormController
 {
@@ -181,6 +182,8 @@ class ServiceController extends FormController
     public function updateAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -211,6 +214,20 @@ class ServiceController extends FormController
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
         }
+        
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+        }
+        
         parent::updateAction();
     }
     
@@ -223,6 +240,8 @@ class ServiceController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -250,12 +269,27 @@ class ServiceController extends FormController
             }
         }
         
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        
+        
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
         }
-
+        
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
+        }
         $this->router->response()->json(array('success' => true));
     }
 

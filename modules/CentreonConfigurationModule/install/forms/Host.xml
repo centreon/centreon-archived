@@ -66,23 +66,33 @@
 					</attributes>
 				</field>
                 <field name="environment_id" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<help>Define the environment of the host</help>
+                    <help>Define the environment of the host</help>
                     <attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/host/[i:id]/environment</listValuesRoute>
-						<multiple>false</multiple>
-					</attributes>
-				</field>
-			</block>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-configuration/host/[i:id]/environment</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+		</field>
+            </block>
             <block name="Macros">
                 <field name="host_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
                     <attributes>
-						<object>host</object>
+			<object>host</object>
                     </attributes>
                 </field>
             </block>
-			<block name="Host check properties">
+            <block name="Tags">
+                <field name="host_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/tag/[i:id]/host/formlist</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+		</field>
+            </block>
+                    <block name="Host check properties">
 				<field name="poller_id" label="Poller" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<help>Define the poller that will monitor the host</help>
                     <attributes>
@@ -349,6 +359,7 @@
                         <field name="timezone_id" mandatory="0"></field>
 			<field name="host_hosttemplates" mandatory="0"></field>
 			<field name="host_custommacros" mandatory="0"></field>
+                        <field name="host_tags" mandatory="0"></field>
 			<field name="environment_id" mandatory="0"></field>
 			<field name="poller_id" mandatory="0"></field>
 		</step>

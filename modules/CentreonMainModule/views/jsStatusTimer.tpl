@@ -6,12 +6,12 @@ $(document).on('centreon.refresh_status', function(e) {
     $('#list_timezone').prepend("<li class='divider'></li>");
     $.each(listUserTimezone, function(id, element) {
         if (element.text != '' && clockTimestamp != '') {
-            var color = '';
+            var myClass ='';
             if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && element.text == sessionStorage.getItem("sTimezone")) {
-                color = '#ADD8E6';
+                myClass ='classColor';
             }
             var sText =  element.text+ " (" + moment.unix(clockTimestamp).tz(element.text).format('HH:mm:ss')+")";
-            $('#list_timezone').prepend("<li style='background-color: "+color+"'><a href='#' onclick='changeTimezone(\""+element.text+"\")'>"+sText+"</a><a href='#' class='modalDelete' data-id='"+element.id+"'><i class='fa fa-times-circle'></i></a></li>");
+            $('#list_timezone').prepend("<li class='"+myClass+"'><a href='#' onclick='changeTimezone(\""+element.text+"\")'>"+sText+"</a><a href='#' class='modalDelete' data-id='"+element.id+"'><i class='fa fa-times-circle'></i></a></li>");
         }
     });
 });

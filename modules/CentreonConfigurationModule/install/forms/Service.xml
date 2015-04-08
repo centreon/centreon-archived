@@ -125,11 +125,21 @@
 	  </block>
 	  <block name="Macros">
 	    <field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
-            <attributes>
-                <object>service</object>
-            </attributes>
-        </field>
+                <attributes>
+                    <object>service</object>
+                </attributes>
+            </field>
 	  </block>
+          <block name="Tags">
+                <field name="service_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/tag/[i:id]/service/formlist</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+		</field>
+            </block>
     </section>
     <section name="Notification">
 	  <block name="Notification Options">
@@ -305,6 +315,7 @@
     	<field name="service_description" mandatory="1"></field>
     	<field name="service_template_model_stm_id" mandatory="0"></field>
     	<field name="service_custommacros" mandatory="0"></field>
+        <field name="service_tags" mandatory="0"></field>
     	<field name="environment_id" mandatory="0"></field>
     </step>
     <step name="Relation">

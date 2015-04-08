@@ -38,6 +38,7 @@ namespace CentreonAdministration\Controllers;
 use Centreon\Internal\Di;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Controller;
+use CentreonAdministration\Internal\TagDatatable;
 
 /**
  * Controller for tag action
@@ -49,6 +50,37 @@ use Centreon\Internal\Controller;
  */
 class TagController extends Controller
 {
+    /*
+    protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
+    
+    protected $objectClass = '\CentreonAdministration\Models\Tag';
+    */
+    
+    
+    
+    
+    
+    protected $objectDisplayName = 'Tag';
+    public static $objectName = 'tag';
+   // protected $objectBaseUrl = '/centreon-administration/tag';
+    protected $objectClass = '\CentreonAdministration\Models\Tag';
+    protected $repository = '\CentreonAdministration\Repository\TagRepository';
+    
+    public static $relationMap = array();
+    
+    protected $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
+    public static $isDisableable = true;
+    
+    
+    
+    
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $objectBaseUrl = '/tag'; 
+    
     /**
      * Add a tag
      *
@@ -66,6 +98,8 @@ class TagController extends Controller
         } else {
             $listResources = $post['resourceId'];
         }
+        
+     
         foreach ($listResources as $resourceId) {
             $tagId = TagsRepository::add(
                 $post['tagName'],
@@ -87,12 +121,58 @@ class TagController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $post = $router->request()->paramsPost();
-
+        
         TagsRepository::delete(
             $post['tagId'],
             $post['resourceName'],
             $post['resourceId']
         );
         return $router->response()->json(array('success' => true));
+    }
+    
+    /**
+     * get list tag
+     * 
+     * @method get
+     * @route /tag/[i:id]/[a:objectName]/formlist
+     */
+    public function listAction()
+    {
+        $data = '';
+        $get = $this->getParams('named');
+        
+        if (isset($get['objectName']) && isset($get['id'])) {
+            $data = TagsRepository::getList($get['objectName'], $get['id'], 1);
+        }
+        $this->router->response()->json($data);
+    }
+    
+    /**
+     * get all tag
+     * 
+     * @method get
+     * @route /tag/all
+     */
+    public function allAction()
+    {
+        $data = '';
+        $data = TagsRepository::getAllList();
+        $this->router->response()->json($data);
+    }
+        
+    /**
+     * 
+     * @method get
+     * @route /tag
+     */
+    public function datatableAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        
+        $myDatatable = new TagDatatable($this->getParams('get'), $this->objectClass);
+        $myDataForDatatable = $myDatatable->getDatas();
+          
+        $router->response()->json($myDataForDatatable);
     }
 }

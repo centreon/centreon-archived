@@ -42,6 +42,7 @@ $(function () {
         }
       }
     });
+      
   }
 
   /* Event for add a tag */
@@ -69,6 +70,8 @@ $(function () {
       saveTag( $newTag );
     }
   });
+  
+
 
   /* Event for delete a tag */
   $( document ).on( "click", ".tag:not(.addtag) .remove a", function() {
@@ -137,8 +140,8 @@ $(function () {
     function saveTags() {
       var listObject = [],
           name = $( "#modal" ).find( "input[name='tagName']" ).val();
-      $( ".allBox:checked" ).each( function( idx, value ) {
-        listObject.push( $( value ).val() );
+      $( ".selected" ).each( function( idx, value ) {
+        listObject.push( $( value ).data('id') );
       });
       $.ajax({
         url: jsUrl.tag.add,
@@ -169,5 +172,13 @@ $(function () {
     $( "#saveAddToTag" ).on( "click", function() {
       saveTags();
     });
+  });
+  $( document).on( "click", ".tagname", function( e ) {
+      e.preventDefault();
+      e.stopPropagation();
+      var sSearch = $(this).html();
+      var sOldFilter = $("input[name='advsearch']").val();
+      $("input[name='advsearch']").val($.trim(sOldFilter+" "+"tags:"+sSearch));
+      $("#btnSearch").click();
   });
 });

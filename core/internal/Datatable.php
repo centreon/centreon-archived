@@ -126,7 +126,7 @@ class Datatable
     
     /**
      *
-     * @var string 
+     * @var array 
      */
     protected static $additionnalDatasource = null;
     
@@ -142,6 +142,7 @@ class Datatable
         'DT_RowData',
         'DT_RowId'
     );
+    
     
     /**
      * 
@@ -173,8 +174,34 @@ class Datatable
     public function getDatas()
     {
         $provider = static::$dataprovider;
+        
+        $aTables = array();
+        $aParameters = array();
+        
+        array_push($aTables, 'cfg_hosts');
+        
+        foreach (static::$columns as $column) {
+            if (isset($column['tablename']))
+                array_push($aTables, $column['tablename']);
+        }
+        $aTables = array_unique($aTables);
+        
+        foreach ($aTables as $oTable) {
+            $aParameters[$oTable] = array();
+            foreach (static::$columns as $column) {
+                if ((isset($column['tablename']) && $oTable == $column['tablename'])) {
+                    $aParameters[$oTable]['field'][] =  $column['name'];
+                } elseif (!isset($column['tablename'])) {
+                    $aParameters['cfg_hosts']['field'][] = $column['name'];
+                }
+            }
+        }
+        
+
+        
+      /*
         $datasFromDb = $provider::loadDatas(
-            $this->params,
+            $aParameters,
             static::$columns,
             $this->specialFields,
             get_class($this),
@@ -182,10 +209,23 @@ class Datatable
             static::$additionnalDatasource
         );
 
-        static::addAdditionnalDatas($datasFromDb['datas']);
-        static::processHooks($datasFromDb['datas']);
-        $this->formatDatas($datasFromDb['datas']);
+   
+
+        s
         
+        */
+        $datasFromDb = $provider::loadDatas(
+            $this->params,
+            static::$columns,
+            $this->specialFields,
+            get_class($this),
+            $this->objectModelClass,
+            static::$additionnalDatasource,
+            isset(static::$aFieldNotAuthorized) ? static::$aFieldNotAuthorized : array()
+        );
+       
+        
+
         // Add RowId
         if (count(static::$rowIdColumn) > 0) {
             foreach ($datasFromDb['datas'] as &$datas) {
@@ -196,7 +236,9 @@ class Datatable
                 $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
             }
         }
-        
+        static::addAdditionnalDatas($datasFromDb['datas']);
+        static::processHooks($datasFromDb['datas']);
+        $this->formatDatas($datasFromDb['datas']);
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
         
         return $sendableDatas;
@@ -228,7 +270,7 @@ class Datatable
             "recordsFiltered" => $datasToSend['nbOfTotalDatas'],
             "data" => $datasToSend['datas']
         );
-        
+       
         return $finalDatas;
     }
     
@@ -331,6 +373,7 @@ class Datatable
     public static function getConfiguration()
     {
         $configurationParams = "";
+        
         foreach (static::$configuration as $configName => $configEntry) {
             
             if ($configName == 'order') {
@@ -340,7 +383,7 @@ class Datatable
             if ($configName == 'searchCols') {
                 $configEntry = self::initSearch($configEntry);
             }
-            
+                       
             $configEntry = (is_array($configEntry)) ? json_encode($configEntry) : $configEntry;
             
             if (is_bool($configEntry)) {
@@ -399,7 +442,7 @@ class Datatable
         }
         return rtrim($line, ',') . ']';
     }
-
+    
     /**
      * 
      * @param type $datas

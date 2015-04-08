@@ -41,6 +41,7 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\HostRepository; 
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of HostDatatable
@@ -62,6 +63,18 @@ class HostTemplateDatatable extends Datatable
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'host_name');
+    
+    /**
+     *
+     * @var type 
+     */
+    //protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Host\Tag';
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array();
     
     /**
      *
@@ -192,6 +205,17 @@ class HostTemplateDatatable extends Datatable
             'className' => "cell_center",
             'width' => '50px'
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'source' => 'relation'
+        ),
     );
     
     /**
@@ -230,7 +254,14 @@ class HostTemplateDatatable extends Datatable
                     $template['ico'].
                     '"></i></a></span>';
             }
-
+            
+            /* Tags */
+            $myHostSet['tagname']  = "";
+            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
     }
 }

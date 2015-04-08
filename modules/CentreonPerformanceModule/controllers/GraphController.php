@@ -65,9 +65,8 @@ class GraphController extends Controller
         $tmpl->addJs('d3.min.js');
         $tmpl->addJs('c3.min.js');
         $tmpl->addJs('jquery.select2/select2.min.js');
-        $tmpl->addJs('moment-with-langs.min.js')
-            ->addJs('moment-with-locales.js')
-            ->addJs('moment-timezone-with-data.min.js');
+        $tmpl->addJs('moment-with-locales.js')
+             ->addJs('moment-timezone-with-data.min.js');
         
         $tmpl->addJs('daterangepicker.js');
         $tmpl->addJs('centreon.graph.js', 'bottom', 'centreon-performance');

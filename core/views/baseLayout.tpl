@@ -292,6 +292,13 @@
           restartOnPushState: false,
           restartOnRequestAfter: false
         }
+    statusInterval = setInterval(function() {
+        loadStatusData();
+    }, 5000);
+    
+    loadStatusData();
+   
+});
 
     </script>
     {block name="javascript-bottom"}

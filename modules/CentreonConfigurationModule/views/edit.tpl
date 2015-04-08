@@ -140,5 +140,64 @@
             });
             {/if}
         });
+        
+  /**
+   * Function to save tag for resource 
+   * 
+   * @param string sName
+   */
+  function addTagToResource(sName) {
+
+    var iId = '';
+    if ( sName !== null && iIdResource !== null) {
+        var sResource = $('input[name=object]').val();
+        var iIdResource = $('input[name=object_id]').val();
+        
+      $.ajax({
+        url: "{url_for url='/centreon-administration/tag/add'}",
+        type: "post",
+        data: { 
+            resourceName : sResource,
+            resourceId   : iIdResource,
+            tagName      : sName 
+        },
+        dataType: "json",
+        success: function( data, textStatus, jqXHR ) {
+            if (data.success) {
+                iId =  data.tagId;
+            }
+        }
+      });
+    }
+    return iId;
+  }
+   /**
+   * Function to delete tag for resource 
+   * 
+   * @param integer iId
+   */
+  function deleteTagToResource(iId) {
+
+    if (iId != "undefined" && iId !== null && iIdResource !== null) {
+      var sResource = $('input[name=object]').val();
+      var iIdResource = $('input[name=object_id]').val();
+
+      $.ajax({
+        url: "{url_for url='/centreon-administration/tag/delete'}",
+        type: "post",
+        data: { 
+            tagId        : iId,
+            resourceId   : iIdResource,
+            resourceName : sResource,
+        },
+        dataType: "json",
+        success: function( data, textStatus, jqXHR ) {
+
+
+        }
+      });
+    }
+ 
+  }
     </script>
 {/block}

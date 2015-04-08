@@ -77,7 +77,7 @@ class EventlogsController extends Controller
 
         $tmpl = $di->get('template');
         $tmpl->addJs('hogan-3.0.0.min.js');
-        $tmpl->addJs('moment-with-langs.min.js');
+        //$tmpl->addJs('moment-with-langs.min.js');
         $tmpl->addJs('daterangepicker.js');
         $tmpl->addJs('jquery.select2/select2.min.js');
         $tmpl->addJs('centreon.search.js');
