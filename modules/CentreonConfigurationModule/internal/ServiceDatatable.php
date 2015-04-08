@@ -282,6 +282,7 @@ class ServiceDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         $previousHost = '';
+        HostRepository::setObjectClass('\CentreonConfiguration\Models\Host');
         $router = Di::getDefault()->get('router');
         foreach ($resultSet as &$myServiceSet) {
             
