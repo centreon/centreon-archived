@@ -283,22 +283,21 @@
 
           /* Init tooltips */
           $( ".bottombar a" ).tooltip();
-        });
+          
+          paceOptions = {
+            // Configuration goes here. Example:
+            elements: false,
+            restartOnPushState: false,
+            restartOnRequestAfter: false
+          }
 
-        paceOptions = {
-          // Configuration goes here. Example:
-          elements: false,
-          restartOnPushState: false,
-          restartOnRequestAfter: false
-        }
+          statusInterval = setInterval(function() {
+              loadStatusData();
+          }, 5000);
+
+          loadStatusData();
         
-        statusInterval = setInterval(function() {
-            loadStatusData();
-        }, 5000);
-
-        loadStatusData();
-   
-});
+        });
 
     </script>
     {block name="javascript-bottom"}
