@@ -72,5 +72,9 @@ class BookmarkController extends Controller
             $requestParams['type'],
             $requestParams['params']
         );
+        $result = array(
+            'success' => true,
+        );
+        $this->router->response()->json($result);
     }
 }

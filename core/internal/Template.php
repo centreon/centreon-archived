@@ -170,6 +170,8 @@ class Template extends \Smarty
         $this->addCss('centreon.css');
         $this->addCss('jquery-ui.min.css');
         $this->addCss('centreon.qtip.css');
+
+
         /* Load javascript */
         $this->addJs('jquery.min.js');
         $this->addJs('jquery-ui.min.js');
@@ -180,12 +182,10 @@ class Template extends \Smarty
         $this->addJs('moment-with-langs.min.js');
         $this->addJs('centreon.functions.js');
 
-        $this->addJs('centreon.custom.js');
         $this->addJs('jquery.metisMenu.js');
-        $this->addJs('jquery.slimscroll.min.js');
+        $this->addJs('centreon.custom.js');
         $this->addJs('pace.min.js');
-
-
+        $this->addJs('jquery.slimscroll.min.js');
 
     }
     

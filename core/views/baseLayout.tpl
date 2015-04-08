@@ -10,7 +10,8 @@
     {block name="style-head"}{/block}
 </head>
 
-<body class="bodyCntr">
+<body class="bodyCntr mini-navbar">
+    <span id="flash-message"></span>
 
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
 
@@ -22,13 +23,17 @@
                     <!--<a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}<i class="fa fa-cube"></i> Centreon{/block}</a>-->
                     <div class="navbar-header">
                         <a class="navbar-minimalize minimalize-styl-2" href="#">
-                            <img src="static/centreon/img/icons/ico-centreon.svg" alt="Centreon" />
+                            <img src="../static/centreon/img/icons/ico-centreon.svg" alt="Centreon" />
                             <span class="nav-label">Centreon</span> </a>
                     </div>
                 </li>
                     {foreach $appMenu as $menuLevel1}
                            <li>
-                                <a href="#">
+                                {if $menuLevel1.url != ""}
+                                    <a href="{url_for url=$menuLevel1.url}">
+                                {else}
+                                    <a href="#">
+                                {/if}
                                     <i class="{$menuLevel1.icon_class}"></i>
                                         <span class="nav-label">{$menuLevel1.name}</span>
                                         {if count($menuLevel1.children) > 0}
@@ -38,7 +43,11 @@
                                 <ul class="nav nav-second-level">
                                     {foreach $menuLevel1.children as $menuLevel2}
                                     <li>
-                                        <a href="#">
+                                        {if $menuLevel2.url != ""}
+                                            <a href="{url_for url=$menuLevel2.url}">
+                                        {else}
+                                            <a href="#">
+                                        {/if}
                                             {$menuLevel2.name}
                                             {if count($menuLevel2.children) > 0}
                                                 <span class="fa arrow"></span>
@@ -47,7 +56,12 @@
                                         <ul class="nav nav-third-level">
                                             {foreach $menuLevel2.children as $menuLevel3}
                                                 <li>
-                                                    <a href="#">{$menuLevel3.name}</a>
+                                                    {if $menuLevel3.url != ""}
+                                                        <a href="{url_for url=$menuLevel3.url}">
+                                                    {else}
+                                                        <a href="#">
+                                                    {/if}
+                                                    {$menuLevel3.name}</a>
                                                 </li>
                                             {/foreach}
                                         </ul>
@@ -57,22 +71,20 @@
                            </li>
                     {/foreach}
                 </li>
-                <li class="landing_link">
+                <li class="landing_link" >
                     <a href="#"><i class="fa fa-star"></i> <span class="nav-label">Bookmark</span></a>
-
-                    {hook name='displayLeftMenu' container='<ul class="nav" id="hook-menu">[hook]</ul>'}
-                    <div class="toggle-button">
-                        <a href="#"><i class="fa fa-angle-double-left"></i></a>
-                    </div>
+                    <ul id="myBookmark" class="nav nav-second-level"></ul>
                 </li>
+
+                {hook name='displayLeftMenu' container='<li>[hook]</li>'}
             </ul>
         </div>
     </nav>
 
-    <div class="viewCntr" id="pageWrapper"> <!-- Page Wrapper -->
+    <div class="container-fluid viewCntr" id="pageWrapper"> <!-- Page Wrapper -->
 
         <div class="row">
-        <nav class="navbar-default navbar-static-top GlobalNavbar">
+            <nav class="navbar-default navbar-static-top GlobalNavbar">
 
                     <ul class="userProfil nav navbar-right">
                         <li class="dropdown">
@@ -152,170 +164,106 @@
                     </ul>
             </nav>
         </div>
-    </div>
-</div>
-<!-- Wrapper -->
-<div id="wrapper">
 
-  <div class="bottombar">
-       <div class="label-button pull-right">
-         Centreon &copy; 2005-2014 <a href="#" id="footer-button"><i class="fa fa-chevron-circle-up"></i></a>
+        <div class="row">
+            {block name="content"}{/block}
+        </div>
+
+
+        <div class="row bottombar">
+
+                <div  class="footer_links col-sm-8 col-md-9">
+                    <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
+                    <a href="https://github.com/centreon/centreon" data-toggle="tooltip" data-placement="top" title="{t}Source{/t}"><i class="fa fa-github"></i></a>
+                    <a href="http://forge.centreon.com" data-toggle="tooltip" data-placement="top" title="{t}Forge{/t}"><i class="fa fa-inbox"></i></a>
+                    <a href="https://plus.google.com/u/0/s/centreon"  data-toggle="tooltip" data-placement="top" title="{t}Google +{/t}"><i class="fa fa-google-plus-square"></i></a>
+                    <a href="https://twitter.com/Centreon" data-toggle="tooltip" data-placement="top" title="{t}Twitter{/t}"><i class="fa fa-twitter"></i></a>
+                    <a href="https://www.facebook.com/pages/Centreon/157748944280967" data-toggle="tooltip" data-placement="top" title="{t}Facebook{/t}"><i class="fa fa-facebook"></i></a>
+                    <a href="http://forge.centreon.com/projects/centreon/issues/new" data-toggle="tooltip" data-placement="top" title="{t}Bug ?{/t}"><i class="fa fa-bug"></i></a>
+                    <a href="http://www.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Web{/t}"><i class="fa fa-desktop"></i></a>
+                </div>
+
+                <p class="col-sm-4 col-md-3"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2014</p>
+
+
        </div>
-       <div class="footer-extended">
-         <div>
-             <ul class="center-block list-inline">
-                 <li><a href="http://documentation.centreon.com/">{t}Documentation{/t}</a></li>
-                 <li><a href="http://forge.centreon.com/projects/centreon/issues/new">{t}Found a bug ?{/t}</a></li>
-                 <li><a href="http://forge.centreon.com">{t}Forge{/t}</a></li>
-             </ul>
-         </div>
-         <div>
-             <ul class="center-block list-inline">
-                 <li><a href="http://www.centreon.com/">Centreon</a></li>
-                 <li><a href="http://www.centreon.com/">Merethis</a></li>
-             </ul>
-         </div>
-         <div>
-             <ul class="center-block list-inline">
-                 <li><a href="https://twitter.com/Centreon"><i class="fa fa-twitter-square"></i></a></li>
-                 <li><a href="https://plus.google.com/u/0/s/centreon"><i class="fa fa-google-plus-square"></i></a></li>
-                 <li><a href="https://www.facebook.com/groups/6316094758/?fref=ts"><i class="fa fa-facebook-square"></i></a></li>
-             </ul>
-         </div>
-      </div>
-   </div>
-{foreach from=$jsBottomFileList item='jsFile'}
-{$jsFile|js}
-{/foreach}
-<script>
-    $(document).ready(function() {
-        var statusInterval, statusData,
-                eStatus = new $.Event('centreon.refresh_status');
-        resizeContent();
-        $('.btn-light').on('click', function() {
-            switchTheme('light');
-        });
-        $('.btn-dark').on('click', function() {
-            switchTheme('dark');
-        });
 
-        $('#logout').on('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            $.ajax({
-                url: "{url_for url='/logout'}",
-                type: "GET",
-                success: function(data, textStatus, jqXHR) {
-                    if (data.status) {
-                        window.location.href = "{url_for url='/login'}";
+    </div>
+
+    {foreach from=$jsBottomFileList item='jsFile'}
+    {$jsFile|js}
+    {/foreach}
+    <script>
+        $(document).ready(function() {
+            var statusInterval, statusData,
+                    eStatus = new $.Event('centreon.refresh_status');
+            $('.btn-light').on('click', function() {
+                switchTheme('light');
+            });
+            $('.btn-dark').on('click', function() {
+                switchTheme('dark');
+            });
+
+            $('#logout').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $.ajax({
+                    url: "{url_for url='/logout'}",
+                    type: "GET",
+                    success: function(data, textStatus, jqXHR) {
+                        if (data.status) {
+                            window.location.href = "{url_for url='/login'}";
+                        }
                     }
-                }
+                });
             });
-        });
-        $(window).on('resize', function() {
-            resizeContent();
+
+            function loadStatusData() {
+                $.ajax({
+                    url: "{url_for url='/status'}",
+                    type: 'GET',
+                    success: function(data, textStatus, jqXHR) {
+                        statusData = data;
+                        $(document).trigger(eStatus);
+                    }
+                });
+            }
+
+            /* Timer */
+            topClock();
+
+            {hook name='displayJsStatus' container='[hook]'}
+
+            statusInterval = setInterval(function() {
+                loadStatusData();
+            }, 5000);
+            loadStatusData();
         });
 
-        function loadStatusData() {
-            $.ajax({
-                url: "{url_for url='/status'}",
-                type: 'GET',
-                success: function(data, textStatus, jqXHR) {
-                    statusData = data;
-                    $(document).trigger(eStatus);
-                }
-            });
+        {if isset($jsUrl)}
+        var jsUrl = {$jsUrl|json_encode};
+        {else}
+        var jsUrl = {};
+        {/if}
+        $(document).ready(function() {
+
+            loadBookmark('{url_for url="/bookmark/list"}');
+
+          /* Init tooltips */
+          $( ".bottombar a" ).tooltip();
+        });
+
+        paceOptions = {
+          // Configuration goes here. Example:
+          elements: false,
+          restartOnPushState: false,
+          restartOnRequestAfter: false
         }
 
-        /* Timer */
-        topClock();
-
-        {hook name='displayJsStatus' container='[hook]'}
-
-        statusInterval = setInterval(function() {
-            loadStatusData();
-        }, 5000);
-        loadStatusData();
-    });
-
-    {if isset($jsUrl)}
-    var jsUrl = {$jsUrl|json_encode};
-    {else}
-    var jsUrl = {};
-    {/if}
-    $(document).ready(function() {
-        resizeContentLeftPanel();
-        $(window).off('resize');
-        $(window).on('resize', function() {
-            resizeContentLeftPanel();
-        });
-        $('#main').on('resize', function() {
-            resizeContentLeftPanel();
-        });
-        var mdata = {get_environment_id};
-
-        $('#flash-message').on('click', 'button.close', function() {
-            alertClose();
-        });
-        $('body').on('click', '#menu1 li', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var target = e.currentTarget;
-            /* Test if extand */
-            if ($(target).parents("#left-panel").hasClass('mini')) {
-                var $a = $(target).find('a');
-                var menuId = $a.data('menuid');
-                if ($a.hasClass('accordion-toggle')) {
-                    var $submenu = $("#submenu_" + menuId);
-                    if ($submenu.length == 0) {
-                        return;
-                    }
-                    /* Get pos */
-                    var pos = $a.offset();
-                    $submenu.css({
-                        top: pos.top,
-                        left: pos.left + $(target).width()
-                    }).toggleClass("show");
-                }
-                $('body').one('click', function() {
-                    $submenu.toggleClass("show");
-                });
-            } else {
-                $(target).find('ul').collapse('toggle');
-                $(target).find('i.toggle').toggleClass('fa-plus-square-o').toggleClass('fa-minus-square-o');
-            }
-
-            var targetUrl = $(target).find('a').attr('href');
-            if (targetUrl !== undefined) {
-                document.location.href = targetUrl;
-            }
-        });
-
-        $( "#left-panel .toggle-button a" ).on( "click", function( e ) {
-          e.preventDefault();
-          e.stopPropagation();
-          $( this ).find( "i.fa" ).toggleClass( "fa-angle-double-left" ).toggleClass( "fa-angle-double-right" );
-          /* Reduce submenu if go to mini */
-          if ( ! $( "aside" ).hasClass( "mini" )) {
-              var $listToggle = $( "#left-panel a.accordion-toggle" );
-              $listToggle.parent( "li" ).find( "ul" ).collapse( "hide" );
-              $listToggle.find( "i.toggle" ).removeClass( "fa-minus-square-o" ).addClass( "fa-plus-square-o" );
-          }
-          $( "aside" ).toggleClass( "mini" );
-          $( ".content" ).toggleClass( "mini" );
-          $( ".bottombar" ).toggleClass( "mini" );
-          $( "#menu1" ).find( "li span" ).toggle();
-          $( "#menu1" ).find( ".toggle" ).toggle();
-        });
-
-        loadBookmark('{url_for url="/bookmark/list"}');
-
-      /* Init tooltips */
-      $( ".bottombar a" ).tooltip();
-    });
-</script>
-{block name="javascript-bottom"}
-<script>{get_custom_js}</script>
-{/block}
+    </script>
+    {block name="javascript-bottom"}
+    <script>{get_custom_js}</script>
+    {/block}
+</div>
 </body>
 </html>

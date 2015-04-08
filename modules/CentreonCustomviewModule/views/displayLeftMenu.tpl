@@ -1,31 +1,33 @@
 <li>
-    <a class="accordion-toggle collapsed">
+<a href="#">
         <i class="fa fa-bookmark"></i>
-        <span>{t}Bookmarked views{/t}</span>
-    </a>
-    <ul class="nav submenu collapse in" style="height: auto;">
-        {foreach from=$variables.bookmarkedViews item=view key=k}
-        <li>
-            {assign var=view_url value="/centreon-customview/"|cat:$view.custom_view_id}
-            <a href="{url_for url=$view_url}">
-                <i></i>
-                <span>{$view.name}</span>
-            </a>
-        </li>
-        {/foreach}
-    </ul>
+        <span class="nav-label">{t}Bookmarked views{/t}</span>
+        {if count($variables.bookmarkedViews) > 0}
+            <span class="fa arrow"></span>
+        {/if}
+ </a>
+<ul class="nav nav-second-level">
+    {foreach from=$variables.bookmarkedViews item=view key=k}
+    <li>
+        {assign var=view_url value="/centreon-customview/"|cat:$view.custom_view_id}
+        <a href="{url_for url=$view_url}">{$view.name}</a>
+    </li>
+    {/foreach}
+</ul>
 </li>
 <li>
-    <a class="accordion-toggle collapsed">
+    <a href="#">
         <i class="fa fa-users"></i>
-        <span>{t}Public views{/t}</span>
+        <span class="nav-label">{t}Public views{/t}</span>
+        {if count($variables.publicViews) > 0}
+            <span class="fa arrow"></span>
+        {/if}
     </a>
-    <ul class="nav submenu collapse in" style="height: auto;">
+    <ul class="nav nav-second-level">
         {foreach from=$variables.publicViews item=view}
         <li>
             {assign var=view_url value="/centreon-customview/"|cat:$view.custom_view_id}
             <a href="{url_for url=$view_url}">
-                <i></i>
                 <span>{$view.name}</span>
             </a>
         </li>

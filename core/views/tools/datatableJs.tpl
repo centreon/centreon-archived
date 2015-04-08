@@ -696,9 +696,12 @@
             },
             success: function( data, textStatus, jqXHR ) {
               if ( data.success ) {
+                loadBookmark(bookmarkUrl);
+                 console.log("booow !");
                 alertMessage( "{t}Your search is bookmarked.{/t}", "alert-success", 3 );
                 $( "#bookmarkStatus" ).removeClass('fa-star-o');
                 $( "#bookmarkStatus" ).addClass('fa-star');
+
               } else {
                 alertMessage( data.error, "alert-danger" );
               }

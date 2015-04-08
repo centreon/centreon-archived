@@ -39,9 +39,9 @@ $(document).ready(function () {
     });
 
     // Append config box / Only for demo purpose
-    $.get("skin-config.html", function (data) {
+   /* $.get("skin-config.html", function (data) {
         $('body').append(data);
-    });
+    });*/
 
     // minimalize menu
     $('.navbar-minimalize').click(function () {
@@ -68,14 +68,14 @@ $(document).ready(function () {
 
     // Fixed Sidebar
     // unComment this only whe you have a fixed-sidebar
-    //    $(window).bind("load", function() {
-    //        if($("body").hasClass('fixed-sidebar')) {
-    //            $('.sidebar-collapse').slimScroll({
-    //                height: 'auto',
-    //                railOpacity: 0.9,
-    //            });
-    //        }
-    //    })
+       $(window).bind("load", function() {
+            if($("body").hasClass('fixed-sidebar')) {
+                $('.sidebar-collapse').slimScroll({
+                  height: 'auto',
+                    railOpacity: 0.9
+                });
+           }
+        })
 
     $(window).bind("load resize click scroll", function() {
         if(!$("body").hasClass('body-small')) {
