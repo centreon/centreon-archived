@@ -14,6 +14,8 @@
 
         var selectedCb = [];
 
+        <!-- Init DataTable -->
+
         oTable = $('#datatable{$object}').dataTable({
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
@@ -21,7 +23,8 @@
             "length": 25,
             "lengthMenu": [[10, 25, 50], [10, 25, 50]],
             "language": {
-                "lengthMenu": "_MENU_"
+                "lengthMenu": "_MENU_",
+                "processing": "Go......................"
             },
             {$datatableParameters.configuration}
             'dom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",

@@ -1,0 +1,65 @@
+
+.centreon_table {
+  margin: 0 10px;
+  padding-top: 20px;
+  padding-bottom: 60px; /* For floating pagination */
+
+  .DTTT {
+    margin-right: 5px;
+  }
+
+  .dataTables_length {
+    display: block;
+    width: 100%;
+  }
+
+  table {
+    thead>tr>th {
+      border-bottom-color: lighten(@topbar-bg-color, 20%);
+      border-bottom-width: 2px;
+    }
+    tbody>tr>td {
+      padding: 4px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    &.dataTable.no-footer {
+      border-bottom-color: lighten(@topbar-bg-color, 20%);
+      border-bottom-width: 2px;
+    }
+  }
+
+  .dataTables_info {
+    font-size: 75%;
+  }
+}
+
+.cell_center {
+  text-align:center;
+}
+.cell_right {
+  text-align:right;
+}
+
+.fakefield {
+  display: none;
+}
+
+/* Configuration listing */
+.configuration-actions {
+  // margin-left: 40px;
+  display: none;
+}
+
+.configuration-actions div {
+  display: inline-block;
+}
+
+.content-container div.row, .dataTables_wrapper div.row {
+  margin-right: 0px;
+}
+
+.progress {
+  margin:0px;
+}
