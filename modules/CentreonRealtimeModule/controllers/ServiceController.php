@@ -56,6 +56,19 @@ class ServiceController extends Controller
     protected $objectClass = '\CentreonRealtime\Models\Service';
     
     /**
+     * 
+     * @param type $request
+     */
+    public function __construct($request)
+    {
+        $repository = '\CentreonRealtime\Repository\ServiceRepository';
+        $confRepository = '\CentreonConfiguration\Repository\ServiceRepository';
+        $repository::setObjectClass($this->objectClass);
+        $confRepository::setObjectClass('\CentreonConfiguration\Models\Service');
+        parent::__construct($request);
+    }
+    
+    /**
      * Display services
      *
      * @method get
