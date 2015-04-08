@@ -59,7 +59,12 @@ class CopyFiles
             throw new Exception('Broker configuration directory not set.');
         }
 
-        system("cp -Rf $tmpdir/broker/{$event->getPollerId()}/* {$dir['directory_config']}");
-        $event->setOutput(_('Successfully copied files for Centreon Broker.'));
+        $output = array();
+        exec("cp -Rf $tmpdir/broker/{$event->getPollerId()}/* {$dir['directory_config']} 2>&1", $output, $status);
+        if ($status) {
+            throw new Exception('Error while copying Broker configuration files' . "\n" . implode("\n", $output));
+        }
+
+        $event->setOutput(_('Successfully copied files for Broker.'));
     }
 }

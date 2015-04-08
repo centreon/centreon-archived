@@ -50,18 +50,20 @@ class EngineProcess
     {
         $action = $event->getAction();
         if (!in_array($action, array('reload', 'restart', 'forcereload'))) {
-            throw new Exception(sprintf('Unknown action %s', $action));
+            throw new Exception(sprintf('Invalid action for Engine: %s', $action));
         }
         $engineParams = Engine::get($event->getPollerId(), 'init_script');
         if (!isset($engineParams['init_script'])) {
             throw new Exception(sprintf("Could not find init script for poller %s", $event->getPollerId()));
         }
         $initScript = $engineParams['init_script'];
-        $command = "sudo {$initScript} {$action}";
+        $command = "sudo {$initScript} {$action} 2>&1";
         $status = 0;
         $output = array();
         exec($command, $output, $status);
-        $event->setOutput($output);
+        foreach ($output as $line) {
+            $event->setOutput($line);
+        }
         $event->setStatus(
             $status ? false : true
         );

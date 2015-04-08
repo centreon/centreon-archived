@@ -143,6 +143,7 @@ class Datatable
         'DT_RowId'
     );
     
+    
     /**
      * 
      */
@@ -210,9 +211,7 @@ class Datatable
 
    
 
-        static::addAdditionnalDatas($datasFromDb['datas']);
-        static::processHooks($datasFromDb['datas']);
-        $this->formatDatas($datasFromDb['datas']);
+        s
         
         */
         $datasFromDb = $provider::loadDatas(
@@ -237,7 +236,9 @@ class Datatable
                 $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
             }
         }
-        
+        static::addAdditionnalDatas($datasFromDb['datas']);
+        static::processHooks($datasFromDb['datas']);
+        $this->formatDatas($datasFromDb['datas']);
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
         
         return $sendableDatas;

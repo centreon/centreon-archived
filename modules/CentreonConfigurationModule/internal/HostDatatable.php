@@ -96,22 +96,7 @@ class HostDatatable extends Datatable
             array('host_name', 'asc')
         ),
         'stateSave' => false,
-        'paging' => true,
-        'group' => array('tagname'),
-        'relation' => array(
-            array(
-                'first' => 'cfg_tags', 
-                'second' => 'cfg_tags_hosts',
-                'firstKey' => 'tag_id', 
-                'secondKey' => 'tag_id'
-            ),
-            array(
-                'first' => 'cfg_tags_hosts', 
-                'second' => 'cfg_hosts',
-                'firstKey' => 'resource_id', 
-                'secondKey' => 'host_id'
-            )
-        )
+        'paging' => true
     );
     
     /**
@@ -253,6 +238,7 @@ class HostDatatable extends Datatable
             'tablename' => 'cfg_tags'
         ),
     );
+    
     /*
 
     protected static $extraParams = array(

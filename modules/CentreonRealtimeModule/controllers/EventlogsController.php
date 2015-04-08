@@ -252,6 +252,7 @@ class EventlogsController extends Controller
      */
     private function convertListEventLogs($listEvents)
     {
+        HostRepository::setObjectClass('\CentreonConfiguration\Models\Host');
         /* Convert data for output */
         $lastDateCount = 0;
         $lastDate = null;

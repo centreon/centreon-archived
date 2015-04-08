@@ -52,6 +52,21 @@
   </div>
 </form>
 <script>
+
+// Formats Engine check conf log, replacing some patterns like warning/erros
+// with HTML/CSS equivalent with colored classes
+function format_check_log(str) {
+  var result = '';
+  if (str) {
+    result = str;
+    result = result.replace(new RegExp('Warning:', 'g'), '<span class="label label-warning">Warning:</span>');
+    result = result.replace(new RegExp('Error:', 'g'), '<span class="label label-danger">Error:</span>');
+    result = result.replace(new RegExp('Total Warnings:', 'g'), '<span class="label label-warning">Total Warnings:</span>');
+    result = result.replace(new RegExp('Total Errors:', 'g'), '<span class="label label-danger">Total Errors:</span>');
+  }
+  return result;
+}
+
 $(function() {
     /* File generation */
     $("#btn-generate-check").click(function() {
@@ -78,7 +93,7 @@ $(function() {
               url: '{'/api/centreon-configuration/testcfg/'|url}' + pollerId,
               dataType: 'json'
             }).success(function(data2, textStatus2, jqXHR2) {
-              $csl.append(data2.output);
+              $csl.append(format_check_log(data2.output));
               $thisBtn.removeAttr('disabled');
             }).error(function(jqXHR2, textStatus2, errorThrown2) {
               $csl.append(errorThrown2);
@@ -131,7 +146,7 @@ $(function() {
           url: '{'/api/centreon-configuration/testcfg/'|url}' + pollerId,
           dataType: 'json'
         }).success(function(data2, textStatus2, jqXHR2) {
-          $csl.append(data2.output);
+          $csl.append(format_check_log(data2.output));
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR2, textStatus2, errorThrown2) {
           $csl.append(errorThrown2);

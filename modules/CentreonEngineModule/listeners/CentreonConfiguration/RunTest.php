@@ -54,15 +54,19 @@ class RunTest
         $enginePath = '/usr/sbin/centengine';
         $path = "{$tmpdir}/engine/{$pollerId}/centengine-testing.cfg";
         $command = "sudo {$enginePath} -v $path 2>&1";
-        $output = shell_exec($command);
-        $debugOut = explode("\n", $output);
-        foreach ($debugOut as $out) {
-            if (preg_match("/warning|error/i", $out)) {
-                $out = preg_replace("/\[\d+\] /", "", $out);
-                $out = str_replace("Warning:", '<span class="label label-warning">Warning</span>', $out);
-                $out = str_replace("Error:", '<span class="label label-danger">Error</span>', $out);
-                $out = str_replace("Total Warnings:", '<span class="label label-warning">Total Warnings</span>', $out);
-                $out = str_replace("Total Errors:", '<span class="label label-danger">Total Errors</span>', $out);
+        exec($command, $output, $status);
+        if ($status == 0) {
+            // We are only selecting warning/errors here
+            // Colors/formatting is performed either in Command (centreonConsole) or JS (web => API thru JSON)
+            foreach ($output as $out) {
+                if (preg_match("/warning|error/i", $out)) {
+                    $out = preg_replace("/\[\d+\] /", "", $out);
+                    $event->setOutput($out);
+                }
+            }
+        } else {
+            $event->setOutput('Error while executing test command');
+            foreach ($output as $out) {
                 $event->setOutput($out);
             }
         }
