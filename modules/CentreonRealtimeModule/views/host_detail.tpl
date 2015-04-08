@@ -480,13 +480,13 @@ $(function() {
             )
             .appendTo('#eventlogs tbody')
         });
+        displayDate();
       }
     });
   });
 
   loadData();
-  
-  displayDate();
+ 
 });
 </script>
 {/block}

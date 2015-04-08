@@ -55,26 +55,33 @@ class TagsRepository
      */
     private static $resourceType = array(
         'host',
+        'hosttemplate',
         'service',
+        'servicetemplate',
         'hostgroup',
         'servicegroup',
-        'ba'
+        'ba',
+        'contact'
     );
 
     /**
      * Add a tag to a resource
      *
      */
-    public static function add($tagName, $resourceName, $resourceId)
+    public static function add($tagName, $resourceName, $resourceId, $bGlobal = 0)
     {
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
-        $userId = $_SESSION['user']->getId();
+        if ($bGlobal == 0) {
+            $userId = $_SESSION['user']->getId();
+        } else {
+            $userId = NULL;
+        }
         $dbconn = Di::getDefault()->get('db_centreon');
         /* Get or create a tagname */
         try {
-            $tagId = static::getTagId($tagName);
+            $tagId = static::getTagId($tagName, $bGlobal);
         } catch (Exception $e) {
             $tagId = Tag::insert(
                 array(
@@ -103,10 +110,15 @@ class TagsRepository
             throw new Exception("This resource type does not support tags.");
         }
         $dbconn = Di::getDefault()->get('db_centreon');
+        
+        if (!is_numeric($tagId)) {
+            $tagId = static::getTagId($tagId, 1);
+        }
         /* Get current user id */
         $query = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE
             tag_id = :tag_id
             AND resource_id = :resource_id";
+        
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':tag_id', $tagId, \PDO::PARAM_INT);
         $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
@@ -114,33 +126,67 @@ class TagsRepository
         /* Get if tag is used */
         if (!static::isUsed($tagId)) {
             Tag::delete($tagId);
-        } 
+        }
+        
     }
 
     /**
      * Return the list of tags for a resource
-     *
+     * 
+     * @param type $resourceName
+     * @param int $resourceId
+     * @param int $bGlobaux
      * @return array
+     * @throws Exception
      */
-    public static function getList($resourceName, $resourceId)
+    public static function getList($resourceName, $resourceId, $bGlobaux = 0)
     {
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
+        if (empty($resourceId)) {
+            return array();
+        }
         $userId = $_SESSION['user']->getId();
-        $dbconn = Di::getDefault()->get('db_centreon');
-        $query = "SELECT t.tag_id, t.tagname
-            FROM cfg_tags t, cfg_tags_" . $resourceName . "s r
-            WHERE t.tag_id = r.tag_id
-                AND r.resource_id = :resource_id
-                AND t.user_id = :user_id";
+        $dbconn = Di::getDefault()->get('db_centreon');        
+
+         $query = "SELECT t.tag_id, t.tagname, user_id
+                FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
+                WHERE ";
+         
+        if ($bGlobaux == 0) {//only tag for user
+            $query .= " t.user_id = :user_id";
+        } elseif ($bGlobaux == 1) {//only global tag
+            $query .= " t.user_id is null ";
+        } else {//tag user + global tag
+            $query .= " (t.user_id is null or t.user_id = :user_id)";
+        }
+         
+        if ($resourceId > 0) {
+            $query .= " AND r.resource_id = :resource_id";
+        }
+
+        
         $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
-        $stmt->bindParam(':user_id', $userId, \PDO::PARAM_INT);
+        
+        if ($resourceId > 0) {
+            $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
+        }
+        if ($bGlobaux == 0 || $bGlobaux == 2) {
+            $stmt->bindParam(':user_id', $userId, \PDO::PARAM_INT);
+        }
         $stmt->execute();
         $tags = array();
+        
+        //echo $query;
+        
         while ($row = $stmt->fetch()) {
-            $tags[$row['tag_id']] = $row['tagname'];
+            if ($bGlobaux == 0) {
+                $sField = $row['tag_id'];
+            } else {
+                $sField = $row['tagname'];
+            }
+            $tags[] = array('id' => $sField, 'text' => $row['tagname'], 'user_id' => $row['user_id']);
         }
         return $tags;
     }
@@ -149,23 +195,32 @@ class TagsRepository
      * Get the tag id
      *
      * @param string $tagName The tag
+     * @param int $bGlobal
      * @return int
      */
-    public static function getTagId($tagName)
+    public static function getTagId($tagName, $bGlobal = 0)
     {
-        $userId = $_SESSION['user']->getId();
+        if ($bGlobal == 0) {
+           $userId = $_SESSION['user']->getId();
+           $aFilter = array(
+                'user_id' => $userId,
+                'tagname' => $tagName
+            );
+        } else {
+            $aFilter = array(
+                'tagname' => $tagName
+            );
+        }
         $tag = Tag::getList(
             'tag_id',
             1,
             0,
             null,
             'ASC',
-            array(
-                'user_id' => $userId,
-                'tagname' => $tagName
-            ),
+            $aFilter,
             'AND'
         );
+        
         if (count($tag) === 0) {
             throw new Exception("The tag is not found for user");
         }
@@ -202,5 +257,76 @@ class TagsRepository
             }
         }
         return false;
+    }
+    
+    /**
+     * 
+     * @param type $objectId
+     * @param type $submittedValues
+     */
+    public static function saveTagsForResource($resourceName, $objectId, $submittedValues)
+    {
+        if (!in_array($resourceName, static::$resourceType)) {
+            throw new Exception("This resource type does not support tags.");
+        }
+        $dbconn = Di::getDefault()->get('db_centreon');
+              
+        $dbconn->query("DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$objectId." "
+                . "AND tag_id in (select tag_id from cfg_tags where user_id is null)");  
+
+        foreach ($submittedValues as $s => $tagName) {
+            self::add($tagName, $resourceName, $objectId, 1);                
+        }
+      
+    }
+    public static function getTag($resourceType, $resourceId, $tagId, $tagName, $iUserId)
+    {
+        if ($iUserId != '') {
+            $sClass = 'tag';
+            $sDivRemove = '<div class="remove"><a href="#">&times;</a></div>';
+        } else {
+            $sClass = 'tagGlobal';
+            $sDivRemove = '';
+        }
+        $html = '<div class="'.$sClass.'" data-resourceid="' . $resourceId . '" data-resourcetype="'
+            . $resourceType .'" data-tagid="' . $tagId . '">
+            <div class="tagname">' . $tagName . '</div>
+            '.$sDivRemove.'
+        </div> ';
+        return $html;
+    }
+
+    public static function getAddTag($resourceType, $resourceId)
+    {
+        $html = '<div class="tag addtag" data-resourceid="' . $resourceId . '" data-resourcetype="'
+            . $resourceType .'">
+            <div class="title"><input type="text" style="width: 0;"></div>
+            <div class="remove noborder"><a href="#">+</a></div>
+        </div>';
+        return $html;
+    }
+    
+    
+    /**
+     * Return the list of tags for all resources
+     * 
+     * @return array
+     * @throws Exception
+     */
+    public static function getAllList()
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');        
+
+         $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null";
+        
+        $stmt = $dbconn->prepare($query);
+
+        $stmt->execute();
+        $tags = array();
+        
+        while ($row = $stmt->fetch()) {
+            $tags[] = array('id' => $row['tag_id'], 'text' => $row['tagname']);
+        }
+        return $tags;
     }
 }

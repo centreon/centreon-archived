@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRe
 use CentreonRealtime\Models\Host;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ServiceDatatable
@@ -49,11 +50,12 @@ use Centreon\Internal\Datatable;
  */
 class ServiceDatatable extends Datatable
 {
+   /*
     protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'service'
     );
-
+*/
     protected static $objectId = 'service_id';
     protected static $objectName = 'Service';
     
@@ -84,6 +86,12 @@ class ServiceDatatable extends Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonRealtime\Models\Service';
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
@@ -235,15 +243,26 @@ class ServiceDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
-        )
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
-
+/*
     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'service'
         )
     );
-    
+    */
     /**
      * 
      * @param array $params
@@ -303,6 +322,14 @@ class ServiceDatatable extends Datatable
                 Datetime::PRECISION_FORMAT,
                 2
             );
+            
+            /* Tags */
+            $myServiceSet['tagname']  = "";
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
             //$myServiceSet['last_check'] = date("d/m/Y - H:i:s", $myServiceSet['last_check']);
         }
     }

@@ -41,6 +41,7 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ServiceTemplateDatatable
@@ -70,11 +71,19 @@ class ServiceTemplateDatatable extends Datatable
      */
     protected static $datasource = '\CentreonConfiguration\Models\Servicetemplate';
     
+
+    
     /**
      *
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'service_id', 'name' => 'service_description');
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array();
     
     /**
      *
@@ -209,6 +218,17 @@ class ServiceTemplateDatatable extends Datatable
             "className" => 'cell_center',
             "width" => '40px'
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'source' => 'relation'
+        ),
     );
     
     /**
@@ -265,6 +285,14 @@ class ServiceTemplateDatatable extends Datatable
                 }
             }
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
+            
+            /* Tags */
+            $myServiceSet['tagname']  = "";
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }
 }

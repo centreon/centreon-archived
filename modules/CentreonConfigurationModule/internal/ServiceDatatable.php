@@ -42,6 +42,7 @@ use CentreonConfiguration\Repository\HostRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ServiceDatatable
@@ -55,7 +56,7 @@ class ServiceDatatable extends Datatable
      *
      * @var array 
      */
-    protected static $configuration = array(
+    public static $configuration = array(
         'autowidth' => false,
         'order' => array(
             array('host_name', 'asc'),
@@ -75,13 +76,21 @@ class ServiceDatatable extends Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonConfiguration\Models\Service';
+    /**
+     *
+     * @var array 
+     */
+
+    public static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
      * @var type 
      */
-    protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Service\Host';
-    
+    protected static $additionnalDatasource = 
+        '\CentreonConfiguration\Models\Relation\Service\Host';
+     
+     
     /**
      *
      * @var type 
@@ -253,8 +262,19 @@ class ServiceDatatable extends Datatable
             "className" => 'cell_center',
             "width" => '40px'
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
-
+    /*
     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'service'
@@ -265,7 +285,7 @@ class ServiceDatatable extends Datatable
     protected static $hookParams = array(
         'resourceType' => 'service'
     );
-    
+    */
     /**
      * 
      * @param array $params
@@ -370,6 +390,14 @@ class ServiceDatatable extends Datatable
             );
             
             $myServiceSet['service_activate'] = $save;
+                   
+            /* Tags */
+            $myServiceSet['tagname']  = "";
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }
 }

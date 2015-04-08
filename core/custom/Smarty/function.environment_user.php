@@ -51,7 +51,7 @@ function smarty_function_environment_user($params, $template) {
         $html .= '<li>';
         $html .= '<a href="#" class="envmenu" data-menu="' . $menu['menu_id'] . '">';
         if (isset($menu['icon_class']) && $menu['icon_class']) {
-            $html .= "<i class=\"{$menu['icon_class']}\"></i>";
+            // $html .= "<i class=\"{$menu['icon_class']}\"></i>";
         } elseif (isset($menu['icon']) && $menu['icon']) {
             $html .= "<img src=\"{$menu['icon']}\" class=\"\">";
         }

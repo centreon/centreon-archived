@@ -10,4 +10,8 @@ composer.lock
 config/centreon.ini
 tests/config/centreon.ini
 /nbproject/private/
+<<<<<<< HEAD
 /.idea/
+=======
+.idea/
+>>>>>>> 61248c7e462db4367b425e7adc95f507a6c5d2c4

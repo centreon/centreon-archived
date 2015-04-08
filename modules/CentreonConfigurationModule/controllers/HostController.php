@@ -46,6 +46,7 @@ use CentreonConfiguration\Internal\HostDatatable;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
 
 class HostController extends FormController
@@ -88,6 +89,7 @@ class HostController extends FormController
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addCss('centreon.qtip.css')
             ->addCss('centreon.tag.css', 'centreon-administration');
+        
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
@@ -107,10 +109,10 @@ class HostController extends FormController
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        
+                
         $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
-        
+          
         $router->response()->json($myDataForDatatable);
     }
     
@@ -123,6 +125,8 @@ class HostController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -152,6 +156,16 @@ class HostController extends FormController
             }
         }
         
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+                
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
@@ -159,6 +173,10 @@ class HostController extends FormController
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($id, $macroList);
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
         }
         
         Host::deployServices($id);
@@ -177,6 +195,8 @@ class HostController extends FormController
     {
         $givenParameters = $this->getParams('post');
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
             
@@ -200,13 +220,26 @@ class HostController extends FormController
                 }
             }
         }
-        
+
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
+        }
+        
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
         }
         
         parent::updateAction();

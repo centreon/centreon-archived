@@ -109,6 +109,7 @@ class Hosttemplate extends CentreonRelationModel
         $relationTableParams = array()
     ) {
         $filters['service_register'] = '1';
+       
         return parent::getMergedParametersBySearch(
             $firstTableParams,
             $secondTableParams,

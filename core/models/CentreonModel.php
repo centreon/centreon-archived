@@ -80,8 +80,10 @@ abstract class CentreonModel
         $filters = array(),
         $filterType = "OR",
         $tablesString = null,
-        $staticFilter = null
+        $staticFilter = null,
+        $aAddFilters  = array()
     ) {
+       
         if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         } elseif (is_array($filterType)) {
@@ -105,7 +107,12 @@ abstract class CentreonModel
             $sql .=  static::$table;
         } else {
             $sql .= $tablesString;
+        } 
+
+        if (!is_null($aAddFilters) && isset($aAddFilters['tables'])) {
+            $sql .= ", ".implode(", ", $aAddFilters['tables']);
         }
+       
         $filterTab = array();
         $nextFilterType = null;
         $first = true;
@@ -113,7 +120,8 @@ abstract class CentreonModel
             $sql .= " WHERE " . $staticFilter;
             $first = false;
             $nextFilterType = "AND";
-        }
+        } 
+        
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 if (is_array($rawvalue)) {
@@ -151,6 +159,10 @@ abstract class CentreonModel
                 }
             }
         }
+        if (!is_null($aAddFilters) && isset($aAddFilters['join'])) {
+            $sql .= " AND ".implode(" AND ", $aAddFilters['join']);
+        }
+             
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
@@ -158,6 +170,7 @@ abstract class CentreonModel
             $db = Di::getDefault()->get(static::$databaseName);
             $sql = $db->limit($sql, $count, $offset);
         }
+        //echo $sql;
         return static::getResult($sql, $filterTab, "fetchAll");
     }
     
@@ -185,8 +198,10 @@ abstract class CentreonModel
         $filters = array(),
         $filterType = "OR",
         $tablesString = null,
-        $staticFilter = null
+        $staticFilter = null,
+        $aAddFilters = array()
     ) {
+        
         $searchFilters = array();
         foreach ($filters as $name => $values) {
             if (is_array($values)) {
@@ -197,6 +212,7 @@ abstract class CentreonModel
                 $searchFilters[$name] = '%' . $values . '%';
             }
         }
+
         return static::getList(
             $parameterNames,
             $count,
@@ -206,7 +222,9 @@ abstract class CentreonModel
             $searchFilters,
             $filterType,
             $tablesString,
-            $staticFilter);
+            $staticFilter,
+            $aAddFilters
+        );
     }
 
     /**

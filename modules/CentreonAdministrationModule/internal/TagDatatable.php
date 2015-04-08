@@ -36,16 +36,14 @@
 
 namespace CentreonAdministration\Internal;
 
-use Centreon\Internal\Datatable;
-use Centreon\Internal\Di;
-use CentreonAdministration\Repository\TagsRepository;
+use Centreon\Internal\Datatable\Datasource\CentreonDb;
 
 /**
- * Description of ContactDatatable
+ * Description of LanguageDatatable
  *
  * @author lionel
  */
-class ContactDatatable extends Datatable
+class TagDatatable extends \Centreon\Internal\Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
     
@@ -53,20 +51,13 @@ class ContactDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonAdministration\Models\Contact';
+    protected static $datasource = '\CentreonAdministration\Models\Tag';
     
     /**
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'contact_id', 'name' => 'description');
-    
-    /**
-     *
-     * @var array 
-     */
-
-    public static  $aFieldNotAuthorized = array('tagname');
+    protected static $rowIdColumn = array('id' => 'tag_id', 'name' => 'tagname');
     
     /**
      *
@@ -75,9 +66,9 @@ class ContactDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('description', 'asc')
+            array('tagname', 'asc')
         ),
-        'stateSave' => false,
+        'stateSave' => true,
         'paging' => true,
     );
     
@@ -88,44 +79,33 @@ class ContactDatatable extends Datatable
     public static $columns = array(
         array (
             'title' => "Id",
-            'name' => 'contact_id',
-            'data' => 'contact_id',
+            'name' => 'tag_id',
+            'data' => 'tag_id',
             'orderable' => true,
             'searchable' => false,
+            'searchLabel' => 'tag',
             'type' => 'string',
             'visible' => false,
         ),
         array (
-            'title' => 'Description',
-            'name' => 'description',
-            'data' => 'description',
+            'title' => 'Name',
+            'name' => 'tagname',
+            'data' => 'tagname',
             'orderable' => true,
             'searchable' => true,
-            'searchLabel' => 'contact',
             'type' => 'string',
             'visible' => true,
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-administration/contact/[i:id]',
+                    'route' => '/centreon-administration/tag/[i:id]',
                     'routeParams' => array(
-                        'id' => '::contact_id::'
+                        'id' => '::tag_id::'
                     ),
-                    'linkName' => '::description::'
+                    'linkName' => '::tagname::'
                 )
             )
-        ),
-        array (
-            'title' => 'Tags',
-            'name' => 'tagname',
-            'data' => 'tagname',
-            'orderable' => false,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'width' => '40px',
-            'tablename' => 'cfg_tags'
-        ),
+        )
     );
     
     /**
@@ -135,24 +115,5 @@ class ContactDatatable extends Datatable
     public function __construct($params, $objectModelClass = '')
     {
         parent::__construct($params, $objectModelClass);
-    }
-    
-    /**
-     * 
-     * @param array $resultSet
-     */
-    protected function formatDatas(&$resultSet)
-    {
-        $previousHost = '';
-        $router = Di::getDefault()->get('router');
-        foreach ($resultSet as &$myContactSet) {      
-            /* Tags */
-            $myContactSet['tagname']  = "";
-            $aTags = TagsRepository::getList('contact', $myContactSet['contact_id'], 2);
-            foreach ($aTags as $oTags) {
-                $myContactSet['tagname'] .= TagsRepository::getTag('contact', $myContactSet['contact_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
-            }
-            $myContactSet['tagname'] .= TagsRepository::getAddTag('contact', $myContactSet['contact_id']);
-        }
     }
 }

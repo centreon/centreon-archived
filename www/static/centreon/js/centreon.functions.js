@@ -24,145 +24,6 @@ function switchTheme(theme) {
     }
 }
 
-/**
- * Resize content
- */
-function resizeContent()
-{
-    var navbarHeight = $('.topbar').height();
-    navbarHeight += $('.bottombar').height();
-    var contentHeight = $(window).height() - navbarHeight - 10; /* -10 is the margin-top of the first content */
-    $('#main').css('min-height', contentHeight);
-}
-
-function resizeContentLeftPanel()
-{
-  var sizeContent, mainContainerName,
-      navbarHeight = $('.topbar').height(),
-      displayHeight = $(window).height() - navbarHeight,
-      innerMenu = $('#left-panel').find('nav').height(),
-      footerHeight = $('#left-panel .toggle-button').height(),
-      contentHeight = 0,
-      marginContent = 0;
-
-  if ($('#main > .content-container').length > 0) {
-    /* Form */
-    contentHeight = $('#main > .content-container > .col-sm-offset-1.col-sm-10').height();
-    //console.log(contentHeight);
-  } else {
-    $('#main').children(':visible').each(function(idx, el) {
-      contentHeight += $(el).height();
-      contentHeight += +$(el).css('margin-top').replace('px', '');
-      contentHeight += +$(el).css('margin-bottom').replace('px', '');
-      marginContent += +$(el).css('margin-top').replace('px', '');
-      marginContent += +$(el).css('margin-bottom').replace('px', '');
-    });
-  }
-
-  if (innerMenu + footerHeight + 10 > contentHeight) {
-    sizeMenu = innerMenu + footerHeight + 10;
-    sizeContent = innerMenu;
-  } else {
-    sizeMenu = contentHeight + footerHeight + marginContent;
-    sizeContent = contentHeight;
-  }
-
-  if (sizeMenu < displayHeight) {
-    sizeMenu = displayHeight;
-    sizeContent = displayHeight - 10 - footerHeight;
-  }
-
-  $('#main').off('resize');
-  $(window).off('resize');
-
-  $('#main').css('min-height', sizeContent + 'px');
-  $('#left-panel').css('min-height', sizeMenu + 'px');
-
-  $('#main').on('resize', function() { resizeContentLeftPanel(); });
-  $(window).on('resize', function() { resizeContentLeftPanel(); });
-}
-
-/**
- * Resize the left panel
- */
-function leftPanelHeight() {
-    var mainHeight = $('#main').height();
-    var navbarHeight = $('.topbar').height();
-    var bottombarHeight = $('.bottombar').height();
-    var contentHeight = $(window).height() - navbarHeight;
-    if (mainHeight < contentHeight) {
-        $('#left-panel').css('min-height', contentHeight + 'px');
-    } else {
-        var newSize = mainHeight + bottombarHeight + 30; /* Margin top*/
-        $('#left-panel').css('min-height', newSize + 'px');
-    }
-}
-
-/* Generate menu */
-function generateMenu($elParent, menu, subLevelId, childId) {
-    var lenMenu = menu.length;
-
-    for (var i = 0; i < lenMenu; i++) {
-        var $li = $('<li></li>');
-        $li.appendTo($elParent);
-        var $link = $('<a></a>').attr('href', menu[i].url).attr('data-menuid', menu[i].menu_id);
-        if (menu[i].menu_id == childId) {
-            $li.addClass('submenu-active');
-        }
-        if (menu[i].icon_class != '') {
-            $('<i></i>').addClass(menu[i].icon_class).appendTo($link);
-        } else if (menu[i].icon_img != '') {
-            $('<img>').attr('src',menu[i].icon_img).addClass('').appendTo($link);
-        }
-        $link.append( " " );
-        $('<span></span>').text(menu[i].name).appendTo($link);
-        $li.append($link);
-        if (menu[i].children.length > 0) {
-            var sign = 'fa-plus-square-o';
-            var mustToggle = false;
-            if (menu[i].menu_id == subLevelId) {
-                sign = 'fa-minus-square-o';
-                mustToggle = true;
-            }
-            $('<i></i>').addClass('fa').addClass(sign).addClass('toggle').addClass('pull-right').appendTo($link);
-            $link.addClass('accordion-toggle');
-            var $childList = $('<ul></ul>');
-            var $submenu = $('<ul></ul>').addClass('nav');
-            $('<div></div>').addClass('dropdown-submenu').attr("id", "submenu_" + menu[i].menu_id).append($submenu).appendTo($('body'));
-            if (menu[i].menu_id == subLevelId) {
-                $childList.addClass('in');
-            }
-            $childList.addClass('collapse').addClass('nav').addClass('submenu').appendTo($li);
-            $childList.collapse({ toggle: false });
-            generateMenu($childList, menu[i].children, subLevelId, childId);
-            generateMenu($submenu, menu[i].children, subLevelId, childId);
-        } else if (childId === 0 && menu[i].menu_id == subLevelId) {
-            $li.addClass('active');
-	    }
-    }
-}
-
-/* Load menu */
-function loadMenu(menuUrl, envId, subLevelId, childId) {
-    $.ajax({
-        'url': menuUrl,
-        'data': {
-            'menu_id': envId
-        },
-        'dataType': 'json',
-        'type': 'GET',
-        'success': function(data, textStatus, jqXHR) {
-            if (!data.success) {
-                // @todo flash error
-                return;
-            }
-            var $menuUl = $('#menu1');
-            $menuUl.html("");
-            generateMenu($menuUl, data.menu, subLevelId, childId);
-        }
-    });
-}
-
 /* Load menu */
 function loadBookmark(bookmarkUrl) {
     $.ajax({
@@ -186,12 +47,10 @@ function generateBookmark($elParent, bookmark) {
     var lenBookmark = bookmark.length;
     
     for (var i = 0; i < lenBookmark; i++) {
-        var $li = $('<li></li>');
+        var $li = $('<li ></li>');
         $li.appendTo($elParent);
-        var $link = $('<a></a>').attr('href', bookmark[i].route + '?quick-access-'+ bookmark[i].type + '=' + encodeURIComponent(bookmark[i].quick_access));
-        $link.append(" ");
-        $('<span></span>').text(bookmark[i].label).appendTo($link);
-        $li.append($link);
+        var $link = $('<a></a>').attr('href', bookmark[i].route + '?quick-access-'+ bookmark[i].type + '=' + encodeURIComponent(bookmark[i].quick_access)).text(bookmark[i].label);
+        $link.appendTo($li);
     }
 }
 
@@ -211,9 +70,11 @@ function topClock() {
     var sHeure;
     if (sessionStorage.length > 0 && sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != "") {
         $(".fa-undo").show();
-       sHeure = clock.tz(sessionStorage.getItem("sTimezone"));
+        
+        var f = clock.format(sDefaultFormatDate);
+        sHeure = moment(f).tz(sessionStorage.getItem("sTimezone"));
     }  else {
-        sHeure = clock
+        sHeure = clock;
         $(".fa-undo").hide();
     }
     $('.time .clock').text(sHeure.format("HH:mm:ss"));

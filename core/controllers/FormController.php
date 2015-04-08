@@ -105,7 +105,7 @@ abstract class FormController extends ListController
             );
         }
         
-        $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id']));
+        $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id'], 'objectName'=> static::$objectName));
         $myForm->getFormFromDatabase();
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', static::$objectName);

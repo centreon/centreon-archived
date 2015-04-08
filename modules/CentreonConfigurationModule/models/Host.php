@@ -189,7 +189,10 @@ class Host extends CentreonBaseModel
         $order = null,
         $sort = "ASC",
         $filters = array(),
-        $filterType = "OR"
+        $filterType = "OR",
+        $tablesString = null,
+        $staticFilter = null,
+        $aAddFilters  = array()
     ) {
         $filters['host_register'] = '1';
         if (is_array($filterType)) {
@@ -200,7 +203,7 @@ class Host extends CentreonBaseModel
                 'host_register' => 'AND'
             );
         }
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
     }
     
     /**
@@ -223,6 +226,9 @@ class Host extends CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
+        $aAddFilters = array();
+        $tablesString =  '';
+        
         $filters['host_register'] = '1';
         if (is_array($filterType)) {
             $filterType['host_register'] = 'AND';
@@ -232,6 +238,15 @@ class Host extends CentreonBaseModel
                 'host_register' => 'AND'
             );
         }
-        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+                
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_hosts'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_hosts.tag_id', 'cfg_tags.tag_id = cfg_tags_hosts.tag_id',
+                    'cfg_tags_hosts.resource_id=cfg_hosts.host_id ')
+            ); 
+        }
+        
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters);
     }
 }

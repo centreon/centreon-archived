@@ -2,15 +2,12 @@
 <database name="centreon" package="centreon_administration" defaultIdMethod="native">
   <table name="cfg_tags" phpName="Tag" idMethod="native">
     <column name="tag_id" phpName="TagId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="user_id" phpName="UserId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true"/>
+    <column name="user_id" phpName="UserId" type="INTEGER" size="10" sqlType="int(10) unsigned" required="false"/>
     <column name="tagname" phpName="TagName" type="VARCHAR" size="100" required="true"/>
     <unique name="cfg_tags_idx_01">
       <unique-column name="user_id"/>
       <unique-column name="tagname"/>
     </unique>
-    <foreign-key foreignTable="cfg_users" name="cfg_tags_fk_01" onDelete="cascade">
-      <reference local="user_id" foreign="user_id"/>
-    </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
