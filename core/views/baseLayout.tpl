@@ -270,14 +270,12 @@
                 loadStatusData();
             }, 5000);
             loadStatusData();
-        });
 
         {if isset($jsUrl)}
         var jsUrl = {$jsUrl|json_encode};
         {else}
         var jsUrl = {};
         {/if}
-        $(document).ready(function() {
 
             loadBookmark('{url_for url="/bookmark/list"}');
 
