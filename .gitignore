@@ -10,3 +10,4 @@ composer.lock
 config/centreon.ini
 tests/config/centreon.ini
 /nbproject/private/
+/.idea/
