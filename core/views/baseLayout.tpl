@@ -193,7 +193,7 @@
     <script>
         $(document).ready(function() {
             var statusInterval, statusData,
-                    eStatus = new $.Event('centreon.refresh_status');
+                eStatus = new $.Event('centreon.refresh_status');
             $('.btn-light').on('click', function() {
                 switchTheme('light');
             });
@@ -214,7 +214,7 @@
                     }
                 });
             });
-            
+
             $("body").on("click", "#modalAdd_timezone", function(e) {
                 $("#modal").removeData("bs.modal");
                 $("#modal").removeData("centreonWizard");
@@ -227,10 +227,32 @@
                 });
             });
 
-            $(document).on('click', '.modalDelete', function(e) {
+             $(document).on('click', '.modalDelete', function(e) {
                 e.preventDefault();
                 $('#modal .modal-content').text('');
                 var id = $(this).data('id');
+
+                /* Delete modal header */
+                var $deleteHeader = $('<div></div>').addClass('modal-header');
+                $('<button></button>')
+                    .attr('type', 'button')
+                    .attr('aria-hidden', 'true')
+                    .attr('data-dismiss', 'modal')
+                    .addClass('close')
+                    .html('&times;')
+                    .appendTo($deleteHeader);
+                $('<h4></h4>').addClass('modal-title').text("{t}Delete{/t}").appendTo($deleteHeader);
+                $deleteHeader.appendTo('#modal .modal-content');
+
+                /* Delete modal body */
+                var $deleteBody = $('<div></div>').addClass('modal-body');
+                $('<span></span>').text('{t}Are you sure to delete ?{/t}').appendTo($deleteBody);
+                var $listElement = $('<ul></ul>').addClass('list-unstyled');
+                $('table[id^="datatable"] tbody tr[class*="selected"]').each(function(k, v) {
+                    $('<li></li>').html($(v).data('name')).appendTo($listElement);
+                });
+                $listElement.appendTo($deleteBody);
+                $deleteBody.appendTo('#modal .modal-content');
 
                 var $deleteFooter = $('<div></div>').addClass('modal-footer');
                 $('<a></a>')
@@ -246,23 +268,66 @@
                     .text('{t}Delete{/t}')
                     .appendTo($deleteFooter);
                 $deleteFooter.appendTo('#modal .modal-content');
-        
-            var objectDeleteUrl =  "{url_for url='/centreon-administration/user/deletetimezone'}";
-        });
-        
-            function loadStatusData() {
-                $.ajax({
-                    url: "{url_for url='/status'}",
-                    type: 'GET',
-                    success: function(data, textStatus, jqXHR) {
-                        statusData = data;
-                        $(document).trigger(eStatus);
-                    }
+
+                var objectDeleteUrl =  "{url_for for='/centreon-administration/user/deletetimezone'}";
+
+                $deleteBtn.on('click', function(e) {
+                    $.ajax({
+                        url: objectDeleteUrl,
+                        type: 'POST',
+                        data: {
+                            'id': id
+                        },
+                        dataType: 'json',
+                        success: function(data, textStatus, jqXHR) {
+                            $('#modal').modal('hide');
+                            alertClose();
+                            if (data.success) {
+                                oTable.fnDraw();
+                                alertMessage('{t}The objects have been successfully deleted{/t}', 'alert-success', 3);
+                            } else {
+                                alertMessage(data.errorMessage, 'alert-danger');
+                            }
+                        }
+                    });
                 });
+
+                 $('#modal')
+                    .removeData('bs.modal')
+                    .modal();
+            });
+
+            function loadStatusData() {
+              $.ajax({
+                url: "{url_for url='/status'}",
+                type: 'GET',
+                success: function(data, textStatus, jqXHR) {
+                  statusData = data;
+                  $(document).trigger(eStatus);
+                }
+              });
             }
 
             /* Timer */
             topClock();
+            
+            {if isset($jsUrl)}
+                var jsUrl = {$jsUrl|json_encode};
+            {else}
+                var jsUrl = {};
+            {/if}
+
+                loadBookmark('{url_for url="/bookmark/list"}');
+
+              /* Init tooltips */
+              $( ".bottombar a" ).tooltip();
+
+              paceOptions = {
+                // Configuration goes here. Example:
+                elements: false,
+                restartOnPushState: false,
+                restartOnRequestAfter: false
+              };
 
             {hook name='displayJsStatus' container='[hook]'}
 
@@ -271,32 +336,7 @@
             }, 5000);
             loadStatusData();
 
-        {if isset($jsUrl)}
-        var jsUrl = {$jsUrl|json_encode};
-        {else}
-        var jsUrl = {};
-        {/if}
-
-            loadBookmark('{url_for url="/bookmark/list"}');
-
-          /* Init tooltips */
-          $( ".bottombar a" ).tooltip();
-          
-          paceOptions = {
-            // Configuration goes here. Example:
-            elements: false,
-            restartOnPushState: false,
-            restartOnRequestAfter: false
-          }
-
-          statusInterval = setInterval(function() {
-              loadStatusData();
-          }, 5000);
-
-          loadStatusData();
-        
         });
-
     </script>
     {block name="javascript-bottom"}
     <script>{get_custom_js}</script>
