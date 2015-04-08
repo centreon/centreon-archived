@@ -61,9 +61,7 @@ class ServiceController extends Controller
      */
     public function __construct($request)
     {
-        $repository = '\CentreonRealtime\Repository\ServiceRepository';
         $confRepository = '\CentreonConfiguration\Repository\ServiceRepository';
-        $repository::setObjectClass($this->objectClass);
         $confRepository::setObjectClass('\CentreonConfiguration\Models\Service');
         parent::__construct($request);
     }

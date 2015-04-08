@@ -70,9 +70,7 @@ class HostController extends Controller
      */
     public function __construct($request)
     {
-        $repository = '\CentreonRealtime\Repository\HostRepository';
         $confRepository = '\CentreonConfiguration\Repository\HostRepository';
-        $repository::setObjectClass($this->objectClass);
         $confRepository::setObjectClass('\CentreonConfiguration\Models\Host');
         parent::__construct($request);
     }
