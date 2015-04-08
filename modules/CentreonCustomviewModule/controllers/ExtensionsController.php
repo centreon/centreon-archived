@@ -221,8 +221,8 @@ class ExtensionsController extends Controller
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('dataTables.bootstrap.js')
             ->addJs('jquery.select2/select2.min.js')
-            ->addJs('jquery.validate.min.js')
-            ->addJs('additional-methods.min.js')
+            ->addJs('jquery.validation/jquery.validate.min.js')
+            ->addJs('jquery.validation/additional-methods.min.js')
             ->addJs('centreon-wizard.js');
         
         $this->tpl->assign('datatableObject', $this->datatableObject);

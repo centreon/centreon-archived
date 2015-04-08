@@ -136,10 +136,10 @@ class TrapDatatable extends Datatable
             'searchParam' => array(
                 'type' => 'select',
                 'additionnalParams' => array(
-                    'OK' => '1',
-                    'Warning' => '2',
-                    'Critical' => '3',
-                    'Unknown' => '4'
+                    'OK' => '0',
+                    'Warning' => '1',
+                    'Critical' => '2',
+                    'Unknown' => '3'
                 )
             ),
         ),

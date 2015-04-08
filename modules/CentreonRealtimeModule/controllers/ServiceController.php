@@ -56,6 +56,17 @@ class ServiceController extends Controller
     protected $objectClass = '\CentreonRealtime\Models\Service';
     
     /**
+     * 
+     * @param type $request
+     */
+    public function __construct($request)
+    {
+        $confRepository = '\CentreonConfiguration\Repository\ServiceRepository';
+        $confRepository::setObjectClass('\CentreonConfiguration\Models\Service');
+        parent::__construct($request);
+    }
+    
+    /**
      * Display services
      *
      * @method get
@@ -91,8 +102,8 @@ class ServiceController extends Controller
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('dataTables.bootstrap.js')
             ->addJs('jquery.select2/select2.min.js')
-            ->addJs('jquery.validate.min.js')
-            ->addJs('additional-methods.min.js')
+            ->addJs('jquery.validation/jquery.validate.min.js')
+            ->addJs('jquery.validation/additional-methods.min.js')
             ->addJs('jquery.qtip.min.js')
             ->addJs('moment-with-locales.js')
             ->addJs('hogan-3.0.0.min.js')

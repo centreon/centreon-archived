@@ -52,9 +52,28 @@ use Centreon\Internal\Controller;
  */
 class HostController extends Controller
 {
+    /**
+     *
+     * @var type 
+     */
     protected $datatableObject = '\CentreonRealtime\Internal\HostDatatable';
     
+    /**
+     *
+     * @var type 
+     */
     protected $objectClass = '\CentreonRealtime\Models\Host';
+    
+    /**
+     * 
+     * @param type $request
+     */
+    public function __construct($request)
+    {
+        $confRepository = '\CentreonConfiguration\Repository\HostRepository';
+        $confRepository::setObjectClass('\CentreonConfiguration\Models\Host');
+        parent::__construct($request);
+    }
     
     /**
      * Display services

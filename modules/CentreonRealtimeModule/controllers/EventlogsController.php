@@ -53,6 +53,19 @@ use Centreon\Internal\Module\Informations as Module;
 class EventlogsController extends Controller
 {
     /**
+     * 
+     * @param type $request
+     */
+    public function __construct($request)
+    {
+        $hostConfRepository = '\CentreonConfiguration\Repository\HostRepository';
+        $hostConfRepository::setObjectClass('\CentreonConfiguration\Models\Host');
+        $serviceConfRepository = '\CentreonConfiguration\Repository\ServiceRepository';
+        $serviceConfRepository::setObjectClass('\CentreonConfiguration\Models\Service');
+        parent::__construct($request);
+    }
+    
+    /**
      * The page structure for display
      *
      * @method GET
