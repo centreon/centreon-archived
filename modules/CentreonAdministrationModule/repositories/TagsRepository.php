@@ -317,7 +317,7 @@ class TagsRepository
     {
         $dbconn = Di::getDefault()->get('db_centreon');        
 
-         $query = "SELECT tag_id, tagname FROM cfg_tags";
+         $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null";
         
         $stmt = $dbconn->prepare($query);
 
