@@ -36,30 +36,23 @@
 namespace CentreonConfiguration\Listeners\CentreonEngine;
 
 use Centreon\Internal\Di;
-use CentreonEngine\Events\GetMacroService as MacroServiceEvent;
-use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonEngine\Events\GetMacroHost as MacroHostEvent;
+use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
 
-class GetMacroService
+class GetMacroHost
 {
-    const MACRO_DOMAIN = 'CENTREON_DOMAIN';
-
     /**
-     * @param CentreonEngine\Events\GetMacroService $event
+     * @param CentreonEngine\Events\GetMacroHost $event
      */
-    public static function execute(MacroServiceEvent $event)
+    public static function execute(MacroHostEvent $event)
     {
-        /* Macros for Domain */
-        $services = array_keys(ServiceRepository::getServicesByPollerId($event->getPollerId()));
-        foreach ($services as $serviceId) {
-            $arr = ServiceRepository::getDomain($serviceId);
-            foreach ($arr as $domainName) {
-                $event->setMacro($serviceId, self::MACRO_DOMAIN, $domainName);
-            }
-            
-            $arrCustomMacro = CustomMacroRepository::loadServiceCustomMacro($serviceId);
+        /* Macros for Host */
+        $hosts = array_keys(HostRepository::getHostsByPollerId($event->getPollerId()));
+        foreach ($hosts as $hostId) {
+            $arrCustomMacro = CustomMacroRepository::loadHostCustomMacro($hostId);
             foreach ($arrCustomMacro as $customMacro) {
-                $event->setMacro($serviceId, $customMacro['macro_name'], $customMacro['macro_value']);
+                $event->setMacro($hostId, $customMacro['macro_name'], $customMacro['macro_value']);
             }
         }
     }

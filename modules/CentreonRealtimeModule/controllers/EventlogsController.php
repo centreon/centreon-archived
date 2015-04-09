@@ -292,23 +292,35 @@ class EventlogsController extends Controller
             
             /* Translate the status id */
             if (isset($log['service_id']) && isset($log['host_id']) && $log['status'] !== '') {
-                $log['status_text'] = Status::numToString(
-                    $log['status'],
-                    Status::TYPE_SERVICE,
-                    true
-                );
+                try {
+                    $log['status_text'] = Status::numToString(
+                        $log['status'],
+                        Status::TYPE_SERVICE,
+                        true
+                    );
+                } catch (\OutOfBoundsException $e) {
+                    $log['status_text'] = "";
+                }
             } elseif (!isset($log['service_id']) && $log['status'] !== '') {
-                $log['status_text'] = Status::numToString(
-                    $log['status'],
-                    Status::TYPE_HOST,
-                    true
-                );
+                try {
+                    $log['status_text'] = Status::numToString(
+                        $log['status'],
+                        Status::TYPE_HOST,
+                        true
+                    );
+                } catch (\OutOfBoundsException $e) {
+                    $log['status_text'] = "";
+                }
             } else if ($log['status'] !== '') {
-                $log['status_text'] = Status::numToString(
-                    $log['status'],
-                    Status::TYPE_EVENT,
-                    true
-                );
+                try {
+                    $log['status_text'] = Status::numToString(
+                        $log['status'],
+                        Status::TYPE_EVENT,
+                        true
+                    );
+                } catch (\OutOfBoundsException $e) {
+                    $log['status_text'] = "";
+                }
             }
 
             if ($log['msg_type'] != 1 && $log['msg_type'] != 0) {

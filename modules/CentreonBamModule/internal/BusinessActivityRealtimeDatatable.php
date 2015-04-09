@@ -45,7 +45,7 @@ use CentreonBam\Repository\BusinessActivityRepository;
  *
  * @author lionel
  */
-class BusinessActivityDatatable extends Datatable
+class BusinessActivityRealtimeDatatable extends Datatable
 {
     /**
      *
@@ -63,7 +63,7 @@ class BusinessActivityDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonBam\Models\BusinessActivity';
+    protected static $datasource = '\CentreonBam\Models\BusinessActivityRealtime';
    
     /**
      *
@@ -102,15 +102,7 @@ class BusinessActivityDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => 70,
-            'searchParam' => array(
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Business Unit' => '1',
-                    'Application' => '2',
-                    'Middleware' => '3'
-                )
-            ),
+            'width' => 70
         ),
         array (
             'title' => 'Business Activity',
@@ -123,7 +115,7 @@ class BusinessActivityDatatable extends Datatable
             'cast' => array(
                 'type' => 'url',
                 'parameters' => array(
-                    'route' => '/centreon-bam/businessactivity/[i:id]',
+                    'route' => '/centreon-bam/businessactivity/realtime/[i:id]',
                     'routeParams' => array(
                         'id' => '::ba_id::'
                     ),
@@ -132,38 +124,62 @@ class BusinessActivityDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'Description',
-            'name' => 'description',
-            'data' => 'description',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-        ),
-        array (
             'title' => 'Status',
-            'name' => 'activate',
-            'data' => 'activate',
+            'name' => 'current_status',
+            'data' => 'current_status',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-            'type' => 'select',
+                'type' => 'select',
                 'parameters' =>array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
+                    '0' => '<span class="label label-success">OK</span>',
+                    '1' => '<span class="label label-warning">Warning</span>',
+                    '2' => '<span class="label label-danger">Critical</span>',
                 )
             ),
             'searchParam' => array(
                 'type' => 'select',
                 'additionnalParams' => array(
-                    'Enabled' => '1',
-                    'Disabled' => '0'
+                    'OK' => '0',
+                    'Warning' => '1',
+                    'Critical' => '2'
                 )
             ),
+            'width' => 100,
+        ),
+         array (
+            'title' => 'Availability',
+            'name' => 'current_level',
+            'data' => 'current_level',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => 50,
+        ),
+        array (
+            'title' => 'Duration',
+            'name' => '(unix_timestamp(NOW())-last_state_change) AS duration',
+            'data' => 'duration',
+            'orderable' => true,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '10%',
+            'className' => 'cell_center'
         ),
     );
+
+    /**
+     *
+     * @param array $params
+     */
+    public function __construct($params, $objectModelClass = '')
+    {
+        parent::__construct($params, $objectModelClass);
+    }
 
     protected static $extraParams = array(
         'addToHook' => array(
@@ -193,7 +209,10 @@ class BusinessActivityDatatable extends Datatable
                 $previousType = $myBaSet['ba_type_id'];
             }
 
-            // set business activity name
+            // Set business activity availability
+            $myBaSet['current_level'] = $myBaSet['current_level'] . '%';
+
+            // Set business activity name with its icon
             $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
         }
     }

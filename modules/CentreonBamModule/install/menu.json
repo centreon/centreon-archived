@@ -7,7 +7,7 @@
                 "name": "BAM",
                 "short_name": "conf_business_activity",
                 "icon_class": "fa fa-suitcase",
-				"menus": [
+                "menus": [
                     {
                         "name": "Business Activity",
                         "short_name": "conf_ba_list",
@@ -22,7 +22,7 @@
             }
         ]
     }, {
-		"name": "Realtime",
+        "name": "Realtime",
         "short_name": "realtime",
         "menus": [
             {
@@ -32,5 +32,5 @@
                 "route": "/centreon-bam/businessactivity/realtime"
             }
         ]
-	}
+    }
 ]

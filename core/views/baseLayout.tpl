@@ -127,10 +127,14 @@
                                 </li>
                              </ul>
                          </li>
-                    </ul>
+                    </ul>                     
                     <ul class="timeZone nav navbar-right">
-                        <li class="time">
-                             <span class="clock"></span>
+                        <li class="time">                                  
+                            <a class="account dropdown-toggle" data-toggle="dropdown" href="#"><span class="clock"></span></a>
+                            <a href="#" id="undotimezone" onclick="changeTimezone()"><span class="fa fa-undo"></span></a>
+                            <ul class="dropdown-menu" id="list_timezone">
+                                <li ><a href="#" id="modalAdd_timezone">{t}Add horloge{/t}<i class="fa fa-clock-o"></i></a></li>
+                            </ul>
                          </li>
                     </ul>
                     <ul class="indicators nav navbar-right">
@@ -218,6 +222,7 @@
                     }
                 });
             });
+
 
             $("body").on("click", "#modalAdd_timezone", function(e) {
                 $("#modal").removeData("bs.modal");

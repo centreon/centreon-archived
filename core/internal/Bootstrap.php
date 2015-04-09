@@ -209,11 +209,13 @@ class Bootstrap
                         $toSend = false;
                         if (false === Csrf::checkToken($tokenValue, $request->method())) {
                             $toSend = true;
-                            $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), Csrf::getExpireTime());
+                            $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
                             $response->code(403)->json(array("message" => "CSRF Token is no valid"));
                         } else {
-                        /* Generate and send a new csrf cookie */
-                            $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), Csrf::getExpireTime());
+                            if (Csrf::mustBeGenerate($request->method())) {
+                                /* Generate and send a new csrf cookie */
+                                $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
+                            }
                         }
                     }
                 );
