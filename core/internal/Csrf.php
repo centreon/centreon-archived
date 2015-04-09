@@ -57,8 +57,6 @@ class Csrf
 
     private static $headerNames = array('x-xsrf-token', 'x-csrf-token');
 
-    private static $expireTime = 900;
-
     /**
      * Check if a value match with the value in the session
      *
@@ -90,6 +88,20 @@ class Csrf
     }
 
     /**
+     * If the token must regenerate
+     *
+     * @param string $method The http method
+     * @return boolean
+     */
+    public static function mustBeGenerate($method = 'POST')
+    {
+        if (false === $_SESSION[self::$sessionTokenName] || false === in_array(strtoupper($method), self::$ignoreMethod)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Return the cookie name
      *
      * @return string
@@ -107,15 +119,5 @@ class Csrf
     public static function getHeaderNames()
     {
         return self::$headerNames;
-    }
-
-    /**
-     * Return the expire time in seconds
-     *
-     * @return int
-     */
-    public static function getExpireTime()
-    {
-        return time() + self::$expireTime;
     }
 }
