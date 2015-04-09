@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_relations_ba_kpi_events" idMethod="native" phpName="ModBamReportingRelationsBaKpiEvents">
+    <column name="ba_event_id" phpName="BaEventId" type="INTEGER" required="true"/>
+    <column name="kpi_event_id" phpName="KpiEventId" type="INTEGER" required="true"/>
+    <foreign-key foreignTable="mod_bam_reporting_ba_events" name="mod_bam_reporting_relations_ba_kpi_events_ibfk_1" onDelete="CASCADE">
+      <reference local="ba_event_id" foreign="ba_event_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="mod_bam_reporting_kpi_events" name="mod_bam_reporting_relations_ba_kpi_events_ibfk_2" onDelete="CASCADE">
+      <reference local="kpi_event_id" foreign="kpi_event_id"/>
+    </foreign-key>
+    <index name="ba_event_id">
+      <index-column name="ba_event_id"/>
+    </index>
+    <index name="kpi_event_id">
+      <index-column name="kpi_event_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

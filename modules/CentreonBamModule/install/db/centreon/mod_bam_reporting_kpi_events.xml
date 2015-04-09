@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_kpi_events" idMethod="native" phpName="ModBamReportingKpiEvents">
+    <column name="kpi_event_id" phpName="KpiEventId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="kpi_id" phpName="KpiId" type="INTEGER" required="true"/>
+    <column name="start_time" phpName="StartTime" type="INTEGER" required="true"/>
+    <column name="end_time" phpName="EndTime" type="INTEGER"/>
+    <column name="status" phpName="Status" type="TINYINT"/>
+    <column name="in_downtime" phpName="InDowntime" type="BOOLEAN" size="1"/>
+    <column name="impact_level" phpName="ImpactLevel" type="TINYINT"/>
+    <column name="first_output" phpName="FirstOutput" type="LONGVARCHAR"/>
+    <column name="first_perfdata" phpName="FirstPerfdata" type="VARCHAR" size="45"/>
+    <index name="kpi_id">
+      <index-column name="kpi_id"/>
+      <index-column name="start_time"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

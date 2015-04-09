@@ -4,16 +4,16 @@
         <column name="id_bgr" phpName="IdBgr" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="id_ba" phpName="IdBa" type="INTEGER" required="true"/>
         <column name="id_ba_group" phpName="IdBaGroup" type="INTEGER" required="true"/>
-        <foreign-key foreignTable="cfg_bam" name="bam_bagroup_ba_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_bam" name="bam_ba_groups_ba_relation_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="id_ba" foreign="ba_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_bam_bagroups" name="bam_bagroup_ba_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
+        <foreign-key foreignTable="cfg_bam_ba_groups" name="bam_bagroup_ba_relation_ibfk_2" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="id_ba_group" foreign="id_ba_group"/>
         </foreign-key>
-        <index name="bam_bagroup_ba_relation_ibfk_1">
+        <index name="bam_ba_groups_ba_relation_ibfk_1">
             <index-column name="id_ba"/>
         </index>
-        <index name="bam_bagroup_ba_relation_ibfk_2">
+        <index name="bam_ba_groups_ba_relation_ibfk_2">
             <index-column name="id_ba_group"/>
         </index>
         <vendor type="mysql">
