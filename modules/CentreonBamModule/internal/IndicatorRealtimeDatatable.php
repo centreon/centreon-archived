@@ -43,9 +43,9 @@ use Centreon\Internal\Di;
 /**
  * Description of IndicatorDatatable
  *
- * @author lionel
+ * @author kevin
  */
-class IndicatorDatatable extends Datatable
+class IndicatorRealtimeDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
 
@@ -53,7 +53,7 @@ class IndicatorDatatable extends Datatable
      *
      * @var type 
      */
-    protected static $datasource = '\CentreonBam\Models\Indicator';
+    protected static $datasource = '\CentreonBam\Models\IndicatorRealtime';
 
     /**
      *
@@ -137,37 +137,40 @@ class IndicatorDatatable extends Datatable
             'source' => 'other',
         ),
         array (
-            'title' => 'Impact (Warning/Critical/Unknown)',
-            'name' => 'impact',
-            'data' => 'impact',
-            'orderable' => true,
-            'searchable' => false,
-            'type' => 'string',
-            'visible' => true,
-            'source' => 'other',
-        ),
-        array (
             'title' => 'Status',
-            'name' => 'activate',
-            'data' => 'activate',
+            'name' => 'current_status',
+            'data' => 'current_status',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-            'type' => 'select',
+                'type' => 'select',
                 'parameters' =>array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
+                    '0' => '<span class="label label-success">OK</span>',
+                    '1' => '<span class="label label-warning">Warning</span>',
+                    '2' => '<span class="label label-danger">Critical</span>',
                 )
             ),
             'searchParam' => array(
                 'type' => 'select',
                 'additionnalParams' => array(
-                    'Disabled' => '0',
-                    'Enabled' => '1'
+                    'OK' => '0',
+                    'Warning' => '1',
+                    'Critical' => '2'
                 )
             ),
+        ),
+        array (
+            'title' => 'Duration',
+            'name' => '(unix_timestamp(NOW())-last_state_change) AS duration',
+            'data' => 'duration',
+            'orderable' => true,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '10%',
+            'className' => 'cell_center'
         ),
     );
 
