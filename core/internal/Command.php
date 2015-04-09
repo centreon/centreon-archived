@@ -134,7 +134,7 @@ class Command
         if (!is_null($module)) {
             $ListOfCommands = array($module => $ListOfCommands);
         }
-        
+
         foreach ($ListOfCommands as $module => $section) {
             if ($module == 'core') {
                 $moduleColorized = Colorize::colorizeText($module, "blue", "black", true);
