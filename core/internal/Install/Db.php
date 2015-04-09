@@ -108,7 +108,7 @@ class Db
         self::postUpdate();
         
         // Empty Target DB
-        //self::deleteTargetDbSchema($targetDbName);
+        self::deleteTargetDbSchema($targetDbName);
     }
     
     /**
@@ -217,7 +217,7 @@ class Db
             File::getFiles($centreonPath . '/install/db/' . $targetDbName, 'xml')
         );
         
-        $moduleList = Informations::getModuleList();
+        $moduleList = Informations::getModuleList(false);
         foreach ($moduleList as $module) {
             $expModuleName = array_map(function ($n) { return ucfirst($n); }, explode('-', $module));
             $moduleFileSystemName = implode("", $expModuleName) . 'Module';
