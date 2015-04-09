@@ -182,10 +182,6 @@
           if ( !$this.loading ) {
             $this.$elem.trigger( "loaded" );
           }
-        },
-        beforeSend: function( jqXHR, settings ) {
-        },
-        complete: function( jqXHR, statusText ) {
         }
       });
     },
