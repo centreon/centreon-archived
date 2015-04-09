@@ -1,3 +1,28 @@
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting_asc_disabled,
+table.dataTable thead .sorting_desc_disabled {
+  background: transparent;
+}
+table.dataTable thead .sorting_asc:after {
+  float: right;
+  font-family: fontawesome;
+}
+table.dataTable thead .sorting_desc:after {
+  content: "\f0dd";
+  float: right;
+  font-family: fontawesome;
+}
+table.dataTable thead .sorting:after {
+  content: "\f0dc";
+  float: right;
+  font-family: fontawesome;
+  color: rgba(50, 50, 50, 0.5);
+}
+.dataTables_wrapper {
+  padding-bottom: 30px;
+}
 
 .centreon_table {
   margin: 0 10px;
@@ -15,8 +40,7 @@
 
   table {
     thead>tr>th {
-      border-bottom-color: lighten(@topbar-bg-color, 20%);
-      border-bottom-width: 2px;
+      border-bottom: 1px solid lighten(@lightGray,5%);
     }
     tbody>tr>td {
       padding: 4px 10px;
@@ -25,8 +49,6 @@
     }
 
     &.dataTable.no-footer {
-      border-bottom-color: lighten(@topbar-bg-color, 20%);
-      border-bottom-width: 2px;
     }
   }
 

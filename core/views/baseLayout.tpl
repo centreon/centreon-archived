@@ -23,7 +23,7 @@
                     <!--<a href="{get_user_homepage}" class="navbar-brand">{block name="appname"}<i class="fa fa-cube"></i> Centreon{/block}</a>-->
                     <div class="navbar-header">
                         <a class="navbar-minimalize minimalize-styl-2" href="#">
-                            <img src="../static/centreon/img/icons/ico-centreon.svg" alt="Centreon" />
+                            <img src="{url_static url='centreon/img/icons/ico-centreon.svg'}" alt="Centreon" />
                             <span class="nav-label">Centreon</span> </a>
                     </div>
                 </li>
@@ -273,7 +273,7 @@
                     .appendTo($deleteFooter);
                 $deleteFooter.appendTo('#modal .modal-content');
 
-                var objectDeleteUrl =  "{url_for for='/centreon-administration/user/deletetimezone'}";
+                var objectDeleteUrl =  "{url_for url='/centreon-administration/user/deletetimezone'}";
 
                 $deleteBtn.on('click', function(e) {
                     $.ajax({
