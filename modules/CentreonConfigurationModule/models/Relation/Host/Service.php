@@ -90,6 +90,7 @@ class Service extends CentreonRelationModel
             . $secondObj::getTableName().".".$secondObj::getPrimaryKey() . "
             AND host_register = '1'
             AND service_register = '1' ";
+        
         $filterTab = array();
         if (count($filters)) {
             $sql .= " AND ( ";
@@ -116,6 +117,7 @@ class Service extends CentreonRelationModel
             $db = Di::getDefault()->get('db_centreon');
             $sql = $db->limit($sql, $count, $offset);
         }
+        //echo $sql;
         $result = static::getResult($sql, $filterTab);
         return $result;
     }
