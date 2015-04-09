@@ -40,6 +40,7 @@
                                             <span class="fa arrow"></span>
                                         {/if}
                                 </a>
+                                {if count($menuLevel1.children) > 0}
                                 <ul class="nav nav-second-level">
                                     {foreach $menuLevel1.children as $menuLevel2}
                                     <li>
@@ -53,6 +54,7 @@
                                                 <span class="fa arrow"></span>
                                             {/if}
                                         </a>
+                                        {if count($menuLevel2.children) > 0}
                                         <ul class="nav nav-third-level">
                                             {foreach $menuLevel2.children as $menuLevel3}
                                                 <li>
@@ -65,9 +67,11 @@
                                                 </li>
                                             {/foreach}
                                         </ul>
+                                        {/if}
                                     </li>
                                     {/foreach}
                                 </ul>
+                                {/if}
                            </li>
                     {/foreach}
                 </li>
