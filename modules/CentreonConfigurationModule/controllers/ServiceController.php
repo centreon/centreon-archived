@@ -83,6 +83,8 @@ class ServiceController extends FormController
             ->addJs('jquery.qtip.min.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('moment-with-locales.js')
+            ->addJs('moment-timezone-with-data.min.js')
             ->addCss('centreon.qtip.css')
             ->addCss('centreon.tag.css', 'centreon-administration');
         $urls = array(

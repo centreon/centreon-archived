@@ -154,8 +154,10 @@ class HostController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('moment-with-locales.js')
+            ->addJs('moment-timezone-with-data.min.js')
             ->addCss('centreon.tag.css', 'centreon-administration');
-        
+                
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
         
