@@ -132,13 +132,24 @@ class BusinessActivityRealtimeDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-            'type' => 'select',
+                'type' => 'select',
                 'parameters' =>array(
                     '0' => '<span class="label label-success">OK</span>',
                     '1' => '<span class="label label-warning">Warning</span>',
                     '2' => '<span class="label label-danger">Critical</span>',
                 )
-            )
+            ),
+            'width' => 100,
+        ),
+         array (
+            'title' => 'Availability',
+            'name' => 'current_level',
+            'data' => 'current_level',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => 50,
         ),
         array (
             'title' => 'Duration',
@@ -190,7 +201,10 @@ class BusinessActivityRealtimeDatatable extends Datatable
                 $previousType = $myBaSet['ba_type_id'];
             }
 
-            // set business activity name
+            // Set business activity availability
+            $myBaSet['current_level'] = $myBaSet['current_level'] . '%';
+
+            // Set business activity name with its icon
             $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
         }
     }
