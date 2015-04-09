@@ -136,13 +136,13 @@ class Informations
     /**
      *
      * @param bool $onlyActivated If list only module activated
-     * @return array
+     * @return array Array of module names (string)
      */
-    public static function getModuleList($onlyActivated = false)
+    public static function getModuleList($onlyActivated = 1)
     {
         $moduleList = array();
         $activated = array('0', '1', '2');
-        if ($onlyActivated) {
+        if ($onlyActivated == 1) {
             $activated = array('1', '2');
         }
         
@@ -165,7 +165,36 @@ class Informations
         
         return $moduleList;
     }
-    
+
+    /**
+     *
+     * @param bool $onlyActivated If list only module activated
+     * @return array Array of arrays describing modules
+     */
+    public static function getModuleExtendedList($onlyActivated = 1)
+    {
+        $activated = array('0', '1', '2');
+        if ($onlyActivated == 1) {
+            $activated = array('1', '2');
+        }
+
+        try {
+            $rawModuleList = Module::getList(
+                '*',
+                -1,
+                0,
+                null,
+                "ASC",
+                array('isactivated' => $activated)
+            );
+
+        } catch (\PDOException $e) {
+
+        }
+
+        return $rawModuleList;
+    }
+
     /**
      * 
      * @return array
