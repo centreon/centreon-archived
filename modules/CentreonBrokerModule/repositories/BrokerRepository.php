@@ -573,19 +573,16 @@ class BrokerRepository
         $defaultOptionsValuesKeys = array_keys($defaultOptionsValues);
         foreach ($defaultOptionsValuesKeys as &$optValue) {
             switch($optValue) {
-                default:
-                    break;
-                    
                 case 'rrd_metric_path':
                     $optValue = 'rrd_metrics';
                     break;
-                
                 case 'rrd_status_path':
                     $optValue = 'rrd_status';
                     break;
-                
                 case 'storage_interval':
                     $optValue = 'interval';
+                    break;
+                default:
                     break;
             }
             $optValue = 'global_' . $optValue;
