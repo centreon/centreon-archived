@@ -41,6 +41,8 @@ use Centreon\Models\CentreonBaseModel;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
 use CentreonConfiguration\Models\Relation\Host\Hosttemplate as HostHosttemplateRelation;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
 
 /**
  * Used for interacting with hosts
@@ -130,9 +132,45 @@ class Host extends CentreonBaseModel
     public static function deployServices($hostId, $hostTemplateId = null)
     {
         static $deployedServices = array();
+        $aServices = array();
 
         $db = Di::getDefault()->get('db_centreon');
+        
+        //get host template
+        $aHostTemplates = HostRepository::getTemplateChain($hostId);
+            foreach ($aHostTemplates as $oTemplate) {
+            //get service template rattached to the host template
+            $aServiceTemplate =  ServiceRepository::getListTemplatesByHostId($oTemplate['id']);
+           
+            foreach ($aServiceTemplate as $oServiceTemplate) { 
+                $aService = ServiceRepository::getListServiceByIdTempalte($oServiceTemplate);
+/*
+                echo "<pre>aService";
+                print_r($aService);
+                echo "</pre>";
+ * 
+ */
+                foreach ($aService as $oService) {
+                    if (!empty($oService)) {
+                        $aServices[] = $oService;
+                    }
+                }
+            }
+        }
+    //    echo $hostId;
+        
+    
+        
+        $aServices =  array_unique($aServices);
+
+        foreach ($aServices as $serviceId) {
+            HostServiceRelation::insert($hostId, $serviceId);
+        }
+        
+        
+        /*
         $hid = is_null($hostTemplateId) ? $hostId : $hostTemplateId;
+        
         $services = HostServiceRelation::getMergedParameters(
             array(),
             array('service_id', 'service_description', 'service_alias'),
@@ -145,6 +183,7 @@ class Host extends CentreonBaseModel
             ),
             'AND'
         );
+        
         foreach ($services as $service) {
             if (is_null($hostTemplateId)) {
                 $deployedServices[$hostId][$service['service_description']] =  true;
@@ -161,14 +200,18 @@ class Host extends CentreonBaseModel
                 $deployedServices[$hostId][$service['service_alias']] = true;
             }
         }
+        
         $templates = HostHosttemplateRelation::getTargetIdFromSourceId(
             'host_tpl_id',
             'host_host_id',
             $hid
         );
+
         foreach ($templates as $tplId) {
             self::deployServices($hostId, $tplId);
         }
+         
+         */
     }
     
     /**

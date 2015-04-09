@@ -173,8 +173,9 @@ abstract class ListController extends Controller
             ->addJs('jquery.fileupload-validate.js')
             ->addJs('jquery.fileupload-ui.js')
             ->addJs('bootstrap3-typeahead.js')
-            ->addJs('centreon-wizard.js');
-
+            ->addJs('centreon-wizard.js')
+            ->addJs('moment-with-locales.js')
+            ->addJs('moment-timezone-with-data.min.js');
         
         /* Display variable */
         $this->tpl->assign('objectName', $this->objectDisplayName);

@@ -433,4 +433,49 @@ class ServiceRepository extends Repository
         }
         return $svcTmpl;
     }
+    
+    /**
+     * Return the list of template by host id
+     *
+     * @param int $iHostId The Host ID
+     * @return array
+     */
+    public static function getListTemplatesByHostId($iHostId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $svcTmpl = array();
+        $query = "SELECT service_service_id FROM cfg_hosts_services_relations WHERE host_host_id = :id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':id', $iHostId, \PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->rowCount()) {
+            $row = $stmt->fetch();
+            $stmt->closeCursor();
+            $svcTmpl[] = $row['service_service_id'];
+        }
+        return $svcTmpl;
+    }
+    
+    /**
+     * Return the list of template
+     *
+     * @param int $svcId The service ID
+     * @return array
+     */
+    
+    public static function getListServiceByIdTempalte($svcId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $svcTmpl = array();
+        $query = "SELECT service_id FROM cfg_services WHERE service_register = '1' AND service_template_model_stm_id = :id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->rowCount()) {
+            $row = $stmt->fetch();
+            $stmt->closeCursor();
+            $svcTmpl[] = $row['service_id'];
+        }
+        return $svcTmpl;
+    }
 }

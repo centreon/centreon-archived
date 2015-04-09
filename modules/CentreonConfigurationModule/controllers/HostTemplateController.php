@@ -115,7 +115,10 @@ class HostTemplateController extends FormController
     {
         $this->tpl->addJs('centreon.overlay.js')
                 ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+                ->addJs('moment-with-locales.js')
+                ->addJs('moment-timezone-with-data.min.js')
                 ->addCss('centreon.tag.css', 'centreon-administration');
+        
         parent::listAction();
     }
     
