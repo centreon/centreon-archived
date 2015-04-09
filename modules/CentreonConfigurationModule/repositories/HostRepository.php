@@ -266,4 +266,30 @@ class HostRepository extends Repository
         );
         return $templates;
     }
+    
+    /**
+     * Returns array of services that are linked to a poller
+     *
+     * @param int $pollerId
+     * @return array
+     */
+    public static function getHostsByPollerId($pollerId)
+    {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT h.host_id, h.host_name
+            FROM cfg_hosts h
+            WHERE h.poller_id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($pollerId));
+        $arr = array();
+        if ($stmt->rowCount()) {
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $arr[$row['host_id']] = $row['host_name'];
+            }
+        }
+
+        return $arr;
+    }
 }
