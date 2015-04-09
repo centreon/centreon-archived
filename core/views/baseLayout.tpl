@@ -269,7 +269,7 @@
                     .appendTo($deleteFooter);
                 $deleteFooter.appendTo('#modal .modal-content');
 
-                var objectDeleteUrl =  "{url_for for='/centreon-administration/user/deletetimezone'}";
+                var objectDeleteUrl =  "{url_for url='/centreon-administration/user/deletetimezone'}";
 
                 $deleteBtn.on('click', function(e) {
                     $.ajax({
