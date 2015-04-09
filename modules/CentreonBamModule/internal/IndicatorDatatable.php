@@ -80,7 +80,7 @@ class IndicatorDatatable extends Datatable
             'name' => 'kpi_id',
             'data' => 'kpi_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => false,
         ),
@@ -105,7 +105,16 @@ class IndicatorDatatable extends Datatable
                 'extra' => array (
                     //'groupable' => true,
                 ),
-            )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Service' => '0',
+                    'Metaservice' => '1',
+                    'Business Activity' => '2',
+                    'Boolean' => '3'
+                )
+            ),
         ),
         array (
             'title' => 'Indicator',
@@ -122,7 +131,7 @@ class IndicatorDatatable extends Datatable
             'name' => 'impacted_ba',
             'data' => 'impacted_ba',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
@@ -132,7 +141,7 @@ class IndicatorDatatable extends Datatable
             'name' => 'impact',
             'data' => 'impact',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
@@ -150,6 +159,13 @@ class IndicatorDatatable extends Datatable
                 'parameters' =>array(
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
+                )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Disabled' => '0',
+                    'Enabled' => '1'
                 )
             ),
         ),

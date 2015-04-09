@@ -139,6 +139,14 @@ class BusinessActivityRealtimeDatatable extends Datatable
                     '2' => '<span class="label label-danger">Critical</span>',
                 )
             ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'OK' => '0',
+                    'Warning' => '1',
+                    'Critical' => '2'
+                )
+            ),
             'width' => 100,
         ),
          array (
