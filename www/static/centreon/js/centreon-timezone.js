@@ -1,4 +1,4 @@
-var sDefaultFormatDate = "YYYY-MM-DD hh:mm:ss";
+var sDefaultFormatDate = "YYYY-MM-DD HH:mm:ss";
 
 function displayDate()
 {
