@@ -61,6 +61,7 @@ class GraphController extends Controller
     public function graphAction()
     {
         $di = Di::getDefault();
+        $router = $di->get('router');
         $tmpl = $di->get('template');
         $tmpl->addJs('d3.min.js');
         $tmpl->addJs('c3.min.js');
@@ -75,6 +76,13 @@ class GraphController extends Controller
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
         
+        $tmpl->append(
+            'jsUrl',
+            array(
+                'graph' => $router->getPathFor('/centreon-performance/graph')
+            ),
+            true
+        );
         
         $tmpl->display('file:[CentreonPerformanceModule]graph.tpl');
     }

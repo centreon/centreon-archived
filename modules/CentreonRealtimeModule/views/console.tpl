@@ -13,8 +13,12 @@
 {/block}
 {block name="javascript-bottom" append}
 	{datatablejs module=$moduleName object=$objectName objectUrl=$objectListUrl datatableObject=$datatableObject}
-	<script>
+        {if isset($jsUrl) }    
+            <script>
                 var jsUrl = {$jsUrl|json_encode};
+            </script>
+        {/if}
+	<script>
 		$(function() {
 			/* monitoring actions */
 
