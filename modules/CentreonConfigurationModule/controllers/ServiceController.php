@@ -93,6 +93,7 @@ class ServiceController extends FormController
                 'del' => $router->getPathFor('/centreon-administration/tag/delete')
             )
         );
+                
         $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }

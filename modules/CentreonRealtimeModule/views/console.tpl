@@ -14,6 +14,7 @@
 {block name="javascript-bottom" append}
 	{datatablejs module=$moduleName object=$objectName objectUrl=$objectListUrl datatableObject=$datatableObject}
 	<script>
+                var jsUrl = {$jsUrl|json_encode};
 		$(function() {
 			/* monitoring actions */
 

@@ -95,7 +95,7 @@ class Csrf
      */
     public static function mustBeGenerate($method = 'POST')
     {
-        if (false === $_SESSION[self::$sessionTokenName] || false === in_array(strtoupper($method), self::$ignoreMethod)) {
+        if (false === isset($_SESSION[self::$sessionTokenName]) || false === in_array(strtoupper($method), self::$ignoreMethod)) {
             return true;
         }
         return false;

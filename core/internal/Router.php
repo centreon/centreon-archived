@@ -134,7 +134,8 @@ class Router extends Klein
                 $response->body($tmpl->fetch('404.tpl'));
             }
         );
-        
+
+        // FIXME Deadcode, should be removed or we should have a ticket to do something about it
         /*$this->onHttpError(function ($code, $router, $matched, $methods_matched, $http_exception) {
             switch ($code) {
                 case 404:

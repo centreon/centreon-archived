@@ -37,6 +37,14 @@ namespace Centreon\Internal;
 
 use Evenement\EventEmitter;
 
+/**
+ * Class Bootstrap
+ * In charge of initializing the application context.
+ * Loaded early during request processing by either front controller (index.php) or centreonConsole
+ * Will init the service container (Di) thru Di->init() to init all services or Di->init(array of services to init) to only
+ * init a subset of services...
+ * @package Centreon\Internal
+ */
 class Bootstrap
 {
     /**
