@@ -71,7 +71,7 @@ class AddService
             foreach ($resultBa as $ba) {
                 $addBamService = true;
                 foreach ($serviceList as &$service) {
-                    if ($service['service_description'] === $ba['name']) {
+                    if ($service['display_name'] === $ba['name']) {
                         $addBamService = false;
                     }
                 }
