@@ -177,6 +177,7 @@ abstract class ListController extends Controller
             ->addJs('moment-with-locales.js')
             ->addJs('moment-timezone-with-data.min.js');
         
+        
         /* Display variable */
         $this->tpl->assign('objectName', $this->objectDisplayName);
         $this->tpl->assign('datatableObject', $this->datatableObject);
