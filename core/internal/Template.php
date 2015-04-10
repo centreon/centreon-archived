@@ -166,10 +166,11 @@ class Template extends \Smarty
     {
         /* Load css */
         $this->addCss('bootstrap.min.css');
+        $this->addCss('dataTables.bootstrap.css');
         $this->addCss('font-awesome.min.css');
-        $this->addCss('centreon.css');
         $this->addCss('jquery-ui.min.css');
         $this->addCss('centreon.qtip.css');
+        $this->addCss('centreon.css');
 
 
         /* Load javascript */

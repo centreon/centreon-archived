@@ -145,7 +145,6 @@ abstract class ListController extends Controller
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
             ->addCss('dataTables.fixedHeader.min.css')
-            ->addCss('dataTables.bootstrap.css')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
