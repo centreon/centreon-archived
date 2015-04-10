@@ -41,6 +41,7 @@ use Centreon\Internal\Di;
 use CentreonConfiguration\Repository\UserRepository;
 use Centreon\Controllers\FormController;
 use CentreonAdministration\Repository\TagsRepository;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 class HostTemplateController extends FormController
 {
