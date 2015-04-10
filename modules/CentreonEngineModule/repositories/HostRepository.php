@@ -41,6 +41,8 @@ use CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigura
 use CentreonConfiguration\Repository\HostTemplateRepository as HostTemplateConfigurationRepository;
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonEngine\Events\AddHost as AddHostEvent;
+use CentreonEngine\Events\AddService as AddServiceEvent;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -92,7 +94,13 @@ class HostRepository extends HostTemplateRepository
             $poller_id
         ));
 
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $hostList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $event = $di->get('events');
+        $addHostEvent = new AddHostEvent($poller_id, $hostList);
+        $event->emit('centreon-engine.add.host', array($addHostEvent));
+
+        foreach ($hostList as $host) {
             $content = array();
             $tmp = array("type" => "host");
             $tmpData = array();
@@ -100,9 +108,9 @@ class HostRepository extends HostTemplateRepository
             $host_id = null;
 
             /* Write Host Properties */
-            foreach ($row as $key => $value) {
+            foreach ($host as $key => $value) {
                 if ($key == "host_id") {
-                    $host_id = $row["host_id"];
+                    $host_id = $host["host_id"];
                     
                     /* Add host_id macro for broker - This is mandatory*/
                     $tmpData["_HOST_ID"] = $host_id;
@@ -165,7 +173,7 @@ class HostRepository extends HostTemplateRepository
             $tmpData['register'] = 1;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
-           
+
             /* Write Service Properties */
             $services = ServiceRepository::generate($host_id, $serviceMacroEvent);
             foreach ($services as $contentService) {
