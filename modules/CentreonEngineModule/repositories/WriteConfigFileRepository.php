@@ -54,8 +54,8 @@ class WriteConfigFileRepository
     {
         /* Remove configuration file if the file exists */
         if (file_exists($filename)) {
-            if (!unlink($filename)) {
-                return array("status" => false, "message" => "Can't remove $filename.");
+            if (!@unlink($filename)) {
+                throw new Exception('"Cannot remove "' . $filename . '"');
             }
         }
 
