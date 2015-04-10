@@ -41,6 +41,7 @@ use Centreon\Internal\Di;
 use CentreonConfiguration\Repository\UserRepository;
 use Centreon\Controllers\FormController;
 use CentreonAdministration\Repository\TagsRepository;
+use CentreonConfiguration\Repository\CustomMacroRepository;
 
 class HostTemplateController extends FormController
 {
@@ -195,13 +196,41 @@ class HostTemplateController extends FormController
      */
     public function updateAction()
     {
-        $givenParameters = $this->getParams('post');
+       $givenParameters = $this->getParams('post');
+        $macroList = array();
         $aTagList = array();
         $aTags = array();
+        
+        if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
+            
+            $macroName = $givenParameters['macro_name'];
+            $macroValue = $givenParameters['macro_value'];
+            $macroHidden = $givenParameters['macro_hidden'];
+            
+            $nbMacro = count($macroName);
+            for($i=0; $i<$nbMacro; $i++) {
+                if (!empty($macroName[$i])) {
+                    if (isset($macroHidden[$i])) {
+                        $isPassword = '1';
+                    } else {
+                        $isPassword = '0';
+                    }
+                    
+                    $macroList[$macroName[$i]] = array(
+                        'value' => $macroValue[$i],
+                        'ispassword' => $isPassword
+                    );
+                }
+            }
+        }
         
         parent::updateAction();
         if ($givenParameters['host_create_services_from_template']) {
             \CentreonConfiguration\Models\Host::deployServices($givenParameters['object_id']);
+        }
+        
+        if (count($macroList) > 0) {
+            CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
         }
         
         if (isset($givenParameters['host_tags'])) {
