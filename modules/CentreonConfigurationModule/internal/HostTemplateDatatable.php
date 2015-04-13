@@ -112,7 +112,6 @@ class HostTemplateDatatable extends Datatable
             'data' => 'host_name',
             'orderable' => true,
             'searchable' => true,
-            'searchLabel' => 'hostcategory',
             'type' => 'string',
             'visible' => true,
             'cast' => array(

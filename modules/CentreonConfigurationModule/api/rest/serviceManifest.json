@@ -5,8 +5,6 @@
     "objectClass" : "\\CentreonConfiguration\\Models\\Service",
     "relationMap" : {
         "host" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Service",
-        "servicegroup" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicegroup",
-        "servicecategory" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicecategory",
         "parents" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Serviceparents",
         "children" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicechildren"
     },
