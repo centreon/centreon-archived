@@ -82,7 +82,7 @@ class ServiceRepository extends ServicetemplateRepository
         
         /* Init Content Array */
         $content = array();
-        
+ 
         /* Get information into the database. */
         $query = "SELECT $field "
             . "FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations r "
@@ -90,7 +90,8 @@ class ServiceRepository extends ServicetemplateRepository
             . "AND h.host_id = r.host_host_id "
             . "AND s.service_id = r.service_service_id "
             . "AND service_activate = '1' "
-            . "AND service_register = '1' "
+            . "AND (service_register = '1' "
+            . "OR service_register = '2') "
             . "ORDER BY host_name, service_description";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
@@ -100,6 +101,7 @@ class ServiceRepository extends ServicetemplateRepository
         $event = $di->get('events');
         $addServiceEvent = new AddServiceEvent($host_id, $serviceList);
         $event->emit('centreon-engine.add.service', array($addServiceEvent));
+        $serviceList = $addServiceEvent->getServiceList();
 
         foreach ($serviceList as $service) {
             $tmp = array("type" => "service");
@@ -130,7 +132,9 @@ class ServiceRepository extends ServicetemplateRepository
                             $writeParam = 0;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                            if (is_numeric($value)) {
+                                $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                            }
                             $args = "";
                         }
                         if ($key == 'check_period' || $key == 'notification_period') {
