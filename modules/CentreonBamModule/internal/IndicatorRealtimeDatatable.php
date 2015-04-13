@@ -138,6 +138,15 @@ class IndicatorRealtimeDatatable extends Datatable
             'source' => 'other',
         ),
         array (
+            'title' => 'Current impact',
+            'name' => 'last_impact',
+            'data' => 'last_impact',
+            'orderable' => true,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
+        ),
+        array (
             'title' => 'Status',
             'name' => 'current_status',
             'data' => 'current_status',
@@ -287,6 +296,9 @@ class IndicatorRealtimeDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myIndicatorSet) {
+            // Add percent to impact
+            $myIndicatorSet['last_impact'] = $myIndicatorSet['last_impact'] . '%';
+
             // Set human readable duration
             $myIndicatorSet['duration'] = Datetime::humanReadable(
                 $myIndicatorSet['duration'],
