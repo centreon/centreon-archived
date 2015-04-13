@@ -1432,9 +1432,11 @@
 		else {
 			$command_id = getMyServiceField($service_id, "command_command_id");
 			$DBRESULT = $pearDB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
-			if ($DBRESULT->numRows())	{
-				$gt = $DBRESULT->fetchRow();
-				return $gt["graph_id"];
+			if ($DBRESULT->numRows()) {
+			    $gt = $DBRESULT->fetchRow();
+                            if ($gt["graph_id"] != NULL) {
+			        return $gt["graph_id"];
+                            }
 			}
 		}
 		$DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
