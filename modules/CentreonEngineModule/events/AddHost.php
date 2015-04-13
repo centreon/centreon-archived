@@ -63,4 +63,9 @@ class AddHost
     {
         return $this->hostList;
     }
+
+    public function setHostList($hosts)
+    {
+        $this->hostList = $hosts;
+    }
 }

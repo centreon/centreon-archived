@@ -63,4 +63,9 @@ class AddService
     {
         return $this->serviceList;
     }
+
+    public function setServiceList($services)
+    {
+        $this->serviceList = $services;
+    }
 }

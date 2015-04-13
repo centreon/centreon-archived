@@ -46,11 +46,8 @@ class AddService
      */
     public static function execute(AddServiceEvent $event)
     {
-        //var_dump($event->getHostId());
-        //var_dump($event->getServiceList());
         $hostId = $event->getHostId();
         $serviceList = $event->getServiceList();
-        //echo "$pollerId\n";
  
         $dbconn = Di::getDefault()->get('db_centreon');
 
@@ -63,6 +60,14 @@ class AddService
         $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
 
         if ($result[0]['host_name'] === '_Module_BAM') {
+            $selectCommandRequest = "SELECT command_id"
+                . " FROM cfg_commands"
+                . " WHERE command_name='check_bam_fake'";
+            $stmtCommandSelect = $dbconn->prepare($selectCommandRequest);
+            $stmtCommandSelect->execute();
+            $resultCommand = $stmtCommandSelect->fetchAll(\PDO::FETCH_ASSOC);
+            $commandId = $resultCommand[0]['command_id'];
+
             $selectBaRequest = "SELECT ba_id, name"
             . " FROM cfg_bam";
             $stmtBaSelect = $dbconn->prepare($selectBaRequest);
@@ -76,12 +81,15 @@ class AddService
                     }
                 }
                 if ($addBamService) {
-                    $insertRequest = "INSERT INTO cfg_services(service_description, display_name, organization_id, service_register)"
-                        . " VALUES(:id_ba, :name, 1, '1')";
+                    $dbconn->beginTransaction();
+
+                    $insertRequest = "INSERT INTO cfg_services(service_description, display_name, command_command_id, service_max_check_attempts, organization_id, service_register)"
+                        . " VALUES(:ba, :name, :command_id, 3, 1, '2')";
                     $serviceName = 'ba_' . $ba['ba_id'];
                     $stmtInsert = $dbconn->prepare($insertRequest);
-                    $stmtInsert->bindParam(':id_ba', $serviceName, \PDO::PARAM_STR);
+                    $stmtInsert->bindParam(':ba', $serviceName, \PDO::PARAM_STR);
                     $stmtInsert->bindParam(':name', $ba['name'], \PDO::PARAM_STR);
+                    $stmtInsert->bindParam(':command_id', $commandId, \PDO::PARAM_INT);
                     $stmtInsert->execute();
                     $lastServiceId = $dbconn->lastInsertId('cfg_services','service_id');
 
@@ -92,14 +100,20 @@ class AddService
                     $stmtRelationInsert->bindParam(':service_id', $lastServiceId, \PDO::PARAM_INT);
                     $stmtRelationInsert->execute();
 
+                    $dbconn->commit();
+
                     $count = count($serviceList);
+                    $serviceList[$count]['service_id'] = $lastServiceId;
                     $serviceList[$count]['host_name'] = '_Module_BAM';
                     $serviceList[$count]['service_description'] = 'ba_' . $ba['ba_id'];
                     $serviceList[$count]['display_name'] = $ba['name'];
                     $serviceList[$count]['host_id'] = $hostId;
-                    $serviceList[$count]['service_register'] = '1';
+                    $serviceList[$count]['service_register'] = '2';
+                    $serviceList[$count]['check_command'] = $commandId;
+                    $serviceList[$count]['service_max_check_attempts'] = '3';
                 }
             }
         }
+        $event->setServiceList($serviceList);
     }
 }
