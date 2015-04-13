@@ -215,14 +215,30 @@ class Bootstrap
                             }
                         }
                         $toSend = false;
-                        if (false === Csrf::checkToken($tokenValue, $request->method())) {
-                            $toSend = true;
-                            $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
-                            $response->code(403)->json(array("message" => "CSRF Token is no valid"));
-                        } else {
-                            if (Csrf::mustBeGenerate($request->method())) {
-                                /* Generate and send a new csrf cookie */
+                        /*
+                         * Test if must test the token 
+                         * @todo better management with middleware global implementation
+                         */
+                        $excludeRoute = array(
+                            '/api'
+                        );
+                        $matchingRoute = array_filter($excludeRoute, function ($route) use ($request) {
+                            $route = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/') . $route;
+                            if ($route == substr($request->pathname(), 0, strlen($route))) {
+                                return true;
+                            }
+                            return false;
+                        });
+                        if (count($matchingRoute) == 0) {
+                            if (false === Csrf::checkToken($tokenValue, $request->method())) {
+                                $toSend = true;
                                 $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
+                                $response->code(403)->json(array("message" => "CSRF Token is no valid"));
+                            } else {
+                                if ($tokenValue == '' || Csrf::mustBeGenerate($request->method())) {
+                                    /* Generate and send a new csrf cookie */
+                                    $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
+                                }
                             }
                         }
                     }
