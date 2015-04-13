@@ -139,12 +139,10 @@ abstract class ListController extends Controller
         $this->tpl->addCss('jquery.fileupload.css');
 
         /* Load CssFile */
-        $this->tpl->addCss('jquery.dataTables.min.css')
+        $this->tpl->addCss('dataTables.tableTools.min.css')
             ->addCss('jquery.fileupload.css')
-            ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
-            ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
@@ -154,7 +152,6 @@ abstract class ListController extends Controller
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
-            ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('dataTables.bootstrap.js')

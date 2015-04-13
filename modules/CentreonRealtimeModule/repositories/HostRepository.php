@@ -151,7 +151,7 @@ class HostRepository extends Repository
                 $status = "";
                 break;
         }
-        return "<span class='label $status pull-right overlay'>&nbsp;"
-            . "<!--<i class='fa fa-check-square-o'>--></i></span>";
+        return "<span class='label $status pull-left overlay'>&nbsp;"
+            . "</span>";
     }
 }

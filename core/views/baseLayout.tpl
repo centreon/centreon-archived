@@ -173,7 +173,7 @@
             </nav>
         </div>
 
-        <div class="row" id="mainContent">
+        <div class="row">
             {block name="content"}{/block}
         </div>
         

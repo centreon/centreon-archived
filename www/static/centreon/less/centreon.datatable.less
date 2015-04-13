@@ -1,3 +1,38 @@
+/* TABLES */
+.table-bordered {
+  border: 1px solid #EBEBEB;
+}
+.table-bordered > thead > tr > th,
+.table-bordered > thead > tr > td {
+  background-color: #F5F5F6;
+  border-bottom-width: 1px;
+}
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+  border: 1px solid @lightGray1;
+}
+.table > thead > tr > th {
+  border-bottom: 1px solid #DDDDDD;
+  vertical-align: middle;
+}
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  border-top: 1px solid @lightGray1;
+  line-height: 1.42857;
+  padding: @paddingElem;
+  vertical-align: middle;
+  font-size: 13px;
+
+}
+
 table.dataTable thead .sorting,
 table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc,
@@ -6,17 +41,17 @@ table.dataTable thead .sorting_desc_disabled {
   background: transparent;
 }
 table.dataTable thead .sorting_asc:after {
-  float: right;
+  //float: right;
   font-family: fontawesome;
 }
 table.dataTable thead .sorting_desc:after {
   content: "\f0dd";
-  float: right;
+  //float: right;
   font-family: fontawesome;
 }
 table.dataTable thead .sorting:after {
   content: "\f0dc";
-  float: right;
+  //float: right;
   font-family: fontawesome;
   color: rgba(50, 50, 50, 0.5);
 }
@@ -25,6 +60,16 @@ table.dataTable thead .sorting:after {
 }
 
 .centreon_table {
+  margin: 0 10px;
+  padding-top: 20px;
+
+  .table-striped>tbody>tr:nth-child(odd) {
+    background-color: @lightGray1;
+  }
+
+  .table-striped>tbody>tr:nth-child(even) {
+    background-color: @white;
+  }
 
   .DTTT {
     margin-right: 5px;
@@ -36,22 +81,20 @@ table.dataTable thead .sorting:after {
   }
 
   table {
-    thead .sorting_asc {
-      color: @thirdBlue;
+    thead>tr>th {
+      border-bottom: 1px solid lighten(@lightGray,5%);
     }
-    thead > tr > th {
-      font-size: 13px;
-      font-weight: normal;
-      border-bottom: 1px solid lighten(@lightGray, 5%);
-      color: #818285;
-    }
-    tbody > tr > td {
+    tbody>tr>td {
       padding: 4px 10px;
       font-size: 12px;
       white-space: nowrap;
     }
+
     &.dataTable.no-footer {
-      border-bottom: 1px solid #111;
+
+      tbody tr.selected {
+        background-color: red;
+      }
     }
   }
 

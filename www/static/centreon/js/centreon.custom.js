@@ -9,21 +9,6 @@ $(document).ready(function () {
     // MetsiMenu
     $('#side-menu').metisMenu();
 
-    /* SlimScroll page
-
-        var contentHeight = $(window).height() - $(".GlobalNavbar").height() - $(".bottombar").height();
-        $('#mainContent').css({"height" :"contentHeight"+"px"});
-        var h = contentHeight+"px";
-        console.log(h);
-
-    $('#mainContent').slimScroll({
-        color: '#00f',
-        allowPageScroll: false,
-        size: '6px',
-        animation: 'true',
-        height: 'h'
-    });*/
-
     // Collapse ibox function
     $('.collapse-link').click( function() {
         var ibox = $(this).closest('div.ibox');

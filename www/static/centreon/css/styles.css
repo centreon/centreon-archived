@@ -188,7 +188,7 @@ table.display td.center {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables sorting
  */
-
+/*
 .sorting_asc {
 	background: url('../images/sort_asc.png') no-repeat center right;
 }
@@ -214,7 +214,7 @@ table.display thead td:active {
 	outline: none;
 }
 
-
+*/
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -251,19 +251,6 @@ table.display tr.odd.gradeU {
 table.display tr.even.gradeU {
 	background-color: #eee;
 }
-
-
-tr.odd {
-	background-color: #E2E4FF;
-}
-
-tr.even {
-	background-color: white;
-}
-
-
-
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Misc
