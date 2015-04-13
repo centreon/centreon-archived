@@ -84,13 +84,13 @@ class HostRepository extends HostTemplateRepository
         $query = "SELECT $fields 
             FROM cfg_hosts 
             WHERE host_activate = '1' 
-            AND host_register = ? 
+            AND (host_register = '1' 
+            OR host_register = '2') 
             AND poller_id = ?
             ORDER BY host_name";
 
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array(
-            static::$register,
             $poller_id
         ));
 
@@ -99,6 +99,7 @@ class HostRepository extends HostTemplateRepository
         $event = $di->get('events');
         $addHostEvent = new AddHostEvent($poller_id, $hostList);
         $event->emit('centreon-engine.add.host', array($addHostEvent));
+        $hostList = $addHostEvent->getHostList();
 
         foreach ($hostList as $host) {
             $content = array();
