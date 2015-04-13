@@ -213,4 +213,25 @@ class CentreonGMT{
 		}
 		return date($date_format, $date);
 	}
+
+    function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
+    {
+        static $locations = null;
+        
+        if ($this->use) {
+            /* Load host location */
+			if (is_null($locations)) {
+				$locations = array();
+				$query = "SELECT host_id, host_location FROM host WHERE host_id";
+				$res = $pearDB->query($query);
+				while ($row = $res->fetchRow()) {
+					$locations[$row['host_id']] = $row['host_location'];
+				}
+            }
+            if (isset($locations[$hostId])) {
+                $date = $this->getUTCDate($date, $locations[$hostId]);
+            }
+        }
+        return date($dateFormat, $date);
+    }
 }
