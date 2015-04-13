@@ -48,3 +48,8 @@ ALTER TABLE `cfg_bam` DROP FOREIGN KEY `bam_ibfk_2`;
 ALTER TABLE `cfg_bam` CHANGE `sla_critical` `sla_month_percent_crit` FLOAT;
 ALTER TABLE `cfg_tags_hosts` DROP FOREIGN KEY `cfg_tags_hosts_fk_01`;
 ALTER TABLE `cfg_tags_hosts` DROP FOREIGN KEY `cfg_tags_hosts_fk_02`;
+ALTER TABLE `cfg_bam_bagroup_ba_relation` DROP FOREIGN KEY `bam_bagroup_ba_relation_ibfk_2`;
+ALTER TABLE `cfg_meta_services` DROP FOREIGN KEY `cfg_meta_services_ibfk_2`;
+ALTER TABLE `cfg_meta_services` DROP FOREIGN KEY `cfg_meta_services_ibfk_2`;
+ALTER TABLE `cfg_meta_services` DROP FOREIGN KEY `meta_service_ibfk_3`;
+ALTER TABLE `cfg_meta_services_relations` DROP FOREIGN KEY `cfg_meta_services_relations_ibfk_1`;
