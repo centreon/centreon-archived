@@ -95,7 +95,15 @@
 {/block}
 
 {block name="javascript-bottom" append}
+    
+{if isset($jsUrl) }    
 <script>
+    var jsUrl = {$jsUrl|json_encode};
+</script>
+{/if}
+    
+<script>
+
 var nbGraph = 0;
 
 function createGraph(serviceId) {

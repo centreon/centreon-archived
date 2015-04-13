@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigura
 use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonEngine\Events\AddService as AddServiceEvent;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -93,14 +94,21 @@ class ServiceRepository extends ServicetemplateRepository
             . "ORDER BY host_name, service_description";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+
+        $serviceList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $event = $di->get('events');
+        $addServiceEvent = new AddServiceEvent($host_id, $serviceList);
+        $event->emit('centreon-engine.add.service', array($addServiceEvent));
+
+        foreach ($serviceList as $service) {
             $tmp = array("type" => "service");
             $tmpData = array();
             $args = "";
-            foreach ($row as $key => $value) {
+            foreach ($service as $key => $value) {
                 if ($key == "service_id" || $key == "host_id") {
-                    $host_id = $row["host_id"];
-                    $service_id = $row["service_id"];
+                    $host_id = $service["host_id"];
+                    $service_id = $service["service_id"];
 
                     /* Add service_id macro for broker - This is mandatory*/
                     $tmpData["_SERVICE_ID"] = $service_id;

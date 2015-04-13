@@ -36,6 +36,7 @@
 namespace CentreonRealtime\Repository\EventlogsRepository;
 
 use Centreon\Internal\Utils\Datetime;
+use Centreon\Internal\Utils\Status;
 use Centreon\Internal\Di;
 use Elasticsearch\Client as ESClient;
 
@@ -69,7 +70,7 @@ class ElasticSearch extends Storage
         $params['hosts'][] = $options->get('default', 'es_host');
         $esclient = new ESClient($params);
 
-        $queryFilters = [];
+        $queryFilters = array();
         if (false === is_null($limit)) {
             $queryFilters["filter"] = array(
                 "limit" => array(
@@ -77,7 +78,7 @@ class ElasticSearch extends Storage
                 )
             );
         }
-        $queryQueries = [];
+        $queryQueries = array();
         if (false === is_null($fromTime)) {
             $queryQueries[] = array(
                 "range" => array(
@@ -127,13 +128,13 @@ class ElasticSearch extends Storage
                 $queryQueries[] = array(
                     "or" => array(
                         "term" => array(
-                            "centreon_status" => Status::numToString($value, Status::TYPE_SERVICE);
+                            "centreon_status" => strtoupper(Status::numToString($value, Status::TYPE_SERVICE))
                         ),
                         "term" => array(
-                            "centreon_status" => Status::numToString($value, Status::TYPE_HOST);
+                            "centreon_status" => strtoupper(Status::numToString($value, Status::TYPE_HOST))
                         ),
                         "term" => array(
-                            "centreon_status" => Status::numToString($value, Status::TYPE_EVENT);
+                            "centreon_status" => strtoupper(Status::numToString($value, Status::TYPE_EVENT))
                         )
                     )
                 );
@@ -155,25 +156,53 @@ class ElasticSearch extends Storage
                 )
             );
         }
-        /*$esQuery['sort'] = array(
-            array('@timestamp' => array('order', 'desc'))
-        );*/
+        $esQuery['sort'] = array(
+            array('@timestamp' => 'desc')
+        );
         $results = $esclient->search(array(
             "body" => $esQuery
         ));
-        $data = [];
+        $data = array();
         foreach ($results['hits']['hits'] as $result) {
             if (isset($result['_source']) && $result['_type'] == 'syslog') {
+                $host = '';
+                $service = '';
+                $status = '';
+                $type = '';
+                if (isset($result['_source']['centreon_hostname'])) {
+                    $host = $result['_source']['centreon_hostname'];
+                } else {
+                    $host = $result['_source']['host'];
+                }
+                if (isset($result['_source']['centreon_service'])) {
+                    $service = $result['_source']['centreon_service'];
+                }
+                if (isset($result['_source']['centreon_status']) && isset($result['_source']['centreon_type'])) {
+                    $type = $result['_source']['centreon_type'];
+                    if (strstr('HOST', substr($type, 4))) {
+                        $statusType = Status::TYPE_HOST;
+                    } else if (strstr('SERVICE', substr($type, 7))) {
+                        $statusType = Status::TYPE_SERVICE;
+                    } else {
+                        $statusType = Status::TYPE_EVENT;
+                    }
+                    try {
+                        $textStatus = ucfirst(strtolower($result['_source']['centreon_status']));
+                        $status = Status::stringToNum($textStatus, $statusType);
+                    } catch(\OutOfBoundsException $e) {
+                        $status = '';
+                    }
+                }
                 $data[] = array(
                     'datetime' => strtotime($result['_source']['@timestamp']),
                     'host_id' => '',
-                    'host' => '',
+                    'host' => $host,
                     'service_id' => '',
-                    'service' => '',
+                    'service' => $service,
                     'instance' => '',
                     'output' => $result['_source']['message'],
-                    'status' => '',
-                    'type' => '',
+                    'status' => $status,
+                    'type' => $type,
                     'msg_type' => ''
                 );
             }
