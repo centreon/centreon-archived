@@ -361,7 +361,7 @@ class Informations
         $stmt->bindParam(':order', $order);
         $module = isset($data['module']) ? $data['module'] : 0;
         $stmt->bindParam(':module', $module);
-        $menuBlock = 'top';
+        $menuBlock = 'root';
         if (isset($data['block'])) {
             $menuBlock = $data['block'];
         } elseif (isset($data['parent'])) {
@@ -369,21 +369,6 @@ class Informations
         }
         $stmt->bindParam(':menu_block', $menuBlock, \PDO::PARAM_STR);
         $stmt->execute();
-        if (!isset($menus[$data['short_name']])) {
-            $menus[$data['short_name']] = $db->lastInsertId('cfg_menus', 'menu_id');
-            if (!isset($data['order']) && isset($data['parent'])) {
-                $stmt = $db->prepare(
-                    "SELECT (MAX(menu_order) + 1) as max_order FROM cfg_menus WHERE parent_id = :parent_id"
-                );
-                $stmt->bindParam(':parent_id', $menus[$data['parent']]);
-                $stmt->execute();
-                $row = $stmt->fetch();
-                $stmt = $db->prepare("UPDATE cfg_menus SET menu_order = :menu_order WHERE menu_id = :menu_id");
-                $stmt->bindParam(':menu_order', $row['max_order']);
-                $stmt->bindParam(':menu_id', $menus[$data['short_name']]);
-                $stmt->execute();
-            }
-        }
     }
     
     /**

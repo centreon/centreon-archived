@@ -4,6 +4,8 @@
         "short_name": "configuration",
         "icon_class": "icon-config",
         "bgcolor": "#CCC",
+        "block": "root",
+        "order": 3,
         "menus": [
             {
                 "name": "Hosts",
@@ -13,22 +15,14 @@
                     {
                         "name": "Hosts",
                         "short_name": "conf_hosts_list",
-                        "route": "/centreon-configuration/host"
+                        "route": "/centreon-configuration/host",
+                        "order": 1
                     },
                     {
                         "name": "Host templates",
                         "short_name": "conf_hosttemplate_list",
-                        "route": "/centreon-configuration/hosttemplate"
-                    },
-                    {
-                        "name": "Host groups",
-                        "short_name": "conf_hostgroup_list",
-                        "route": "/centreon-configuration/hostgroup"
-                    },
-                    {
-                        "name": "Host categories",
-                        "short_name": "conf_category_list",
-                        "route": "/centreon-configuration/hostcategory"
+                        "route": "/centreon-configuration/hosttemplate",
+                        "order": 1
                     }
                 ]
             },
@@ -40,22 +34,14 @@
                     {
                         "name": "Services",
                         "short_name": "conf_services_list",
-                        "route": "/centreon-configuration/service"
+                        "route": "/centreon-configuration/service",
+                        "order": 1
                     },
                     {
                         "name": "Service templates",
                         "short_name": "conf_servicetemplate_list",
-                        "route": "/centreon-configuration/servicetemplate"
-                    },
-                    {
-                        "name": "Servicegroups",
-                        "short_name": "conf_servicegroup_list",
-                        "route": "/centreon-configuration/servicegroup"
-                    },
-                    {
-                        "name": "Service categories",
-                        "short_name": "conf_servicecategory_list",
-                        "route": "/centreon-configuration/servicecategory"
+                        "route": "/centreon-configuration/servicetemplate",
+                        "order": 1
                     }
                 ]
             },
@@ -107,7 +93,8 @@
                     {
                         "name": "Pollers",
                         "short_name": "conf_pollers_list",
-                        "route": "/centreon-configuration/poller"
+                        "route": "/centreon-configuration/poller",
+                        "order": 1
                     },
                     {
                         "name": "Global Resources",

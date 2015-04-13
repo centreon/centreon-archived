@@ -315,7 +315,6 @@ abstract class Installer
     {
         $i = 1;
         foreach ($menus as $menu) {
-            $menu['order'] = $i;
             if (!is_null($parent)) {
                 $menu['parent'] = $parent;
             }
@@ -324,7 +323,6 @@ abstract class Installer
             if (isset($menu['menus']) && count($menu['menus'])) {
                 self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
             }
-            $i++;
         }
     }
 }

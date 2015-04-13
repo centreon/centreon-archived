@@ -384,7 +384,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         $memoryValue = HumanReadable::convertArray(
             array($metric['current_value'], $metric['max']),
             $metric['unit_name'],
-            &$newUnit,
+            $newUnit,
             2
         );
         $normalizeMetricSet['current'] = $memoryValue[0];

@@ -95,7 +95,7 @@ class Menu
             "SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order, menu_block
             FROM cfg_menus
             WHERE module_id IN (SELECT id FROM cfg_modules WHERE isactivated = '1' OR isactivated = '2')
-            ORDER BY menu_order ASC, module_id ASC"
+            ORDER BY menu_order ASC, name ASC"
         );
         $stmt->execute();
         $menus = $stmt->fetchAll(\PDO::FETCH_ASSOC);

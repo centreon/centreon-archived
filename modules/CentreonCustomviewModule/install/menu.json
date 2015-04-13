@@ -4,7 +4,9 @@
         "short_name": "home",
         "icon_class": "icon-home-dashboard",
         "bgcolor": "#CCC",
-        "route": "/centreon-customview"
+        "route": "/centreon-customview",
+        "block": "root",
+        "order": 1
     },
     {
         "name": "Extensions",

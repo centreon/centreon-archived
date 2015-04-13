@@ -4,8 +4,8 @@
       "short_name": "administration",
       "icon_class": "fa fa-folder-open",
       "bgcolor": "#FA5858",
-      "block": "user",
-      "order": 1,
+      "block": "root",
+      "order": 2,
       "menus" : [
             {
                 "name": "Users",
