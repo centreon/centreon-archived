@@ -195,11 +195,8 @@ class CentreonGMT{
 	{
 		global $pearDB;
 		static $locations = null;
-		static $date = null;
 
-		if (is_null($date)) {
-			$date = time();
-		}
+		$date = time();
 		if ($this->use) {
 			if (is_null($locations)) {
 				$locations = array();
