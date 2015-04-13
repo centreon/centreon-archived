@@ -25,9 +25,6 @@ table.dataTable thead .sorting:after {
 }
 
 .centreon_table {
-  margin: 0 10px;
-  padding-top: 20px;
-  padding-bottom: 60px; /* For floating pagination */
 
   .DTTT {
     margin-right: 5px;
@@ -39,16 +36,22 @@ table.dataTable thead .sorting:after {
   }
 
   table {
-    thead>tr>th {
-      border-bottom: 1px solid lighten(@lightGray,5%);
+    thead .sorting_asc {
+      color: @thirdBlue;
     }
-    tbody>tr>td {
+    thead > tr > th {
+      font-size: 13px;
+      font-weight: normal;
+      border-bottom: 1px solid lighten(@lightGray, 5%);
+      color: #818285;
+    }
+    tbody > tr > td {
       padding: 4px 10px;
       font-size: 12px;
       white-space: nowrap;
     }
-
     &.dataTable.no-footer {
+      border-bottom: 1px solid #111;
     }
   }
 

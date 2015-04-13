@@ -91,7 +91,7 @@ class HostDatatable extends Datatable
      * @var array 
      */
     public static $configuration = array(
-        'autowidth' => false,
+        'autowidth' => true,
         'order' => array(
             array('host_name', 'asc')
         ),
@@ -105,6 +105,57 @@ class HostDatatable extends Datatable
      */
     public static $columns = array(
         array (
+                    'title' => 'Host',
+                    'name' => 'host_name',
+                    'data' => 'host_name',
+                    'orderable' => true,
+                    'searchable' => true,
+                    'searchLabel' => 'host',
+                    'type' => 'string',
+                    'visible' => true,
+                    'cast' => array(
+                        'type' => 'url',
+                        'parameters' => array(
+                            'route' => '/centreon-configuration/host/[i:id]',
+                            'routeParams' => array(
+                                'id' => '::host_id::'
+                            ),
+                            'linkName' => '::host_name::'
+                        )
+                    ),
+                    'searchParam' => array(
+                        'main' => 'true',
+                    )
+                ),
+        array (
+                    'title' => 'Status',
+                    'name' => 'host_activate',
+                    'data' => 'host_activate',
+                    'orderable' => true,
+                    'searchable' => true,
+                    'type' => 'string',
+                    'visible' => true,
+                    'cast' => array(
+                        'type' => 'select',
+                        'parameters' => array(
+                            '0' => '<span class="label label-danger">Disabled</span>',
+                            '1' => '<span class="label label-success">Enabled</span>',
+                            '2' => 'Trash',
+                        )
+                    ),
+                    'searchParam' => array(
+                        'main' => 'true',
+                        'type' => 'select',
+                        'additionnalParams' => array(
+                            'Enabled' => '1',
+                            'Disabled' => '0'
+                        )
+                    ),
+                    'className' => "cell_center",
+                    'width' => '50px'
+                ),
+
+        array (
             'title' => "Id",
             'name' => 'host_id',
             'data' => 'host_id',
@@ -112,32 +163,9 @@ class HostDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => false,
-            'width' => '20px',
             'className' => "cell_center"
         ),
-        array (
-            'title' => 'Host',
-            'name' => 'host_name',
-            'data' => 'host_name',
-            'orderable' => true,
-            'searchable' => true,
-            'searchLabel' => 'host',
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'url',
-                'parameters' => array(
-                    'route' => '/centreon-configuration/host/[i:id]',
-                    'routeParams' => array(
-                        'id' => '::host_id::'
-                    ),
-                    'linkName' => '::host_name::'
-                )
-            ),
-            'searchParam' => array(
-                'main' => 'true',
-            )
-        ),
+
         array (
             'title' => 'Description',
             'name' => 'host_alias',
@@ -145,7 +173,7 @@ class HostDatatable extends Datatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
         ),
         array (
             'title' => 'IP Address / DNS',
@@ -163,8 +191,7 @@ class HostDatatable extends Datatable
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '50px',
+            'visible' => false,
             'className' => "cell_center"
         ),
         array (
@@ -174,8 +201,7 @@ class HostDatatable extends Datatable
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '40px',
+            'visible' => false,
             'className' => "cell_center"
         ),
         array (
@@ -185,11 +211,11 @@ class HostDatatable extends Datatable
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
             'width' => '40px',
             'className' => "cell_center"
         ),
-        array (
+        /*array (
             'title' => 'Templates',
             'name' => 'host_id as host_template',
             'data' => 'host_template',
@@ -198,34 +224,8 @@ class HostDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'className' => "cell_center"
-        ),
-        array (
-            'title' => 'Status',
-            'name' => 'host_activate',
-            'data' => 'host_activate',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' => array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
-                    '2' => 'Trash',
-                )
-            ),
-            'searchParam' => array(
-                'main' => 'true',
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Enabled' => '1',
-                    'Disabled' => '0'
-                )
-            ),
-            'className' => "cell_center",
-            'width' => '50px'
-        ),
+        ),*/
+
         array (
             'title' => 'Tags',
             'name' => 'tagname',
@@ -234,7 +234,6 @@ class HostDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => '40px',
             'tablename' => 'cfg_tags'
         ),
     );
@@ -284,7 +283,7 @@ class HostDatatable extends Datatable
                 RealTimeHostRepository::getStatus($myHostSet['host_id'])
             );
 
-            /* Templates */
+            /* Templates
             $myHostSet['host_template']  = "";
             $templates = HostTemplateRepository::getTemplateList($myHostSet['host_id']);
             foreach ($templates as $template) {
@@ -294,7 +293,7 @@ class HostDatatable extends Datatable
                     '"><i class="fa '.
                     $template['ico'].
                     '"></i></a></span>';
-            }
+            }*/
             
             /* Tags */
             $myHostSet['tagname']  = "";

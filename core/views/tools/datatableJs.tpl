@@ -5,12 +5,7 @@
     $(document).ready(function() {
     	document.onselectstart = function() { return false; };
 
-        /* Remove the label next to pagination dropdown */
-        var labelToRemove = 'label[for=datatable{$object}_length_select]';
-        $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
-            $(labelToRemove).hide();
-            $("#datatable{$object}_length").append($(".configuration-actions"));
-        });
+
 
         var selectedCb = [];
 
@@ -78,14 +73,21 @@
             "sSortDesc": "header headerSortUp",
             "sSortable": "header"
         });
-       
-        /* Remove the label next to pagination dropdown */
+
+        {* --- Code a virer ulterieurement
+        /*Remove the label next to pagination dropdown*/
         var labelToRemove = 'label[for=datatable{$object}_length_select]';
         $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
             $(labelToRemove).hide();
             $("#datatable{$object}_length").append($(".configuration-actions"));
             $(".configuration-actions").show();
-        }); 
+        });
+
+                var labelToRemove = 'label[for=datatable{$object}_length_select]';
+                $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
+                    $(labelToRemove).hide();
+                    $("#datatable{$object}_length").append($(".configuration-actions"));
+                });*}
 
         $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 

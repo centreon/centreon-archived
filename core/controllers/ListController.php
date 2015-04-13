@@ -157,7 +157,6 @@ abstract class ListController extends Controller
             ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
-            ->addJs('dataTables.responsive.js')
             ->addJs('dataTables.bootstrap.js')
             ->addJs('jquery.select2/select2.min.js')
             ->addJs('jquery.validation/jquery.validate.min.js')
