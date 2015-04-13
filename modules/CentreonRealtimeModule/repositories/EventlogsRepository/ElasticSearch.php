@@ -162,7 +162,6 @@ class ElasticSearch extends Storage
         $results = $esclient->search(array(
             "body" => $esQuery
         ));
-        file_put_contents('/tmp/es_query', json_encode($esQuery));
         $data = array();
         foreach ($results['hits']['hits'] as $result) {
             if (isset($result['_source']) && $result['_type'] == 'syslog') {
