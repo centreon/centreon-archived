@@ -39,6 +39,7 @@ namespace CentreonBam\Internal;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Datetime;
 
 /**
  * Description of IndicatorDatatable
@@ -276,6 +277,22 @@ class IndicatorRealtimeDatatable extends Datatable
                     $kpi['impacted_ba'] = '<a href="/centreon-bam/businessactivity/' . $kpiImpactedBa['id_ba'] . '">' . $kpiImpactedBa['name'] . '</a>';
                 }
             }
+        }
+    }
+
+    /**
+     *
+     * @param array $resultSet
+     */
+    protected function formatDatas(&$resultSet)
+    {
+        foreach ($resultSet as &$myIndicatorSet) {
+            // Set human readable duration
+            $myIndicatorSet['duration'] = Datetime::humanReadable(
+                $myIndicatorSet['duration'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
         }
     }
 }
