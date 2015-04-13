@@ -11,18 +11,17 @@
                 "name": "Hosts",
                 "short_name": "conf_hosts",
                 "icon_class": "fa fa-desktop",
+                "order": 2,
                 "menus": [
                     {
                         "name": "Hosts",
                         "short_name": "conf_hosts_list",
-                        "route": "/centreon-configuration/host",
-                        "order": 1
+                        "route": "/centreon-configuration/host"
                     },
                     {
                         "name": "Host templates",
                         "short_name": "conf_hosttemplate_list",
-                        "route": "/centreon-configuration/hosttemplate",
-                        "order": 1
+                        "route": "/centreon-configuration/hosttemplate"
                     }
                 ]
             },
@@ -30,18 +29,17 @@
                 "name": "Services",
                 "short_name": "conf_services",
                 "icon_class": "fa fa-rss",
+                "order": 2,
                 "menus": [
                     {
                         "name": "Services",
                         "short_name": "conf_services_list",
-                        "route": "/centreon-configuration/service",
-                        "order": 1
+                        "route": "/centreon-configuration/service"
                     },
                     {
                         "name": "Service templates",
                         "short_name": "conf_servicetemplate_list",
-                        "route": "/centreon-configuration/servicetemplate",
-                        "order": 1
+                        "route": "/centreon-configuration/servicetemplate"
                     }
                 ]
             },
@@ -49,6 +47,7 @@
                 "name": "Commands",
                 "short_name": "conf_commands",
                 "icon_class": "fa fa-terminal",
+                "order": 3,
                 "menus": [
                     {
                         "name": "Commands",
@@ -89,6 +88,7 @@
                 "name": "Pollers",
                 "short_name": "conf_poller",
                 "icon_class": "fa fa-code-fork",
+                "order": 1,
                 "menus": [
                     {
                         "name": "Pollers",
