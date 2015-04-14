@@ -94,7 +94,6 @@ class CentreonACL
 
 		$this->setTopology();
  		$this->getACLStr();
-
  	}
 
  	/*
@@ -410,9 +409,9 @@ class CentreonACL
 							}
 							$str_topo .= $topo_page["topology_topology_id"];
 					 		$count++;
-                                                        if (!isset($tmp_topo_page[$topo_page['topology_topology_id']]) || !$tmp_topo_page[$topo_page['topology_topology_id']]) {
-                                                            $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
-                                                        }
+                            if (!isset($tmp_topo_page[$topo_page['topology_topology_id']]) || !$tmp_topo_page[$topo_page['topology_topology_id']]) {
+                                $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
+                            }
 						}
 						$DBRESULT2->free();
 					}
@@ -942,8 +941,8 @@ class CentreonACL
 
     public function getTopology()
     {
-        $this->checkUpdateACL();
-        return $this->topology;
+    	$this->checkUpdateACL();
+    	return $this->topology;
     }
 
     /**
@@ -1193,6 +1192,8 @@ class CentreonACL
             $groupIds = array_keys($this->accessGroups);
             if (is_array($groupIds) && count($groupIds)) {
                 $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id IN (".implode(",", $groupIds).")");
+                
+                // Manage changes 
                 if (isset($data['type']) && $data["type"] == 'HOST' && $data['action'] == 'ADD') {
                     $host_name = getMyHostName($data["id"]);
                     $request = "SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id IN (SELECT acl_res_id FROM acl_resources_host_relations WHERE host_host_id = '".$data['id']."')";
@@ -1212,7 +1213,8 @@ class CentreonACL
                 } else if (isset($data['type']) && $data["type"] == 'SERVICE' && $data['action'] == 'ADD') {
                     $hosts = getMyServiceHosts($data["id"]);
                     $svc_name = getMyServiceName($data["id"]); 
-                    foreach ($hosts as $host_id => $host_name) {
+                    foreach ($hosts as $host_id) {
+                    	$host_name = getMyHostName($host_id);
                         $request = "SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id IN (SELECT acl_res_id FROM acl_resources_host_relations WHERE host_host_id = '".$host_id."')";
                         $DBRESULT = $pearDB->query($request);
                         while ($row = $DBRESULT->fetchRow()) {
