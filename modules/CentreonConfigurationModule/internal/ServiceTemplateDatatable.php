@@ -156,34 +156,6 @@ class ServiceTemplateDatatable extends Datatable
             "width" => '40px'
         ),
         array (
-            'title' => 'Notifications',
-            'name' => 'service_notifications_enabled',
-            'data' => 'service_notifications_enabled',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' =>array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
-                    '2' => '<span class="label label-info">Default</span>',
-                )
-            ),
-            'searchParam' => array(
-                'main' => 'true',
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Enabled' => '1',
-                    'Disabled' => '0',
-                    'Default' => '2'
-                )
-            ),
-            "className" => 'cell_center',
-            "width" => '40px'
-        ),
-        array (
             'title' => 'Parent Template',
             'name' => 'service_template_model_stm_id',
             'data' => 'service_template_model_stm_id',

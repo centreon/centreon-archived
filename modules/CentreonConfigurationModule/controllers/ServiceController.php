@@ -328,17 +328,6 @@ class ServiceController extends FormController
     }
     
     /**
-     * Get list of Timeperiods for a specific service
-     * 
-     * @method get
-     * @route /service/[i:id]/notificationperiod
-     */
-    public function notificationPeriodForServiceAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id2', '\CentreonConfiguration\Models\Timeperiod');
-    }
-    
-    /**
      * Get check command for a specific service
      *
      * @method get
@@ -442,7 +431,7 @@ class ServiceController extends FormController
     {
         $params = $this->getParams();
         $data = ServiceRepository::getConfigurationData($params['id']);
-        list($checkdata, $notifdata) = ServiceRepository::formatDataForTooltip($data);
+        $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
     }

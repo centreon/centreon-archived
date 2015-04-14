@@ -77,12 +77,6 @@ class HostRepository extends Repository
         'host_process_perf_data',
         'host_retain_status_information',
         'host_retain_nonstatus_information',
-        'host_notification_interval',
-        'host_notification_options',
-        'host_notifications_enabled',
-        'contact_additive_inheritance',
-        'cg_additive_inheritance',
-        'host_first_notification_delay',
         'host_stalking_options',
         'host_snmp_community',
         'host_snmp_version'
@@ -161,7 +155,7 @@ class HostRepository extends Repository
      * Format data so that it can be displayed in tooltip
      *
      * @param array $data
-     * @return array array($checkdata, $notifdata)
+     * @return array $checkdata
      */
     public static function formatDataForTooltip($data)
     {
@@ -196,37 +190,7 @@ class HostRepository extends Repository
             'value' => $data['host_passive_checks_enabled']
         );
 
-        /* Notification data */
-        $notifdata = array();
-        $notifdata[] = array(
-            'label' => _('Notification enabled'),
-            'value' => YesNoDefault::toString($data['host_notifications_enabled'])
-        );
-        $notifdata[] = array(
-            'label' => _('Notification interval'),
-            'value' => $data['host_notification_interval']
-        );
-        $notifdata[] = array(
-            'label' => _('Time period'),
-            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
-        );
-        $notifdata[] = array(
-            'label' => _('Options'),
-            'value' => $data['host_notification_options']
-        );
-        $notifdata[] = array(
-            'label' => _('First notification delay'),
-            'value' => $data['host_first_notification_delay']
-        );
-        $notifdata[] = array(
-            'label' => _('Contacts'),
-            'value' => ''
-        );
-        $notifdata[] = array(
-            'label' => _('Contact groups'),
-            'value' => ''
-        );
-        return array($checkdata, $notifdata);
+        return $checkdata;
     }
 
     /**
