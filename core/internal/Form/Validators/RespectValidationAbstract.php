@@ -72,7 +72,7 @@ abstract class RespectValidationAbstract implements ValidatorInterface
      * @param type $value
      * @return type
      */
-    public function validate($value)
+    public function validate($value, $params = array())
     {
         $validationChainCall = $this->buildValidationChain() . '->validate' ;
         return v::$validationChainCall($value);
