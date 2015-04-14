@@ -142,7 +142,7 @@
 						foreach ($dts as $dt) {
 							if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 								foreach ($ext_cmd_add['host'] as $cmd) {
-									$cmd = sprintf($cmd, time(), $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
+									$cmd = sprintf($cmd, time(), $period['obj_name'], $gmt->getUTCDateBasedOnHostGMT($dt[0], $period['obj_id'], 'U'), $gmt->getUTCDateBasedOnHostGMT($dt[1], $period['obj_id'], 'U'), $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
                                     if (!in_array($cmd, $existingDowntime)) {
                                         $downtime->setCommand($period['obj_id'], $cmd);
                                         $existingDowntime[] = $cmd;
@@ -183,7 +183,7 @@
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['host'] as $cmd) {
-										$cmd = sprintf($cmd, time(), $hostClass->getHostName($host), $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
+										$cmd = sprintf($cmd, time(), $hostClass->getHostName($host), $gmt->getUTCDateBasedOnHostGMT($dt[0], $host, 'U'), $gmt->getUTCDateBasedOnHostGMT($dt[1], $host, 'U'), $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
                                             $downtime->setCommand($host, $cmd);
                                             $existingDowntime[] = $cmd;
@@ -223,7 +223,7 @@
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
-										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
+										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $gmt->getUTCDateBasedOnHostGMT($dt[0], $hid, 'U'), $gmt->getUTCDateBasedOnHostGMT($dt[1], $hid, 'U'), $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
                                             $downtime->setCommand($period['host_id'], $cmd);
                                             $existingDowntime[] = $cmd;
@@ -306,7 +306,7 @@
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
-										$cmd = sprintf($cmd, time(), $host_name, $service_name, $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
+										$cmd = sprintf($cmd, time(), $host_name, $service_name, $gmt->getUTCDateBasedOnHostGMT($dt[0], $service[0], 'U'), $gmt->getUTCDateBasedOnHostGMT($dt[1], $service[0], 'U'), $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
                                             $downtime->setCommand($period['obj_id'], $cmd);
                                             $existingDowntime[] = $cmd;
