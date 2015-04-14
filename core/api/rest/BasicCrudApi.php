@@ -39,6 +39,8 @@ namespace Centreon\Api\Rest;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Api;
 use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Exception\Validator\MissingParameterException;
+use Centreon\Internal\Exception\Http\BadRequestException;
 
 /**
  * Description of BasicCrudApi
@@ -295,6 +297,8 @@ class BasicCrudApi extends Api
 
             // aaaa
             $this->sendJsonApiResponse($this->objectName, $object, $links);
+        } catch (MissingParameterException $ex) {
+            throw new BadRequestException($ex->getMessage(), $ex->getMessage());
         } catch (Exception $ex) {
             if ($ex->getMessage() === static::OBJ_NOT_EXIST) {
                 $this->router->response()->code(404);

@@ -41,6 +41,7 @@ use Centreon\Internal\Form\Generator\Api;
 use Centreon\Internal\Form\Generator\Cli;
 use Centreon\Internal\Form\Exception\InvalidTokenException;
 use Centreon\Internal\Exception;
+use Centreon\Internal\Exception\Validator\MissingParameterException;
 
 /**
  * Description of Validator
@@ -119,7 +120,7 @@ class Validator
         // If not all mandatory parameters are in the dataset, throw an exception
         $datasKeys = array_keys($submittedDatas);
         if (count(array_diff($validationScheme['mandatory'], $datasKeys)) > 0) {
-            throw new \Exception("missing parameters");
+            throw new MissingParameterException("missing parameters", 400);
         }
         
         // Validate each field according to its validators
