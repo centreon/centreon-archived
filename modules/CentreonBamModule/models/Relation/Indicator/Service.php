@@ -42,11 +42,7 @@ use Centreon\Models\CentreonRelationModel;
 
 class Service extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_servicegroups_relations";
     protected static $firstKey = "kpi_id";
-    //protected static $secondKey = "service_id";
-    //public static $firstObject = "\CentreonConfiguration\Models\Servicegroup";
-    //public static $secondObject = "\CentreonConfiguration\Models\Service";
 
     /**
      * Get Host id service id from kpi id
