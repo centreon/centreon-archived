@@ -216,6 +216,7 @@ class CentreonGMT{
 
     function getUTCDateBasedOnHostGMT($date, $hostId, $dateFormat = 'c')
     {
+		global $pearDB;
         static $locations = null;
         
         if ($this->use) {
