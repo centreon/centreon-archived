@@ -148,7 +148,7 @@ class Validator
      */
     private function raiseValidationException($errors)
     {
-        $message = "";
+        $message = $errors;
         $code = 401;
         
         throw new \Exception($message, $code);

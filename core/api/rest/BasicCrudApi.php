@@ -334,26 +334,27 @@ class BasicCrudApi extends Api
     {
         // 
         $params = $this->getParams();
+        $apiResourceObjects = $params['data'];
         
+        
+
         try {
-            if (isset($params[$this->objectName])) {
-                $repository = $this->repository;
-                $objectParams = $params[$this->objectName];
-
-                if (isset($objectParams[0])) {
-                    foreach ($objectParams as $singleObjectParams) {
-                        $idOfCreatedElement = $repository::create($singleObjectParams);
-                        $object[] = $repository::load($idOfCreatedElement);
-                    }
-                } else {
-                    $idOfCreatedElement = $repository::create($objectParams);
-                    $object = $repository::load($idOfCreatedElement);
+            $object = array();
+            $repository = $this->repository;
+            foreach ($apiResourceObjects as $apiResourceObject) {
+                // If the resource type param is the right one we processed
+                if ($apiResourceObject['type'] == $this->objectName) {
+                    unset($apiResourceObject['type']);
+                    $idOfCreatedElement = $repository::create(
+                        $apiResourceObjects,
+                        'api',
+                        $this->objectBaseUrl . '/update'
+                    );
+                    $object[] = $repository::load($idOfCreatedElement);
                 }
-
-                $this->sendJsonApiResponse($this->objectName, $object);
-            } else {
-                $this->router->response()->code(400);
             }
+            
+            $this->sendJsonApiResponse($this->objectName, $object);
         } catch (\PDOException $ex) {
             if ($ex->getCode() == 23000) {
                 $this->router->response()->code(409);
