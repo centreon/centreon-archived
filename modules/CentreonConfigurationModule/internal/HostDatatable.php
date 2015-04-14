@@ -267,18 +267,29 @@ class HostDatatable extends Datatable
         $router = Di::getDefault()->get('router');
         
         foreach ($resultSet as &$myHostSet) {
+
+            /* ------------
+
             $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
                 '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/host/snapshot/').
                 $myHostSet['host_id'].
                 '"><span class=" overlay">'.
                 $myHostSet['host_name'].
                 '</span></span>';
-            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor('/centreon-realtime/host/').
+            $myHostSet['host_name'] .= '</span><span href="#" class="patchState" data-overlay-url="'.$router->getPathFor('/centreon-realtime/host/').
+
                 $myHostSet['host_id'].
                 '/tooltip">';
-            $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
-                RealTimeHostRepository::getStatus($myHostSet['host_id'])
-            );
+
+            ---------*/
+
+            $myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'.
+                $myHostSet['host_name'];
+
+                /* Host State */
+                $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
+                    RealTimeHostRepository::getStatus($myHostSet['host_id'])
+                );
 
             /* Templates */
             $myHostSet['host_template']  = "";

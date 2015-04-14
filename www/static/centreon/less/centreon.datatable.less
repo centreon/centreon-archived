@@ -13,11 +13,13 @@
 .table-bordered > thead > tr > td,
 .table-bordered > tbody > tr > td,
 .table-bordered > tfoot > tr > td {
-  border: 1px solid @lightGray1;
+  border-bottom: 1px solid @white;
+  border-left: none;
+  border-right: none;
 }
 .table > thead > tr > th {
-  border-bottom: 1px solid #DDDDDD;
   vertical-align: middle;
+  border: none;
 }
 .table > thead > tr > th,
 .table > tbody > tr > th,
@@ -25,11 +27,14 @@
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  border-top: 1px solid @lightGray1;
+  border-top: none;
   line-height: 1.42857;
   padding: @paddingElem;
   vertical-align: middle;
   font-size: 13px;
+  border-bottom: 1px solid @white;
+  border-left: none;
+  border-right: none;
 
 }
 
@@ -60,8 +65,6 @@ table.dataTable thead .sorting:after {
 }
 
 .centreon_table {
-  margin: 0 10px;
-  padding-top: 20px;
 
   .table-striped>tbody>tr:nth-child(odd) {
     background-color: @lightGray1;
@@ -85,15 +88,20 @@ table.dataTable thead .sorting:after {
       border-bottom: 1px solid lighten(@lightGray,5%);
     }
     tbody>tr>td {
-      padding: 4px 10px;
+      padding: @paddingElem/2 @paddingElem;
       font-size: 12px;
       white-space: nowrap;
+
+      a {
+        position: relative;
+        padding: @paddingElem/2 0;
+      }
     }
 
     &.dataTable.no-footer {
 
       tbody tr.selected {
-        background-color: red;
+        background-color: @lightGray;
       }
     }
   }
