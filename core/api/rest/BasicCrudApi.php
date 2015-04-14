@@ -339,6 +339,7 @@ class BasicCrudApi extends Api
         
 
         try {
+            $object = array();
             $repository = $this->repository;
             foreach ($apiResourceObjects as $apiResourceObject) {
                 // If the resource type param is the right one we processed
@@ -354,26 +355,6 @@ class BasicCrudApi extends Api
             }
             
             $this->sendJsonApiResponse($this->objectName, $object);
-            
-            if ($params['data']['type'] == $this->objectName) {
-                $repository = $this->repository;
-                $objectParams = $params['data'];
-                unset($objectParams['type']);
-
-                if (isset($objectParams[0])) {
-                    foreach ($objectParams as $singleObjectParams) {
-                        $idOfCreatedElement = $repository::create($singleObjectParams);
-                        $object[] = $repository::load($idOfCreatedElement);
-                    }
-                } else {
-                    $idOfCreatedElement = $repository::create($objectParams, 'api', $this->objectBaseUrl . '/update');
-                    $object = $repository::load($idOfCreatedElement);
-                }
-
-                $this->sendJsonApiResponse($this->objectName, $object);
-            } else {
-                $this->router->response()->code(400);
-            }
         } catch (\PDOException $ex) {
             if ($ex->getCode() == 23000) {
                 $this->router->response()->code(409);
