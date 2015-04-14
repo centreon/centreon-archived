@@ -174,46 +174,7 @@ class Datatable
     public function getDatas()
     {
         $provider = static::$dataprovider;
-        
-        $aTables = array();
-        $aParameters = array();
-        
-        array_push($aTables, 'cfg_hosts');
-        
-        foreach (static::$columns as $column) {
-            if (isset($column['tablename']))
-                array_push($aTables, $column['tablename']);
-        }
-        $aTables = array_unique($aTables);
-        
-        foreach ($aTables as $oTable) {
-            $aParameters[$oTable] = array();
-            foreach (static::$columns as $column) {
-                if ((isset($column['tablename']) && $oTable == $column['tablename'])) {
-                    $aParameters[$oTable]['field'][] =  $column['name'];
-                } elseif (!isset($column['tablename'])) {
-                    $aParameters['cfg_hosts']['field'][] = $column['name'];
-                }
-            }
-        }
-        
 
-        
-      /*
-        $datasFromDb = $provider::loadDatas(
-            $aParameters,
-            static::$columns,
-            $this->specialFields,
-            get_class($this),
-            $this->objectModelClass,
-            static::$additionnalDatasource
-        );
-
-   
-
-        s
-        
-        */
         $datasFromDb = $provider::loadDatas(
             $this->params,
             static::$columns,

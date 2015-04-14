@@ -70,11 +70,6 @@ class HostDatatable extends Datatable
      */
     protected static $datasource = '\CentreonRealtime\Models\Host';
     
-     /**
-     *
-     * @var type 
-     */
-    //protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Host\Tag';
     /**
      *
      * @var type 
