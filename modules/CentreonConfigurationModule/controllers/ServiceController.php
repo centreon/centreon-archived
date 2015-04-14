@@ -54,9 +54,7 @@ class ServiceController extends FormController
     protected $objectClass = '\CentreonConfiguration\Models\Service';
     protected $repository = '\CentreonConfiguration\Repository\ServiceRepository';
     public static $relationMap = array(
-        'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
         'service_hosts' => '\CentreonConfiguration\Models\Relation\Service\Host',
-        'servicecategories' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
         'service_parents' => '\CentreonConfiguration\Models\Relation\Service\Serviceparent',
         'service_childs' => '\CentreonConfiguration\Models\Relation\Service\Servicechild',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
@@ -371,28 +369,6 @@ class ServiceController extends FormController
     public function hostForServiceAction()
     {
         parent::getRelations(static::$relationMap['service_hosts']);
-    }
-    
-    /**
-     * Get list of service group for a specific service
-     * 
-     * @method get
-     * @route /service/[i:id]/servicegroup
-     */
-    public function serviceGroupForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['service_servicegroups']);
-    }
-
-    /**
-     * Get list of service categories for a specific service
-     * 
-     * @method get
-     * @route /service/[i:id]/servicecategory
-     */
-    public function serviceCategoryForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['servicecategories']);
     }
     
     /**

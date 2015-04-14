@@ -41,10 +41,8 @@ use CentreonEngine\Repository\CommandRepository;
 use CentreonEngine\Repository\TimePeriodRepository;
 use CentreonEngine\Repository\HostRepository;
 use CentreonEngine\Repository\HostTemplateRepository;
-use CentreonEngine\Repository\HostgroupRepository;
 use CentreonEngine\Repository\ConnectorRepository;
 use CentreonEngine\Repository\ServicetemplateRepository;
-use CentreonEngine\Repository\ServicegroupRepository;
 use CentreonEngine\Repository\UserRepository;
 use CentreonEngine\Repository\UsergroupRepository;
 use CentreonEngine\Repository\ConfigGenerateResourcesRepository;
@@ -154,18 +152,6 @@ class GenerateEngine
         // To be remove
         UserRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/contactgroups.cfg");
         $event->setOutput('contactgroups.cfg');
-
-        /* Generate config Object */
-        HostgroupRepository::generate(static::$fileList, $event->getPollerId(), static::$path, "objects/hostgroups.cfg");
-        $event->setOutput('hostgroups.cfg');
-
-        ServicegroupRepository::generate(
-            static::$fileList,
-            $event->getPollerId(),
-            static::$path,
-            "objects/servicegroups.cfg"
-        );
-        $event->setOutput('servicegroups.cfg');
 
         /* Retrieve all extra macros by emitting event */
         $events = Di::getDefault()->get('events');

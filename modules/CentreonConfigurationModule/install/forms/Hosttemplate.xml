@@ -147,16 +147,6 @@
 		                <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
 		                </field>
 		        </block>
-			<block name="Host category relations">
-				<field name="host_categories" label="Parent host categories" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/hostcategory/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/hostcategory</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
-			</block>
 		</section>
 		<section name="Data processing">
 			<block name="Data processing">

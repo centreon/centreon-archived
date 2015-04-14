@@ -64,8 +64,6 @@ class HostController extends FormController
     protected $tmplField = '#host_hosttemplates';
     
     public static $relationMap = array(
-        'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
-        'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
@@ -246,30 +244,6 @@ class HostController extends FormController
         if ($givenParameters['host_create_services_from_template']) {
             Host::deployServices($givenParameters['object_id']);
         }
-    }
-    
-    /**
-     * Get list of hostgroups for a specific host
-     *
-     *
-     * @method get
-     * @route /host/[i:id]/hostgroup
-     */
-    public function hostgroupForHostAction()
-    {
-        parent::getRelations(static::$relationMap['host_hostgroups']);
-    }
-    
-    /**
-     * Get list of hostcategories for a specific host
-     *
-     *
-     * @method get
-     * @route /host/[i:id]/hostcategory
-     */
-    public function hostcategoryForHostAction()
-    {
-        parent::getRelations(static::$relationMap['host_hostcategories']);
     }
     
     /**

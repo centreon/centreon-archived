@@ -37,18 +37,8 @@
 				<field name="acl_resource_hosts" label="Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/host/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/host","multiple":true,"ordered":false}</attributes>
 				</field>
-				<field name="acl_resource_hostgroups" label="Host groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/hostgroup/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/hostgroup","multiple":true,"ordered":false}</attributes>
-				</field>
 				<field name="acl_resource_excluded_hosts" label="Exclude hosts from host groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/host/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/excludedhost","multiple":true,"ordered":false}</attributes>
-				</field>
-			</block>
-		</section>
-		<section name="Services"> 
-			<block name="Shared resources">
-				<field name="acl_resource_servicegroups" label="Service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>{"object_type":"object","defaultValuesRoute":"/centreon-configuration/servicegroup/formlist","listValuesRoute":"/centreon-administration/aclresource/[i:id]/servicegroup","multiple":true,"ordered":false}</attributes>
 				</field>
 			</block>
 		</section>

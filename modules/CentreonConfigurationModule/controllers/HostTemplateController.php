@@ -98,7 +98,6 @@ class HostTemplateController extends FormController
      * @var array 
      */
     public static $relationMap = array(
-        'host_categories' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate',
         'hosttemplate_servicetemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate',
         'host_icon' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Icon'
@@ -324,30 +323,6 @@ class HostTemplateController extends FormController
         parent::getRelations(static::$relationMap['hosttemplate_servicetemplates']);
     }
     
-    /**
-     * Get list of hostgroups for a specific host template
-     *
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]/hostgroup
-     */
-    public function hostgroupForHostTemplateAction()
-    {
-        parent::getRelations(static::$relationMap['host_hostgroups']);
-    }
-    
-    /**
-     * Get list of hostcategories for a specific host template
-     *
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]/hostcategory
-     */
-    public function hostcategoryForHostTemplateAction()
-    {
-        parent::getRelations(static::$relationMap['host_categories']);
-    }
-
     /**
      * Get host template for a specific host template
      *
