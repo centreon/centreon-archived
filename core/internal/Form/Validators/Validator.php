@@ -122,7 +122,7 @@ class Validator
         if (count(array_diff($validationScheme['mandatory'], $datasKeys)) > 0) {
             throw new MissingParameterException("missing parameters", 400);
         }
-        
+
         // Validate each field according to its validators
         foreach ($submittedDatas as $key => $value) {
             if (isset($validationScheme['fieldScheme'][$key])) {
