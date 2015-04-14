@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -172,6 +172,7 @@ abstract class ListController extends Controller
             ->addJs('centreon-wizard.js')
             ->addJs('moment-with-locales.js')
             ->addJs('moment-timezone-with-data.min.js');
+        
         
         /* Display variable */
         $this->tpl->assign('objectName', $this->objectDisplayName);

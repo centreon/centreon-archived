@@ -4,8 +4,6 @@
     "objectBaseUrl" : "host",
     "objectClass" : "\\CentreonConfiguration\\Models\\Host",
     "relationMap" : {
-        "hostgroup" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hostgroup",
-        "hostcategory" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hostcategory",
         "parents" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hostparents",
         "children" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hostchildren",
         "hosttemplate" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hosttemplate",

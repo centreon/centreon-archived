@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -38,6 +38,7 @@ namespace CentreonBam\Internal;
 
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
+use Centreon\Internal\Utils\Datetime;
 use CentreonBam\Repository\BusinessActivityRepository;
 
 /**
@@ -214,6 +215,13 @@ class BusinessActivityRealtimeDatatable extends Datatable
 
             // Set business activity name with its icon
             $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
+
+            // Set human readable duration
+            $myBaSet['duration'] = Datetime::humanReadable(
+                $myBaSet['duration'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
         }
     }
 }

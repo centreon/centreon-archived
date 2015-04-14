@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigura
 use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonEngine\Events\AddService as AddServiceEvent;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -81,7 +82,7 @@ class ServiceRepository extends ServicetemplateRepository
         
         /* Init Content Array */
         $content = array();
-        
+ 
         /* Get information into the database. */
         $query = "SELECT $field "
             . "FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations r "
@@ -89,18 +90,27 @@ class ServiceRepository extends ServicetemplateRepository
             . "AND h.host_id = r.host_host_id "
             . "AND s.service_id = r.service_service_id "
             . "AND service_activate = '1' "
-            . "AND service_register = '1' "
+            . "AND (service_register = '1' "
+            . "OR service_register = '2') "
             . "ORDER BY host_name, service_description";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+
+        $serviceList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $event = $di->get('events');
+        $addServiceEvent = new AddServiceEvent($host_id, $serviceList);
+        $event->emit('centreon-engine.add.service', array($addServiceEvent));
+        $serviceList = $addServiceEvent->getServiceList();
+
+        foreach ($serviceList as $service) {
             $tmp = array("type" => "service");
             $tmpData = array();
             $args = "";
-            foreach ($row as $key => $value) {
+            foreach ($service as $key => $value) {
                 if ($key == "service_id" || $key == "host_id") {
-                    $host_id = $row["host_id"];
-                    $service_id = $row["service_id"];
+                    $host_id = $service["host_id"];
+                    $service_id = $service["service_id"];
 
                     /* Add service_id macro for broker - This is mandatory*/
                     $tmpData["_SERVICE_ID"] = $service_id;
@@ -122,7 +132,9 @@ class ServiceRepository extends ServicetemplateRepository
                             $writeParam = 0;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                            if (is_numeric($value)) {
+                                $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                            }
                             $args = "";
                         }
                         if ($key == 'check_period' || $key == 'notification_period') {

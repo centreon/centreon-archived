@@ -4,6 +4,8 @@
         "short_name": "realtime",
         "icon_class": "icon-real-time",
         "bgcolor": "lightblue",
+        "block": "root",
+        "order": 3,
         "menus": [
             {
                 "name": "Incidents",

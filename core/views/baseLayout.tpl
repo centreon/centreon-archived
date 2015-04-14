@@ -190,7 +190,7 @@
                     <a href="http://www.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Web{/t}"><i class="fa fa-desktop"></i></a>
                 </div>
 
-                <p class="col-sm-4 col-md-3"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2014</p>
+                <p class="col-sm-4 col-md-3"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2015</p>
        </div>
 
     </div>

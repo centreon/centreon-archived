@@ -105,25 +105,20 @@ class WriteConfigFileRepository
      */
     public static function writeObjectFile($content, $filename, & $filesList, $user = "Anonymous")
     {
-        /* Check that the content is not empty */
-        if (count($content)) {
-            /* Init File */
-            $handle = static::initFile($filename);
+        /* Init File */
+        $handle = static::initFile($filename);
             
-            /* Add file into the list of file to include into centengine.cfg */
-            static::addFile($filesList, $filename, static::getFileType($filename));
+        /* Add file into the list of file to include into centengine.cfg */
+        static::addFile($filesList, $filename, static::getFileType($filename));
 
-            /* Write Data */
-            static::addHeader($handle, $user);
+        /* Write Data */
+        static::addHeader($handle, $user);
             
-            /* Add Content to the configuration file */
-            static::addObjectsContent($handle, $content);
-            
-            /* Close file */
-            static::closeFile($handle);
-        }/* else {
-            print "Content is empty for file '$filename'. File will not be created.\n";
-        }*/
+        /* Add Content to the configuration file */
+        static::addObjectsContent($handle, $content);
+           
+        /* Close file */
+        static::closeFile($handle);
     }
 
     /**

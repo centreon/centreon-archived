@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_relations_ba_timeperiods" idMethod="native" phpName="ModBamReportingRelationsBaTimeperiods">
+    <column name="ba_id" phpName="BaId" type="INTEGER"/>
+    <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER"/>
+    <column name="is_default" phpName="IsDefault" type="BOOLEAN" size="1"/>
+    <foreign-key foreignTable="mod_bam_reporting_ba" name="mod_bam_reporting_relations_ba_timeperiods_ibfk_1" onDelete="CASCADE">
+      <reference local="ba_id" foreign="ba_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="mod_bam_reporting_timeperiods" name="mod_bam_reporting_relations_ba_timeperiods_ibfk_2" onDelete="CASCADE">
+      <reference local="timeperiod_id" foreign="timeperiod_id"/>
+    </foreign-key>
+    <index name="ba_id">
+      <index-column name="ba_id"/>
+    </index>
+    <index name="timeperiod_id">
+      <index-column name="timeperiod_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

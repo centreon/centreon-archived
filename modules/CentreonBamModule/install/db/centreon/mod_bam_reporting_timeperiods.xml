@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_timeperiods" idMethod="native" phpName="ModBamReportingTimeperiods">
+    <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="200"/>
+    <column name="sunday" phpName="Sunday" type="VARCHAR" size="200"/>
+    <column name="monday" phpName="Monday" type="VARCHAR" size="200"/>
+    <column name="tuesday" phpName="Tuesday" type="VARCHAR" size="200"/>
+    <column name="wednesday" phpName="Wednesday" type="VARCHAR" size="200"/>
+    <column name="thursday" phpName="Thursday" type="VARCHAR" size="200"/>
+    <column name="friday" phpName="Friday" type="VARCHAR" size="200"/>
+    <column name="saturday" phpName="Saturday" type="VARCHAR" size="200"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

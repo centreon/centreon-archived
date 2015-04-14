@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -85,8 +85,7 @@ class HostRepository extends Repository
         'host_first_notification_delay',
         'host_stalking_options',
         'host_snmp_community',
-        'host_snmp_version',
-        'host_tags'
+        'host_snmp_version'
     );
 
     /**

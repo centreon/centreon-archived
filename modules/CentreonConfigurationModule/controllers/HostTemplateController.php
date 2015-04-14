@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -98,7 +98,6 @@ class HostTemplateController extends FormController
      * @var array 
      */
     public static $relationMap = array(
-        'host_categories' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hostcategory',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Hosttemplate',
         'hosttemplate_servicetemplates' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate',
         'host_icon' => '\CentreonConfiguration\Models\Relation\Hosttemplate\Icon'
@@ -114,11 +113,22 @@ class HostTemplateController extends FormController
      */
     public function listAction()
     {
+        $router = Di::getDefault()->get('router');
         $this->tpl->addJs('centreon.overlay.js')
+                ->addJs('hogan-3.0.0.min.js')
                 ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
                 ->addJs('moment-with-locales.js')
                 ->addJs('moment-timezone-with-data.min.js')
                 ->addCss('centreon.tag.css', 'centreon-administration');
+        
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+            )
+        );
+                
+        $this->tpl->append('jsUrl', $urls, true);
         
         parent::listAction();
     }
@@ -313,30 +323,6 @@ class HostTemplateController extends FormController
         parent::getRelations(static::$relationMap['hosttemplate_servicetemplates']);
     }
     
-    /**
-     * Get list of hostgroups for a specific host template
-     *
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]/hostgroup
-     */
-    public function hostgroupForHostTemplateAction()
-    {
-        parent::getRelations(static::$relationMap['host_hostgroups']);
-    }
-    
-    /**
-     * Get list of hostcategories for a specific host template
-     *
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]/hostcategory
-     */
-    public function hostcategoryForHostTemplateAction()
-    {
-        parent::getRelations(static::$relationMap['host_categories']);
-    }
-
     /**
      * Get host template for a specific host template
      *

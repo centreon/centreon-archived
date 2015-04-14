@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,6 +41,8 @@ use CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigura
 use CentreonConfiguration\Repository\HostTemplateRepository as HostTemplateConfigurationRepository;
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonEngine\Events\AddHost as AddHostEvent;
+use CentreonEngine\Events\AddService as AddServiceEvent;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -82,17 +84,24 @@ class HostRepository extends HostTemplateRepository
         $query = "SELECT $fields 
             FROM cfg_hosts 
             WHERE host_activate = '1' 
-            AND host_register = ? 
+            AND (host_register = '1' 
+            OR host_register = '2') 
             AND poller_id = ?
             ORDER BY host_name";
 
         $stmt = $dbconn->prepare($query);
         $stmt->execute(array(
-            static::$register,
             $poller_id
         ));
 
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $hostList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $event = $di->get('events');
+        $addHostEvent = new AddHostEvent($poller_id, $hostList);
+        $event->emit('centreon-engine.add.host', array($addHostEvent));
+        $hostList = $addHostEvent->getHostList();
+
+        foreach ($hostList as $host) {
             $content = array();
             $tmp = array("type" => "host");
             $tmpData = array();
@@ -100,9 +109,9 @@ class HostRepository extends HostTemplateRepository
             $host_id = null;
 
             /* Write Host Properties */
-            foreach ($row as $key => $value) {
+            foreach ($host as $key => $value) {
                 if ($key == "host_id") {
-                    $host_id = $row["host_id"];
+                    $host_id = $host["host_id"];
                     
                     /* Add host_id macro for broker - This is mandatory*/
                     $tmpData["_HOST_ID"] = $host_id;
@@ -165,7 +174,7 @@ class HostRepository extends HostTemplateRepository
             $tmpData['register'] = 1;
             $tmp["content"] = $tmpData;
             $content[] = $tmp;
-           
+
             /* Write Service Properties */
             $services = ServiceRepository::generate($host_id, $serviceMacroEvent);
             foreach ($services as $contentService) {

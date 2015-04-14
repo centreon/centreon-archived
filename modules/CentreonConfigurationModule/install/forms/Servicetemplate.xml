@@ -161,14 +161,6 @@
 						<multiple>true</multiple>
 					</attributes>
 				</field>
-				<field name="service_template_servicecategories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/servicecategory/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/servicecategory</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
 			</block>
 			<block name="SNMP traps">
 				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">

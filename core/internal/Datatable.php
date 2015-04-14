@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -225,6 +225,7 @@ class Datatable
         );
        
         
+        static::addAdditionnalDatas($datasFromDb['datas']);
 
         // Add RowId
         if (count(static::$rowIdColumn) > 0) {
@@ -236,7 +237,7 @@ class Datatable
                 $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
             }
         }
-        static::addAdditionnalDatas($datasFromDb['datas']);
+
         static::processHooks($datasFromDb['datas']);
         $this->formatDatas($datasFromDb['datas']);
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);

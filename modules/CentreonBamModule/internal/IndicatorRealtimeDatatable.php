@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -39,6 +39,7 @@ namespace CentreonBam\Internal;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 use Centreon\Internal\Di;
+use Centreon\Internal\Utils\Datetime;
 
 /**
  * Description of IndicatorDatatable
@@ -135,6 +136,15 @@ class IndicatorRealtimeDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
+        ),
+        array (
+            'title' => 'Current impact',
+            'name' => 'last_impact',
+            'data' => 'last_impact',
+            'orderable' => true,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => true,
         ),
         array (
             'title' => 'Status',
@@ -276,6 +286,25 @@ class IndicatorRealtimeDatatable extends Datatable
                     $kpi['impacted_ba'] = '<a href="/centreon-bam/businessactivity/' . $kpiImpactedBa['id_ba'] . '">' . $kpiImpactedBa['name'] . '</a>';
                 }
             }
+        }
+    }
+
+    /**
+     *
+     * @param array $resultSet
+     */
+    protected function formatDatas(&$resultSet)
+    {
+        foreach ($resultSet as &$myIndicatorSet) {
+            // Add percent to impact
+            $myIndicatorSet['last_impact'] = $myIndicatorSet['last_impact'] . '%';
+
+            // Set human readable duration
+            $myIndicatorSet['duration'] = Datetime::humanReadable(
+                $myIndicatorSet['duration'],
+                Datetime::PRECISION_FORMAT,
+                2
+            );
         }
     }
 }

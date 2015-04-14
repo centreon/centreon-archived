@@ -4,11 +4,14 @@
         "short_name": "configuration",
         "icon_class": "icon-config",
         "bgcolor": "#CCC",
+        "block": "root",
+        "order": 3,
         "menus": [
             {
                 "name": "Hosts",
                 "short_name": "conf_hosts",
                 "icon_class": "fa fa-desktop",
+                "order": 2,
                 "menus": [
                     {
                         "name": "Hosts",
@@ -19,16 +22,6 @@
                         "name": "Host templates",
                         "short_name": "conf_hosttemplate_list",
                         "route": "/centreon-configuration/hosttemplate"
-                    },
-                    {
-                        "name": "Host groups",
-                        "short_name": "conf_hostgroup_list",
-                        "route": "/centreon-configuration/hostgroup"
-                    },
-                    {
-                        "name": "Host categories",
-                        "short_name": "conf_category_list",
-                        "route": "/centreon-configuration/hostcategory"
                     }
                 ]
             },
@@ -36,6 +29,7 @@
                 "name": "Services",
                 "short_name": "conf_services",
                 "icon_class": "fa fa-rss",
+                "order": 2,
                 "menus": [
                     {
                         "name": "Services",
@@ -46,16 +40,6 @@
                         "name": "Service templates",
                         "short_name": "conf_servicetemplate_list",
                         "route": "/centreon-configuration/servicetemplate"
-                    },
-                    {
-                        "name": "Servicegroups",
-                        "short_name": "conf_servicegroup_list",
-                        "route": "/centreon-configuration/servicegroup"
-                    },
-                    {
-                        "name": "Service categories",
-                        "short_name": "conf_servicecategory_list",
-                        "route": "/centreon-configuration/servicecategory"
                     }
                 ]
             },
@@ -63,6 +47,7 @@
                 "name": "Commands",
                 "short_name": "conf_commands",
                 "icon_class": "fa fa-terminal",
+                "order": 3,
                 "menus": [
                     {
                         "name": "Commands",
@@ -103,11 +88,13 @@
                 "name": "Pollers",
                 "short_name": "conf_poller",
                 "icon_class": "fa fa-code-fork",
+                "order": 1,
                 "menus": [
                     {
                         "name": "Pollers",
                         "short_name": "conf_pollers_list",
-                        "route": "/centreon-configuration/poller"
+                        "route": "/centreon-configuration/poller",
+                        "order": 1
                     },
                     {
                         "name": "Global Resources",

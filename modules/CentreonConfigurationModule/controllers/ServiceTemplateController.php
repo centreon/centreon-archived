@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -57,9 +57,7 @@ class ServiceTemplateController extends FormController
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
     protected $repository = '\CentreonConfiguration\Repository\ServicetemplateRepository';
     public static $relationMap = array(
-        'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup',
         'service_template_hosts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Hosttemplate',
-        'service_template_servicecategories' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicecategory',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
         'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate',
         'service_icon' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Icon'
@@ -84,9 +82,20 @@ class ServiceTemplateController extends FormController
      */
     public function listAction()
     {
+        $router = Di::getDefault()->get('router');
         $this->tpl->addJs('centreon.overlay.js')
                 ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+                ->addJs('hogan-3.0.0.min.js')
                 ->addCss('centreon.tag.css', 'centreon-administration');
+        
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+            )
+        );
+                
+        $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
 
@@ -266,30 +275,6 @@ class ServiceTemplateController extends FormController
     public function hosttemplateForServiceAction()
     {
         parent::getRelations(static::$relationMap['service_template_hosts']);
-    }
-    
-    /**
-     * Get list of service group for a specific service
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]/servicegroup
-     */
-    public function serviceGroupForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['service_servicegroups']);
-    }
-
-    /**
-     * Get list of service categories for a specific service
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]/servicecategory
-     */
-    public function serviceCategoryForServiceTemplateAction()
-    {
-        parent::getRelations(static::$relationMap['service_template_servicecategories']);
     }
     
     /**
