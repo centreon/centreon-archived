@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -34,6 +34,8 @@
  * 
  */
 namespace Centreon\Internal\Form\Generator;
+
+use Centreon\Internal\Di;
 
 /**
  * Description of Api
@@ -74,5 +76,42 @@ class Api extends Generator
         }
         
         return array('fieldScheme' => $validatorsFinalList);
+    }
+    
+    /**
+     * 
+     */
+    protected function buildValidatorsQuery()
+    {
+        $validatorsQuery = "SELECT
+                fv.`name` as validator_name, `route` as `validator`, ffv.`params` as `params`,
+                ff.`name` as `field_name`, ff.`label` as `field_label`
+            FROM
+                cfg_forms_validators fv, cfg_forms_fields_validators_relations ffv, cfg_forms_fields ff
+            WHERE
+                ffv.validator_id = fv.validator_id
+            AND
+                ffv.server_side = '1'
+            AND
+                ff.field_id = ffv.field_id
+            AND
+                ffv.field_id IN (
+                    SELECT
+                        fi.field_id
+                    FROM
+                        cfg_forms_fields fi, cfg_forms_blocks fb, cfg_forms_blocks_fields_relations fbf, cfg_forms_sections fs, cfg_forms f
+                    WHERE
+                        fi.field_id = fbf.field_id
+                    AND
+                        fbf.block_id = fb.block_id
+                    AND
+                        fb.section_id = fs.section_id
+                    AND
+                        fs.form_id = f.form_id
+                    AND
+                        f.route = '$this->formRoute'
+            );";
+        
+        return $validatorsQuery;
     }
 }

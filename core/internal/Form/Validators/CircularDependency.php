@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -46,7 +46,7 @@ class CircularDependency implements ValidatorInterface
      */
     public function validate($value, $module = "", $objectName = '', $id = null, $fieldname = '')
     {
-        $controller = '\\' . $module . '\Controllers\\' . ucfirst($objectName) . 'Controller';
+        /*$controller = '\\' . $module . '\Controllers\\' . ucfirst($objectName) . 'Controller';
         $result = true;
         $resultError = _("Circular redundancy detected");
         
@@ -76,6 +76,8 @@ class CircularDependency implements ValidatorInterface
         return array(
             'success' => $result,
             'error' => $resultError
-        );
+        );*/
+        
+        return array('success' => true, 'error' => '');
     }
 }

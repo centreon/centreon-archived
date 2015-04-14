@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -39,6 +39,8 @@ namespace Centreon\Api\Rest;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Api;
 use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Exception\Validator\MissingParameterException;
+use Centreon\Internal\Exception\Http\BadRequestException;
 
 /**
  * Description of BasicCrudApi
@@ -334,26 +336,27 @@ class BasicCrudApi extends Api
     {
         // 
         $params = $this->getParams();
-        
+        $apiResourceObjects = json_decode($params['data'], true);
+
         try {
-            if (isset($params[$this->objectName])) {
-                $repository = $this->repository;
-                $objectParams = $params[$this->objectName];
-
-                if (isset($objectParams[0])) {
-                    foreach ($objectParams as $singleObjectParams) {
-                        $idOfCreatedElement = $repository::create($singleObjectParams);
-                        $object[] = $repository::load($idOfCreatedElement);
-                    }
-                } else {
-                    $idOfCreatedElement = $repository::create($objectParams);
-                    $object = $repository::load($idOfCreatedElement);
+            $object = array();
+            $repository = $this->repository;
+            foreach ($apiResourceObjects as $apiResourceObject) {
+                // If the resource type param is the right one we processed
+                if ($apiResourceObject['type'] == $this->objectName) {
+                    unset($apiResourceObject['type']);
+                    $idOfCreatedElement = $repository::create(
+                        $apiResourceObject,
+                        'api',
+                        $this->objectBaseUrl . '/update'
+                    );
+                    $object[] = $repository::load($idOfCreatedElement);
                 }
-
-                $this->sendJsonApiResponse($this->objectName, $object);
-            } else {
-                $this->router->response()->code(400);
             }
+
+            $this->sendJsonApiResponse($this->objectName, $object);
+        } catch (MissingParameterException $ex) {
+            $this->router->response()->code(400);
         } catch (\PDOException $ex) {
             if ($ex->getCode() == 23000) {
                 $this->router->response()->code(409);

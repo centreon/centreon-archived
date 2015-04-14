@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -189,10 +189,17 @@ class CommandDatatable extends Datatable
      */
     public function formatDatas(&$resultSet)
     {
-        foreach ($resultSet as &$myCmdSet) {
+        foreach ($resultSet as $key => &$myCmdSet) {
+            // @todo remove virtual hosts and virtual services
+            if ($myCmdSet['command_name'] === 'check_bam_fake') {
+                unset($resultSet[$key]);
+                continue;
+            }
+
             $myCmdSet['command_line'] = sprintf('%.70s', $myCmdSet['command_line'])."...";
             $myCmdSet['host_use'] = CommandRepository::getUseNumber($myCmdSet["command_id"], "host");
             $myCmdSet['svc_use'] =  CommandRepository::getUseNumber($myCmdSet["command_id"], "service");
         }
+        $resultSet = array_values($resultSet);
     }
 }

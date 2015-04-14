@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -72,7 +72,7 @@ abstract class RespectValidationAbstract implements ValidatorInterface
      * @param type $value
      * @return type
      */
-    public function validate($value)
+    public function validate($value, $params = array())
     {
         $validationChainCall = $this->buildValidationChain() . '->validate' ;
         return v::$validationChainCall($value);
