@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -430,19 +430,20 @@ class BasicCrudApi extends Api
         // 
         $params = $this->getParams();
         $repository = $this->repository;
+        $returnCode = 204;
         
         try {
             $ids = explode(',', $params['id']);
             $repository::delete($ids);
         } catch (Exception $ex) {
             if ($ex->getMessage() === static::OBJ_NOT_EXIST) {
-                $this->router->response()->code(404);
+                $returnCode = 404;
             } else {
-                $this->router->response()->code(500);
+                $returnCode = 500;
             }
         }
         
-        $this->router->response()->code(204);
+        $this->router->response()->code($returnCode);
     }
     
     /**

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -53,8 +53,6 @@ class Hosttemplate extends CentreonBaseModel
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "host_name";
     protected static $relations = array(
-        "\CentreonConfiguration\Models\Relation\Host\Hostgroup",
-        "\CentreonConfiguration\Models\Relation\Host\Hostcategory",
         "\CentreonConfiguration\Models\Relation\Host\Service",
         "\CentreonConfiguration\Models\Relation\Host\Hostparents",
         "\CentreonConfiguration\Models\Relation\Host\Hostchildren"

@@ -192,24 +192,6 @@
 	  </block>
 	</section>
 	<section name="Relations">
-		<block name="Relations">
-			<field name="service_servicegroups" label="Linked with service groups" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-		  		<attributes>
-					<object_type>object</object_type>
-					<defaultValuesRoute>/centreon-configuration/servicegroup/formlist</defaultValuesRoute>
-					<listValuesRoute>/centreon-configuration/service/[i:id]/servicegroup</listValuesRoute>
-					<multiple>true</multiple>
-		  		</attributes>
-			</field>
-			<field name="servicecategories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
-		  		<attributes>
-					<object_type>object</object_type>
-					<defaultValuesRoute>/centreon-configuration/servicecategory/formlist</defaultValuesRoute>
-					<listValuesRoute>/centreon-configuration/service/[i:id]/servicecategory</listValuesRoute>
-					<multiple>true</multiple>
-		  		</attributes>
-			</field>
-	  	</block>
 	  	<block name="SNMP traps">
 			<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  		<attributes>
@@ -321,7 +303,6 @@
     </step>
     <step name="Relation">
         <field name="service_hosts" mandatory="1"></field>
-        <field name="service_servicegroups" mandatory="0"></field>
     </step>
   </wizard>
 </forms>

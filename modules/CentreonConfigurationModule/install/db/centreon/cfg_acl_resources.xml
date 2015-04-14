@@ -5,8 +5,6 @@
         <column name="acl_res_name" phpName="AclResName" type="VARCHAR" size="255" required="false"/>
         <column name="acl_res_alias" phpName="AclResAlias" type="VARCHAR" size="255" required="false"/>
         <column name="all_hosts" phpName="AllHosts" type="CHAR" sqlType="enum('0','1')" required="false"/>
-        <column name="all_hostgroups" phpName="AllHostgroups" type="CHAR" sqlType="enum('0','1')" required="false"/>
-        <column name="all_servicegroups" phpName="AllServicegroups" type="CHAR" sqlType="enum('0','1')" required="false"/>
         <column name="acl_res_activate" phpName="AclResActivate" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="acl_res_comment" phpName="AclResComment" type="LONGVARCHAR" required="false"/>
         <column name="acl_res_status" phpName="AclResStatus" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>

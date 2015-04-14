@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2015 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -42,11 +42,7 @@ use Centreon\Models\CentreonRelationModel;
 
 class Service extends CentreonRelationModel
 {
-    protected static $relationTable = "cfg_servicegroups_relations";
     protected static $firstKey = "kpi_id";
-    //protected static $secondKey = "service_id";
-    //public static $firstObject = "\CentreonConfiguration\Models\Servicegroup";
-    //public static $secondObject = "\CentreonConfiguration\Models\Service";
 
     /**
      * Get Host id service id from kpi id

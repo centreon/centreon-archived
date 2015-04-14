@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -112,7 +112,6 @@ class HostTemplateDatatable extends Datatable
             'data' => 'host_name',
             'orderable' => true,
             'searchable' => true,
-            'searchLabel' => 'hostcategory',
             'type' => 'string',
             'visible' => true,
             'cast' => array(
