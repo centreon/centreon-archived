@@ -147,7 +147,10 @@ abstract class Generator
         $di = Di::getDefault();
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $uri = substr($this->formRoute, strlen($baseUrl));
-        $mandatoryQuery = "SELECT name FROM cfg_forms_fields WHERE mandatory = '1'"
+        if ($uri[0] !== '/') {
+           $uri = '/' . $uri;
+        }
+        $mandatoryQuery = "SELECT name FROM cfg_forms_fields WHERE mandatory = '1' "
             . "AND field_id IN (
                     SELECT
                         fi.field_id

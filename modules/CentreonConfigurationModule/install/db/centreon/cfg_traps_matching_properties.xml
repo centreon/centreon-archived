@@ -7,15 +7,11 @@
         <column name="tmo_regexp" phpName="TmoRegexp" type="VARCHAR" size="255" required="false"/>
         <column name="tmo_string" phpName="TmoString" type="VARCHAR" size="255" required="false"/>
         <column name="tmo_status" phpName="TmoStatus" type="INTEGER" required="false"/>
-        <column name="severity_id" phpName="SeverityId" type="INTEGER" required="false"/>
         <foreign-key foreignTable="cfg_traps" name="cfg_traps_matching_properties_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="trap_id" foreign="traps_id"/>
         </foreign-key>
         <index name="trap_id">
             <index-column name="trap_id"/>
-        </index>
-        <index name="traps_matching_properties_ibfk_2">
-            <index-column name="severity_id"/>
         </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

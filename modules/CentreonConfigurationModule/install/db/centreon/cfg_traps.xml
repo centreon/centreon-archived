@@ -6,7 +6,6 @@
         <column name="traps_oid" phpName="TrapsOid" type="VARCHAR" size="255" required="false"/>
         <column name="traps_args" phpName="TrapsArgs" type="LONGVARCHAR" required="false"/>
         <column name="traps_status" phpName="TrapsStatus" type="CHAR" sqlType="enum('-1','0','1','2','3')" required="false"/>
-        <column name="severity_id" phpName="SeverityId" type="INTEGER" required="false"/>
         <column name="manufacturer_id" phpName="ManufacturerId" type="INTEGER" required="false"/>
         <column name="traps_reschedule_svc_enable" phpName="TrapsRescheduleSvcEnable" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="0"/>
         <column name="traps_execution_command" phpName="TrapsExecutionCommand" type="VARCHAR" size="255" required="false"/>
@@ -37,9 +36,6 @@
         </index>
         <index name="traps_ibfk_1">
             <index-column name="manufacturer_id"/>
-        </index>
-        <index name="traps_ibfk_2">
-            <index-column name="severity_id"/>
         </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
