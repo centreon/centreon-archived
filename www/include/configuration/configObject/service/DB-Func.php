@@ -627,7 +627,7 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
                     }
                 }
             }
-            $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $maxId["MAX(service_id)"], "action" => "ADD"));
+            $centreon->user->access->updateACL(array("type" => 'SERVICE', 'id' => $maxId["MAX(service_id)"], "action" => "DUP", "duplicate_service" => $key));
         }
     }
     return ($maxId["MAX(service_id)"]);

@@ -1194,33 +1194,61 @@ class CentreonACL
                 $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id IN (".implode(",", $groupIds).")");
                 
                 // Manage changes 
-                if (isset($data['type']) && $data["type"] == 'HOST' && $data['action'] == 'ADD') {
+                if (isset($data['type']) && $data["type"] == 'HOST' && ($data['action'] == 'ADD' || $data['action'] == 'DUP')) {
                     $host_name = getMyHostName($data["id"]);
-                    $request = "SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id IN (SELECT acl_res_id FROM acl_resources_host_relations WHERE host_host_id = '".$data['id']."')";
-                    $DBRESULT = $pearDB->query($request);
-                    while ($row = $DBRESULT->fetchRow()) {
-                        // Insert New Host
-                        $request1 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$data["id"]."', NULL, '$host_name', NULL, ".$row['acl_group_id'].")";
-                        $pearDBO->query($request1);
-                        
-                        // Insert services
+
+                    if ($data['action'] == 'ADD') {
+                		// Put new entries in the table with group_id
+                    	foreach ($groupIds as $group_id) {
+							$request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$host_id."', NULL, '$host_name', NULL, ".$group_id.")";
+                            $pearDBO->query($request2);
+                    	}
+
+                    	// Insert services
                         $svc = getMyHostServices($data['id']);
                         foreach ($svc as $svc_id => $svc_name) {
-                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$data["id"]."', $svc_id, '$host_name', '$svc_name', ".$row['acl_group_id'].")";
+                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$data["id"]."', $svc_id, '$host_name', '$svc_name', ".$group_id.")";
                             $pearDBO->query($request2);
                         }
+                    } else if ($data['action'] == 'DUP' && isset($data['duplicate_host'])) {
+                    	// Get current configuration into Centreon_acl table
+                    	$request = "SELECT group_id FROM centreon_acl WHERE host_id = ".$data['duplicate_host']." AND service_id IS NULL";
+                    	$DBRESULT = $pearDBO->query($request);
+                        while ($row = $DBRESULT->fetchRow()) {
+                        	// Insert New Host
+	                        $request1 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$data["id"]."', NULL, '$host_name', NULL, ".$row['group_id'].")";
+	                        $pearDBO->query($request1);
+
+	                        // Insert services
+	                        $request = "SELECT service_description, service_id, group_id FROM centreon_acl WHERE host_id = ".$data['duplicate_host']." AND service_id IS NOT NULL";
+	                        $DBRESULT = $pearDBO->query($request);
+                        	while ($row = $DBRESULT->fetchRow()) {
+	                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$data["id"]."', ".getMyServiceID($row["service_description"], $data["id"]).", '$host_name', '".$row["service_description"]."', ".$row['group_id'].")";
+	                            $pearDBO->query($request2);
+	                        }
+                        }
                     }
-                } else if (isset($data['type']) && $data["type"] == 'SERVICE' && $data['action'] == 'ADD') {
+                } else if (isset($data['type']) && $data["type"] == 'SERVICE' && ($data['action'] == 'ADD' || $data['action'] == 'DUP')) {
                     $hosts = getMyServiceHosts($data["id"]);
                     $svc_name = getMyServiceName($data["id"]); 
                     foreach ($hosts as $host_id) {
                     	$host_name = getMyHostName($host_id);
-                        $request = "SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id IN (SELECT acl_res_id FROM acl_resources_host_relations WHERE host_host_id = '".$host_id."')";
-                        $DBRESULT = $pearDB->query($request);
-                        while ($row = $DBRESULT->fetchRow()) {
-                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$host_id."', '".$data["id"]."', '$host_name', '$svc_name', ".$row['acl_group_id'].")";
-                            $pearDBO->query($request2);
-                        }
+
+                    	if ($data['action'] == 'ADD') {
+	                     	// Put new entries in the table with group_id
+	                    	foreach ($groupIds as $group_id) {
+								$request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$host_id."', '".$data["id"]."', '$host_name', '$svc_name', ".$group_id.")";
+	                            $pearDBO->query($request2);
+	                    	}
+                    	} else if ($data['action'] == 'DUP' && isset($data['duplicate_service'])){
+	                     	// Get current configuration into Centreon_acl table
+	                    	$request = "SELECT group_id FROM centreon_acl WHERE host_id = $host_id AND service_id = ".$data['duplicate_service'];
+	                        $DBRESULT = $pearDBO->query($request);
+	                        while ($row = $DBRESULT->fetchRow()) {
+	                            $request2 = "INSERT INTO centreon_acl (host_id, service_id, host_name, service_description, group_id) VALUES ('".$host_id."', '".$data["id"]."', '$host_name', '$svc_name', ".$row['group_id'].")";
+	                            $pearDBO->query($request2);
+	                        }
+                    	}
                     }
                 }
             }
