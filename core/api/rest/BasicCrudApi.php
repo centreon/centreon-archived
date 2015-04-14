@@ -334,11 +334,31 @@ class BasicCrudApi extends Api
     {
         // 
         $params = $this->getParams();
+        $apiResourceObjects = $params['data'];
         
+        
+
         try {
-            if (isset($params[$this->objectName])) {
+            $repository = $this->repository;
+            foreach ($apiResourceObjects as $apiResourceObject) {
+                // If the resource type param is the right one we processed
+                if ($apiResourceObject['type'] == $this->objectName) {
+                    unset($apiResourceObject['type']);
+                    $idOfCreatedElement = $repository::create(
+                        $apiResourceObjects,
+                        'api',
+                        $this->objectBaseUrl . '/update'
+                    );
+                    $object[] = $repository::load($idOfCreatedElement);
+                }
+            }
+            
+            $this->sendJsonApiResponse($this->objectName, $object);
+            
+            if ($params['data']['type'] == $this->objectName) {
                 $repository = $this->repository;
-                $objectParams = $params[$this->objectName];
+                $objectParams = $params['data'];
+                unset($objectParams['type']);
 
                 if (isset($objectParams[0])) {
                     foreach ($objectParams as $singleObjectParams) {
@@ -346,7 +366,7 @@ class BasicCrudApi extends Api
                         $object[] = $repository::load($idOfCreatedElement);
                     }
                 } else {
-                    $idOfCreatedElement = $repository::create($objectParams);
+                    $idOfCreatedElement = $repository::create($objectParams, 'api', $this->objectBaseUrl . '/update');
                     $object = $repository::load($idOfCreatedElement);
                 }
 
