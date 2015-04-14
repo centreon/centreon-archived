@@ -40,6 +40,7 @@ use Centreon\Internal\Form\Generator\Web\Wizard;
 use Centreon\Internal\Form\Generator\Api;
 use Centreon\Internal\Form\Generator\Cli;
 use Centreon\Internal\Form\Exception\InvalidTokenException;
+use Centreon\Internal\Exception;
 
 /**
  * Description of Validator
@@ -151,6 +152,6 @@ class Validator
         $message = $errors;
         $code = 401;
         
-        throw new \Exception($message, $code);
+        throw new Exception($message, $code);
     }
 }
