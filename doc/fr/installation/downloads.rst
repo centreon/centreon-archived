@@ -36,7 +36,7 @@ versions logicielles considérées comme en cours de développement.
 Centreon Web
 ************
 
-Archives: `<http://www.centreon.com/Content-Download/donwload-centreon>`_
+Archives: `<http://www.centreon.com/Content-Download/download-centreon>`_
 
 git: `<http://git.centreon.com/centreon.git>`_
 
