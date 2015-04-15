@@ -4,12 +4,13 @@
         "short_name": "performance",
         "icon_class": "icon-perf",
         "bgcolor": "lightseagreen",
-	"menus": [ {
-            "name" : "Graph",
-            "short_name" : "graph",
-            "icon_class": "fa fa-bar-chart-o",
-            "route" : "/centreon-performance/graph"
-	}]
+        "order": 3,
+      	"menus": [ {
+                  "name" : "Graph",
+                  "short_name" : "graph",
+                  "icon_class": "fa fa-bar-chart-o",
+                  "route" : "/centreon-performance/graph"
+      	}]
     },
     {
       "name": "Configuration",

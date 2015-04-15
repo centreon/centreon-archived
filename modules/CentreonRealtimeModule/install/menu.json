@@ -5,7 +5,7 @@
         "icon_class": "icon-real-time",
         "bgcolor": "lightblue",
         "block": "root",
-        "order": 3,
+        "order": 2,
         "menus": [
             {
                 "name": "Incidents",
