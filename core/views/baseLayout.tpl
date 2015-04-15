@@ -193,6 +193,12 @@
                 <p class="signature col-sm-4 col-md-3"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2015</p>
        </div>
 
+       <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
+           <div class="modal-dialog modal-lg">
+               <div class="modal-content"></div>
+           </div>
+       </div>
+
     </div>
 
     {foreach from=$jsBottomFileList item='jsFile'}
