@@ -122,37 +122,6 @@ class ServiceRepository extends Repository
 
     /**
      * 
-     * @param int $service_id
-     * @return type
-     */
-    public function getNotificicationsStatus($service_id)
-    {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        while (1) {
-            $stmt = $dbconn->query(
-                "SELECT "
-                . "service_notifications_enabled, "
-                . "service_template_model_stm_id "
-                . "FROM cfg_services "
-                . "WHERE "
-                . "service_id = '".$service_id."' LIMIT 1"
-            );
-            $row = $stmt->fetchAll();
-            
-            if (($row[0]['service_notifications_enabled'] != 2) || (!$row[0]['service_template_model_stm_id'])) {
-                return $row[0]['service_notifications_enabled'];
-            }
-            
-            $service_id = $row[0]['service_template_model_stm_id'];
-        }
-        
-    }
-    
-    /**
-     * 
      * @param int $service_template_id
      * @return array
      */
@@ -287,7 +256,7 @@ class ServiceRepository extends Repository
      * Format data so that it can be displayed in tooltip
      *
      * @param array $data
-     * @return array array($checkdata, $notifdata)
+     * @return array $checkdata
      */
     public static function formatDataForTooltip($data)
     {
@@ -322,37 +291,7 @@ class ServiceRepository extends Repository
             'value' => $data['service_passive_checks_enabled']
         );
 
-        /* Notification data */
-        $notifdata = array();
-        $notifdata[] = array(
-            'label' => _('Notification enabled'),
-            'value' => YesNoDefault::toString($data['service_notifications_enabled'])
-        );
-        $notifdata[] = array(
-            'label' => _('Notification interval'),
-            'value' => $data['service_notification_interval']
-        );
-        $notifdata[] = array(
-            'label' => _('Time period'),
-            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
-        );
-        $notifdata[] = array(
-            'label' => _('Options'),
-            'value' => $data['service_notification_options']
-        );
-        $notifdata[] = array(
-            'label' => _('First notification delay'),
-            'value' => $data['service_first_notification_delay']
-        );
-        $notifdata[] = array(
-            'label' => _('Contacts'),
-            'value' => ''
-        );
-        $notifdata[] = array(
-            'label' => _('Contact groups'),
-            'value' => ''
-        );
-        return array($checkdata, $notifdata);
+        return $checkdata;
     }
 
     /**

@@ -76,12 +76,6 @@ class HostTemplateRepository extends Repository
         'host_process_perf_data',
         'host_retain_status_information',
         'host_retain_nonstatus_information',
-        'host_notification_interval',
-        'host_notification_options',
-        'host_notifications_enabled',
-        'contact_additive_inheritance',
-        'cg_additive_inheritance',
-        'host_first_notification_delay',
         'host_stalking_options',
         'host_snmp_community',
         'host_snmp_version'
@@ -220,7 +214,6 @@ class HostTemplateRepository extends Repository
             case 'host_retain_status_information':
             case 'host_retain_nonstatus_information':
             case 'host_event_handler_enabled':
-            case 'host_notifications_enabled':
                 if ($value == 0) {
                     return _('No');
                 } else if ($value == 1) {

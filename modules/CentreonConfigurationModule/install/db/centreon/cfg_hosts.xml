@@ -31,12 +31,6 @@
         <column name="host_process_perf_data" phpName="HostProcessPerfData" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="host_retain_status_information" phpName="HostRetainStatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="host_retain_nonstatus_information" phpName="HostRetainNonstatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="host_notification_interval" phpName="HostNotificationInterval" type="INTEGER" required="false"/>
-        <column name="host_notification_options" phpName="HostNotificationOptions" type="VARCHAR" size="200" required="false"/>
-        <column name="host_notifications_enabled" phpName="HostNotificationsEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="contact_additive_inheritance" phpName="ContactAdditiveInheritance" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
-        <column name="cg_additive_inheritance" phpName="CgAdditiveInheritance" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
-        <column name="host_first_notification_delay" phpName="HostFirstNotificationDelay" type="INTEGER" required="false"/>
         <column name="host_stalking_options" phpName="HostStalkingOptions" type="VARCHAR" size="200" required="false"/>
         <column name="host_snmp_community" phpName="HostSnmpCommunity" type="VARCHAR" size="255" required="false"/>
         <column name="host_snmp_version" phpName="HostSnmpVersion" type="VARCHAR" size="255" required="false"/>

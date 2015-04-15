@@ -57,3 +57,4 @@ ALTER TABLE `cfg_hosts_services_relations` DROP FOREIGN KEY `cfg_host_service_re
 ALTER TABLE `cfg_hosts_services_relations` DROP FOREIGN KEY `host_service_relation_ibfk_3`;
 ALTER TABLE `cfg_traps` DROP FOREIGN KEY `traps_ibfk_2`;
 ALTER TABLE `cfg_traps_matching_properties` DROP FOREIGN KEY `cfg_traps_matching_properties_ibfk_2`;
+ALTER TABLE `cfg_bam` DROP FOREIGN KEY `mod_bam_ibfk_1`;

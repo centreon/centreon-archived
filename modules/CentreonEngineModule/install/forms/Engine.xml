@@ -43,9 +43,6 @@
 		<field name="enable_flap_detection" label="Enable flap detection" default_value="0" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
 		  <help></help>
 		</field>
-		<field name="enable_notifications" label="Enable notifications" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
-		  <help></help>
-        </field>
 		<field name="enable_predictive_host_dependency_checks" label="Enable predictive host dependency checks" default_value="1" advanced="0" type="singlecheckbox" parent_field="" mandatory="0">
 		  <help></help>
         </field>
@@ -116,9 +113,6 @@
 		  <help></help>
 		</field>
 		<field name="max_debug_file_size" label="Max debug file size" default_value="1000000" advanced="1" type="text" parent_field="" mandatory="0">
-		  <help></help>
-		</field>
-		<field name="notification_timeout" label="Notification timeout" default_value="30" advanced="0" type="text" parent_field="" mandatory="1">
 		  <help></help>
 		</field>
 		<field name="ochp_command" label="OCHP command" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
