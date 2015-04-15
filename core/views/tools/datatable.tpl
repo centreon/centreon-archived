@@ -1,4 +1,8 @@
-<div class="first-content">
+<div class="col-lg-12">
+
+    {include file='tools/datatable-search.tpl'}
+
+    <!-- Add / Actions -->
     <div class="col-sm-12 col-md-9 configuration-actions">
       <div>
         <button class="btn btn-default btn-sm" id="modalAdd">{t}Add{/t}</button>
@@ -33,6 +37,12 @@
         </div>
       </div>
     </div>
+   <!-- Datatable-->
+   <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
+        </div>
+   </div>
 </div>
 
-{include file="tools/datatable-table.tpl"}
+
