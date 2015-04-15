@@ -124,7 +124,7 @@ class BusinessActivityRealtimeController extends Controller
         );
         $this->tpl->append('jsUrl', $urls, true);
 
-        $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
+        $this->tpl->display('file:[CentreonBamModule]console.tpl');
     }
 
     /**
