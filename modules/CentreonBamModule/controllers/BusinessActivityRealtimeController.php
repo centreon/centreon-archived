@@ -122,7 +122,7 @@ class BusinessActivityRealtimeController extends Controller
         );
         $this->tpl->append('jsUrl', $urls, true);
 
-        $this->tpl->display('file:[CentreonRealtimeModule]console.tpl');
+        $this->tpl->display('file:[CentreonBamModule]console.tpl');
     }
 
     /**
@@ -140,5 +140,21 @@ class BusinessActivityRealtimeController extends Controller
         $myDataForDatatable = $myDatatable->getDatas();
         
         $router->response()->json($myDataForDatatable);
+    }
+
+    /**
+     * Service detail page
+     *
+     * @method get
+     * @route /businessactivity/realtime/[i:id]
+     */
+    public function businessActivityDetailAction()
+    {
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('moduleName', 'CentreonBam');
+        $tpl->assign('objectName', 'BusinessActivity');
+
+        $tpl->display('file:[CentreonBamModule]ba_detail.tpl');
     }
 }

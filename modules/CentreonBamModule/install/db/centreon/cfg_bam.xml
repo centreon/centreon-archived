@@ -10,11 +10,7 @@
         <column name="sla_month_percent_crit" phpName="SlaMonthPercentCrit" type="FLOAT"/>
         <column name="sla_month_duration_warn" phpName="SlaMonthDurationWarn" type="INTEGER"/>
         <column name="sla_month_duration_crit" phpName="SlaMonthDurationCrit" type="INTEGER"/>
-        <column name="id_notification_period" phpName="IdNotificationPeriod" type="INTEGER"/>
         <column name="id_reporting_period" phpName="IdReportingPeriod" type="INTEGER"/>
-        <column name="notification_interval" phpName="NotificationInterval" type="INTEGER"/>
-        <column name="notification_options" phpName="NotificationOptions" type="VARCHAR" size="255"/>
-        <column name="notifications_enabled" phpName="NotificationsEnabled" type="CHAR" sqlType="enum('0','1','2')"/>
         <column name="max_check_attempts" phpName="MaxCheckAttempts" type="INTEGER"/>
         <column name="normal_check_interval" phpName="NormalCheckInterval" type="INTEGER"/>
         <column name="retry_check_interval" phpName="RetryCheckInterval" type="INTEGER"/>
@@ -34,9 +30,6 @@
         <column name="comment" phpName="Comment" type="LONGVARCHAR"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true" defaultValue="1"/>
         <column name="ba_type_id" phpName="BaTypeId" type="INTEGER" required="false"/>
-        <foreign-key foreignTable="cfg_timeperiods" name="mod_bam_ibfk_1" onDelete="SET NULL">
-            <reference local="id_notification_period" foreign="tp_id"/>
-        </foreign-key>
         <foreign-key foreignTable="cfg_timeperiods" name="mod_bam_ibfk_5" onDelete="SET NULL">
             <reference local="id_reporting_period" foreign="tp_id"/>
         </foreign-key>
@@ -70,9 +63,6 @@
         </index>
         <index name="levelc_index">
             <index-column name="level_c"/>
-        </index>
-        <index name="id_notification_period">
-            <index-column name="id_notification_period"/>
         </index>
         <index name="id_reporting_period">
             <index-column name="id_reporting_period"/>

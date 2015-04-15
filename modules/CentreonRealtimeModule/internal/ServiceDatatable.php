@@ -281,34 +281,39 @@ class ServiceDatatable extends Datatable
     {
         $previousHost = '';
         HostConfigurationRepository::setObjectClass('\CentreonConfiguration\Models\Host');
-        foreach ($resultSet as &$myServiceSet) {
+        foreach ($resultSet as $key => &$myServiceSet) {
             // Set host_name
             $myHostName = Host::get($myServiceSet['host_id'], array('name'));
             $myServiceSet['name'] = $myHostName['name'];
-            
+
+            // @todo remove virtual hosts and virtual services
+            if ($myServiceSet['name'] === '_Module_BAM') {
+                unset($resultSet[$key]);
+                continue;
+            }
             if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'.
-                    $myServiceSet['host_id'].
-                    '/tooltip"><span class="overlay">'.
-                    $icon.
-                    '&nbsp;'.$myServiceSet['name'].'</span></span>';
+                $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'
+                    . $myServiceSet['host_id']
+                    . '/tooltip"><span class="overlay">'
+                    . $icon
+                    . '&nbsp;'.$myServiceSet['name'].'</span></span>';
             }
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
-            $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'.
-                $myServiceSet['host_id'].
-                '/'.$myServiceSet['service_id'].
-                '/tooltip"><span class="overlay">'.
-                $icon.
-                '&nbsp;'.$myServiceSet['description'].'</span></span>';
+            $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'
+                . $myServiceSet['host_id']
+                . '/'.$myServiceSet['service_id']
+                . '/tooltip"><span class="overlay">'
+                . $icon
+                . '&nbsp;'.$myServiceSet['description'].'</span></span>';
             if ($myServiceSet['perfdata'] != '') {
                 $myServiceSet['ico'] = '<span data-overlay-url="/centreon-realtime/service/'
                     . $myServiceSet['host_id']
                     . '/' . $myServiceSet['service_id']
-                    . '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';
+                    .     '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';
             } else {
                 $myServiceSet['ico'] = ''; 
             }
@@ -332,5 +337,6 @@ class ServiceDatatable extends Datatable
             $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
             //$myServiceSet['last_check'] = date("d/m/Y - H:i:s", $myServiceSet['last_check']);
         }
+        $resultSet = array_values($resultSet);
     }
 }

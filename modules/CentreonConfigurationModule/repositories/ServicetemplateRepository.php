@@ -88,13 +88,6 @@ class ServicetemplateRepository extends Repository
         'service_process_perf_data',
         'service_retain_status_information',
         'service_retain_nonstatus_information',
-        'service_notification_interval',
-        'service_notification_options',
-        'service_notifications_enabled',
-        'contact_additive_inheritance',
-        'cg_additive_inheritance',
-        'service_inherit_contacts_from_host',
-        'service_first_notification_delay',
         'service_stalking_options',
         'command_command_id_arg',
         'command_command_id_arg2'
@@ -215,7 +208,6 @@ class ServicetemplateRepository extends Repository
             case 'service_process_perf_data':
             case 'service_retain_status_information':
             case 'service_retain_nonstatus_information':
-            case 'service_notifications_enabled':
                 if ($value == 0) {
                     return _('No');
                 } else if ($value == 1) {

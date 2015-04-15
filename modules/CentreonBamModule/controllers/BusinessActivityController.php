@@ -111,18 +111,6 @@ class BusinessActivityController extends FormController
     }
  
     /**
-     * Get list of Timeperiods for a specific business activity
-     *
-     *
-     * @method get
-     * @route /businessactivity/[i:id]/notificationperiod
-     */
-    public function notificationPeriodForHostAction()
-    {
-        parent::getSimpleRelation('id_notification_period', '\CentreonConfiguration\Models\Timeperiod');
-    }
-
-    /**
      * Get reporting period for a specific business activity
      *
      * @method get

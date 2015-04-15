@@ -164,46 +164,6 @@
 				</field>
 			</block>
         </section>
-   		<section name="Notification">
-			<block name="Notification">
-				<field name="host_notifications_enabled" label="Notification enabled" default_value="2" advanced="0" type="radio" parent_field="" mandatory="0">
-					<help>Specify whether or not notifications for this host are enabled.</help>
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="host_notification_interval" label="Notification interval" default_value="0" advanced="1" type="integer" parent_field="" mandatory="0">
-					<help>If this value is set to 0, the notification will be sent only one time.</help>
-				</field>
-				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/host/[i:id]/notificationperiod</listValuesRoute>
-						<multiple>false</multiple>
-					</attributes>
-				</field>
-				<field name="host_notification_options" label="Notification options" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="0">
-					<help></help>
-					<attributes>
-                        <choices>
-                            <Down>1</Down>
-                            <Unreachable>1</Unreachable>
-                            <Recovery>1</Recovery>
-                            <Flapping>1</Flapping>
-                            <Downtime_Scheduled>1</Downtime_Scheduled>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="host_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0">
-					<help></help>
-				</field>
-			</block>
-		</section>
 		<section name="Relations">
 			<block name="Parentships">
 				<field name="host_parents" label="Parents Hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="0">

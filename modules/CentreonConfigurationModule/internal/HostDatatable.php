@@ -104,6 +104,46 @@ class HostDatatable extends Datatable
      * @var array 
      */
     public static $columns = array(
+
+        array (
+            'title' => "",
+            'name' => 'host_id',
+            'data' => 'host_id',
+            'orderable' => false,
+            'searchable' => false,
+            'type' => 'string',
+            'visible' => false,
+            'width' => '20px',
+            'className' => "cell_center"
+        ),
+
+        array (
+            'title' => 'Status',
+            'name' => 'host_activate',
+            'data' => 'host_activate',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'cast' => array(
+                'type' => 'select',
+                'parameters' => array(
+                    '0' => '<span class="label label-danger">Disabled</span>',
+                    '1' => '<span class="label label-success">Enabled</span>',
+                    '2' => 'Trash',
+                )
+            ),
+            'searchParam' => array(
+                'main' => 'true',
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
+                )
+            ),
+            'className' => "cell_center",
+            'width' => '50px'
+        ),
         array (
             'title' => "Id",
             'name' => 'host_id',
@@ -145,7 +185,7 @@ class HostDatatable extends Datatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => true,
+            'visible' => false,
         ),
         array (
             'title' => 'IP Address / DNS',
@@ -163,8 +203,7 @@ class HostDatatable extends Datatable
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '50px',
+            'visible' => false,
             'className' => "cell_center"
         ),
         array (
@@ -174,8 +213,7 @@ class HostDatatable extends Datatable
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '40px',
+            'visible' => false,
             'className' => "cell_center"
         ),
         array (
@@ -185,8 +223,7 @@ class HostDatatable extends Datatable
             'orderable' => false,
             'searchable' => false,
             'type' => 'string',
-            'visible' => true,
-            'width' => '40px',
+            'visible' => false,
             'className' => "cell_center"
         ),
         array (
@@ -197,35 +234,10 @@ class HostDatatable extends Datatable
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            'className' => "cell_center"
-        ),
-        array (
-            'title' => 'Status',
-            'name' => 'host_activate',
-            'data' => 'host_activate',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' => array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
-                    '2' => 'Trash',
-                )
-            ),
-            'searchParam' => array(
-                'main' => 'true',
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Enabled' => '1',
-                    'Disabled' => '0'
-                )
-            ),
             'className' => "cell_center",
-            'width' => '50px'
+            'width' => "20px"
         ),
+
         array (
             'title' => 'Tags',
             'name' => 'tagname',
@@ -234,7 +246,6 @@ class HostDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => '40px',
             'tablename' => 'cfg_tags'
         ),
     );
@@ -271,30 +282,36 @@ class HostDatatable extends Datatable
         $router = Di::getDefault()->get('router');
         
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/host/snapshot/').
-                $myHostSet['host_id'].
-                '"><span class="overlay">'.
-                $myHostSet['host_name'].
-                '</span></span>';
-            $myHostSet['host_name'] .= '</a><a href="#" data-overlay-url="'.$router->getPathFor('/centreon-realtime/host/').
-                $myHostSet['host_id'].
-                '/tooltip">';
-            $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
-                RealTimeHostRepository::getStatus($myHostSet['host_id'])
-            );
+
+            /* ------------
+
+            $router->getPathFor('/centreon-configuration/host/snapshot/')
+            $router->getPathFor('/centreon-realtime/host/')
+
+            ---------*/
+
+            $myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'.
+                $myHostSet['host_name'];
+
+                /* Host State */
+                $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
+                    RealTimeHostRepository::getStatus($myHostSet['host_id'])
+                );
+
 
             /* Templates */
             $myHostSet['host_template']  = "";
             $templates = HostTemplateRepository::getTemplateList($myHostSet['host_id']);
-            foreach ($templates as $template) {
-                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/').
+            $myHostSet['host_template'] .= '<span>'.count($templates).'</span>';
+
+            /*foreach ($templates as $template) {
+               /* $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/').
                     $template['id'].'"><a class="overlay" href="'.
                     $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
                     '"><i class="fa '.
                     $template['ico'].
                     '"></i></a></span>';
-            }
+            }*/
             
             /* Tags */
             $myHostSet['tagname']  = "";
