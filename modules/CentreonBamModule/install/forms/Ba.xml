@@ -20,6 +20,16 @@
                 <field name="level_w" label="Warning Threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
                 <field name="level_c" label="Critical Threshold" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
             </block>
+            <block name="Tags">
+                <field name="ba_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/tag/[i:id]/ba/formlist</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+		</field>
+            </block>
             <block name="Reporting">
                 <field name="id_reporting_period" label="Reporting Time Period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
                     <attributes>
@@ -77,6 +87,7 @@
             <field name="ba_type_id" mandatory="1"></field>
             <field name="level_w" mandatory="1"></field>
             <field name="level_c" mandatory="1"></field>
+            <field name="ba_tags" mandatory="0"></field>
         </step>
         <step name="Indicators">
             <field name="kpi" mandatory="0"></field>

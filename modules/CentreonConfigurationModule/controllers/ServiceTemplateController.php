@@ -151,6 +151,16 @@ class ServiceTemplateController extends FormController
             }
         }
         
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
+            foreach ($aTagsTemplates as $key => $oTpl) {
+                if (!in_array($oTpl['text'], array_values($aTags))) {
+                    array_push($aTags, $oTpl['text']);
+                }    
+            }
+        }
+        
         if (count($aTags) > 0) {
             TagsRepository::saveTagsForResource('service', $givenParameters['object_id'], $aTags);
         }
@@ -208,6 +218,16 @@ class ServiceTemplateController extends FormController
                 if (strlen($var) > 1) {
                     array_push($aTags, $var);
                 }
+            }
+        }
+        
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
+            foreach ($aTagsTemplates as $key => $oTpl) {
+                if (!in_array($oTpl['text'], array_values($aTags))) {
+                    array_push($aTags, $oTpl['text']);
+                }    
             }
         }
         

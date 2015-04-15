@@ -70,6 +70,17 @@ class HostTemplateDatatable extends Datatable
      */
     //protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Host\Tag';
     
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'host'
+        )
+    );
+
+    //protected static $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'host'
+    );
+    
     /**
      *
      * @var array 

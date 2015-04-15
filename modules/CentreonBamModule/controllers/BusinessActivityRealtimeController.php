@@ -111,8 +111,12 @@ class BusinessActivityRealtimeController extends Controller
         $this->tpl->assign('objectName', 'BusinessActivity');
         //$this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/centreon-bam/businessactivity/realtime/list');
+        /*
+        $actions = array();
         
-        //$this->tpl->assign('actions', $actions);
+        $tShis->tpl->assign('actions', $actions);
+        
+         */
 
         $urls = array(
             'tag' => array(

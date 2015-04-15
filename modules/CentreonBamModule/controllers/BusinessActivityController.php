@@ -39,6 +39,7 @@ use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
 use CentreonBam\Repository\BusinessActivityRepository;
 use CentreonBam\Repository\IndicatorRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 class BusinessActivityController extends FormController
 {
@@ -119,5 +120,34 @@ class BusinessActivityController extends FormController
     public function reportingPeriodForHostAction()
     {
         parent::getSimpleRelation('id_reporting_period', '\CentreonConfiguration\Models\Timeperiod');
+    }
+    
+    /**
+     * Update a host
+     *
+     *
+     * @method post
+     * @route /businessactivity/update
+     */
+    public function updateAction()
+    {
+        $givenParameters = $this->getParams('post');
+        $aTagList = array();
+        $aTags = array();  
+        
+        parent::updateAction();
+        
+        if (isset($givenParameters['ba_tags'])) {
+            $aTagList = explode(",", $givenParameters['ba_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var) > 1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
+        }
     }
 }
