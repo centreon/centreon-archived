@@ -62,10 +62,6 @@ class ServicetemplateRepository extends \CentreonConfiguration\Repository\Reposi
         $content["service_check_freshness"] = 1;
         $content["service_event_handler_enabled"] = 1;
         $content["service_flap_detection_enabled"] = 1;
-        $content["service_process_perf_data"] = 1;
-        $content["service_retain_status_information"] = 1;
-        $content["service_retain_nonstatus_information"] = 1;
-        $content["service_stalking_options"] = 1;
         $content["service_is_volatile"] = 1;
         $content["service_parallelize_check"] = 1;
         $content["service_obsess_over_service"] = 1;
