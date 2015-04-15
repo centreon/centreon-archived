@@ -11,11 +11,13 @@
                     {
                         "name": "Business Activity",
                         "short_name": "conf_ba_list",
+                        "order": 1,
                         "route": "/centreon-bam/businessactivity"
                     },
                     {
                         "name": "Indicators",
                         "short_name": "conf_indicators_lists",
+                        "order": 2,
                         "route": "/centreon-bam/indicator"
                     }	
                 ]
@@ -29,6 +31,7 @@
                 "name": "BAM",
                 "short_name": "view_ba_list",
                 "icon_class": "fa fa-suitcase",
+                "order": 3,
                 "route": "/centreon-bam/businessactivity/realtime"
             }
         ]
