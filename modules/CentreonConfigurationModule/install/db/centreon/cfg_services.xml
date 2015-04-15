@@ -6,7 +6,6 @@
         <column name="command_command_id" phpName="CommandCommandId" type="INTEGER" required="false"/>
         <column name="timeperiod_tp_id" phpName="TimeperiodTpId" type="INTEGER" required="false"/>
         <column name="command_command_id2" phpName="CommandCommandId2" type="INTEGER" required="false"/>
-        <column name="timeperiod_tp_id2" phpName="TimeperiodTpId2" type="INTEGER" required="false"/>
         <column name="service_description" phpName="ServiceDescription" type="VARCHAR" size="200" required="false"/>
         <column name="service_alias" phpName="ServiceAlias" type="VARCHAR" size="255" required="false"/>
         <column name="display_name" phpName="DisplayName" type="VARCHAR" size="255" required="false"/>
@@ -35,6 +34,7 @@
         <column name="service_locked" phpName="ServiceLocked" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
         <column name="service_register" phpName="ServiceRegister" type="CHAR" sqlType="enum('0','1','2','3')" required="true" defaultValue="0"/>
         <column name="service_activate" phpName="ServiceActivate" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="1"/>
+        <column name="service_type" phpName="ServiceType" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="1"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
         <column name="environment_id" phpName="EnvironmentId" type="INTEGER" required="false"/>
         <column name="domain_id" phpName="DomainId" type="INTEGER" required="false"/>
@@ -47,10 +47,7 @@
         <foreign-key foreignTable="cfg_timeperiods" name="service_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="timeperiod_tp_id" foreign="tp_id"/>
         </foreign-key>
-        <foreign-key foreignTable="cfg_timeperiods" name="service_ibfk_4" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="timeperiod_tp_id2" foreign="tp_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_organizations" name="service_ibfk_5" onDelete="CASCADE" onUpdate="RESTRICT">
+       <foreign-key foreignTable="cfg_organizations" name="service_ibfk_5" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_environments" name="service_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">

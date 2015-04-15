@@ -5,65 +5,73 @@
 	<redirect>1</redirect>
 	<redirect_route>/centreon-configuration/service</redirect_route>
 	<section name="Service configuration">
-	  <block name="General information">
-		<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-          <help>Name used for service in auto-deploy by template.</help>
-        </field>
-		<field name="service_template_model_stm_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-		  <attributes>
-			<object_type>object</object_type>
-			<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
-			<listValuesRoute>/centreon-configuration/service/[i:id]/servicetemplate</listValuesRoute>
-			<multiple>false</multiple>
-		  </attributes>
-          <help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
-		</field>
-		<field name="service_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
-		  <attributes>
-			<object_type>object</object_type>
-			<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
-			<listValuesRoute>/centreon-configuration/service/[i:id]/icon</listValuesRoute>
-			<multiple>false</multiple>
-			<wizardRoute>/media/image/add</wizardRoute>
-		  </attributes>
-		</field>
-		<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
-		  <attributes>
-			<object_type>object</object_type>
-			<defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
-			<listValuesRoute>/centreon-configuration/service/[i:id]/host</listValuesRoute>
-			<multiple>true</multiple>
-		  </attributes>
-          <help>Specify one or multiple host templates, that should be linked to this template. A service, that uses this service template, will complete the missing host relation and result in a full service definition.</help>
-		</field>
-        <field name="environment_id" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-            <help>Define the environment of the Services</help>
-            <attributes>
-                <object_type>object</object_type>
-                <defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
-                <listValuesRoute>/centreon-configuration/service/[i:id]/environment</listValuesRoute>
-                <multiple>false</multiple>
-            </attributes>
-        </field>
-        <field name="domain_id" label="Domain" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-            <help>Define the domain of the Service</help>
-            <attributes>
-                <object_type>object</object_type>
-                <defaultValuesRoute>/centreon-administration/domain/formlist</defaultValuesRoute>
-                <listValuesRoute>/centreon-configuration/service/[i:id]/domain</listValuesRoute>
-                <multiple>false</multiple>
-            </attributes>
-        </field>
-	  </block>
-	  <block name="Check properties">
-		<field name="service_type" label="Type" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="1">
-		  <attributes>
-            <choices>
-              <Alerting>1</Alerting>
-              <Metrology>1</Metrology>
-            </choices>
-		  </attributes>
-          <help>Specify if you want alerts and / or performance graphs</help>
+	  	<block name="General information">
+			<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+          		<help>Name used for service in auto-deploy by template.</help>
+        	</field>
+			<field name="service_template_model_stm_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+		  		<attributes>
+					<object_type>object</object_type>
+					<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+					<listValuesRoute>/centreon-configuration/service/[i:id]/servicetemplate</listValuesRoute>
+					<multiple>false</multiple>
+		  		</attributes>
+          		<help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
+			</field>
+			<field name="service_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
+		  		<attributes>
+					<object_type>object</object_type>
+					<defaultValuesRoute>/image/icon/centreon</defaultValuesRoute>
+					<listValuesRoute>/centreon-configuration/service/[i:id]/icon</listValuesRoute>
+					<multiple>false</multiple>
+					<wizardRoute>/media/image/add</wizardRoute>
+		  		</attributes>
+			</field>
+			<field name="service_hosts" label="Linked with hosts" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
+		  		<attributes>
+					<object_type>object</object_type>
+					<defaultValuesRoute>/centreon-configuration/host/formlist</defaultValuesRoute>
+					<listValuesRoute>/centreon-configuration/service/[i:id]/host</listValuesRoute>
+					<multiple>true</multiple>
+		  		</attributes>
+          		<help>Specify one or multiple host templates, that should be linked to this template. A service, that uses this service template, will complete the missing host relation and result in a full service definition.</help>
+			</field>
+        	<field name="service_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+            	<attributes>
+	                <object_type>object</object_type>
+	                <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+	                <listValuesRoute>/centreon-administration/tag/[i:id]/service/formlist</listValuesRoute>
+	                <multiple>true</multiple>
+	            </attributes>
+			</field>
+        	<field name="environment_id" label="Environment" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+            	<help>Define the environment of the Services</help>
+            	<attributes>
+	                <object_type>object</object_type>
+	                <defaultValuesRoute>/centreon-administration/environment/formlist</defaultValuesRoute>
+	                <listValuesRoute>/centreon-configuration/service/[i:id]/environment</listValuesRoute>
+	                <multiple>false</multiple>
+	            </attributes>
+	        </field>
+	        <field name="domain_id" label="Domain" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+	            <help>Define the domain of the Service</help>
+	            <attributes>
+	                <object_type>object</object_type>
+	                <defaultValuesRoute>/centreon-administration/domain/formlist</defaultValuesRoute>
+	                <listValuesRoute>/centreon-configuration/service/[i:id]/domain</listValuesRoute>
+	                <multiple>false</multiple>
+	            </attributes>
+	        </field>
+	  	</block>
+	  	<block name="Check properties">
+			<field name="service_type" label="Type" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="0">
+		  	<attributes>
+            	<choices>
+              		<Alerting>1</Alerting>
+              		<Metrology>0</Metrology>
+        		</choices>
+		  	</attributes>
+          	<help>Specify if you want alerts and / or performance graphs</help>
 		</field>
 		<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
 		  <attributes>
@@ -102,47 +110,27 @@
 		  </attributes>
           <help>Enable or disable active checks (either regularly scheduled or on-demand) of this service here. By default active service checks are enabled.</help>
 		</field>
-		<field name="service_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-		  <attributes>
-            <choices>
-              <Yes>1</Yes>
-              <No>0</No>
-              <Default>2</Default>
-            </choices>
-		  </attributes>
-          <help>Enable or disable passive checks here. When disabled submitted states will be not accepted.</help>
-		</field>
 		<field name="service_is_volatile" label="Is volatile" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-		  <attributes>
-            <choices>
-              <Yes>1</Yes>
-              <No>0</No>
-              <Default>2</Default>
-            </choices>
-		  </attributes>
-          <help>This directive is used to denote whether the service is "volatile". A volatile service resets its state to OK with every query. Services are normally not volatile.</help>
+		  	<attributes>
+            	<choices>
+              		<Yes>1</Yes>
+              		<No>0</No>
+              		<Default>2</Default>
+            	</choices>
+		  	</attributes>
+          	<help>This directive is used to denote whether the service is "volatile". A volatile service resets its state to OK with every query. Services are normally not volatile.</help>
 		</field>
-	  </block>
-	  <block name="Macros">
+	</block>
+	<block name="Macros">
 	    <field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
-                <attributes>
-                    <object>service</object>
-                </attributes>
-            </field>
-	  </block>
-          <block name="Tags">
-                <field name="service_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
-                    <attributes>
-                        <object_type>object</object_type>
-                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
-                        <listValuesRoute>/centreon-administration/tag/[i:id]/service/formlist</listValuesRoute>
-                        <multiple>true</multiple>
-                    </attributes>
-		</field>
-            </block>
+            <attributes>
+                <object>service</object>
+            </attributes>
+        </field>
+	</block>
     </section>
-	<section name="Relations">
-	  	<block name="SNMP traps">
+	<section name="SNMP Traps">
+	  	<block name="Traps confirguration">
 			<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 		  		<attributes>
 					<object_type>object</object_type>
@@ -189,36 +177,6 @@
 		</field>
 		<field name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 		<field name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
-	  </block>
-	  <block name="History options">
-		<field name="service_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-		  <attributes>
-            <choices>
-              <Yes>1</Yes>
-              <No>0</No>
-              <Default>2</Default>
-            </choices>
-		  </attributes>
-		</field>
-		<field name="service_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-		  <attributes>
-            <choices>
-              <Yes>1</Yes>
-              <No>0</No>
-              <Default>2</Default>
-            </choices>
-		  </attributes>
-		</field>
-		<field name="service_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
-		  <attributes>
-            <choices>
-              <Ok>1</Ok>
-              <Warning>1</Warning>
-              <Unknown>1</Unknown>
-              <Critical>1</Critical>
-            </choices>
-		  </attributes>
-		</field>
 	  </block>
 	  <block name="Event handler">
 		<field name="service_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
