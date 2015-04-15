@@ -35,7 +35,8 @@ $(function () {
           $newTag.parent().prepend( " " ).prepend( $( tag ) );
           $newTag.find( "input" )
             .animate({
-              "width": 0
+              "width": 0,
+              "padding": 0
             })
             .val( "" );
           tagExpand = false;
@@ -53,7 +54,8 @@ $(function () {
     } else {
       $( this ).parent().removeClass( "noborder" );
       $newTag.find( ".title > input" ).animate({
-        width: "100px"
+        width: "100px",
+        padding: "0px"
       });
       $newTag.find( "input" ).focus();
       tagExpand = true;
@@ -102,7 +104,8 @@ $(function () {
       return;
     }
     $( ".addtag input" ).animate({
-      width: "0"
+      width: "0",
+      padding: "0"
     }).val( "" );
     $( ".addtag .remove" ).addClass( "noborder" );
     tagExpand = false;
