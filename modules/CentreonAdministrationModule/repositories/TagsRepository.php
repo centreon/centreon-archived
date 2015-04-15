@@ -55,11 +55,9 @@ class TagsRepository
      */
     private static $resourceType = array(
         'host',
-        'hosttemplate',
+        //'hosttemplate',
         'service',
-        'servicetemplate',
-        'hostgroup',
-        'servicegroup',
+        //'servicetemplate',
         'ba',
         'contact'
     );
@@ -269,13 +267,30 @@ class TagsRepository
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
+        
         $dbconn = Di::getDefault()->get('db_centreon');
-              
-        $dbconn->query("DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$objectId." "
-                . "AND tag_id in (select tag_id from cfg_tags where user_id is null)");  
+        $aTagNotDelete = array();
+        foreach ($submittedValues as $s => $tagName) {
+            if (is_numeric($tagName)) {
+                array_push($aTagNotDelete, $tagName);
+            }
+        }
+        if (count($aTagNotDelete) > 0) {
+            $sLisTagNotDelete = implode(",", $aTagNotDelete);
+        }
+        $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$objectId." "
+                . "AND tag_id in (select tag_id from cfg_tags where user_id is null)";
+        
+        if (isset($sLisTagNotDelete)) {
+            $sQuery .= " AND tag_id NOT IN (".$sLisTagNotDelete.")";
+        }
+
+        $dbconn->query($sQuery);  
 
         foreach ($submittedValues as $s => $tagName) {
-            self::add($tagName, $resourceName, $objectId, 1);                
+            if (!is_numeric($tagName)) {
+                self::add($tagName, $resourceName, $objectId, 1);
+            }
         }
       
     }

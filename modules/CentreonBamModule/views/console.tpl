@@ -19,12 +19,14 @@
             </script>
         {/if}
 	<script>
-		$(function() {
-			/* we remove the empty label, for it conflicts with our action bar */
-			var labelToRemove = 'label[for=datatable{$objectName}_length_select]';
-			$(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
-				$(labelToRemove).hide();
-			});
-		});
+            $(function() {
+                /* monitoring actions */
+
+                /* we remove the empty label, for it conflicts with our action bar */
+                var labelToRemove = 'label[for=datatable{$objectName}_length_select]';
+                $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
+                        $(labelToRemove).hide();
+                });
+            });
 	</script>
 {/block}

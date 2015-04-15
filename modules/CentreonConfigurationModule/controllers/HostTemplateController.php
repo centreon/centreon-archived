@@ -173,14 +173,7 @@ class HostTemplateController extends FormController
             }
         }
         
-        if (isset($givenParameters['host_tags'])) {
-            $aTagList = explode(",", $givenParameters['host_tags']);
-            foreach ($aTagList as $var) {
-                if (strlen($var)>1) {
-                    array_push($aTags, $var);
-                }
-            }
-        }
+        
         
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
@@ -190,6 +183,30 @@ class HostTemplateController extends FormController
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($id, $macroList);
         }
+        
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        //get Tag for hostTemplate
+        if (isset($givenParameters['host_hosttemplates'])) {
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
+            $aTemplate = array_diff( $aTemplate, array( '' ) );
+            foreach ($aTemplate as $eTemplate) {
+                $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }
+                }
+            }
+        }
+
         if (count($aTags) > 0) {
             TagsRepository::saveTagsForResource('host', $id, $aTags);
         }
@@ -210,6 +227,7 @@ class HostTemplateController extends FormController
         $macroList = array();
         $aTagList = array();
         $aTags = array();
+        $aTagsTemplate = array();
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
             
@@ -243,6 +261,21 @@ class HostTemplateController extends FormController
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
         }
         
+        //get Tag for hostTemplate
+        if (isset($givenParameters['host_hosttemplates'])) {
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']); 
+            $aTemplate = array_diff( $aTemplate, array( '' ) );
+
+            foreach ($aTemplate as $eTemplate) {
+                $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }
+                }
+            }
+        }
+       
         if (isset($givenParameters['host_tags'])) {
             $aTagList = explode(",", $givenParameters['host_tags']);
             foreach ($aTagList as $var) {
@@ -251,7 +284,8 @@ class HostTemplateController extends FormController
                 }
             }
         }
-        
+        $aTags = array_merge($aTags, $aTagsTemplate);
+
         if (count($aTags) > 0) {
             TagsRepository::saveTagsForResource('host', $givenParameters['object_id'], $aTags);
         }
