@@ -60,3 +60,7 @@ ALTER TABLE `cfg_traps_matching_properties` DROP FOREIGN KEY `cfg_traps_matching
 ALTER TABLE `cfg_bam` DROP FOREIGN KEY `mod_bam_ibfk_1`;
 ALTER TABLE `cfg_meta_services` DROP `notification_interval`;
 ALTER TABLE `cfg_meta_services` DROP `notification_period`;
+ALTER TABLE `cfg_hosts` DROP FOREIGN KEY `host_ibfk_4`;
+ALTER TABLE `cfg_services` DROP FOREIGN KEY `service_ibfk_4`;
+ALTER TABLE `cfg_hosts` DROP INDEX `htm_index`;
+
