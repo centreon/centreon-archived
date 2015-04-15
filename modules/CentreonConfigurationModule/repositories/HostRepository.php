@@ -39,8 +39,12 @@ use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Host;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
+use CentreonConfiguration\Models\Service;
 use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
+use CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate as HostTemplateServiceTemplateRelation;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -223,10 +227,16 @@ class HostRepository extends Repository
      */
     public static function getTemplateChain($hostId)
     {
-        $templates = static::getRelations(
+        // @todo improve performance
+        $templates = array();
+        $currentTemplates = static::getRelations(
             '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
             $hostId
         );
+        $templates = array_merge($templates, $currentTemplates);
+        foreach ($currentTemplates as $currentTemplate) {
+                $templates = array_merge($templates, self::getTemplateChain($currentTemplate['id']));
+        }
         return $templates;
     }
     
@@ -254,5 +264,52 @@ class HostRepository extends Repository
         }
 
         return $arr;
+    }
+
+    /**
+     * Deploy services by host templates
+     *
+     * @param int $hostId
+     * @param int $hostTemplateId
+     */
+    public static function deployServices($hostId, $hostTemplateId = null)
+    {
+        static $deployedServices = array();
+        $aServices = array();
+
+        $db = Di::getDefault()->get('db_centreon');
+
+        //get host template
+        $aHostTemplates = HostRepository::getTemplateChain($hostId);
+
+        // get host services
+        $aHostServices = HostServiceRelation::getMergedParameters(array('host_id'), array('service_id', 'service_description'), -1, 0, null, "ASC", array('host_id' => $hostId), "OR");
+        //var_dump($aHostServices);
+
+        $aHostServiceTemplates = array();
+
+        foreach ($aHostTemplates as $oHostTemplate) {
+
+            $aHostTemplateServiceTemplates = HostTemplateServiceTemplateRelation::getMergedParameters(
+                array('host_id'), array('service_id', 'service_description'),
+                -1, 0, null, "ASC",
+                array('host_id' => $oHostTemplate['id']),
+                "OR");
+            $aHostServiceTemplates = array_merge($aHostServiceTemplates, $aHostTemplateServiceTemplates);
+        }
+
+        $aServicesDescription = array_values(array_column($aHostServices, 'service_description'));
+
+        foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
+            if (!in_array($oHostServiceTemplate['service_description'], $aServicesDescription)) {
+                $newService['service_description'] = $oHostServiceTemplate['service_description'];
+                $newService['service_template_model_stm_id'] = $oHostServiceTemplate['service_id'];
+                $newService['service_register'] = 1;
+                $newService['service_activate'] = 1;
+                $newService['organization_id'] = Di::getDefault()->get('organization');
+                $serviceId = Service::insert($newService);
+                HostServiceRelation::insert($hostId, $serviceId);
+            }
+        }
     }
 }

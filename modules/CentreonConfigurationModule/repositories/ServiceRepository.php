@@ -402,7 +402,7 @@ class ServiceRepository extends Repository
      * @return array
      */
     
-    public static function getListServiceByIdTempalte($svcId)
+    public static function getListServiceByIdTemplate($svcId)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         $svcTmpl = array();
