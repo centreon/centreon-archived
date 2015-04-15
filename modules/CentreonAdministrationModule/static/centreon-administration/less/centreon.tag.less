@@ -1,16 +1,26 @@
+@import "../../centreon/less/centreon.less";
 
 @customTag-color: #f17933;
 @tag-global-color: #0C5C27;
-@white: #fff;
+
+
+div.tagGlobal {
+  background-color: @firstGreenLighten;
+  border : 2px solid @firstGreenLighten;
+  color : @white;
+}
+div.tag {
+  color: @customTag-color;
+  background-color: lighten(@customTag-color,30%);
+  border: 2px solid lighten(@customTag-color,30%);
+}
+
 
 div.tag, div.tagGlobal {
 
   display: inline-block;
-  background-color: #fff;
-  color: @customTag-color;
   border-radius: 2px;
   font-size: 11px;
-  border: 2px solid @customTag-color;
   font-weight: bold;
 
   .title {
@@ -66,8 +76,4 @@ div.tag, div.tagGlobal {
     border: 0;
   }
 
-}
-
-div.tagGlobal {
-    background-color: @tag-global-color;
 }
