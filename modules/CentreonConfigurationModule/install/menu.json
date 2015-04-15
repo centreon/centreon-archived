@@ -16,11 +16,13 @@
                     {
                         "name": "Hosts",
                         "short_name": "conf_hosts_list",
+                        "order": 1,
                         "route": "/centreon-configuration/host"
                     },
                     {
                         "name": "Host templates",
                         "short_name": "conf_hosttemplate_list",
+                        "order": 2,
                         "route": "/centreon-configuration/hosttemplate"
                     }
                 ]
@@ -34,11 +36,13 @@
                     {
                         "name": "Services",
                         "short_name": "conf_services_list",
+                        "order": 1,
                         "route": "/centreon-configuration/service"
                     },
                     {
                         "name": "Service templates",
                         "short_name": "conf_servicetemplate_list",
+                        "order": 2,
                         "route": "/centreon-configuration/servicetemplate"
                     }
                 ]
@@ -52,11 +56,13 @@
                     {
                         "name": "Commands",
                         "short_name": "conf_commands_list",
+                        "order": 1,
                         "route": "/centreon-configuration/command"
                     },
                     {
                         "name": "Connectors",
                         "short_name": "conf_connectors_list",
+                        "order": 2,
                         "route": "/centreon-configuration/connector"
                     }
                 ]
@@ -69,11 +75,13 @@
                     {
                         "name": "Traps",
                         "short_name": "conf_traps_list",
+                        "order": 1,
                         "route": "/centreon-configuration/trap"
                     },
                     {
                         "name": "Manufacturers",
                         "short_name": "conf_manufacturers_list",
+                        "order": 2,
                         "route": "/centreon-configuration/manufacturer"
                     }
                 ]
@@ -99,6 +107,7 @@
                     {
                         "name": "Global Resources",
                         "short_name": "conf_resources_list",
+                        "order": 2,
                         "route": "/centreon-configuration/resource"
                     }
                 ]
