@@ -2,17 +2,14 @@
 <database name="centreon" package="centreon_configuration" defaultIdMethod="native">
     <table name="cfg_hosts" phpName="Host" idMethod="native">
         <column name="host_id" phpName="HostId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-        <column name="host_template_model_htm_id" phpName="HostTemplateModelHtmId" type="INTEGER" required="false"/>
         <column name="command_command_id" phpName="CommandCommandId" type="INTEGER" required="false"/>
         <column name="command_command_id_arg1" phpName="CommandCommandIdArg1" type="LONGVARCHAR" required="false"/>
         <column name="timeperiod_tp_id" phpName="TimeperiodTpId" type="INTEGER" required="false"/>
-        <column name="timeperiod_tp_id2" phpName="TimeperiodTpId2" type="INTEGER" required="false"/>
         <column name="command_command_id2" phpName="CommandCommandId2" type="INTEGER" required="false"/>
         <column name="command_command_id_arg2" phpName="CommandCommandIdArg2" type="LONGVARCHAR" required="false"/>
         <column name="host_name" phpName="HostName" type="VARCHAR" size="200" required="false"/>
         <column name="host_alias" phpName="HostAlias" type="VARCHAR" size="200" required="false"/>
         <column name="host_address" phpName="HostAddress" type="VARCHAR" size="255" required="false"/>
-        <column name="display_name" phpName="DisplayName" type="VARCHAR" size="255" required="false"/>
         <column name="host_max_check_attempts" phpName="HostMaxCheckAttempts" type="INTEGER" required="false"/>
         <column name="host_check_interval" phpName="HostCheckInterval" type="INTEGER" required="false"/>
         <column name="host_retry_check_interval" phpName="HostRetryCheckInterval" type="INTEGER" required="false"/>
@@ -28,10 +25,6 @@
         <column name="host_high_flap_threshold" phpName="HostHighFlapThreshold" type="INTEGER" required="false"/>
         <column name="host_flap_detection_enabled" phpName="HostFlapDetectionEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
         <column name="flap_detection_options" phpName="FlapDetectionOptions" type="VARCHAR" size="255" required="false"/>
-        <column name="host_process_perf_data" phpName="HostProcessPerfData" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="host_retain_status_information" phpName="HostRetainStatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="host_retain_nonstatus_information" phpName="HostRetainNonstatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="host_stalking_options" phpName="HostStalkingOptions" type="VARCHAR" size="200" required="false"/>
         <column name="host_snmp_community" phpName="HostSnmpCommunity" type="VARCHAR" size="255" required="false"/>
         <column name="host_snmp_version" phpName="HostSnmpVersion" type="VARCHAR" size="255" required="false"/>
         <column name="host_location" phpName="HostLocation" type="INTEGER" required="false" defaultValue="0"/>
@@ -50,9 +43,6 @@
         </foreign-key>
         <foreign-key foreignTable="cfg_timeperiods" name="host_ibfk_3" onDelete="SET NULL" onUpdate="RESTRICT">
             <reference local="timeperiod_tp_id" foreign="tp_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_timeperiods" name="host_ibfk_4" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="timeperiod_tp_id2" foreign="tp_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_organizations" name="host_ibfk_5" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>

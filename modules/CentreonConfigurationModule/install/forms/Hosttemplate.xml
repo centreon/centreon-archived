@@ -33,6 +33,14 @@
 						<wizardRoute>/media/image/add</wizardRoute>
 					</attributes>
 				</field>
+                <field name="host_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/tag/[i:id]/host/formlist</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+                </field>
 			</block>
 			<block name="Service templates relations">
 		        <field name="hosttemplate_servicetemplates" label="Linked Service Templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
@@ -52,16 +60,6 @@
                     </attributes>
                 </field>
 			</block>
-            <block name="Tags">
-                <field name="host_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
-                    <attributes>
-                        <object_type>object</object_type>
-                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
-                        <listValuesRoute>/centreon-administration/tag/[i:id]/host/formlist</listValuesRoute>
-                        <multiple>true</multiple>
-                    </attributes>
-                </field>
-            </block>
 			<block name="Host check properties">
 				<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
@@ -92,6 +90,7 @@
 					</attributes>
 				</field>
 				<field name="host_passive_checks_enabled" label="Passive checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
+					<help>Enable or disable active checks (either regularly scheduled or on-demand) of this host here. By default active host checks are enabled.</help>
 					<attributes>
                         <choices>
                             <Yes>1</Yes>
@@ -150,46 +149,6 @@
 				<field name="host_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 				<field name="host_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 			</block>
-			<block name="Perfdata options">
-				<field name="host_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-			</block>
-			<block name="History options">
-				<field name="host_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="host_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="host_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Up>1</Up>
-                            <Down>1</Down>
-                            <Unreachable>1</Unreachable>
-                        </choices>
-					</attributes>
-				</field>
-			</block>
 			<block name="Event handler">
 				<field name="host_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
@@ -209,8 +168,6 @@
 					</attributes>
 				</field>
 			</block>
-		</section>
-		<section name="Extended information">
 		</section>
 	</form>
     <wizard name="add_hosttemplates">
