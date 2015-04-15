@@ -275,7 +275,7 @@
 					</attributes>
 				</field>
 			</block>
-			<block name="Data processing">
+			<block name="Data processing" advanced="1">
 				<field name="host_obsess_over_host" label="Obsess over host" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<help></help>
 					<attributes>
