@@ -24,10 +24,6 @@
         <column name="service_low_flap_threshold" phpName="ServiceLowFlapThreshold" type="INTEGER" required="false"/>
         <column name="service_high_flap_threshold" phpName="ServiceHighFlapThreshold" type="INTEGER" required="false"/>
         <column name="service_flap_detection_enabled" phpName="ServiceFlapDetectionEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="service_process_perf_data" phpName="ServiceProcessPerfData" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="service_retain_status_information" phpName="ServiceRetainStatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="service_retain_nonstatus_information" phpName="ServiceRetainNonstatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="service_stalking_options" phpName="ServiceStalkingOptions" type="VARCHAR" size="200" required="false"/>
         <column name="service_comment" phpName="ServiceComment" type="LONGVARCHAR" required="false"/>
         <column name="command_command_id_arg" phpName="CommandCommandIdArg" type="LONGVARCHAR" required="false"/>
         <column name="command_command_id_arg2" phpName="CommandCommandIdArg2" type="LONGVARCHAR" required="false"/>
@@ -67,9 +63,6 @@
         </index>
         <index name="tp1_index">
             <index-column name="timeperiod_tp_id"/>
-        </index>
-        <index name="tp2_index">
-            <index-column name="timeperiod_tp_id2"/>
         </index>
         <index name="description_index">
             <index-column name="service_description"/>
