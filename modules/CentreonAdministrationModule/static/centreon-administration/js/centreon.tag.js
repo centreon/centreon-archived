@@ -35,7 +35,8 @@ $(function () {
           $newTag.parent().prepend( " " ).prepend( $( tag ) );
           $newTag.find( "input" )
             .animate({
-              "width": 0
+              "width": 0,
+              "padding": 0
             })
             .val( "" );
           tagExpand = false;
@@ -102,7 +103,8 @@ $(function () {
       return;
     }
     $( ".addtag input" ).animate({
-      width: "0"
+      width: 0,
+      padding: 0
     }).val( "" );
     $( ".addtag .remove" ).addClass( "noborder" );
     tagExpand = false;
@@ -178,7 +180,11 @@ $(function () {
       e.stopPropagation();
       var sSearch = $(this).html();
       var sOldFilter = $("input[name='advsearch']").val();
-      $("input[name='advsearch']").val($.trim(sOldFilter+" "+"tags:"+sSearch));
+      var newSearch = "tags:" + sSearch;
+      var regexSearch = new RegExp("(^| )" + newSearch + "( |$)", "g");
+      if (null === sOldFilter.match(regexSearch)) {
+        $("input[name='advsearch']").val($.trim(sOldFilter + " " + newSearch));
+      }
       $("#btnSearch").click();
   });
 });
