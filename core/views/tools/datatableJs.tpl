@@ -5,12 +5,8 @@
     $(document).ready(function() {
     	document.onselectstart = function() { return false; };
 
-        /* Remove the label next to pagination dropdown */
-        var labelToRemove = 'label[for=datatable{$object}_length_select]';
-        $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
-            $(labelToRemove).hide();
-            $("#datatable{$object}_length").append($(".configuration-actions"));
-        });
+        /* -- Show wizard Add button  -- */
+        $(".configuration-actions").show();
 
         var selectedCb = [];
 
@@ -78,22 +74,16 @@
             "sSortDesc": "header headerSortUp",
             "sSortable": "header"
         });
-       
-        /* Remove the label next to pagination dropdown */
-        var labelToRemove = 'label[for=datatable{$object}_length_select]';
-        $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
-            $(labelToRemove).hide();
-            $("#datatable{$object}_length").append($(".configuration-actions"));
-            $(".configuration-actions").show();
-        }); 
 
-        $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
-        /*setInterval(function () {
+        /* -- Refresh Datatable's Datas -- */
+
+        setInterval(function () {
             $(".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
-        }, 60000);*/
+        }, 60000);
 
+        /* -- Show datatable's selected line  -- */
         function toggleSelectedAction() {
             var countElem = $('table[id^="datatable"] tbody tr').length;
             var countChecked = $('table[id^="datatable"] tbody tr[class*="selected"]').length;

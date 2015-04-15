@@ -1,7 +1,5 @@
 /* TABLES */
-.table-bordered {
-  border: 1px solid #EBEBEB;
-}
+
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
   background-color: #F5F5F6;
@@ -138,4 +136,40 @@ table.dataTable thead .sorting:after {
 
 .progress {
   margin:0px;
+}
+
+/*--- Pagination ---*/
+
+.pagination>li>a, .pagination>li>span {
+  position: relative;
+  float: left;
+  line-height: 1.42857143;
+  color: @thirdBlue;
+  text-decoration: none;
+  background-color: @lightGray1;
+  border-width: 0px 0px 4px 0px;
+  border-color: @lightGray;
+  margin: 0 2px;
+  border-radius: 0 !important;
+}
+
+.pagination {
+  .active {
+    a,span,a:hover,span:hover,a:focus,span:focus {
+      z-index: 2;
+      color: #fff;
+      cursor: default;
+      background-color: @thirdBlue;
+      border-width: 0px 0px 4px 0px;
+      border-color: @darkBlue;
+    }
+  }
+}
+
+.pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
+  color: @darkGray;
+  cursor: not-allowed;
+  background-color:@darkGray2;
+  border-width: 0px 0px 4px 0px;
+  border-color: @darkGray1;
 }
