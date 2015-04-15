@@ -178,7 +178,11 @@ $(function () {
       e.stopPropagation();
       var sSearch = $(this).html();
       var sOldFilter = $("input[name='advsearch']").val();
-      $("input[name='advsearch']").val($.trim(sOldFilter+" "+"tags:"+sSearch));
+      var newSearch = "tags:" + sSearch;
+      var regexSearch = new RegExp("(^| )" + newSearch + "( |$)", "g");
+      if (null === sOldFilter.match(regexSearch)) {
+        $("input[name='advsearch']").val($.trim(sOldFilter + " " + newSearch));
+      }
       $("#btnSearch").click();
   });
 });
