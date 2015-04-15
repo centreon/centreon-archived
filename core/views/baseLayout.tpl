@@ -12,7 +12,7 @@
 
 <body class="bodyCntr mini-navbar">
     <span id="flash-message"></span>
-
+<!-- Commentaire de test-->
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
 
     <!-- Menu aside -->
