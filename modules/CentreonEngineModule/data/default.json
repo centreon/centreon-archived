@@ -5,7 +5,6 @@
     "debug_level": "0",
     "debug_verbosity": "0",
     "enable_event_handlers": "1",
-    "enable_notifications": "0",
     "event_broker_options": "-1",
     "execute_host_checks": "1",
     "execute_service_checks": "1",

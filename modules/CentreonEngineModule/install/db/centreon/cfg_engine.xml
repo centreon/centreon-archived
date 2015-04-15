@@ -7,7 +7,6 @@
         <column name="var_lib_dir" phpName="VarLibDir" type="VARCHAR" size="255" required="false"/>
         <column name="module_dir" phpName="ModuleDir" type="VARCHAR" size="255" required="false"/>
         <column name="init_script" phpName="InitScript" type="VARCHAR" size="255" required="false"/>
-        <column name="enable_notifications" phpName="EnableNotifications" type="TINYINT" size="1" required="false"/>
         <column name="enable_event_handlers" phpName="EnableEventHandlers" type="TINYINT" size="1" required="false"/>
         <column name="external_command_buffer_slots" phpName="ExternalCommandBufferSlots" type="INTEGER" required="false"/>
         <column name="command_check_interval" phpName="CommandCheckInterval" type="VARCHAR" size="255" required="false"/>
@@ -34,7 +33,6 @@
         <column name="service_check_timeout" phpName="ServiceCheckTimeout" type="INTEGER" required="false"/>
         <column name="host_check_timeout" phpName="HostCheckTimeout" type="INTEGER" required="false"/>
         <column name="event_handler_timeout" phpName="EventHandlerTimeout" type="INTEGER" required="false"/>
-        <column name="notification_timeout" phpName="NotificationTimeout" type="INTEGER" required="false"/>
         <column name="ocsp_timeout" phpName="OcspTimeout" type="INTEGER" required="false"/>
         <column name="ochp_timeout" phpName="OchpTimeout" type="INTEGER" required="false"/>
         <column name="ocsp_command" phpName="OcspCommand" type="INTEGER" required="false"/>
