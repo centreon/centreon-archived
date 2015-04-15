@@ -179,7 +179,7 @@
         
         <div class="row bottombar">
 
-                <div  class="footer_links col-sm-8 col-md-4 col-md-offset-5">
+                <div  class="footer_links col-sm-8 col-md-4">
                     <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
                     <a href="https://github.com/centreon/centreon" data-toggle="tooltip" data-placement="top" title="{t}Source{/t}"><i class="fa fa-github"></i></a>
                     <a href="http://forge.centreon.com" data-toggle="tooltip" data-placement="top" title="{t}Forge{/t}"><i class="fa fa-inbox"></i></a>
