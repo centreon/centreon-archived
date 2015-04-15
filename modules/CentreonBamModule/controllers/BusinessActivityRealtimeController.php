@@ -143,4 +143,20 @@ class BusinessActivityRealtimeController extends Controller
         
         $router->response()->json($myDataForDatatable);
     }
+
+    /**
+     * Service detail page
+     *
+     * @method get
+     * @route /businessactivity/realtime/[i:id]
+     */
+    public function businessActivityDetailAction()
+    {
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('moduleName', 'CentreonBam');
+        $tpl->assign('objectName', 'BusinessActivity');
+
+        $tpl->display('file:[CentreonBamModule]ba_detail.tpl');
+    }
 }

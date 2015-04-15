@@ -108,49 +108,6 @@
 				</field>
 			</block>
 		</section>
-		<section name="Notification">
-			<block name="Notification">
-				<field name="service_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_inherit_contacts_from_host" label="Inherit contacts from hosts" default_value="1" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_notification_interval" label="Notification interval" default_value="0" advanced="1" type="integer" parent_field="" mandatory="0"></field>
-				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/notificationperiod</listValuesRoute>
-						<multiple>false</multiple>
-					</attributes>
-				</field>
-				<field name="service_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Warning>1</Warning>
-                            <Unknown>1</Unknown>
-                            <Critical>1</Critical>
-                            <Recovery>1</Recovery>
-                            <Flapping>1</Flapping>
-                            <Downtime_scheduled>1</Downtime_scheduled>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
-			</block>
-		</section>
 		<section name="Relations">
 			<block name="Relations">
 				<field name="service_template_hosts" label="Linked with host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">

@@ -252,7 +252,13 @@ class HostDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         $previousHost = '';
-        foreach ($resultSet as &$myHostSet) {
+        foreach ($resultSet as $key => &$myHostSet) {
+            // @todo remove virtual hosts and virtual services
+            if ($myHostSet['name'] === '_Module_BAM') {
+                unset($resultSet[$key]);
+                continue;
+            }
+
             // Set host_name
             if ($myHostSet['name'] === $previousHost) {
                 $myHostSet['name'] = '';
@@ -281,5 +287,6 @@ class HostDatatable extends Datatable
             }
             $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
+        $resultSet = array_values($resultSet);
     }
 }

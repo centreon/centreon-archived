@@ -421,18 +421,6 @@ class HostTemplateController extends FormController
     }
     
     /**
-     * Get list of Timeperiods for a specific host template
-     *
-     *
-     * @method get
-     * @route /hosttemplate/[i:id]/notificationperiod
-     */
-    public function notificationPeriodForHostTemplateAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id2', '\CentreonConfiguration\Models\Timeperiod');
-    }
-    
-    /**
      * Get check command for a specific host template
      *
      * @method get
@@ -503,7 +491,7 @@ class HostTemplateController extends FormController
     {
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $checkdata = HostRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }
@@ -519,7 +507,7 @@ class HostTemplateController extends FormController
     {
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $checkdata = HostRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }

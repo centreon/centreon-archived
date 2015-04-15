@@ -28,13 +28,6 @@
         <column name="service_process_perf_data" phpName="ServiceProcessPerfData" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_retain_status_information" phpName="ServiceRetainStatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
         <column name="service_retain_nonstatus_information" phpName="ServiceRetainNonstatusInformation" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="service_notification_interval" phpName="ServiceNotificationInterval" type="INTEGER" required="false"/>
-        <column name="service_notification_options" phpName="ServiceNotificationOptions" type="VARCHAR" size="200" required="false"/>
-        <column name="service_notifications_enabled" phpName="ServiceNotificationsEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false" defaultValue="2"/>
-        <column name="contact_additive_inheritance" phpName="ContactAdditiveInheritance" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
-        <column name="cg_additive_inheritance" phpName="CgAdditiveInheritance" type="BOOLEAN" size="1" required="false" defaultValue="false"/>
-        <column name="service_inherit_contacts_from_host" phpName="ServiceInheritContactsFromHost" type="CHAR" sqlType="enum('0','1')" required="false" defaultValue="1"/>
-        <column name="service_first_notification_delay" phpName="ServiceFirstNotificationDelay" type="INTEGER" required="false"/>
         <column name="service_stalking_options" phpName="ServiceStalkingOptions" type="VARCHAR" size="200" required="false"/>
         <column name="service_comment" phpName="ServiceComment" type="LONGVARCHAR" required="false"/>
         <column name="command_command_id_arg" phpName="CommandCommandIdArg" type="LONGVARCHAR" required="false"/>

@@ -33,74 +33,24 @@
  * For more information : contact@centreon.com
  * 
  */
-namespace Centreon\Internal\Form\Validators;
+namespace Centreon\Internal\Exception\Validator;
 
-use Respect\Validation\Validator as v;
+use Centreon\Internal\Exception;
 
 /**
- * Description of RespectValidationAbstract
+ * Description of NotFoundException
  *
  * @author lionel
  */
-abstract class RespectValidationAbstract implements ValidatorInterface
+class MissingParameterException extends Exception
 {
     /**
-     *
-     * @var type 
-     */
-    protected $validators = array();
-    
-    /**
-     *
-     * @var type 
-     */
-    protected $submittedValidators;
-
-
-    /**
      * 
-     * @param type $params
+     * @param type $message
+     * @param type $previous
      */
-    protected function __construct($params)
+    public function __construct($message, $internalCode = '', $previous = null)
     {
-        $this->submittedValidators = explode(';', $params);
-        $this->prepareArguments();
-    }
-    
-    /**
-     * 
-     * @param type $value
-     * @return type
-     */
-    public function validate($value, $params = array())
-    {
-        $validationChainCall = $this->buildValidationChain() . '->validate' ;
-        return v::$validationChainCall($value);
-    }
-    
-    /**
-     * 
-     * @return string
-     */
-    protected function buildValidationChain()
-    {
-        $validationChainCall = '';
-        foreach ($this->submittedValidators as $stringValidator) {
-            $validatorParamsAndValue = explode('=', $stringValidator);
-            if (in_array($validatorParamsAndValue[0], $this->validators)) {
-                if (!empty($validationChainCall)) {
-                    $validationChainCall .= '->';
-                }
-                $validationChainCall .= $validatorParamsAndValue[0] . '(' . $validatorParamsAndValue[1] . ')';
-            }
-        }
-        return $validationChainCall;
-    }
-    
-    /**
-     * Prepare custom arguments
-     */
-    protected function prepareArguments()
-    {
+        parent::__construct($message, $internalCode, $previous);
     }
 }

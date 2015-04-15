@@ -132,7 +132,7 @@ class HostRepository extends HostTemplateRepository
                             $value = CommandConfigurationRepository::getCommandName($value).$args;
                             $args = "";
                         }
-                        if ($key == 'check_period' || $key == 'notification_period') {
+                        if ($key == 'check_period') {
                             $value = TimeperiodConfigurationRepository::getPeriodName($value);
                         }
                         if ($key == 'timezone_id') {
