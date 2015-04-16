@@ -225,6 +225,16 @@ class ServiceController extends FormController
             }
         }
         
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
+            foreach ($aTagsTemplates as $key => $oTpl) {
+                if (!in_array($oTpl['text'], array_values($aTags))) {
+                    array_push($aTags, $oTpl['text']);
+                }    
+            }
+        }
+        
         if (count($aTags) > 0) {
             TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
         }
@@ -279,14 +289,21 @@ class ServiceController extends FormController
             }
         }
         
-        
-        
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
         }
         
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
+            foreach ($aTagsTemplates as $key => $oTpl) {
+                if (!in_array($oTpl['text'], array_values($aTags))) {
+                    array_push($aTags, $oTpl['text']);
+                }    
+            }
+        }
         
         if (count($aTags) > 0) {
             TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
@@ -434,5 +451,5 @@ class ServiceController extends FormController
         $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
-    }
+    }     
 }

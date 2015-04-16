@@ -40,6 +40,7 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 use Centreon\Internal\Utils\Datetime;
 use CentreonBam\Repository\BusinessActivityRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of BaDatatable
@@ -71,11 +72,17 @@ class BusinessActivityRealtimeDatatable extends Datatable
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'ba_id', 'name' => 'name');
-    
-    /**
+     /**
      *
      * @var array 
      */
+    protected static  $aFieldNotAuthorized = array('tagname');
+    
+    /**addToTag
+     *
+     * @var array 
+     */
+    
     protected static $configuration = array(
         'autowidth' => false,
         'order' => array(
@@ -171,6 +178,17 @@ class BusinessActivityRealtimeDatatable extends Datatable
             'width' => '10%',
             'className' => 'cell_center'
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
 
     /**
@@ -181,18 +199,18 @@ class BusinessActivityRealtimeDatatable extends Datatable
     {
         parent::__construct($params, $objectModelClass);
     }
-
+ 
     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'ba'
         )
     );
 
-    protected static $hook = 'displayTagList';
+    //protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'ba'
     );
-    
+
     /**
      * 
      * @param array $resultSet
@@ -222,6 +240,15 @@ class BusinessActivityRealtimeDatatable extends Datatable
                 Datetime::PRECISION_FORMAT,
                 2
             );
+            
+            
+            /* Tags */
+            $myBaSet['tagname']  = "";
+            $aTags = TagsRepository::getList('ba', $myBaSet['ba_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myBaSet['tagname'] .= TagsRepository::getTag('ba', $myBaSet['ba_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myBaSet['tagname'] .= TagsRepository::getAddTag('ba', $myBaSet['ba_id']);
         }
     }
 }

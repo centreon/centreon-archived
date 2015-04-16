@@ -125,6 +125,7 @@ class Servicetemplate extends CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
+        $aAddFilters = array();
         $filters['service_register'] = '0';
         if (is_array($filterType)) {
             $filterType['service_register'] = 'AND';
@@ -134,7 +135,15 @@ class Servicetemplate extends CentreonBaseModel
                 'service_register' => 'AND'
             );
         }
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_services'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_services.tag_id', 
+                    'cfg_tags_services.resource_id=cfg_services.service_id ')
+            ); 
+        }
+
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
     }
     
     /**
@@ -157,6 +166,7 @@ class Servicetemplate extends CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
+        $aAddFilters = array();
         $filters['service_register'] = '0';
         
         if (is_array($filterType)) {
@@ -167,8 +177,16 @@ class Servicetemplate extends CentreonBaseModel
                 'service_register' => 'AND'
             );
         }
+        
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_services'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_services.tag_id', 
+                    'cfg_tags_services.resource_id=cfg_services.service_id ')
+            ); 
+        }
 
-        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
     }
 
     /**

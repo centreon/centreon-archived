@@ -5,30 +5,34 @@
         "icon_class": "icon-real-time",
         "bgcolor": "lightblue",
         "block": "root",
-        "order": 3,
+        "order": 2,
         "menus": [
             {
                 "name": "Incidents",
                 "short_name": "incidents",
                 "icon_class": "fa fa-bell",
+                "order": 5,
                 "route": "/centreon-realtime/incident"
             },
             {
                 "name": "Services",
                 "short_name": "monitoring-services",
                 "icon_class": "fa fa-rss",
+                "order": 2,
                 "route": "/centreon-realtime/service"
             },
             {
                 "name": "Hosts",
                 "short_name": "monitoring-hosts",
                 "icon_class": "fa fa-desktop",
+                "order": 3,
                 "route": "/centreon-realtime/host"
             },
             {
                 "name": "EventLogs",
                 "short_name": "eventlogs",
                 "icon_class": "fa fa-edit",
+                "order": 4,
                 "route": "/centreon-realtime/eventlogs"
             }
         ]

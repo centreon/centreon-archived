@@ -39,6 +39,7 @@ namespace CentreonBam\Internal;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 use CentreonBam\Repository\BusinessActivityRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of BaDatatable
@@ -70,6 +71,12 @@ class BusinessActivityDatatable extends Datatable
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'ba_id', 'name' => 'name');
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
@@ -163,6 +170,17 @@ class BusinessActivityDatatable extends Datatable
                 )
             ),
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
 
     protected static $extraParams = array(
@@ -171,7 +189,7 @@ class BusinessActivityDatatable extends Datatable
         )
     );
 
-    protected static $hook = 'displayTagList';
+    //protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'ba'
     );
@@ -195,6 +213,14 @@ class BusinessActivityDatatable extends Datatable
 
             // set business activity name
             $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
+                      
+            /* Tags */
+            $myBaSet['tagname']  = "";
+            $aTags = TagsRepository::getList('ba', $myBaSet['ba_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myBaSet['tagname'] .= TagsRepository::getTag('ba', $myBaSet['ba_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myBaSet['tagname'] .= TagsRepository::getAddTag('ba', $myBaSet['ba_id']);
         }
     }
 }

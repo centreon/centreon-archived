@@ -4,7 +4,7 @@ $(function () {
   function saveTag( $newTag ) {
     var tmplTagCmpl,
         tmplTag = "<div class='tag' data-resourceid='<%resourceid%>' data-resourcetype='<%resourcetype%>' data-tagid='<%tagid%>'>"
-          + "<div class='title'><%tagname%></div>"
+          + "<div class='tagname'><%tagname%></div>"
           + "<div class='remove'><a href='#'>&times;</a></div>"
           + "</div>";
         tagName = $newTag.find( "input" ).val().trim();

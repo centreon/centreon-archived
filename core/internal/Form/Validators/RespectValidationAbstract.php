@@ -55,6 +55,11 @@ abstract class RespectValidationAbstract implements ValidatorInterface
      * @var type 
      */
     protected $submittedValidators;
+    
+    /**
+     *
+     */
+    protected $contextCall = '';
 
 
     /**
@@ -66,7 +71,7 @@ abstract class RespectValidationAbstract implements ValidatorInterface
         $this->submittedValidators = explode(';', $params);
         $this->prepareArguments();
     }
-    
+
     /**
      * 
      * @param type $value
@@ -74,24 +79,26 @@ abstract class RespectValidationAbstract implements ValidatorInterface
      */
     public function validate($value, $params = array())
     {
-        $validationChainCall = $this->buildValidationChain() . '->validate' ;
-        return v::$validationChainCall($value);
+        $validators = $this->buildValidationChain();
+        $callStr = $this->contextCall;
+        $obj = \Respect\Validation\Validator::$callStr();
+        foreach ($validators as $func => $param) {
+            $obj = call_user_func_array(array($obj, $func), $param);
+        }
+        return $obj->validate($value);
     }
-    
+
     /**
      * 
      * @return string
      */
     protected function buildValidationChain()
     {
-        $validationChainCall = '';
+        $validationChainCall = array();
         foreach ($this->submittedValidators as $stringValidator) {
             $validatorParamsAndValue = explode('=', $stringValidator);
             if (in_array($validatorParamsAndValue[0], $this->validators)) {
-                if (!empty($validationChainCall)) {
-                    $validationChainCall .= '->';
-                }
-                $validationChainCall .= $validatorParamsAndValue[0] . '(' . $validatorParamsAndValue[1] . ')';
+                $validationChainCall[$validatorParamsAndValue[0]] = explode(',' ,$validatorParamsAndValue[1]);
             }
         }
         return $validationChainCall;
