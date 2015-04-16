@@ -108,11 +108,15 @@ class ElasticSearch extends Storage
             } elseif ($key == 'host') {
                 $queryQueries[] = array(
                     "or" => array(
-                        "term" => array(
-                            "host" => $value
+                        array(
+                            "term" => array(
+                                "host" => $value
+                            )
                         ),
-                        "term" => array(
-                            "centreon_hostname" => $value
+                        array(
+                            "term" => array(
+                                "centreon_hostname" => $value
+                            )
                         )
                     )
                 );
@@ -140,6 +144,12 @@ class ElasticSearch extends Storage
                 );
             }
         }
+        /* Add filter for only centreon-engine message */
+        $queryQueries[] = array(
+            'exists' => array(
+                'field' => 'centreon_hostname'
+            )
+        );
         if (count($queryQueries) > 0) {
             $queryFilters["filter"]["and"] = $queryQueries;
         }
@@ -159,6 +169,7 @@ class ElasticSearch extends Storage
         $esQuery['sort'] = array(
             array('@timestamp' => 'desc')
         );
+        file_put_contents('/tmp/query_es', json_encode($esQuery, JSON_PRETTY_PRINT));
         $results = $esclient->search(array(
             "body" => $esQuery
         ));
