@@ -185,7 +185,7 @@ class ServiceController extends FormController
         $macroList = array();
         $aTagList = array();
         $aTags = array();
-        
+
         $givenParameters = $this->getParams('post');
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
@@ -227,11 +227,14 @@ class ServiceController extends FormController
         
         //get Tag for serviceTemplate
         if (isset($givenParameters['service_template_model_stm_id'])) {
-            $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
-            foreach ($aTagsTemplates as $key => $oTpl) {
-                if (!in_array($oTpl['text'], array_values($aTags))) {
-                    array_push($aTags, $oTpl['text']);
-                }    
+            $iTemplate = trim($givenParameters['service_template_model_stm_id']);
+            if (!empty($iTemplate)) {
+                $aTagsTemplates = TagsRepository::getList('service', $iTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }    
+                }
             }
         }
         
@@ -279,7 +282,7 @@ class ServiceController extends FormController
                 }
             }
         }
-        
+       // print_r($givenParameters['service_tags']);die;
         if (isset($givenParameters['service_tags'])) {
             $aTagList = explode(",", $givenParameters['service_tags']);
             foreach ($aTagList as $var) {
@@ -297,11 +300,14 @@ class ServiceController extends FormController
         
         //get Tag for serviceTemplate
         if (isset($givenParameters['service_template_model_stm_id'])) {
-            $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
-            foreach ($aTagsTemplates as $key => $oTpl) {
-                if (!in_array($oTpl['text'], array_values($aTags))) {
-                    array_push($aTags, $oTpl['text']);
-                }    
+            $iTemplate = trim($givenParameters['service_template_model_stm_id']);
+            if (!empty($iTemplate)) {
+                $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }    
+                }
             }
         }
         
