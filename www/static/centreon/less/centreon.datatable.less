@@ -147,10 +147,10 @@ table.dataTable thead .sorting:after {
   color: @thirdBlue;
   text-decoration: none;
   background-color: @lightGray1;
-  border-width: 0px 0px 4px 0px;
-  border-color: @lightGray;
+  border-width: 0px;
+  box-shadow: 1px 2px 2px @lightGray;
   margin: 0 2px;
-  border-radius: 0 !important;
+  border-radius: 2px !important;
 }
 
 .pagination {
@@ -160,16 +160,17 @@ table.dataTable thead .sorting:after {
       color: #fff;
       cursor: default;
       background-color: @thirdBlue;
-      border-width: 0px 0px 4px 0px;
+      border-width: 0px 0px 2px 0px;
       border-color: @darkBlue;
+      box-shadow: 1px 0px 2px @darkBlue;
     }
   }
 }
 
 .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
-  color: @darkGray;
+  color: @darkGray2;
   cursor: not-allowed;
-  background-color:@darkGray2;
-  border-width: 0px 0px 4px 0px;
-  border-color: @darkGray1;
+  background-color:@lightGray;
+  border-width: 0px;
+  box-shadow: 1px 2px 2px @darkGray1;
 }

@@ -343,6 +343,9 @@ class BasicCrudApi extends Api
             $repository = $this->repository;
             foreach ($apiResourceObjects as $apiResourceObject) {
                 // If the resource type param is the right one we processed
+                if (!isset($apiResourceObject['type'])) {
+                    throw new MissingParameterException("type is not provided", 400);
+                }
                 if ($apiResourceObject['type'] == $this->objectName) {
                     unset($apiResourceObject['type']);
                     $idOfCreatedElement = $repository::create(

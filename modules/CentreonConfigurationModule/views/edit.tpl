@@ -1,15 +1,15 @@
-{extends file="file:[Core]viewLayout.tpl"}
+{extends file="file:[Core]baseLayout.tpl"}
 
 {block name="title"}{$pageTitle}{/block}
 
 {block name="content"}
-    <div class="content-container">
+    <div class="wrapper">
         <a id="advanced_mode_switcher" href="#" class="btn btn-primary">
             <i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}
         </a>
         {$form}
-    </div>
-        
+     </div>
+
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
