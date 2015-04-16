@@ -17,15 +17,15 @@
 				<field name="firstname" label="Firstname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="lastname" label="Lastname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 			</block>
-            <block name="Locale settings">
-				<field name="language_id" label="Language" default_value="1" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-administration/language/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-administration/user/[i:id]/language</listValuesRoute>
-						<multiple>false</multiple>
-					</attributes>
-				</field>
+                        <block name="Locale settings">
+                            <field name="language_id" label="Language" default_value="1" advanced="0" type="select" parent_field="" mandatory="0">
+                                <attributes>
+                                        <object_type>object</object_type>
+                                        <defaultValuesRoute>/centreon-administration/language/formlist</defaultValuesRoute>
+                                        <listValuesRoute>/centreon-administration/user/[i:id]/language</listValuesRoute>
+                                        <multiple>false</multiple>
+                                </attributes>
+                            </field>
 			</block>
 		</section>
 		<section name="Access">
@@ -44,25 +44,25 @@
 			</block>
 			<block name="ACL">
 				<field name="is_admin" label="Admin role" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                        </choices>
-					</attributes>
+                                    <attributes>
+                                        <choices>
+                                            <Yes>1</Yes>
+                                            <No>0</No>
+                                        </choices>
+                                    </attributes>
 				</field>
 			</block>
 		</section>
 		<section name="Extended information">
 			<block name="Additional information">
-				<field name="is_activated" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
-					<attributes>
-                        <choices>
-                            <Enabled>1</Enabled>
-                            <Disabled>0</Disabled>
-                        </choices>
-					</attributes>
-				</field>
+                            <field name="is_activated" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+                                <attributes>
+                                    <choices>
+                                        <Enabled>1</Enabled>
+                                        <Disabled>0</Disabled>
+                                    </choices>
+				</attributes>
+                            </field>
 			</block>
 		</section>
 	</form>

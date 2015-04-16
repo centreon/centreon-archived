@@ -50,11 +50,11 @@ use CentreonAdministration\Internal\TagDatatable;
  */
 class TagController extends Controller
 {
-    /*
-    protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
+
+    //protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
     
-    protected $objectClass = '\CentreonAdministration\Models\Tag';
-    */
+    //protected $objectClass = '\CentreonAdministration\Models\Tag';
+ 
     
     
     protected $objectDisplayName = 'Tag';
@@ -139,6 +139,7 @@ class TagController extends Controller
         }
         $this->router->response()->json($data);
     }
+    
     
     /**
      * get all tag

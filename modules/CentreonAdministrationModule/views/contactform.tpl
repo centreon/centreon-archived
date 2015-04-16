@@ -10,6 +10,7 @@
             <div>{$form.contact_info_key.html}</div>
             <div>{$form.contact_info_value.html}</div>
             <div>{$form.timezone_id.html}</div>
+            <div>{$form.contact_tags.html}</div>
             <div>{$form.add_button.html}</div>
             {$form.hidden}
         </form>

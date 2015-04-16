@@ -241,7 +241,6 @@ class BusinessActivityRealtimeDatatable extends Datatable
                 2
             );
             
-            
             /* Tags */
             $myBaSet['tagname']  = "";
             $aTags = TagsRepository::getList('ba', $myBaSet['ba_id'], 2);

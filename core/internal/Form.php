@@ -597,9 +597,9 @@ class Form
         $params['label'] = $field['label'];
         $params['type'] = $field['type'];
         $params['mandatory'] = $field['mandatory'];
-        $params['parent_field'] = $field['parent_field'];
-        $params['parent_value'] = $field['parent_value'];
-        $params['child_actions'] = $field['child_actions'];
+        $params['parent_field'] = isset($field['parent_field']) ? $field['parent_field'] : '';
+        $params['parent_value'] = isset($field['parent_value']) ? $field['parent_value'] : '';
+        $params['child_actions'] = isset($field['child_actions']) ? $field['child_actions'] : '';
         
         if (isset($field['advanced']) && $field['advanced'] != null) {
             $params['advanced'] = $field['advanced'];
