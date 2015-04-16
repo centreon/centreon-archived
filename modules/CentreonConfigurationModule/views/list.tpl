@@ -1,4 +1,4 @@
-{extends file="file:[Core]viewLayout.tpl"}
+{extends file="file:[Core]baseLayout.tpl"}
 
 {block name="title"}{$objectName}{/block}
 
