@@ -359,7 +359,7 @@ class BasicCrudApi extends Api
 
             $this->sendJsonApiResponse($this->objectName, $object);
         } catch (MissingParameterException $ex) {
-            $this->router->response()->code(400);
+            $this->router->response()->code(400)->json($ex->getMessage());
         } catch (\PDOException $ex) {
             if ($ex->getCode() == 23000) {
                 $this->router->response()->code(409);

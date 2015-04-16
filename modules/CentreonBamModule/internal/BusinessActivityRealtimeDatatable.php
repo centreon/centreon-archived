@@ -155,7 +155,8 @@ class BusinessActivityRealtimeDatatable extends Datatable
                     'Critical' => '2'
                 )
             ),
-            'width' => 100,
+            'width' => '50px',
+            'className' => 'cell_center'
         ),
          array (
             'title' => 'Availability',

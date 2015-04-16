@@ -79,7 +79,6 @@ class BusinessActivityRealtime extends CentreonBaseModel
         }
 
         $filters['activate'] = '1';
-        $filters['current_status'] = array('0','1','2');
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
     }
     
@@ -103,6 +102,7 @@ class BusinessActivityRealtime extends CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
+        $filters['activate'] = '1';
         $aAddFilters = array();
         $tablesString =  null;
 
