@@ -85,19 +85,23 @@ class TagController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $post = $router->request()->paramsPost();
+        $sGlobal = 0;
 
         if (!is_array($post['resourceId'])) {
             $listResources = array($post['resourceId']);
         } else {
             $listResources = $post['resourceId'];
         }
-        
+        if (isset($post['typeTag']) && $post['typeTag'] == 1) {
+            $sGlobal = 1;
+        }
      
         foreach ($listResources as $resourceId) {
             $tagId = TagsRepository::add(
                 $post['tagName'],
                 $post['resourceName'],
-                $resourceId
+                $resourceId,
+                $sGlobal
             );
         }
         return $router->response()->json(array('success' => true, 'tagId' => $tagId));
