@@ -164,7 +164,6 @@ $(function() {
   $("#filters").on("submit", function(e) {
     e.preventDefault();
     e.stopPropagation();
-    fillFromSimpleSearch();
     runSearch();
   });
 
