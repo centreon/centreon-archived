@@ -58,7 +58,7 @@ class MainController extends Controller
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        $backUrl = $router->getPathFor('/centreon-customview');
+        $backUrl = $router->getPathFor('/centreon-realtime/service');
         $router->response()->redirect($backUrl, 200);
     }
     

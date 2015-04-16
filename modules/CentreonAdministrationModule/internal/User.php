@@ -195,7 +195,7 @@ class User
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        $homePage = $router->getPathFor('/centreon-customview');
+        $homePage = $router->getPathFor('/centreon-realtime/service');
         return $homePage;
     }
     /**

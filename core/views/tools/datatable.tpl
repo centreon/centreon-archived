@@ -1,6 +1,8 @@
 <div class="first-content">
     <div class="col-sm-12 col-md-9 configuration-actions">
-      <div><button class="btn btn-default btn-sm" id="modalAdd">{t}Add{/t}</button></div>
+      <div>
+        <button class="btn btn-default btn-sm" id="modalAdd">{t}Add{/t}</button>
+      </div>
       <div class="btn-group" id="selected_option" style="display: none;">
         <div class="btn-group btn-group-sm">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">

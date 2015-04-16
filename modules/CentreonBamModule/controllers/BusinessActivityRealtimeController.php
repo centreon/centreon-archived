@@ -79,7 +79,6 @@ class BusinessActivityRealtimeController extends Controller
             ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
-            ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('dataTables.bootstrap.css')
             ->addCss('centreon.tag.css', 'centreon-administration')
             ->addCss('select2.css')
@@ -92,7 +91,6 @@ class BusinessActivityRealtimeController extends Controller
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
-            ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('jquery.select2/select2.min.js')
@@ -113,8 +111,12 @@ class BusinessActivityRealtimeController extends Controller
         $this->tpl->assign('objectName', 'BusinessActivity');
         //$this->tpl->assign('consoleType', 0); // host console
         $this->tpl->assign('objectListUrl', '/centreon-bam/businessactivity/realtime/list');
+        /*
+        $actions = array();
         
-        //$this->tpl->assign('actions', $actions);
+        $tShis->tpl->assign('actions', $actions);
+        
+         */
 
         $urls = array(
             'tag' => array(

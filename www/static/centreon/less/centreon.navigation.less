@@ -114,6 +114,9 @@
     margin-left: @left-bar-width-mini;
   }
 
+  .signature {
+    text-align: right;
+  }
 
   a {
     padding: 10px 5px;
@@ -283,7 +286,7 @@ body.fixed-sidebar .navbarSide {
   color: #1ab394;
 }
 .navbar-default .landing_link a {
-  background: #00ccbf;
+  background: @firstGreenLighten;
   color: white !important;
 }
 .navbar-default .landing_link a:hover {
@@ -404,6 +407,7 @@ body.mini-navbar .navbar-default .nav > li > .nav-third-level li a {
 
 body.mini-navbar .navbar-static-side {
   width: 70px;
+  z-index:1;
 }
 
 body.mini-navbar .nav-label,

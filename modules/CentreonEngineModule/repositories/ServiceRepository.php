@@ -69,14 +69,11 @@ class ServiceRepository extends ServicetemplateRepository
             . "service_description, service_alias, service_template_model_stm_id, command_command_id_arg, "
             . "s.command_command_id AS check_command, s.timeperiod_tp_id AS check_period, "
             . "s.command_command_id_arg2, s.command_command_id2 AS event_handler, "
-            . "s.display_name, "
             . "service_is_volatile, service_max_check_attempts, service_normal_check_interval, "
             . "service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, "
             . "s.initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, "
             . "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, "
-            . "service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, "
-            . "service_retain_status_information, service_retain_nonstatus_information, "
-            . "service_stalking_options ";
+            . "service_high_flap_threshold, service_flap_detection_enabled ";
 
         
         /* Init Content Array */

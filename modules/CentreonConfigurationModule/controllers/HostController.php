@@ -127,7 +127,7 @@ class HostController extends FormController
         $aTags = array();
         
         $givenParameters = $this->getParams('post');
-        
+                
         $givenParameters['host_register'] = 1;
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
@@ -171,6 +171,20 @@ class HostController extends FormController
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveHostCustomMacro($id, $macroList);
+        }
+        
+        //get Tag for hostTemplate
+        if (isset($givenParameters['host_hosttemplates'])) {
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
+            $aTemplate = array_diff( $aTemplate, array( '' ) );
+            foreach ($aTemplate as $eTemplate) {
+                $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }
+                }
+            }
         }
         
         if (count($aTags) > 0) {
@@ -232,6 +246,20 @@ class HostController extends FormController
             foreach ($aTagList as $var) {
                 if (strlen($var)>1) {
                     array_push($aTags, $var);
+                }
+            }
+        }
+        
+        //get Tag for hostTemplate
+        if (isset($givenParameters['host_hosttemplates'])) {
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
+            $aTemplate = array_diff( $aTemplate, array( '' ) );
+            foreach ($aTemplate as $eTemplate) {
+                $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }
                 }
             }
         }

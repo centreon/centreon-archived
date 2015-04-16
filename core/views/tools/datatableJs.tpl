@@ -5,12 +5,8 @@
     $(document).ready(function() {
     	document.onselectstart = function() { return false; };
 
-        /* Remove the label next to pagination dropdown */
-        var labelToRemove = 'label[for=datatable{$object}_length_select]';
-        $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
-            $(labelToRemove).hide();
-            $("#datatable{$object}_length").append($(".configuration-actions"));
-        });
+        /* -- Show wizard Add button  -- */
+        $(".configuration-actions").show();
 
         var selectedCb = [];
 
@@ -27,6 +23,7 @@
                 "processing": "Go......................"
             },
             {$datatableParameters.configuration}
+            responsive: true,
             'dom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             "columns": [
                 {$datatableParameters.header.columnHeader}
@@ -77,22 +74,16 @@
             "sSortDesc": "header headerSortUp",
             "sSortable": "header"
         });
-       
-        /* Remove the label next to pagination dropdown */
-        var labelToRemove = 'label[for=datatable{$object}_length_select]';
-        $(document).delegate(labelToRemove, 'DOMSubtreeModified', function() {
-            $(labelToRemove).hide();
-            $("#datatable{$object}_length").append($(".configuration-actions"));
-            $(".configuration-actions").show();
-        }); 
 
-        $(".ColVis_MasterButton").removeClass("ColVis_Button").addClass("btn btn-default btn-sm");
 
-        /*setInterval(function () {
+        /* -- Refresh Datatable's Datas -- */
+
+        setInterval(function () {
             $(".overlay" ).qtip( "destroy", true );
             oTable.api().ajax.reload(null, false);
-        }, 60000);*/
+        }, 60000);
 
+        /* -- Show datatable's selected line  -- */
         function toggleSelectedAction() {
             var countElem = $('table[id^="datatable"] tbody tr').length;
             var countChecked = $('table[id^="datatable"] tbody tr[class*="selected"]').length;
@@ -111,6 +102,7 @@
         /* Add modal */
         {if isset($objectAddUrl)}
         $('#modalAdd').on('click', function(e) {
+            console.log('hello Sanfour :)');
             $('#modal').removeData('bs.modal');
             $('#modal').removeData('centreonWizard');
             $('#modal .modal-content').text('');
