@@ -128,6 +128,16 @@ class ContactDatatable extends Datatable
         ),
     );
     
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'contact'
+        )
+    );
+
+    protected static $hookParams = array(
+        'resourceType' => 'contact'
+    );
+    
     /**
      * 
      * @param array $params
