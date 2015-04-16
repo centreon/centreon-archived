@@ -211,11 +211,8 @@ class Full extends Generator
     {
         $formElements = $this->formHandler->toSmarty();
 
-        
-        $htmlRendering = '<div class="row">';
 
-        $htmlRendering = '<div class="col-sm-offset-1 col-sm-10">';
-        
+        $htmlRendering = '<div class="form-group formWrapper">';
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
             . 'id="formSuccess" '
@@ -230,11 +227,10 @@ class Full extends Generator
             . '</div>';
         
         $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].' novalidate>';
-        
+
         $formRendering = '';
 
         $tabRendering = '<div class="form-tabs-header">'
-            . '<div class="row">'
             . '<div class="col-xs-12 col-sm-10">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
@@ -255,7 +251,7 @@ class Full extends Generator
         }
         $formRendering .= '</ul></div>'
             . '<div class="clearfix visible-xs-block"></div>'
-            . '</div></div>';
+            . '</div>';
 
         $formRendering .= '<div class="tab-content">';
         $first = true;

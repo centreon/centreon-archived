@@ -6,9 +6,11 @@
    <div class="ibox float-e-margins">
         <div class="ibox-content">
             <!-- Add / Actions -->
+            {if $displayActionBar === true}
               <div class="configuration-actions">
                 <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectName}{/t}</button>
               </div>
+            {/if}
               <div class="btn-group" id="selected_option" style="display: none;">
                 <div class="btn-group btn-group-sm">
                   <button type="button" class="btnC btnDefault dropdown-toggle" data-toggle="dropdown">

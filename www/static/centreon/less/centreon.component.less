@@ -22,3 +22,36 @@
   z-index: 1;
   color: #27651a;
 }
+/*-- Form --*/
+.formWrapper {
+  margin-top: @paddingElem*3;
+}
+/*---- Notification --- */
+
+.bs-callout {
+  position: absolute;
+  color: @white;
+  width: 100%;
+  z-index: 1;
+  left: 0;
+  font-size:90%;
+  text-align: center;
+  padding: @paddingElem/2 0;
+  border-top: 3px solid;
+  top: 0;
+}
+
+.bs-callout-success {
+  background-color: fade(@success,30%);
+  color: @success;
+}
+
+.bs-callout-danger {
+  background-color: fade(@danger,30%);
+  color: @danger;
+}
+.bs-callout-info {
+  background-color: fade(@info,30%);
+  color: @info;
+
+}
