@@ -195,7 +195,7 @@ class HostController extends FormController
             TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
         }
         
-        Host::deployServices($id);
+        HostRepository::deployServices($id);
         
         $this->router->response()->json(array('success' => true));
     }

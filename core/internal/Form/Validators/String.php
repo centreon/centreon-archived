@@ -74,7 +74,6 @@ class String extends RespectValidationAbstract
         'xdigit',
     );
 
-
     /**
      * 
      * @param type $params
@@ -82,8 +81,9 @@ class String extends RespectValidationAbstract
     public function __construct($params)
     {
         parent::__construct($params);
+        $this->contextCall = 'string';
     }
-    
+
     /**
      * Prepare custom arguments
      */
@@ -91,11 +91,15 @@ class String extends RespectValidationAbstract
     {
         $length = array();
         foreach ($this->submittedValidators as $stringValidator) {
-            $validatorParamsAndValue = explode('=', $stringValidator);
-            
-            if ($validatorParamsAndValue[0] == 'minlength' || $validatorParamsAndValue[0] == 'maxlength') {
-                $length[$validatorParamsAndValue[0]] = $validatorParamsAndValue[1];
+            $stringValidator = json_decode($stringValidator, true);
+            //$validatorParamsAndValue = explode('=', $stringValidator);
+
+            foreach ($stringValidator as $myKey => $myValue) {
+                $length[$myKey] = $myValue;
             }
+            /*if ($validatorParamsAndValue[0] == 'minlength' || $validatorParamsAndValue[0] == 'maxlength') {
+                $length[$validatorParamsAndValue[0]] = $validatorParamsAndValue[1];
+            }*/
         }
         if (isset($length['minlength']) && isset($length['maxlength'])) {
             $this->submittedValidators[] = 'length=' . $length['minlength'] . ',' . $length['maxlength'];

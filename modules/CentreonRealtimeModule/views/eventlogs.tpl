@@ -86,23 +86,6 @@ $(function() {
     $($picker.element[0]).trigger('change');
   });
 
-  $("select[name='status']").select2({
-    placeholder: "{t}Status{/t}"
-  });
-
-  $("select[name='msg_type']").select2({
-    placeholder: "{t}Message type{/t}"
-  });
-
-  $("select[name='instance_name']").select2({
-    placeholder: "{t}Instance{/t}"
-  });
-
-  $("select[name='type']").select2({
-    placeholder: "{t}State type{/t}",
-    allowClear: true
-  });
-
   //jsUrl.graph = "{url_for url='/centreon-performance/graph'}";
   $(".infinite-scroll").on("click", ".event", function () {
     if ($(this).hasClass("active")) {
@@ -146,7 +129,18 @@ $(function() {
   //var reload = true;
   $("input.centreon-search").on("keyup", function(e) {
     var listSearch = [];
-    if (this.value.length > 2) {
+    if (e.which == 13) {
+      /* Fill the advanced search */
+      var advString = $("input[name='advsearch']").val();
+      var searchTag = $(this).data("searchtag");
+      var tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" );
+      var splitRegex = new RegExp( "(\\w+|\"[^\"]+\"|'[^']+')", "g" );
+      /* Remove the existing values */
+      advString = advString.replace( tagRegex, "").trim();
+      while (match = splitRegex.exec($(this).val())) {
+        advString += " " + searchTag + ":" + match[1];
+      }
+      $("input[name='advsearch']").val(advString.trim());
     }
   }).on("blur", function (e) {
     /* Fill the advanced search */
@@ -169,6 +163,7 @@ $(function() {
 
   $("#filters").on("submit", function(e) {
     e.preventDefault();
+    e.stopPropagation();
     runSearch();
   });
 
