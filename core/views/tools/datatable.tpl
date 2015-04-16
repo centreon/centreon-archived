@@ -9,7 +9,7 @@
               <div class="configuration-actions">
                 <button class="btnC btnSuccess" id="modalAdd">{t}Add {$objectName}{/t}</button>
               </div>
-              <div class="btn-group" id="selected_option" style="display: none;">
+              <div class="btn-group" id="selected_option" style="display: none; margin-left:75px">
                 <div class="btn-group btn-group-sm">
                   <button type="button" class="btnC btnDefault dropdown-toggle" data-toggle="dropdown">
                     {t}Actions{/t}
