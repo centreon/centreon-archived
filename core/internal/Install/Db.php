@@ -198,7 +198,7 @@ class Db
             $files = array_diff(scandir($path), array('.', '..'));
 
             foreach ($files as $file) {
-                Delete(realpath($path) . '/' . $file);
+                unlink(realpath($path) . '/' . $file);
             }
 
             return rmdir($path);
