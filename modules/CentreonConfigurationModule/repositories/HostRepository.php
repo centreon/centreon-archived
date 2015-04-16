@@ -229,15 +229,26 @@ class HostRepository extends Repository
     public static function getTemplateChain($hostId)
     {
         // @todo improve performance
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT h.host_id, h.host_name"
+            . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
+            . " WHERE h.host_id=htr.host_tpl_id"
+            . " AND htr.host_host_id=:host_id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetchAll();
+
         $templates = array();
-        $currentTemplates = static::getRelations(
-            '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-            $hostId
-        );
-        $templates = array_merge($templates, $currentTemplates);
-        foreach ($currentTemplates as $currentTemplate) {
-                $templates = array_merge($templates, self::getTemplateChain($currentTemplate['id']));
+        foreach ($row as $template) {
+            $templates[] = array(
+                "id" => $template['host_id'],
+                "text" => $template['host_name']
+            );
+            $templates = array_merge($templates, self::getTemplateChain($template['host_id']));
         }
+
         return $templates;
     }
     
@@ -316,7 +327,7 @@ class HostRepository extends Repository
         // get services linked to the host
         $aServicesDescription = array_values(array_column($aHostServices, 'service_description'));
 
-        //$db->beginTransaction();
+        $db->beginTransaction();
 
         // create services which don't yet exist
         foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
@@ -332,9 +343,7 @@ class HostRepository extends Repository
             }
         }
 
-        //var_dump("okkk\n");
-
-        //$db->commit();
+        $db->commit();
 
     }
 }
