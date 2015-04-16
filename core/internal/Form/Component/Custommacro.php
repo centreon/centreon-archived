@@ -110,6 +110,11 @@ class Custommacro extends Component
         // DefaultValue
         $functionCall = 'load' . ucfirst($element['label_object']) .'CustomMacro';
         $currentCustommacro = CustomMacroRepository::$functionCall($element['label_extra']['id']);
+        if ($element['label_object'] == 'host') {
+            $regex = '/^\$_HOST(.+)\$$/';
+        } else {
+            $regex = '/^\$_SERVICE(.+)\$$/';
+        }
         if (count($currentCustommacro) > 0) {
             $i = 0;
             foreach ($currentCustommacro as $cm) {
@@ -123,7 +128,7 @@ class Custommacro extends Component
                             <hr style="margin:2;"/>
                             <div class="row clone-cell">
                                 <div class="col-sm-1"><label class="label-controller">'._("Name").'</label></div>
-                                <div class="col-sm-3"><input class="form-control" name="macro_name[' . $i . ']" value="'.$cm['macro_name'].'"/></div>
+                                <div class="col-sm-3"><input class="form-control" name="macro_name[' . $i . ']" value="'. preg_replace($regex, '$1', $cm['macro_name']) .'"/></div>
                                 <div class="col-sm-1"><label class="label-controller">'._("Value").'</label></div>
                                 <div class="col-sm-3">
                                     <input class="hidden-value form-control" name="macro_value[' . $i . ']" value="'.$cm['macro_value'].'"/>
