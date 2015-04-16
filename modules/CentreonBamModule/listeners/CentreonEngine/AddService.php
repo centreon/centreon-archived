@@ -76,14 +76,15 @@ class AddService
             foreach ($resultBa as $ba) {
                 $addBamService = true;
                 foreach ($serviceList as &$service) {
-                    if ($service['display_name'] === $ba['name']) {
+                    if ($service['service_alias'] === $ba['name']) {
                         $addBamService = false;
                     }
+                    unset($service['service_alias']);
                 }
                 if ($addBamService) {
                     $dbconn->beginTransaction();
 
-                    $insertRequest = "INSERT INTO cfg_services(service_description, display_name, command_command_id, service_max_check_attempts, organization_id, service_register)"
+                    $insertRequest = "INSERT INTO cfg_services(service_description, service_alias, command_command_id, service_max_check_attempts, organization_id, service_register)"
                         . " VALUES(:ba, :name, :command_id, 3, 1, '2')";
                     $serviceName = 'ba_' . $ba['ba_id'];
                     $stmtInsert = $dbconn->prepare($insertRequest);
@@ -106,7 +107,6 @@ class AddService
                     $serviceList[$count]['service_id'] = $lastServiceId;
                     $serviceList[$count]['host_name'] = '_Module_BAM';
                     $serviceList[$count]['service_description'] = 'ba_' . $ba['ba_id'];
-                    $serviceList[$count]['display_name'] = $ba['name'];
                     $serviceList[$count]['host_id'] = $hostId;
                     $serviceList[$count]['service_register'] = '2';
                     $serviceList[$count]['check_command'] = $commandId;
