@@ -85,6 +85,16 @@ class ServiceTemplateDatatable extends Datatable
      */
     protected static  $aFieldNotAuthorized = array();
     
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'service'
+        )
+    );
+
+    //protected static $hook= 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'service'
+    );
     /**
      *
      * @var array 

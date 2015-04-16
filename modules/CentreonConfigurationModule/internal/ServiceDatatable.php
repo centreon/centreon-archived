@@ -246,18 +246,18 @@ class ServiceDatatable extends Datatable
             'tablename' => 'cfg_tags'
         ),
     );
-    /*
+ 
     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'service'
         )
     );
 
-    protected static $hook= 'displayTagList';
+    //protected static $hook= 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'service'
     );
-    */
+  
     /**
      * 
      * @param array $params

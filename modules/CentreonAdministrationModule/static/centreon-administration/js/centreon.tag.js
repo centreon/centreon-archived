@@ -4,7 +4,7 @@ $(function () {
   function saveTag( $newTag ) {
     var tmplTagCmpl,
         tmplTag = "<div class='tag' data-resourceid='<%resourceid%>' data-resourcetype='<%resourcetype%>' data-tagid='<%tagid%>'>"
-          + "<div class='title'><%tagname%></div>"
+          + "<div class='tagname'><%tagname%></div>"
           + "<div class='remove'><a href='#'>&times;</a></div>"
           + "</div>";
         tagName = $newTag.find( "input" ).val().trim();
@@ -54,8 +54,7 @@ $(function () {
     } else {
       $( this ).parent().removeClass( "noborder" );
       $newTag.find( ".title > input" ).animate({
-        width: "100px",
-        padding: "0px"
+        width: "100px"
       });
       $newTag.find( "input" ).focus();
       tagExpand = true;
@@ -104,8 +103,8 @@ $(function () {
       return;
     }
     $( ".addtag input" ).animate({
-      width: "0",
-      padding: "0"
+      width: 0,
+      padding: 0
     }).val( "" );
     $( ".addtag .remove" ).addClass( "noborder" );
     tagExpand = false;

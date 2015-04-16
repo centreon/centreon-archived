@@ -47,4 +47,38 @@ class BusinessActivity extends CentreonBaseModel
     protected static $table = "cfg_bam";
     protected static $primaryKey = "ba_id";
     protected static $uniqueLabelField = "name";
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $aAddFilters = array();
+        $tablesString =  null;
+         
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_bas'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_bas.tag_id', 'cfg_tags.tag_id = cfg_tags_bas.tag_id',
+                    'cfg_tags_bas.resource_id = cfg_bam.ba_id ')
+            ); 
+        }
+        
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters);
+    }
 }

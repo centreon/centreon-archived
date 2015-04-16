@@ -13,7 +13,8 @@ then
     moduleList="centreon-main centreon-administration centreon-configuration centreon-realtime centreon-performance centreon-bam centreon-customview"
     
     for module in $moduleList
-    do 
+    do
+	echo "Reinstall module : $module " 
         ./external/bin/centreonConsole core:module:manage:reinstall moduleName=$module
     done
     

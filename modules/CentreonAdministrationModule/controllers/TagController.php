@@ -57,9 +57,6 @@ class TagController extends Controller
     */
     
     
-    
-    
-    
     protected $objectDisplayName = 'Tag';
     public static $objectName = 'tag';
    // protected $objectBaseUrl = '/centreon-administration/tag';
@@ -70,10 +67,6 @@ class TagController extends Controller
     
     protected $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
     public static $isDisableable = true;
-    
-    
-    
-    
     
     /**
      *
