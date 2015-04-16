@@ -62,7 +62,6 @@ class HostRepository extends Repository
         'command_command_id',
         'command_command_id_arg1',
         'timeperiod_tp_id',
-        'timeperiod_tp_id2',
         'command_command_id2',
         'command_command_id_arg2',
         'host_max_check_attempts',
@@ -79,10 +78,6 @@ class HostRepository extends Repository
         'host_high_flap_threshold',
         'host_flap_detection_enabled',
         'flap_detection_options',
-        'host_process_perf_data',
-        'host_retain_status_information',
-        'host_retain_nonstatus_information',
-        'host_stalking_options',
         'host_snmp_community',
         'host_snmp_version'
     );
