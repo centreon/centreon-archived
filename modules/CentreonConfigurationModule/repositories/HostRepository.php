@@ -321,7 +321,19 @@ class HostRepository extends Repository
                 array('host_id' => $oHostTemplate['id']),
                 "OR"
             );
-            $aHostServiceTemplates = array_merge($aHostServiceTemplates, $aHostTemplateServiceTemplates);
+
+            // Remove services with same description
+            foreach ($aHostTemplateServiceTemplates as $oHostTemplateServiceTemplate) {
+                $merge = true;
+                foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
+                    if ($oHostTemplateServiceTemplate['service_description'] === $oHostServiceTemplate['service_description']) {
+                        $merge = false;
+                    }
+                }
+                if ($merge) {
+                    $aHostServiceTemplates[] = $oHostTemplateServiceTemplate;
+                }
+            }
         }
 
         // get services linked to the host
