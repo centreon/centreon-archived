@@ -211,11 +211,8 @@ class Full extends Generator
     {
         $formElements = $this->formHandler->toSmarty();
 
-        
-        $htmlRendering = '<div class="row">';
 
-        $htmlRendering = '<div class="col-sm-offset-1 col-sm-10">';
-        
+        $htmlRendering = '<div class="form-group formWrapper">';
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
             . 'id="formSuccess" '

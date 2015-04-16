@@ -246,12 +246,12 @@ class HostTemplateDatatable extends Datatable
         $router = Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/snapshot/').
-                $myHostSet['host_id'].
-                '"><span class="overlay">'.
-                $myHostSet['host_name'].
-                '</span></span>';
+            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name'])
+                . '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/snapshot/')
+                . $myHostSet['host_id']
+                . '"><span class="overlay">'
+                . $myHostSet['host_name']
+                . '</span></span>';
             
             /* Templates */
             $myHostSet['host_template']  = "";
