@@ -127,8 +127,8 @@ $(function () {
     $body.html(
       "<form role='form'><div class='form-group'>"
       + "Tag name <input type='text' class='form-control' name='tagName'>"
-      + "Personnal <input type='radio' class='form-control' value='2' name='typetag' checked>"
-      + "Global <input type='radio' class='form-control' value='1' name='typetag'>"
+      + "Personnal <input type='radio'  value='2' name='typetag' checked>"
+      + "Global <input type='radio'  value='1' name='typetag'>"
       + "</div></form>"
     );
     $footer.html(
