@@ -126,7 +126,9 @@ $(function () {
     );
     $body.html(
       "<form role='form'><div class='form-group'>"
-      + "<input type='text' class='form-control' name='tagName'>"
+      + "Tag name <input type='text' class='form-control' name='tagName'>"
+      + "Personnal <input type='radio' class='form-control' value='2' name='typetag' checked>"
+      + "Global <input type='radio' class='form-control' value='1' name='typetag'>"
       + "</div></form>"
     );
     $footer.html(
@@ -145,10 +147,12 @@ $(function () {
       $( ".selected" ).each( function( idx, value ) {
         listObject.push( $( value ).data('id') );
       });
+      var typetag = $("input[name='typetag']:checked" ).val();
       $.ajax({
         url: jsUrl.tag.add,
         data: {
           tagName: name,
+          typeTag : typetag,
           resourceName: $( "#addToTag" ).data( "resourcetype" ),
           resourceId: listObject
         },

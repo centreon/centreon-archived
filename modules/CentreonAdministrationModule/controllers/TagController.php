@@ -50,11 +50,11 @@ use CentreonAdministration\Internal\TagDatatable;
  */
 class TagController extends Controller
 {
-    /*
-    protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
+
+    //protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
     
-    protected $objectClass = '\CentreonAdministration\Models\Tag';
-    */
+    //protected $objectClass = '\CentreonAdministration\Models\Tag';
+ 
     
     
     protected $objectDisplayName = 'Tag';
@@ -85,19 +85,23 @@ class TagController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $post = $router->request()->paramsPost();
+        $sGlobal = 0;
 
         if (!is_array($post['resourceId'])) {
             $listResources = array($post['resourceId']);
         } else {
             $listResources = $post['resourceId'];
         }
-        
+        if (isset($post['typeTag']) && $post['typeTag'] == 1) {
+            $sGlobal = 1;
+        }
      
         foreach ($listResources as $resourceId) {
             $tagId = TagsRepository::add(
                 $post['tagName'],
                 $post['resourceName'],
-                $resourceId
+                $resourceId,
+                $sGlobal
             );
         }
         return $router->response()->json(array('success' => true, 'tagId' => $tagId));
@@ -139,6 +143,7 @@ class TagController extends Controller
         }
         $this->router->response()->json($data);
     }
+    
     
     /**
      * get all tag
