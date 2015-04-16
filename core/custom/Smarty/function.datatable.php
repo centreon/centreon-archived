@@ -60,8 +60,10 @@ function smarty_function_datatable($params, $smarty)
     $smarty->assign('datatableParameters', $datatableParameters);
     
     if ($params['configuration']) {
-        return $smarty->fetch('tools/datatable.tpl');
+        $smarty->assign('displayActionBar', true);
+    } else {
+        $smarty->assign('displayActionBar', false);
     }
     
-    return $smarty->fetch('tools/datatable-table.tpl');
+    return $smarty->fetch('tools/datatable.tpl');
 }
