@@ -41,6 +41,7 @@ use Centreon\Internal\Api;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Exception\Validator\MissingParameterException;
 use Centreon\Internal\Exception\Http\BadRequestException;
+use Centreon\Internal\Exception\HttpException;
 
 /**
  * Description of BasicCrudApi
@@ -354,6 +355,8 @@ class BasicCrudApi extends Api
                         $this->objectBaseUrl . '/update'
                     );
                     $object[] = $repository::load($idOfCreatedElement);
+                } else {
+                    throw new BadRequestException('Wrong Type', 'The type you set does not match expected');
                 }
             }
 
@@ -364,6 +367,8 @@ class BasicCrudApi extends Api
             if ($ex->getCode() == 23000) {
                 $this->router->response()->code(409);
             }
+        } catch (HttpException $ex) {
+            $this->router->response()->code($ex->getCode())->json($ex->getMessage());
         } catch (Exception $ex) {
             $this->router->response()->code(500);
         }
