@@ -48,4 +48,39 @@ class Contact extends CentreonBaseModel
     protected static $table = "cfg_contacts";
     protected static $primaryKey = "contact_id";
     protected static $uniqueLabelField = "description";
+    
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $aAddFilters = array();
+
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_contacts'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_contacts.tag_id', 
+                    'cfg_tags_contacts.resource_id = cfg_contacts.contact_id ')
+            ); 
+        }
+
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
+    }
+    
 }

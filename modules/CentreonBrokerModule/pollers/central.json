@@ -95,6 +95,13 @@
                         "name": "correlation",
                         "filepath": "%global_broker_etc_directory%/correlation.xml"
                       }
+                    ],
+                    "stats": [
+                      {
+                        "type": "stats",
+                        "name": "stats-central-broker",
+                        "fifo": "/var/lib/centreon-broker/stats-central-broker.fifo"
+                      }
                     ]
                   },
                   {
@@ -128,6 +135,13 @@
                       {
                         "type": "file",
                         "name": "%global_broker_logs_directory%/central-rrd.log"
+                      }
+                    ],
+                    "stats": [
+                      {
+                        "type": "stats",
+                        "name": "stats-central-rrd",
+                        "fifo": "/var/lib/centreon-broker/stats-central-rrd.fifo"
                       }
                     ]
                   }

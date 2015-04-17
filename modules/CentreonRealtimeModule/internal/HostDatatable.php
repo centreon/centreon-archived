@@ -224,18 +224,18 @@ class HostDatatable extends Datatable
             'tablename' => 'cfg_tags'
         ),
     );
-/*
+
     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'host'
         )
     );
 
-    protected static $hook = 'displayTagList';
+    //protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'host'
     );
-    */
+
     /**
      * 
      * @param array $params

@@ -62,7 +62,6 @@ class HostRepository extends Repository
         'command_command_id',
         'command_command_id_arg1',
         'timeperiod_tp_id',
-        'timeperiod_tp_id2',
         'command_command_id2',
         'command_command_id_arg2',
         'host_max_check_attempts',
@@ -79,10 +78,6 @@ class HostRepository extends Repository
         'host_high_flap_threshold',
         'host_flap_detection_enabled',
         'flap_detection_options',
-        'host_process_perf_data',
-        'host_retain_status_information',
-        'host_retain_nonstatus_information',
-        'host_stalking_options',
         'host_snmp_community',
         'host_snmp_version'
     );
@@ -226,30 +221,34 @@ class HostRepository extends Repository
      * @param int $hostId The host template Id
      * @return array
      */
-    public static function getTemplateChain($hostId)
+    public static function getTemplateChain($hostId, $alreadyProcessed = array())
     {
-        // @todo improve performance
-        $db = Di::getDefault()->get('db_centreon');
-
-        $sql = "SELECT h.host_id, h.host_name"
-            . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
-            . " WHERE h.host_id=htr.host_tpl_id"
-            . " AND htr.host_host_id=:host_id";
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetchAll();
-
         $templates = array();
-        foreach ($row as $template) {
-            $templates[] = array(
-                "id" => $template['host_id'],
-                "text" => $template['host_name']
-            );
-            $templates = array_merge($templates, self::getTemplateChain($template['host_id']));
-        }
+        if (in_array($hostId, $alreadyProcessed)) {
+            return $templates;
+        } else {
+            $alreadyProcessed[] = $hostId;
+            // @todo improve performance
+            $db = Di::getDefault()->get('db_centreon');
 
-        return $templates;
+            $sql = "SELECT h.host_id, h.host_name"
+                . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
+                . " WHERE h.host_id=htr.host_tpl_id"
+                . " AND htr.host_host_id=:host_id";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetchAll();
+
+            foreach ($row as $template) {
+                $templates[] = array(
+                    "id" => $template['host_id'],
+                    "text" => $template['host_name']
+                );
+                $templates = array_merge($templates, self::getTemplateChain($template['host_id'], $alreadyProcessed));
+            }
+            return $templates;
+        }
     }
     
     /**

@@ -174,18 +174,9 @@ class BrokerRepository
     {
         $content = json_decode(file_get_contents($fileTpl), true);
         if (count($finalFileTpl) > 0) {
-            //foreach ($finalFileTpl as &$finalConfBlock) {
-                //if ($finalFileTpl['name'] === $content['name']) {
-                    foreach ($content['content']['broker']['setup'] as $setup) {
-                        $finalFileTpl['content']['broker']['setup'] = static::mergeBrokerConfSetup($finalFileTpl['content']['broker']['setup'], $setup);
-                    }
-                    //$finalConfBlock['content']['broker']['setup'] = static::concatBrokerConfSetup($finalConfBlock['content']['broker']['setup'], $content['content']['broker']['setup']);
-                /*} else {
-                    $count = count($finalFileTpl);
-                    $finalConfBlock[$count]['name'] = $confBlock['name'];
-                    $finalConfBlock[$count]['content'] = $confBlock['content'];
-                }*/
-            //}
+            foreach ($content['content']['broker']['setup'] as $setup) {
+                $finalFileTpl['content']['broker']['setup'] = static::mergeBrokerConfSetup($finalFileTpl['content']['broker']['setup'], $setup);
+            }
         } else {
             $finalFileTpl = $content;
         }
@@ -200,8 +191,6 @@ class BrokerRepository
      */
     public static function mergeBrokerConfSetup($finalSetup, $tmpSetup)
     {
-        //var_dump($tmpSetup);
-        //var_dump($finalSetup);
         foreach ($finalSetup as &$setup) {
             if ($setup['name'] === $tmpSetup['name']) {
                 foreach ($tmpSetup['params']['mode'] as $mode) {
@@ -267,9 +256,9 @@ class BrokerRepository
                     $property['correlation'] = isset($property['correlation']) ? $property['correlation'] : array();
                     $property['correlation'] = array_merge($property['correlation'], $tmpProperty['correlation']);
                 }
-                if (isset ($tmpProperty['statistics'])) {
-                    $property['statistics'] = isset($property['statistics']) ? $property['statistics'] : array();
-                    $property['statistics'] = array_merge($property['statistics'], $tmpProperty['statistics']);
+                if (isset ($tmpProperty['stats'])) {
+                    $property['stats'] = isset($property['stats']) ? $property['stats'] : array();
+                    $property['stats'] = array_merge($property['stats'], $tmpProperty['stats']);
                 }
             }
         }

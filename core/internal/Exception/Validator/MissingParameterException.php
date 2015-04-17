@@ -49,7 +49,7 @@ class MissingParameterException extends Exception
      * @param type $message
      * @param type $previous
      */
-    public function __construct($message, $internalCode = '', $previous = null)
+    public function __construct($message, $internalCode = 400, $previous = null)
     {
         parent::__construct($message, $internalCode, $previous);
     }

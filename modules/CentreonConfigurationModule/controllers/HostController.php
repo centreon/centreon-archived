@@ -174,14 +174,18 @@ class HostController extends FormController
         }
         
         //get Tag for hostTemplate
-        if (isset($givenParameters['host_hosttemplates'])) {
+        if (isset($givenParameters['host_hosttemplates']) && !empty($givenParameters['host_hosttemplates'])) {
             $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
             $aTemplate = array_diff( $aTemplate, array( '' ) );
+
             foreach ($aTemplate as $eTemplate) {
-                $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
-                foreach ($aTagsTemplates as $key => $oTpl) {
-                    if (!in_array($oTpl['text'], array_values($aTags))) {
-                        array_push($aTags, $oTpl['text']);
+                $eTemplate = trim($eTemplate);
+                if (!empty($eTemplate)) {
+                    $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                    foreach ($aTagsTemplates as $key => $oTpl) {
+                        if (!in_array($oTpl['text'], array_values($aTags))) {
+                            array_push($aTags, $oTpl['text']);
+                        }
                     }
                 }
             }
@@ -255,10 +259,13 @@ class HostController extends FormController
             $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
             $aTemplate = array_diff( $aTemplate, array( '' ) );
             foreach ($aTemplate as $eTemplate) {
-                $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
-                foreach ($aTagsTemplates as $key => $oTpl) {
-                    if (!in_array($oTpl['text'], array_values($aTags))) {
-                        array_push($aTags, $oTpl['text']);
+                $eTemplate = trim($eTemplate);
+                if (!empty($eTemplate)) {
+                    $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                    foreach ($aTagsTemplates as $key => $oTpl) {
+                        if (!in_array($oTpl['text'], array_values($aTags))) {
+                            array_push($aTags, $oTpl['text']);
+                        }
                     }
                 }
             }

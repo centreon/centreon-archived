@@ -91,6 +91,7 @@ class TagsRepository
         /* Insert relation tag */
         $query = "INSERT INTO cfg_tags_" . $resourceName . "s (tag_id, resource_id)
             VALUES (:tag_id, :resource_id)";
+                
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':tag_id', $tagId, \PDO::PARAM_INT);
         $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
@@ -267,7 +268,7 @@ class TagsRepository
         if (!in_array($resourceName, static::$resourceType)) {
             throw new Exception("This resource type does not support tags.");
         }
-        
+
         $dbconn = Di::getDefault()->get('db_centreon');
         $aTagNotDelete = array();
         foreach ($submittedValues as $s => $tagName) {
@@ -280,16 +281,26 @@ class TagsRepository
         }
         $sQuery = "DELETE FROM cfg_tags_" . $resourceName . "s WHERE resource_id = ".$objectId." "
                 . "AND tag_id in (select tag_id from cfg_tags where user_id is null)";
-        
+        /*
         if (isset($sLisTagNotDelete)) {
             $sQuery .= " AND tag_id NOT IN (".$sLisTagNotDelete.")";
         }
+         */
 
         $dbconn->query($sQuery);  
 
         foreach ($submittedValues as $s => $tagName) {
             if (!is_numeric($tagName)) {
                 self::add($tagName, $resourceName, $objectId, 1);
+            } else {
+
+                $query = "INSERT INTO cfg_tags_" . $resourceName . "s (tag_id, resource_id)
+                    VALUES (:tag_id, :resource_id)";
+
+                $stmt = $dbconn->prepare($query);
+                $stmt->bindParam(':tag_id', $tagName, \PDO::PARAM_INT);
+                $stmt->bindParam(':resource_id', $objectId, \PDO::PARAM_INT);
+                $stmt->execute();
             }
         }
       

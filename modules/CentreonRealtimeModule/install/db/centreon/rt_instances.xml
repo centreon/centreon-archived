@@ -22,6 +22,7 @@
         <column name="last_log_rotation" phpName="LastLogRotation" type="INTEGER" required="false"/>
         <column name="modified_host_attributes" phpName="ModifiedHostAttributes" type="INTEGER" required="false"/>
         <column name="modified_service_attributes" phpName="ModifiedServiceAttributes" type="INTEGER" required="false"/>
+        <column name="notifications" phpName="Notifications" type="BOOLEAN" size="1" required="false"/>
         <column name="obsess_over_hosts" phpName="ObsessOverHosts" type="BOOLEAN" size="1" required="false"/>
         <column name="obsess_over_services" phpName="ObsessOverServices" type="BOOLEAN" size="1" required="false"/>
         <column name="passive_host_checks" phpName="PassiveHostChecks" type="BOOLEAN" size="1" required="false"/>
