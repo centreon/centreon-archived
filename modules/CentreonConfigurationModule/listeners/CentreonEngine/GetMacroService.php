@@ -56,11 +56,6 @@ class GetMacroService
             foreach ($arr as $domainName) {
                 $event->setMacro($serviceId, self::MACRO_DOMAIN, $domainName);
             }
-            
-            $arrCustomMacro = CustomMacroRepository::loadServiceCustomMacro($serviceId);
-            foreach ($arrCustomMacro as $customMacro) {
-                $event->setMacro($serviceId, $customMacro['macro_name'], $customMacro['macro_value']);
-            }
         }
     }
 }
