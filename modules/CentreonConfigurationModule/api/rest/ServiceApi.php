@@ -41,15 +41,6 @@ class ServiceApi extends BasicCrudApi
 {
     public $objectName = 'service';
     
-    public $relationMap = array(
-        'service_hosts' => '\CentreonConfiguration\Models\Relation\Service\Host',
-        'service_parents' => '\CentreonConfiguration\Models\Relation\Service\Serviceparent',
-        'service_childs' => '\CentreonConfiguration\Models\Relation\Service\Servicechild',
-        'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
-        'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Service',
-        'service_icon' => '\CentreonConfiguration\Models\Relation\Service\Icon'
-    );
-    
     public function __construct($request)
     {
         parent::__construct($request);
