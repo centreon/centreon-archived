@@ -10,7 +10,7 @@
     {block name="style-head"}{/block}
 </head>
 
-<body class="bodyCntr mini-navbar">
+<body class="bodyCntr">
     <span id="flash-message"></span>
 <!-- Commentaire de test-->
 <div class="mainCntr" id="mainCntr"> <!-- Global Wrapper -->
