@@ -51,38 +51,26 @@ class AddHost
 
         $dbconn = Di::getDefault()->get('db_centreon');
 
-        $selectRequest = "SELECT COUNT(poller_id) as poller"
-            . " FROM cfg_centreonbroker cb, cfg_centreonbroker_info cbi"
-            . " WHERE cb.poller_id=:id"
-            . " AND cb.config_id=cbi.config_id"
-            . " AND cbi.config_value='bam'";
-        $stmtSelect = $dbconn->prepare($selectRequest);
-        $stmtSelect->bindParam(':id', $pollerId, \PDO::PARAM_INT);
-        $stmtSelect->execute();
-        $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
-
-        if ($result[0]['poller'] > 0) {
-            $addBamHost = true;
-            foreach ($hostList as &$host) {
-                if ($host['host_name'] === '_Module_BAM') {
-                    $addBamHost = false;
-                }
+        $addBamHost = true;
+        foreach ($hostList as &$host) {
+            if ($host['host_name'] === '_Module_BAM') {
+                $addBamHost = false;
             }
-            if ($addBamHost) {
-                $insertRequest = "INSERT INTO cfg_hosts(host_name, host_address, host_max_check_attempts, poller_id, organization_id, host_register)"
-                    . " VALUES('_Module_BAM', '127.0.0.1', '3', :id, 1, '2')";
-                $stmtInsert = $dbconn->prepare($insertRequest);
-                $stmtInsert->bindParam(':id', $pollerId, \PDO::PARAM_INT);
-                $stmtInsert->execute();
-                $lastHostId = $dbconn->lastInsertId('cfg_hosts','host_id');
-                $count = count($hostList);
+        }
+        if ($addBamHost) {
+            $insertRequest = "INSERT INTO cfg_hosts(host_name, host_address, host_max_check_attempts, poller_id, organization_id, host_register)"
+                . " VALUES('_Module_BAM', '127.0.0.1', '3', :id, 1, '2')";
+            $stmtInsert = $dbconn->prepare($insertRequest);
+            $stmtInsert->bindParam(':id', $pollerId, \PDO::PARAM_INT);
+            $stmtInsert->execute();
+            $lastHostId = $dbconn->lastInsertId('cfg_hosts','host_id');
+            $count = count($hostList);
 
-                $hostList[$count]['host_id'] = $lastHostId;
-                $hostList[$count]['host_name'] = '_Module_BAM';
-                $hostList[$count]['host_address'] = '127.0.0.1';
-                $hostList[$count]['host_register'] = '2';
-                $hostList[$count]['host_max_check_attempts'] = '3';
-            }
+            $hostList[$count]['host_id'] = $lastHostId;
+            $hostList[$count]['host_name'] = '_Module_BAM';
+            $hostList[$count]['host_address'] = '127.0.0.1';
+            $hostList[$count]['host_register'] = '2';
+            $hostList[$count]['host_max_check_attempts'] = '3';
         }
         $event->setHostList($hostList);
     }
