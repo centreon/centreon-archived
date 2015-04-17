@@ -59,20 +59,20 @@ class TagController extends Controller
     
     protected $objectDisplayName = 'Tag';
     public static $objectName = 'tag';
-   // protected $objectBaseUrl = '/centreon-administration/tag';
+    protected $objectBaseUrl = '/centreon-administration/tag';
     protected $objectClass = '\CentreonAdministration\Models\Tag';
     protected $repository = '\CentreonAdministration\Repository\TagRepository';
     
     public static $relationMap = array();
     
     protected $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
-    public static $isDisableable = true;
+    public static $isDisableable = false;
     
     /**
      *
      * @var type 
      */
-    protected $objectBaseUrl = '/tag'; 
+    //protected $objectBaseUrl = '/tag'; 
     
     /**
      * Add a tag
@@ -157,11 +157,10 @@ class TagController extends Controller
         $data = TagsRepository::getAllList();
         $this->router->response()->json($data);
     }
-        
     /**
-     * 
+     *
      * @method get
-     * @route /tag
+     * @route /tag/list
      */
     public function datatableAction()
     {
@@ -172,5 +171,66 @@ class TagController extends Controller
         $myDataForDatatable = $myDatatable->getDatas();
           
         $router->response()->json($myDataForDatatable);
+    }
+    
+    
+    /**
+     * 
+     * @method get
+     * @route /tag
+     */
+    public function listeAction()
+    {
+        // Load CssFile
+        $this->tpl->addCss('jquery.fileupload.css');
+
+        /* Load CssFile */
+        $this->tpl->addCss('dataTables.tableTools.min.css')
+            ->addCss('jquery.fileupload.css')
+            ->addCss('dataTables.colVis.min.css')
+            ->addCss('dataTables.colReorder.min.css')
+            ->addCss('select2.css')
+            ->addCss('select2-bootstrap.css')
+            ->addCss('centreon-wizard.css');
+
+        /* Load JsFile */
+        $this->tpl->addJs('jquery.dataTables.min.js')
+            ->addJs('dataTables.tableTools.min.js')
+            ->addJs('dataTables.colVis.min.js')
+            ->addJs('dataTables.colReorder.min.js')
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('dataTables.bootstrap.js')
+            ->addJs('jquery.select2/select2.min.js')
+            ->addJs('jquery.validation/jquery.validate.min.js')
+            ->addJs('jquery.validation/additional-methods.min.js')
+            ->addJs('centreon.search.js')
+            ->addJs('centreon-clone.js')
+            ->addJs('tmpl.min.js')
+            ->addJs('load-image.min.js')
+            ->addJs('canvas-to-blob.min.js')
+            ->addJs('jquery.fileupload.js')
+            ->addJs('jquery.fileupload-process.js')
+            ->addJs('jquery.fileupload-image.js')
+            ->addJs('jquery.fileupload-validate.js')
+            ->addJs('jquery.fileupload-ui.js')
+            ->addJs('bootstrap3-typeahead.js')
+            ->addJs('centreon-wizard.js')
+            ->addJs('moment-with-locales.js')
+            ->addJs('moment-timezone-with-data.min.js');
+        
+        
+        /* Display variable */
+        $this->tpl->assign('objectName', $this->objectDisplayName);
+        $this->tpl->assign('datatableObject', $this->datatableObject);
+        $this->tpl->assign('moduleName', static::$moduleName);
+        $this->tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
+        $this->tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
+        $this->tpl->assign('isDisableable', static::$isDisableable);
+        
+        
+
+        $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
+        $this->tpl->display('file:[CentreonAdministrationModule]list.tpl');
     }
 }
