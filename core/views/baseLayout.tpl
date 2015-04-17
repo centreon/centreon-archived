@@ -179,7 +179,7 @@
         
         <div class="row bottombar">
 
-                <div  class="footer_links col-sm-8 col-md-3">
+                <div  class="footer_links col-sm-8 col-md-4">
                     <a href="http://documentation.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Documentation{/t}"><i class="fa fa-book"></i></a>
                     <a href="https://github.com/centreon/centreon" data-toggle="tooltip" data-placement="top" title="{t}Source{/t}"><i class="fa fa-github"></i></a>
                     <a href="http://forge.centreon.com" data-toggle="tooltip" data-placement="top" title="{t}Forge{/t}"><i class="fa fa-inbox"></i></a>
@@ -190,7 +190,7 @@
                     <a href="http://www.centreon.com/" data-toggle="tooltip" data-placement="top" title="{t}Web{/t}"><i class="fa fa-desktop"></i></a>
                 </div>
 
-                <p class="signature col-sm-4 col-md-3 col-md-offset-5"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2015</p>
+                <p class="signature col-sm-4 col-md-4 col-md-offset-4"> <a href="http://www.centreon.com/">Centreon </a><small>Beta</small> &copy; 2005-2015</p>
        </div>
 
        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">

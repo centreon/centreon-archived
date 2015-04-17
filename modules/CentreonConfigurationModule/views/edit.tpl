@@ -95,9 +95,6 @@
         });
         
         $(function () {
-            $("#formHeader").parent().parent().append(
-                $('<div class="col-md-12"></div>').append($("#advanced_mode_switcher"))
-            );
 
             {if isset($inheritanceUrl)}
             $.ajax({
