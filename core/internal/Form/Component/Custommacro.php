@@ -94,11 +94,11 @@ class Custommacro extends Component
                                     <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[#index#]" />
                                 </div>
                                 <div class="col-sm-2">
-                                    <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i><span>
+                                    <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i></span>
                                     &nbsp;
                                     <span class="remove-trigger" style="cursor:pointer;">
                                         <i class="fa fa-times-circle"></i>
-                                    <span>
+                                    </span>
                                 </div>
                             </div>
                             <input 
@@ -138,11 +138,11 @@ class Custommacro extends Component
                                     <input class="hidden-value-trigger" type="checkbox" name="macro_hidden[' . $i . ']" '.$cm['macro_hidden'].' />
                                 </div>
                                 <div class="col-sm-2">
-                                    <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i><span>
+                                    <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i></span>
                                     &nbsp;
                                     <span class="remove-trigger" style="cursor:pointer;">
                                         <i class="fa fa-times-circle"></i>
-                                    <span>
+                                    </span>
                                 </div>
                             </div>
                             <input 
