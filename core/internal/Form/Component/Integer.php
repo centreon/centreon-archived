@@ -68,7 +68,7 @@ class Integer extends Component
         
         $myJs = "";
         
-        $inputHtml = '<span><input '.
+        $inputHtml = '<input '.
                         'id="'.$element['id'].'" '.
                         'type="number" '.
                         'name="'.$element['name'].'" '.
@@ -76,7 +76,7 @@ class Integer extends Component
                         'class="form-control input-sm '.$addClass.'" '.
                         $placeholder.
                         $required .
-                        '/><span>';
+                        '/>';
         
         
         return array(

@@ -48,7 +48,6 @@ function smarty_function_environment_user($params, $template) {
     $m = \Centreon\Internal\Di::getDefault()->get('menu');
     $envmenu = $m->getMenu(null, null, 'user');
     foreach ($envmenu as $menu) {
-        $html .= '<li>';
         $html .= '<a href="#" class="envmenu" data-menu="' . $menu['menu_id'] . '">';
         if (isset($menu['icon_class']) && $menu['icon_class']) {
             // $html .= "<i class=\"{$menu['icon_class']}\"></i>";
@@ -57,7 +56,6 @@ function smarty_function_environment_user($params, $template) {
         }
         $html .= " " . $menu['name'];
         $html .= "</a>";
-        $html .= "</li>";
     }
     return $html;
 }

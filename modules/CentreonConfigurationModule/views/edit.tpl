@@ -96,7 +96,7 @@
         
         $(function () {
             $("#formHeader").parent().parent().append(
-                $('<div class="col-xs-12 col-sm-2"></div>').append($("#advanced_mode_switcher"))
+                $('<div class="col-md-12"></div>').append($("#advanced_mode_switcher"))
             );
 
             {if isset($inheritanceUrl)}

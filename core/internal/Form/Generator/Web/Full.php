@@ -231,7 +231,7 @@ class Full extends Generator
         $formRendering = '';
 
         $tabRendering = '<div class="form-tabs-header">'
-            . '<div class="col-xs-12 col-sm-10">'
+            . '<div class="col-md-12">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
         $first = true;
@@ -249,9 +249,8 @@ class Full extends Generator
                 .'</a>'
                 . '</li>';
         }
-        $formRendering .= '</ul></div>'
-            . '<div class="clearfix visible-xs-block"></div>'
-            . '</div>';
+        $formRendering .= '</ul></div>' // end col-md-12
+            . '</div>'; // end form-tabs-header
 
         $formRendering .= '<div class="tab-content">';
         $first = true;

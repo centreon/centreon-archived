@@ -1,7 +1,12 @@
+html {
+  background-color: fade(@black,10%);
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     font-size: @defaultFontSize;
     overfolow-x : hidden;
+    background-color: transparent;
 }
 #mainCntr {
   width: 100%;
@@ -9,9 +14,8 @@ body {
 }
 
 #pageWrapper {
-  min-height: 568px;
+  //min-height: 568px;
   position: relative;
-  background-color: fade(@black,8%);
 }
 .logo {
     min-height: 50px;
@@ -105,7 +109,6 @@ body {
   min-height: 48px;
 }
 .ibox-content {
-  background-color: #ffffff;
   color: inherit;
   border-color: #e7eaec;
   border-image: none;

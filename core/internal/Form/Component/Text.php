@@ -68,7 +68,7 @@ class Text extends Component
         
         $myJs = '';
 
-        $inputHtml = '<span><input '.
+        $inputHtml = '<input '.
                         'id="'.$element['id'].'" '.
                         'type="text" '.
                         'name="'.$element['name'].'" '.
@@ -76,7 +76,7 @@ class Text extends Component
                         'class="form-control input-sm '.$addClass.'" '.
                         $placeholder.
                         $required .
-                        '/><span>';
+                        '/>';
         
         return array(
             'html' => $inputHtml,
