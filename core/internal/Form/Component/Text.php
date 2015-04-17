@@ -76,7 +76,7 @@ class Text extends Component
                         'class="form-control input-sm '.$addClass.'" '.
                         $placeholder.
                         $required .
-                        '/><span>';
+                        '/></span>';
         
         return array(
             'html' => $inputHtml,
