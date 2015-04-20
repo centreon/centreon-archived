@@ -229,7 +229,7 @@ class BasicCrud extends AbstractCommand
         $repository = $this->repository;
 
         //
-        $fields = (!id_null($fields)) ? $fields : '*';
+        $fields = (!is_null($fields)) ? $fields : '*';
         
         $object = $repository::load($objectSlug, $fields);
         $this->normalizeSingleSet($object);
