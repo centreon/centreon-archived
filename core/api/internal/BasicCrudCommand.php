@@ -62,11 +62,10 @@ class BasicCrudCommand extends BasicCrud
     {
         $objectList = parent::listAction($fields, $count, $offset);
         
-        $selectedFields = (!is_null($fields)) ? $fields : implode(',', $this->liteAttributesSet);
-        
         // Displaying
         if (count($objectList) > 0) {
-            $result = $selectedFields . "\n";
+            $selectedFields = array_keys($objectList[0]);
+            $result = implode(';', $selectedFields) . "\n";
             foreach ($objectList as $object) {
                 $result .= implode(';', $object) . "\n";
             }
