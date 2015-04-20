@@ -49,29 +49,12 @@ class AddHost
         $pollerId = $event->getPollerId();
         $hostList = $event->getHostList();
 
-        $dbconn = Di::getDefault()->get('db_centreon');
-
-        $addBamHost = true;
         foreach ($hostList as &$host) {
             if ($host['host_name'] === '_Module_BAM') {
-                $addBamHost = false;
+                unset($host);
             }
         }
-        if ($addBamHost) {
-            $insertRequest = "INSERT INTO cfg_hosts(host_name, host_address, host_max_check_attempts, poller_id, organization_id, host_register)"
-                . " VALUES('_Module_BAM', '127.0.0.1', '3', :id, 1, '2')";
-            $stmtInsert = $dbconn->prepare($insertRequest);
-            $stmtInsert->bindParam(':id', $pollerId, \PDO::PARAM_INT);
-            $stmtInsert->execute();
-            $lastHostId = $dbconn->lastInsertId('cfg_hosts','host_id');
-            $count = count($hostList);
 
-            $hostList[$count]['host_id'] = $lastHostId;
-            $hostList[$count]['host_name'] = '_Module_BAM';
-            $hostList[$count]['host_address'] = '127.0.0.1';
-            $hostList[$count]['host_register'] = '2';
-            $hostList[$count]['host_max_check_attempts'] = '3';
-        }
         $event->setHostList($hostList);
     }
 }
