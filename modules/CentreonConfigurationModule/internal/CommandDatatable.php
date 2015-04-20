@@ -190,12 +190,6 @@ class CommandDatatable extends Datatable
     public function formatDatas(&$resultSet)
     {
         foreach ($resultSet as $key => &$myCmdSet) {
-            // @todo remove virtual hosts and virtual services
-            if ($myCmdSet['command_name'] === 'check_bam_fake') {
-                unset($resultSet[$key]);
-                continue;
-            }
-
             $myCmdSet['command_line'] = sprintf('%.70s', $myCmdSet['command_line'])."...";
             $myCmdSet['host_use'] = CommandRepository::getUseNumber($myCmdSet["command_id"], "host");
             $myCmdSet['svc_use'] =  CommandRepository::getUseNumber($myCmdSet["command_id"], "service");
