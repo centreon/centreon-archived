@@ -186,4 +186,69 @@ class Service extends CentreonBaseModel
         return parent::getIdByParameter($paramName, $paramValues, $extraConditions);
     }
 
+    /**
+     * Used for duplicate a service
+     *
+     * @param int $sourceObjectId The source service id
+     * @param int $duplicateEntries The number entries
+     * @param bool $duplicateHost If this service is duplicate by a host duplication
+     * @return array List of new service id
+     */
+    public static function duplicate($sourceObjectId, $duplicateEntries = 1, $duplicateHost = false)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        /* Get element to duplicate */
+        $sourceParams = static::getParameters($sourceObjectId, '*');
+        if (false === $sourceParams) {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+        unset($sourceParams['service_id']);
+        $originalName = $sourceParams['service_description'];
+        $explodeOriginalName = explode('_', $originalName);
+        $j = 0;
+        if (count($explodeOriginalName) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
+            $newName = join('_', array_splice($explodeOriginalName, 0, -1));
+            $j = $explodeOriginalName[$count - 1];
+        } else {
+            $newName = $originalName;
+        }
+
+        /* Insert new service */
+        $listDuplicateId = array();
+        for ($i = 0; $i < $duplicateEntries; $i++) {
+            /* Search the unique name for duplicate service if not duplicate form host */
+            if (false === $duplicateHost) {
+                do {
+                    $j++;
+                    $unique = self::isUnique($newName . '_' . $j);
+                } while (false === $unique);
+                $newName = $originalName . '_' . $j;
+            }
+            $sourceParams['service_description'] = $newName;
+            /* Insert the duplicate service */
+            $lastId = static::insert($sourceParams);
+            $listDuplicateId[] = $lastId;
+            /* Insert relation */
+            $db->beginTransaction();
+            /*  Duplicate macros for new service */
+            $queryDupMacros = "INSERT INTO cfg_customvariables_services (svc_macro_name, svc_macro_value, is_password, svc_svc_id)
+                SELECT svc_macro_name, svc_macro_value, is_password, " . $lastId . " FROM cfg_customvariables_services
+                    WHERE svc_svc_id = " . $sourceObjectId;
+            $db->query($queryDupMacros);
+            /*  Recreate service template create by host template */
+            if ($duplicateHost) {
+                $queryDupHT = "INSERT INTO cfg_services_hosts_templates_relations (service_id, host_tpl_id)
+                    SELECT " . $lastId . ", host_tpl_id FROM cfg_services_hosts_templates_relations
+                        WHERE service_id = " . $sourceObjectId;
+                $db->query($queryDupHT);
+            }
+            /* Service global tags */
+            $queryDupTag = "INSERT INTO cfg_tags_services (tag_id, resource_id)
+                SELECT ts.tag_id, " . $lastId . " FROM cfg_tags_services ts, cfg_tags t
+                    WHERE t.user_id IS NULL AND t.tag_id = ts.tag_id AND ts.resource_id = " . $sourceObjectId;
+            $db->query($queryDupTag);
+            $db->commit();
+        }
+        return $listDuplicateId;
+    }
 }

@@ -52,6 +52,9 @@
         <foreign-key foreignTable="cfg_domains" name="service_ibfk_7" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="domain_id" foreign="domain_id"/>
         </foreign-key>
+        <foreign-key foreignTable="cfg_services" name="service_ibfk_8" onDelete="SETNULL" onUpdate="RESTRICT">
+            <reference local="service_template_model_stm_id" foreign="service_id"/>
+        </foreign-key>
         <index name="stm_index">
             <index-column name="service_template_model_stm_id"/>
         </index>

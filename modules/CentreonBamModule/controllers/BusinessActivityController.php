@@ -54,6 +54,27 @@ class BusinessActivityController extends FormController
     );
    
     public static $isDisableable = true;
+
+    /**
+    * Create a new business activity
+    *
+    * @method post
+    * @route /businessactivity/add
+    */
+    public function createAction()
+    {
+        $givenParameters = $this->getParams('post');
+
+        $repository = $this->repository;
+        try {
+            $id = $repository::create($givenParameters, 'wizard', $this->getUri());
+            BusinessActivityRepository::createVirtualService($id);
+        } catch (Exception $e) {
+            $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        $this->router->response()->json(array('success' => true));
+    }
  
     /**
      * 
@@ -123,7 +144,7 @@ class BusinessActivityController extends FormController
     }
     
     /**
-     * Update a host
+     * Update a business activity
      *
      *
      * @method post
@@ -133,7 +154,7 @@ class BusinessActivityController extends FormController
     {
         $givenParameters = $this->getParams('post');
         $aTagList = array();
-        $aTags = array();  
+        $aTags = array();
         
         parent::updateAction();
         
@@ -149,5 +170,20 @@ class BusinessActivityController extends FormController
         if (count($aTags) > 0) {
             TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
         }
+    }
+
+    /**
+     * Delete a business activity
+     *
+     *
+     * @method post
+     * @route /businessactivity/delete
+     */
+    public function deleteAction()
+    {
+        $givenParameters = $this->getParams('post');
+
+        BusinessActivityRepository::deleteVirtualService($givenParameters['ids']);
+        parent::deleteAction();
     }
 }

@@ -37,6 +37,8 @@ namespace CentreonBam\Repository;
 
 use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
+use CentreonConfiguration\Models\VirtualHost;
+use CentreonConfiguration\Models\VirtualService;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -127,7 +129,7 @@ class BusinessActivityRepository extends FormRepository
         return $baList;
     }
 
-	/**
+    /**
      *
      * @param string $name
      * @return string
@@ -142,5 +144,106 @@ class BusinessActivityRepository extends FormRepository
         $buList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
 
         return $buList;
+    }
+
+    /**
+     *
+     *
+     * @return $id
+     */
+    public static function getVirtualHost()
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $selectRequest = "SELECT host_id"
+            . " FROM cfg_hosts"
+            . " WHERE host_name='_Module_BAM'";
+        $stmtSelect = $dbconn->prepare($selectRequest);
+        $stmtSelect->bindParam(':id', $hostId, \PDO::PARAM_INT);
+        $stmtSelect->execute();
+        $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (isset($result[0]['host_id'])) {
+            return $result[0]['host_id'];
+        } else {
+            $id = static::createVirtualHost();
+            return $id;
+        }
+    }
+
+    /**
+     *
+     * 
+     * @return $id
+     */
+    public static function createVirtualHost()
+    {
+        $virtualHost = array(
+            'host_name' => '_Module_BAM',
+            'organization_id' => 1
+        );
+
+        $id = VirtualHost::insert($virtualHost);
+
+        return $id;
+    }
+
+    /**
+     *
+     * @param string $id
+     * 
+     */
+    public static function createVirtualService($id)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $virtualService = array(
+            'service_description' => 'ba_' . $id,
+            'organization_id' => 1
+        );
+
+        $hostId = static::getVirtualHost();
+
+        $dbconn->beginTransaction();
+
+        $serviceId = VirtualService::insert($virtualService);
+
+        $insertRelationRequest = "INSERT INTO cfg_hosts_services_relations(host_host_id, service_service_id)"
+            . " VALUES(:host_id, :service_id)";
+        $stmtRelationInsert = $dbconn->prepare($insertRelationRequest);
+        $stmtRelationInsert->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        $stmtRelationInsert->bindParam(':service_id', $serviceId, \PDO::PARAM_INT);
+        $stmtRelationInsert->execute();
+
+        $dbconn->commit();
+    }
+
+    /**
+     *
+     * @param string $id
+     *
+     */
+    public static function deleteVirtualService($ids)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $dbconn->beginTransaction();
+
+        foreach ($ids as $id) {
+            $serviceDescription = 'ba_' . $id;
+            $selectRequest = "SELECT service_id"
+            . " FROM cfg_services"
+            . " WHERE service_description=:service_description";
+            $stmtSelect = $dbconn->prepare($selectRequest);
+            $stmtSelect->bindParam(':service_description', $serviceDescription, \PDO::PARAM_STR);
+            $stmtSelect->execute();
+            $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
+
+            if (isset($result[0]['service_id'])) {
+                Service::delete($result[0]['service_id']);
+            }
+        }
+
+        $dbconn->commit();
     }
 }

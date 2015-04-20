@@ -1,8 +1,0 @@
-[
-    {
-        "command_name": "check_bam_fake",
-        "command_line": "check_bam_fake",
-        "command_type": 1,
-        "organization_id": 1
-    }
-]
