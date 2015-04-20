@@ -165,6 +165,7 @@ class TagsRepository
             $query .= " AND r.resource_id = :resource_id";
         }
 
+        $query .= " ORDER BY tagname ASC";
         
         $stmt = $dbconn->prepare($query);
         
@@ -342,9 +343,8 @@ class TagsRepository
     public static function getAllList()
     {
         $dbconn = Di::getDefault()->get('db_centreon');        
-
-         $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null";
         
+        $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null ORDER BY tagname ASC ";   
         $stmt = $dbconn->prepare($query);
 
         $stmt->execute();
@@ -355,4 +355,55 @@ class TagsRepository
         }
         return $tags;
     }
+    
+    
+    /**
+     * Delete the global tags
+     * @param type $aDatas
+     * @return type
+     */
+    public static function deleteGlobal($aDatas)
+    {
+
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        if (!is_array($aDatas) || count($aDatas) == 0) {
+            return;
+        }
+        
+        $sIdTags = implode(",", $aDatas);
+                
+        foreach (static::$resourceType as $resource) {
+            $sQuery = "DELETE FROM cfg_tags_" . $resource . "s WHERE tag_id IN (".$sIdTags.")";
+            $oSmt = $dbconn->prepare($sQuery);
+            $oSmt->execute();
+        }
+        
+        $sQueryDelete = "DELETE FROM cfg_tags WHERE tag_id IN (".$sIdTags.")";
+        $oSmtDelete = $dbconn->prepare($sQueryDelete);
+        $oSmtDelete->execute();      
+    }
+    /**
+     * 
+     * @param type $tagId
+     * @param type $tagName
+     * @return type
+     */
+    public static function update($tagId, $tagName)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        if (empty($tagId)|| empty($tagName)) {
+            return;
+        }
+        
+        $query = "UPDATE cfg_tags SET tagname = :tagname WHERE tag_id = :tag_id";
+
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':tag_id', $tagId, \PDO::PARAM_INT);
+        $stmt->bindParam(':tagname', $tagName, \PDO::PARAM_STR);
+        $stmt->execute();
+
+    }
+    
 }

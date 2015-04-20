@@ -39,6 +39,7 @@ use Centreon\Internal\Di;
 use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Internal\Controller;
 use CentreonAdministration\Internal\TagDatatable;
+use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
 
 /**
  * Controller for tag action
@@ -230,7 +231,94 @@ class TagController extends Controller
         
         
 
-        $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/delete');
+        $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/del');
         $this->tpl->display('file:[CentreonAdministrationModule]list.tpl');
+    }
+    
+    /**
+     * Delete a tag
+     *
+     * @method post
+     * @route /tag/del
+     */
+    public function delAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $post = $router->request()->paramsPost();
+      
+        TagsRepository::deleteGlobal(
+            $post['ids']
+        );
+        return $router->response()->json(array('success' => true));
+    }
+    
+    
+    /**
+     * 
+     * @method get
+     * @route /{object}/[i:id]
+     */
+    public function editAction($additionnalParamsForSmarty = array())
+    {
+        $requestParam = $this->getParams('named');
+        $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
+        
+        $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id'], 'objectName'=> static::$objectName));
+        $myForm->getFormFromDatabase();
+        $myForm->addHiddenComponent('object_id', $requestParam['id']);
+        $myForm->addHiddenComponent('object', static::$objectName);
+        
+        // get object Current Values
+        $myForm->setDefaultValues($this->objectClass, $requestParam['id']);
+        
+        $formModeUrl = $this->router->getPathFor(
+                            $this->objectBaseUrl.'/[i:id]',
+                            array(
+                                'id' => $requestParam['id']
+                            )
+                        );
+        
+        // Display page
+        $this->tpl->assign('pageTitle', $this->objectDisplayName);
+        $this->tpl->assign('form', $myForm->generate());
+
+        $this->tpl->assign('formModeUrl', $formModeUrl);
+        $this->tpl->assign('formName', $myForm->getName());
+        $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
+        
+        foreach ($additionnalParamsForSmarty as $smartyVarName => $smartyVarValue) {
+            $this->tpl->assign($smartyVarName, $smartyVarValue);
+        }
+        
+
+        if (isset($this->tmplField)) {
+            $this->tpl->assign('tmplField', $this->tmplField);
+        }
+        
+        $this->tpl->display('file:[CentreonConfigurationModule]editTag.tpl');
+    }
+    
+    /**
+     * Generic update function
+     *
+     * @method post
+     * @route /{object}/update
+     */
+    public function updateAction()
+    {
+       
+        $givenParameters = clone $this->getParams('post');
+ 
+        try {
+            TagsRepository::update($givenParameters['object_id'], $givenParameters['tagname']);
+            
+            unset($_SESSION['form_token']);
+            unset($_SESSION['form_token_time']);
+            $this->router->response()->json(array('success' => true));
+        } catch (\Centreon\Internal\Exception $e) {
+            $updateErrorMessage = $e->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+        }
     }
 }
