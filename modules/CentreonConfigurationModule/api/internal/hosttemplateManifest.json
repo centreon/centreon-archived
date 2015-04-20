@@ -1,6 +1,6 @@
 {
     "liteAttributesSet" : "host_id,host_name,host_alias,host_address,host_activate",
-    "repository" : "\\CentreonConfiguration\\Repository\\HosttemplateRepository",
+    "repository" : "\\CentreonConfiguration\\Repository\\HostTemplateRepository",
     "objectBaseUrl" : "host",
     "objectClass" : "\\CentreonConfiguration\\Models\\Hosttemplate",
     "relationMap" : {
