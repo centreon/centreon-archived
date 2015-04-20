@@ -37,8 +37,8 @@ namespace CentreonBam\Repository;
 
 use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
-use CentreonConfiguration\Models\Host;
-use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\VirtualHost;
+use CentreonConfiguration\Models\VirtualService;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -180,11 +180,12 @@ class BusinessActivityRepository extends FormRepository
     {
         $virtualHost = array(
             'host_name' => '_Module_BAM',
-            'organization_id' => 1,
-            'host_register' => '2'
+            'organization_id' => 1
         );
 
-        $id = Host::insert($virtualHost);
+        $id = VirtualHost::insert($virtualHost);
+
+        return $id;
     }
 
     /**
@@ -198,15 +199,14 @@ class BusinessActivityRepository extends FormRepository
 
         $virtualService = array(
             'service_description' => 'ba_' . $id,
-            'organization_id' => 1,
-            'service_register' => '2'
+            'organization_id' => 1
         );
 
         $hostId = static::getVirtualHost();
 
         $dbconn->beginTransaction();
 
-        $serviceId = Service::insert($virtualService);
+        $serviceId = VirtualService::insert($virtualService);
 
         $insertRelationRequest = "INSERT INTO cfg_hosts_services_relations(host_host_id, service_service_id)"
             . " VALUES(:host_id, :service_id)";
