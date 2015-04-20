@@ -305,11 +305,16 @@ class TagController extends Controller
         $givenParameters = clone $this->getParams('post');
  
         try {
-            TagsRepository::update($givenParameters['object_id'], $givenParameters['tagname']);
-            
-            unset($_SESSION['form_token']);
-            unset($_SESSION['form_token_time']);
-            $this->router->response()->json(array('success' => true));
+            $tagId = TagsRepository::isExist($givenParameters['tagname']);
+            if ($tagId > 0 && $tagId != $givenParameters['object_id']) {
+                $this->router->response()->json(array('success' => false,'error' => "This tag name already exists"));           
+            } else {
+                TagsRepository::update($givenParameters['object_id'], $givenParameters['tagname']);
+                unset($_SESSION['form_token']);
+                unset($_SESSION['form_token_time']);
+                $this->router->response()->json(array('success' => true));
+            }
+                   
         } catch (\Centreon\Internal\Exception $e) {
             $updateErrorMessage = $e->getMessage();
             $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));

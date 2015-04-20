@@ -406,4 +406,36 @@ class TagsRepository
 
     }
     
+    /**
+     * Get the tag id
+     * @param string $tagName The tag
+     * @return int
+     */
+    public static function isExist($tagName)
+    {
+        if (empty($tagName)) {
+            return;
+        }
+        
+        $aFilter = array(
+            'tagname' => $tagName
+        );
+
+        $tag = Tag::getList(
+            'tag_id',
+            1,
+            0,
+            null,
+            'ASC',
+            $aFilter,
+            'AND'
+        );
+        if (isset($tag[0]['tag_id'])) {
+            $iReturn = $tag[0]['tag_id'];
+        } else {
+            $iReturn = -1;
+        }
+        return $iReturn;
+    }
+    
 }
