@@ -1,8 +1,8 @@
 {
     "liteAttributesSet" : "service_id,service_description,service_activate",
-    "repository" : "\\CentreonConfiguration\\Repository\\ServiceRepository",
-    "objectBaseUrl" : "service",
-    "objectClass" : "\\CentreonConfiguration\\Models\\Service",
+    "repository" : "\\CentreonConfiguration\\Repository\\ServicetemplateRepository",
+    "objectBaseUrl" : "servicetemplate",
+    "objectClass" : "\\CentreonConfiguration\\Models\\Servicetemplate",
     "relationMap" : {
         "service_hosts" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Service",
         "service_parents" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Serviceparents",
