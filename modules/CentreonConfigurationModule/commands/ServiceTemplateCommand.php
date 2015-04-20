@@ -39,13 +39,13 @@ use Centreon\Api\Internal\BasicCrudCommand;
 /**
  * 
  */
-class HostTemplateCommand extends BasicCrudCommand
+class ServiceTemplateCommand extends BasicCrudCommand
 {
     /**
      *
      * @var type 
      */
-    public $objectName = 'hosttemplate';
+    public $objectName = 'servicetemplate';
     
     public function __construct()
     {
