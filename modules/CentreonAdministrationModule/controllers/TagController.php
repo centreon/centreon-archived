@@ -50,14 +50,7 @@ use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
  * @subpackage CentreonAdministration
  */
 class TagController extends Controller
-{
-
-    //protected static $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
-    
-    //protected $objectClass = '\CentreonAdministration\Models\Tag';
- 
-    
-    
+{    
     protected $objectDisplayName = 'Tag';
     public static $objectName = 'tag';
     protected $objectBaseUrl = '/centreon-administration/tag';
@@ -68,6 +61,8 @@ class TagController extends Controller
     
     protected $datatableObject = '\CentreonAdministration\Internal\TagDatatable';
     public static $isDisableable = false;
+    
+    public static $disableButton = true;
     
     /**
      *
@@ -228,9 +223,8 @@ class TagController extends Controller
         $this->tpl->assign('objectAddUrl', $this->objectBaseUrl . '/add');
         $this->tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
         $this->tpl->assign('isDisableable', static::$isDisableable);
+        $this->tpl->assign('disableButton', static::$disableButton);
         
-        
-
         $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/del');
         $this->tpl->display('file:[CentreonAdministrationModule]list.tpl');
     }
@@ -300,7 +294,7 @@ class TagController extends Controller
     }
     
     /**
-     * Generic update function
+     * update function
      *
      * @method post
      * @route /{object}/update

@@ -23,8 +23,10 @@
                         <li><a href="#" id="modalDisable">{t}Disable{/t}</a></li>
                     {/if}
                     <li><a href="#" id="modalDelete">{t}Delete{/t}</a></li>
-                    <li><a href="#" id="modalDuplicate">{t}Duplicate{/t}</a></li>
-                    <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>
+                    {if !(isset($disableButton)) || (isset($disableButton) && !$disableButton)}
+                        <li><a href="#" id="modalDuplicate">{t}Duplicate{/t}</a></li>
+                        <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>
+                    {/if}
                   </ul>
                 </div>
                 <div class="btn-group btn-group-sm hidden" id="addToGroup">
