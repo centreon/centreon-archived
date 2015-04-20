@@ -36,6 +36,7 @@
 namespace Centreon\Api\Internal;
 
 use Centreon\Internal\Command\AbstractCommand;
+use Centreon\Internal\Module\Informations;
 
 /**
  * Description of BasicCrud
