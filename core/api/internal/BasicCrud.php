@@ -147,7 +147,7 @@ class BasicCrud extends AbstractCommand
      */
     private function parseManifest()
     {
-        $manifestDir = dirname(\Centreon\Internal\Module\Informations::getModuleFromPath(static::$moduleShortName));
+        $manifestDir = realpath(Informations::getModulePath(static::$moduleShortName) . '/');
         $manifestFile = $manifestDir . '/api/internal/' . $this->objectName . 'Manifest.json';
         $this->objectManifest = json_decode(file_get_contents($manifestFile), true);
         foreach ($this->objectManifest as $mKey => $mValue) {

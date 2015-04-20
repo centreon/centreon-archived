@@ -62,7 +62,7 @@ class BasicCrudCommand extends BasicCrud
     {
         $objectList = parent::listAction($fields, $count, $offset);
         
-        $selectedFields = (!is_null($fields)) ? $fields : implode(';', $this->liteAttributesSet);
+        $selectedFields = (!is_null($fields)) ? $fields : implode(',', $this->liteAttributesSet);
         
         // Displaying
         if (count($objectList) > 0) {
