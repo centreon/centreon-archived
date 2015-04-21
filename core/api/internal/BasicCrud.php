@@ -217,8 +217,8 @@ class BasicCrud extends AbstractCommand
             // Parsing attributes List
             $givenFields = (!is_null($fields)) ? $fields : $this->liteAttributesSet;
             $fieldsToQuery = array_diff(
-                array_column($this->externalAttributeSet, 'type'),
-                explode(',', $givenFields)
+                explode(',', $givenFields),
+                array_column($this->externalAttributeSet, 'type')
             );
             
             // Getting the list from
@@ -240,26 +240,31 @@ class BasicCrud extends AbstractCommand
      */
     private function getExternalObject(&$objectList)
     {
-        $repository = $this->repository;
-        
         foreach ($objectList as &$myObject) {
             
             $myExternalParams = array();
             
             foreach ($this->externalAttributeSet as $externalAttribute) {
                 if ($externalAttribute['link'] == 'relation') {
-                    $exP = $repository::getRelations(
-                        $this->relationMap[$externalAttribute['fields']],
-                        $myObject[$this->attributesMap['id']]
+                    $relClass = $this->relationMap[$externalAttribute['objectClass']];
+                    $exP = $relClass::getMergedParameters(
+                        array(),
+                        $externalAttribute['fields'],
+                        -1,
+                        0,
+                        null,
+                        "ASC",
+                        array($this->attributesMap['id'] => $myObject[$this->attributesMap['id']]),
+                        "AND"
                     );
                     $myExternalParams = array_merge($myExternalParams, $exP);
                 } else {
-                    $exP = $repository::getSimpleRelation(
+                    /*$exP = $repository::getSimpleRelation(
                         $externalAttribute['fields'],
                         $externalAttribute['objectClass'],
                         $myObject[$this->attributesMap['id']]
                     );
-                    $myExternalParams = array_merge($myExternalParams, $exP);
+                    $myExternalParams = array_merge($myExternalParams, $exP);*/
                 }
             }
             

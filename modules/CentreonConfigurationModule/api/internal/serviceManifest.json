@@ -5,7 +5,7 @@
             "type": "host",
             "fields": "host_id, host_name",
             "link": "relation",
-            "field": "service_hosts"
+            "objectClass": "service_hosts"
         },
         {
             "type": "servicetemplate",
