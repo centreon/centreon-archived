@@ -1,0 +1,19 @@
+{
+    "liteAttributesSet" : "host_id,host_name,host_alias,host_address,host_activate",
+    "repository" : "\\CentreonConfiguration\\Repository\\HostRepository",
+    "objectBaseUrl" : "host",
+    "objectClass" : "\\CentreonConfiguration\\Models\\Host",
+    "relationMap" : {
+        "parents" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hostparents",
+        "children" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hostchildren",
+        "hosttemplate" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Hosttemplate",
+        "service" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Service"
+    },
+    "attributesMap" : {
+        "id" : "host_id",
+        "name" : "host_name",
+        "description" : "host_alias",
+        "ip_dns" : "host_address",
+        "status" : "host_activate"
+    }
+}
