@@ -336,20 +336,25 @@ class TagsRepository
     
     /**
      * Return the list of tags for all resources
-     * @param int $sType Description
+     * @param string $sSearch String to search
+     * @param int $sType Type of search
      * @return array
      * @throws Exception
      */
-    public static function getAllList($sType = 1)
+    public static function getAllList($sSearch, $sType = 1)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         $userId = $_SESSION['user']->getId();
         
+        $sSearch = trim($sSearch);
+        
         if ($sType == 1) {
-            $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null ORDER BY tagname ASC ";   
+            $query = "SELECT tag_id, tagname FROM cfg_tags where user_id is null ".(!empty($sSearch) ? ' AND tagname LIKE "%'.$sSearch.'%"' : '')." ORDER BY tagname ASC ";   
         } else {
-            $query = "SELECT tag_id, tagname FROM cfg_tags where user_id =".$userId." ORDER BY tagname ASC ";   
+            $query = "SELECT tag_id, tagname FROM cfg_tags where user_id =".$userId." ".(!empty($sSearch) ? ' AND tagname LIKE "%'.$sSearch.'%"' : '')." ORDER BY tagname ASC ";   
         }
+        
+       
         $stmt = $dbconn->prepare($query);
 
         $stmt->execute();
