@@ -218,8 +218,8 @@ class Host extends CentreonBaseModel
         $originalName = $sourceParams['host_name'];
         $explodeOriginalName = explode('_', $originalName);
         $j = 0;
-        if (count($explodeOriginalName) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
-            $originalName = join('_', array_splice($explodeOriginalName, 0, -1));
+        if (($count = count($explodeOriginalName)) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
+            $originalName = join('_', array_slice($explodeOriginalName, 0, -1));
             $j = $explodeOriginalName[$count - 1];
         }
 
