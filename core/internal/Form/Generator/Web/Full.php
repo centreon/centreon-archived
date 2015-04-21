@@ -410,9 +410,6 @@ class Full extends Generator
      */
     protected function buildValidatorsQuery()
     {
-        $di = Di::getDefault();
-        $baseUrl = $di->get('config')->get('global', 'base_url');
-        $uri = substr($this->formRoute, strlen($baseUrl));
         $validatorsQuery = "SELECT
                 fv.`name` as validator_name, `route` as `validator`, ffv.`params` as `params`,
                 ff.`name` as `field_name`, ff.`label` as `field_label`
@@ -439,7 +436,7 @@ class Full extends Generator
                     AND
                         fs.form_id = f.form_id
                     AND
-                        f.route = '$uri'
+                        f.route = '$this->formRoute'
             );";
         
         return $validatorsQuery;

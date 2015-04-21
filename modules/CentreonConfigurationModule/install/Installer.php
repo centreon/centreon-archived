@@ -36,6 +36,7 @@
 
 namespace CentreonConfiguration\Install;
 
+use Centreon\Internal\Di;
 use Centreon\Internal\Module\Installer as ModuleInstaller;
 
 /**
@@ -52,6 +53,22 @@ class Installer extends ModuleInstaller
     {
         parent::__construct($moduleDirectory, $moduleInfo);
     }
+
+    /**
+     *
+     */
+    protected function setUpFormValidators()
+    {
+        $validators = array(
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
+        );
+
+        $db = Di::getDefault()->get('db_centreon');
+
+        foreach ($validators as $validator) {
+            $db->exec($validator);
+        }
+    }
     
     public function customPreInstall()
     {
@@ -63,7 +80,7 @@ class Installer extends ModuleInstaller
      */
     public function customInstall()
     {
-        
+        $this->setUpFormValidators();
     }
     
     /**

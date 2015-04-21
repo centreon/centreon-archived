@@ -36,14 +36,14 @@
 
 namespace Centreon\Internal\Exception;
 
-use Centreon\Internal\Exception;
+use Centreon\Internal\Exception as CentreonException;
 
 /**
  * Description of HttpException
  *
  * @author lionel
  */
-class HttpException extends Exception
+class HttpException extends CentreonException
 {
     /**
      *
@@ -63,7 +63,7 @@ class HttpException extends Exception
      * @param type $code
      * @param type $previous
      */
-    public function __construct($title, $message, $code, $internalCode, $previous)
+    public function __construct($title, $message = "", $code = 0, $internalCode = 0, $previous = NULL)
     {
         parent::__construct($message, $code, $previous);
         $this->httpErrorTitle = $title;

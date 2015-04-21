@@ -42,6 +42,7 @@ use Centreon\Internal\Form\Generator\Cli;
 use Centreon\Internal\Form\Exception\InvalidTokenException;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Exception\Validator\MissingParameterException;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
  * Description of Validator
@@ -130,9 +131,10 @@ class Validator
         foreach ($submittedDatas as $key => $value) {
             if (isset($validationScheme['fieldScheme'][$key])) {
                 foreach ($validationScheme['fieldScheme'][$key] as $validatorElement) {
-                    $call = '\Centreon\Internal\Form\Validators\\' . ucfirst($validatorElement['call']);
+                    //$call = '\Centreon\Internal\Form\Validators\\' . ucfirst($validatorElement['call']);
+                    $call = $this->parseValidatorName($validatorElement['call']);
                     $validator = new $call($validatorElement['params']);
-                    $result = $validator->validate($value);
+                    $result = $validator->validate($value, json_decode($validatorElement['params'], true));
                     if ($result['success'] === false) {
                         $errors[] = $result['error'];
                     }
@@ -145,6 +147,25 @@ class Validator
             $this->raiseValidationException($errors);
         }
     }
+
+    protected function parseValidatorName($validatorName)
+    {
+        $call = "";
+        $parsedValidator = explode('.', $validatorName);
+
+        if ($parsedValidator[0] === 'core') {
+            $call .= '\Centreon\Internal\Form\Validators\\';
+        } else {
+            $call .= CamelCaseTransformation::customToCamelCase($parsedValidator[0], '-')
+                . '\Forms\Validators\\';
+        }
+        
+        for ($i = 1; $i < count($parsedValidator); $i++) {
+            $call .= ucfirst($parsedValidator[$i]);
+        }
+
+        return $call;
+    }
     
     /**
      * 
@@ -153,9 +174,6 @@ class Validator
      */
     private function raiseValidationException($errors)
     {
-        $message = $errors;
-        $code = 401;
-        
-        throw new Exception($message, $code);
+        throw new \Centreon\Internal\Exception\Http\BadRequestException('Validation error', $errors);
     }
 }
