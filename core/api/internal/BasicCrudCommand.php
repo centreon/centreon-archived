@@ -116,9 +116,9 @@ class BasicCrudCommand extends BasicCrud
      * Action for delete
      *
      */
-    public function deleteAction()
+    public function deleteAction($id)
     {
-        parent::deleteAction();
+        parent::deleteAction($id);
     }
     
     /**

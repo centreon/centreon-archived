@@ -61,6 +61,12 @@ class BasicCrud extends AbstractCommand
      *
      * @var type 
      */
+    protected $externalAttributeSet = array();
+    
+    /**
+     *
+     * @var type 
+     */
     protected $attributesMap = array();
     
     /**
@@ -143,7 +149,6 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
-     * @param string $manifestFile
      */
     private function parseManifest()
     {
@@ -201,6 +206,7 @@ class BasicCrud extends AbstractCommand
      * @param type $fields
      * @param type $count
      * @param type $offset
+     * @return type
      */
     public function listAction($fields = null, $count = -1, $offset = 0)
     {
@@ -208,10 +214,19 @@ class BasicCrud extends AbstractCommand
             // Getting the repository name
             $repository = $this->repository;
 
-            // Getting the list from 
-            $fields = (!is_null($fields)) ? $fields : $this->liteAttributesSet;
-            $objectList = $repository::getList($fields, $count, $offset);
+            // Parsing attributes List
+            $givenFields = (!is_null($fields)) ? $fields : $this->liteAttributesSet;
+            $fieldsToQuery = array_diff(
+                explode(',', $givenFields),
+                array_column($this->externalAttributeSet, 'type')
+            );
+            
+            // Getting the list from
+            $objectList = $repository::getList($fieldsToQuery, $count, $offset);
             $this->normalizeParams($objectList);
+            
+            $this->getExternalObject($objectList);
+            
         } catch (\Exception $ex) {
             
         }
@@ -221,8 +236,49 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
+     * @param type $objectList
+     */
+    private function getExternalObject(&$objectList)
+    {
+        foreach ($objectList as &$myObject) {
+            
+            $myExternalParams = array();
+            
+            foreach ($this->externalAttributeSet as $externalAttribute) {
+                if ($externalAttribute['link'] == 'relation') {
+                    $relClass = $this->relationMap[$externalAttribute['objectClass']];
+                    $exP = $relClass::getMergedParameters(
+                        $externalAttribute['fields'],
+                        array(),
+                        -1,
+                        0,
+                        null,
+                        "ASC",
+                        array($this->attributesMap['id'] => $myObject[$this->attributesMap['id']]),
+                        "AND"
+                    );
+                    
+                    if (count($exP) > 0) {
+                        if ($externalAttribute['group']) {
+                            $myExternalParams = array_merge($myExternalParams, $exP);
+                        } else {
+                            $myExternalParams = array_merge($myExternalParams, $exP[0]);
+                        }
+                    }
+                    
+                }
+            }
+            
+            $myObject = array_merge($myObject, $myExternalParams);
+        }
+    }
+    
+    /**
+     * 
      * @param type $objectSlug
      * @param type $fields
+     * @param type $linkedObject
+     * @return type
      */
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
     {
@@ -259,10 +315,17 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
+     * @param type $id
      */
-    public function deleteAction()
+    public function deleteAction($id)
     {
-        echo "Not implemented yet";
+        try {
+            $repository = $this->repository;
+            $repository::delete(array($id));
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
+        } catch (Exception $ex) {
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+        }
     }
     
     /**
