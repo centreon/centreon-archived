@@ -86,7 +86,13 @@ class Command
      */
     public function getHelp()
     {
-        echo "Help not yet implemented\n";
+        echo "Usage: centreonConsole [-v] [-l] [-h] [-u <user>] [-p <password>] <request> <parameters>\n";
+        echo "-v Get Centreon Core version\n";
+        echo "-l List available commands\n";
+        echo "-h Print this help\n";
+        echo "-u / -p To authenticate\n";
+        echo "request Command or request to execute, as listed by '-l'\n";
+        echo "parameters List of parameters for the request, separated by ':'\n";
     }
     
     /**

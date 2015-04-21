@@ -54,6 +54,11 @@
         $getVersion = true;
     }
 
+    // No args => display help
+    if ($requestLine == '' && !($listMode || $getVersion )) {
+        $helpMode = true;
+    }
+
     try {
         $commandeLineManager = new \Centreon\Internal\Command($requestLine, $parametersLine);
         if ($helpMode) {
