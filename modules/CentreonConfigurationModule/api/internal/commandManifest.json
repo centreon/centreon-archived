@@ -6,7 +6,7 @@
     "attributesMap" : {
         "id" : "command_id",
         "name" : "command_name",
-        "description" : "command_line",
-        "ip_dns" : "command_type"
+        "command line" : "command_line",
+        "type" : "command_type"
     }
 }
