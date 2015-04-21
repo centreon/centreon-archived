@@ -152,12 +152,12 @@ sub updateEventEndTime {
     }
     my $ack = $centreonAck->getServiceAckTime($start, $updateTime, $hostName, $serviceDescription);
     if (!$totalEvents && $updateTime) {
-        my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.", `last_update`=".$lastUpdate.
+        my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), `last_update`=".$lastUpdate.
                     " WHERE `servicestateevent_id` = ".$eventId;
         $centstorage->query($query);
     }else {
         if ($updateTime) {
-            my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.", `last_update`= 0".
+            my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`= IFNULL(ack_time,$ack), `last_update`= 0".
                     " WHERE `servicestateevent_id` = ".$eventId;
             $centstorage->query($query);
         }
