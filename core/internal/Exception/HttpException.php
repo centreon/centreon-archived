@@ -65,6 +65,9 @@ class HttpException extends CentreonException
      */
     public function __construct($title, $message = "", $code = 0, $internalCode = 0, $previous = NULL)
     {
+        if (is_array($message)) {
+            $message = implode("\n", $message);
+        }
         parent::__construct($message, $code, $previous);
         $this->httpErrorTitle = $title;
         $this->internalCode = $internalCode;
