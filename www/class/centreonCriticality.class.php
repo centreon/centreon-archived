@@ -293,7 +293,7 @@ class CentreonCriticality {
         if (isset($this->tree[$service_id]) && $this->tree[$service_id] != 0) {
             return $this->tree[$service_id];
         }
-        return array();
+        return 0;
     }
     
     /**
@@ -329,4 +329,29 @@ class CentreonCriticality {
         }
         return 0;
     }
+
+    function getHostTplCriticities($host_id, $cache) {
+        global $pearDB;
+        
+        if (!$host_id) { 
+            return NULL;
+        }
+        
+        $rq = "SELECT host_tpl_id " .
+            "FROM host_template_relation " .
+            "WHERE host_host_id = '".$host_id."' " .
+            "ORDER BY `order`";
+        $DBRESULT = $pearDB->query($rq);
+        while ($row = $DBRESULT->fetchRow()) {
+            if (isset($cache[$row['host_tpl_id']])) {
+                return $this->getData($cache[$row['host_tpl_id']], false);
+            } else {
+                if ($result_field = $this->getHostTplCriticities($row['host_tpl_id'], $cache)) {
+                    return $result_field;
+                }
+            }
+        }
+        return NULL;
+    }
+
 }
