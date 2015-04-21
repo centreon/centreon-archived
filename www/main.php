@@ -38,9 +38,9 @@
 
  	ini_set("display_errors", "Off");
  	if (defined("E_DEPRECATED")) {
- 	    ini_set("error_reporting", E_ALL ^ E_DEPRECATED);
+ 	    ini_set("error_reporting", E_ALL ^ E_NOTICE ^ E_STRICT ^ E_DEPRECATED);
  	} else {
- 	    ini_set("error_reporting", E_ALL);
+ 	    ini_set("error_reporting", E_ALL ^ E_NOTICE ^ E_STRICT);
  	}
 
 
