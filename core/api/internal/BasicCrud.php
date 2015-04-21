@@ -248,8 +248,8 @@ class BasicCrud extends AbstractCommand
                 if ($externalAttribute['link'] == 'relation') {
                     $relClass = $this->relationMap[$externalAttribute['objectClass']];
                     $exP = $relClass::getMergedParameters(
-                        array(),
                         $externalAttribute['fields'],
+                        array(),
                         -1,
                         0,
                         null,
@@ -257,14 +257,15 @@ class BasicCrud extends AbstractCommand
                         array($this->attributesMap['id'] => $myObject[$this->attributesMap['id']]),
                         "AND"
                     );
-                    $myExternalParams = array_merge($myExternalParams, $exP);
-                } else {
-                    /*$exP = $repository::getSimpleRelation(
-                        $externalAttribute['fields'],
-                        $externalAttribute['objectClass'],
-                        $myObject[$this->attributesMap['id']]
-                    );
-                    $myExternalParams = array_merge($myExternalParams, $exP);*/
+                    
+                    if (count($exP) > 0) {
+                        if ($externalAttribute['group']) {
+                            $myExternalParams = array_merge($myExternalParams, $exP);
+                        } else {
+                            $myExternalParams = array_merge($myExternalParams, $exP[0]);
+                        }
+                    }
+                    
                 }
             }
             
@@ -314,10 +315,17 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
+     * @param type $id
      */
-    public function deleteAction()
+    public function deleteAction($id)
     {
-        echo "Not implemented yet";
+        try {
+            $repository = $this->repository;
+            $repository::delete(array($id));
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
+        } catch (Exception $ex) {
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+        }
     }
     
     /**

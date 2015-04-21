@@ -1,18 +1,12 @@
 {
-    "liteAttributesSet" : "host,service_id,service_description,servicetemplate,service_activate",
+    "liteAttributesSet" : "host,service_id,service_description,service_template_model_stm_id,service_activate",
     "externalAttributeSet" : [
         {
             "type": "host",
-            "fields": "host_id, host_name",
+            "fields": "host_id,host_name",
             "link": "relation",
-            "objectClass": "service_hosts"
-        },
-        {
-            "type": "servicetemplate",
-            "fields": "service_id, service_description",
-            "link": "inner",
-            "field": "service_template_model_stm_id",
-            "objectClass":"\\CentreonConfiguration\\Models\\Servicetemplate"
+            "objectClass": "service_hosts",
+            "group": false
         }
     ],
     "repository" : "\\CentreonConfiguration\\Repository\\ServiceRepository",
@@ -26,6 +20,7 @@
     "attributesMap" : {
         "id" : "service_id",
         "name" : "service_description",
-        "activate" : "service_activate"
+        "activate" : "service_activate",
+        "template": "service_template_model_stm_id"
     }
 }
