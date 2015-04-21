@@ -20,7 +20,7 @@
             "lengthMenu": [[10, 25, 50], [10, 25, 50]],
             "language": {
                 "lengthMenu": "_MENU_",
-                "processing": "Go......................"
+                "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
             responsive: true,
