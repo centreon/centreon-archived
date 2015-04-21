@@ -281,7 +281,7 @@ if ($form->validate())	{
   require_once("listsMenusAccess.php");
 } else {
   $action = $form->getSubmitValue("action");
-  if ($valid && $action["action"]["action"]) {
+  if ($valid && $action["action"]) {
     require_once("listsMenusAccess.php");
   } else {
     // Apply a template definition

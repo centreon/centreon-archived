@@ -591,7 +591,7 @@ if ($form->validate() && $from_list_menu == false)	{
     $valid = true;
 }
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"]["action"]) {
+if ($valid && $action["action"]) {
     require_once($path."listContact.php");
 } else	{
 # Apply a template definition

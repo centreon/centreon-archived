@@ -298,7 +298,7 @@
 
 	$action = $form->getSubmitValue("action");
 
-	if ($valid && $action["action"]["action"])
+	if ($valid && $action["action"])
 		require_once($path."listTimeperiod.php");
 	else {
 		/*

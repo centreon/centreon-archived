@@ -975,7 +975,7 @@
 
 	require_once $path.'javascript/argumentJs.php';
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])	{
+	if ($valid && $action["action"])	{
 		if ($p == "60201") {
 			require_once($path."listServiceByHost.php");
 		} elseif ($p == "60202") {

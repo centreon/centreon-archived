@@ -339,7 +339,7 @@ if ($form->validate())	{
 }
 $action = $form->getSubmitValue("action");
 
-if ($valid && $action["action"]["action"])
+if ($valid && $action["action"])
 require_once($path."listServiceGroup.php");
 else	{
 #Apply a template definition

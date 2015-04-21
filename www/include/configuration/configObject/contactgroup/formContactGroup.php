@@ -278,7 +278,7 @@
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"]) {
+	if ($valid && $action["action"]) {
 		require_once($path."listContactGroup.php");
 	} else {
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);

@@ -275,7 +275,7 @@ if ($form->validate() && $from_list_menu == false)	{
 }
 
 $action = $form->getSubmitValue("action");
-if ($valid && $action["action"]["action"])
+if ($valid && $action["action"])
     require_once($path."listServiceCategories.php");
 else	{
     /*

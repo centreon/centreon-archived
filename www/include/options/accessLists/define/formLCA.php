@@ -363,7 +363,7 @@ $lca["lca_topos"] = array();
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
+	if ($valid && $action["action"])
 		require_once("listLCA.php");
 	else	{
 		#Apply a template definition
@@ -375,10 +375,5 @@ $lca["lca_topos"] = array();
 		$tpl->assign('o', $o);
 		$tpl->display("formLCA.ihtml");
 	}
-/*
-	echo "<pre>";
-	print_r($lca_topos2);
-	echo "</pre>";
-*/
 
 ?>

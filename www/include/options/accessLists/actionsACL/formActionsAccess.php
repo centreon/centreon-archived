@@ -241,7 +241,7 @@
 	$tpl->assign("helptext", $helptext);
 
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"]) {
+	if ($valid && $action["action"]) {
 		require_once($path."listsActionsAccess.php");
 	} else {
 		// Apply a template definition
