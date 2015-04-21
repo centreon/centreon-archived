@@ -126,7 +126,8 @@ class Service extends CentreonBaseModel
         $filterType = "OR",
         $tablesString = null,
         $staticFilter = null,
-        $aAddFilters  = array()
+        $aAddFilters  = array(),
+        $aGroup = array()
     ) {
         $filters['service_register'] = '1';
         if (is_array($filterType)) {
@@ -137,7 +138,8 @@ class Service extends CentreonBaseModel
                 'service_register' => 'AND'
             );
         }
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+               
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
     }
     
     /**
@@ -160,6 +162,10 @@ class Service extends CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
+        $aAddFilters = array();
+        $tablesString =  '';
+        $aGroup = array();
+        
         $filters['service_register'] = '1';
         if (is_array($filterType)) {
             $filterType['service_register'] = 'AND';
@@ -170,8 +176,11 @@ class Service extends CentreonBaseModel
             );
         }
         
- 
-        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_services.resource_id', 'nb' => count($filters['tagname']));
+        }
+         
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 
     /**

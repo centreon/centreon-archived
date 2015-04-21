@@ -1,6 +1,7 @@
 $(function () {
   var tagExpand = false;
 
+
   function saveTag( $newTag ) {
     var tmplTagCmpl,
         tmplTag = "<div class='tag' data-resourceid='<%resourceid%>' data-resourcetype='<%resourcetype%>' data-tagid='<%tagid%>'>"
@@ -72,8 +73,6 @@ $(function () {
     }
   });
   
-
-
   /* Event for delete a tag */
   $( document ).on( "click", ".tag:not(.addtag) .remove a", function() {
     var $newTag = $( this ).parent().parent();
@@ -124,13 +123,16 @@ $(function () {
       + "<button type='button' class='close' aria-hidden='true'>&times;</button>"
       + "</div>"
     );
+       
     $body.html(
       "<form role='form'><div class='form-group'>"
-      + "Tag name <input type='text' class='form-control' name='tagName'>"
-      + "Personnal <input type='radio'  value='2' name='typetag' checked>"
-      + "Global <input type='radio'  value='1' name='typetag'>"
+      + "Tag name <input type='text' class='form-control' id='tagName' name='tagName' />"
+      + "<input type='text' class='form-control' id='tagsGlobal' name='tagsGlobal' style='visibility: hidden;' />"
+      + "Personnal <input type='radio' value='2' class='typetag' name='typetag' checked>"
+      + "Global <input type='radio' value='1' class='typetag' name='typetag'>"
       + "</div></form>"
     );
+    
     $footer.html(
       "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>"
       + "<button type='button' class='btn btn-primary' id='saveAddToTag'>Save</button>"
@@ -140,16 +142,79 @@ $(function () {
       .append( $body )
       .append( $footer );
     $( "#modal" ).modal();
+    
+                
+    $(".typetag").on( "click", function() {
+        var val = $(this).val();
+        if (val == 2) {
+            
+            $("div[id$='tagName']").show();
+            $("div[id$='tagsGlobal']").css('visibility', 'hidden');
+            $("div[id$='tagsGlobal']").hide();
+        }else {
+            $("div[id$='tagName']").hide();
+            $("div[id$='tagsGlobal']").css('visibility', 'visible');
+            $("div[id$='tagsGlobal']").show();
+        }
+    });
+   
+    $("#tagsGlobal").select2({
+       multiple:true, 
+       allowClear: true, 
+       formatResult: select2_formatResult, 
+       formatSelection: select2_formatSelection, 
+       ajax: {
+           data: function(term, page) {
+               return { q: term, };
+           },
+           dataType: "json", 
+           url:jsUrl.tag.getallGlobal, 
+           results: function (data){ 
+               return {results:data, more:false}; 
+           }
+       },
+       initSelection: function(element, callback) { 
+           var id=$(element).val();
+           $(element).val(id.substring(1, id.length));
+       }
+   });
 
+    $("#tagName").select2({
+       multiple:true, 
+       allowClear: true, 
+       formatResult: select2_formatResult, 
+       formatSelection: select2_formatSelection, 
+       ajax: {
+           data: function(term, page) {
+               return { q: term, };
+           },
+           dataType: "json", 
+           url:jsUrl.tag.getallPerso, 
+           results: function (data){ 
+               return {results:data, more:false}; 
+           }
+       },
+       initSelection: function(element, callback) { 
+           var id=$(element).val();
+           $(element).val(id.substring(1, id.length));
+       }
+   });
+
+      
     function saveTags() {
       var listObject = [],
-          name = $( "#modal" ).find( "input[name='tagName']" ).val();
+          name = '';
       $( ".selected" ).each( function( idx, value ) {
         listObject.push( $( value ).data('id') );
       });
       var typetag = $("input[name='typetag']:checked" ).val();
+      if (typetag == 2)
+          name = $( "#modal" ).find( "input[name='tagName']" ).val();
+      else
+          name = $( "#modal" ).find( "input[name='tagsGlobal']" ).val();
+      
       $.ajax({
-        url: jsUrl.tag.add,
+        url: jsUrl.tag.addMassive,
         data: {
           tagName: name,
           typeTag : typetag,

@@ -95,6 +95,7 @@ class Host extends CentreonBaseModel
     ) {
         $filters['enabled'] = '1';
         $aAddFilters = array();
+        $aGroup = array();
         $tablesString =  null;
         
         if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
@@ -106,6 +107,10 @@ class Host extends CentreonBaseModel
              
         }
         
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters);
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_hosts.resource_id', 'nb' => count($filters['tagname']));
+        }
+        
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 }

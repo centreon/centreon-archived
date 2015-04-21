@@ -142,7 +142,8 @@ class Host extends CentreonBaseModel
         $filterType = "OR",
         $tablesString = null,
         $staticFilter = null,
-        $aAddFilters  = array()
+        $aAddFilters  = array(),
+        $aGroup = array()
     ) {
         $filters['host_register'] = '1';
         if (is_array($filterType)) {
@@ -153,7 +154,8 @@ class Host extends CentreonBaseModel
                 'host_register' => 'AND'
             );
         }
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
+                        
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
     }
     
     /**
@@ -178,7 +180,8 @@ class Host extends CentreonBaseModel
     ) {
         $aAddFilters = array();
         $tablesString =  '';
-        
+        $aGroup = array();
+                 
         $filters['host_register'] = '1';
         if (is_array($filterType)) {
             $filterType['host_register'] = 'AND';
@@ -192,11 +195,15 @@ class Host extends CentreonBaseModel
         if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
             $aAddFilters = array(
                 'tables' => array('cfg_tags', 'cfg_tags_hosts'),
-                'join'   => array('cfg_tags.tag_id = cfg_tags_hosts.tag_id', 'cfg_tags.tag_id = cfg_tags_hosts.tag_id',
+                'join'   => array('cfg_tags.tag_id = cfg_tags_hosts.tag_id', 
                     'cfg_tags_hosts.resource_id=cfg_hosts.host_id ')
             ); 
         }
         
-        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters);
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_hosts.resource_id', 'nb' => count($filters['tagname']));
+        }
+               
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 }
