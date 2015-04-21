@@ -61,6 +61,12 @@ class BasicCrud extends AbstractCommand
      *
      * @var type 
      */
+    protected $externalAttributeSet = array();
+    
+    /**
+     *
+     * @var type 
+     */
     protected $attributesMap = array();
     
     /**
@@ -143,7 +149,6 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
-     * @param string $manifestFile
      */
     private function parseManifest()
     {
@@ -201,6 +206,7 @@ class BasicCrud extends AbstractCommand
      * @param type $fields
      * @param type $count
      * @param type $offset
+     * @return type
      */
     public function listAction($fields = null, $count = -1, $offset = 0)
     {
@@ -208,10 +214,19 @@ class BasicCrud extends AbstractCommand
             // Getting the repository name
             $repository = $this->repository;
 
-            // Getting the list from 
-            $fields = (!is_null($fields)) ? $fields : $this->liteAttributesSet;
-            $objectList = $repository::getList($fields, $count, $offset);
+            // Parsing attributes List
+            $givenFields = (!is_null($fields)) ? $fields : $this->liteAttributesSet;
+            $fieldsToQuery = array_diff(
+                array_column($this->externalAttributeSet, 'type'),
+                explode(',', $givenFields)
+            );
+            
+            // Getting the list from
+            $objectList = $repository::getList($fieldsToQuery, $count, $offset);
             $this->normalizeParams($objectList);
+            
+            $this->getExternalObject($objectList);
+            
         } catch (\Exception $ex) {
             
         }
@@ -221,8 +236,43 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
+     * @param type $objectList
+     */
+    private function getExternalObject(&$objectList)
+    {
+        $repository = $this->repository;
+        
+        foreach ($objectList as &$myObject) {
+            
+            $myExternalParams = array();
+            
+            foreach ($this->externalAttributeSet as $externalAttribute) {
+                if ($externalAttribute['link'] == 'relation') {
+                    $exP = $repository::getRelations(
+                        $this->relationMap[$externalAttribute['fields']],
+                        $myObject[$this->attributesMap['id']]
+                    );
+                    $myExternalParams = array_merge($myExternalParams, $exP);
+                } else {
+                    $exP = $repository::getSimpleRelation(
+                        $externalAttribute['fields'],
+                        $externalAttribute['objectClass'],
+                        $myObject[$this->attributesMap['id']]
+                    );
+                    $myExternalParams = array_merge($myExternalParams, $exP);
+                }
+            }
+            
+            $myObject = array_merge($myObject, $myExternalParams);
+        }
+    }
+    
+    /**
+     * 
      * @param type $objectSlug
      * @param type $fields
+     * @param type $linkedObject
+     * @return type
      */
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
     {

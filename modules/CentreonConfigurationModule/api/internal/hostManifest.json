@@ -13,7 +13,7 @@
         "id" : "host_id",
         "name" : "host_name",
         "description" : "host_alias",
-        "ip_dns" : "host_address",
-        "status" : "host_activate"
+        "address" : "host_address",
+        "activate" : "host_activate"
     }
 }
