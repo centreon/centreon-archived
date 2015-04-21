@@ -227,4 +227,64 @@ class Hosttemplate extends CentreonBaseModel
         
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters);
     }
+
+    /**
+     * Used for duplicate a host
+     *
+     * @param int $sourceObjectId The source host id
+     * @param int $duplicateEntries The number entries
+     * @return array List of new host id
+     */
+    public static function duplicate($sourceObjectId, $duplicateEntries = 1)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        $sourceParams = static::getParameters($sourceObjectId, '*');
+        if (false === $sourceParams) {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+        unset($sourceParams['host_id']);
+        $originalName = $sourceParams['host_name'];
+        $explodeOriginalName = explode('_', $originalName);
+        $j = 0;
+        if (($count = count($explodeOriginalName)) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
+            $originalName = join('_', array_slice($explodeOriginalName, 0, -1));
+            $j = $explodeOriginalName[$count - 1];
+        }
+
+        $listDuplicateId = array();
+        for ($i = 0; $i < $duplicateEntries; $i++) {
+            /* Search the unique name for duplicate host */
+            do {
+                $j++;
+                $unique = self::isUnique($originalName . '_' . $j);
+            } while (false === $unique);
+            $sourceParams['host_name'] = $originalName . '_' . $j;
+            /* Insert the duplicate host */
+            $lastId = static::insert($sourceParams);
+            $listDuplicateId[] = $lastId;
+            /* Insert relation */
+            $db->beginTransaction();
+            /* Add relation between host template and service template */
+            $queryRelServiceTmpl = "INSERT INTO cfg_hosts_services_relations (host_host_id, service_service_id)
+                SELECT " . $lastId . ", service_service_id FROM cfg_hosts_services_relations
+                    WHERE host_host_id = " . $sourceObjectId;
+            $db->query($queryRelServiceTmpl);
+            /* Duplicate macros */
+            $queryDupMacros = "INSERT INTO cfg_customvariables_hosts (host_macro_name, host_macro_value, is_password, host_host_id)
+                SELECT host_macro_name, host_macro_value, is_password, " . $lastId . " FROM cfg_customvariables_hosts
+                    WHERE host_host_id = " . $sourceObjectId;
+            $db->query($queryDupMacros);
+            /* Host template */
+            $queryDupTemplate = "INSERT INTO cfg_hosts_templates_relations (host_host_id, host_tpl_id, `order`)
+                SELECT " . $lastId . ", host_tpl_id, `order` FROM cfg_hosts_templates_relations
+                    WHERE host_host_id = " . $sourceObjectId;
+            $db->query($queryDupTemplate);
+            /* Host global tags */
+            $queryDupTag = "INSERT INTO cfg_tags_hosts (tag_id, resource_id)
+                SELECT th.tag_id, " . $lastId . " FROM cfg_tags_hosts th, cfg_tags t
+                    WHERE t.user_id IS NULL AND t.tag_id = th.tag_id AND th.resource_id = " . $sourceObjectId;
+            $db->query($queryDupTag);
+            $db->commit();
+        }
+    }
 }

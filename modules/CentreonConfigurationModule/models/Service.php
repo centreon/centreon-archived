@@ -202,12 +202,24 @@ class Service extends CentreonBaseModel
         if (false === $sourceParams) {
             throw new \Exception(static::OBJ_NOT_EXIST);
         }
+
+        /* Get host id for this service */
+        $query = "SELECT host_host_id FROM cfg_hosts_services_relations WHERE service_service_id  = :svc_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam('svc_id', $sourceObjectId);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if (is_null($row)) {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+        $hostId = $row['host_host_id'];
+
         unset($sourceParams['service_id']);
         $originalName = $sourceParams['service_description'];
         $explodeOriginalName = explode('_', $originalName);
         $j = 0;
-        if (count($explodeOriginalName) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
-            $newName = join('_', array_splice($explodeOriginalName, 0, -1));
+        if (($count = count($explodeOriginalName)) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
+            $newName = join('_', array_slice($explodeOriginalName, 0, -1));
             $j = $explodeOriginalName[$count - 1];
         } else {
             $newName = $originalName;
@@ -220,9 +232,9 @@ class Service extends CentreonBaseModel
             if (false === $duplicateHost) {
                 do {
                     $j++;
-                    $unique = self::isUnique($newName . '_' . $j);
+                    $unique = self::isUnique($newName . '_' . $j, $duplicateHost, $hostId);
                 } while (false === $unique);
-                $newName = $originalName . '_' . $j;
+                $newName = $newName . '_' . $j;
             }
             $sourceParams['service_description'] = $newName;
             /* Insert the duplicate service */
@@ -257,5 +269,32 @@ class Service extends CentreonBaseModel
             $db->commit();
         }
         return $listDuplicateId;
+    }
+
+    /**
+     * Check if the name is unique
+     *
+     * @param string $name The name to validate
+     * @param int $hostId The host id for validate : the name is unqiue by host
+     * @return bool
+     */
+    public static function isUnique($name, $hostId)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        $query = "SELECT COUNT(s.service_id) as nb
+            FROM cfg_services s, cfg_hosts_services_relations hs
+            WHERE s.service_register = '1'
+                AND s.service_id = hs.service_service_id
+                AND s.service_description = :svc_desc
+                AND hs.host_host_id = :host_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':svc_desc', $name, \PDO::PARAM_STR);
+        $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if ($row['nb'] > 0) {
+            return false;
+        }
+        return true;   
     }
 }

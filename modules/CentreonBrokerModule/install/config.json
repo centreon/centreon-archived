@@ -1,7 +1,7 @@
 {
     "name": "Centreon Broker",
     "shortname" : "centreon-broker",
-    "version": "3.0.0",
+    "version": "2.99.2",
     "author" : [
         "Centreon"
     ],
@@ -9,11 +9,11 @@
     "isdisableable" : false,
     "url" : "",
     "description" : "Centreon Broker Module",
-    "core version" : "3.0.0",
+    "core version" : "2.99.2",
     "dependencies" : [
         {
             "name" : "centreon-administration",
-            "version" : "3.0.0"
+            "version" : "2.99.2"
         }
     ],
     "optionnal dependencies" : [
