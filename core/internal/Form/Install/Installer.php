@@ -387,7 +387,7 @@ class Installer
                         $stmt->bindValue(':server_side', '1');
                     }
                     
-                    unset($validator['rules']);
+                    //unset($validator['rules']);
                     $validatorParams = array();
                     foreach ($validator->argument as $argument) {
                         //$validatorParams = (string)$argument['name'] . '=' . $argument;

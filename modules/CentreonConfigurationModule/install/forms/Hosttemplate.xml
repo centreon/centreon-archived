@@ -23,6 +23,11 @@
 						<multiple>true</multiple>
 						<ordered>true</ordered>
 					</attributes>
+                                    <validators>
+                                        <validator rules="remote" serverside="centreon-configuration.circular.dependency">
+                                            <argument name="object">host</argument>
+                                        </validator>
+                                    </validators>
 				</field>
 				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>

@@ -31,63 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
+namespace CentreonConfiguration\Commands;
 
-namespace CentreonConfiguration\Install;
-
-use Centreon\Internal\Di;
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Api\Internal\BasicCrudCommand;
 
 /**
  * 
  */
-class Installer extends ModuleInstaller
+class CommandCommand extends BasicCrudCommand
 {
     /**
-     * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
-     */
-    public function __construct($moduleDirectory, $moduleInfo)
-    {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
-
-    /**
      *
+     * @var type 
      */
-    protected function setUpFormValidators()
-    {
-        $validators = array(
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
-        );
-
-        $db = Di::getDefault()->get('db_centreon');
-
-        foreach ($validators as $validator) {
-            $db->exec($validator);
-        }
-    }
+    public $objectName = 'command';
     
-    public function customPreInstall()
+    public function __construct()
     {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
-        $this->setUpFormValidators();
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
-    {
-        
+        parent::__construct();
     }
 }

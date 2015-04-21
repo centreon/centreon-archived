@@ -1,7 +1,7 @@
 {
     "name": "Centreon Performance",
     "shortname" : "centreon-performance",
-    "version": "3.0.0",
+    "version": "2.99.2",
     "author" : [
         "Centreon"
     ],
@@ -9,11 +9,11 @@
     "isdisableable" : true,
     "url" : "",
     "description" : "Centreon Performance Module",
-    "core version" : "3.0.0",
+    "core version" : "2.99.2",
     "dependencies" : [
         {
             "name" : "centreon-realtime",
-            "version" : "3.0.0"
+            "version" : "2.99.2"
         }
     ],
     "optionnal dependencies" : [

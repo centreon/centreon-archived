@@ -32,141 +32,23 @@
  * For more information : contact@centreon.com
  *
  */
-
 namespace CentreonConfiguration\Commands;
 
-use Centreon\Internal\Command\AbstractCommand;
-use CentreonConfiguration\Models\Relation\Service\Host as HostServiceRelation;
-use CentreonConfiguration\Models\Command;
-use CentreonConfiguration\Models\Service;
+use Centreon\Api\Internal\BasicCrudCommand;
 
 /**
- * Login controller
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers
+ * 
  */
-class ServiceCommand extends AbstractCommand
+class ServiceCommand extends BasicCrudCommand
 {
     /**
-     * Action for listing hosts
      *
+     * @var type 
      */
-    public function listAction()
+    public $objectName = 'service';
+    
+    public function __construct()
     {
-        /*
-         * Fields that we want to display
-         */
-        $hostParams = array(
-            'host_id', 'host_name'
-        );
-        $serviceParams = array(
-            'service_id',
-            'service_description',
-            'service_normal_check_interval',
-            'service_retry_check_interval',
-            'service_max_check_attempts',
-            'service_active_checks_enabled',
-            'service_passive_checks_enabled',
-            'service_activate'
-        );
-        
-        $serviceList = HostServiceRelation::getMergedParameters(
-            $serviceParams,
-            $hostParams
-        );
-        
-        if (count($serviceList) > 0) {
-            $result = "host id;host name;id;description;command check;"
-                . "normal check interval;retry check interval;max check attempts;"
-                . "active checks enabled;passive checks enabled;activate\n";
-            foreach ($serviceList as $service) {
-                $command = Command::getParameters($service['command_command_id'], array('command_name'));
-                $result .= "$service[host_id];$service[host_name];"
-                    . "$service[service_description];$command[command_name];$service[service_normal_check_interval];"
-                    . "$service[service_retry_check_interval];$service[service_max_check_attempts];"
-                    . "$service[service_active_checks_enabled];$service[service_passive_checks_enabled];"
-                    . "$service[service_activate]\n";
-            }
-        } else {
-            $result = "No result found";
-        }
-        
-        echo $result;
-    }
-
-    /**
-     * Action to get info a specific host
-     * @param    int   $id    ID of object
-     * @param    mixed   $host    Name of object
-     */
-    public function showAction($host)
-    {
-        /*
-         * Query parameter
-         */
-        $params = array(
-            "service_register" => '1'
-        );
-        
-        if (is_numeric($host)) {
-            $params['service_id'] = $host;
-        } else {
-            $params['service_name'] = $host;
-        }
-        
-        
-        /*
-         * Get host informations
-         */
-        $hostList = Service::getList('*', -1, 0, null, "ASC", $params, "AND");
-        
-        if (count($hostList) > 0) {
-            $result = "id;name;alias;address;activate\n";
-            foreach ($hostList as $host) {
-                $result .= "$host[service_id];$host[service_name];"
-                    . "$host[service_alias];$host[service_address];$host[service_activate]\n";
-            }
-        } else {
-            $result = "No result found";
-        }
-        
-        echo $result;
-    }
-
-    /**
-     * Action for update 
-     *
-     */
-    public function updateAction()
-    {
-        echo "Not implemented yet";
-    }
-
-    /**
-     * Action for add
-     *
-     */
-    public function addAction()
-    {
-        echo "Not implemented yet";
-    }
-
-    /**
-     * Action for delete
-     *
-     */
-    public function deleteAction()
-    {
-        echo "Not implemented yet";
-    }
-
-    /**
-     * Action for duplicate
-     *
-     */
-    public function duplicateAction()
-    {
-        echo "Not implemented yet";
+        parent::__construct();
     }
 }

@@ -32,116 +32,23 @@
  * For more information : contact@centreon.com
  *
  */
-
 namespace CentreonConfiguration\Commands;
 
-use Centreon\Internal\Command\AbstractCommand;
-use CentreonConfiguration\Models\Hosttemplate;
+use Centreon\Api\Internal\BasicCrudCommand;
 
 /**
- * Login controller
- * @authors Julien Mathis
- * @package Centreon
- * @subpackage Controllers
+ * 
  */
-class HostTemplateCommand extends AbstractCommand
+class HostTemplateCommand extends BasicCrudCommand
 {
     /**
-     * Action for listing hosts
      *
+     * @var type 
      */
-    public function listAction()
+    public $objectName = 'hosttemplate';
+    
+    public function __construct()
     {
-        /*
-         * Fields that we want to display
-         */
-        $params = 'host_id,host_name,host_alias,host_activate';
-        
-        $hostList = Hosttemplate::getList(
-            $params,
-            -1,
-            0,
-            null,
-            "ASC"
-        );
-        
-        if (count($hostList) > 0) {
-            $result = "id;name;alias;activate\n";
-            foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];"
-                    . "$host[host_alias];$host[host_activate]\n";
-            }
-        } else {
-            $result = "No result found";
-        }
-        
-        echo $result;
-    }
-
-    /**
-     * Action to get info a specific host
-     * @param    int   $id    ID of object
-     * @param    mixed   $host    Name of object
-     */
-    public function showAction($hostTemplate)
-    {
-        if (is_numeric($hostTemplate)) {
-            $params['host_id'] = $hostTemplate;
-        } else {
-            $params['host_name'] = $hostTemplate;
-        }
-        
-        /*
-         * Get host informations
-         */
-        $hostList = Hosttemplate::getList('*', -1, 0, null, "ASC", $params, "AND");
-        
-        if (count($hostList) > 0) {
-            $result = "id;name;alias;activate\n";
-            foreach ($hostList as $host) {
-                $result .= "$host[host_id];$host[host_name];"
-                    . "$host[host_alias];$host[host_activate]\n";
-            }
-        } else {
-            $result = "No result found";
-        }
-        
-        echo $result;
-    }
-
-    /**
-     * Action for update 
-     *
-     */
-    public function updateAction()
-    {
-        echo "Not implemented yet";
-    }
-
-    /**
-     * Action for add
-     *
-     */
-    public function addAction()
-    {
-        echo "Not implemented yet";
-    }
-
-    /**
-     * Action for delete
-     *
-     */
-    public function deleteAction()
-    {
-        echo "Not implemented yet";
-    }
-
-    /**
-     * Action for duplicate
-     *
-     */
-    public function duplicateAction()
-    {
-        echo "Not implemented yet";
+        parent::__construct();
     }
 }

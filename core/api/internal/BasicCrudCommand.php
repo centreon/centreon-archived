@@ -33,60 +33,99 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Api\Internal;
 
-namespace Centreon\Internal\Exception;
-
-use Centreon\Internal\Exception as CentreonException;
+use Centreon\Api\Internal\BasicCrud;
 
 /**
- * Description of HttpException
+ * Description of BasicCrudCommand
  *
  * @author lionel
  */
-class HttpException extends CentreonException
+class BasicCrudCommand extends BasicCrud
 {
     /**
-     *
-     * @var type 
-     */
-    protected $httpErrorTitle = '';
-    
-    /**
-     *
-     * @var type 
-     */
-    protected $internalCode = '';
-    
-    /**
      * 
-     * @param type $message
-     * @param type $code
-     * @param type $previous
      */
-    public function __construct($title, $message = "", $code = 0, $internalCode = 0, $previous = NULL)
+    public function __construct()
     {
-        if (is_array($message)) {
-            $message = implode("\n", $message);
-        }
-        parent::__construct($message, $code, $previous);
-        $this->httpErrorTitle = $title;
-        $this->internalCode = $internalCode;
+        parent::__construct();
     }
     
     /**
      * 
-     * @return type
+     * @param type $fields
+     * @param type $count
+     * @param type $offset
      */
-    public function getTitle()
+    public function listAction($fields = null, $count = -1, $offset = 0)
     {
-        return $this->httpErrorTitle;
-    }
-    
-    /**
-     * 
-     */
-    public function getInternalCode()
-    {
+        $objectList = parent::listAction($fields, $count, $offset);
         
+        // Displaying
+        if (count($objectList) > 0) {
+            $selectedFields = array_keys($objectList[0]);
+            $result = implode(';', $selectedFields) . "\n";
+            foreach ($objectList as $object) {
+                $result .= implode(';', $object) . "\n";
+            }
+        } else {
+            $result = _("No result found");
+        }
+        
+        echo $result;
+    }
+    
+    /**
+     * 
+     * @param type $objectSlug
+     * @param type $fields
+     * @param type $linkedObject
+     */
+    public function showAction($objectSlug, $fields = null, $linkedObject = '')
+    {
+        $myObject = parent::showAction($objectSlug, $fields, $linkedObject);
+        
+        $result = '';
+        foreach ($myObject as $key => $value) {
+            $result .= $key . ': ' . $value . "\n";
+        }
+        
+        echo $result;
+    }
+    
+    /**
+     * Action for update 
+     *
+     */
+    public function updateAction()
+    {
+        parent::updateAction();
+    }
+
+    /**
+     * Action for add
+     *
+     */
+    public function createAction()
+    {
+        parent::createAction();
+    }
+
+    /**
+     * Action for delete
+     *
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
+    }
+    
+    /**
+     * 
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
     }
 }

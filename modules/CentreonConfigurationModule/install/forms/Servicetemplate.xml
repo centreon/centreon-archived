@@ -22,6 +22,11 @@
 						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/servicetemplate</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>
+                                    <validators>
+                                        <validator rules="remote" serverside="centreon-configuration.circular.dependency">
+                                            <argument name="object">service</argument>
+                                        </validator>
+                                    </validators>
 				</field>
 				<field name="service_template_hosts" label="Linked with host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
