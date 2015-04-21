@@ -34,12 +34,12 @@
  */
 namespace CentreonConfiguration\Commands;
 
-use Centreon\Api\Internal\BasicCrudConnector;
+use Centreon\Api\Internal\BasicCrudCommand;
 
 /**
  * 
  */
-class ConnectorCommand extends BasicCrudConnector
+class ConnectorCommand extends BasicCrudCommand
 {
     /**
      *
