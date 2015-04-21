@@ -240,7 +240,7 @@ class BusinessActivityRepository extends FormRepository
             $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
 
             if (isset($result[0]['service_id'])) {
-                Service::delete($result[0]['service_id']);
+                VirtualService::delete($result[0]['service_id']);
             }
         }
 
