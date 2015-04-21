@@ -216,7 +216,7 @@ class Service extends CentreonBaseModel
         /* Insert new service */
         $listDuplicateId = array();
         for ($i = 0; $i < $duplicateEntries; $i++) {
-            /* Search the unique name for duplicate service if not duplicate form host */
+            /* Search the unique name for duplicate service if not duplicate from host */
             if (false === $duplicateHost) {
                 do {
                     $j++;
@@ -247,6 +247,13 @@ class Service extends CentreonBaseModel
                 SELECT ts.tag_id, " . $lastId . " FROM cfg_tags_services ts, cfg_tags t
                     WHERE t.user_id IS NULL AND t.tag_id = ts.tag_id AND ts.resource_id = " . $sourceObjectId;
             $db->query($queryDupTag);
+            /* Add relation to host only if not duplicate from host */
+            if (false === $duplicateHost) {
+                $queryDupHostRelation = "INSERT INTO cfg_hosts_services_relations (host_host_id, service_service_id)
+                    SELECT host_host_id, " . $lastId . " FROM cfg_hosts_services_relations
+                        WHERE service_service_id = " . $sourceObjectId;
+                $db->query($queryDupHostRelation);
+            }
             $db->commit();
         }
         return $listDuplicateId;
