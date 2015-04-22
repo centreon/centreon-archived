@@ -24,7 +24,6 @@
 					</attributes>
                                     <validators>
                                         <validator rules="remote" serverside="centreon-configuration.circular.dependency">
-                                            <argument name="object">service</argument>
                                         </validator>
                                     </validators>
 				</field>
@@ -197,6 +196,7 @@
 	    	<field name="service_description" mandatory="1"></field>
 	    	<field name="service_alias" mandatory="0"></field>
 	    	<field name="service_template_model_stm_id" mandatory="0"></field>
+	    	<field name="command_command_id" mandatory="0"></field>
 	    	<field name="service_custommacros" mandatory="0"></field>
         	<field name="service_tags" mandatory="0"></field>
 	  	</step>
