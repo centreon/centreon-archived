@@ -8,8 +8,8 @@
 			<block name="General information">
 				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 					<validators>
-                    	<validator rules="remote" serverside="unique" />
-                        <validator rules="forbiddenChar" serverside="forbiddenChar">
+                    	<validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
                         	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
                         </validator>
 					</validators>
