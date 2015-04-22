@@ -165,7 +165,7 @@ abstract class FormRepository extends ListRepository
             if (method_exists(get_called_class(), 'postSave')) {
                 static::postSave($id, 'add', $givenParameters);
             }
-        } catch( \PDOException $Exception ) {
+        } catch (\PDOException $e) {
             $db->rollback();
             throw new Exception($e->getMessage());
         } catch (\Exception $e) {

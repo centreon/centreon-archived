@@ -68,7 +68,9 @@
                 }
             }
             lastSelectedRow = this;
+            {if $displayActionBar === true}
             toggleSelectedAction();
+            {/if}
         });
 
         $('#datatable{$object} tbody').on('click', 'a', function (e) {

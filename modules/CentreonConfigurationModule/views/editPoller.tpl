@@ -6,12 +6,16 @@
 <div class="content-container">
     <div class="pull-right inline-block">
         <div class="input-group">
+            {if (isset($engineFormUrl) && !empty($engineFormUrl))}
             <a id="engine_advanced_form" href="{$engineFormUrl}" class="btn btn-primary">
                 <i class="fa fa-gear"></i> {t}Engine{/t}
             </a>
+            {/if}
+            {if (isset($brokerFormUrl) && !empty($brokerFormUrl))}
             <a id="broker_advanced_form" href="{$brokerFormUrl}" class="btn btn-primary">
                 <i class="fa fa-database"></i> {t}Broker{/t}
             </a>
+            {/if}
         </div>
     </div>
   <div class="row">

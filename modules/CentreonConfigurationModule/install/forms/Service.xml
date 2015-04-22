@@ -79,7 +79,7 @@
 		  	</attributes>
           	<help>Specify if you want alerts and / or performance graphs</help>
 		</field>
-		<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="1">
+		<field name="timeperiod_tp_id" label="Check period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
 			<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>

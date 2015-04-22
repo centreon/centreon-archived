@@ -59,9 +59,25 @@ class HumanReadable
         ),
         's' => array(
             'smaller' => true,
-            'function' => "self::seconds"
+            'function' => "seconds"
         )
     );
+
+    /**
+     * Convert a value for human readable
+     *
+     * @param int $values The array of values (float or int)
+     * @param string $unit The string of the unit
+     * @param string $newUnit The new unit string
+     * @param int $decimal The number of decimal for the result
+     * @param bool $toString If return string (can be complex)
+     * @return int|string
+     */
+    public static function convert($value, $unit, &$newUnit, $decimal = null, $toString = false)
+    {
+        $retValues = self::convertArray(array($value), $unit, $newUnit, $decimal, $toString);
+        return $retValues[0];
+    }
 
     /**
      * Convert a array for human readable
@@ -70,20 +86,23 @@ class HumanReadable
      * @param string $unit The string of the unit
      * @param string $newUnit The new unit string
      * @param int $decimal The number of decimal for the result
+     * @param bool $toString If return string (can be complex)
      * @return array
      */
-    public static function convertArray($values, $unit, &$newUnit, $decimal = null)
+    public static function convertArray($values, $unit, &$newUnit, $decimal = null, $toString = false)
     {
         if (false === in_array($unit, array_keys(self::$units))) {
             return $values;
         }
         /* Getting the factor */
-        $factor = self::getFactor($values, $decimal);
+        $factor = self::getFactor($values);
         if (false === $factor) {
             // @todo
         } else {
-            $newUnit = self::$units[$unit]['units'][$factor];
-            return self::convertArrayWithFactor($values, $unit, $factor, $decimal);
+            if (isset(self::$units[$unit]['units'])) {
+                $newUnit = self::$units[$unit]['units'][$factor];
+            }
+            return self::convertArrayWithFactor($values, $unit, $factor, $decimal, $toString);
         }
     }
 
@@ -94,9 +113,10 @@ class HumanReadable
      * @param string $unit The string of the unit
      * @param int $factor The factor for divide
      * @param int $decimal The number of decimal for the result
+     * @param bool $toString If return string (can be complex)
      * @return array
      */
-    public static function convertArrayWithFactor($values, $unit, $factor, $decimal = null)
+    public static function convertArrayWithFactor($values, $unit, $factor, $decimal = null, $toString = false)
     {
         if (false === in_array($unit, array_keys(self::$units)) && is_null($decimal)) {
             return $values;
@@ -126,6 +146,18 @@ class HumanReadable
                 },
                 $values
             );
+        } elseif (isset(self::$units[$unit]['function'])) {
+            $func = self::$units[$unit]['function'];
+            try {
+                return array_map(
+                    function ($value) use ($func, $decimal, $toString) {
+                        return self::$func($value, $decimal, $toString);
+                    },
+                    $values
+                );
+            } catch (\Exception $e) {
+                return self::convertArrayWithFactor($values, null, $factor, $decimal);
+            }
         }
     }
 
@@ -142,5 +174,39 @@ class HumanReadable
             return floor((strlen($max) - 1) / 3);
         }
         return false;
+    }
+
+    /**
+     * Convert seconds to human readable
+     *
+     * @param int $value The value to convert
+     * @param int $decimal The number of decimal for the result
+     * @param bool $toString If return string (can be complex)
+     * @return int|string
+     */
+    protected static function seconds($value, $decimal = null, $toString = false)
+    {
+        $units = array(
+            "w" => 7 * 24 * 3600,
+            "d" => 24 * 3600,
+            "h" => 3600,
+            "m" => 60,
+            "s" => 1
+        );
+        $retValue = null;
+        $retArray = array();
+        foreach ($units as $unitName => $divider) {
+            if ($quot = intval($value / $divider)) {
+                if (is_null($retValue)) {
+                    $retValue = $quot;
+                }
+                $retArray[] = $quot . $unitName;
+                $value -= $quot * $divider;
+            }
+        }
+        if ($toString) {
+            return join(" ", $retArray);
+        }
+        return $retValue;
     }
 }

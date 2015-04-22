@@ -39,6 +39,7 @@ use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Host;
 use Centreon\Internal\Utils\YesNoDefault;
+use Centreon\Internal\Utils\HumanReadable;
 use CentreonConfiguration\Repository\Repository;
 use Centreon\Internal\Exception\Validator\MissingParameterException;
 /**
@@ -85,14 +86,7 @@ class ServiceRepository extends Repository
         $intervalLength = Di::getDefault()->get('config')->get('default', 'interval_length');
         $interval *= $intervalLength;
         
-        if ($interval % 60 == 0) {
-            $units = "min";
-            $interval /= 60;
-        } else {
-            $units = "sec";
-        }
-        
-        $scheduling = $interval.' '.$units;
+        $scheduling = HumanReadable::convert($interval, 's', $units, null, true);
         
         return $scheduling;
     }
