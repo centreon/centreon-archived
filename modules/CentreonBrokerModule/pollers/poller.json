@@ -41,7 +41,21 @@
                                                 "name" : "failover-central-output",
                                                 "path" : "%global_broker_data_directory%/central-output.failover",
                                                 "failover": "central-output"
+                                            },
+                                            {
+                                              "type": "dump",
+                                              "tagname": "extcmd-%poller_name%",
+                                              "path": "%engine_command_file%",
+                                              "name": "extcmd-%poller_name%"
                                             }
+                                        ],
+                                        "input": [
+                                          {
+                                            "type": "tcp",
+                                            "name": "central-transfert-input",
+                                            "host": "%broker_central_ip%",
+                                            "port": "5669"
+                                          }
                                         ],
                                         "logger": [
                                           {
@@ -68,6 +82,12 @@
                                                 "name" : "failover-central-output",
                                                 "path" : "%global_broker_data_directory%/central-output.failover",
                                                 "failover": "central-output"
+                                            },
+                                            {
+                                              "type": "dump",
+                                              "tagname": "extcmd-%poller_name%",
+                                              "path": "%engine_command_file%",
+                                              "name": "extcmd-%poller_name%"
                                             }
                                         ],
                                         "logger": [
