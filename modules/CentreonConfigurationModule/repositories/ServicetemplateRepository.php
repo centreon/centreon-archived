@@ -68,7 +68,6 @@ class ServicetemplateRepository extends Repository
     protected static $inheritanceColumns = array(
         'command_command_id',
         'timeperiod_tp_id',
-        'timeperiod_tp_id2',
         'command_command_id2',
         'service_is_volatile',
         'service_max_check_attempts',
@@ -85,10 +84,6 @@ class ServicetemplateRepository extends Repository
         'service_low_flap_threshold',
         'service_high_flap_threshold',
         'service_flap_detection_enabled',
-        'service_process_perf_data',
-        'service_retain_status_information',
-        'service_retain_nonstatus_information',
-        'service_stalking_options',
         'command_command_id_arg',
         'command_command_id_arg2'
     );
@@ -194,7 +189,6 @@ class ServicetemplateRepository extends Repository
                 $command = Command::get($value);
                 return $command['command_name'];
             case 'timeperiod_tp_id':
-            case 'timeperiod_tp_id2':
                 $timeperiod = Timeperiod::get($value);
                 return $timeperiod['tp_name'];
             case 'service_is_volatile':
@@ -205,9 +199,6 @@ class ServicetemplateRepository extends Repository
             case 'service_check_freshness':
             case 'service_event_handler_enabled':
             case 'service_flap_detection_enabled':
-            case 'service_process_perf_data':
-            case 'service_retain_status_information':
-            case 'service_retain_nonstatus_information':
                 if ($value == 0) {
                     return _('No');
                 } else if ($value == 1) {

@@ -56,7 +56,6 @@ class HostTemplateRepository extends Repository
         'command_command_id',
         'command_command_id_arg1',
         'timeperiod_tp_id',
-        'timeperiod_tp_id2',
         'command_command_id2',
         'command_command_id_arg2',
         'host_max_check_attempts',
@@ -73,10 +72,6 @@ class HostTemplateRepository extends Repository
         'host_high_flap_threshold',
         'host_flap_detection_enabled',
         'flap_detection_options',
-        'host_process_perf_data',
-        'host_retain_status_information',
-        'host_retain_nonstatus_information',
-        'host_stalking_options',
         'host_snmp_community',
         'host_snmp_version'
     );
@@ -202,7 +197,6 @@ class HostTemplateRepository extends Repository
                 $command = Command::get($value);
                 return $command['command_name'];
             case 'timeperiod_tp_id':
-            case 'timeperiod_tp_id2':
                 $timeperiod = Timeperiod::get($value);
                 return $timeperiod['tp_name'];
             case 'host_active_checks_enabled':
@@ -210,9 +204,6 @@ class HostTemplateRepository extends Repository
             case 'host_obsess_over_host':
             case 'host_check_freshness':
             case 'flap_detection_options':
-            case 'host_process_perf_data':
-            case 'host_retain_status_information':
-            case 'host_retain_nonstatus_information':
             case 'host_event_handler_enabled':
                 if ($value == 0) {
                     return _('No');
