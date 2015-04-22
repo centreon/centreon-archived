@@ -37,6 +37,7 @@ namespace Centreon\Api\Internal;
 
 use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Exception;
 
 /**
  * Description of BasicCrud
@@ -299,18 +300,59 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
+     * @param type $params
+     * @return type
      */
-    public function createAction()
+    private function parseObjectParams($params)
     {
-        echo "Not implemented yet";
+        $finalParamList = array();
+        
+        // First we seperate the params
+        $rawParamList = explode(';', $params);
+        
+        // 
+        foreach ($rawParamList as $param) {
+            $explodedParam = explode('=', $param);
+            $paramName = $explodedParam[0];
+            $finalParamList[$paramName] = implode('', $explodedParam);
+        }
+        
+        return $finalParamList;
     }
     
     /**
      * 
+     * @param string $params
      */
-    public function updateAction()
+    public function createAction($params)
     {
-        echo "Not implemented yet";
+        try {
+            $repository = $this->repository;
+            $paramList = $this->parseObjectParams($params);
+            $idOfCreatedElement = $repository::create(
+                        $paramList,
+                        'api',
+                        $this->objectBaseUrl . '/update'
+                    );
+            Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
+        } catch (Exception $ex) {
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+        }
+    }
+    
+    /**
+     * 
+     * @param string $object
+     * @param string $params
+     */
+    public function updateAction($object, $params)
+    {
+        try {
+            $repository = $this->repository;
+            $paramList = $this->parseObjectParams($params);
+        } catch (Exception $ex) {
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+        }
     }
     
     /**

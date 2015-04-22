@@ -95,30 +95,34 @@ class BasicCrudCommand extends BasicCrud
     }
     
     /**
-     * Action for update 
-     *
-     */
-    public function updateAction()
-    {
-        parent::updateAction();
-    }
-
-    /**
      * Action for add
-     *
+     * 
+     * @param string $params
      */
-    public function createAction()
+    public function createAction($params)
     {
-        parent::createAction();
+        parent::createAction($params);
+    }
+    
+    /**
+     * Action for update
+     * 
+     * @param string $object
+     * @param string $params
+     */
+    public function updateAction($object, $params)
+    {
+        parent::updateAction($object, $params);
     }
 
     /**
      * Action for delete
-     *
+     * 
+     * @param type $object
      */
-    public function deleteAction($id)
+    public function deleteAction($object)
     {
-        parent::deleteAction($id);
+        parent::deleteAction($object);
     }
     
     /**
