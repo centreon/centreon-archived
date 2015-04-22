@@ -16,7 +16,7 @@ What's new?
 Compatibility with PHP 5.4.x
 ============================
 
-Centreon is now compatible with PHP in version 5.4.x. So, you do not need to downgrade to PHP 5.3.x version when you install it on Debian 6.
+Centreon is now compatible with PHP in version 5.4.x. So, you do not need to downgrade to PHP 5.3.x version when you install it on Debian 6, Ubuntu 13.04, Redhat 7 and CentOS 7.
 
 Centreon proprietary module (Centreon BAM, Centreon BI, Centreon MAP, Centreon KB) is not compatible as yet with this PHP version.
 
