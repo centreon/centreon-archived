@@ -117,7 +117,7 @@ class Validator
     private function validateDatas($validationScheme, $submittedDatas)
     {
         $errors = array();
-        
+
         // If not all mandatory parameters are in the dataset, throw an exception
         $datasKeys = array_keys($submittedDatas);
         $missingKeys = array_diff($validationScheme['mandatory'], $datasKeys);
@@ -127,6 +127,14 @@ class Validator
             throw new MissingParameterException($errorMessage);
         }
 
+        $objectParams = array();
+        if (isset($submittedDatas['object'])) {
+            $objectParams['object'] = $submittedDatas['object'];
+        }
+        if (isset($submittedDatas['object_id'])) {
+            $objectParams['object_id'] = $submittedDatas['object_id'];
+        }
+
         // Validate each field according to its validators
         foreach ($submittedDatas as $key => $value) {
             if (isset($validationScheme['fieldScheme'][$key])) {
@@ -134,7 +142,8 @@ class Validator
                     //$call = '\Centreon\Internal\Form\Validators\\' . ucfirst($validatorElement['call']);
                     $call = $this->parseValidatorName($validatorElement['call']);
                     $validator = new $call($validatorElement['params']);
-                    $result = $validator->validate($value, json_decode($validatorElement['params'], true));
+                    $validatorParams = array_merge($objectParams, json_decode($validatorElement['params'], true));
+                    $result = $validator->validate($value, $validatorParams);
                     if ($result['success'] === false) {
                         $errors[] = $result['error'];
                     }

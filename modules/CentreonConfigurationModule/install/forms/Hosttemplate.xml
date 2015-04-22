@@ -25,7 +25,6 @@
 					</attributes>
                                     <validators>
                                         <validator rules="remote" serverside="centreon-configuration.circular.dependency">
-                                            <argument name="object">host</argument>
                                         </validator>
                                     </validators>
 				</field>

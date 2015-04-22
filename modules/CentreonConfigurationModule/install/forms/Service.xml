@@ -19,7 +19,6 @@
           		<help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
                             <validators>
                                 <validator rules="remote" serverside="centreon-configuration.circular.dependency">
-                                    <argument name="object">service</argument>
                                 </validator>
                             </validators>
 			</field>
