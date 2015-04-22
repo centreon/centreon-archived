@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give MERETHIS
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,63 +31,82 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonConfiguration\Install;
-
-use Centreon\Internal\Di;
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+namespace CentreonMain\Events;
 
 /**
- * 
+ * Parameters for generic events 
+ *
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage CentreonMain
  */
-class Installer extends ModuleInstaller
+class Generic
 {
     /**
-     * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
-     */
-    public function __construct($moduleDirectory, $moduleInfo)
-    {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
-
-    /**
+     * The array of input
      *
+     * @var array
      */
-    protected function setUpFormValidators()
-    {
-        $validators = array(
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
-        );
+    private $input = array();
 
-        $db = Di::getDefault()->get('db_centreon');
+    /**
+     * The array for output
+     *
+     * @var array
+     */
+    private $output = array();
 
-        foreach ($validators as $validator) {
-            $db->exec($validator);
-        }
-    }
-    
-    public function customPreInstall()
-    {
-        $this->setUpFormValidators();
-    }
-    
     /**
-     * 
+     * The contructor
+     *
+     * @param array $input The assoc array for input information
      */
-    public function customInstall()
+    public function __construct($input = array())
     {
-        
+        $this->input = $input;
     }
-    
+
     /**
-     * 
+     * Set the values for output
+     *
+     * @param array $output The assoc array for output values
      */
-    public function customRemove()
+    public function setOutput($output)
     {
-        
+        $this->output = $output;
+    }
+
+    /** 
+     * Set/add a value un output
+     *
+     * @param string $key The name of output value
+     * @param mixed $value The value
+     */
+    public function addOutput($key, $value)
+    {
+        $this->output[$key] = $value;
+    }
+
+    /**
+     * Get the output values
+     *
+     * @return array The values
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * Get the input values
+     *
+     * @return array The values
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 }

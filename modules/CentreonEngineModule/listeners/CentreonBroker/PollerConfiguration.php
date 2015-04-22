@@ -31,63 +31,48 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonConfiguration\Install;
+namespace CentreonEngine\Listeners\CentreonBroker;
 
-use Centreon\Internal\Di;
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+use CentreonEngine\Models\Engine;
+use CentreonMain\Events\Generic as GenericEvent;
 
 /**
- * 
+ * Listeners for event
+ *
+ * @author Maximilien Bersoult <mbersoult@centreon.com>
+ * @version 3.0.0
+ * @package Centreon
+ * @subpackage CentreonBroker
  */
-class Installer extends ModuleInstaller
+class PollerConfiguration
 {
-    /**
-     * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
-     */
-    public function __construct($moduleDirectory, $moduleInfo)
-    {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
 
     /**
+     * Execute the event
      *
+     * @param \CentreonMain\Events\Generic $event The object for event
      */
-    protected function setUpFormValidators()
+    public static function execute(GenericEvent $event)
     {
-        $validators = array(
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
-        );
-
-        $db = Di::getDefault()->get('db_centreon');
-
-        foreach ($validators as $validator) {
-            $db->exec($validator);
+        $input = $event->getInput();
+        if (false === isset($input['poller_id'])) {
+            throw new \InvalidArgumentException();
         }
-    }
-    
-    public function customPreInstall()
-    {
-        $this->setUpFormValidators();
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
         
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
-    {
-        
+        $pollerInformation = Engine::get($input['poller_id']);
+        $delimiter = '';
+        if (isset($input['delimiter'])) {
+            $delimiter = $input['delimiter'];
+        }
+        $keys = array_map(
+            function ($name) use ($delimiter) {
+                return $delimiter . 'engine_' . $name . $delimiter;
+            },
+            array_keys($pollerInformation)
+        );
+        $values = array_combine($keys, array_values($pollerInformation));
+        $event->setOutput($values);
     }
 }

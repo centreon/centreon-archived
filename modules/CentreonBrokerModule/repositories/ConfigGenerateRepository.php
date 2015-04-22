@@ -42,6 +42,7 @@ use CentreonConfiguration\Models\Poller;
 use CentreonBroker\Repository\BrokerRepository;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
+use CentreonMain\Events\Generic as GenericEvent;
 
 /**
  * Factory for generate Centron Broker configuration
@@ -281,21 +282,49 @@ class ConfigGenerateRepository
                 }
                 $file->endElement();
             } else {
-                $value = str_replace(
-                    array_keys($this->baseConfig),
-                    array_values($this->baseConfig),
-                    $value
-                );
-                $key = str_replace(
-                    array_keys($this->baseConfig),
-                    array_values($this->baseConfig),
-                    $key
-                );
-                $key = str_replace(array('/','.'),'-',$key);
-                $file->writeElement($key, $value);
+                if ($key == '%callback%') {
+                    switch ($value) {
+                        case 'pollerCommandLine':
+                            $this->addCommandLineBlock($file);
+                            break;
+                    }
+                } else {
+                    $value = str_replace(
+                        array_keys($this->baseConfig),
+                        array_values($this->baseConfig),
+                        $value
+                    );
+                    $key = str_replace(
+                        array_keys($this->baseConfig),
+                        array_values($this->baseConfig),
+                        $key
+                    );
+                    $key = str_replace(array('/','.'),'-',$key);
+                    $file->writeElement($key, $value);
+                }
             }
         }
         if (false === $isGeneral) {
+            $file->endElement();
+        }
+    }
+
+    /**
+     * Add block for external command line
+     *
+     * @param \XMLWriter $gile The xml file
+     */
+    private function addCommandLineBlock($file)
+    {
+        /* Get poller list */
+        $pollers = Poller::getList();
+        $varlib = $this->baseConfig['%global_broker_data_directory%'];
+        foreach ($pollers as $poller) {
+            $file->startElement("input");
+            $file->writeElement("name", "extcommand-" . $poller['name']);
+            $file->writeElement("type", "dump");
+            $file->writeElement("path", $varlib . "/extcommand-" . $poller['poller_id'] . '.fifo');
+            $file->writeElement("tagname", "extcommand-" . $poller['name']);
             $file->endElement();
         }
     }
@@ -308,10 +337,13 @@ class ConfigGenerateRepository
     private function loadMacros($pollerId)
     {
         $config = Di::getDefault()->get('config');
+
         /* Load contant values */
         $this->baseConfig['broker_central_ip'] = getHostByName(getHostName());
+
         /* Load user value */
         $this->baseConfig = array_merge($this->baseConfig, BrokerRepository::loadValues($pollerId));
+
         /* Load paths */
         $paths = BrokerRepository::getPathsFromPollerId($pollerId);
         $pathsValue = array_values($paths);
@@ -341,6 +373,7 @@ class ConfigGenerateRepository
         $paths = array_combine($pathsKeys, $pathsValue);
         $this->baseConfig = array_merge($this->baseConfig, $paths);
         $this->baseConfig['poller_id'] = $this->pollerId;
+
         /* Information for database */
         $dbInformation = CentreonDb::parseDsn(
             $config->get('db_centreon', 'dsn'),
@@ -355,6 +388,15 @@ class ConfigGenerateRepository
         );
         $dbInformation = array_combine($dbKeys, array_values($dbInformation));
         $this->baseConfig = array_merge($dbInformation, $this->baseConfig);
+
+        /* Load general poller information */
+        $pollerInformation = Poller::get($pollerId);
+        $this->baseConfig['poller_name'] = $pollerInformation['name'];
+
+        /* Load configuration information from Centren Engine */
+        $eventObj = new GenericEvent(array('poller_id' => $pollerId));
+        Di::getDefault()->get('events')->emit('centreon-broker.poller.configuration', array($eventObj));
+        $this->baseConfig = array_merge($eventObj->getOutput(), $this->baseConfig);
         
         /* get global value in database */
         $globalOptions = BrokerRepository::getGlobalValues();
