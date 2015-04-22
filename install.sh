@@ -186,7 +186,10 @@ external/bin/centreonConsole core:module:manage:install moduleName=centreon-perf
 \cp -r modules/CentreonAdministrationModule/static/centreon-administration/ www/static/
 \cp -r modules/CentreonPerformanceModule/static/centreon-performance/ www/static/
 \cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
+
 chown apache.apache /srv/centreon/www/uploads/images
+usermod -G centreon-engine apache
+usermod -G centreon-broker apache
 
 # Start services
 # Nothing to do, they should already be running due to previous steps
