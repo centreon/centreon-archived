@@ -72,7 +72,7 @@ class Installer extends ModuleInstaller
     
     public function customPreInstall()
     {
-        
+        $this->setUpFormValidators();
     }
     
     /**
@@ -80,7 +80,7 @@ class Installer extends ModuleInstaller
      */
     public function customInstall()
     {
-        $this->setUpFormValidators();
+        
     }
     
     /**
