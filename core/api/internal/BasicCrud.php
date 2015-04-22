@@ -338,7 +338,7 @@ class BasicCrud extends AbstractCommand
                         'api',
                         $this->objectBaseUrl . '/update'
                     );
-            Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
         } catch (Exception $ex) {
             \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
@@ -354,6 +354,13 @@ class BasicCrud extends AbstractCommand
         try {
             $repository = $this->repository;
             $paramList = $this->parseObjectParams($params);
+            $paramList['object_id'] = $object;
+            $repository::update(
+                        $paramList,
+                        'api',
+                        $this->objectBaseUrl . '/update'
+                    );
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
         } catch (Exception $ex) {
             \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
