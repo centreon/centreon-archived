@@ -219,10 +219,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         
         if ($object == 'host') {
             $ctp = 'timeperiod_tp_id';
-        } elseif ($object == 'service') {
-            $ctp = 'timeperiod_tp_id2';
         }
-        
         $query = "SELECT tp_name, ".$object."_notification_options "
             . "FROM cfg_users, cfg_timeperiods "
             . "WHERE user_id='$contactId' "

@@ -195,8 +195,10 @@ class Host extends CentreonBaseModel
         if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
             $aAddFilters = array(
                 'tables' => array('cfg_tags', 'cfg_tags_hosts'),
-                'join'   => array('cfg_tags.tag_id = cfg_tags_hosts.tag_id', 
-                    'cfg_tags_hosts.resource_id=cfg_hosts.host_id ')
+                'join'   => array(
+                    'cfg_tags.tag_id = cfg_tags_hosts.tag_id', 
+                    'cfg_tags_hosts.resource_id = cfg_hosts.host_id '
+                )
             ); 
         }
         

@@ -84,7 +84,7 @@ abstract class CentreonModel
         $aAddFilters  = array(),
         $sGroup = array()
     ) {
-   
+
         if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         } elseif (is_array($filterType)) {
@@ -212,8 +212,6 @@ abstract class CentreonModel
         $sGroup = array()
     ) {
         
-        
-        
         $searchFilters = array();
         foreach ($filters as $name => $values) {
             if (is_array($values)) {
@@ -224,7 +222,7 @@ abstract class CentreonModel
                 $searchFilters[$name] = '%' . $values . '%';
             }
         }
-
+        
         return static::getList(
             $parameterNames,
             $count,
