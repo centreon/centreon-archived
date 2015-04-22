@@ -3,10 +3,11 @@
 {block name="title"}{$pageTitle}{/block}
 
 {block name="content"}
+
+    <a id="advanced_mode_switcher" href="#" class="btn btn-primary">
+        <i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}
+    </a>
     <div class="col-md-12">
-        <a id="advanced_mode_switcher" href="#" class="btn btn-primary">
-            <i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}
-        </a>
         {$form}
      </div>
 

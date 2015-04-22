@@ -298,12 +298,12 @@ class Form
     public function renderFinalHtml($inputElement)
     {
         $helpButton = '';
-        $classInput = 'col-sm-9';
+        $classInput = '';
         $classAdvanced = '';
         $extraHtml = '';
         if ($inputElement['type'] !== 'submit') {
             $helpButton = $this->renderHelp($inputElement);
-            $classInput = 'col-sm-9';
+            $classInput = 'col-md-12';
         }
         if (isset($inputElement['css'])) {
             $classInput = $inputElement['css'];
@@ -316,55 +316,14 @@ class Form
             $classAdvanced = 'advanced';
         }
         
-        return '<div class="form-group ' . $classAdvanced . '">'.
-                '<div class="col-sm-2" style="text-align:right">'.$inputElement['label'].'</div>'.
-                '<div class="'.$classInput.'">'.$inputElement['input'].'</div>'. $extraHtml .
+        return '<div class="form-group' . $classAdvanced . '">'.
+                $inputElement['label'].
+                $inputElement['input']. $extraHtml .
                 $helpButton.
                 '</div>';
     }
     
-    /**
-     * 
-     * @param type $inputElement
-     * @return string
-     */
-    private function renderHelp($inputElement)
-    {
-        $helpButton = '';
-        
-        if (isset($inputElement['label_help'])) {
-            $helpButton = '<div class="col-sm-1"><button id="'
-                . $inputElement['name'] . '_help" type="button" class="btn btn-sm btn-info">?</button>'
-                . '</div>';
-            $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
-                                content: {
-                                    text: "'.str_replace('"', '\"', $inputElement['label_help']).'",
-                                    title: "'.$inputElement['label_label'].' Help",
-                                    button: true
-                                },
-                                position: {
-                                    my: "top right",
-                                    at: "bottom left",
-                                    target: $("#' . $inputElement['name'] . '_help") // my target
-                                },
-                                show: {
-                                    event: "click",
-                                    solo: "true"
-                                },
-                                style: {
-                                    classes: "qtip-bootstrap"
-                                },
-                                hide: {
-                                    event: "unfocus"
-                                }
-                            });';
-            $this->tpl->addCustomJs($helpBubble);
-        }
-        
-        return $helpButton;
-    }
-    
-    
+
     /**
      * 
      * @param array $inputElement
@@ -381,14 +340,61 @@ class Form
         }
         
         $mandatorySign = "";
+        $mandatorySpan = "";
         if (isset($inputElement['label_mandatory']) && $inputElement['label_mandatory'] == "1") {
             $mandatorySign .= ' required';
+            $mandatorySpan = '<span>*</span>';
         }
         
-        $inputHtml = '<label class="label-controller' . $mandatorySign . '" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
+        $inputHtml = '<label class="label-controller floatLabel' . $mandatorySign . '" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>'.$mandatorySpan;
+
         
         return $inputHtml;
     }
+
+     /**
+         *
+         * @param type $inputElement
+         * @return string
+         */
+        private function renderHelp($inputElement)
+        {
+            $helpButton = '';
+
+            $ajaxUrl = '/form/help/';
+
+
+
+            /*if (isset($inputElement['label_help'])) {
+                $helpButton = '<button id="'
+                    . $inputElement['name'] . '_help" type="button" class="btn btn-sm btn-info">?</button>';
+                $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
+                                    content: {
+                                        text: "'.str_replace('"', '\"', $inputElement['label_help']).'",
+                                        title: "'.$inputElement['label_label'].' Help",
+                                        button: true
+                                    },
+                                    position: {
+                                        my: "top right",
+                                        at: "bottom left",
+                                        target: $("#' . $inputElement['name'] . '_help") // my target
+                                    },
+                                    show: {
+                                        event: "click",
+                                        solo: "true"
+                                    },
+                                    style: {
+                                        classes: "qtip-bootstrap"
+                                    },
+                                    hide: {
+                                        event: "unfocus"
+                                    }
+                                });';
+                $this->tpl->addCustomJs($helpBubble);
+            }*/
+
+            return $helpButton;
+        }
     
     /**
      * Add a submit to the form

@@ -225,12 +225,11 @@ class Full extends Generator
             . 'An error occured'
             . '</div>';
         
-        $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].' novalidate>';
+        $htmlRendering .= '<form class="CentreonForm" role="form" '.$formElements['attributes'].' novalidate>';
 
         $formRendering = '';
 
         $tabRendering = '<div class="form-tabs-header">'
-            . '<div class="col-md-12">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
         $first = true;
@@ -248,7 +247,7 @@ class Full extends Generator
                 .'</a>'
                 . '</li>';
         }
-        $formRendering .= '</ul></div>' // end col-md-12
+        $formRendering .= '</ul>' // end col-md-12
             . '</div>'; // end form-tabs-header
 
         $formRendering .= '<div class="tab-content">';
@@ -261,14 +260,13 @@ class Full extends Generator
             }
             $formRendering .= '" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel => $blockComponents) {
-                $formRendering .= '<h4 class="page-header" style="padding-top:0px;">'.$blockLabel.'</h4>';
+                $formRendering .= '<div class="panel panel-default">'.'<h5 class="panel-heading">'.$blockLabel.'</h5>';
                 $formRendering .= '<div class="panel-body">';
                 foreach ($blockComponents as $component) {
                     if (isset($formElements[$component['name']]['html'])) {
-                        $formRendering .= '<div class="col-xs-12 col-sm-8">';
+                        $formRendering .= '<div class="col-md-6">';
                         $formRendering .= $formElements[$component['name']]['html'];
                         $formRendering .= '</div>'
-                            . '<div class="clearfix visible-xs-block"></div>'
                             . '<div class="col-xs-12 col-sm-4';
                         if ($component['advanced'] == '1') {
                             $formRendering .= ' advanced';
@@ -278,6 +276,7 @@ class Full extends Generator
                             . '</div>';
                     }
                 }
+                $formRendering .= '</div>';
                 $formRendering .= '</div>';
             }
             $formRendering .= '</div>';

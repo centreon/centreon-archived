@@ -73,10 +73,9 @@ class Text extends Component
                         'type="text" '.
                         'name="'.$element['name'].'" '.
                         $value.
-                        'class="form-control input-sm '.$addClass.'" '.
-                        $placeholder.
+                        'class="'.$addClass.'" '.
                         $required .
-                        '/>';
+                        '/>'.'<cite></cite>';
         
         return array(
             'html' => $inputHtml,

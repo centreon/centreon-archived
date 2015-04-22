@@ -1,57 +1,149 @@
-.btnC {
-  position: relative;
-  line-height: 1.5;
-  margin: 0 2px;
-  border-radius: 2px;
-  border-width: 0px;
-  text-decoration: none;
-  font-size: 75%;
-  padding : @paddingElem/2 @paddingElem;
-}
-.btnDefault{
-  color: @thirdBlue;
-  background-color: @lightGray1;
-  //border-color: @lightGray;
-  box-shadow: 1px 2px 2px @lightGray;
+.CentreonForm {
+
+  /*-- Form --*/
+    /*ul {
+    background: white;
+    margin-bottom: 1em;
+
+    li {
+      border: 1px solid #ccc;
+      border-bottom: 0;
+      margin-bottom: 0px;
+      position: relative;
+
+      &:first-child {
+        border-top: 0;
+      }
+
+      &:last-child {
+        border-bottom: 1px solid #ccc;
+      }
+    }
+  }
+
+  /*-- Reset --*/
+
+  label, input[type="text"], textarea {
+    display: block;
+    border: 0;
+
+  }
+
+  input[type="text"], textarea {
+    width: 100%;
+    height: 100%;
+    padding: 16px @paddingElem @paddingElem/2;
+    outline: 0;
+    border-radius: 3px;
+    box-shadow: 2px 1px 1px @lightGray;
+    border: 1px solid @lightGray;
+  }
+
+  textarea {
+    height: 16em;
+    resize: none;
+  }
+
+  /*-- input  --*/
+
+  cite {
+    display: none;
+    position: absolute;
+    font-size: 75%;
+    color: @info;
+  }
+
+  /*-- Label  --*/
+
+  label.floatLabel {
+    font-size: 11px;
+    position: absolute;
+    top: @paddingElem / 2;
+    left: 30px;
+    color: @lightGray3;
+    font-weight: normal;
+    opacity: 1;
+    z-index: 1;
+    -webkit-transition: .333s ease top, .333s ease opacity;
+    transition: .333s ease top, .333s ease opacity;
+  }
 }
 
-.btnSuccess{
-  position: absolute;
-  background-color: #e2efc6;
-  box-shadow: 1px 2px 2px @success;
-  z-index: 1;
-  color: #27651a;
-}
-/*-- Form --*/
-.formWrapper {
-  margin-top: @paddingElem*3;
-}
-/*---- Notification --- */
-
-.bs-callout {
-  position: absolute;
-  color: @white;
-  width: 100%;
-  z-index: 1;
-  left: 0;
-  font-size:90%;
-  text-align: center;
-  padding: @paddingElem/2 0;
-  border-top: 3px solid;
-  top: 0;
+.js-hide-label > label.floatLabel {
+  opacity: 0;
+  top: 1.5em;
 }
 
-.bs-callout-success {
-  background-color: fade(@success,30%);
-  color: @success;
+.js-unhighlight-label{
+  color: red;
+}
+.required {
+  &:after {
+  display: none;
+  }
+   ~ span {
+    position: absolute;
+    right: 2em;
+    top: 1em;
+    color: fade(@danger,60%);
+  }
 }
 
-.bs-callout-danger {
-  background-color: fade(@danger,30%);
-  color: @danger;
-}
-.bs-callout-info {
-  background-color: fade(@info,30%);
-  color: @info;
+  /*-- Buttons --*/
+  .btnC {
+    position: relative;
+    line-height: 1.5;
+    margin: 0 2px;
+    border-radius: 2px;
+    border-width: 0px;
+    text-decoration: none;
+    font-size: 75%;
+    padding : @paddingElem/2 @paddingElem;
+  }
+  .btnDefault{
+    color: @thirdBlue;
+    background-color: @lightGray1;
+    //border-color: @lightGray;
+    box-shadow: 1px 2px 2px @lightGray;
+  }
 
-}
+  .btnSuccess{
+    position: absolute;
+    background-color: #e2efc6;
+    box-shadow: 1px 2px 2px @success;
+    z-index: 1;
+    color: #27651a;
+  }
+  /*-- Form --*/
+  .formWrapper {
+    margin-top: @paddingElem*3;
+  }
+  /*---- Notification --- */
+
+  .bs-callout {
+    position: absolute;
+    color: @white;
+    width: 100%;
+    z-index: 1;
+    left: 0;
+    font-size:90%;
+    text-align: center;
+    padding: @paddingElem/2 0;
+    border-top: 3px solid;
+    top: 0;
+  }
+
+  .bs-callout-success {
+    background-color: fade(@success,30%);
+    color: @success;
+  }
+
+  .bs-callout-danger {
+    background-color: fade(@danger,30%);
+    color: @danger;
+  }
+  .bs-callout-info {
+    background-color: fade(@info,30%);
+    color: @info;
+
+  }
