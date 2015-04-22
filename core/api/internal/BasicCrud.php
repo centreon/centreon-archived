@@ -306,17 +306,21 @@ class BasicCrud extends AbstractCommand
     private function parseObjectParams($params)
     {
         $finalParamList = array();
-        
+
         // First we seperate the params
         $rawParamList = explode(';', $params);
-        
+
         // 
         foreach ($rawParamList as $param) {
-            $explodedParam = explode('=', $param);
-            $paramName = $explodedParam[0];
-            $finalParamList[$paramName] = implode('', $explodedParam);
+            $openingDelimiterPos = strpos($param, '[');
+            $closingDelimiterPos = strrpos($param, ']');
+            if (($openingDelimiterPos !== false) || ($closingDelimiterPos !== false)) {
+                $paramName = substr($param, 0, $openingDelimiterPos);
+                $paramValue = substr($param, $openingDelimiterPos + 1, ($closingDelimiterPos - $openingDelimiterPos) - 1);
+                $finalParamList[$paramName] = $paramValue;
+            }
         }
-        
+
         return $finalParamList;
     }
     
