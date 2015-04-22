@@ -17,10 +17,6 @@
 					<multiple>false</multiple>
 		  		</attributes>
           		<help>Define the description of the service. It may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided). Services must have a unique description on a per host basis.</help>
-                            <validators>
-                                <validator rules="remote" serverside="centreon-configuration.circular.dependency">
-                                </validator>
-                            </validators>
 			</field>
 			<field name="service_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 		  		<attributes>
