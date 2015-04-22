@@ -102,6 +102,49 @@ class TagController extends Controller
         }
         return $router->response()->json(array('success' => true, 'tagId' => $tagId));
     }
+    /**
+     * Add a tag
+     *
+     * @method post
+     * @route /tag/addMassive
+     */
+    public function addMassiveAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+        $post = $router->request()->paramsPost();
+        $sGlobal = 0;
+        
+        $sTagName = trim($post['tagName']);
+        
+        if (empty($sTagName)) {
+            return;
+        }
+
+        if (!is_array($post['resourceId'])) {
+            $listResources = array($post['resourceId']);
+        } else {
+            $listResources = $post['resourceId'];
+        }
+        if (!is_array($sTagName)) {
+            $listTag = explode(",", $sTagName);
+        } else {
+            $listTag = $sTagName;
+        }
+
+
+        if (isset($post['typeTag']) && $post['typeTag'] == 1) {
+            $sGlobal = 1;
+        }
+        
+        $listTag = array_diff($listTag, array(''));
+      
+        foreach ($listResources as $resourceId) {
+            TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag);
+        }
+     
+        return $router->response()->json(array('success' => true));
+    }
 
     /**
      * Delete a tag
@@ -145,12 +188,37 @@ class TagController extends Controller
      * get all tag
      * 
      * @method get
+     * @route /tag/allPerso
+     */
+    public function allPersoAction()
+    {
+        $data = '';
+        $sSearch = '';
+        $get = $this->getParams();
+        if (isset($get['search'])) {
+            $sSearch = trim($get['search']);
+        }
+        
+        $data = TagsRepository::getAllList($sSearch, 2);
+        $this->router->response()->json($data);
+    }
+    /**
+     * get all tag
+     * 
+     * @method get
      * @route /tag/all
      */
     public function allAction()
     {
         $data = '';
-        $data = TagsRepository::getAllList();
+        $sSearch = '';
+        $get = $this->getParams();
+        if (isset($get['search'])) {
+            $sSearch = trim($get['search']);
+        }
+        
+        
+        $data = TagsRepository::getAllList($sSearch, 1);
         $this->router->response()->json($data);
     }
     /**

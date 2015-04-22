@@ -69,17 +69,20 @@ class BusinessActivityRealtime extends CentreonBaseModel
         $filterType = "OR"
     ) {
         $aAddFilters = array();
+        $aGroup = array();
         
         if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
             $aAddFilters = array(
                 'tables' => array('cfg_tags', 'cfg_tags_bas'),
-                'join'   => array('cfg_tags.tag_id = cfg_tags_bas.tag_id', 'cfg_tags.tag_id = cfg_tags_bas.tag_id',
+                'join'   => array('cfg_tags.tag_id = cfg_tags_bas.tag_id', 
                     'cfg_tags_bas.resource_id = cfg_bam.ba_id ')
             ); 
         }
-
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_bas.resource_id', 'nb' => count($filters['tagname']));
+        }
         $filters['activate'] = '1';
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
     }
     
     /**
@@ -105,6 +108,7 @@ class BusinessActivityRealtime extends CentreonBaseModel
         $filters['activate'] = '1';
         $aAddFilters = array();
         $tablesString =  null;
+        
 
         if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
             $aAddFilters = array(
