@@ -10,6 +10,8 @@ yum install -y gcc rrdtool rrdtool-devel
 # Install LA*P stack
 yum install -y centos-release-SCL
 yum install -y php54 php54-php-cli php54-php-mysql php54-php-xml php54-php-pdo php54-php-mbstring php54-php-devel php54-php php54-php-process php54-php-pear
+# FIXME for compat' with shebang of centreonConsole
+ln -sf /opt/rh/php54/root/usr/bin/php /usr/bin/php
 
 # Replace timezone in /opt/rh/php54/root/etc/php.ini
 sed -i 's/^\(;date.timezone.*\)/\1\ndate.timezone = Europe\/Paris/' /opt/rh/php54/root/etc/php.ini
@@ -181,9 +183,9 @@ external/bin/centreonConsole core:internal:install
 external/bin/centreonConsole core:module:manage:install moduleName=centreon-broker
 external/bin/centreonConsole core:module:manage:install moduleName=centreon-engine
 external/bin/centreonConsole core:module:manage:install moduleName=centreon-performance 
-cp -r modules/CentreonAdministrationModule/static/centreon-administration/ www/static/
-cp -r modules/CentreonPerformanceModule/static/centreon-performance/ www/static/
-cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
+\cp -r modules/CentreonAdministrationModule/static/centreon-administration/ www/static/
+\cp -r modules/CentreonPerformanceModule/static/centreon-performance/ www/static/
+\cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
 chown apache.apache /srv/centreon/www/uploads/images
 
 # Start services
