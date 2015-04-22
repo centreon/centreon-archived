@@ -193,7 +193,13 @@ class TagController extends Controller
     public function allPersoAction()
     {
         $data = '';
-        $data = TagsRepository::getAllList(2);
+        $sSearch = '';
+        $get = $this->getParams();
+        if (isset($get['search'])) {
+            $sSearch = trim($get['search']);
+        }
+        
+        $data = TagsRepository::getAllList($sSearch, 2);
         $this->router->response()->json($data);
     }
     /**
@@ -204,8 +210,15 @@ class TagController extends Controller
      */
     public function allAction()
     {
-        $data = '';       
-        $data = TagsRepository::getAllList(1);
+        $data = '';
+        $sSearch = '';
+        $get = $this->getParams();
+        if (isset($get['search'])) {
+            $sSearch = trim($get['search']);
+        }
+        
+        
+        $data = TagsRepository::getAllList($sSearch, 1);
         $this->router->response()->json($data);
     }
     /**

@@ -31,63 +31,51 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
+namespace CentreonConfiguration\Forms\Validators;
 
-namespace CentreonConfiguration\Install;
-
-use Centreon\Internal\Di;
-use Centreon\Internal\Module\Installer as ModuleInstaller;
+use Centreon\Internal\Form\Validators\ValidatorInterface;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
 
 /**
- * 
+ * @author Kevin Duret <kduret@centreon.com>
+ * @package Centreon
+ * @subpackage Core
  */
-class Installer extends ModuleInstaller
+class CircularDependency implements ValidatorInterface
 {
     /**
      * 
-     * @param type $moduleDirectory
-     * @param type $moduleInfo
      */
-    public function __construct($moduleDirectory, $moduleInfo)
+    public function validate($value, $params = array())
     {
-        parent::__construct($moduleDirectory, $moduleInfo);
-    }
+        $result = true;
+        $resultError = _("Circular redundancy detected");
 
-    /**
-     *
-     */
-    protected function setUpFormValidators()
-    {
-        $validators = array(
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
-        );
-
-        $db = Di::getDefault()->get('db_centreon');
-
-        foreach ($validators as $validator) {
-            $db->exec($validator);
+        if ((isset($params['object'])) && (($params['object'] === 'host') || ($params['object'] === 'hosttemplate'))) {
+            $objectStack = explode(',', trim($value));
+            foreach ($objectStack as $hostId) {
+                $listHostId = HostRepository::getTemplateChain($hostId);
+                foreach($listHostId as $hostTemplateId) {
+                    if (isset($params['object_id']) && ($hostTemplateId['id'] == $params['object_id'])) {
+                        $result = false;
+                    }
+                }
+            }
+        } else if ((isset($params['object'])) && (($params['object'] === 'service') || ($params['object'] === 'servicetemplate'))) {
+            $serviceId = $value;
+            $listServiceId = ServiceRepository::getListTemplates($serviceId);
+            foreach($listServiceId as $serviceTemplateId) {
+                if (isset($params['object_id']) && ($serviceTemplateId['id'] == $params['object_id'])) {
+                    $result = false;
+                }
+            }
         }
-    }
-    
-    public function customPreInstall()
-    {
-        $this->setUpFormValidators();
-    }
-    
-    /**
-     * 
-     */
-    public function customInstall()
-    {
-        
-    }
-    
-    /**
-     * 
-     */
-    public function customRemove()
-    {
-        
+
+        return array(
+            'success' => $result,
+            'error' => $resultError
+        );
     }
 }

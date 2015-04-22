@@ -38,6 +38,7 @@ namespace CentreonAdministration\Repository;
 use CentreonAdministration\Models\User;
 use CentreonAdministration\Models\Apitoken;
 use CentreonAdministration\Models\Contact;
+use CentreonAdministration\Models\ContactInfo;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonSecurity\Internal\Sso;
@@ -257,6 +258,29 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         }
         
         return $name;
+    }
+
+    /**
+     *
+     * @param string $userId
+     * @return string
+     */
+    public static function getEmail($userId)
+    {
+        $contactEmail = array();
+        $contactId = Contact::getParameters($userId, array('contact_id'));
+
+        if (isset($contactId['contact_id'])) {
+            $contactInfosId = ContactInfo::getIdByParameter('contact_id',$contactId['contact_id']);
+            foreach ($contactInfosId as $id) {
+                $contactInfos = ContactInfo::getParameters($id, array('info_key', 'info_value'));
+                if ($contactInfos['info_key'] === 'email') {
+                    $contactEmail[] = $contactInfos['info_value'];
+                }
+            }
+        }
+
+        return $contactEmail;
     }
 
     /**

@@ -165,7 +165,7 @@ $(function () {
        formatSelection: select2_formatSelection, 
        ajax: {
            data: function(term, page) {
-               return { q: term, };
+               return { search: term, };
            },
            dataType: "json", 
            url:jsUrl.tag.getallGlobal, 
@@ -186,7 +186,7 @@ $(function () {
        formatSelection: select2_formatSelection, 
        ajax: {
            data: function(term, page) {
-               return { q: term, };
+               return { search: term, };
            },
            dataType: "json", 
            url:jsUrl.tag.getallPerso, 

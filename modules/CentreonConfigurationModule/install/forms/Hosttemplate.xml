@@ -8,8 +8,8 @@
 			<block name="General information">
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 					<validators>
-                    	<validator rules="remote" serverside="unique" />
-                        <validator rules="forbiddenChar" serverside="forbiddenChar">
+                    	<validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
                         	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
                         </validator>
 					</validators>
@@ -25,7 +25,6 @@
 					</attributes>
                                     <validators>
                                         <validator rules="remote" serverside="centreon-configuration.circular.dependency">
-                                            <argument name="object">host</argument>
                                         </validator>
                                     </validators>
 				</field>
