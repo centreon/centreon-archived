@@ -126,7 +126,7 @@ $(function () {
        
     $body.html(
       "<form role='form'><div class='form-group'>"
-      + "Tag name <input type='text' class='form-control' id='tagName' name='tagName' />"
+      + "Tag name <input type='text' class='form-control' id='tagPerso' name='tagPerso' />"
       + "<input type='text' class='form-control' id='tagsGlobal' name='tagsGlobal' style='visibility: hidden;' />"
       + "Personnal <input type='radio' value='2' class='typetag' name='typetag' checked>"
       + "Global <input type='radio' value='1' class='typetag' name='typetag'>"
@@ -148,18 +148,19 @@ $(function () {
         var val = $(this).val();
         if (val == 2) {
             
-            $("div[id$='tagName']").show();
+            $("div[id$='tagPerso']").show();
             $("div[id$='tagsGlobal']").css('visibility', 'hidden');
             $("div[id$='tagsGlobal']").hide();
         }else {
-            $("div[id$='tagName']").hide();
+            $("div[id$='tagPerso']").hide();
             $("div[id$='tagsGlobal']").css('visibility', 'visible');
             $("div[id$='tagsGlobal']").show();
         }
     });
    
     $("#tagsGlobal").select2({
-       multiple:true, 
+       multiple:true,
+       tags: true, 
        allowClear: true, 
        formatResult: select2_formatResult, 
        formatSelection: select2_formatSelection, 
@@ -176,11 +177,18 @@ $(function () {
        initSelection: function(element, callback) { 
            var id=$(element).val();
            $(element).val(id.substring(1, id.length));
-       }
+       },
+       createSearchChoice: function (term) {
+            return {
+                id: $.trim(term),
+                text: $.trim(term)
+            };
+        }
    });
 
-    $("#tagName").select2({
+    $("#tagPerso").select2({
        multiple:true, 
+       tags: true, 
        allowClear: true, 
        formatResult: select2_formatResult, 
        formatSelection: select2_formatSelection, 
@@ -197,7 +205,13 @@ $(function () {
        initSelection: function(element, callback) { 
            var id=$(element).val();
            $(element).val(id.substring(1, id.length));
-       }
+       },
+       createSearchChoice: function (term) {
+            return {
+                id: $.trim(term),
+                text: $.trim(term)
+            };
+        }
    });
 
       
@@ -209,7 +223,7 @@ $(function () {
       });
       var typetag = $("input[name='typetag']:checked" ).val();
       if (typetag == 2)
-          name = $( "#modal" ).find( "input[name='tagName']" ).val();
+          name = $( "#modal" ).find( "input[name='tagPerso']" ).val();
       else
           name = $( "#modal" ).find( "input[name='tagsGlobal']" ).val();
       

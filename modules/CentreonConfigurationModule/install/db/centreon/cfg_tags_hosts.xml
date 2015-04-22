@@ -3,6 +3,7 @@
   <table name="cfg_tags_hosts" phpName="Tag" idMethod="native">
     <column name="tag_id" phpName="TagId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="resource_id" phpName="ResourceId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="template_id" phpName="TemplateId" type="INTEGER" required="false"/>
     <foreign-key foreignTable="cfg_tags" name="cfg_tags_hosts_fk_01" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="tag_id" foreign="tag_id"/>
     </foreign-key>
