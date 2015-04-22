@@ -56,6 +56,9 @@ class CircularDependency implements ValidatorInterface
         if ((isset($params['object'])) && (($params['object'] === 'host') || ($params['object'] === 'hosttemplate'))) {
             $objectStack = explode(',', trim($value));
             foreach ($objectStack as $hostId) {
+                if (isset($params['object_id']) && $hostId == $params['object_id']) {
+                    $result = false;
+                }
                 $listHostId = HostRepository::getTemplateChain($hostId);
                 foreach($listHostId as $hostTemplateId) {
                     if (isset($params['object_id']) && ($hostTemplateId['id'] == $params['object_id'])) {
@@ -66,6 +69,9 @@ class CircularDependency implements ValidatorInterface
         } else if ((isset($params['object'])) && (($params['object'] === 'service') || ($params['object'] === 'servicetemplate'))) {
             $serviceId = $value;
             $listServiceId = ServiceRepository::getListTemplates($serviceId);
+            if (isset($params['object_id']) && $serviceId == $params['object_id']) {
+                $result = false;
+            }
             foreach($listServiceId as $serviceTemplateId) {
                 if (isset($params['object_id']) && ($serviceTemplateId['id'] == $params['object_id'])) {
                     $result = false;
