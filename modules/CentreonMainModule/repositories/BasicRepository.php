@@ -36,6 +36,8 @@
 
 namespace CentreonMain\Repository;
 
+use Centreon\Internal\Di;
+
 
 class BasicRepository
 {
