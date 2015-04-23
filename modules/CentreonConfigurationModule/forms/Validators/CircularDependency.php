@@ -59,7 +59,7 @@ class CircularDependency implements ValidatorInterface
                 if (isset($params['object_id']) && $hostId == $params['object_id']) {
                     $result = false;
                 }
-                $listHostId = HostRepository::getTemplateChain($hostId);
+                $listHostId = HostRepository::getTemplateChain($hostId, array(), -1);
                 foreach($listHostId as $hostTemplateId) {
                     if (isset($params['object_id']) && ($hostTemplateId['id'] == $params['object_id'])) {
                         $result = false;

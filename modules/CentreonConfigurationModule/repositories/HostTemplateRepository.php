@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Hosttemplate;
 use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
 
@@ -123,40 +124,6 @@ class HostTemplateRepository extends Repository
     }
 
     /**
-     * 
-     * @param int $host_id
-     * @return string
-     */
-    public static function getTemplateList($host_id)
-    {
-        $di = Di::getDefault();
-        
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        /* Init Array to return */
-        $hostTemplates = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT host_tpl_id, host_name, host_id, `order` "
-            . "FROM cfg_hosts h, cfg_hosts_templates_relations hr "
-            . "WHERE h.host_id = hr.host_tpl_id "
-            . "AND hr.host_host_id = '$host_id' "
-            . "AND host_activate = '1' "
-            . "AND host_register = '0' "
-            . "ORDER BY `order` ASC";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $hostTemplates[] = array(
-                                     'id' => $row["host_id"],
-                                     'name' => $row["host_name"],
-                                     'ico' => 'fa-shield');
-        }
-        return $hostTemplates;
-    }
-
-    /**
      * Get the value from template
      *
      * @param int $hostId The host template Id
@@ -166,7 +133,7 @@ class HostTemplateRepository extends Repository
     public static function getInheritanceValues($hostId, $isBase=false)
     {
         $values = array();
-        $templates = static::getTemplateList($hostId);
+        $templates = HostRepository::getTemplateChain($hostId, array(), -1);
         if ($isBase) {
             array_unshift($templates, $hostId);
         }

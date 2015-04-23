@@ -298,7 +298,7 @@ class HostDatatable extends Datatable
 
             /* Templates */
             $myHostSet['host_template']  = "";
-            $templates = HostTemplateRepository::getTemplateList($myHostSet['host_id']);
+            $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             $myHostSet['host_template'] .= '<span>'.count($templates).'</span>';
 
             /*foreach ($templates as $template) {
