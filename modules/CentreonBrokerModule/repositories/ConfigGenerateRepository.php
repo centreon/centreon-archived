@@ -322,7 +322,7 @@ class ConfigGenerateRepository
         foreach ($pollers as $poller) {
             $file->startElement("input");
             $file->writeElement("name", "extcommand-" . $poller['name']);
-            $file->writeElement("type", "dump");
+            $file->writeElement("type", "dump_fifo");
             $file->writeElement("path", $varlib . "/extcommand-" . $poller['poller_id'] . '.fifo');
             $file->writeElement("tagname", "extcommand-" . $poller['name']);
             $file->endElement();

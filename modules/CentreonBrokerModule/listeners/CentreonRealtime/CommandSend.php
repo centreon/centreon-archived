@@ -36,6 +36,7 @@
 namespace CentreonBroker\Listeners\CentreonRealtime;
 
 use Centreon\Internal\Di;
+use CentreonRealtime\Events\ExternalCommand;
 
 /**
  * Listeners for send a command

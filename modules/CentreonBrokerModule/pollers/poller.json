@@ -43,10 +43,10 @@
                                                 "failover": "central-output"
                                             },
                                             {
-                                              "type": "dump",
-                                              "tagname": "extcmd-%poller_name%",
+                                              "type": "dumper",
+                                              "tagname": "extcommand-%poller_name%",
                                               "path": "%engine_command_file%",
-                                              "name": "extcmd-%poller_name%"
+                                              "name": "extcommand-%poller_name%"
                                             }
                                         ],
                                         "input": [
@@ -61,6 +61,13 @@
                                           {
                                             "type": "file",
                                             "name": "%global_broker_logs_directory%/central-module.log"
+                                          }
+                                        ],
+                                        "stats": [
+                                          {
+                                            "type": "stats",
+                                            "name": "stats-central-broker",
+                                            "fifo": "/var/lib/centreon-broker/stats-central-module.fifo"
                                           }
                                         ]
                                     }
@@ -94,6 +101,13 @@
                                           {
                                             "type": "file",
                                             "name": "%global_broker_logs_directory%/central-module.log"
+                                          }
+                                        ],
+                                        "stats": [
+                                          {
+                                            "type": "stats",
+                                            "name": "stats-central-broker",
+                                            "fifo": "/var/lib/centreon-broker/stats-central-module.fifo"
                                           }
                                         ]
                                     }
