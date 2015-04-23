@@ -167,13 +167,42 @@ $(document).ready(function() {
             //$(this).addClass('js-hide-label');
         });
 
+        $form_url = $('.CentreonForm').attr("data-route");
+
+        $.ajax({
+            url: "$form_url",
+            type: "POST",
+            dataType: 'html',
+            success : function(data){
+                console.log(data);
+            },
+            error : function(resultat, statut, erreur){
+
+            },
+
+            complete : function(resultat, statut){
+
+            }
+        })
+
         // Code for adding/removing classes here
 
         $('.CentreonForm .form-group').find('input, textarea').on('keyup blur focus', function(e){
 
+            // ajax request for
+
+            /*$.ajax({
+                url: "{url_for url=$validateUrl}",
+                type: "POST",
+                dataType: 'json',
+                data: $(this).serializeArray(),
+                context: document.body
+            })*/
+
             // Cache our selectors
             var $this = $(this),
                 $parent = $this.parent(),
+                url = $ajaxUrl = '/form/help/';
                 $help = $('cite');
 
             /*if (e.type == 'keyup') {
@@ -183,6 +212,7 @@ $(document).ready(function() {
                     $parent.removeClass('js-hide-label');
                 }
             }
+
             else */if (e.type == 'blur') {
                 $this.next().css({'display':'none'}).html("help");
 
@@ -195,7 +225,7 @@ $(document).ready(function() {
             }
             else if (e.type == 'focus') {
 
-                        $this.next().css({'display': 'block'}).html("help");
+                 $this.next().css({'display': 'block'}).html("help");
 
                 if ($this.val() == '') {
                     $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');

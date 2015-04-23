@@ -361,10 +361,6 @@ class Form
         {
             $helpButton = '';
 
-            $ajaxUrl = '/form/help/';
-
-
-
             /*if (isset($inputElement['label_help'])) {
                 $helpButton = '<button id="'
                     . $inputElement['name'] . '_help" type="button" class="btn btn-sm btn-info">?</button>';

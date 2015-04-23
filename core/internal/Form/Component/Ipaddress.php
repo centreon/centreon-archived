@@ -65,7 +65,7 @@ class Ipaddress extends Component
         
         $myJs = "";
         
-        $myHtml = '<div id="'.$element['name'].'_ipaddress" class="input-group input-group-sm">';
+        $myHtml = '<div id="'.$element['name'].'_ipaddress" class="input-group">';
         
         $myHtml .= '<input '.
                 'id="'.$element['id'].'" '.

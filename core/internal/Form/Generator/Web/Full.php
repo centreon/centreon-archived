@@ -225,7 +225,7 @@ class Full extends Generator
             . 'An error occured'
             . '</div>';
         
-        $htmlRendering .= '<form class="CentreonForm" role="form" '.$formElements['attributes'].' novalidate>';
+        $htmlRendering .= '<form class="CentreonForm" role="form" '.$formElements['attributes'].' data-route="'.$this->formRoute.'" novalidate>';
 
         $formRendering = '';
 
@@ -266,14 +266,11 @@ class Full extends Generator
                     if (isset($formElements[$component['name']]['html'])) {
                         $formRendering .= '<div class="col-md-6">';
                         $formRendering .= $formElements[$component['name']]['html'];
-                        $formRendering .= '</div>'
-                            . '<div class="col-xs-12 col-sm-4';
                         if ($component['advanced'] == '1') {
                             $formRendering .= ' advanced';
                         }
-                        $formRendering .= '">'
-                            . '<span class="inheritance" id="' . $component['name'] . '_inheritance"></span>'
-                            . '</div>';
+                         $formRendering .= '<span class="inheritance" id="' . $component['name'] . '_inheritance">hello</span>';
+                         $formRendering .= '</div>';
                     }
                 }
                 $formRendering .= '</div>';
