@@ -25,7 +25,6 @@
         <column name="notifications" phpName="Notifications" type="BOOLEAN" size="1" required="false"/>
         <column name="obsess_over_hosts" phpName="ObsessOverHosts" type="BOOLEAN" size="1" required="false"/>
         <column name="obsess_over_services" phpName="ObsessOverServices" type="BOOLEAN" size="1" required="false"/>
-        <column name="outdated" phpName="Outdated" type="BOOLEAN" required="false"/>
         <column name="passive_host_checks" phpName="PassiveHostChecks" type="BOOLEAN" size="1" required="false"/>
         <column name="passive_service_checks" phpName="PassiveServiceChecks" type="BOOLEAN" size="1" required="false"/>
         <column name="pid" phpName="Pid" type="INTEGER" required="false"/>
