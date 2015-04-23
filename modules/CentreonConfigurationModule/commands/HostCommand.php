@@ -34,12 +34,12 @@
  */
 namespace CentreonConfiguration\Commands;
 
-use Centreon\Api\Internal\BasicCrudCommand;
+use CentreonConfiguration\Api\Internal\BasicTagSupport;
 
 /**
  * 
  */
-class HostCommand extends BasicCrudCommand
+class HostCommand extends BasicTagSupport
 {
     /**
      *
@@ -51,4 +51,5 @@ class HostCommand extends BasicCrudCommand
     {
         parent::__construct();
     }
+
 }

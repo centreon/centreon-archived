@@ -163,7 +163,6 @@ class TagsRepository
         if (empty($resourceId)) {
             return array();
         }
-        $userId = $_SESSION['user']->getId();
         $dbconn = Di::getDefault()->get('db_centreon');        
 
          $query = "SELECT t.tag_id, t.tagname, user_id
@@ -190,6 +189,7 @@ class TagsRepository
             $stmt->bindParam(':resource_id', $resourceId, \PDO::PARAM_INT);
         }
         if ($bGlobaux == 0 || $bGlobaux == 2) {
+            $userId = $_SESSION['user']->getId();
             $stmt->bindParam(':user_id', $userId, \PDO::PARAM_INT);
         }
         $stmt->execute();
