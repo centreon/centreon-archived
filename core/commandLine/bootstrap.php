@@ -115,6 +115,9 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
         case 'install':
             $filename .= '/install/'.  implode('/', $fullClassPath);
             break;
+        case 'forms':
+            $filename .= '/forms/'.  implode('/', $fullClassPath);
+            break;
         case 'events':
             $filename .= '/events/'.  implode('/', $fullClassPath);
             break;
