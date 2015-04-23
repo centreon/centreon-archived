@@ -36,13 +36,13 @@
                       {
                         "type": "dumper",
                         "tagname": "cfg-engine-%poller_name%",
-                        "path": "%engine_conf_dir%",
+                        "path": "%engine_conf_dir%/$FILENAME$",
                         "name": "cfg-engine-%poller_name%"
                       },
                       {
                         "type": "dumper",
                         "tagname": "cfg-broker-%poller_name%",
-                        "path": "%global_broker_etc_directory%",
+                        "path": "%global_broker_etc_directory%/$FILENAME$",
                         "name": "cfg-broker-%poller_name%"
                       }
                     ],
