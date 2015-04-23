@@ -76,6 +76,7 @@
         <column name="percent_state_change" phpName="PercentStateChange" type="DOUBLE" required="false"/>
         <column name="perfdata" phpName="Perfdata" type="LONGVARCHAR" required="false"/>
         <column name="process_perfdata" phpName="ProcessPerfdata" type="BOOLEAN" size="1" required="false"/>
+        <column name="real_state" phpName="RealState" type="SMALLINT" required="false"/>
         <column name="retain_nonstatus_information" phpName="RetainNonstatusInformation" type="BOOLEAN" size="1" required="false"/>
         <column name="retain_status_information" phpName="RetainStatusInformation" type="BOOLEAN" size="1" required="false"/>
         <column name="retry_interval" phpName="RetryInterval" type="DOUBLE" required="false"/>
