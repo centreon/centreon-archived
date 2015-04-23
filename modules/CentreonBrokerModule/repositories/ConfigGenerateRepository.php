@@ -73,7 +73,7 @@ class ConfigGenerateRepository
         if (!isset($this->tmpPath)) {
             throw new Exception('Temporary path not set');
         }
-        $this->tmpPath = rtrim($this->tmpPath, '/') . '/broker';
+        $this->tmpPath = rtrim($this->tmpPath, '/') . '/broker/generate';
 
         /* Load defaults values */
         $this->defaults = json_decode(file_get_contents(dirname(__DIR__) . '/data/default.json'), true);
@@ -351,7 +351,7 @@ class ConfigGenerateRepository
             $file->startElement("input");
             $file->writeElement("name", "cfg-engine-" . $poller['name']);
             $file->writeElement("type", "dump_dir");
-            $file->writeElement("path", $configGeneratePath . '/' . $poller['poller_id']);
+            $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
             $file->writeElement("tagname", "cfg-engine-" . $poller['name']);
             $file->endElement();
         }
@@ -371,7 +371,7 @@ class ConfigGenerateRepository
             $file->startElement("input");
             $file->writeElement("name", "cfg-broker-" . $poller['name']);
             $file->writeElement("type", "dump_dir");
-            $file->writeElement("path", $configGeneratePath . '/' . $poller['poller_id']);
+            $file->writeElement("path", $configGeneratePath . '/apply/' . $poller['poller_id']);
             $file->writeElement("tagname", "cfg-broker-" . $poller['name']);
             $file->endElement();
         }

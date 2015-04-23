@@ -54,19 +54,19 @@ class CopyFiles
         $config = Di::getDefault()->get('config');
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        /* Get engine etc directory */
-        $dir = EngineRepository::getDirectories($event->getPollerId());
-        if (!isset($dir['conf_dir'])) {
-            throw new Exception('Engine configuration directory not set.');
-        }
-
         $output = array();
-        exec("rm -rf {$dir['conf_dir']}/resources/*.cfg 2>&1", $output, $status);
+        exec("rm -rf {$tmpdir}/engine/apply/{$event->getPollerId()}/resources/*.cfg 2>&1", $output, $status);
         if ($status) {
             throw new Exception('Error while copying Engine configuration files' . "\n" . implode("\n", $output));
         }
+
+        if (false === is_dir($tmpdir . '/engine/apply/' . $event->getPollerId())) {
+            if (false === mkdir($tmpdir . '/engine/apply/' . $event->getPollerId())) {
+                throw new Exception("Error while prepare copy of Engine configuration files\n");
+            }
+        }
         $output = array();
-        exec("cp -Rf $tmpdir/engine/{$event->getPollerId()}/* {$dir['conf_dir']} 2>&1", $output, $status);
+        exec("cp -Rf $tmpdir/engine/generate/{$event->getPollerId()}/* {$tmpdir}/engine/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
         if ($status) {
             throw new Exception('Error while copying Engine configuration files'. "\n" . implode("\n", $output));
         }
