@@ -184,7 +184,7 @@ $(document).ready(function() {
 
             $.ajax({
                 url: '/form/help',
-                type: "POST",
+                type: "GET",
                 dataType: 'JSON',
                 data : {
                     form: $form_url,

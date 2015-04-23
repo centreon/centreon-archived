@@ -65,7 +65,7 @@ class Ipaddress extends Component
         
         $myJs = "";
         
-        $myHtml = '<div id="'.$element['name'].'_ipaddress" class="input-group">';
+        $myHtml = '<div id="'.$element['name'].'_ipaddress">';
         
         $myHtml .= '<input '.
                 'id="'.$element['id'].'" '.
@@ -77,7 +77,7 @@ class Ipaddress extends Component
                 $required.
                 '/>';
                     
-        $myHtml .= '<span id="'.$element['name'].'_ipaddress_span" class=""></span>';
+        $myHtml .= '<cite id="'.$element['name'].'_ipaddress_span"></cite>';
         
         $myHtml .= '<span id="'.$element['name'].'_resolve_dns_span" class="input-group-btn">'
             . '<button id="'.$element['name'].'_resolve_dns" class="btn btn-default" type="button">Resolve</button>'
