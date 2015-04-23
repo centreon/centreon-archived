@@ -269,39 +269,47 @@ class ConfigGenerateRepository
         }
         foreach ($configuration as $key => $value) {
             if (is_array($value)) {
-                $file->startElement($key);
-                foreach ($value as $subkey => $subvalue) {
-                    $subvalue = str_replace(
-                        array_keys($this->baseConfig),
-                        array_values($this->baseConfig),
-                        $subvalue
-                    );
-                    if (is_string($subkey)) {
-                        $file->writeElement($subkey, $subvalue);
-                    }
-                }
-                $file->endElement();
-            } else {
                 if ($key == '%callback%') {
-                    switch ($value) {
-                        case 'pollerCommandLine':
-                            $this->addCommandLineBlock($file);
-                            break;
+                    foreach ($value as $action) {
+                        switch ($action) {
+                            case 'pollerCommandLine':
+                                $this->addCommandLineBlock($file);
+                                break;
+                            case 'pollerConfigCentreonEngine':
+                                $this->addConfigCentreonEngineBlock($file);
+                                break;
+                            case 'pollerConfigCentreonBroker':
+                                $this->addConfigCentreonBrokerBlock($file);
+                                break;
+                        }
                     }
                 } else {
-                    $value = str_replace(
-                        array_keys($this->baseConfig),
-                        array_values($this->baseConfig),
-                        $value
-                    );
-                    $key = str_replace(
-                        array_keys($this->baseConfig),
-                        array_values($this->baseConfig),
-                        $key
-                    );
-                    $key = str_replace(array('/','.'),'-',$key);
-                    $file->writeElement($key, $value);
+                    $file->startElement($key);
+                    foreach ($value as $subkey => $subvalue) {
+                        $subvalue = str_replace(
+                            array_keys($this->baseConfig),
+                            array_values($this->baseConfig),
+                            $subvalue
+                        );
+                        if (is_string($subkey)) {
+                            $file->writeElement($subkey, $subvalue);
+                        }
+                    }
+                    $file->endElement();
                 }
+            } else {
+                $value = str_replace(
+                    array_keys($this->baseConfig),
+                    array_values($this->baseConfig),
+                    $value
+                );
+                $key = str_replace(
+                    array_keys($this->baseConfig),
+                    array_values($this->baseConfig),
+                    $key
+                );
+                $key = str_replace(array('/','.'),'-',$key);
+                $file->writeElement($key, $value);
             }
         }
         if (false === $isGeneral) {
@@ -325,6 +333,46 @@ class ConfigGenerateRepository
             $file->writeElement("type", "dump_fifo");
             $file->writeElement("path", $varlib . "/extcommand-" . $poller['poller_id'] . '.fifo');
             $file->writeElement("tagname", "extcommand-" . $poller['name']);
+            $file->endElement();
+        }
+    }
+
+    /**
+     * Add block for send Centreon Engine configuration files
+     *
+     * @param \XMLWriter $gile The xml file
+     */
+    private function addConfigCentreonEngineBlock($file)
+    {
+        $pollers = Poller::getList();
+        /* The path for generate configuration */
+        $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/engine';
+        foreach ($pollers as $poller) {
+            $file->startElement("input");
+            $file->writeElement("name", "cfg-engine-" . $poller['name']);
+            $file->writeElement("type", "dump_dir");
+            $file->writeElement("path", $configGeneratePath . '/' . $poller['poller_id']);
+            $file->writeElement("tagname", "cfg-engine-" . $poller['name']);
+            $file->endElement();
+        }
+    }
+
+    /**
+     * Add block for send Centreon Broker configuration files
+     *
+     * @param \XMLWriter $gile The xml file
+     */
+    private function addConfigCentreonBrokerBlock($file)
+    {
+        $pollers = Poller::getList();
+        /* The path for generate configuration */
+        $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/broker';
+        foreach ($pollers as $poller) {
+            $file->startElement("input");
+            $file->writeElement("name", "cfg-broker-" . $poller['name']);
+            $file->writeElement("type", "dump_dir");
+            $file->writeElement("path", $configGeneratePath . '/' . $poller['poller_id']);
+            $file->writeElement("tagname", "cfg-broker-" . $poller['name']);
             $file->endElement();
         }
     }

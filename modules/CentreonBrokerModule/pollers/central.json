@@ -32,6 +32,18 @@
                         "tagname": "extcommand-%poller_name%",
                         "path": "%engine_command_file%",
                         "name": "extcommand-%poller_name%"
+                      },
+                      {
+                        "type": "dumper",
+                        "tagname": "cfg-engine-%poller_name%",
+                        "path": "%engine_conf_dir%",
+                        "name": "cfg-engine-%poller_name%"
+                      },
+                      {
+                        "type": "dumper",
+                        "tagname": "cfg-broker-%poller_name%",
+                        "path": "%global_broker_etc_directory%",
+                        "name": "cfg-broker-%poller_name%"
                       }
                     ],
                     "input": [
@@ -59,7 +71,11 @@
                   {
                     "general": {
                       "name": "central-broker",
-                      "%callback%": "pollerCommandLine"
+                      "%callback%": [
+                        "pollerCommandLine",
+                        "pollerConfigCentreonEngine",
+                        "pollerConfigCentreonBroker"
+                      ]
                     },
                     "input": [
                       {
