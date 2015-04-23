@@ -31,27 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonBroker\Listeners\CentreonRealtime;
+namespace CentreonRealtime\Models;
 
-use Centreon\Internal\Di;
-use CentreonRealtime\Events\ExternalCommand;
+use Centreon\Models\CentreonBaseModel;
 
 /**
- * Listeners for send a command
+ * Used for interacting with hosts
  *
- * @author Maximilien Bersoult <mbersoult@centreon.com>
- * @version 3.0.0
- * @package Centreon
- * @subpackage CentreonBroker
+ * @author sylvestre
  */
-class CommandSend
+class Downtimes extends CentreonBaseModel
 {
-    public static function execute(ExternalCommand $command)
-    {
-        // @todo found poller where I am
-        $varlib = "/var/lib/centreon-broker";
-        file_put_contents($varlib . '/extcommand-' . $command->getPollerId() . '.fifo', $command->getCommand());
-    }
+    protected static $table = "rt_downtimes";
+    protected static $primaryKey = "downtime_id";
+    protected static $uniqueLabelField = "name";
 }

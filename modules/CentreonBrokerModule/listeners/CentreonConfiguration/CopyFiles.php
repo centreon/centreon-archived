@@ -53,14 +53,13 @@ class CopyFiles
         $config = Di::getDefault()->get('config');
         $tmpdir = $config->get('global', 'centreon_generate_tmp_dir');
 
-        /* Get broker etc directory */
-        $dir = BrokerRepository::getPathsFromPollerId($event->getPollerId());
-        if (!isset($dir['directory_config'])) {
-            throw new Exception('Broker configuration directory not set.');
+        if (false === is_dir($tmpdir . '/broker/apply/' . $event->getPollerId())) {
+            if (false === mkdir($tmpdir . '/broker/apply/' . $event->getPollerId())) {
+                throw new Exception("Error while prepare copy of Broker configuration files\n");
+            }
         }
-
         $output = array();
-        exec("cp -Rf $tmpdir/broker/{$event->getPollerId()}/* {$dir['directory_config']} 2>&1", $output, $status);
+        exec("cp -Rf $tmpdir/broker/{$event->getPollerId()}/* {$tmpdir}/broker/apply/{$event->getPollerId()}/ 2>&1", $output, $status);
         if ($status) {
             throw new Exception('Error while copying Broker configuration files' . "\n" . implode("\n", $output));
         }
