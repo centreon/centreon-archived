@@ -4,10 +4,10 @@
     <column name="tag_id" phpName="TagId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="resource_id" phpName="ResourceId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="template_id" phpName="TemplateId" type="INTEGER" required="false"/>
-    <foreign-key foreignTable="cfg_tags" name="cfg_tags_services_fk_01">
+    <foreign-key foreignTable="cfg_tags" name="cfg_tags_services_fk_01" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="tag_id" foreign="tag_id"/>
     </foreign-key>
-    <foreign-key foreignTable="cfg_services" name="cfg_tags_services_fk_02">
+    <foreign-key foreignTable="cfg_services" name="cfg_tags_services_fk_02" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="resource_id" foreign="service_id"/>
     </foreign-key>
     <vendor type="mysql">

@@ -63,11 +63,27 @@ class BusinessActivityController extends FormController
     */
     public function createAction()
     {
+        $aTagList = array();
+        $aTags = array();
+        
         $givenParameters = $this->getParams('post');
 
         $repository = $this->repository;
         try {
             $id = $repository::create($givenParameters, 'wizard', $this->getUri());
+            
+            if (isset($givenParameters['ba_tags'])) {
+                $aTagList = explode(",", $givenParameters['ba_tags']);
+                foreach ($aTagList as $var) {
+                    if (strlen($var) > 1) {
+                        array_push($aTags, $var);
+                    }
+                }
+                if (count($aTags) > 0) {
+                    TagsRepository::saveTagsForResource('ba', $id, $aTags);
+                }
+            }
+
             BusinessActivityRepository::createVirtualService($id);
         } catch (Exception $e) {
             $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
@@ -168,11 +184,10 @@ class BusinessActivityController extends FormController
                     array_push($aTags, $var);
                 }
             }
-        }
-        
-        if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
-        }
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
+            }
+        }        
     }
 
     /**

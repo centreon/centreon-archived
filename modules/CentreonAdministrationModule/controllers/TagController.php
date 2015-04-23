@@ -114,6 +114,8 @@ class TagController extends Controller
         $router = $di->get('router');
         $post = $router->request()->paramsPost();
         $sGlobal = 0;
+        $bStatus = false;
+        $addErrorMessage = '';
         
         $sTagName = trim($post['tagName']);
         
@@ -138,12 +140,20 @@ class TagController extends Controller
         }
         
         $listTag = array_diff($listTag, array(''));
-      
-        foreach ($listResources as $resourceId) {
-            TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag);
+       
+        try {    
+            foreach ($listResources as $resourceId) {
+                TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag);
+            }
+            $bStatus = true;
+            
+        } catch (Exception $e) {
+            $addErrorMessage = $e->getMessage();
+            $bStatus = false;
         }
-     
-        return $router->response()->json(array('success' => true));
+ 
+        return $this->router->response()->json(array('success' => $bStatus,'error' => $addErrorMessage));
+            
     }
 
     /**
@@ -157,7 +167,7 @@ class TagController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $post = $router->request()->paramsPost();
-        
+ 
         TagsRepository::delete(
             $post['tagId'],
             $post['resourceName'],
