@@ -62,7 +62,7 @@ class ConfigCorrelationRepository
         if (!isset($tmpPath)) {
             throw new Exception('Temporary path not set');
         }
-        $tmpPath = rtrim($tmpPath, '/') . '/broker';
+        $tmpPath = rtrim($tmpPath, '/') . '/broker/generate';
         
         $xml = new \XMLWriter();
 
