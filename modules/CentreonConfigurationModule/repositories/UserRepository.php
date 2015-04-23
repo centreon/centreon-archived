@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -91,41 +91,6 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
 
     /**
      * 
-     * @param integer $contactId
-     * @param string $object
-     * @return string
-     */
-    public static function getNotificationInfos($contactId, $object)
-    {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        if ($object == 'host') {
-            $ctp = 'timeperiod_tp_id';
-        } elseif ($object == 'service') {
-            $ctp = 'timeperiod_tp_id2';
-        }
-        
-        $query = "SELECT tp_name, contact_".$object."_notification_options "
-            . "FROM cfg_contacts, cfg_timeperiods "
-            . "WHERE contact_id='$contactId' "
-            . "AND tp_id = $ctp" ;
-        
-        $stmt = $dbconn->query($query);
-        $resultSet = $stmt->fetch();
-        
-        if ($resultSet === false) {
-            $return = '';
-        } else {
-            $return = $resultSet['tp_name'].' ('.$resultSet['contact_'.$object.'_notification_options'].')';
-        }
-        
-        return $return;
-    }
-    
-    /**
-     * 
      * @param type $name
      * @param type $email
      * @return string
@@ -144,38 +109,6 @@ class UserRepository extends \CentreonConfiguration\Repository\Repository
         return $name;
     }
 
-    /**
-     * 
-     * @param type $contact_id
-     * @param type $type
-     * @return string
-     */
-    public static function getNotificationCommand($contact_id, $type)
-    {
-        $di = Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        if ($type != "host" && $type != "service") {
-            return "";
-        }
-
-        /* Launch Request */
-        $query = "SELECT command_name FROM cfg_contacts_".$type."commands_relations, cfg_commands "
-            . "WHERE contact_contact_id = $contact_id AND command_command_id = command_id";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        $cmd = "";
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($cmd != "") {
-                $cmd .= ",";
-            }
-            $cmd .= $row["command_name"];
-        }
-        return $cmd;
-    }
-    
     /**
      * 
      * @param type $contact_id

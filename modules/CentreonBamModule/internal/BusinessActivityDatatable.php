@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -39,6 +39,7 @@ namespace CentreonBam\Internal;
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
 use CentreonBam\Repository\BusinessActivityRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of BaDatatable
@@ -64,12 +65,18 @@ class BusinessActivityDatatable extends Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonBam\Models\BusinessActivity';
-    
+   
     /**
      *
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'ba_id', 'name' => 'name');
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
@@ -95,7 +102,25 @@ class BusinessActivityDatatable extends Datatable
             'visible' => false,
         ),
         array (
-            'title' => 'Name',
+            'title' => 'Type',
+            'name' => 'ba_type_id',
+            'data' => 'ba_type_id',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => 70,
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Business Unit' => '1',
+                    'Application' => '2',
+                    'Middleware' => '3'
+                )
+            ),
+        ),
+        array (
+            'title' => 'Business Activity',
             'name' => 'name',
             'data' => 'name',
             'orderable' => true,
@@ -136,7 +161,25 @@ class BusinessActivityDatatable extends Datatable
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
                 )
-            )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
+                )
+            ),
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
         ),
     );
 
@@ -146,7 +189,7 @@ class BusinessActivityDatatable extends Datatable
         )
     );
 
-    protected static $hook = 'displayTagList';
+    //protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'ba'
     );
@@ -157,9 +200,27 @@ class BusinessActivityDatatable extends Datatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $previousType = '';
         foreach ($resultSet as &$myBaSet) {
+            // Set business activity type
+            $baType = \CentreonBam\Models\BusinessActivityType::getParameters($myBaSet['ba_type_id'], array('name'));
+            $myBaSet['ba_type_id'] = $baType['name'];
+            if ($myBaSet['ba_type_id'] === $previousType) {
+                $myBaSet['ba_type_id'] = '';
+            } else {
+                $previousType = $myBaSet['ba_type_id'];
+            }
+
+            // set business activity name
             $myBaSet['name'] = BusinessActivityRepository::getIconImage($myBaSet['name']) . $myBaSet['name'];
+                      
+            /* Tags */
+            $myBaSet['tagname']  = "";
+            $aTags = TagsRepository::getList('ba', $myBaSet['ba_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myBaSet['tagname'] .= TagsRepository::getTag('ba', $myBaSet['ba_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myBaSet['tagname'] .= TagsRepository::getAddTag('ba', $myBaSet['ba_id']);
         }
-        
     }
 }

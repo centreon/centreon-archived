@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,7 +36,11 @@
 namespace CentreonConfiguration\Commands;
 
 use Centreon\Internal\Command\AbstractCommand;
+use Centreon\Internal\Utils\CommandLine\Colorize;
+use CentreonConfiguration\Repository\ConfigApplyRepository;
 use CentreonConfiguration\Repository\ConfigGenerateRepository;
+use CentreonConfiguration\Repository\ConfigMoveRepository;
+use CentreonConfiguration\Repository\ConfigTestRepository;
 
 /**
  * @authors Lionel Assepo
@@ -47,27 +51,57 @@ class ConfigCommand extends AbstractCommand
 {
     /**
      * Action for Generating configuration files
-     * @param type $id
+     * @param integer $id Poller id
      */
     public function generateAction($id)
     {
         $obj = new ConfigGenerateRepository($id);
-        echo $obj->getStepStatus();
+        $obj->generate();
+        echo $obj->getOutput();
     }
 
     /**
      * Action for Move configuration files
+     * @param integer $id Poller id
      */
-    public function moveAction()
+    public function moveAction($id)
     {
-        echo "Not implemented yet";
+        $obj = new ConfigMoveRepository($id);
+        $obj->moveConfig();
+        echo $obj->getOutput();
     }
 
     /**
      * Action for testing configuration files
+     * @param integer $id Poller id
      */
-    public function testAction()
+    public function testAction($id)
     {
-        echo "Not implemented yet";
+        $obj = new ConfigTestRepository($id);
+        $obj->checkConfig();
+        // Only CentEngine is tested at the moment
+        // We are formatting the output to have a colored, readable ouput on terminal
+        $totalWarningsStr = Colorize::colorizeMessage('Total Warnings', 'warning');
+        $warningStr = Colorize::colorizeMessage('Warning', 'warning');
+        $totalErrorsStr = Colorize::colorizeMessage('Total Errors', 'danger');
+        $errorStr = Colorize::colorizeMessage('Error', 'danger');
+        $finalStr = $obj->getOutput();
+        $finalStr = str_replace("\nTotal Warnings", "\n".$totalWarningsStr, $finalStr);
+        $finalStr = str_replace("\nWarning", "\n".$warningStr, $finalStr);
+        $finalStr = str_replace("\nTotal Errors", "\n".$totalErrorsStr, $finalStr);
+        $finalStr = str_replace("\nError", "\n".$errorStr, $finalStr);
+        echo $finalStr;
+    }
+
+    /**
+     * Action for Apply configuration
+     * @param integer $id Poller id
+     * @param string $action Action to be applied
+     */
+    public function applyAction($id, $action)
+    {
+        $obj = new ConfigApplyRepository($id);
+        $obj->action($action);
+        echo $obj->getOutput();
     }
 }

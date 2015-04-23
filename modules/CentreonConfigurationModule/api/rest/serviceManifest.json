@@ -4,11 +4,9 @@
     "objectBaseUrl" : "service",
     "objectClass" : "\\CentreonConfiguration\\Models\\Service",
     "relationMap" : {
-        "host" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Service",
-        "servicegroup" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicegroup",
-        "servicecategory" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicecategory",
-        "parents" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Serviceparents",
-        "children" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicechildren"
+        "service_hosts" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Service",
+        "service_parents" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Serviceparents",
+        "service_children" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicechildren"
     },
     "attributesMap" : {
         "id" : "service_id",

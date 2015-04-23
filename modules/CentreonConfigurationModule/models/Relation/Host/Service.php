@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -90,6 +90,7 @@ class Service extends CentreonRelationModel
             . $secondObj::getTableName().".".$secondObj::getPrimaryKey() . "
             AND host_register = '1'
             AND service_register = '1' ";
+        
         $filterTab = array();
         if (count($filters)) {
             $sql .= " AND ( ";
@@ -116,6 +117,7 @@ class Service extends CentreonRelationModel
             $db = Di::getDefault()->get('db_centreon');
             $sql = $db->limit($sql, $count, $offset);
         }
+        //echo $sql;
         $result = static::getResult($sql, $filterTab);
         return $result;
     }

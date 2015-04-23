@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -71,51 +71,66 @@ class Component
             $label = $element['name'];
         }
         
+        $rules = array();
+        
         if (isset($element['label_validators'])) {
+            $remote = false;
             foreach ($element['label_validators'] as $validator) {
-                if (strstr(strtolower($validator['validator_action']), 'jquery') !== false) {
-
-                } else {
-                    $validatorRoute = Di::getDefault()
-                        ->get('router')
-                        ->getPathFor($validator['validator_action']);
-
-                    $ajaxCall = '$.ajax({
-                            url: "'.$validatorRoute.'",
-                            type: "POST",
-                            data: {
-                                "value":$(this).val(),
-                                "module":$("[name=\'module\']").val(),
-                                "object":$("[name=\'object\']").val(),
-                                "object_id":$("[name=\'object_id\']").val()
-                            },
-                            dataType: "json",
-                            context: document.body
-                        })';
-                    $eventList = explode(',', trim($validator['events']));
-                    foreach ($eventList as $event) {
-                        if (!empty($event)) {
-                            $eventValidation .= '$("#'.$element['name'].'").on ("'.$event.'" , function(){ '.
-                               $ajaxCall.
-                               '.success(function(data, status, jqxhr) {
-                                    if (data["success"]) {
-                                        alertClose();
-                                        $(this).val(data["value"]);
-                                    } else {
-                                        alertClose();
-                                        alertMessage("<b>'.$label.'</b> " + data["error"], "alert-danger");
-                                    }
-                               });
-                            });';
+                $rule = null;
+                switch ($validator['rules']) {
+                    case 'remote':
+                        if ($remote) {
+                            // @todo log warning message more than one remote
+                            break;
                         }
-                    }
+                        $rule = array(
+                            'action' => $validator['validator_action']
+                        );
+                        $remote = true;
+                        break;
+                    case 'size':
+                        if (false === isset($validator['params']['minlength'])
+                            && false === isset($validator['params']['maxlength'])) {
+                            // @todo log Warning bad format
+                            break;
+                        }
+                        if (isset($validator['params']['minlength'])) {
+                            $rule['minlength'] = $validator['params']['minlength'];
+                        }
+                        if (isset($validator['params']['maxlength'])) {
+                            $rule['maxlength'] = $validator['params']['maxlength'];
+                        }
+                        break;
+                    case 'forbiddenChar':
+                        if (false === isset($validator['params']['charaters'])) {
+                            break;
+                        }
+                        $rule['characters'] = $validator['params']['characters'];
+                    default:
+                        // @todo log warning rules not found
+                        break;
+                }
+                if (false === is_null($rule)) {
+                    $rules = array_merge($rules, array(
+                        $validator['rules'] => $rule
+                    ));
                 }
             }
         }
         
+        if ((isset($element['parent_fields']) && $element['parent_fields'] != '')
+            && (isset($element['parent_value']) && $element['parent_value'] != '')
+            && (isset($element['child_mandatory']) && $element['child_mandatory'] == 1)) {
+                
+            $rules['required'] = array(
+                'parent_id' => $element['parent_fields'],
+                'parent_value' => $element['parent_value']
+            );
+        }
+        
         return array(
             'submitValidation' => $submitValidation,
-            'eventValidation' => $eventValidation
+            'eventValidation' => array($element['name'] => $rules)
         );
     }
 }

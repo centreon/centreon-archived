@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -109,6 +109,9 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
             break;
         case 'listeners':
             $filename .= '/listeners/'.  implode('/', $fullClassPath);
+            break;
+        case 'forms':
+            $filename .= '/forms/'.  implode('/', $fullClassPath);
             break;
         case 'models':
             $filename .= '/models/'.  implode('/', $fullClassPath);

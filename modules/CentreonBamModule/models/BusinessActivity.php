@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -47,4 +47,42 @@ class BusinessActivity extends CentreonBaseModel
     protected static $table = "cfg_bam";
     protected static $primaryKey = "ba_id";
     protected static $uniqueLabelField = "name";
+    
+    /**
+     * 
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $aAddFilters = array();
+        $tablesString =  null;
+        $aGroup = array();
+         
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_bas'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_bas.tag_id', 
+                    'cfg_tags_bas.resource_id = cfg_bam.ba_id ')
+            ); 
+        }
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_bas.resource_id', 'nb' => count($filters['tagname']));
+        }
+        
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
+    }
 }

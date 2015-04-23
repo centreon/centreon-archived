@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 MERETHIS
+ * Copyright 2005-2015 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -58,7 +58,6 @@ abstract class Customcurvegraph extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        file_put_contents('/tmp/debug', var_export($element, true));
         $di = \Centreon\Internal\Di::getDefault();
         /* Add javascript file for clone */
         $tpl = $di->get('template');

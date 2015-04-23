@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -120,37 +120,6 @@ class ServiceRepository extends Repository
         }
     }
 
-    /**
-     * 
-     * @param int $service_id
-     * @return type
-     */
-    public function getNotificicationsStatus($service_id)
-    {
-        // Initializing connection
-        $di = Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        while (1) {
-            $stmt = $dbconn->query(
-                "SELECT "
-                . "service_notifications_enabled, "
-                . "service_template_model_stm_id "
-                . "FROM cfg_services "
-                . "WHERE "
-                . "service_id = '".$service_id."' LIMIT 1"
-            );
-            $row = $stmt->fetchAll();
-            
-            if (($row[0]['service_notifications_enabled'] != 2) || (!$row[0]['service_template_model_stm_id'])) {
-                return $row[0]['service_notifications_enabled'];
-            }
-            
-            $service_id = $row[0]['service_template_model_stm_id'];
-        }
-        
-    }
-    
     /**
      * 
      * @param int $service_template_id
@@ -287,7 +256,7 @@ class ServiceRepository extends Repository
      * Format data so that it can be displayed in tooltip
      *
      * @param array $data
-     * @return array array($checkdata, $notifdata)
+     * @return array $checkdata
      */
     public static function formatDataForTooltip($data)
     {
@@ -322,37 +291,7 @@ class ServiceRepository extends Repository
             'value' => $data['service_passive_checks_enabled']
         );
 
-        /* Notification data */
-        $notifdata = array();
-        $notifdata[] = array(
-            'label' => _('Notification enabled'),
-            'value' => YesNoDefault::toString($data['service_notifications_enabled'])
-        );
-        $notifdata[] = array(
-            'label' => _('Notification interval'),
-            'value' => $data['service_notification_interval']
-        );
-        $notifdata[] = array(
-            'label' => _('Time period'),
-            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
-        );
-        $notifdata[] = array(
-            'label' => _('Options'),
-            'value' => $data['service_notification_options']
-        );
-        $notifdata[] = array(
-            'label' => _('First notification delay'),
-            'value' => $data['service_first_notification_delay']
-        );
-        $notifdata[] = array(
-            'label' => _('Contacts'),
-            'value' => ''
-        );
-        $notifdata[] = array(
-            'label' => _('Contact groups'),
-            'value' => ''
-        );
-        return array($checkdata, $notifdata);
+        return $checkdata;
     }
 
     /**
@@ -417,19 +356,73 @@ class ServiceRepository extends Repository
      * @param int $svcId The service ID
      * @return array
      */
-    public static function getListTemplates($svcId)
+    public static function getListTemplates($svcId, $alreadyProcessed = array())
+    {
+        $svcTmpl = array();
+        if (in_array($svcId, $alreadyProcessed)) {
+            return $svcTmpl;
+        } else {
+            $alreadyProcessed[] = $svcId;
+            // @todo improve performance
+            $dbconn = Di::getDefault()->get('db_centreon');
+
+            $query = "SELECT service_template_model_stm_id FROM cfg_services WHERE service_id = :id";
+            $stmt = $dbconn->prepare($query);
+            $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $row = $stmt->fetch();
+                $stmt->closeCursor();
+                if ($row['service_template_model_stm_id'] !== NULL) {
+                    $svcTmpl = array_merge($svcTmpl, self::getListTemplates($row['service_template_model_stm_id'], $alreadyProcessed));
+                    $svcTmpl[] = $row['service_template_model_stm_id'];
+                }
+            }
+            return $svcTmpl;
+        }
+    }
+    
+    /**
+     * Return the list of template by host id
+     *
+     * @param int $iHostId The Host ID
+     * @return array
+     */
+    public static function getListTemplatesByHostId($iHostId)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         $svcTmpl = array();
-        $query = "SELECT service_template_model_stm_id FROM cfg_services WHERE service_id = :id";
+        $query = "SELECT service_service_id FROM cfg_hosts_services_relations WHERE host_host_id = :id";
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':id', $iHostId, \PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->rowCount()) {
+            $row = $stmt->fetch();
+            $stmt->closeCursor();
+            $svcTmpl[] = $row['service_service_id'];
+        }
+        return $svcTmpl;
+    }
+    
+    /**
+     * Return the list of template
+     *
+     * @param int $svcId The service ID
+     * @return array
+     */
+    
+    public static function getListServiceByIdTemplate($svcId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $svcTmpl = array();
+        $query = "SELECT service_id FROM cfg_services WHERE service_register = '1' AND service_template_model_stm_id = :id";
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
         $stmt->execute();
         if ($stmt->rowCount()) {
             $row = $stmt->fetch();
             $stmt->closeCursor();
-            $svcTmpl = self::getListTemplates($row['service_template_model_stm_id']);
-            array_unshift($svcTmpl, $row['service_template_model_stm_id']);
+            $svcTmpl[] = $row['service_id'];
         }
         return $svcTmpl;
     }

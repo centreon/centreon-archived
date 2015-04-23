@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -54,10 +54,6 @@ class OptionRepository
     protected static function validateForm($givenParameters, $origin = "", $route = "")
     {
         $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
-        if ($origin == 'wizard' || $origin == 'form') {
-            $formValidator->csrf($givenParameters['token']);
-            unset($givenParameters['token']);
-        }
         $formValidator->validate($givenParameters->all());
     }
     

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -41,6 +41,7 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ServiceTemplateDatatable
@@ -70,12 +71,30 @@ class ServiceTemplateDatatable extends Datatable
      */
     protected static $datasource = '\CentreonConfiguration\Models\Servicetemplate';
     
+
+    
     /**
      *
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'service_id', 'name' => 'service_description');
     
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array();
+    
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'service'
+        )
+    );
+
+    //protected static $hook= 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'service'
+    );
     /**
      *
      * @var array 
@@ -117,8 +136,8 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Interval',
             'name' => 'service_normal_check_interval',
             'data' => 'service_normal_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -128,8 +147,8 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Retry',
             'name' => 'service_retry_check_interval',
             'data' => 'service_retry_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -139,29 +158,10 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Atp',
             'name' => 'service_max_check_attempts',
             'data' => 'service_max_check_attempts',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            "className" => 'cell_center',
-            "width" => '40px'
-        ),
-        array (
-            'title' => 'Notifications',
-            'name' => 'service_notifications_enabled',
-            'data' => 'service_notifications_enabled',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' =>array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
-                    '2' => '<span class="label label-info">Default</span>',
-                )
-            ),
             "className" => 'cell_center',
             "width" => '40px'
         ),
@@ -169,8 +169,8 @@ class ServiceTemplateDatatable extends Datatable
             'title' => 'Parent Template',
             'name' => 'service_template_model_stm_id',
             'data' => 'service_template_model_stm_id',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
         ),
@@ -190,14 +190,26 @@ class ServiceTemplateDatatable extends Datatable
                     '2' => '<span class="label label-warning">Trash</span>',
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-                                    ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
+                )
+            ),
             "className" => 'cell_center',
             "width" => '40px'
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'source' => 'relation'
         ),
     );
     
@@ -255,6 +267,14 @@ class ServiceTemplateDatatable extends Datatable
                 }
             }
             $myServiceSet['service_template_model_stm_id'] = $tplStr;
+            
+            /* Tags */
+            $myServiceSet['tagname']  = "";
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }
 }

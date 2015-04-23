@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -42,6 +42,7 @@ use CentreonConfiguration\Models\Poller;
 use CentreonBroker\Repository\BrokerRepository;
 use CentreonConfiguration\Events\BrokerModule as BrokerModuleEvent;
 use CentreonConfiguration\Internal\Poller\Template\Manager as PollerTemplateManager;
+use CentreonMain\Events\Generic as GenericEvent;
 
 /**
  * Factory for generate Centron Broker configuration
@@ -108,8 +109,13 @@ class ConfigGenerateRepository
         if (!isset($listTpl[$tmplName])) {
             throw new Exception('The template is not found on list of templates');
         }
-        $fileTpl = $listTpl[$tmplName]->getBrokerPath();
-        $this->tplInformation = json_decode(file_get_contents($fileTpl), true);
+        $fileTplList = $listTpl[$tmplName]->getBrokerPath();
+        //$this->tplInformation = json_decode(file_get_contents($fileTpl), true);
+
+        $this->tplInformation = array();
+        foreach ($fileTplList as $fileTpl) {
+            $this->tplInformation = BrokerRepository::mergeBrokerConf($this->tplInformation, $fileTpl);
+        }
 
         $this->loadMacros($pollerId);
 
@@ -263,26 +269,110 @@ class ConfigGenerateRepository
         }
         foreach ($configuration as $key => $value) {
             if (is_array($value)) {
-                $file->startElement($key);
-                foreach ($value as $subkey => $subvalue) {
-                    $subvalue = str_replace(
-                        array_keys($this->baseConfig),
-                        array_values($this->baseConfig),
-                        $subvalue
-                    );
-                    $file->writeElement($subkey, $subvalue);
+                if ($key == '%callback%') {
+                    foreach ($value as $action) {
+                        switch ($action) {
+                            case 'pollerCommandLine':
+                                $this->addCommandLineBlock($file);
+                                break;
+                            case 'pollerConfigCentreonEngine':
+                                $this->addConfigCentreonEngineBlock($file);
+                                break;
+                            case 'pollerConfigCentreonBroker':
+                                $this->addConfigCentreonBrokerBlock($file);
+                                break;
+                        }
+                    }
+                } else {
+                    $file->startElement($key);
+                    foreach ($value as $subkey => $subvalue) {
+                        $subvalue = str_replace(
+                            array_keys($this->baseConfig),
+                            array_values($this->baseConfig),
+                            $subvalue
+                        );
+                        if (is_string($subkey)) {
+                            $file->writeElement($subkey, $subvalue);
+                        }
+                    }
+                    $file->endElement();
                 }
-                $file->endElement();
             } else {
                 $value = str_replace(
                     array_keys($this->baseConfig),
                     array_values($this->baseConfig),
                     $value
                 );
+                $key = str_replace(
+                    array_keys($this->baseConfig),
+                    array_values($this->baseConfig),
+                    $key
+                );
+                $key = str_replace(array('/','.'),'-',$key);
                 $file->writeElement($key, $value);
             }
         }
         if (false === $isGeneral) {
+            $file->endElement();
+        }
+    }
+
+    /**
+     * Add block for external command line
+     *
+     * @param \XMLWriter $gile The xml file
+     */
+    private function addCommandLineBlock($file)
+    {
+        /* Get poller list */
+        $pollers = Poller::getList();
+        $varlib = $this->baseConfig['%global_broker_data_directory%'];
+        foreach ($pollers as $poller) {
+            $file->startElement("input");
+            $file->writeElement("name", "extcommand-" . $poller['name']);
+            $file->writeElement("type", "dump_fifo");
+            $file->writeElement("path", $varlib . "/extcommand-" . $poller['poller_id'] . '.fifo');
+            $file->writeElement("tagname", "extcommand-" . $poller['name']);
+            $file->endElement();
+        }
+    }
+
+    /**
+     * Add block for send Centreon Engine configuration files
+     *
+     * @param \XMLWriter $gile The xml file
+     */
+    private function addConfigCentreonEngineBlock($file)
+    {
+        $pollers = Poller::getList();
+        /* The path for generate configuration */
+        $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/engine';
+        foreach ($pollers as $poller) {
+            $file->startElement("input");
+            $file->writeElement("name", "cfg-engine-" . $poller['name']);
+            $file->writeElement("type", "dump_dir");
+            $file->writeElement("path", $configGeneratePath . '/' . $poller['poller_id']);
+            $file->writeElement("tagname", "cfg-engine-" . $poller['name']);
+            $file->endElement();
+        }
+    }
+
+    /**
+     * Add block for send Centreon Broker configuration files
+     *
+     * @param \XMLWriter $gile The xml file
+     */
+    private function addConfigCentreonBrokerBlock($file)
+    {
+        $pollers = Poller::getList();
+        /* The path for generate configuration */
+        $configGeneratePath = rtrim(Di::getDefault()->get('config')->get('global', 'centreon_generate_tmp_dir'), '/') . '/broker';
+        foreach ($pollers as $poller) {
+            $file->startElement("input");
+            $file->writeElement("name", "cfg-broker-" . $poller['name']);
+            $file->writeElement("type", "dump_dir");
+            $file->writeElement("path", $configGeneratePath . '/' . $poller['poller_id']);
+            $file->writeElement("tagname", "cfg-broker-" . $poller['name']);
             $file->endElement();
         }
     }
@@ -295,10 +385,13 @@ class ConfigGenerateRepository
     private function loadMacros($pollerId)
     {
         $config = Di::getDefault()->get('config');
+
         /* Load contant values */
         $this->baseConfig['broker_central_ip'] = getHostByName(getHostName());
+
         /* Load user value */
         $this->baseConfig = array_merge($this->baseConfig, BrokerRepository::loadValues($pollerId));
+
         /* Load paths */
         $paths = BrokerRepository::getPathsFromPollerId($pollerId);
         $pathsValue = array_values($paths);
@@ -328,6 +421,7 @@ class ConfigGenerateRepository
         $paths = array_combine($pathsKeys, $pathsValue);
         $this->baseConfig = array_merge($this->baseConfig, $paths);
         $this->baseConfig['poller_id'] = $this->pollerId;
+
         /* Information for database */
         $dbInformation = CentreonDb::parseDsn(
             $config->get('db_centreon', 'dsn'),
@@ -342,6 +436,15 @@ class ConfigGenerateRepository
         );
         $dbInformation = array_combine($dbKeys, array_values($dbInformation));
         $this->baseConfig = array_merge($dbInformation, $this->baseConfig);
+
+        /* Load general poller information */
+        $pollerInformation = Poller::get($pollerId);
+        $this->baseConfig['poller_name'] = $pollerInformation['name'];
+
+        /* Load configuration information from Centren Engine */
+        $eventObj = new GenericEvent(array('poller_id' => $pollerId));
+        Di::getDefault()->get('events')->emit('centreon-broker.poller.configuration', array($eventObj));
+        $this->baseConfig = array_merge($eventObj->getOutput(), $this->baseConfig);
         
         /* get global value in database */
         $globalOptions = BrokerRepository::getGlobalValues();

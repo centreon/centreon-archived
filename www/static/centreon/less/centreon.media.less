@@ -1,0 +1,54 @@
+@media (min-width: 768px) {
+  #pageWrapper {
+    position: inherit;
+    margin: 0 0 0 @sidebar-width;
+    /*min-height: 1200px;*/
+  }
+
+  .navbarSide {
+    z-index: 101;
+    position: absolute;
+    width: @sidebar-width;
+  }
+
+  .navbar-top-links .dropdown-messages,
+  .navbar-top-links .dropdown-tasks,
+  .navbar-top-links .dropdown-alerts {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 768px) {
+
+  #pageWrapper {
+    position: inherit;
+    margin: 0 0 0 0px;
+    min-height: 1000px;
+  }
+
+  .body-small .navbarSide {
+    display: none;
+    z-index: 1;
+    position: absolute;
+    width: 70px;
+  }
+
+  .body-small.mini-navbar .navbarSide {
+    display: block;
+  }
+  .ibox-tools {
+    float: none;
+    text-align: right;
+    display: block;
+  }
+}
+
+@media (max-width: 350px) {
+
+  .ibox-tools {
+    float: none;
+    text-align: left;
+    display: inline-block;
+  }
+
+}

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -107,7 +107,7 @@ class TrapDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'Description',
+            'title' => 'OID',
             'name' => 'traps_oid',
             'data' => 'traps_oid',
             'orderable' => true,
@@ -132,7 +132,16 @@ class TrapDatatable extends Datatable
                     '2' => '<span class="label label-danger">Critical</span>',
                     '3' => '<span>Unknown</span>',
                 )
-            )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'OK' => '0',
+                    'Warning' => '1',
+                    'Critical' => '2',
+                    'Unknown' => '3'
+                )
+            ),
         ),
     );
     

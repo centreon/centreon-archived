@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -74,7 +74,6 @@ class String extends RespectValidationAbstract
         'xdigit',
     );
 
-
     /**
      * 
      * @param type $params
@@ -82,5 +81,28 @@ class String extends RespectValidationAbstract
     public function __construct($params)
     {
         parent::__construct($params);
+        $this->contextCall = 'string';
+    }
+
+    /**
+     * Prepare custom arguments
+     */
+    protected function prepareArguments()
+    {
+        $length = array();
+        foreach ($this->submittedValidators as $stringValidator) {
+            $stringValidator = json_decode($stringValidator, true);
+            //$validatorParamsAndValue = explode('=', $stringValidator);
+
+            foreach ($stringValidator as $myKey => $myValue) {
+                $length[$myKey] = $myValue;
+            }
+            /*if ($validatorParamsAndValue[0] == 'minlength' || $validatorParamsAndValue[0] == 'maxlength') {
+                $length[$validatorParamsAndValue[0]] = $validatorParamsAndValue[1];
+            }*/
+        }
+        if (isset($length['minlength']) && isset($length['maxlength'])) {
+            $this->submittedValidators[] = 'length=' . $length['minlength'] . ',' . $length['maxlength'];
+        }
     }
 }

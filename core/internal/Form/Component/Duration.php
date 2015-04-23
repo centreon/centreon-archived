@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -60,8 +60,10 @@ class Duration extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required = ' required';
         }
         
         $myJs = '';
@@ -73,6 +75,7 @@ class Duration extends Component
             . $value
             . 'class="form-control input-sm '.$addClass.'" '
             . $placeholder
+            . $required
             . '/>';
             
         $durationScaleSelector = '<button '

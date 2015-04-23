@@ -37,7 +37,7 @@ namespace CentreonMain\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Controller;
-use Centreon\Internal\Form\Wizard;
+use Centreon\Internal\Form\Generator\Web\Wizard;
 
 /**
  * Validators controller
@@ -58,12 +58,12 @@ class ImageController extends Controller
     public function addAction()
     {
         $di = Di::getDefault();
-        $config = $di->get('config');
+        $baseUrl = rtrim($di->get('config')->get('global', 'base_url'), '/');
         $form = new Wizard(
-            rtrim($config->get('global', 'base_url'), '/').'/media/image/add',
-            0,
+            $baseUrl . '/media/image/add',
             array('id' => 0)
         );
+        $form->getFormFromDatabase();
         echo $form->generate();
     }
     

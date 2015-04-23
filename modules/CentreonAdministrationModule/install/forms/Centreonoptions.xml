@@ -32,6 +32,42 @@
                 </field>
             </block>
 		</section>
+    <section name="Eventlogs engine">
+      <block name="Eventlogs storage engine">
+        <field name="eventlogs" label="Storage engine" advanced="0" type="select" parent_field="" mandatory="1">
+          <attributes>
+            <multiple>false</multiple>
+            <selectData>
+              <database>Database</database>
+              <elasticsearch>Elastic Search</elasticsearch>
+            </selectData>
+            <listValuesRoute>/centreon-administration/eventlogs/storage</listValuesRoute>
+          </attributes>
+        </field>
+      </block>
+      <block name="Elastic search">
+        <field name="es_host" label="Elastic Search URL" default_value="http://localhost:9200" advanced="0" type="text" parent_field="eventlogs" parent_value="elasticsearch" child_mandatory="1" mandatory="0">
+          <help></help>
+        </field>
+        <field name="es_security" label="Elastic Search security type" default_value="none" advanced="0" type="select" parent_field="eventlogs" parent_value="elasticsearch" child_mandatory="1" mandatory="0">
+          <attributes>
+            <multiple>false</multiple>
+            <selectData>
+              <none>None</none>
+              <http>HTTP Authentication</http>
+            </selectData>
+            <listValuesRoute>/centreon-administration/eventlogs/es_security</listValuesRoute>
+          </attributes>
+          <help></help>
+        </field>
+        <field name="es_user" label="Elastic Search username" default_value="" advanced="0" type="text" parent_field="es_security" parent_value="http" mandatory="0">
+          <help></help>
+        </field>
+        <field name="es_pass" label="Elastic Search password" default_value="" advanced="0" type="password" parent_field="es_security" parent_value="http" mandatory="0">
+          <help></help>
+        </field>
+      </block>
+    </section>
         <section name="Poller Options">
             <block name="Object Naming">
                 <field name="illegal_macro_output_chars" label="Illegal Macro Output chars" default_value="`~$^&amp;&quot;'|&lt;&gt;" advanced="0" type="text" parent_field="" mandatory="0">
@@ -57,6 +93,26 @@
             </block>
         </section>
         <section name="Broker Options">
+      <block name="Path configuration">
+        <field name="broker_etc_directory" label="Configuration directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The configuration directory for Centreon Broker</help>
+        </field>
+        <field name="broker_module_directory" label="Module directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The module directory for Centreon Broker. This directory content the .so module.</help>
+        </field>
+        <field name="broker_logs_directory" label="Logs directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The log directory for Centreon Broker</help>
+        </field>
+        <field name="broker_data_directory" label="Data directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The data directory for Centreon Broker</help>
+        </field>
+        <field name="broker_cbmod_directory" label="cbmod directory" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The CBMOD directory for Centreon Broker</help>
+        </field>
+        <field name="broker_init_script" label="Init script path" advanced="0" type="text" parent_field="" mandatory="1">
+          <help>The init script path for Centreon Broker</help>
+        </field>
+      </block>
             <block name="Storage">
                 <field name="storage_interval" label="interval" default_value="60" advanced="0" type="text" parent_field="" mandatory="0">
                   <help>The interval.</help>

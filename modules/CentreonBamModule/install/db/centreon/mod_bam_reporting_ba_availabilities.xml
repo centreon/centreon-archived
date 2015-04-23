@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_ba_availabilities" idMethod="native" phpName="ModBamReportingBaAvailabilities">
+    <column name="ba_id" phpName="BaId" type="INTEGER" required="true"/>
+    <column name="time_id" phpName="TimeId" type="INTEGER" required="true"/>
+    <column name="timeperiod_id" phpName="TimeperiodId" type="INTEGER" required="true"/>
+    <column name="available" phpName="Available" type="INTEGER"/>
+    <column name="unavailable" phpName="Unavailable" type="INTEGER"/>
+    <column name="degraded" phpName="Degraded" type="INTEGER"/>
+    <column name="unknown" phpName="Unknown" type="INTEGER"/>
+    <column name="downtime" phpName="Downtime" type="INTEGER"/>
+    <column name="alert_unavailable_opened" phpName="AlertUnavailableOpened" type="INTEGER"/>
+    <column name="alert_degraded_opened" phpName="AlertDegradedOpened" type="INTEGER"/>
+    <column name="alert_unknown_opened" phpName="AlertUnknownOpened" type="INTEGER"/>
+    <column name="nb_downtime" phpName="NbDowntime" type="INTEGER"/>
+    <column name="timeperiod_is_default" phpName="TimeperiodIsDefault" type="BOOLEAN" size="1"/>
+    <unique name="ba_id">
+      <unique-column name="ba_id"/>
+      <unique-column name="time_id"/>
+      <unique-column name="timeperiod_id"/>
+    </unique>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

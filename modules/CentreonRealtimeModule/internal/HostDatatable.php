@@ -38,6 +38,7 @@ namespace CentreonRealtime\Internal;
 use CentreonConfiguration\Repository\HostRepository as HostConfigurationRepository;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of HostDatatable
@@ -57,7 +58,7 @@ class HostDatatable extends Datatable
         'order' => array(
             array('name', 'asc')
         ),
-        'stateSave' => true,
+        'stateSave' => false,
         'paging' => true,
     );
     
@@ -74,6 +75,8 @@ class HostDatatable extends Datatable
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'name');
+    
+    protected static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
@@ -131,7 +134,7 @@ class HostDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'State',
+            'title' => 'Status',
             'name' => 'state',
             'data' => 'state',
             'orderable' => true,
@@ -143,15 +146,20 @@ class HostDatatable extends Datatable
                 'parameters' =>array(
                     '0' => '<span class="label label-success">Up</span>',
                     '1' => '<span class="label label-danger">Down</span>',
-                    '2' => '<span class="label label-default">Unreachable</span>'
+                    '2' => '<span class="label label-primary">Unreachable</span>',
+                    '4' => '<span class="label label-info">Pending</span>'
                 )
             ),
-            'searchtype' => 'select',
-            'searchvalues' => array(
-                'Up' => 0,
-                'Down' => 1,
-                'Unreachable' => 2
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'UP' => '0',
+                    'Down' => '1',
+                    'Unreachable' => '2',
+                    'Pending' => '4'
+                )
             ),
+
             'width' => "50px",
             'className' => 'cell_center'
         ),
@@ -159,8 +167,8 @@ class HostDatatable extends Datatable
             'title' => 'Last Check',
             'name' => '(unix_timestamp(NOW())-last_check) AS last_check',
             'data' => 'last_check',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'className' => 'cell_center'
@@ -169,8 +177,8 @@ class HostDatatable extends Datatable
             'title' => 'Duration',
             'name' => '(unix_timestamp(NOW())-last_hard_state_change) AS duration',
             'data' => 'duration',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'className' => 'cell_center'
@@ -179,8 +187,8 @@ class HostDatatable extends Datatable
             'title' => 'Retry',
             'name' => 'CONCAT(check_attempt, " / ", max_check_attempts) AS retry',
             'data' => 'retry',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '50px',
@@ -199,10 +207,21 @@ class HostDatatable extends Datatable
             'title' => 'Perfdata',
             'name' => 'perfdata',
             'data' => 'perfdata',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => false,
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
         ),
     );
 
@@ -212,11 +231,11 @@ class HostDatatable extends Datatable
         )
     );
 
-    protected static $hook = 'displayTagList';
+    //protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'host'
     );
-    
+
     /**
      * 
      * @param array $params
@@ -233,7 +252,13 @@ class HostDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         $previousHost = '';
-        foreach ($resultSet as &$myHostSet) {
+        foreach ($resultSet as $key => &$myHostSet) {
+            // @todo remove virtual hosts and virtual services
+            if ($myHostSet['name'] === '_Module_BAM') {
+                unset($resultSet[$key]);
+                continue;
+            }
+
             // Set host_name
             if ($myHostSet['name'] === $previousHost) {
                 $myHostSet['name'] = '';
@@ -253,6 +278,15 @@ class HostDatatable extends Datatable
                 Datetime::PRECISION_FORMAT,
                 2
             );
+            
+            /* Tags */
+            $myHostSet['tagname']  = "";
+            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
+        $resultSet = array_values($resultSet);
     }
 }

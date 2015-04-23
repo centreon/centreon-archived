@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -109,6 +109,7 @@ class Hosttemplate extends CentreonRelationModel
         $relationTableParams = array()
     ) {
         $filters['service_register'] = '1';
+       
         return parent::getMergedParametersBySearch(
             $firstTableParams,
             $secondTableParams,

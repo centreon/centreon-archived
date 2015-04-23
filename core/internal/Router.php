@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -134,7 +134,8 @@ class Router extends Klein
                 $response->body($tmpl->fetch('404.tpl'));
             }
         );
-        
+
+        // FIXME Deadcode, should be removed or we should have a ticket to do something about it
         /*$this->onHttpError(function ($code, $router, $matched, $methods_matched, $http_exception) {
             switch ($code) {
                 case 404:

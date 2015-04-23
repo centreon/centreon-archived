@@ -1,8 +1,10 @@
 [
     {
-      "name": "Performance",
-      "short_name": "performance",
-      "icon_class": "fa fa-bar-chart-o",
-      "bgcolor": "lightseagreen "
+        "name": "Performance",
+        "short_name": "performance",
+        "icon_class": "icon-perf",
+        "bgcolor": "lightseagreen ",
+        "block": "root",
+        "order": 4
     }
 ]

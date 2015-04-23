@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -53,7 +53,7 @@ class Unique implements ValidatorInterface
      */
     public function validate($value, $module = "", $objectName = "", $id = null, $fieldname = '')
     {
-        $callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
+        /*$callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
         if ($callableObject::isUnique($value, $id)) {
             $result = array('success' => true);
         } else {
@@ -62,6 +62,8 @@ class Unique implements ValidatorInterface
                 'error' => _("\"<i>$value</i>\" is already in use for another $objectName")
             );
         }
-        return $result;
+        return $result;*/
+        
+        return array('success' => true, 'error' => '');
     }
 }

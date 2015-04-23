@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,6 +37,8 @@ namespace CentreonBam\Repository;
 
 use CentreonMain\Repository\FormRepository;
 use Centreon\Internal\Di;
+use CentreonConfiguration\Models\VirtualHost;
+use CentreonConfiguration\Models\VirtualService;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -83,5 +85,165 @@ class BusinessActivityRepository extends FormRepository
         }
         
         return $finalRoute;
+    }
+
+    /**
+     *
+     *
+     * @return string
+     */
+    public static function getIndicatorsForBa($id)
+    {
+        // Get datatabases connections
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        $sql = "SELECT k.kpi_id "
+            . "FROM cfg_bam_kpi k "
+            . "WHERE k.id_ba='$id' ";
+        $stmt = $dbconn->query($sql);
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $resultIndicators = array();
+        foreach ($result as $indicator) {
+            array_push($resultIndicators, $indicator);
+        }
+
+        return $resultIndicators;
+    }
+
+    /**
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function getBaList()
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        #$router = $di->get('router');
+
+        $baList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 2));
+
+        return $baList;
+    }
+
+    /**
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function getBuList()
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        #$router = $di->get('router');
+
+        $buList = static::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
+
+        return $buList;
+    }
+
+    /**
+     *
+     *
+     * @return $id
+     */
+    public static function getVirtualHost()
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $selectRequest = "SELECT host_id"
+            . " FROM cfg_hosts"
+            . " WHERE host_name='_Module_BAM'";
+        $stmtSelect = $dbconn->prepare($selectRequest);
+        $stmtSelect->bindParam(':id', $hostId, \PDO::PARAM_INT);
+        $stmtSelect->execute();
+        $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (isset($result[0]['host_id'])) {
+            return $result[0]['host_id'];
+        } else {
+            $id = static::createVirtualHost();
+            return $id;
+        }
+    }
+
+    /**
+     *
+     * 
+     * @return $id
+     */
+    public static function createVirtualHost()
+    {
+        $virtualHost = array(
+            'host_name' => '_Module_BAM',
+            'organization_id' => 1
+        );
+
+        $id = VirtualHost::insert($virtualHost);
+
+        return $id;
+    }
+
+    /**
+     *
+     * @param string $id
+     * 
+     */
+    public static function createVirtualService($id)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $virtualService = array(
+            'service_description' => 'ba_' . $id,
+            'organization_id' => 1
+        );
+
+        $hostId = static::getVirtualHost();
+
+        $dbconn->beginTransaction();
+
+        $serviceId = VirtualService::insert($virtualService);
+
+        $insertRelationRequest = "INSERT INTO cfg_hosts_services_relations(host_host_id, service_service_id)"
+            . " VALUES(:host_id, :service_id)";
+        $stmtRelationInsert = $dbconn->prepare($insertRelationRequest);
+        $stmtRelationInsert->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        $stmtRelationInsert->bindParam(':service_id', $serviceId, \PDO::PARAM_INT);
+        $stmtRelationInsert->execute();
+
+        $dbconn->commit();
+    }
+
+    /**
+     *
+     * @param string $id
+     *
+     */
+    public static function deleteVirtualService($ids)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+
+        $dbconn->beginTransaction();
+
+        foreach ($ids as $id) {
+            $serviceDescription = 'ba_' . $id;
+            $selectRequest = "SELECT service_id"
+            . " FROM cfg_services"
+            . " WHERE service_description=:service_description";
+            $stmtSelect = $dbconn->prepare($selectRequest);
+            $stmtSelect->bindParam(':service_description', $serviceDescription, \PDO::PARAM_STR);
+            $stmtSelect->execute();
+            $result = $stmtSelect->fetchAll(\PDO::FETCH_ASSOC);
+
+            if (isset($result[0]['service_id'])) {
+                VirtualService::delete($result[0]['service_id']);
+            }
+        }
+
+        $dbconn->commit();
     }
 }

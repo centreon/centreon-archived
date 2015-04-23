@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -60,8 +60,16 @@ class CopyFiles
             throw new Exception('Engine configuration directory not set.');
         }
 
-        system("rm -rf {$dir['conf_dir']}/resources/*.cfg");
-        system("cp -Rf $tmpdir/engine/{$event->getPollerId()}/* {$dir['conf_dir']}");
-        $event->setOutput(_('Successfully copied files for Centreon Engine.'));
+        $output = array();
+        exec("rm -rf {$dir['conf_dir']}/resources/*.cfg 2>&1", $output, $status);
+        if ($status) {
+            throw new Exception('Error while copying Engine configuration files' . "\n" . implode("\n", $output));
+        }
+        $output = array();
+        exec("cp -Rf $tmpdir/engine/{$event->getPollerId()}/* {$dir['conf_dir']} 2>&1", $output, $status);
+        if ($status) {
+            throw new Exception('Error while copying Engine configuration files'. "\n" . implode("\n", $output));
+        }
+        $event->setOutput(_('Successfully copied files for Engine.'));
     }
 }

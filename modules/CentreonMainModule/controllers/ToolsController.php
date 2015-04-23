@@ -90,7 +90,8 @@ class ToolsController extends Controller
         $options = array(
             'cache_dir' => $tempDir,
             'use_cache' => false,
-            'compress' => false
+            'compress' => false,
+            'relativeUrls' => false
         );
         if ("dev" !== $di->get('config')->get('global', 'env')) {
             $options['use_cache'] = true;

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -253,7 +253,6 @@ class HostTest extends DbTestCase
             'contact_additive_inheritance' => '1',
             'cg_additive_inheritance' => '1',
             'host_first_notification_delay' => '0',
-            'host_stalking_options' => null,
             'host_snmp_community' => 'public',
             'host_snmp_version' => '2c',
             'host_location' => '0',
@@ -336,7 +335,6 @@ class HostTest extends DbTestCase
                 'contact_additive_inheritance' => '0',
                 'cg_additive_inheritance' => '0',
                 'host_first_notification_delay' => null,
-                'host_stalking_options' => null,
                 'host_snmp_community' => null,
                 'host_snmp_version' => null,
                 'host_location' => '0',
@@ -383,7 +381,6 @@ class HostTest extends DbTestCase
                 'contact_additive_inheritance' => '0',
                 'cg_additive_inheritance' => '0',
                 'host_first_notification_delay' => null,
-                'host_stalking_options' => null,
                 'host_snmp_community' => null,
                 'host_snmp_version' => null,
                 'host_location' => '0',
@@ -435,7 +432,6 @@ class HostTest extends DbTestCase
                 'contact_additive_inheritance' => '0',
                 'cg_additive_inheritance' => '0',
                 'host_first_notification_delay' => null,
-                'host_stalking_options' => null,
                 'host_snmp_community' => null,
                 'host_snmp_version' => null,
                 'host_location' => '0',
@@ -487,7 +483,6 @@ class HostTest extends DbTestCase
                 'contact_additive_inheritance' => '0',
                 'cg_additive_inheritance' => '0',
                 'host_first_notification_delay' => null,
-                'host_stalking_options' => null,
                 'host_snmp_community' => null,
                 'host_snmp_version' => null,
                 'host_location' => '0',
@@ -605,7 +600,6 @@ class HostTest extends DbTestCase
             'contact_additive_inheritance' => '1',
             'cg_additive_inheritance' => '1',
             'host_first_notification_delay' => '0',
-            'host_stalking_options' => null,
             'host_snmp_community' => 'public',
             'host_snmp_version' => '2c',
             'host_location' => '0',
@@ -725,7 +719,6 @@ class HostTest extends DbTestCase
                 'contact_additive_inheritance',
                 'cg_additive_inheritance',
                 'host_first_notification_delay',
-                'host_stalking_options',
                 'host_snmp_community',
                 'host_snmp_version',
                 'host_location',

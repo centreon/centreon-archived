@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -268,7 +268,6 @@ class ExtensionsController extends Controller
             ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
-            ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('dataTables.bootstrap.css')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
@@ -279,21 +278,16 @@ class ExtensionsController extends Controller
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
-            ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('dataTables.bootstrap.js')
             ->addJs('jquery.select2/select2.min.js')
-            ->addJs('jquery.validate.min.js')
-            ->addJs('additional-methods.min.js')
+            ->addJs('jquery.validation/jquery.validate.min.js')
+            ->addJs('jquery.validation/additional-methods.min.js')
             ->addJs('centreon-wizard.js');
         
         $this->tpl->assign('datatableObject', $this->datatableObject);
         
         parent::init();
-
-        /* Set Cookie */
-        $token = Form::getSecurityToken();
-        setcookie("ajaxToken", $token, time()+15, '/');
     }
 }

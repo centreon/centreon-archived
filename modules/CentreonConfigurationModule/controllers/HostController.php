@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -46,6 +46,7 @@ use CentreonConfiguration\Internal\HostDatatable;
 use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonAdministration\Repository\TagsRepository;
 use Centreon\Controllers\FormController;
 
 class HostController extends FormController
@@ -63,8 +64,6 @@ class HostController extends FormController
     protected $tmplField = '#host_hosttemplates';
     
     public static $relationMap = array(
-        'host_hostgroups' => '\CentreonConfiguration\Models\Relation\Host\Hostgroup',
-        'host_hostcategories' => '\CentreonConfiguration\Models\Relation\Host\Hostcategory',
         'host_parents' => '\CentreonConfiguration\Models\Relation\Host\Hostparents',
         'host_childs' => '\CentreonConfiguration\Models\Relation\Host\Hostchildren',
         'host_hosttemplates' => '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
@@ -88,10 +87,14 @@ class HostController extends FormController
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addCss('centreon.qtip.css')
             ->addCss('centreon.tag.css', 'centreon-administration');
+        
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
         $this->tpl->append('jsUrl', $urls, true);
@@ -107,10 +110,10 @@ class HostController extends FormController
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        
+                
         $myDatatable = new HostDatatable($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
-        
+          
         $router->response()->json($myDataForDatatable);
     }
     
@@ -123,9 +126,11 @@ class HostController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
-        
+                
         $givenParameters['host_register'] = 1;
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
@@ -152,6 +157,16 @@ class HostController extends FormController
             }
         }
         
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+                
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
@@ -161,7 +176,29 @@ class HostController extends FormController
             CustomMacroRepository::saveHostCustomMacro($id, $macroList);
         }
         
-        Host::deployServices($id);
+        //get Tag for hostTemplate
+        if (isset($givenParameters['host_hosttemplates']) && !empty($givenParameters['host_hosttemplates'])) {
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
+            $aTemplate = array_diff( $aTemplate, array( '' ) );
+
+            foreach ($aTemplate as $eTemplate) {
+                $eTemplate = trim($eTemplate);
+                if (!empty($eTemplate)) {
+                    $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                    foreach ($aTagsTemplates as $key => $oTpl) {
+                        if (!in_array($oTpl['text'], array_values($aTags))) {
+                            array_push($aTags, $oTpl['text']);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
+        }
+        
+        HostRepository::deployServices($id);
         
         $this->router->response()->json(array('success' => true));
     }
@@ -177,6 +214,8 @@ class HostController extends FormController
     {
         $givenParameters = $this->getParams('post');
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
             
@@ -200,7 +239,7 @@ class HostController extends FormController
                 }
             }
         }
-        
+
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
@@ -209,34 +248,40 @@ class HostController extends FormController
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
         }
         
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        //get Tag for hostTemplate
+        if (isset($givenParameters['host_hosttemplates'])) {
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
+            $aTemplate = array_diff( $aTemplate, array( '' ) );
+            foreach ($aTemplate as $eTemplate) {
+                $eTemplate = trim($eTemplate);
+                if (!empty($eTemplate)) {
+                    $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                    foreach ($aTagsTemplates as $key => $oTpl) {
+                        if (!in_array($oTpl['text'], array_values($aTags))) {
+                            array_push($aTags, $oTpl['text']);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+        }
+        
         parent::updateAction();
         if ($givenParameters['host_create_services_from_template']) {
             Host::deployServices($givenParameters['object_id']);
         }
-    }
-    
-    /**
-     * Get list of hostgroups for a specific host
-     *
-     *
-     * @method get
-     * @route /host/[i:id]/hostgroup
-     */
-    public function hostgroupForHostAction()
-    {
-        parent::getRelations(static::$relationMap['host_hostgroups']);
-    }
-    
-    /**
-     * Get list of hostcategories for a specific host
-     *
-     *
-     * @method get
-     * @route /host/[i:id]/hostcategory
-     */
-    public function hostcategoryForHostAction()
-    {
-        parent::getRelations(static::$relationMap['host_hostcategories']);
     }
     
     /**
@@ -387,18 +432,6 @@ class HostController extends FormController
     }
     
     /**
-     * Get list of Timeperiods for a specific host
-     *
-     *
-     * @method get
-     * @route /host/[i:id]/notificationperiod
-     */
-    public function notificationPeriodForHostAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id2', '\CentreonConfiguration\Models\Timeperiod');
-    }
-
-    /**
      * Get check command for a specific host
      *
      * @method get
@@ -456,7 +489,7 @@ class HostController extends FormController
     {
         $params = $this->getParams();
         $data = HostRepository::getConfigurationData($params['id']);
-        list($checkdata, $notifdata) = HostRepository::formatDataForTooltip($data);
+        $checkdata = HostRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]host_conf_tooltip.tpl');
     }

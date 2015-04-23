@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -136,13 +136,13 @@ class Informations
     /**
      *
      * @param bool $onlyActivated If list only module activated
-     * @return array
+     * @return array Array of module names (string)
      */
-    public static function getModuleList($onlyActivated = false)
+    public static function getModuleList($onlyActivated = 1)
     {
         $moduleList = array();
         $activated = array('0', '1', '2');
-        if ($onlyActivated) {
+        if ($onlyActivated == 1) {
             $activated = array('1', '2');
         }
         
@@ -165,7 +165,36 @@ class Informations
         
         return $moduleList;
     }
-    
+
+    /**
+     *
+     * @param bool $onlyActivated If list only module activated
+     * @return array Array of arrays describing modules
+     */
+    public static function getModuleExtendedList($onlyActivated = 1)
+    {
+        $activated = array('0', '1', '2');
+        if ($onlyActivated == 1) {
+            $activated = array('1', '2');
+        }
+
+        try {
+            $rawModuleList = Module::getList(
+                '*',
+                -1,
+                0,
+                null,
+                "ASC",
+                array('isactivated' => $activated)
+            );
+
+        } catch (\PDOException $e) {
+
+        }
+
+        return $rawModuleList;
+    }
+
     /**
      * 
      * @return array
@@ -332,7 +361,7 @@ class Informations
         $stmt->bindParam(':order', $order);
         $module = isset($data['module']) ? $data['module'] : 0;
         $stmt->bindParam(':module', $module);
-        $menuBlock = 'top';
+        $menuBlock = 'root';
         if (isset($data['block'])) {
             $menuBlock = $data['block'];
         } elseif (isset($data['parent'])) {
@@ -340,21 +369,6 @@ class Informations
         }
         $stmt->bindParam(':menu_block', $menuBlock, \PDO::PARAM_STR);
         $stmt->execute();
-        if (!isset($menus[$data['short_name']])) {
-            $menus[$data['short_name']] = $db->lastInsertId('cfg_menus', 'menu_id');
-            if (!isset($data['order']) && isset($data['parent'])) {
-                $stmt = $db->prepare(
-                    "SELECT (MAX(menu_order) + 1) as max_order FROM cfg_menus WHERE parent_id = :parent_id"
-                );
-                $stmt->bindParam(':parent_id', $menus[$data['parent']]);
-                $stmt->execute();
-                $row = $stmt->fetch();
-                $stmt = $db->prepare("UPDATE cfg_menus SET menu_order = :menu_order WHERE menu_id = :menu_id");
-                $stmt->bindParam(':menu_order', $row['max_order']);
-                $stmt->bindParam(':menu_id', $menus[$data['short_name']]);
-                $stmt->execute();
-            }
-        }
     }
     
     /**

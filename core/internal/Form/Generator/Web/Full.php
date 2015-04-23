@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -113,7 +113,8 @@ class Full extends Generator
                 
                 $fieldQuery = 'SELECT '
                     . 'f.field_id, f.name, f.label, f.default_value, f.attributes, '
-                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, parent_field, child_actions '
+                    . 'f.type, f.help, f.help_url, f.advanced, f.mandatory, f.parent_field, '
+                    . 'f.parent_value, f.child_actions, f.child_mandatory '
                     . 'FROM cfg_forms_fields f, cfg_forms_blocks_fields_relations bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
 		    . 'AND bfr.field_id = f.field_id ' 
@@ -126,12 +127,15 @@ class Full extends Generator
                 
                 foreach ($fieldList as $field) {
                     
-                    $validatorQuery = "SELECT v.route as validator_action, vr.client_side_event as events "
+                    $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
                         . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $field[field_id] "
                         . "AND vr.validator_id = v.validator_id";
                     $validatorStmt = $dbconn->query($validatorQuery);
-                    $field['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    while ($validator = $validatorStmt->fetch()) {
+                        $validator['params'] = json_decode($validator['params'], true);
+                        $field['validators'][] = $validator;
+                    }
                     
                     $this->addFieldToForm($field);
                     $this->formComponents[$section['name']][$block['name']][] = $field;
@@ -207,11 +211,7 @@ class Full extends Generator
     {
         $formElements = $this->formHandler->toSmarty();
 
-        
-        $htmlRendering = '<div class="row">';
-
-        $htmlRendering = '<div class="col-sm-offset-1 col-sm-10">';
-        
+        $htmlRendering = '<div class="form-group formWrapper">';
         $htmlRendering .= '<div '
             . 'class="bs-callout bs-callout-success" '
             . 'id="formSuccess" '
@@ -225,13 +225,12 @@ class Full extends Generator
             . 'An error occured'
             . '</div>';
         
-        $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].'>';
-        
+        $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].' novalidate>';
+
         $formRendering = '';
 
         $tabRendering = '<div class="form-tabs-header">'
-            . '<div class="row">'
-            . '<div class="col-xs-12 col-sm-10">'
+            . '<div class="col-md-12">'
             . '<ul class="nav nav-tabs" id="formHeader">';
         
         $first = true;
@@ -249,9 +248,8 @@ class Full extends Generator
                 .'</a>'
                 . '</li>';
         }
-        $formRendering .= '</ul></div>'
-            . '<div class="clearfix visible-xs-block"></div>'
-            . '</div></div>';
+        $formRendering .= '</ul></div>' // end col-md-12
+            . '</div>'; // end form-tabs-header
 
         $formRendering .= '<div class="tab-content">';
         $first = true;
@@ -289,7 +287,7 @@ class Full extends Generator
         $formRendering .= '<div>'.$formElements['save_form']['html'].'</div>';
         
         $formRendering .= $formElements['hidden'];
-        $htmlRendering .= $tabRendering.$formRendering.'</form></div></div>';
+        $htmlRendering .= $tabRendering.$formRendering.'</form></div>';
         
         return $htmlRendering;
     }
@@ -359,6 +357,28 @@ class Full extends Generator
             $this->formHandler->setDefaults($defaultValues);
         }
     }
+
+    /**
+     *
+     * @param array $param
+     */
+    public function setValues($defaultValue, $objectId = "", $params)
+    {
+        // Get the mapped columns for the object
+        $objectColumns = $defaultValue::getColumns();
+        $fields = implode(',', array_intersect($objectColumns, array_keys($this->formDefaults)));
+
+        // Get the mapped values and if no value saved for the field, the default one is set
+        $myValues = $defaultValue::getParameters($objectId, $fields);
+
+        // Set value for parameter
+        foreach ($params as $key => $value) {
+            $myValues[$key] = $value;
+        }
+
+        // Merging with non-mapped form field and returend the values combined
+        $this->formHandler->setDefaults(array_merge($myValues, array_diff_key($this->formDefaults, $myValues)));
+    }
     
     /**
      * 
@@ -390,9 +410,6 @@ class Full extends Generator
      */
     protected function buildValidatorsQuery()
     {
-        $di = Di::getDefault();
-        $baseUrl = $di->get('config')->get('global', 'base_url');
-        $uri = substr($this->formRoute, strlen($baseUrl));
         $validatorsQuery = "SELECT
                 fv.`name` as validator_name, `route` as `validator`, ffv.`params` as `params`,
                 ff.`name` as `field_name`, ff.`label` as `field_label`
@@ -400,6 +417,8 @@ class Full extends Generator
                 cfg_forms_validators fv, cfg_forms_fields_validators_relations ffv, cfg_forms_fields ff
             WHERE
                 ffv.validator_id = fv.validator_id
+            AND
+                ffv.server_side = '1'
             AND
                 ff.field_id = ffv.field_id
             AND
@@ -417,7 +436,7 @@ class Full extends Generator
                     AND
                         fs.form_id = f.form_id
                     AND
-                        f.route = '$uri'
+                        f.route = '$this->formRoute'
             );";
         
         return $validatorsQuery;

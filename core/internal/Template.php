@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give MERETHIS
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -98,6 +98,8 @@ class Template extends \Smarty
         $this->customJs = "";
         parent::__construct();
         $this->initConfig();
+        $menu = new Menu();
+        $this->assign('appMenu', $menu->getMenu());
     }
     
     /**
@@ -164,11 +166,13 @@ class Template extends \Smarty
     {
         /* Load css */
         $this->addCss('bootstrap.min.css');
+        $this->addCss('dataTables.bootstrap.css');
         $this->addCss('font-awesome.min.css');
-        $this->addCss('centreon.css');
         $this->addCss('jquery-ui.min.css');
         $this->addCss('centreon.qtip.css');
-        $this->addCss('centreon-wizard.css');
+        $this->addCss('centreon.css');
+
+
         /* Load javascript */
         $this->addJs('jquery.min.js');
         $this->addJs('jquery-ui.min.js');
@@ -176,11 +180,19 @@ class Template extends \Smarty
         $this->addJs('centreon.help.tooltip.js');
         $this->addJs('bootstrap.min.js');
         $this->addJs('jquery.ba-resize.js');
-        $this->addJs('moment-with-locales.js');
-        $this->addJs('moment-timezone-with-data.min.js');
+        $this->addJs('moment-with-langs.min.js');
         $this->addJs('centreon.functions.js');
         $this->addJs('centreon-timezone.js');
         $this->addJs('centreon-wizard.js');
+        $this->addJs('centreon.csrf.js');
+
+        $this->addJs('jquery.metisMenu.js');
+        $this->addJs('centreon.custom.js');
+        $this->addJs('pace.min.js');
+        $this->addJs('jquery.slimscroll.min.js');
+        $this->addJs('moment-with-locales.js');
+        $this->addJs('moment-timezone-with-data.min.js');
+
     }
     
     /**

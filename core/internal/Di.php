@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -123,7 +123,7 @@ class Di
     public function get($name)
     {
         if (false === $this->has($name)) {
-            throw new Exception("The service injector is not defined.");
+            throw new Exception("No service defined in DI with name: '" . $name . "'");
         }
         if (false === isset($this->shared[$name])) {
             if (is_string($this->services[$name])) {

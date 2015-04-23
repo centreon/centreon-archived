@@ -26,6 +26,32 @@
                         "type" :"file",
                         "name" : "failover-central-output",
                         "path" : "%global_broker_data_directory%/central-output.failover"
+                      },
+                      {
+                        "type": "dumper",
+                        "tagname": "extcommand-%poller_name%",
+                        "path": "%engine_command_file%",
+                        "name": "extcommand-%poller_name%"
+                      },
+                      {
+                        "type": "dumper",
+                        "tagname": "cfg-engine-%poller_name%",
+                        "path": "%engine_conf_dir%",
+                        "name": "cfg-engine-%poller_name%"
+                      },
+                      {
+                        "type": "dumper",
+                        "tagname": "cfg-broker-%poller_name%",
+                        "path": "%global_broker_etc_directory%",
+                        "name": "cfg-broker-%poller_name%"
+                      }
+                    ],
+                    "input": [
+                      {
+                        "type": "tcp",
+                        "name": "central-transfert-input",
+                        "host": "localhost",
+                        "port": "5669"
                       }
                     ],
                     "logger": [
@@ -33,11 +59,23 @@
                         "type": "file",
                         "name": "%global_broker_logs_directory%/central-module.log"
                       }
+                    ],
+                    "stats": [
+                      {
+                        "type": "stats",
+                        "name": "stats-central-broker",
+                        "fifo": "/var/lib/centreon-broker/stats-central-module.fifo"
+                      }
                     ]
                   },
                   {
                     "general": {
-                      "name": "central-broker"
+                      "name": "central-broker",
+                      "%callback%": [
+                        "pollerCommandLine",
+                        "pollerConfigCentreonEngine",
+                        "pollerConfigCentreonBroker"
+                      ]
                     },
                     "input": [
                       {
@@ -82,6 +120,11 @@
                         "type": "file",
                         "name": "failover-central-rrd",
                         "path" : "%global_broker_data_directory%/central-rrd.failover"
+                      },
+                      {
+                        "type": "tcp",
+                        "name": "central-transfert-output",
+                        "port": "5669"
                       }
                     ],
                     "logger": [
@@ -94,6 +137,13 @@
                       {
                         "name": "correlation",
                         "filepath": "%global_broker_etc_directory%/correlation.xml"
+                      }
+                    ],
+                    "stats": [
+                      {
+                        "type": "stats",
+                        "name": "stats-central-broker",
+                        "fifo": "/var/lib/centreon-broker/stats-central-broker.fifo"
                       }
                     ]
                   },
@@ -128,6 +178,13 @@
                       {
                         "type": "file",
                         "name": "%global_broker_logs_directory%/central-rrd.log"
+                      }
+                    ],
+                    "stats": [
+                      {
+                        "type": "stats",
+                        "name": "stats-central-rrd",
+                        "fifo": "/var/lib/centreon-broker/stats-central-rrd.fifo"
                       }
                     ]
                   }

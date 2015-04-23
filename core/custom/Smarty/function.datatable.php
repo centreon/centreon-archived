@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -60,8 +60,10 @@ function smarty_function_datatable($params, $smarty)
     $smarty->assign('datatableParameters', $datatableParameters);
     
     if ($params['configuration']) {
-        return $smarty->fetch('tools/datatable.tpl');
+        $smarty->assign('displayActionBar', true);
+    } else {
+        $smarty->assign('displayActionBar', false);
     }
     
-    return $smarty->fetch('tools/datatable-table.tpl');
+    return $smarty->fetch('tools/datatable.tpl');
 }

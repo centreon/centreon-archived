@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -69,8 +69,9 @@ class Wizard extends Full
         $route = str_replace($baseUrl, '', $route);*/
 
         $query = "SELECT f.field_id as field_id, w.name as wizard_name, s.name as step_name, 
-            s.rank as step_rank, f.mandatory as mandatory,
-            sf.rank as field_pos, f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
+            s.rank as step_rank, f.mandatory as mandatory, f.parent_field as parent_field, f.parent_value as parent_value,
+            f.child_mandatory as child_mandatory, f.child_actions as child_actions, sf.rank as field_pos,
+            f.name as name, f.label, f.default_value, f.attributes, f.type, f.help
             FROM cfg_forms_wizards w, cfg_forms_steps s, cfg_forms_steps_fields_relations sf, cfg_forms_fields f
             WHERE w.route = :route
                 AND w.wizard_id = s.wizard_id
@@ -83,12 +84,15 @@ class Wizard extends Full
         $stmt->execute();
         while ($row = $stmt->fetch()) {
             // Get validators
-            $validatorQuery = "SELECT v.route as validator_action, vr.client_side_event as events "
+            $validatorQuery = "SELECT v.route as validator_action, vr.params as params, vr.client_side_event as rules "
                         . "FROM cfg_forms_validators v, cfg_forms_fields_validators_relations vr "
                         . "WHERE vr.field_id = $row[field_id] "
                         . "AND vr.validator_id = v.validator_id";
             $validatorStmt = $dbconn->query($validatorQuery);
-            $row['validators'] = $validatorStmt->fetchAll(\PDO::FETCH_ASSOC);
+            while ($validator = $validatorStmt->fetch()) {
+                $validator['params'] = json_decode($validator['params'], true);
+                $row['validators'][] = $validator;
+            }
             
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
@@ -110,9 +114,6 @@ class Wizard extends Full
      */
     protected function buildValidatorsQuery()
     {
-        $di = Di::getDefault();
-        $baseUrl = $di->get('config')->get('global', 'base_url');
-        $uri = substr($this->formRoute, strlen($baseUrl));
         $validatorsQuery = "SELECT
                         fv.`name` as validator_name, `route` as `validator`, ffv.`params` as `params`,
                         ff.`name` as `field_name`, ff.`label` as `field_label`
@@ -120,6 +121,8 @@ class Wizard extends Full
                         cfg_forms_validators fv, cfg_forms_fields_validators_relations ffv, cfg_forms_fields ff
                     WHERE
                         ffv.validator_id = fv.validator_id
+                    AND
+                        ffv.server_side = '1'
                     AND
                         ff.field_id = ffv.field_id
                     AND
@@ -135,7 +138,7 @@ class Wizard extends Full
                             AND
                                 fs.wizard_id = fw.wizard_id
                             AND
-                                fw.route = '$uri'
+                                fw.route = '$this->formRoute'
                     );";
         
         return $validatorsQuery;

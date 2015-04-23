@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,6 +37,14 @@ namespace Centreon\Internal;
 
 use Evenement\EventEmitter;
 
+/**
+ * Class Bootstrap
+ * In charge of initializing the application context.
+ * Loaded early during request processing by either front controller (index.php) or centreonConsole
+ * Will init the service container (Di) thru Di->init() to init all services or Di->init(array of services to init) to only
+ * init a subset of services...
+ * @package Centreon\Internal
+ */
 class Bootstrap
 {
     /**
@@ -194,6 +202,48 @@ class Bootstrap
             'router',
             function () {
                 $router = new Router();
+                /* Add middleroute for CSRF token */
+                $router->respond(function ($request, $response, $service, $app)
+                    {
+                        /* Get the token */
+                        $headers = $request->headers();
+                        $tokenValue = '';
+                        foreach (Csrf::getHeaderNames() as $headerName) {
+                            if ($headers->exists($headerName)) {
+                                $tokenValue = $headers[$headerName];
+                                break;
+                            }
+                        }
+                        $toSend = false;
+                        /*
+                         * Test if must test the token 
+                         * @todo better management with middleware global implementation
+                         */
+                        $excludeRoute = array(
+                            '/api'
+                        );
+                        $matchingRoute = array_filter($excludeRoute, function ($route) use ($request) {
+                            $route = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/') . $route;
+                            if ($route == substr($request->pathname(), 0, strlen($route))) {
+                                return true;
+                            }
+                            return false;
+                        });
+                        if (count($matchingRoute) == 0) {
+                            if (false === Csrf::checkToken($tokenValue, $request->method())) {
+                                $toSend = true;
+                                $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
+                                $response->code(403)->json(array("message" => "CSRF Token is no valid"));
+                            } else {
+                                if ($tokenValue == '' || Csrf::mustBeGenerate($request->method())) {
+                                    /* Generate and send a new csrf cookie */
+                                    $response->cookie(Csrf::getCookieName(), Csrf::generateToken(), 0);
+                                }
+                            }
+                        }
+                    }
+                );
+                /* Parsing route */
                 $router->parseRoutes();
                 return $router;
             }

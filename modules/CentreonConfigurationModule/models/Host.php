@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,6 +41,8 @@ use Centreon\Models\CentreonBaseModel;
 use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
 use CentreonConfiguration\Models\Relation\Host\Hosttemplate as HostHosttemplateRelation;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
 
 /**
  * Used for interacting with hosts
@@ -53,8 +55,6 @@ class Host extends CentreonBaseModel
     protected static $primaryKey = "host_id";
     protected static $uniqueLabelField = "host_name";
     protected static $relations = array(
-        "\CentreonConfiguration\Models\Relation\Host\Hostgroup",
-        "\CentreonConfiguration\Models\Relation\Host\Hostcategory",
         "\CentreonConfiguration\Models\Relation\Host\Service",
         "\CentreonConfiguration\Models\Relation\Host\Hostparents",
         "\CentreonConfiguration\Models\Relation\Host\Hostchildren"
@@ -122,56 +122,6 @@ class Host extends CentreonBaseModel
     }
 
     /**
-     * Deploy services by host templates
-     *
-     * @param int $hostId
-     * @param int $hostTemplateId
-     */
-    public static function deployServices($hostId, $hostTemplateId = null)
-    {
-        static $deployedServices = array();
-
-        $db = Di::getDefault()->get('db_centreon');
-        $hid = is_null($hostTemplateId) ? $hostId : $hostTemplateId;
-        $services = HostServiceRelation::getMergedParameters(
-            array(),
-            array('service_id', 'service_description', 'service_alias'),
-            -1,
-            0,
-            null,
-            'ASC',
-            array(
-                HostServiceRelation::getFirstKey() => $hid
-            ),
-            'AND'
-        );
-        foreach ($services as $service) {
-            if (is_null($hostTemplateId)) {
-                $deployedServices[$hostId][$service['service_description']] =  true;
-            } elseif (!isset($deployedServices[$hostId][$service['service_alias']])) {
-                $serviceId = Service::insert(
-                    array(
-                        'service_description' => $service['service_alias'],
-                        'service_template_model_stm_id' => $service['service_id'],
-                        'service_register' => 1,
-                        'service_activate' => 1
-                    )
-                );
-                HostServiceRelation::insert($hostId, $serviceId);
-                $deployedServices[$hostId][$service['service_alias']] = true;
-            }
-        }
-        $templates = HostHosttemplateRelation::getTargetIdFromSourceId(
-            'host_tpl_id',
-            'host_host_id',
-            $hid
-        );
-        foreach ($templates as $tplId) {
-            self::deployServices($hostId, $tplId);
-        }
-    }
-    
-    /**
      * 
      * @param type $parameterNames
      * @param type $count
@@ -189,7 +139,11 @@ class Host extends CentreonBaseModel
         $order = null,
         $sort = "ASC",
         $filters = array(),
-        $filterType = "OR"
+        $filterType = "OR",
+        $tablesString = null,
+        $staticFilter = null,
+        $aAddFilters  = array(),
+        $aGroup = array()
     ) {
         $filters['host_register'] = '1';
         if (is_array($filterType)) {
@@ -200,7 +154,8 @@ class Host extends CentreonBaseModel
                 'host_register' => 'AND'
             );
         }
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+                        
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
     }
     
     /**
@@ -223,6 +178,10 @@ class Host extends CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
+        $aAddFilters = array();
+        $tablesString =  '';
+        $aGroup = array();
+                 
         $filters['host_register'] = '1';
         if (is_array($filterType)) {
             $filterType['host_register'] = 'AND';
@@ -232,6 +191,87 @@ class Host extends CentreonBaseModel
                 'host_register' => 'AND'
             );
         }
-        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+                
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_hosts'),
+                'join'   => array(
+                    'cfg_tags.tag_id = cfg_tags_hosts.tag_id', 
+                    'cfg_tags_hosts.resource_id = cfg_hosts.host_id '
+                )
+            ); 
+        }
+        
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_hosts.resource_id', 'nb' => count($filters['tagname']));
+        }
+               
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
+    }
+
+    /**
+     * Used for duplicate a host
+     *
+     * @param int $sourceObjectId The source host id
+     * @param int $duplicateEntries The number entries
+     * @return array List of new host id
+     */
+    public static function duplicate($sourceObjectId, $duplicateEntries = 1)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        $sourceParams = static::getParameters($sourceObjectId, '*');
+        if (false === $sourceParams) {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+        unset($sourceParams['host_id']);
+        $originalName = $sourceParams['host_name'];
+        $explodeOriginalName = explode('_', $originalName);
+        $j = 0;
+        if (($count = count($explodeOriginalName)) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
+            $originalName = join('_', array_slice($explodeOriginalName, 0, -1));
+            $j = $explodeOriginalName[$count - 1];
+        }
+
+        $listDuplicateId = array();
+        for ($i = 0; $i < $duplicateEntries; $i++) {
+            /* Search the unique name for duplicate host */
+            do {
+                $j++;
+                $unique = self::isUnique($originalName . '_' . $j);
+            } while (false === $unique);
+            $sourceParams['host_name'] = $originalName . '_' . $j;
+            /* Insert the duplicate host */
+            $lastId = static::insert($sourceParams);
+            $listDuplicateId[] = $lastId;
+            /* Insert relation */
+            /* Duplicate service */
+            /*   Get service for the source host */
+            $listSvc = HostServiceRelation::getTargetIdFromSourceId('service_service_id', 'host_host_id', $sourceObjectId);
+            foreach ($listSvc as $svcId) {
+                /* Duplicate service */
+                $newSvcId = Service::duplicate($svcId, 1, true);
+                if (count($newSvcId) > 0) {
+                    /* Attach the new service to the new host */
+                    HostServiceRelation::insert($lastId, $newSvcId[0]);
+                }
+            }
+            $db->beginTransaction();
+            /* Duplicate macros */
+            $queryDupMacros = "INSERT INTO cfg_customvariables_hosts (host_macro_name, host_macro_value, is_password, host_host_id)
+                SELECT host_macro_name, host_macro_value, is_password, " . $lastId . " FROM cfg_customvariables_hosts
+                    WHERE host_host_id = " . $sourceObjectId;
+            $db->query($queryDupMacros);
+            /* Host template */
+            $queryDupTemplate = "INSERT INTO cfg_hosts_templates_relations (host_host_id, host_tpl_id, `order`)
+                SELECT " . $lastId . ", host_tpl_id, `order` FROM cfg_hosts_templates_relations
+                    WHERE host_host_id = " . $sourceObjectId;
+            $db->query($queryDupTemplate);
+            /* Host global tags */
+            $queryDupTag = "INSERT INTO cfg_tags_hosts (tag_id, resource_id)
+                SELECT th.tag_id, " . $lastId . " FROM cfg_tags_hosts th, cfg_tags t
+                    WHERE t.user_id IS NULL AND t.tag_id = th.tag_id AND th.resource_id = " . $sourceObjectId;
+            $db->query($queryDupTag);
+            $db->commit();
+        }
     }
 }

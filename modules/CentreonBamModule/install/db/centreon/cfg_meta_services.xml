@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="cfg_meta_services" idMethod="native" phpName="CfgMetaServices">
+    <column name="meta_id" phpName="MetaId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="meta_name" phpName="MetaName" type="VARCHAR" size="254"/>
+    <column name="meta_display" phpName="MetaDisplay" type="VARCHAR" size="254"/>
+    <column name="check_period" phpName="CheckPeriod" type="INTEGER"/>
+    <column name="max_check_attempts" phpName="MaxCheckAttempts" type="INTEGER"/>
+    <column name="normal_check_interval" phpName="NormalCheckInterval" type="INTEGER"/>
+    <column name="retry_check_interval" phpName="RetryCheckInterval" type="INTEGER"/>
+    <column name="calcul_type" phpName="CalculType" type="CHAR" sqlType="enum('SOM','AVE','MIN','MAX')"/>
+    <column name="data_source_type" phpName="DataSourceType" type="SMALLINT" required="true" defaultValue="0"/>
+    <column name="meta_select_mode" phpName="MetaSelectMode" type="CHAR" sqlType="enum('1','2')" defaultValue="1"/>
+    <column name="regexp_str" phpName="RegexpStr" type="VARCHAR" size="254"/>
+    <column name="metric" phpName="Metric" type="VARCHAR" size="255"/>
+    <column name="warning" phpName="Warning" type="VARCHAR" size="254"/>
+    <column name="critical" phpName="Critical" type="VARCHAR" size="254"/>
+    <column name="graph_id" phpName="GraphId" type="INTEGER"/>
+    <column name="meta_comment" phpName="MetaComment" type="LONGVARCHAR"/>
+    <column name="meta_activate" phpName="MetaActivate" type="CHAR" sqlType="enum('0','1')"/>
+    <column name="value" phpName="Value" type="FLOAT"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

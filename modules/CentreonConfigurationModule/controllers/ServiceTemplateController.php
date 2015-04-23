@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,6 +41,8 @@ use CentreonConfiguration\Repository\ServicetemplateRepository;
 use CentreonConfiguration\Repository\ServiceRepository;
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Controllers\FormController;
+use CentreonAdministration\Repository\TagsRepository;
+
 
 /**
  * 
@@ -55,9 +57,7 @@ class ServiceTemplateController extends FormController
     protected $objectClass = '\CentreonConfiguration\Models\Servicetemplate';
     protected $repository = '\CentreonConfiguration\Repository\ServicetemplateRepository';
     public static $relationMap = array(
-        'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicegroup',
         'service_template_hosts' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Hosttemplate',
-        'service_template_servicecategories' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Servicecategory',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
         'service_traps' => '\CentreonConfiguration\Models\Relation\Trap\Servicetemplate',
         'service_icon' => '\CentreonConfiguration\Models\Relation\Servicetemplate\Icon'
@@ -82,7 +82,23 @@ class ServiceTemplateController extends FormController
      */
     public function listAction()
     {
-        $this->tpl->addJs('centreon.overlay.js');
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('centreon.overlay.js')
+                ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+                ->addJs('hogan-3.0.0.min.js')
+                ->addCss('centreon.tag.css', 'centreon-administration');
+        
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
+            )
+        );
+                
+        $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
 
@@ -96,6 +112,8 @@ class ServiceTemplateController extends FormController
     public function updateAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -126,6 +144,32 @@ class ServiceTemplateController extends FormController
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
         }
+        
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var) > 1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $iTemplate = trim($givenParameters['service_template_model_stm_id']);
+            if (!empty($iTemplate)) {
+                $aTagsTemplates = TagsRepository::getList('service', $iTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }    
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource('service', $givenParameters['object_id'], $aTags);
+        }
         parent::updateAction();
     }
     
@@ -139,6 +183,8 @@ class ServiceTemplateController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -171,6 +217,32 @@ class ServiceTemplateController extends FormController
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
         }
+        
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var) > 1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $iTemplate = trim($givenParameters['service_template_model_stm_id']);
+            if (!empty($iTemplate)) {
+                $aTagsTemplates = TagsRepository::getList('service', $iTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }    
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource('service', $id, $aTags);
+        }
 
         $this->router->response()->json(array('success' => true));
     }
@@ -185,18 +257,6 @@ class ServiceTemplateController extends FormController
     public function checkPeriodForServiceAction()
     {
         parent::getSimpleRelation('timeperiod_tp_id', '\CentreonConfiguration\Models\Timeperiod');
-    }
-    
-    /**
-     * Get list of Timeperiods for a specific service
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]/notificationperiod
-     */
-    public function notificationPeriodForServiceAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id2', '\CentreonConfiguration\Models\Timeperiod');
     }
     
     /**
@@ -232,30 +292,6 @@ class ServiceTemplateController extends FormController
     public function hosttemplateForServiceAction()
     {
         parent::getRelations(static::$relationMap['service_template_hosts']);
-    }
-    
-    /**
-     * Get list of service group for a specific service
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]/servicegroup
-     */
-    public function serviceGroupForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['service_servicegroups']);
-    }
-
-    /**
-     * Get list of service categories for a specific service
-     *
-     *
-     * @method get
-     * @route /servicetemplate/[i:id]/servicecategory
-     */
-    public function serviceCategoryForServiceTemplateAction()
-    {
-        parent::getRelations(static::$relationMap['service_template_servicecategories']);
     }
     
     /**
@@ -329,7 +365,7 @@ class ServiceTemplateController extends FormController
     {
         $params = $this->getParams();
         $data = ServiceRepository::getConfigurationData($params['id']);
-        list($checkdata, $notifdata) = ServiceRepository::formatDataForTooltip($data);
+        $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
     }

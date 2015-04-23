@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -141,40 +141,36 @@ class AclmenuController extends FormController
     public function updateAction()
     {
         $givenParameters = $this->getParams('post');
-        if (Form::validateSecurity($givenParameters['token'])) {
-            $aclmenu = array(
-                'name' => $givenParameters['name'],
-                'description' => $givenParameters['description'],
-                'enabled' => $givenParameters['enabled'],
+        $aclmenu = array(
+            'name' => $givenParameters['name'],
+            'description' => $givenParameters['description'],
+            'enabled' => $givenParameters['enabled'],
+        );
+        
+        $aclmenuObj = new Menu();
+        $aclMenuGroupRelation = new AclMenuRelation();
+        try {
+            $aclmenuObj->update($givenParameters['acl_menu_id'], $aclmenu);
+            $aclData = array();
+            $this->setAclMenuData($aclData, $givenParameters);
+            AclmenuRepository::updateAclLevel(
+                $givenParameters['acl_menu_id'],
+                $aclData
             );
-            
-            $aclmenuObj = new Menu();
-            $aclMenuGroupRelation = new AclMenuRelation();
-            try {
-                $aclmenuObj->update($givenParameters['acl_menu_id'], $aclmenu);
-                $aclData = array();
-                $this->setAclMenuData($aclData, $givenParameters);
-                AclmenuRepository::updateAclLevel(
-                    $givenParameters['acl_menu_id'],
-                    $aclData
-                );
-                $aclMenuGroupRelation->delete(null, $givenParameters['acl_menu_id']);
-                $db = Di::getDefault()->get('db_centreon');
-                $db->beginTransaction();
-                $aclgroups = explode(",", $givenParameters['acl_groups']);
-                foreach ($aclgroups as $aclgroupId) {
-                    if (is_numeric($aclgroupId)) {
-                        $aclMenuGroupRelation->insert($aclgroupId, $givenParameters['acl_menu_id']);
-                    }
+            $aclMenuGroupRelation->delete(null, $givenParameters['acl_menu_id']);
+            $db = Di::getDefault()->get('db_centreon');
+            $db->beginTransaction();
+            $aclgroups = explode(",", $givenParameters['acl_groups']);
+            foreach ($aclgroups as $aclgroupId) {
+                if (is_numeric($aclgroupId)) {
+                    $aclMenuGroupRelation->insert($aclgroupId, $givenParameters['acl_menu_id']);
                 }
-                $db->commit();
-            } catch (Exception $e) {
-                echo "fail";
             }
-            echo 'success';
-        } else {
+            $db->commit();
+        } catch (Exception $e) {
             echo "fail";
         }
+        echo 'success';
     }
     
     /**

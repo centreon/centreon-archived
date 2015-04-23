@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -126,7 +126,7 @@ class Datatable
     
     /**
      *
-     * @var string 
+     * @var array 
      */
     protected static $additionnalDatasource = null;
     
@@ -142,6 +142,7 @@ class Datatable
         'DT_RowData',
         'DT_RowId'
     );
+    
     
     /**
      * 
@@ -173,15 +174,20 @@ class Datatable
     public function getDatas()
     {
         $provider = static::$dataprovider;
+
         $datasFromDb = $provider::loadDatas(
             $this->params,
             static::$columns,
             $this->specialFields,
             get_class($this),
             $this->objectModelClass,
-            static::$additionnalDatasource
+            static::$additionnalDatasource,
+            isset(static::$aFieldNotAuthorized) ? static::$aFieldNotAuthorized : array()
         );
+       
         
+        static::addAdditionnalDatas($datasFromDb['datas']);
+
         // Add RowId
         if (count(static::$rowIdColumn) > 0) {
             foreach ($datasFromDb['datas'] as &$datas) {
@@ -192,8 +198,7 @@ class Datatable
                 $datas['DT_RowId'] = $datas[static::$rowIdColumn['id']];
             }
         }
-        
-        static::addAdditionnalDatas($datasFromDb['datas']);
+
         static::processHooks($datasFromDb['datas']);
         $this->formatDatas($datasFromDb['datas']);
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
@@ -227,7 +232,7 @@ class Datatable
             "recordsFiltered" => $datasToSend['nbOfTotalDatas'],
             "data" => $datasToSend['datas']
         );
-        
+       
         return $finalDatas;
     }
     
@@ -330,6 +335,7 @@ class Datatable
     public static function getConfiguration()
     {
         $configurationParams = "";
+        
         foreach (static::$configuration as $configName => $configEntry) {
             
             if ($configName == 'order') {
@@ -339,7 +345,7 @@ class Datatable
             if ($configName == 'searchCols') {
                 $configEntry = self::initSearch($configEntry);
             }
-            
+                       
             $configEntry = (is_array($configEntry)) ? json_encode($configEntry) : $configEntry;
             
             if (is_bool($configEntry)) {
@@ -398,7 +404,7 @@ class Datatable
         }
         return rtrim($line, ',') . ']';
     }
-
+    
     /**
      * 
      * @param type $datas
@@ -425,7 +431,11 @@ class Datatable
                     } else {
                         $a = $colName;
                     }
-                    $singleData[$a] =  self::$colCast['caster']($a, $originalData, $colCast['parameters']);
+                    $extra = array();
+                    if (isset($colCast['extra'])) {
+                        $extra = $colCast['extra'];
+                    }
+                    $singleData[$a] =  self::$colCast['caster']($a, $originalData, $colCast['parameters'], $extra);
                 }
             }
             
@@ -516,14 +526,22 @@ class Datatable
      * @param type $cast
      * @return type
      */
-    public static function addSelect($field, $values, $cast)
+    public static function addSelect($field, $values, $cast, $extra = array())
     {
         $myElement = "";
+        static $previousValue;
         if (isset($cast['selecttype']) && ($cast['selecttype'] != 'none')) {
             $subCaster = 'add'.ucwords($cast['selecttype']);
             $myElement = static::$subCaster($field, $values, $cast['parameters'][$values[$field]]['parameters']);
         } elseif (isset($values[$field])) {
             $myElement = $cast[$values[$field]];
+            if (isset($extra['groupable']) && $extra['groupable']) {
+                if ($myElement === $previousValue) {
+                    $myElement = "";
+                } else {
+                    $previousValue = $myElement;
+                }
+            }
         }
         
         return $myElement;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+    <table name="cfg_bam_ba_groups" phpName="BamBaGroups" idMethod="native">
+        <column name="id_ba_group" phpName="IdBaGroup" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="ba_group_name" phpName="BaGroupName" type="VARCHAR" size="255" required="false"/>
+        <column name="ba_group_description" phpName="BaGroupDescription" type="VARCHAR" size="255" required="false"/>
+        <column name="visible" phpName="Visible" type="CHAR" required="false" defaultValue="1"/>
+        <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="cfg_organizations" name="bam_ba_groups_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="organization_id" foreign="organization_id"/>
+        </foreign-key>
+        <unique name="unique_name">
+            <unique-column name="ba_group_name"/>
+            <unique-column name="organization_id"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

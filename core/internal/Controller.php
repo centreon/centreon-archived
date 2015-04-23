@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -101,17 +101,19 @@ abstract class Controller extends HttpCore
      */
     protected function init()
     {
-        $md5Email = "";
+        $userName = "";
+        $userEmails = array();
+
         if (isset($_SESSION['user'])) {
             try {
-                $md5Email = md5($_SESSION['user']->getEmail());
+                $userName = $_SESSION['user']->getName();
+                $userEmails = $_SESSION['user']->getEmail();
             } catch (Exception $e) {
                 ;
             }
         }
-        /*
-         * Set md5Email for Gravatar
-         */
-        $this->tpl->assign("md5Email", $md5Email);
+
+        $this->tpl->assign("userName", $userName);
+        $this->tpl->assign("userEmails", $userEmails);
     }
 }

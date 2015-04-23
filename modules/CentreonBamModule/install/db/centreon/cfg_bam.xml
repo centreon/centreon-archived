@@ -1,52 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="centreon" package="centreon_bam" defaultIdMethod="native">
-    <table name="cfg_bam" phpName="Bam" idMethod="native">
+    <table name="cfg_bam" idMethod="native" phpName="ModBam">
         <column name="ba_id" phpName="BaId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-        <column name="name" phpName="Name" type="VARCHAR" size="254" required="false"/>
-        <column name="description" phpName="Description" type="VARCHAR" size="254" required="false"/>
-        <column name="level_w" phpName="LevelW" type="FLOAT" required="false"/>
-        <column name="level_c" phpName="LevelC" type="FLOAT" required="false"/>
-        <column name="sla_type" phpName="SlaType" type="TINYINT" size="6" required="false"/>
-        <column name="sla_warning" phpName="SlaWarning" type="FLOAT" required="false"/>
-        <column name="sla_critical" phpName="SlaCritical" type="FLOAT" required="false"/>
-        <column name="id_notification_period" phpName="IdNotificationPeriod" type="INTEGER" required="false"/>
-        <column name="id_check_period" phpName="IdCheckPeriod" type="INTEGER" required="false"/>
-        <column name="id_reporting_period" phpName="IdReportingPeriod" type="INTEGER" required="false"/>
-        <column name="notification_interval" phpName="NotificationInterval" type="INTEGER" required="false"/>
-        <column name="notification_options" phpName="NotificationOptions" type="VARCHAR" size="255" required="false"/>
-        <column name="notifications_enabled" phpName="NotificationsEnabled" type="CHAR" sqlType="enum('0','1','2')" required="false"/>
-        <column name="max_check_attempts" phpName="MaxCheckAttempts" type="INTEGER" required="false"/>
-        <column name="normal_check_interval" phpName="NormalCheckInterval" type="INTEGER" required="false"/>
-        <column name="retry_check_interval" phpName="RetryCheckInterval" type="INTEGER" required="false"/>
-        <column name="current_level" phpName="CurrentLevel" type="FLOAT" required="false"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="254"/>
+        <column name="description" phpName="Description" type="VARCHAR" size="254"/>
+        <column name="level_w" phpName="LevelW" type="FLOAT"/>
+        <column name="level_c" phpName="LevelC" type="FLOAT"/>
+        <column name="sla_month_percent_warn" phpName="SlaMonthPercentWarn" type="FLOAT"/>
+        <column name="sla_month_percent_crit" phpName="SlaMonthPercentCrit" type="FLOAT"/>
+        <column name="sla_month_duration_warn" phpName="SlaMonthDurationWarn" type="INTEGER"/>
+        <column name="sla_month_duration_crit" phpName="SlaMonthDurationCrit" type="INTEGER"/>
+        <column name="id_reporting_period" phpName="IdReportingPeriod" type="INTEGER"/>
+        <column name="max_check_attempts" phpName="MaxCheckAttempts" type="INTEGER"/>
+        <column name="normal_check_interval" phpName="NormalCheckInterval" type="INTEGER"/>
+        <column name="retry_check_interval" phpName="RetryCheckInterval" type="INTEGER"/>
+        <column name="current_level" phpName="CurrentLevel" type="FLOAT"/>
         <column name="calculate" phpName="Calculate" type="CHAR" sqlType="enum('0','1')" required="true" defaultValue="0"/>
         <column name="downtime" phpName="Downtime" type="FLOAT" required="true" defaultValue="0"/>
         <column name="acknowledged" phpName="Acknowledged" type="FLOAT" required="true" defaultValue="0"/>
-        <column name="dependency_dep_id" phpName="DependencyDepId" type="INTEGER" required="false"/>
-        <column name="icon_id" phpName="IconId" type="INTEGER" required="false"/>
-        <column name="graph_style" phpName="GraphStyle" type="VARCHAR" size="254" required="false"/>
-        <column name="activate" phpName="Activate" type="CHAR" required="false" defaultValue="1"/>
-        <column name="comment" phpName="Comment" type="LONGVARCHAR" required="false"/>
+        <column name="must_be_rebuild" phpName="MustBeRebuild" type="CHAR" sqlType="enum('0','1','2')" defaultValue="0"/>
+        <column name="last_state_change" phpName="LastStateChange" type="INTEGER"/>
+        <column name="current_status" phpName="CurrentStatus" type="TINYINT"/>
+        <column name="in_downtime" phpName="InDowntime" type="BOOLEAN" size="1"/>
+        <column name="dependency_dep_id" phpName="DependencyDepId" type="INTEGER"/>
+        <column name="graph_id" phpName="GraphId" type="INTEGER"/>
+        <column name="icon_id" phpName="IconId" type="INTEGER"/>
+        <column name="graph_style" phpName="GraphStyle" type="VARCHAR" size="254"/>
+        <column name="activate" phpName="Activate" type="TINYINT" defaultValue="1"/>
+        <column name="comment" phpName="Comment" type="LONGVARCHAR"/>
         <column name="organization_id" phpName="OrganizationId" type="INTEGER" required="true" defaultValue="1"/>
-        <foreign-key foreignTable="cfg_timeperiods" name="bam_ibfk_1" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="id_notification_period" foreign="tp_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_timeperiods" name="bam_ibfk_2" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="id_check_period" foreign="tp_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_view_images" name="bam_ibfk_4" onDelete="SET NULL" onUpdate="RESTRICT">
-            <reference local="icon_id" foreign="img_id"/>
-        </foreign-key>
-        <foreign-key foreignTable="cfg_timeperiods" name="bam_ibfk_5" onDelete="SET NULL" onUpdate="RESTRICT">
+        <column name="ba_type_id" phpName="BaTypeId" type="INTEGER" required="false"/>
+        <foreign-key foreignTable="cfg_timeperiods" name="mod_bam_ibfk_5" onDelete="SET NULL">
             <reference local="id_reporting_period" foreign="tp_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_view_images" name="mod_bam_ibfk_4" onDelete="SET NULL">
+            <reference local="icon_id" foreign="img_id"/>
         </foreign-key>
         <foreign-key foreignTable="cfg_organizations" name="bam_ibfk_6" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="organization_id" foreign="organization_id"/>
+        </foreign-key>
+        <foreign-key foreignTable="cfg_bam_ba_type" name="bam_ibfk_7" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference local="ba_type_id" foreign="ba_type_id"/>
         </foreign-key>
         <unique name="unique_name">
             <unique-column name="name"/>
             <unique-column name="organization_id"/>
         </unique>
+        <index name="name_index">
+            <index-column name="name"/>
+        </index>
         <index name="description_index">
             <index-column name="description"/>
         </index>
@@ -62,20 +64,17 @@
         <index name="levelc_index">
             <index-column name="level_c"/>
         </index>
-        <index name="id_notification_period">
-            <index-column name="id_notification_period"/>
-        </index>
         <index name="id_reporting_period">
             <index-column name="id_reporting_period"/>
-        </index>
-        <index name="id_check_period">
-            <index-column name="id_check_period"/>
         </index>
         <index name="dependency_index">
             <index-column name="dependency_dep_id"/>
         </index>
         <index name="icon_index">
             <index-column name="icon_id"/>
+        </index>
+        <index name="graph_index">
+            <index-column name="graph_id"/>
         </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>

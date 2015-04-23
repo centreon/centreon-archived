@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -239,6 +239,7 @@ abstract class CentreonBaseModel extends CentreonModel
      *
      * @param int $sourceObjectId
      * @param int $duplicateEntries
+     * @return array List of new object id
      */
     public static function duplicate($sourceObjectId, $duplicateEntries = 1)
     {
@@ -255,9 +256,19 @@ abstract class CentreonBaseModel extends CentreonModel
             $originalName = array();
             foreach (static::$uniqueLabelField as $uniqueField) {
                 $originalName[$uniqueField] = $sourceParams[$uniqueField];
+                $explodeOriginalName = explode('_', $originalName[$uniqueField]);
+                $count = count($explodeOriginalName);
+                if (($count > 1) && (is_numeric($explodeOriginalName[$count - 1]))) {
+                    $originalName[$uniqueField] = preg_replace('/(.*)_\d+$/', '$1', $originalName[$uniqueField]);
+                }
             }
         } else {
             $originalName = $sourceParams[static::$uniqueLabelField];
+            $explodeOriginalName = explode('_', $originalName);
+            $count = count($explodeOriginalName);
+            if (($count > 1) && (is_numeric($explodeOriginalName[$count - 1]))) {
+                $originalName = preg_replace('/(.*)_\d+$/', '$1', $originalName);
+            }
         }
         /* Get relations */
         $firstKeyCopy = array();
@@ -282,25 +293,27 @@ abstract class CentreonBaseModel extends CentreonModel
         $i = 1;
         $j = 1;
         /* Add the number for new entries */
+        $listDuplicateId = array();
         while ($i <= $duplicateEntries) {
             /* Test if unique fields are unique */
             if (is_array(static::$uniqueLabelField)) {
                 $unique = true;
                 foreach (static::$uniqueLabelField as $uniqueField) {
                     $sourceParams[$uniqueField] = $originalName[$uniqueField] . '_' . $j;
-                    if (false === self::isUnique($originalName[$uniqueField] . '_' . $j, $sourceObjectId, $uniqueField)) {
+                    if (false === self::isUnique($originalName[$uniqueField] . '_' . $j, 0, $uniqueField)) {
                         $unique = false;
                     }
                 }
             } else {
                 $unique = false;
                 $sourceParams[static::$uniqueLabelField] = $originalName . '_' . $j;
-                if (self::isUnique($originalName . '_' . $j, $sourceObjectId)) {
+                if (self::isUnique($originalName . '_' . $j, 0)) {
                     $unique = true;
                 }
             }
             if ($unique) {
                 $lastId = static::insert($sourceParams);
+                $listDuplicateId[] = $lastId;
                 $db->beginTransaction();
                 foreach ($firstKeyCopy as $relation => $idArray) {
                     foreach ($idArray as $relationId) {
@@ -317,6 +330,7 @@ abstract class CentreonBaseModel extends CentreonModel
             }
             $j++;
         }
+        return $listDuplicateId;
     }
 
     /**

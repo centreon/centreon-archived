@@ -8,17 +8,31 @@
 			<block name="General information">
 				<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 					<validators>
-						<validator events="blur">unique</validator>
-						<validator events="blur">forbiddenChar</validator>
+                    	<validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                        </validator>
 					</validators>
 				</field>
 				<field name="service_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="service_template_model_stm_id" label="Service Template Model" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist/[i:id]</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/servicetemplate</listValuesRoute>
 						<multiple>false</multiple>
+					</attributes>
+                                    <validators>
+                                        <validator rules="remote" serverside="centreon-configuration.circular.dependency">
+                                        </validator>
+                                    </validators>
+				</field>
+				<field name="service_template_hosts" label="Linked with host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+					<attributes>
+						<object_type>object</object_type>
+						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
+						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/hosttemplate</listValuesRoute>
+						<multiple>true</multiple>
 					</attributes>
 				</field>
 				<field name="service_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
@@ -39,11 +53,19 @@
         		        <multiple>false</multiple>
 		            </attributes>
         		</field>
+        		<field name="service_tags" label="Tags" default_value="" advanced="0" type="tag" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/tag/all</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/tag/[i:id]/service/formlist</listValuesRoute>
+                        <multiple>true</multiple>
+                    </attributes>
+                </field>
 			</block>
 			<block name="Macros">
-				<field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
+                <field name="service_custommacros" label="Custom macros" default_value="" advanced="0" type="custommacro" parent_field="" mandatory="0">
                     <attributes>
-						<object>service</object>
+                        <object>service</object>
                     </attributes>
                 </field>
 			</block>
@@ -73,8 +95,8 @@
 						<multiple>false</multiple>
 					</attributes>
 				</field>
-				<field name="service_max_check_attempts" label="Max check attempts" default_value="3" advanced="0" type="integer" parent_field="" mandatory="1"></field>
-				<field name="service_check_interval" label="Normal check interval" default_value="5" advanced="0" type="integer" parent_field="" mandatory="0"></field>
+				<field name="service_max_check_attempts" label="Max check attempts" default_value="3" advanced="0" type="integer" parent_field="" mandatory="3"></field>
+				<field name="service_normal_check_interval" label="Normal check interval" default_value="5" advanced="0" type="integer" parent_field="" mandatory="0"></field>
 				<field name="service_retry_check_interval" label="Retry check interval" default_value="1" advanced="0" type="integer" parent_field="" mandatory="0"></field>
 				<field name="service_active_checks_enabled" label="Active checks enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
@@ -96,69 +118,8 @@
 				</field>
 			</block>
 		</section>
-		<section name="Notification">
-			<block name="Notification">
-				<field name="service_notifications_enabled" label="Notification enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_inherit_contacts_from_host" label="Inherit contacts from hosts" default_value="1" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_notification_interval" label="Notification interval" default_value="0" advanced="1" type="integer" parent_field="" mandatory="0"></field>
-				<field name="timeperiod_tp_id2" label="Notification period" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/timeperiod/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/notificationperiod</listValuesRoute>
-						<multiple>false</multiple>
-					</attributes>
-				</field>
-				<field name="service_notification_options" label="Notification options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Warning>1</Warning>
-                            <Unknown>1</Unknown>
-                            <Critical>1</Critical>
-                            <Recovery>1</Recovery>
-                            <Flapping>1</Flapping>
-                            <Downtime_scheduled>1</Downtime_scheduled>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_first_notification_delay" label="First notification delay" default_value="" advanced="1" type="integer" parent_field="" mandatory="0"></field>
-			</block>
-		</section>
-		<section name="Relations">
-			<block name="Relations">
-				<field name="service_template_hosts" label="Linked with host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/hosttemplate</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
-				<field name="service_template_servicecategories" label="Linked with service categories" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
-					<attributes>
-						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/servicecategory/formlist</defaultValuesRoute>
-						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/servicecategory</listValuesRoute>
-						<multiple>true</multiple>
-					</attributes>
-				</field>
-			</block>
-			<block name="SNMP traps">
+		<section name="SNMP Traps">
+			<block name="Traps configuration">
 				<field name="service_traps" label="Linked with SNMP traps" default_value="" advanced="1" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
@@ -206,47 +167,6 @@
 				<field name="service_low_flap_threshold" label="Low flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 				<field name="service_high_flap_threshold" label="High flap threshold" default_value="" advanced="1" type="text" parent_field="" mandatory="0"></field>
 			</block>
-			<block name="Perfdata options">
-				<field name="service_process_perf_data" label="Process perfdata" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-			</block>
-			<block name="History options">
-				<field name="service_retain_status_information" label="Retain status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_retain_nonstatus_information" label="Retain non status information" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Yes>1</Yes>
-                            <No>0</No>
-                            <Default>2</Default>
-                        </choices>
-					</attributes>
-				</field>
-				<field name="service_stalking_options" label="Stalking options" default_value="" advanced="1" type="checkbox" parent_field="" mandatory="0">
-					<attributes>
-                        <choices>
-                            <Ok>1</Ok>
-                            <Warning>1</Warning>
-                            <Unknown>1</Unknown>
-                            <Critical>1</Critical>
-                        </choices>
-					</attributes>
-				</field>
-			</block>
 			<block name="Event handler">
 				<field name="service_event_handler_enabled" label="Event handler enabled" default_value="2" advanced="1" type="radio" parent_field="" mandatory="0">
 					<attributes>
@@ -271,15 +191,17 @@
 		</section>
 	</form>
 	<wizard name="add_servicetemplate">
-	  <route>/centreon-configuration/servicetemplate/add</route>
-	  <step name="General">
-	    <field name="service_description" mandatory="1"></field>
-	    <field name="service_alias" mandatory="0"></field>
-	    <field name="service_template_model_stm_id" mandatory="0"></field>
-	    <field name="service_custommacros" mandatory="0"></field>
-	  </step>
-	  <step name="Relations">
-	    <field name="service_template_hosts" mandatory="0"></field>
-	  </step>  
-        </wizard>
+	  	<route>/centreon-configuration/servicetemplate/add</route>
+	  	<step name="General">
+	    	<field name="service_description" mandatory="1"></field>
+	    	<field name="service_alias" mandatory="0"></field>
+	    	<field name="service_template_model_stm_id" mandatory="0"></field>
+	    	<field name="command_command_id" mandatory="0"></field>
+	    	<field name="service_custommacros" mandatory="0"></field>
+        	<field name="service_tags" mandatory="0"></field>
+	  	</step>
+	  	<step name="Relations">
+	    	<field name="service_template_hosts" mandatory="0"></field>
+	  	</step>  
+    </wizard>
 </forms>

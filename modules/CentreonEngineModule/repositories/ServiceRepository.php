@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\TimePeriodRepository as TimePeriodConfigura
 use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRepository;
 use CentreonConfiguration\Repository\ServicetemplateRepository as ServicetemplateConfigurationRepository;
 use CentreonConfiguration\Repository\CustomMacroRepository;
+use CentreonEngine\Events\AddService as AddServiceEvent;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -68,20 +69,16 @@ class ServiceRepository extends ServicetemplateRepository
             . "service_description, service_alias, service_template_model_stm_id, command_command_id_arg, "
             . "s.command_command_id AS check_command, s.timeperiod_tp_id AS check_period, "
             . "s.command_command_id_arg2, s.command_command_id2 AS event_handler, "
-            . "s.timeperiod_tp_id2 AS notification_period, s.display_name, "
             . "service_is_volatile, service_max_check_attempts, service_normal_check_interval, "
             . "service_retry_check_interval, service_active_checks_enabled, service_passive_checks_enabled, "
             . "s.initial_state, service_parallelize_check, service_obsess_over_service, service_check_freshness, "
             . "service_freshness_threshold, service_event_handler_enabled, service_low_flap_threshold, "
-            . "service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, "
-            . "service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, "
-            . "service_notification_options, service_notifications_enabled, service_first_notification_delay, "
-            . "service_stalking_options ";
+            . "service_high_flap_threshold, service_flap_detection_enabled ";
 
         
         /* Init Content Array */
         $content = array();
-        
+ 
         /* Get information into the database. */
         $query = "SELECT $field "
             . "FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations r "
@@ -89,18 +86,27 @@ class ServiceRepository extends ServicetemplateRepository
             . "AND h.host_id = r.host_host_id "
             . "AND s.service_id = r.service_service_id "
             . "AND service_activate = '1' "
-            . "AND service_register = '1' "
+            . "AND (service_register = '1' "
+            . "OR service_register = '2') "
             . "ORDER BY host_name, service_description";
         $stmt = $dbconn->prepare($query);
         $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+
+        $serviceList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $event = $di->get('events');
+        $addServiceEvent = new AddServiceEvent($host_id, $serviceList);
+        $event->emit('centreon-engine.add.service', array($addServiceEvent));
+        $serviceList = $addServiceEvent->getServiceList();
+
+        foreach ($serviceList as $service) {
             $tmp = array("type" => "service");
             $tmpData = array();
             $args = "";
-            foreach ($row as $key => $value) {
+            foreach ($service as $key => $value) {
                 if ($key == "service_id" || $key == "host_id") {
-                    $host_id = $row["host_id"];
-                    $service_id = $row["service_id"];
+                    $host_id = $service["host_id"];
+                    $service_id = $service["service_id"];
 
                     /* Add service_id macro for broker - This is mandatory*/
                     $tmpData["_SERVICE_ID"] = $service_id;
@@ -122,10 +128,12 @@ class ServiceRepository extends ServicetemplateRepository
                             $writeParam = 0;
                         }
                         if ($key == 'check_command' || $key == 'event_handler') {
-                            $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                            if (is_numeric($value)) {
+                                $value = CommandConfigurationRepository::getCommandName($value).html_entity_decode($args);
+                            }
                             $args = "";
                         }
-                        if ($key == 'check_period' || $key == 'notification_period') {
+                        if ($key == 'check_period') {
                             $value = TimePeriodConfigurationRepository::getPeriodName($value);
                         }
                         if ($key == "template_model_stm_id") {

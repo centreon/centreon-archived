@@ -53,7 +53,7 @@ abstract class FormRepository extends ListRepository
      * @param string $searchStr
      * @return array
      */
-    public static function getFormList($searchStr = "")
+    public static function getFormList($searchStr = "", $objectId = null)
     {
         if (!empty(static::$secondaryObjectClass)) {
             $class = static::$secondaryObjectClass;
@@ -92,11 +92,12 @@ abstract class FormRepository extends ListRepository
     protected static function validateForm($givenParameters, $origin = "", $route = "")
     {
         $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
-        if ($origin == 'wizard' || $origin == 'form') {
-            $formValidator->csrf($givenParameters['token']);
-            unset($givenParameters['token']);
+        
+        if (is_a($givenParameters, '\Klein\DataCollection\DataCollection')) {
+            $givenParameters = $givenParameters->all();
         }
-        $formValidator->validate($givenParameters->all());
+        
+        $formValidator->validate($givenParameters);
     }
 
     /**
@@ -161,6 +162,11 @@ abstract class FormRepository extends ListRepository
         
         return $id;
     }
+    
+    public static function disable($givenParameters)
+    {
+        static::update($givenParameters, '', '', false);
+    }
 
     /**
      * Generic update function
@@ -168,9 +174,11 @@ abstract class FormRepository extends ListRepository
      * @param array $givenParameters
      * @throws \Centreon\Internal\Exception
      */
-    public static function update($givenParameters, $origin = "", $route = "")
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true)
     {
-        self::validateForm($givenParameters, $origin, $route);
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route);
+        }
         
         $class = static::$objectClass;
         $pk = $class::getPrimaryKey();

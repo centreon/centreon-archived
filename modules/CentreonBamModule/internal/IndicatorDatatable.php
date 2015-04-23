@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -38,27 +38,28 @@ namespace CentreonBam\Internal;
 
 use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use Centreon\Internal\Datatable;
+use Centreon\Internal\Di;
 
 /**
- * Description of BaDatatable
+ * Description of IndicatorDatatable
  *
  * @author lionel
  */
 class IndicatorDatatable extends Datatable
 {
     protected static $dataprovider = '\Centreon\Internal\Datatable\Dataprovider\CentreonDb';
-    
+
     /**
      *
      * @var type 
      */
     protected static $datasource = '\CentreonBam\Models\Indicator';
-    
+
     /**
      *
      * @var type 
      */
-    protected static $rowIdColumn = array('id' => 'kpièid', 'name' => 'kpi_type');
+    protected static $rowIdColumn = array('id' => 'kpi_id', 'name' => 'object_name');
     
     /**
      *
@@ -75,11 +76,11 @@ class IndicatorDatatable extends Datatable
     
     public static $columns = array(
         array (
-            'title' => "Id",
+            'title' => 'Id',
             'name' => 'kpi_id',
             'data' => 'kpi_id',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => false,
         ),
@@ -91,43 +92,59 @@ class IndicatorDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'width' => 10,
+            'class' => 'cell_center',
             'cast' => array(
-                'type' => 'url',
+                'type' => 'select',
                 'parameters' => array(
-                    'route' => '/centreon-bam/business-view/[i:id]',
-                    'routeParams' => array(
-                        'id' => '::kpi_id::'
-                    ),
-                    'linkName' => '::kpi_type::'
+                    '0' => "<i class='fa fa-rss'></i>",
+                    '1' => "<i class='fa fa-superscript'></i>",
+                    '2' => "<i class='fa fa-suitcase'></i>",
+                    '3' => "<i class='fa fa-comment-o'></i>",
+                ),
+                'extra' => array (
+                    //'groupable' => true,
+                ),
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Service' => '0',
+                    'Metaservice' => '1',
+                    'Business Activity' => '2',
+                    'Boolean' => '3'
                 )
-            )
+            ),
         ),
         array (
-            'title' => 'Warning Impact',
-            'name' => 'drop_warning',
-            'data' => 'drop_warning',
+            'title' => 'Indicator',
+            'name' => 'object',
+            'data' => 'object',
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
+            'source' => 'other',
         ),
-         array (
-            'title' => 'Critical Impact',
-            'name' => 'drop_critical',
-            'data' => 'drop_critical',
+        array (
+            'title' => 'Impacted BA',
+            'name' => 'impacted_ba',
+            'data' => 'impacted_ba',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
+            'source' => 'other',
         ),
-         array (
-            'title' => 'Unknown Impact',
-            'name' => 'drop_unknown',
-            'data' => 'drop_unknown',
+        array (
+            'title' => 'Impact (Warning/Critical/Unknown)',
+            'name' => 'impact',
+            'data' => 'impact',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
+            'source' => 'other',
         ),
         array (
             'title' => 'Status',
@@ -143,7 +160,119 @@ class IndicatorDatatable extends Datatable
                     '0' => '<span class="label label-danger">Disabled</span>',
                     '1' => '<span class="label label-success">Enabled</span>',
                 )
-            )
+            ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Disabled' => '0',
+                    'Enabled' => '1'
+                )
+            ),
         ),
     );
+
+    /**
+    *
+    * @param type $resultSet
+    */
+    public static function addAdditionnalDatas(&$resultSet)
+    {
+        // Get datatabases connections
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+
+        // Add object column
+        // Can be service, metaservice or BA
+        $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_id, s.service_description
+            FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, cfg_bam_kpi k 
+            WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id';
+        $stmtKpiService = $dbconn->query($sqlKpiService);
+        $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
+
+        $sqlKpiMetaservice = 'SELECT k.kpi_id,ms.meta_id
+            FROM cfg_meta_services ms,cfg_bam_kpi k
+            WHERE ms.meta_id=k.meta_id';
+        $stmtKpiMetaservice = $dbconn->query($sqlKpiMetaservice);
+        $resultKpiMetaservice = $stmtKpiMetaservice->fetchAll(\PDO::FETCH_ASSOC);
+
+        $sqlKpiBa = 'SELECT k.kpi_id,b.ba_id,b.name
+            FROM cfg_bam b,cfg_bam_kpi k
+            WHERE b.ba_id=k.id_indicator_ba';
+        $stmtKpiBa = $dbconn->query($sqlKpiBa);
+        $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
+
+        $sqlKpiBoolean = 'SELECT k.kpi_id,b.boolean_id,b.name
+            FROM cfg_bam_boolean b,cfg_bam_kpi k
+            WHERE b.boolean_id=k.boolean_id';
+        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($resultSet as &$kpi) {
+            if ($kpi['kpi_type'] == 0) {
+                foreach ($resultKpiService as $kpiObject) {
+                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = $kpiObject['host_name'].' '.$kpiObject['service_description'];
+                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['host_name'].' '.$kpiObject['service_description'] . '</a>';
+                    }
+                }
+            } else if ($kpi['kpi_type'] == 1) {
+                foreach ($resultKpiMetaservice as $kpiObject) {
+                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = 'metaservice';
+                        $kpi['object'] = 'metaservice';
+                    }
+                }
+            } else if ($kpi['kpi_type'] == 2) {
+                foreach ($resultKpiBa as $kpiObject) {
+                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = $kpiObject['name'];
+                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
+                    }
+                }
+            } else if ($kpi['kpi_type'] == 3) {
+                foreach ($resultKpiBoolean as $kpiObject) {
+                    if ($kpiObject['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['object_name'] = $kpiObject['name'];
+                        $kpi['object'] = '<a href="/centreon-bam/indicator/' . $kpiObject['kpi_id'] . '">' . $kpiObject['name'] . '</a>';
+                    }
+                }
+            }
+        }
+
+        // Add impact column
+        $sqlKpiImpact = 'SELECT kpi_id, drop_warning, drop_critical, drop_unknown
+                         FROM cfg_bam_kpi';
+        $stmtKpiImpact = $dbconn->query($sqlKpiImpact);
+        $resultKpiImpact = $stmtKpiImpact->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($resultSet as &$kpi) {
+            foreach ($resultKpiImpact as $kpiImpact) {
+                if ($kpi['kpi_type'] == 3) {
+                    if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['impact'] = $kpiImpact['drop_critical'] . '%';
+                    }
+                } else {
+                    if ($kpiImpact['kpi_id'] === $kpi['kpi_id']) {
+                        $kpi['impact'] = $kpiImpact['drop_warning'] . '% / ' . $kpiImpact['drop_critical'] . '% / ' . $kpiImpact['drop_unknown']. '%';
+                    }
+                }
+            }
+        }
+
+        // Add impacted BA column
+        $sqlKpiImpactedBa = 'SELECT k.kpi_id, k.id_ba, b.name'
+            . ' FROM cfg_bam_kpi k, cfg_bam b'
+            . ' WHERE k.id_ba=b.ba_id';
+        $stmtKpiImpactedBa = $dbconn->query($sqlKpiImpactedBa);
+        $resultKpiImpactedBa = $stmtKpiImpactedBa->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($resultSet as &$kpi) {
+            $kpi['impacted_ba'] = "";
+            foreach ($resultKpiImpactedBa as $kpiImpactedBa) {
+                if ($kpiImpactedBa['kpi_id'] === $kpi['kpi_id']) {
+                    $kpi['impacted_ba'] = '<a href="/centreon-bam/businessactivity/' . $kpiImpactedBa['id_ba'] . '">' . $kpiImpactedBa['name'] . '</a>';
+                }
+            }
+        }
+    }
 }

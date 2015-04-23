@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -69,7 +69,6 @@ class BrokerController extends FormController
         $updateErrorMessage = '';
         
         try {
-            Form::validateSecurity($givenParameters['token']);
             $pollerId = $givenParameters['poller_id'];
             unset($givenParameters['poller_id']);
             \CentreonBroker\Repository\BrokerRepository::save($pollerId, $givenParameters);

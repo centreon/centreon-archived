@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -69,14 +69,25 @@ class ConfigApplyRepository extends ConfigRepositoryAbstract
             $event = $this->di->get('events');
 
             /* Engine */
-            $this->output[] = sprintf(_("Performing %s action on the engine..."), $method);
+            $this->output[] = sprintf(_("Performing %s action on Engine..."), $method);
             $engineEvent = new EngineProcess($this->pollerId, $method);
             $event->emit("centreon-configuration.engine.process", array($engineEvent));
+            $this->output = array_merge($this->output, $engineEvent->getOutput());
 
-            /* Broker */
-            $this->output[] = sprintf(_("Performing %s action on the broker..."), $method);
-            $brokerEvent = new BrokerProcess($this->pollerId, $method);
-            $event->emit("centreon-configuration.broker.process", array($brokerEvent));
+            // Check Engine action is OK before going on with Broker
+            if ($engineEvent->getStatus()) {
+                /* Broker */
+                $this->output[] = sprintf(_("Performing %s action on Broker..."), $method);
+                $brokerEvent = new BrokerProcess($this->pollerId, $method);
+                $event->emit("centreon-configuration.broker.process", array($brokerEvent));
+                $this->output = array_merge($this->output, $brokerEvent->getOutput());
+                if (!$brokerEvent->getStatus())
+                {
+                    $this->status = false;
+                }
+            } else {
+                $this->status = false;
+            }
         } catch (Exception $e) {
             $this->output[] = $e->getMessage();
             $this->status = false;

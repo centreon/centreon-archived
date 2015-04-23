@@ -62,16 +62,10 @@ class HostTemplateRepository
     {
         $content = array();
         $content["host_active_checks_enabled"] = 1;
-        $content["host_passive_checks_enabled"] = 1;
         $content["host_obsess_over_host"] = 1;
         $content["host_check_freshness"] = 1;
         $content["host_event_handler_enabled"] = 1;
         $content["host_flap_detection_enabled"] = 1;
-        $content["host_process_perf_data"] = 1;
-        $content["host_retain_status_information"] = 1;
-        $content["host_retain_nonstatus_information"] = 1;
-        $content["host_notifications_enabled"] = 1;
-        $content["host_stalking_options"] = 1;
         return $content;
     }
 
@@ -129,7 +123,7 @@ class HostTemplateRepository
                             $value = CommandConfigurationRepository::getCommandName($value).$args;
                             $args = "";
                         }
-                        if ($key == 'check_period' || $key == 'notification_period') {
+                        if ($key == 'check_period') {
                             $value = TimePeriodConfigurationRepository::getPeriodName($value);
                         }
                         $tmpData[$key] = $value;
@@ -177,16 +171,13 @@ class HostTemplateRepository
      */
     protected static function getFields()
     {
-        $fields = "host_id, host_name, host_alias, host_address, display_name, "
-            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled, host_passive_checks_enabled, "
+        $fields = "host_id, host_name, host_alias, host_address, "
+            . "host_max_check_attempts, host_check_interval, host_active_checks_enabled,  "
             . "command_command_id_arg1, command_command_id AS check_command, timeperiod_tp_id AS check_period, "
             . "host_obsess_over_host, host_check_freshness, host_freshness_threshold, host_event_handler_enabled, "
             . "command_command_id_arg2, command_command_id2 AS event_handler, host_flap_detection_enabled, "
-            . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, host_process_perf_data, "
-            . "host_retain_status_information, host_retain_nonstatus_information, host_notifications_enabled, "
-            . "host_notification_interval, host_notification_options, "
-            . "timeperiod_tp_id2 AS notification_period, "
-            . "host_stalking_options, host_register, timezone_id ";
+            . "host_low_flap_threshold, host_high_flap_threshold, flap_detection_options, "
+            . "host_register, timezone_id ";
 
         return $fields;
     }

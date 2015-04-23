@@ -1,15 +1,15 @@
-{extends file="file:[Core]viewLayout.tpl"}
+{extends file="file:[Core]baseLayout.tpl"}
 
 {block name="title"}{$pageTitle}{/block}
 
 {block name="content"}
-    <div class="content-container">
+    <div class="col-md-12">
         <a id="advanced_mode_switcher" href="#" class="btn btn-primary">
             <i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}
         </a>
         {$form}
-    </div>
-        
+     </div>
+
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -96,7 +96,7 @@
         
         $(function () {
             $("#formHeader").parent().parent().append(
-                $('<div class="col-xs-12 col-sm-2"></div>').append($("#advanced_mode_switcher"))
+                $('<div class="col-md-12"></div>').append($("#advanced_mode_switcher"))
             );
 
             {if isset($inheritanceUrl)}
@@ -140,5 +140,64 @@
             });
             {/if}
         });
+        
+  /**
+   * Function to save tag for resource 
+   * 
+   * @param string sName
+   */
+  function addTagToResource(sName) {
+
+    var iId = '';
+    if ( sName !== null && iIdResource !== null) {
+        var sResource = $('input[name=object]').val();
+        var iIdResource = $('input[name=object_id]').val();
+        
+      $.ajax({
+        url: "{url_for url='/centreon-administration/tag/add'}",
+        type: "post",
+        data: { 
+            resourceName : sResource,
+            resourceId   : iIdResource,
+            tagName      : sName 
+        },
+        dataType: "json",
+        success: function( data, textStatus, jqXHR ) {
+            if (data.success) {
+                iId =  data.tagId;
+            }
+        }
+      });
+    }
+    return iId;
+  }
+   /**
+   * Function to delete tag for resource 
+   * 
+   * @param integer iId
+   */
+  function deleteTagToResource(iId) {
+
+    if (iId != "undefined" && iId !== null && iIdResource !== null) {
+      var sResource = $('input[name=object]').val();
+      var iIdResource = $('input[name=object_id]').val();
+
+      $.ajax({
+        url: "{url_for url='/centreon-administration/tag/delete'}",
+        type: "post",
+        data: { 
+            tagId        : iId,
+            resourceId   : iIdResource,
+            resourceName : sResource,
+        },
+        dataType: "json",
+        success: function( data, textStatus, jqXHR ) {
+
+
+        }
+      });
+    }
+ 
+  }
     </script>
 {/block}

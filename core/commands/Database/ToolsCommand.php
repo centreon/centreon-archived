@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -66,4 +66,45 @@ class ToolsCommand extends AbstractCommand
         }
         echo json_encode($tab);
     }
+    
+    
+     /**
+     * Extract json file and prints a sql string 
+     *
+     * @param string $sFile
+     * @param string $tablename
+     * @sDestination
+     */
+    public function jsonToSqlAction($sFile, $tablename, $sDestination = '')
+    {
+        $sInsert = "INSERT INTO ".$tablename."(";
+        if (file_exists($sFile)) {
+            try {
+                $sColumns = '';
+                $aData = json_decode(file_get_contents($sFile), true);
+ 
+                $sSql = '';
+
+                foreach($aData as $value) {
+                    $sColumns = implode(',', array_keys($value));
+                    $sSql .= "(".'"'.implode('","',array_values($value)).'"'."), "; 
+                }
+                $sChars = $sInsert.$sColumns.") VALUES ".$sSql;
+                $sContent = substr($sChars, 0, strlen($sChars) - 2 ).";";
+               // echo $sDestination;
+                
+                if (empty($sDestination)) {
+                    echo $sContent;
+                } else  {
+                    if (file_exists($sDestination)) {
+                        file_put_contents($sContent, $sDestination);
+                    } else throw new Exception("invalide desination");
+                }
+             
+            } catch (Exception $ex) {
+                 return "invalide content";
+            } 
+        }
+    }
+
 }

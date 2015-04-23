@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -315,7 +315,6 @@ abstract class Installer
     {
         $i = 1;
         foreach ($menus as $menu) {
-            $menu['order'] = $i;
             if (!is_null($parent)) {
                 $menu['parent'] = $parent;
             }
@@ -324,7 +323,6 @@ abstract class Installer
             if (isset($menu['menus']) && count($menu['menus'])) {
                 self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
             }
-            $i++;
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,8 +39,13 @@ use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Host;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
+use CentreonConfiguration\Models\Service;
 use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Models\Relation\Host\Service as HostServiceRelation;
+use CentreonConfiguration\Models\Relation\Hosttemplate\Servicetemplate as HostTemplateServiceTemplateRelation;
+use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTemplateRelation;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -57,7 +62,6 @@ class HostRepository extends Repository
         'command_command_id',
         'command_command_id_arg1',
         'timeperiod_tp_id',
-        'timeperiod_tp_id2',
         'command_command_id2',
         'command_command_id_arg2',
         'host_max_check_attempts',
@@ -74,16 +78,6 @@ class HostRepository extends Repository
         'host_high_flap_threshold',
         'host_flap_detection_enabled',
         'flap_detection_options',
-        'host_process_perf_data',
-        'host_retain_status_information',
-        'host_retain_nonstatus_information',
-        'host_notification_interval',
-        'host_notification_options',
-        'host_notifications_enabled',
-        'contact_additive_inheritance',
-        'cg_additive_inheritance',
-        'host_first_notification_delay',
-        'host_stalking_options',
         'host_snmp_community',
         'host_snmp_version'
     );
@@ -101,25 +95,24 @@ class HostRepository extends Repository
         $router = $di->get('router');
         
         $finalRoute = "";
-        
-        while (1) {
+        $templates = array();
+        $alreadyProcessed = false;
+        $hostIdTab = Host::getIdByParameter('host_name', array($host_name));
+        if (count($hostIdTab) == 0) {
+            $finalRoute = "<i class='fa fa-hdd-o'></i>";
+        } else {
+            $hostId = $hostIdTab[0];
+        }
+
+        while (empty($finalRoute)) {
             $stmt = $dbconn->query(
-                "SELECT b.filename, h.host_id "
+                "SELECT b.filename "
                 . "FROM cfg_hosts h, cfg_hosts_images_relations hir, cfg_binaries b "
-                . "WHERE h.host_name = '$host_name' "
+                . "WHERE h.host_id = '$hostId' "
                 . "AND h.host_id = hir.host_id "
                 . "AND hir.binary_id = b.binary_id"
             );
             $ehiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
-            $stmtTpl = $dbconn->query(
-                "SELECT host_tpl_id, host_name "
-                . "FROM cfg_hosts, cfg_hosts_templates_relations "
-                . "WHERE host_host_id = '$ehiResult[host_id]' "
-                . "AND host_id = host_host_id "
-                . "LIMIT 1"
-            );
-            $tplResult = $stmtTpl->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($ehiResult['filename'])) {
                 $filenameExploded = explode('.', $ehiResult['filename']);
@@ -131,17 +124,20 @@ class HostRepository extends Repository
                     'format' => '.'.$fileFormat
                 );
                 $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
-                $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
-                break;
-            } elseif (is_null($ehiResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
-                $finalRoute .= "<i class='fa fa-hdd-o'></i>";
-                break;
+                $finalRoute = '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
+            } else {
+                if (count($templates) == 0 && !$alreadyProcessed) {
+                    $templates = static::getTemplateChain($hostId, array(), -1);
+                    $alreadyProcessed = true;
+                } else if (count($templates) == 0 && $alreadyProcessed) {
+                    $finalRoute = "<i class='fa fa-hdd-o'></i>";
+                }
+                $currentHost = array_shift($templates);
+                $hostId = $currentHost['id'];
             }
-            
-            $host_name = $tplResult['host_name'];
         }
-        
-        return $finalRoute;
+
+        return $finalRoute;    
     }
 
     /**
@@ -159,7 +155,7 @@ class HostRepository extends Repository
      * Format data so that it can be displayed in tooltip
      *
      * @param array $data
-     * @return array array($checkdata, $notifdata)
+     * @return array $checkdata
      */
     public static function formatDataForTooltip($data)
     {
@@ -194,37 +190,7 @@ class HostRepository extends Repository
             'value' => $data['host_passive_checks_enabled']
         );
 
-        /* Notification data */
-        $notifdata = array();
-        $notifdata[] = array(
-            'label' => _('Notification enabled'),
-            'value' => YesNoDefault::toString($data['host_notifications_enabled'])
-        );
-        $notifdata[] = array(
-            'label' => _('Notification interval'),
-            'value' => $data['host_notification_interval']
-        );
-        $notifdata[] = array(
-            'label' => _('Time period'),
-            'value' => static::getObjectName('\CentreonConfiguration\Models\Timeperiod', $data['timeperiod_tp_id2'])
-        );
-        $notifdata[] = array(
-            'label' => _('Options'),
-            'value' => $data['host_notification_options']
-        );
-        $notifdata[] = array(
-            'label' => _('First notification delay'),
-            'value' => $data['host_first_notification_delay']
-        );
-        $notifdata[] = array(
-            'label' => _('Contacts'),
-            'value' => ''
-        );
-        $notifdata[] = array(
-            'label' => _('Contact groups'),
-            'value' => ''
-        );
-        return array($checkdata, $notifdata);
+        return $checkdata;
     }
 
     /**
@@ -236,10 +202,7 @@ class HostRepository extends Repository
     public static function getInheritanceValues($hostId)
     {
         $values = array();
-        $templates = static::getRelations(
-            '\CentreonConfiguration\Models\Relation\Host\Hosttemplate',
-            $hostId
-        );
+        $templates = static::getTemplateChain($hostId, array(), -1);
         foreach ($templates as $template) {
             $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
             $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
@@ -250,5 +213,159 @@ class HostRepository extends Repository
             $values = array_merge($tmplValues, $values);
         }
         return $values;
+    }
+
+    /**
+     * Get template chain (id, text)
+     *
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed The host templates already processed
+     * @param int $depth The depth to search
+     * @return array
+     */
+    public static function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1)
+    {
+        $templates = array();
+        if (($depth == -1) || ($depth > 0)) {
+            if ($depth > 0) {
+                $depth--;
+            }
+            if (in_array($hostId, $alreadyProcessed)) {
+                return $templates;
+            } else {
+                $alreadyProcessed[] = $hostId;
+                // @todo improve performance
+                $db = Di::getDefault()->get('db_centreon');
+
+                $sql = "SELECT h.host_id, h.host_name"
+                    . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
+                    . " WHERE h.host_id=htr.host_tpl_id"
+                    . " AND htr.host_host_id=:host_id"
+                    . " AND host_activate = '1'"
+                    . " AND host_register = '0'"
+                    . " ORDER BY `order` ASC";
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+                $stmt->execute();
+                $row = $stmt->fetchAll();
+
+                foreach ($row as $template) {
+                    $templates[] = array(
+                        "id" => $template['host_id'],
+                        "text" => $template['host_name']
+                    );
+                    $templates = array_merge($templates, self::getTemplateChain($template['host_id'], $alreadyProcessed, $depth));
+                }
+                return $templates;
+            }
+        }
+        return $templates;
+    }
+    
+    /**
+     * Returns array of services that are linked to a poller
+     *
+     * @param int $pollerId
+     * @return array
+     */
+    public static function getHostsByPollerId($pollerId)
+    {
+        $db = Di::getDefault()->get('db_centreon');
+
+        $sql = "SELECT h.host_id, h.host_name
+            FROM cfg_hosts h
+            WHERE h.poller_id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($pollerId));
+        $arr = array();
+        if ($stmt->rowCount()) {
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $arr[$row['host_id']] = $row['host_name'];
+            }
+        }
+
+        return $arr;
+    }
+
+    /**
+     * Deploy services by host templates
+     *
+     * @param int $hostId
+     * @param int $hostTemplateId
+     */
+    public static function deployServices($hostId, $hostTemplateId = null)
+    {
+        static $deployedServices = array();
+        $aServices = array();
+
+        $db = Di::getDefault()->get('db_centreon');
+
+        //get host template
+        $aHostTemplates = HostRepository::getTemplateChain($hostId, array(), -1);
+
+        // get host services
+        $aHostServices = HostServiceRelation::getMergedParameters(
+            array('host_id'),
+            array('service_id',
+            'service_description'),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host_id' => $hostId),
+            "OR"
+        );
+
+        // get all service templates linked to a host by its host templates
+        $aHostServiceTemplates = array();
+        foreach ($aHostTemplates as $oHostTemplate) {
+
+            $aHostTemplateServiceTemplates = HostTemplateServiceTemplateRelation::getMergedParameters(
+                array('host_id'),
+                array('service_id', 'service_description'),
+                -1,
+                0,
+                null,
+                "ASC",
+                array('host_id' => $oHostTemplate['id']),
+                "OR"
+            );
+
+            // Remove services with same description
+            foreach ($aHostTemplateServiceTemplates as $oHostTemplateServiceTemplate) {
+                $merge = true;
+                foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
+                    if ($oHostTemplateServiceTemplate['service_description'] === $oHostServiceTemplate['service_description']) {
+                        $merge = false;
+                    }
+                }
+                if ($merge) {
+                    $aHostServiceTemplates[] = $oHostTemplateServiceTemplate;
+                }
+            }
+        }
+
+        // get services linked to the host
+        $aServicesDescription = array_values(array_column($aHostServices, 'service_description'));
+
+        $db->beginTransaction();
+
+        // create services which don't yet exist
+        foreach ($aHostServiceTemplates as $oHostServiceTemplate) {
+            if (!in_array($oHostServiceTemplate['service_description'], $aServicesDescription)) {
+                $newService['service_description'] = $oHostServiceTemplate['service_description'];
+                $newService['service_template_model_stm_id'] = $oHostServiceTemplate['service_id'];
+                $newService['service_register'] = 1;
+                $newService['service_activate'] = 1;
+                $newService['organization_id'] = Di::getDefault()->get('organization');
+                $serviceId = Service::insert($newService);
+                HostServiceRelation::insert($hostId, $serviceId);
+                ServiceHostTemplateRelation::insert($serviceId, $oHostServiceTemplate['host_id']);
+            }
+        }
+
+        $db->commit();
+
     }
 }

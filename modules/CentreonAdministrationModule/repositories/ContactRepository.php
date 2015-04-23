@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -38,6 +38,7 @@ namespace CentreonAdministration\Repository;
 use CentreonAdministration\Models\Contact;
 use CentreonAdministration\Models\ContactInfo;
 use Centreon\Internal\Di;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
@@ -66,7 +67,7 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
     {
         $infoToInsert = array(
             'contact_id' => $givenParameters['object_id'],
-            'info_key' => $givenParameters['contact_info_key'],
+            'info_key'   => $givenParameters['contact_info_key'],
             'info_value' => $givenParameters['contact_info_value'],
         );
         return ContactInfo::insert($infoToInsert);
@@ -108,17 +109,34 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
         
         return $finalInfos;
     }
+
     /**
      * Update contact
      * @param array $givenParameters
      */
     public static function updateContact($givenParameters)
     {
+        $aTagList = array();
+        $aTags = array();
+        
+        if (isset($givenParameters['contact_tags'])) {
+            $aTagList = explode(",", $givenParameters['contact_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+        }
+
         $infoToUpdate = array(
             'contact_id'   => $givenParameters['object_id'],
             'timezone_id'  => $givenParameters['timezone_id']
         );
-        return Contact::update($infoToUpdate);
+        return Contact::update($givenParameters['object_id'], $infoToUpdate);
     }
             
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -384,7 +384,7 @@ class DomainRepository extends \CentreonAdministration\Repository\Repository
         $memoryValue = HumanReadable::convertArray(
             array($metric['current_value'], $metric['max']),
             $metric['unit_name'],
-            &$newUnit,
+            $newUnit,
             2
         );
         $normalizeMetricSet['current'] = $memoryValue[0];

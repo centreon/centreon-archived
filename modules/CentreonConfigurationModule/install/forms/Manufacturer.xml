@@ -8,8 +8,10 @@
 			<block name="General information">
 				<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 					<validators>
-						<validator events="blur">unique</validator>
-						<validator events="blur">forbiddenChar</validator>
+                    	<validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                        </validator>
 					</validators>
 				</field>
 				<field name="alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>

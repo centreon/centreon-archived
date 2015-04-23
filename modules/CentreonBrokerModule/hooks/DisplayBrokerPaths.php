@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -66,41 +66,42 @@ class DisplayBrokerPaths
     protected static function getPathList()
     {
         $paths = array();
+        $config = Di::getDefault()->get('config');
 
         $paths['broker_etc_directory'] = array(
             'label' => _('Configuration directory'),
             'help' => _('Directory to store configuration files for Broker'),
-            'value' =>''
+            'value' => $config->get('default', 'broker_etc_directory')
         );
 
         $paths['broker_module_directory'] = array(
             'label' => _('Module directory'),
             'help' => _('Broker module directory.'),
-            'value' => ''
+            'value' => $config->get('default', 'broker_module_directory')
         );
 
         $paths['broker_logs_directory'] = array(
             'label' => _('Log directory'),
             'help' => _('Directory to store log file for Broker'),
-            'value' => ''
+            'value' => $config->get('default', 'broker_logs_directory')
         );
 
         $paths['broker_data_directory'] = array(
             'label' => _('Data directory'),
             'help' => _('Directory to store data for Broker'),
-            'value' => ''
+            'value' => $config->get('default', 'broker_data_directory')
         );
 
         $paths['broker_cbmod_directory'] = array(
             'label' => _('Directory for cbmod.so'),
             'help' => _('Directory of the main broker module'),
-            'value' => ''
+            'value' => $config->get('default', 'broker_cbmod_directory')
         );
 
         $paths['broker_init_script'] = array(
             'label' => _('Init script'),
             'help' => _('The init script for Broker'),
-            'value' => ''
+            'value' => $config->get('default', 'broker_init_script')
         );
 
         return $paths;

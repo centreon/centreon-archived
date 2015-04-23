@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -114,7 +114,7 @@ class DisplayEngineOptions
 	$options['module_dir'] = array(
             'label' => _('Module directory'),
             'help' => _('Event broker modules will be placed there.'),
-            'value' => '/usr/lib/centreon-engine/'
+            'value' => '/usr/lib64/centreon-engine/'
         );
 
 	$options['init_script'] = array(

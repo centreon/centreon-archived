@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -139,13 +139,10 @@ abstract class ListController extends Controller
         $this->tpl->addCss('jquery.fileupload.css');
 
         /* Load CssFile */
-        $this->tpl->addCss('jquery.dataTables.min.css')
+        $this->tpl->addCss('dataTables.tableTools.min.css')
             ->addCss('jquery.fileupload.css')
-            ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
-            ->addCss('dataTables.fixedHeader.min.css')
-            ->addCss('dataTables.bootstrap.css')
             ->addCss('select2.css')
             ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
@@ -155,13 +152,12 @@ abstract class ListController extends Controller
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
-            ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('dataTables.bootstrap.js')
             ->addJs('jquery.select2/select2.min.js')
-            ->addJs('jquery.validate.min.js')
-            ->addJs('additional-methods.min.js')
+            ->addJs('jquery.validation/jquery.validate.min.js')
+            ->addJs('jquery.validation/additional-methods.min.js')
             ->addJs('centreon.search.js')
             ->addJs('centreon-clone.js')
             ->addJs('tmpl.min.js')
@@ -173,11 +169,10 @@ abstract class ListController extends Controller
             ->addJs('jquery.fileupload-validate.js')
             ->addJs('jquery.fileupload-ui.js')
             ->addJs('bootstrap3-typeahead.js')
-            ->addJs('centreon-wizard.js');
-
-        /* Set Cookie */
-        $token = Form::getSecurityToken();
-        setcookie("ajaxToken", $token, time()+15, '/');
+            ->addJs('centreon-wizard.js')
+            ->addJs('moment-with-locales.js')
+            ->addJs('moment-timezone-with-data.min.js');
+        
         
         /* Display variable */
         $this->tpl->assign('objectName', $this->objectDisplayName);
@@ -234,18 +229,19 @@ abstract class ListController extends Controller
         $givenParameters = clone $this->getParams('post');
         $repository = $this->repository;
         try {
+            $repository = $this->repository;
             $id = $repository::create($givenParameters, 'wizard', $this->getUri());
-        } catch (Exception $e) {
+
+            unset($_SESSION['form_token']);
+            unset($_SESSION['form_token_time']);
             if ($sendResponse) {
-                $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+                $this->router->response()->json(array('success' => true));
+            } else {
+                return $id;
             }
-            return false;
-        }
-        
-        if ($sendResponse) {
-            $this->router->response()->json(array('success' => true));
-        } else {
-            return $id;
+        } catch (\Centreon\Internal\Exception $e) {
+            $updateErrorMessage = $e->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
     
@@ -263,14 +259,9 @@ abstract class ListController extends Controller
         $errorMessage = '';
         
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $this->router->request()->paramsPost();
             $repository = $this->repository;
             $repository::delete($params['ids']);
-            
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $deleteSuccess = false;
             $errorMessage = $e->getMessage();
@@ -367,16 +358,11 @@ abstract class ListController extends Controller
         $errorMessage = '';
         
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $listDuplicate = json_decode($this->router->request()->param('duplicate'));
 
             $objClass = $this->objectClass;
             $repository = $this->repository;
             $repository::duplicate($listDuplicate);
-            
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $duplicateSuccess = false;
             $errorMessage = $e->getMessage();
@@ -426,17 +412,12 @@ abstract class ListController extends Controller
         $errorMessage = '';
         
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $this->router->request()->paramsPost();
 
             $objClass = $this->objectClass;
             foreach ($params['ids'] as $id) {
                 $objClass::update($id, $params['values']);
             }
-            
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $massiveChangeSuccess = false;
             $errorMessage = $e->getMessage();
@@ -474,7 +455,7 @@ abstract class ListController extends Controller
     {
         $requestParam = $this->getParams('named');
         $repository = $this->repository;
-        $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParam['id']);
+        $list = $repository::getSimpleRelation($fieldName, $targetObj, $requestParam['id'], $reverse);
         $this->router->response()->json($list);
     }
 
@@ -494,22 +475,17 @@ abstract class ListController extends Controller
         $field = static::$enableDisableFieldName;
 
         try {
-            Form::validateSecurity(filter_input(INPUT_COOKIE, 'ajaxToken'));
             $params = $this->router->request()->paramsPost();
 
             $repository = $this->repository;
             foreach ($params['ids'] as $id) {
-                $repository::update(
+                $repository::disable(
                     array(
                         'object_id' => $id,
                         $field => $value
                     )
                 );
             }
-
-            /* Set Cookie */
-            $token = Form::getSecurityToken();
-            setcookie("ajaxToken", $token, time()+15, '/');
         } catch (Exception $e) {
             $success = false;
             $errorMessage = $e->getMessage();

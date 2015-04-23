@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -64,50 +64,6 @@ class ContactTemplateController extends FormController
         parent::getSimpleRelation('contact_template_id', '\CentreonConfiguration\Models\Contact');
     }
    
-    /**
-     * Get host notification period for a specific contact template
-     *
-     * @method get
-     * @route /contacttemplate/[i:id]/hostnotifperiod
-     */
-    public function hostNotifPeriodForContactAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id', '\CentreonConfiguration\Models\Timeperiod');
-    }
-
-    /**
-     * Get host notification command for a specific contact template
-     *
-     * @method get
-     * @route /contacttemplate/[i:id]/hostnotifcommand
-     */
-    public function hostNotifCommandForContactAction()
-    {
-        parent::getRelations(static::$relationMap['contact_hostcommands']);
-    }
-
-    /**
-     * Get service notification period for a specific contact template
-     *
-     * @method get
-     * @route /contacttemplate/[i:id]/servicenotifperiod
-     */
-    public function serviceNotifPeriodForContactAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id2', '\CentreonConfiguration\Models\Timeperiod');
-    }
-
-    /**
-     * Get service notification command for a specific contact template
-     *
-     * @method get
-     * @route /contacttemplate/[i:id]/servicenotifcommand
-     */
-    public function serviceNotifCommandForContactAction()
-    {
-        parent::getRelations(static::$relationMap['contact_servicecommands']);
-    }
-
     /**
      * Get contact group for a specific contact template
      *

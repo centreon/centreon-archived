@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -220,7 +220,7 @@ class BrokerFormRepository extends FormRepository
             'broker_module_directory' => 'directory_modules',
             'broker_data_directory' => 'directory_data',
             'broker_logs_directory' => 'directory_logs',
-            'init_script' => 'init_script'
+            'broker_init_script' => 'init_script'
         );
         
         $componentList = array();

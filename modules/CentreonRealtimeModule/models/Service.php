@@ -71,6 +71,9 @@ class Service extends CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['enabled'] = '1';
+        
+        
+        
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
     }
 
@@ -95,6 +98,21 @@ class Service extends CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['enabled'] = '1';
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        $aAddFilters = array();
+        $tablesString =  null;
+        $aGroup = array();
+        
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+           
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_services'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_services.tag_id',  'cfg_tags_services.resource_id = s.service_id ')
+            ); 
+             
+        }
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_services.resource_id', 'nb' => count($filters['tagname']));
+        }
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 }

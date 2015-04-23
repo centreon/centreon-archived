@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -40,6 +40,9 @@ use Centreon\Internal\Form\Generator\Web\Wizard;
 use Centreon\Internal\Form\Generator\Api;
 use Centreon\Internal\Form\Generator\Cli;
 use Centreon\Internal\Form\Exception\InvalidTokenException;
+use Centreon\Internal\Exception;
+use Centreon\Internal\Exception\Validator\MissingParameterException;
+use Centreon\Internal\Utils\String\CamelCaseTransformation;
 
 /**
  * Description of Validator
@@ -87,30 +90,6 @@ class Validator
     
     /**
      * 
-     * @param type $token
-     * @return boolean
-     * @throws Exception
-     */
-    public function csrf($token)
-    {
-        if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
-            if ($token == $_SESSION['form_token']) {
-                $oldTimestamp = time() - (15*60);
-                if ($_SESSION['form_token_time'] < $oldTimestamp) {
-                    throw new InvalidTokenException('The validation is impossible due to expire form token');
-                }
-            } else {
-                throw new InvalidTokenException('The validation is impossible due to wrong form token');
-            }
-        } else {
-            throw new InvalidTokenException('The validation is impossible due to missing form token');
-        }
-        
-        return true;
-    }
-    
-    /**
-     * 
      * @param type $submittedDatas
      */
     public function validate($submittedDatas)
@@ -138,20 +117,33 @@ class Validator
     private function validateDatas($validationScheme, $submittedDatas)
     {
         $errors = array();
-        
+
         // If not all mandatory parameters are in the dataset, throw an exception
         $datasKeys = array_keys($submittedDatas);
-        if (count(array_diff($validationScheme['mandatory'], $datasKeys)) > 0) {
-            throw new \Exception("missing parameters");
+        $missingKeys = array_diff($validationScheme['mandatory'], $datasKeys);
+        if (count($missingKeys) > 0) {
+            $errorMessage = "The following mandatory parameters are missing : ";
+            $errorMessage .= implode("\n    - ", $missingKeys);
+            throw new MissingParameterException($errorMessage);
         }
-        
+
+        $objectParams = array();
+        if (isset($submittedDatas['object'])) {
+            $objectParams['object'] = $submittedDatas['object'];
+        }
+        if (isset($submittedDatas['object_id'])) {
+            $objectParams['object_id'] = $submittedDatas['object_id'];
+        }
+
         // Validate each field according to its validators
         foreach ($submittedDatas as $key => $value) {
             if (isset($validationScheme['fieldScheme'][$key])) {
                 foreach ($validationScheme['fieldScheme'][$key] as $validatorElement) {
-                    $call = '\Centreon\Internal\Form\Validators\\' . ucfirst($validatorElement['call']);
+                    //$call = '\Centreon\Internal\Form\Validators\\' . ucfirst($validatorElement['call']);
+                    $call = $this->parseValidatorName($validatorElement['call']);
                     $validator = new $call($validatorElement['params']);
-                    $result = $validator->validate($value);
+                    $validatorParams = array_merge($objectParams, json_decode($validatorElement['params'], true));
+                    $result = $validator->validate($value, $validatorParams);
                     if ($result['success'] === false) {
                         $errors[] = $result['error'];
                     }
@@ -164,6 +156,25 @@ class Validator
             $this->raiseValidationException($errors);
         }
     }
+
+    protected function parseValidatorName($validatorName)
+    {
+        $call = "";
+        $parsedValidator = explode('.', $validatorName);
+
+        if ($parsedValidator[0] === 'core') {
+            $call .= '\Centreon\Internal\Form\Validators\\';
+        } else {
+            $call .= CamelCaseTransformation::customToCamelCase($parsedValidator[0], '-')
+                . '\Forms\Validators\\';
+        }
+        
+        for ($i = 1; $i < count($parsedValidator); $i++) {
+            $call .= ucfirst($parsedValidator[$i]);
+        }
+
+        return $call;
+    }
     
     /**
      * 
@@ -172,9 +183,6 @@ class Validator
      */
     private function raiseValidationException($errors)
     {
-        $message = "";
-        $code = 401;
-        
-        throw new \Exception($message, $code);
+        throw new \Centreon\Internal\Exception\Http\BadRequestException('Validation error', $errors);
     }
 }

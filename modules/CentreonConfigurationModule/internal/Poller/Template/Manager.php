@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -84,7 +84,6 @@ class Manager
     {
         $rawTemplatesFileList = array();
         $moduleList = Informations::getModuleList();
-        //var_dump($moduleList);
         foreach ($moduleList as $module) {
             $modulePath = Informations::getModulePath($module);
             $pollerTemplatesFilePath = $modulePath . '/pollers/*.json';
@@ -94,8 +93,8 @@ class Manager
         $templatesList = array();
         foreach ($rawTemplatesFileList as $templateFile) {
             $liteTemplate = self::liteFileParser($templateFile);
-            
-            if (!in_array($liteTemplate['name'], array_keys($templatesList))) {
+
+            if (!isset($templatesList[$liteTemplate['name']])) {
                 $myLiteTemplate = new LiteTemplate($liteTemplate['name']);
                 if ($liteTemplate['engine']) {
                     $myLiteTemplate->setEnginePath($templateFile);
@@ -110,14 +109,13 @@ class Manager
                     $templatesList[$liteTemplate['name']]->setEnginePath($templateFile);
                 }
                 $brokerPath = $templatesList[$liteTemplate['name']]->getBrokerPath();
-                if ($liteTemplate['broker'] && empty($brokerPath)) {
+                if ($liteTemplate['broker']) {
                     $templatesList[$liteTemplate['name']]->setBrokerPath($templateFile);
                 }
-            }
-            
+            } 
             unset($liteTemplate);
         }
-        
+
         return $templatesList;
     }
 }

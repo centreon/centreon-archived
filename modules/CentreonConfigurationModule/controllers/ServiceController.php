@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -42,6 +42,7 @@ use CentreonConfiguration\Models\Service;
 use CentreonConfiguration\Models\Host;
 use CentreonConfiguration\Models\Relation\Host\Service as HostService;
 use Centreon\Controllers\FormController;
+use CentreonAdministration\Repository\TagsRepository;
 
 class ServiceController extends FormController
 {
@@ -53,9 +54,7 @@ class ServiceController extends FormController
     protected $objectClass = '\CentreonConfiguration\Models\Service';
     protected $repository = '\CentreonConfiguration\Repository\ServiceRepository';
     public static $relationMap = array(
-        'service_servicegroups' => '\CentreonConfiguration\Models\Relation\Service\Servicegroup',
         'service_hosts' => '\CentreonConfiguration\Models\Relation\Service\Host',
-        'servicecategories' => '\CentreonConfiguration\Models\Relation\Service\Servicecategory',
         'service_parents' => '\CentreonConfiguration\Models\Relation\Service\Serviceparent',
         'service_childs' => '\CentreonConfiguration\Models\Relation\Service\Servicechild',
         'service_servicetemplates' => '\CentreonConfiguration\Models\Relation\Service\Servicetemplate',
@@ -82,14 +81,20 @@ class ServiceController extends FormController
             ->addJs('jquery.qtip.min.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('moment-with-locales.js')
+            ->addJs('moment-timezone-with-data.min.js')
             ->addCss('centreon.qtip.css')
             ->addCss('centreon.tag.css', 'centreon-administration');
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
+                
         $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
@@ -181,7 +186,9 @@ class ServiceController extends FormController
     public function updateAction()
     {
         $macroList = array();
-        
+        $aTagList = array();
+        $aTags = array();
+
         $givenParameters = $this->getParams('post');
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
@@ -211,6 +218,33 @@ class ServiceController extends FormController
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
         }
+        
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
+        
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $iTemplate = trim($givenParameters['service_template_model_stm_id']);
+            if (!empty($iTemplate)) {
+                $aTagsTemplates = TagsRepository::getList('service', $iTemplate, 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }    
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+        }
+        
         parent::updateAction();
     }
     
@@ -223,6 +257,8 @@ class ServiceController extends FormController
     public function createAction()
     {
         $macroList = array();
+        $aTagList = array();
+        $aTags = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -249,13 +285,38 @@ class ServiceController extends FormController
                 }
             }
         }
+       // print_r($givenParameters['service_tags']);die;
+        if (isset($givenParameters['service_tags'])) {
+            $aTagList = explode(",", $givenParameters['service_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1) {
+                    array_push($aTags, $var);
+                }
+            }
+        }
         
         $id = parent::createAction(false);
         
         if (count($macroList) > 0) {
             CustomMacroRepository::saveServiceCustomMacro($id, $macroList);
         }
-
+        
+        //get Tag for serviceTemplate
+        if (isset($givenParameters['service_template_model_stm_id'])) {
+            $iTemplate = trim($givenParameters['service_template_model_stm_id']);
+            if (!empty($iTemplate)) {
+                $aTagsTemplates = TagsRepository::getList('service', $givenParameters['service_template_model_stm_id'], 1);
+                foreach ($aTagsTemplates as $key => $oTpl) {
+                    if (!in_array($oTpl['text'], array_values($aTags))) {
+                        array_push($aTags, $oTpl['text']);
+                    }    
+                }
+            }
+        }
+        
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
+        }
         $this->router->response()->json(array('success' => true));
     }
 
@@ -293,17 +354,6 @@ class ServiceController extends FormController
     }
     
     /**
-     * Get list of Timeperiods for a specific service
-     * 
-     * @method get
-     * @route /service/[i:id]/notificationperiod
-     */
-    public function notificationPeriodForServiceAction()
-    {
-        parent::getSimpleRelation('timeperiod_tp_id2', '\CentreonConfiguration\Models\Timeperiod');
-    }
-    
-    /**
      * Get check command for a specific service
      *
      * @method get
@@ -334,28 +384,6 @@ class ServiceController extends FormController
     public function hostForServiceAction()
     {
         parent::getRelations(static::$relationMap['service_hosts']);
-    }
-    
-    /**
-     * Get list of service group for a specific service
-     * 
-     * @method get
-     * @route /service/[i:id]/servicegroup
-     */
-    public function serviceGroupForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['service_servicegroups']);
-    }
-
-    /**
-     * Get list of service categories for a specific service
-     * 
-     * @method get
-     * @route /service/[i:id]/servicecategory
-     */
-    public function serviceCategoryForServiceAction()
-    {
-        parent::getRelations(static::$relationMap['servicecategories']);
     }
     
     /**
@@ -429,8 +457,8 @@ class ServiceController extends FormController
     {
         $params = $this->getParams();
         $data = ServiceRepository::getConfigurationData($params['id']);
-        list($checkdata, $notifdata) = ServiceRepository::formatDataForTooltip($data);
+        $checkdata = ServiceRepository::formatDataForTooltip($data);
         $this->tpl->assign('checkdata', $checkdata);
         $this->tpl->display('file:[CentreonConfigurationModule]service_conf_tooltip.tpl');
-    }
+    }     
 }

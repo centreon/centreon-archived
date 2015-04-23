@@ -8,8 +8,10 @@
 	  <block name="General settings">
 		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 			<validators>
-				<validator events="blur">unique</validator>
-				<validator events="blur">forbiddenChar</validator>
+                <validator rules="remote" serverside="core.unique" />
+                <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                </validator>
 			</validators>
           <help>Name which will be used for identifying the poller.</help>
 		</field>

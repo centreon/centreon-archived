@@ -1,17 +1,12 @@
 [
     {
-        "name": "Home",
+        "name": "Dashboard",
         "short_name": "home",
-        "icon_class": "fa fa-home",
+        "icon_class": "icon-home-dashboard",
         "bgcolor": "#CCC",
-        "menus": [
-            {
-                "name": "Home page",
-                "short_name": "customviews",
-                "icon_class": "fa fa-home",
-                "route": "/centreon-customview"
-            }
-        ]
+        "route": "/centreon-customview",
+        "block": "root",
+        "order": 1
     },
     {
         "name": "Extensions",

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,6 +36,7 @@
 
 namespace CentreonConfiguration\Install;
 
+use Centreon\Internal\Di;
 use Centreon\Internal\Module\Installer as ModuleInstaller;
 
 /**
@@ -52,10 +53,26 @@ class Installer extends ModuleInstaller
     {
         parent::__construct($moduleDirectory, $moduleInfo);
     }
+
+    /**
+     *
+     */
+    protected function setUpFormValidators()
+    {
+        $validators = array(
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
+        );
+
+        $db = Di::getDefault()->get('db_centreon');
+
+        foreach ($validators as $validator) {
+            $db->exec($validator);
+        }
+    }
     
     public function customPreInstall()
     {
-        
+        $this->setUpFormValidators();
     }
     
     /**

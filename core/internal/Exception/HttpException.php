@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -36,14 +36,14 @@
 
 namespace Centreon\Internal\Exception;
 
-use Centreon\Internal\Exception;
+use Centreon\Internal\Exception as CentreonException;
 
 /**
  * Description of HttpException
  *
  * @author lionel
  */
-class HttpException extends Exception
+class HttpException extends CentreonException
 {
     /**
      *
@@ -63,8 +63,11 @@ class HttpException extends Exception
      * @param type $code
      * @param type $previous
      */
-    public function __construct($title, $message, $code, $internalCode, $previous)
+    public function __construct($title, $message = "", $code = 0, $internalCode = 0, $previous = NULL)
     {
+        if (is_array($message)) {
+            $message = implode("\n", $message);
+        }
         parent::__construct($message, $code, $previous);
         $this->httpErrorTitle = $title;
         $this->internalCode = $internalCode;

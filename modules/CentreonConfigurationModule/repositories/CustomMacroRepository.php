@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -80,7 +80,7 @@ class CustomMacroRepository
             . " VALUES(:macro_name, :macro_value, :is_password, :host)";
         $stmtInsert = $dbconn->prepare($insertRequest);
         foreach ($submittedValues as $customMacroName => $customMacro) {
-            $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
+            $stmtInsert->bindValue(':macro_name', '$_HOST' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
             $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
             $stmtInsert->bindParam(':host', $objectId, \PDO::PARAM_INT);
@@ -124,7 +124,7 @@ class CustomMacroRepository
         $stmtInsert = $dbconn->prepare($insertRequest);
         
         foreach ($submittedValues as $customMacroName => $customMacro) {
-            $stmtInsert->bindParam(':macro_name', $customMacroName, \PDO::PARAM_STR);
+            $stmtInsert->bindValue(':macro_name', '$_SERVICE' . $customMacroName . '$', \PDO::PARAM_STR);
             $stmtInsert->bindParam(':macro_value', $customMacro['value'], \PDO::PARAM_STR);
             $stmtInsert->bindParam(':is_password', $customMacro['ispassword'], \PDO::PARAM_INT);
             $stmtInsert->bindParam(':svc', $objectId, \PDO::PARAM_INT);

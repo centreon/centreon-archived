@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -37,21 +37,45 @@ namespace CentreonBam\Controllers;
 
 use Centreon\Internal\Di;
 use Centreon\Controllers\FormController;
-use CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren;
-use CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents;
+use CentreonBam\Repository\BusinessActivityRepository;
+use CentreonBam\Repository\IndicatorRepository;
+use CentreonAdministration\Repository\TagsRepository;
 
 class BusinessActivityController extends FormController
 {
     protected $objectDisplayName = 'BusinessActivity';
     public static $objectName = 'businessactivity';
+    public static $enableDisableFieldName = 'activate';
     protected $objectClass = '\CentreonBam\Models\BusinessActivity';
     protected $datatableObject = '\CentreonBam\Internal\BusinessActivityDatatable';
     protected $repository = '\CentreonBam\Repository\BusinessActivityRepository'; 
     public static $relationMap = array(
-        'parent_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivitychildren',
-        'child_business_activity' => '\CentreonBam\Models\Relation\BusinessActivity\BusinessActivityparents',
+        'kpi' => '\CentreonBam\Models\Relation\BusinessActivity\Indicator'
     );
-    
+   
+    public static $isDisableable = true;
+
+    /**
+    * Create a new business activity
+    *
+    * @method post
+    * @route /businessactivity/add
+    */
+    public function createAction()
+    {
+        $givenParameters = $this->getParams('post');
+
+        $repository = $this->repository;
+        try {
+            $id = $repository::create($givenParameters, 'wizard', $this->getUri());
+            BusinessActivityRepository::createVirtualService($id);
+        } catch (Exception $e) {
+            $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        $this->router->response()->json(array('success' => true));
+    }
+ 
     /**
      * 
      * @method get
@@ -66,37 +90,51 @@ class BusinessActivityController extends FormController
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
         $this->tpl->append('jsUrl', $urls, true);
         parent::listAction();
     }
-    
+
     /**
-     * Get list of Timeperiods for a specific business activity
+     * Get list of Types for a specific business activity
      *
      *
      * @method get
-     * @route /businessactivity/[i:id]/checkperiod
+     * @route /businessactivity/[i:id]/type
      */
-    public function checkPeriodForHostAction()
+    public function typeForHostAction()
     {
-        parent::getSimpleRelation('id_check_period', '\CentreonConfiguration\Models\Timeperiod');
-    }
-    
-    /**
-     * Get list of Timeperiods for a specific business activity
-     *
-     *
-     * @method get
-     * @route /businessactivity/[i:id]/notificationperiod
-     */
-    public function notificationPeriodForHostAction()
-    {
-        parent::getSimpleRelation('id_notification_period', '\CentreonConfiguration\Models\Timeperiod');
+        parent::getSimpleRelation('ba_type_id', '\CentreonBam\Models\BusinessActivityType');
     }
 
+    /**
+     * Get list of Indicators for a specific business activity
+     *
+     *
+     * @method get
+     * @route /businessactivity/[i:id]/indicator
+     */
+    public function indicatorForBaAction()
+    {
+        $di = Di::getDefault();
+        $router = $di->get('router');
+
+        $requestParam = $this->getParams('named');
+
+        $indicatorList = BusinessActivityRepository::getIndicatorsForBa($requestParam['id']);
+        $finalList = array();
+        foreach ($indicatorList as $indicator) {
+            $finalList[] = IndicatorRepository::getIndicatorName($indicator['kpi_id']);
+        }
+
+        $router->response()->json($finalList);
+    }
+ 
     /**
      * Get reporting period for a specific business activity
      *
@@ -109,76 +147,46 @@ class BusinessActivityController extends FormController
     }
     
     /**
-     * 
-     * @method get
-     * @route /businessactivity/[i:id]/parent
+     * Update a business activity
+     *
+     *
+     * @method post
+     * @route /businessactivity/update
      */
-    public function parentForBusinessActivityAction()
+    public function updateAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
+        $givenParameters = $this->getParams('post');
+        $aTagList = array();
+        $aTags = array();
         
-        $requestParam = $this->getParams('named');
+        parent::updateAction();
         
-        $BusinessActivityparentsList = BusinessActivityparents::getMergedParameters(
-            array('ba_id', 'name'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('cfg_bam_dep_parents_relations.id_ba' => $requestParam['id']),
-            "AND"
-        );
-
-        $finalBusinessActivityList = array();
-        foreach ($BusinessActivityparentsList as $BusinessActivityparents) {
-            $finalBusinessActivityList[] = array(
-                "id" => $BusinessActivityparents['ba_id'],
-                "text" => $BusinessActivityparents['name'],
-                "theming" => BusinessActivityRepository::getIconImage(
-                    $BusinessActivityparents['name']
-                ).' '.$BusinessActivityparents['name']
-            );
+        if (isset($givenParameters['ba_tags'])) {
+            $aTagList = explode(",", $givenParameters['ba_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var) > 1) {
+                    array_push($aTags, $var);
+                }
+            }
         }
         
-        $router->response()->json($finalBusinessActivityList);
+        if (count($aTags) > 0) {
+            TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
+        }
     }
 
     /**
-     * 
-     * @method get
-     * @route /businessactivity/[i:id]/child
+     * Delete a business activity
+     *
+     *
+     * @method post
+     * @route /businessactivity/delete
      */
-    public function childForBusinessActivityAction()
+    public function deleteAction()
     {
-        $di = Di::getDefault();
-        $router = $di->get('router');
-        
-        $requestParam = $this->getParams('named');
-        
-        $BusinessActivitychildrenList = BusinessActivitychildren::getMergedParameters(
-            array('ba_id', 'name'),
-            array(),
-            -1,
-            0,
-            null,
-            "ASC",
-            array('cfg_bam_dep_children_relations.id_dep' => $requestParam['id']),
-            "AND"
-        );
+        $givenParameters = $this->getParams('post');
 
-        $finalBusinessActivityList = array();
-        foreach ($BusinessActivitychildrenList as $BusinessActivitychildren) {
-            $finalBusinessActivityList[] = array(
-                "id" => $BusinessActivitychildren['ba_id'],
-                "text" => $BusinessActivitychildren['name'],
-                "theming" => BusinessActivityRepository::getIconImage(
-                    $BusinessActivitychildren['name']
-                ).' '.$BusinessActivitychildren['name']
-            );
-        }
-        
-        $router->response()->json($finalBusinessActivityList);
+        BusinessActivityRepository::deleteVirtualService($givenParameters['ids']);
+        parent::deleteAction();
     }
 }

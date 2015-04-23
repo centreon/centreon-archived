@@ -1,10 +1,11 @@
 $(function () {
   var tagExpand = false;
 
+
   function saveTag( $newTag ) {
     var tmplTagCmpl,
         tmplTag = "<div class='tag' data-resourceid='<%resourceid%>' data-resourcetype='<%resourcetype%>' data-tagid='<%tagid%>'>"
-          + "<div class='title'><%tagname%></div>"
+          + "<div class='tagname'><%tagname%></div>"
           + "<div class='remove'><a href='#'>&times;</a></div>"
           + "</div>";
         tagName = $newTag.find( "input" ).val().trim();
@@ -35,13 +36,15 @@ $(function () {
           $newTag.parent().prepend( " " ).prepend( $( tag ) );
           $newTag.find( "input" )
             .animate({
-              "width": 0
+              "width": 0,
+              "padding": 0
             })
             .val( "" );
           tagExpand = false;
         }
       }
     });
+      
   }
 
   /* Event for add a tag */
@@ -69,7 +72,7 @@ $(function () {
       saveTag( $newTag );
     }
   });
-
+  
   /* Event for delete a tag */
   $( document ).on( "click", ".tag:not(.addtag) .remove a", function() {
     var $newTag = $( this ).parent().parent();
@@ -99,7 +102,8 @@ $(function () {
       return;
     }
     $( ".addtag input" ).animate({
-      width: "0"
+      width: 0,
+      padding: 0
     }).val( "" );
     $( ".addtag .remove" ).addClass( "noborder" );
     tagExpand = false;
@@ -119,11 +123,16 @@ $(function () {
       + "<button type='button' class='close' aria-hidden='true'>&times;</button>"
       + "</div>"
     );
+       
     $body.html(
       "<form role='form'><div class='form-group'>"
-      + "<input type='text' class='form-control' name='tagName'>"
+      + "Tag name <input type='text' class='form-control' id='tagPerso' name='tagPerso' />"
+      + "<input type='text' class='form-control' id='tagsGlobal' name='tagsGlobal' style='visibility: hidden;' />"
+      + "Personnal <input type='radio' value='2' class='typetag' name='typetag' checked>"
+      + "Global <input type='radio' value='1' class='typetag' name='typetag'>"
       + "</div></form>"
     );
+    
     $footer.html(
       "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>"
       + "<button type='button' class='btn btn-primary' id='saveAddToTag'>Save</button>"
@@ -133,17 +142,96 @@ $(function () {
       .append( $body )
       .append( $footer );
     $( "#modal" ).modal();
+    
+                
+    $(".typetag").on( "click", function() {
+        var val = $(this).val();
+        if (val == 2) {
+            
+            $("div[id$='tagPerso']").show();
+            $("div[id$='tagsGlobal']").css('visibility', 'hidden');
+            $("div[id$='tagsGlobal']").hide();
+        }else {
+            $("div[id$='tagPerso']").hide();
+            $("div[id$='tagsGlobal']").css('visibility', 'visible');
+            $("div[id$='tagsGlobal']").show();
+        }
+    });
+   
+    $("#tagsGlobal").select2({
+       multiple:true,
+       tags: true, 
+       allowClear: true, 
+       formatResult: select2_formatResult, 
+       formatSelection: select2_formatSelection, 
+       ajax: {
+           data: function(term, page) {
+               return { search: term, };
+           },
+           dataType: "json", 
+           url:jsUrl.tag.getallGlobal, 
+           results: function (data){ 
+               return {results:data, more:false}; 
+           }
+       },
+       initSelection: function(element, callback) { 
+           var id=$(element).val();
+           $(element).val(id.substring(1, id.length));
+       },
+       createSearchChoice: function (term) {
+            return {
+                id: $.trim(term),
+                text: $.trim(term)
+            };
+        }
+   });
 
+    $("#tagPerso").select2({
+       multiple:true, 
+       tags: true, 
+       allowClear: true, 
+       formatResult: select2_formatResult, 
+       formatSelection: select2_formatSelection, 
+       ajax: {
+           data: function(term, page) {
+               return { search: term, };
+           },
+           dataType: "json", 
+           url:jsUrl.tag.getallPerso, 
+           results: function (data){ 
+               return {results:data, more:false}; 
+           }
+       },
+       initSelection: function(element, callback) { 
+           var id=$(element).val();
+           $(element).val(id.substring(1, id.length));
+       },
+       createSearchChoice: function (term) {
+            return {
+                id: $.trim(term),
+                text: $.trim(term)
+            };
+        }
+   });
+
+      
     function saveTags() {
       var listObject = [],
-          name = $( "#modal" ).find( "input[name='tagName']" ).val();
-      $( ".allBox:checked" ).each( function( idx, value ) {
-        listObject.push( $( value ).val() );
+          name = '';
+      $( ".selected" ).each( function( idx, value ) {
+        listObject.push( $( value ).data('id') );
       });
+      var typetag = $("input[name='typetag']:checked" ).val();
+      if (typetag == 2)
+          name = $( "#modal" ).find( "input[name='tagPerso']" ).val();
+      else
+          name = $( "#modal" ).find( "input[name='tagsGlobal']" ).val();
+      
       $.ajax({
-        url: jsUrl.tag.add,
+        url: jsUrl.tag.addMassive,
         data: {
           tagName: name,
+          typeTag : typetag,
           resourceName: $( "#addToTag" ).data( "resourcetype" ),
           resourceId: listObject
         },
@@ -169,5 +257,17 @@ $(function () {
     $( "#saveAddToTag" ).on( "click", function() {
       saveTags();
     });
+  });
+  $( document).on( "click", ".tagname", function( e ) {
+      e.preventDefault();
+      e.stopPropagation();
+      var sSearch = $(this).html();
+      var sOldFilter = $("input[name='advsearch']").val();
+      var newSearch = "tags:" + sSearch;
+      var regexSearch = new RegExp("(^| )" + newSearch + "( |$)", "g");
+      if (null === sOldFilter.match(regexSearch)) {
+        $("input[name='advsearch']").val($.trim(sOldFilter + " " + newSearch));
+      }
+      $("#btnSearch").click();
   });
 });

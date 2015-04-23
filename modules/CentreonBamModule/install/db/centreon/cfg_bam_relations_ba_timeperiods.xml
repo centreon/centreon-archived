@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="cfg_bam_relations_ba_timeperiods" idMethod="native" phpName="CfgBamRelationsBaTimeperiods">
+    <column name="ba_id" phpName="BaId" type="INTEGER" required="true"/>
+    <column name="tp_id" phpName="TpId" type="INTEGER" required="true"/>
+    <foreign-key foreignTable="cfg_bam" name="cfg_bam_relations_ba_timeperiods_ibfk_1" onDelete="CASCADE">
+      <reference local="ba_id" foreign="ba_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="cfg_timeperiods" name="cfg_bam_relations_ba_timeperiods_ibfk_2" onDelete="CASCADE">
+      <reference local="tp_id" foreign="tp_id"/>
+    </foreign-key>
+    <index name="ba_id">
+      <index-column name="ba_id"/>
+    </index>
+    <index name="tp_id">
+      <index-column name="tp_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

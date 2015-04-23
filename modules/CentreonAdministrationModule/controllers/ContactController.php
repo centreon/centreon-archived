@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -53,6 +53,32 @@ class ContactController extends FormController
     
     protected $datatableObject = '\CentreonAdministration\Internal\ContactDatatable';
     public static $isDisableable = true;
+    
+     /**
+     * List contact
+     *
+     * @method get
+     * @route /contact
+     */
+    public function listAction()
+    {
+        $router = Di::getDefault()->get('router');
+        $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+                ->addJs('hogan-3.0.0.min.js')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        
+        $urls = array(
+            'tag' => array(
+                'add' => $router->getPathFor('/centreon-administration/tag/add'),
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
+            )
+        );
+        $this->tpl->append('jsUrl', $urls, true);
+        parent::listAction();
+    }
     
     /**
      * 
@@ -132,26 +158,41 @@ class ContactController extends FormController
      */
     public function editAction()
     {
+        $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+        
         $requestParam = $this->getParams('named');
         $customForm = new Form('ContactInfoForm');
         
         // Add selector
         $selectAttributes = json_encode(array(
             'defaultValuesRoute' =>  '/centreon-administration/contact/contact-info/formlist',
-            'listValuesRoute' =>  '/centreon-administration/contact/contact-info/default'
+            'listValuesRoute' =>  ''
         ));
         
         // Add selector
         $aSelectTimezones = json_encode(array(
             'defaultValuesRoute' =>  '/centreon-administration/timezone/formlist',
-            'listValuesRoute' =>  '/centreon-administration/timezone/default'
+            'listValuesRoute' =>  $this->router->getPathFor(
+                    '/centreon-administration/contact/[i:id]/timezone', 
+                    array('id' => $requestParam['id'])
+            )
+        ));
+        
+        // Add selector
+        $aSelectTags = json_encode(array(
+            'defaultValuesRoute' =>  '/centreon-administration/tag/all',
+            'listValuesRoute' =>  $this->router->getPathFor(
+                    '/centreon-administration/tag/[i:id]/contact/formlist', 
+                    array('id' => $requestParam['id'])
+            )
         ));
         
         $customForm->addStatic(array(
             'name' => 'contact_info_key',
             'label' => _('Notification way'),
             'type' => 'select',
-            'mandatory' => true,
+            'mandatory' => false,
             'advanced' => false,
             'attributes' => $selectAttributes
         ));
@@ -160,7 +201,7 @@ class ContactController extends FormController
             'name' => 'contact_info_value',
             'label' => _('Value'),
             'type' => 'text',
-            'mandatory' => true,
+            'mandatory' => false,
             'advanced' => false,
         ));
         
@@ -172,9 +213,18 @@ class ContactController extends FormController
             'advanced' => false,
             'attributes' => $aSelectTimezones,
         ));
+        $customForm->addStatic(array(
+            'name' => 'contact_tags',
+            'label' => _('Tags'),
+            'type' => 'tag',
+            'mandatory' => false,
+            'advanced' => false,
+            'attributes' => $aSelectTags,
+        ));
         
         $customForm->addSubmit('add_button', 'Add');
         $customForm->addHidden('object_id', $requestParam['id']);
+        $customForm->addHidden('object', static::$objectName);
         
         // Get Already loaded
         $repository = $this->repository;
@@ -205,5 +255,17 @@ class ContactController extends FormController
         $repository = $this->repository;
         $repository::removeContactInfo($requestParam['id']);
         $this->router->service()->back();
+    }
+    
+    /**
+     * Get list of timezone for a specific contact
+     *
+     *
+     * @method get
+     * @route /contact/[i:id]/timezone
+     */
+    public function timezoneForContactAction()
+    {
+        parent::getSimpleRelation('timezone_id', '\CentreonAdministration\Models\Timezone');
     }
 }

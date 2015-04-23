@@ -41,6 +41,7 @@ use CentreonConfiguration\Repository\ServiceRepository as ServiceConfigurationRe
 use CentreonRealtime\Models\Host;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ServiceDatatable
@@ -49,11 +50,12 @@ use Centreon\Internal\Datatable;
  */
 class ServiceDatatable extends Datatable
 {
+   /*
     protected static $hook = 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'service'
     );
-
+*/
     protected static $objectId = 'service_id';
     protected static $objectName = 'Service';
     
@@ -89,6 +91,12 @@ class ServiceDatatable extends Datatable
      *
      * @var array 
      */
+    protected static  $aFieldNotAuthorized = array('tagname');
+    
+    /**
+     *
+     * @var array 
+     */
     public static $columns = array(
         array (
             'title' => "Id",
@@ -103,7 +111,7 @@ class ServiceDatatable extends Datatable
             'className' => 'cell_center'
         ),
          array (
-            'title' => 'Name',
+            'title' => 'Host',
             'name' => 'host_id',
             'data' => 'name',
             'orderable' => true,
@@ -190,7 +198,7 @@ class ServiceDatatable extends Datatable
             'title' => 'Last Check',
             'name' => '(unix_timestamp(NOW())-s.last_check) AS last_check',
             'data' => 'last_check',
-            'orderable' => true,
+            'orderable' => false,
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
@@ -200,7 +208,7 @@ class ServiceDatatable extends Datatable
             'title' => 'Duration',
             'name' => '(unix_timestamp(NOW())-s.last_hard_state_change) AS duration',
             'data' => 'duration',
-            'orderable' => true,
+            'orderable' => false,
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
@@ -211,7 +219,7 @@ class ServiceDatatable extends Datatable
             'title' => 'Retry',
             'name' => 'CONCAT(s.check_attempt, " / ", s.max_check_attempts) as retry',
             'data' => 'retry',
-            'orderable' => true,
+            'orderable' => false,
             'searchable' => false,
             'type' => 'string',
             'visible' => true,
@@ -231,19 +239,34 @@ class ServiceDatatable extends Datatable
             'title' => 'Perfdata',
             'name' => 's.perfdata',
             'data' => 'perfdata',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => false,
-        )
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
 
-    protected static $extraParams = array(
+     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'service'
         )
     );
-    
+
+    //protected static $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'service'
+    );
     /**
      * 
      * @param array $params
@@ -261,34 +284,40 @@ class ServiceDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         $previousHost = '';
-        foreach ($resultSet as &$myServiceSet) {
+        HostConfigurationRepository::setObjectClass('\CentreonConfiguration\Models\Host');
+        foreach ($resultSet as $key => &$myServiceSet) {
             // Set host_name
             $myHostName = Host::get($myServiceSet['host_id'], array('name'));
             $myServiceSet['name'] = $myHostName['name'];
-            
+
+            // @todo remove virtual hosts and virtual services
+            if ($myServiceSet['name'] === '_Module_BAM') {
+                unset($resultSet[$key]);
+                continue;
+            }
             if ($myServiceSet['name'] === $previousHost) {
                 $myServiceSet['name'] = '';
             } else {
                 $previousHost = $myServiceSet['name'];
                 $icon = HostConfigurationRepository::getIconImage($myServiceSet['name']);
-                $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'.
-                    $myServiceSet['host_id'].
-                    '/tooltip"><span class="overlay">'.
-                    $icon.
-                    '&nbsp;'.$myServiceSet['name'].'</span></span>';
+                $myServiceSet['name'] = '<span data-overlay-url="/centreon-realtime/host/'
+                    . $myServiceSet['host_id']
+                    . '/tooltip"><span class="overlay">'
+                    . $icon
+                    . '&nbsp;'.$myServiceSet['name'].'</span></span>';
             }
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
-            $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'.
-                $myServiceSet['host_id'].
-                '/'.$myServiceSet['service_id'].
-                '/tooltip"><span class="overlay">'.
-                $icon.
-                '&nbsp;'.$myServiceSet['description'].'</span></span>';
+            $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'
+                . $myServiceSet['host_id']
+                . '/'.$myServiceSet['service_id']
+                . '/tooltip"><span class="overlay">'
+                . $icon
+                . '&nbsp;'.$myServiceSet['description'].'</span></span>';
             if ($myServiceSet['perfdata'] != '') {
                 $myServiceSet['ico'] = '<span data-overlay-url="/centreon-realtime/service/'
                     . $myServiceSet['host_id']
                     . '/' . $myServiceSet['service_id']
-                    . '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';
+                    .     '/graph"><span class="overlay"><i class="fa fa-bar-chart-o"></i></span></span>';
             } else {
                 $myServiceSet['ico'] = ''; 
             }
@@ -302,7 +331,16 @@ class ServiceDatatable extends Datatable
                 Datetime::PRECISION_FORMAT,
                 2
             );
+            
+            /* Tags */
+            $myServiceSet['tagname']  = "";
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
             //$myServiceSet['last_check'] = date("d/m/Y - H:i:s", $myServiceSet['last_check']);
         }
+        $resultSet = array_values($resultSet);
     }
 }

@@ -52,9 +52,28 @@ use Centreon\Internal\Controller;
  */
 class HostController extends Controller
 {
+    /**
+     *
+     * @var type 
+     */
     protected $datatableObject = '\CentreonRealtime\Internal\HostDatatable';
     
+    /**
+     *
+     * @var type 
+     */
     protected $objectClass = '\CentreonRealtime\Models\Host';
+    
+    /**
+     * 
+     * @param type $request
+     */
+    public function __construct($request)
+    {
+        $confRepository = '\CentreonConfiguration\Repository\HostRepository';
+        $confRepository::setObjectClass('\CentreonConfiguration\Models\Host');
+        parent::__construct($request);
+    }
     
     /**
      * Display services
@@ -71,7 +90,6 @@ class HostController extends Controller
             ->addCss('dataTables.tableTools.min.css')
             ->addCss('dataTables.colVis.min.css')
             ->addCss('dataTables.colReorder.min.css')
-            ->addCss('dataTables.fixedHeader.min.css')
             ->addCss('dataTables.bootstrap.css')
             ->addCss('centreon.tag.css', 'centreon-administration')
             ->addCss('select2.css')
@@ -84,15 +102,14 @@ class HostController extends Controller
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
             ->addJs('dataTables.colReorder.min.js')
-            ->addJs('dataTables.fixedHeader.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
             ->addJs('jquery.select2/select2.min.js')
-            ->addJs('jquery.validate.min.js')
-            ->addJs('additional-methods.min.js')
+            ->addJs('jquery.validation/jquery.validate.min.js')
+            ->addJs('jquery.validation/additional-methods.min.js')
             ->addJs('hogan-3.0.0.min.js')
             ->addJs('centreon.search.js')
-            //->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
             ->addJs('bootstrap3-typeahead.js')
             ->addJs('centreon.search.js')
             ->addJs('centreon-wizard.js');
@@ -116,7 +133,10 @@ class HostController extends Controller
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
         $this->tpl->append('jsUrl', $urls, true);
@@ -134,7 +154,11 @@ class HostController extends Controller
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        
+        $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
+            ->addJs('moment-with-locales.js')
+            ->addJs('moment-timezone-with-data.min.js')
+            ->addCss('centreon.tag.css', 'centreon-administration');
+                
         $myDatatable = new $this->datatableObject($this->getParams('get'), $this->objectClass);
         $myDataForDatatable = $myDatatable->getDatas();
         

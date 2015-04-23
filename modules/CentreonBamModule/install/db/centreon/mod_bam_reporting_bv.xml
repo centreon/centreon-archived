@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_bv" idMethod="native" phpName="ModBamReportingBv">
+    <column name="bv_id" phpName="BvId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="bv_name" phpName="BvName" type="VARCHAR" size="45"/>
+    <column name="bv_description" phpName="BvDescription" type="LONGVARCHAR"/>
+    <unique name="bv_name">
+      <unique-column name="bv_name"/>
+    </unique>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

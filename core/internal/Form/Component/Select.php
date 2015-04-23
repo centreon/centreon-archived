@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -70,8 +70,10 @@ class Select extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required .= ' required';
         }
         $addJs = '';
         if (isset($element['label_ordered']) && $element['label_ordered']) {
@@ -99,7 +101,7 @@ class Select extends Component
             . $addClass
             . '" id="'.$element['name']
             . '" name="' . $element['name']
-            . '" style="width: 100%;" type="hidden" value=" " />';
+            . '" style="width: 100%;" type="hidden" value=" "' . $required . ' />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '

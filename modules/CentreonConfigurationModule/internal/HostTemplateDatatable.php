@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -41,6 +41,7 @@ use Centreon\Internal\Datatable\Datasource\CentreonDb;
 use CentreonConfiguration\Repository\HostRepository; 
 use CentreonConfiguration\Repository\HostTemplateRepository;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of HostDatatable
@@ -62,6 +63,29 @@ class HostTemplateDatatable extends Datatable
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'host_id', 'name' => 'host_name');
+    
+    /**
+     *
+     * @var type 
+     */
+    //protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Host\Tag';
+    
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'host'
+        )
+    );
+
+    //protected static $hook = 'displayTagList';
+    protected static $hookParams = array(
+        'resourceType' => 'host'
+    );
+    
+    /**
+     *
+     * @var array 
+     */
+    protected static  $aFieldNotAuthorized = array();
     
     /**
      *
@@ -99,7 +123,6 @@ class HostTemplateDatatable extends Datatable
             'data' => 'host_name',
             'orderable' => true,
             'searchable' => true,
-            'searchLabel' => 'hostcategory',
             'type' => 'string',
             'visible' => true,
             'cast' => array(
@@ -126,8 +149,8 @@ class HostTemplateDatatable extends Datatable
             'title' => 'Interval',
             'name' => 'host_check_interval',
             'data' => 'host_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '50px',
@@ -137,8 +160,8 @@ class HostTemplateDatatable extends Datatable
             'title' => 'Retry',
             'name' => 'host_retry_check_interval',
             'data' => 'host_retry_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '40px',
@@ -148,8 +171,8 @@ class HostTemplateDatatable extends Datatable
             'title' => 'Atp',
             'name' => 'host_max_check_attempts',
             'data' => 'host_max_check_attempts',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'width' => '40px',
@@ -174,15 +197,34 @@ class HostTemplateDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'cast' => array(
-                            'type' => 'select',
-                            'parameters' => array(
-                                                  '0' => '<span class="label label-danger">Disabled</span>',
-                                                  '1' => '<span class="label label-success">Enabled</span>',
-                                                  '2' => 'Trash',
-                                                  )
-                            ),
+                'type' => 'select',
+                'parameters' => array(
+                    '0' => '<span class="label label-danger">Disabled</span>',
+                    '1' => '<span class="label label-success">Enabled</span>',
+                    '2' => 'Trash',
+                )
+            ),
+            'searchParam' => array(
+                'main' => 'true',
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Enabled' => '1',
+                    'Disabled' => '0'
+                )
+            ),
             'className' => "cell_center",
             'width' => '50px'
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'source' => 'relation'
         ),
     );
     
@@ -204,25 +246,30 @@ class HostTemplateDatatable extends Datatable
         $router = Di::getDefault()->get('router');
 
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
-                '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/snapshot/').
-                $myHostSet['host_id'].
-                '"><span class="overlay">'.
-                $myHostSet['host_name'].
-                '</span></span>';
+            $myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name'])
+                . '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/snapshot/')
+                . $myHostSet['host_id']
+                . '"><span class="overlay">'
+                . $myHostSet['host_name']
+                . '</span></span>';
             
             /* Templates */
             $myHostSet['host_template']  = "";
-            $templates = HostTemplateRepository::getTemplateList($myHostSet['host_id']);
+            $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
-                 $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/').
-                    $template['id'].'"><a class="overlay" href="'.
-                    $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
-                    '"><i class="fa '.
-                    $template['ico'].
-                    '"></i></a></span>';
+                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/')
+                . $template['id'].'"><a class="overlay" href="'
+                . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
+                . '"><i class="fa fa-shield"></i></a></span>';
             }
-
+            
+            /* Tags */
+            $myHostSet['tagname']  = "";
+            $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }
     }
 }

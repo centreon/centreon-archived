@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -38,6 +38,7 @@ namespace CentreonAdministration\Repository;
 use CentreonAdministration\Models\User;
 use CentreonAdministration\Models\Apitoken;
 use CentreonAdministration\Models\Contact;
+use CentreonAdministration\Models\ContactInfo;
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 use CentreonSecurity\Internal\Sso;
@@ -218,10 +219,7 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         
         if ($object == 'host') {
             $ctp = 'timeperiod_tp_id';
-        } elseif ($object == 'service') {
-            $ctp = 'timeperiod_tp_id2';
         }
-        
         $query = "SELECT tp_name, ".$object."_notification_options "
             . "FROM cfg_users, cfg_timeperiods "
             . "WHERE user_id='$contactId' "
@@ -257,6 +255,29 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         }
         
         return $name;
+    }
+
+    /**
+     *
+     * @param string $userId
+     * @return string
+     */
+    public static function getEmail($userId)
+    {
+        $contactEmail = array();
+        $contactId = Contact::getParameters($userId, array('contact_id'));
+
+        if (isset($contactId['contact_id'])) {
+            $contactInfosId = ContactInfo::getIdByParameter('contact_id',$contactId['contact_id']);
+            foreach ($contactInfosId as $id) {
+                $contactInfos = ContactInfo::getParameters($id, array('info_key', 'info_value'));
+                if ($contactInfos['info_key'] === 'email') {
+                    $contactEmail[] = $contactInfos['info_value'];
+                }
+            }
+        }
+
+        return $contactEmail;
     }
 
     /**

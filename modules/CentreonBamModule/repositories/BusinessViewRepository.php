@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,7 +35,9 @@
 
 namespace CentreonBam\Repository;
 
-use CentreonMain\Repository\FormRepository;
+use Centreon\Internal\Di;
+use Centreon\Repository\FormRepository;
+use CentreonBam\Models\BusinessActivity;
 
 /**
  * @author Sylvestre Ho <sho@centreon.com>
@@ -44,4 +46,21 @@ use CentreonMain\Repository\FormRepository;
  */
 class BusinessViewRepository extends FormRepository
 {
+
+    /**
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function getBuList()
+    {
+        // Initializing connection
+        $di = Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        #$router = $di->get('router');
+
+        $buList = BusinessActivity::getList("ba_id,name", -1, 0, null, "ASC", array('ba_type_id' => 1));
+
+		return $buList;
+	}
 }

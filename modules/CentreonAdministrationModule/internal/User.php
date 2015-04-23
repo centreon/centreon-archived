@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -165,10 +165,9 @@ class User
      */
     public function getEmail()
     {
-        if (!isset($this->email)) {
-            throw new Exception(self::$notInit);
-        }
-        return $this->email;
+        $emails = UserRepository::getEmail($this->id);
+
+        return $emails;
     }
 
     /**
@@ -195,7 +194,7 @@ class User
     {
         $di = Di::getDefault();
         $router = $di->get('router');
-        $homePage = $router->getPathFor('/centreon-customview');
+        $homePage = $router->getPathFor('/centreon-realtime/service');
         return $homePage;
     }
     /**

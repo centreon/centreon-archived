@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -51,10 +51,8 @@ class ForbiddenChar implements ValidatorInterface
      */
     public function validate($value, $params = array())
     {
-        $forbiddenCharDetected = false;
-        $illegalCharsStr = "~!$%^&|<>?,;()=";
-        $illegalCharsStr .= '"';
-        $illegalCharsArr = str_split($illegalCharsStr);
+        /*$forbiddenCharDetected = false;
+        $illegalCharsStr = str_split($params['characters']);
 
         $forbiddenCharsList = '';
         foreach ($illegalCharsArr as $char) {
@@ -72,6 +70,8 @@ class ForbiddenChar implements ValidatorInterface
                 'error' => _('One of these illegal chars ('.$forbiddenCharsList.') have been found')
             );
         }
-        return $result;
+        return $result;*/
+        
+        return array('success' => true, 'error' => '');
     }
 }

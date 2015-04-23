@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -199,7 +199,9 @@ abstract class CentreonRelationModel extends CentreonModel
         $sort = "ASC",
         $filters = array(),
         $filterType = "OR",
-        $relationTableParams = array()
+        $relationTableParams = array(),
+        $aAddFilters = array(),
+        $aGroup = array()
     ) {
         /* Convert params for getList */
         $params = array();
@@ -217,7 +219,7 @@ abstract class CentreonRelationModel extends CentreonModel
         $staticFilter .= " AND ";
         $staticFilter .= $secondObject::getTableName() . "." . $secondObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$secondKey;
 
-        return static::getListBySearch($params, $count, $offset, $order, $sort, $filters, $filterType, $listTable, $staticFilter);
+        return static::getListBySearch($params, $count, $offset, $order, $sort, $filters, $filterType, $listTable, $staticFilter, $aAddFilters, $aGroup);
     }
 
     /**

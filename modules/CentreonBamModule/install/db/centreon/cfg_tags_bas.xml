@@ -6,7 +6,7 @@
     <foreign-key foreignTable="cfg_tags" name="cfg_tags_bas_fk_01">
       <reference local="tag_id" foreign="tag_id"/>
     </foreign-key>
-    <foreign-key foreignTable="cfg_bam" name="cfg_tags_bas_fk_02">
+    <foreign-key foreignTable="cfg_bam" name="cfg_tags_bas_fk_02" onDelete="CASCADE" onUpdate="RESTRICT">
       <reference local="resource_id" foreign="ba_id"/>
     </foreign-key>
     <vendor type="mysql">

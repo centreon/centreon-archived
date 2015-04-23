@@ -7,10 +7,12 @@
         <section name="General">
             <block name="General information">
                 <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-                    <validators>
-                        <validator events="blur">unique</validator>
-                        <validator events="blur">forbiddenChar</validator>
-                    </validators>
+					         <validators>
+                     <validator rules="remote" serverside="unique" />
+                     <validator rules="forbiddenChar" serverside="forbiddenChar">
+                       <argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                     </validator>
+					         </validators>
                 </field>
                 <field name="offset" label="Offset" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
                 <field name="dst_offset" label="Dst Offset" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>

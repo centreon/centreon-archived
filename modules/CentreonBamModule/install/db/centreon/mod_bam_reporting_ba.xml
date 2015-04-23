@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_ba" idMethod="native" phpName="ModBamReportingBa">
+    <column name="ba_id" phpName="BaId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="ba_name" phpName="BaName" type="VARCHAR" size="45"/>
+    <column name="ba_description" phpName="BaDescription" type="LONGVARCHAR"/>
+    <column name="sla_month_percent_crit" phpName="SlaMonthPercentCrit" type="FLOAT"/>
+    <column name="sla_month_percent_warn" phpName="SlaMonthPercentWarn" type="FLOAT"/>
+    <column name="sla_month_duration_crit" phpName="SlaMonthDurationCrit" type="INTEGER"/>
+    <column name="sla_month_duration_warn" phpName="SlaMonthDurationWarn" type="INTEGER"/>
+    <unique name="ba_name">
+      <unique-column name="ba_name"/>
+    </unique>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

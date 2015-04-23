@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -55,7 +55,7 @@ class Command
     {
         try {
             $bootstrap = new Bootstrap();
-            $sectionToInit = array('configuration', 'database', 'cache', 'logger', 'organization');
+            $sectionToInit = array('configuration', 'database', 'cache', 'logger', 'organization', 'events');
             $bootstrap->init($sectionToInit);
             $this->requestLine = $requestLine;
             $this->parametersLine = $parametersLine;
@@ -86,7 +86,13 @@ class Command
      */
     public function getHelp()
     {
-        echo "Help not yet implemented\n";
+        echo "Usage: centreonConsole [-v] [-l] [-h] [-u <user>] [-p <password>] <request> <parameters>\n";
+        echo "-v Get Centreon Core version\n";
+        echo "-l List available commands\n";
+        echo "-h Print this help\n";
+        echo "-u / -p To authenticate\n";
+        echo "request Command or request to execute, as listed by '-l'\n";
+        echo "parameters List of parameters for the request, separated by ':'\n";
     }
     
     /**
@@ -134,7 +140,7 @@ class Command
         if (!is_null($module)) {
             $ListOfCommands = array($module => $ListOfCommands);
         }
-        
+
         foreach ($ListOfCommands as $module => $section) {
             if ($module == 'core') {
                 $moduleColorized = Colorize::colorizeText($module, "blue", "black", true);

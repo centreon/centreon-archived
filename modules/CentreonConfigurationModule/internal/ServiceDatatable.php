@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -42,6 +42,7 @@ use CentreonConfiguration\Repository\HostRepository;
 use CentreonRealtime\Repository\ServiceRepository as ServiceRealTimeRepository;
 use Centreon\Internal\Di;
 use Centreon\Internal\Datatable;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ServiceDatatable
@@ -55,7 +56,7 @@ class ServiceDatatable extends Datatable
      *
      * @var array 
      */
-    protected static $configuration = array(
+    public static $configuration = array(
         'autowidth' => false,
         'order' => array(
             array('host_name', 'asc'),
@@ -75,13 +76,21 @@ class ServiceDatatable extends Datatable
      * @var type 
      */
     protected static $datasource = '\CentreonConfiguration\Models\Service';
+    /**
+     *
+     * @var array 
+     */
+
+    public static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
      * @var type 
      */
-    protected static $additionnalDatasource = '\CentreonConfiguration\Models\Relation\Service\Host';
-    
+    protected static $additionnalDatasource = 
+        '\CentreonConfiguration\Models\Relation\Service\Host';
+     
+     
     /**
      *
      * @var type 
@@ -160,8 +169,8 @@ class ServiceDatatable extends Datatable
             'title' => 'Interval',
             'name' => 'service_normal_check_interval',
             'data' => 'service_normal_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -171,8 +180,8 @@ class ServiceDatatable extends Datatable
             'title' => 'Retry',
             'name' => 'service_retry_check_interval',
             'data' => 'service_retry_check_interval',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -182,29 +191,10 @@ class ServiceDatatable extends Datatable
             'title' => 'Atp',
             'name' => 'service_max_check_attempts',
             'data' => 'service_max_check_attempts',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
-            "className" => 'cell_center',
-            "width" => '40px'
-        ),
-        array (
-            'title' => 'Notifications',
-            'name' => 'service_notifications_enabled',
-            'data' => 'service_notifications_enabled',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'cast' => array(
-                'type' => 'select',
-                'parameters' =>array(
-                    '0' => '<span class="label label-danger">Disabled</span>',
-                    '1' => '<span class="label label-success">Enabled</span>',
-                    '2' => '<span class="label label-info">Default</span>',
-                )
-            ),
             "className" => 'cell_center',
             "width" => '40px'
         ),
@@ -212,8 +202,8 @@ class ServiceDatatable extends Datatable
             'title' => 'Parent Template',
             'name' => 'service_template_model_stm_id',
             'data' => 'service_template_model_stm_id',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'searchLabel' => 'servicetemplate',
             'type' => 'string',
             'visible' => true,
@@ -238,26 +228,36 @@ class ServiceDatatable extends Datatable
                 'type' => 'select',
                 'additionnalParams' => array(
                     'Enabled' => '1',
-                    'Disabled' => '0',
-                    'Trash' => '2'
+                    'Disabled' => '0'
                 )
             ),
             "className" => 'cell_center',
             "width" => '40px'
         ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
     );
-
+ 
     protected static $extraParams = array(
         'addToHook' => array(
             'objectType' => 'service'
         )
     );
 
-    protected static $hook= 'displayTagList';
+    //protected static $hook= 'displayTagList';
     protected static $hookParams = array(
         'resourceType' => 'service'
     );
-    
+  
     /**
      * 
      * @param array $params
@@ -274,6 +274,7 @@ class ServiceDatatable extends Datatable
     protected function formatDatas(&$resultSet)
     {
         $previousHost = '';
+        HostRepository::setObjectClass('\CentreonConfiguration\Models\Host');
         $router = Di::getDefault()->get('router');
         foreach ($resultSet as &$myServiceSet) {
             
@@ -307,9 +308,6 @@ class ServiceDatatable extends Datatable
             $myServiceSet['service_max_check_attempts'] = ServiceRepository::getMyServiceField(
                 $myServiceSet['service_id'],
                 'service_max_check_attempts'
-            );
-            $myServiceSet['service_notifications'] = ServiceRepository::getNotificicationsStatus(
-                $myServiceSet['service_id']
             );
             
             // Get Real Service Description
@@ -361,6 +359,14 @@ class ServiceDatatable extends Datatable
             );
             
             $myServiceSet['service_activate'] = $save;
+                   
+            /* Tags */
+            $myServiceSet['tagname']  = "";
+            $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }
     }
 }

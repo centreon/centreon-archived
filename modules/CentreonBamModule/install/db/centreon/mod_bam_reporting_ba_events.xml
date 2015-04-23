@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_ba_events" idMethod="native" phpName="ModBamReportingBaEvents">
+    <column name="ba_event_id" phpName="BaEventId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="ba_id" phpName="BaId" type="INTEGER" required="true"/>
+    <column name="start_time" phpName="StartTime" type="INTEGER" required="true"/>
+    <column name="first_level" phpName="FirstLevel" type="DOUBLE"/>
+    <column name="end_time" phpName="EndTime" type="INTEGER"/>
+    <column name="status" phpName="Status" type="TINYINT"/>
+    <column name="in_downtime" phpName="InDowntime" type="BOOLEAN" size="1"/>
+    <index name="ba_id">
+      <index-column name="ba_id"/>
+      <index-column name="start_time"/>
+    </index>
+    <index name="ba_id_2">
+      <index-column name="ba_id"/>
+      <index-column name="end_time"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

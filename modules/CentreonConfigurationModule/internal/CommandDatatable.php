@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -137,6 +137,15 @@ class CommandDatatable extends Datatable
                     '4' => '<span class="label label-info">Discovery</span>',
                 )
             ),
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Notifications' => '1',
+                    'Check' => '2',
+                    'Miscelleanous' => '3',
+                    'Discovery' => '4',
+                )
+            ),
             "className" => 'cell_center',
             'width' => "40px"
             
@@ -145,8 +154,8 @@ class CommandDatatable extends Datatable
             'title' => 'Host use',
             'name' => 'NULL AS host_use',
             'data' => 'host_use',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -156,8 +165,8 @@ class CommandDatatable extends Datatable
             'title' => 'Service use',
             'name' => 'NULL AS svc_use',
             'data' => 'svc_use',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             "className" => 'cell_center',
@@ -180,10 +189,11 @@ class CommandDatatable extends Datatable
      */
     public function formatDatas(&$resultSet)
     {
-        foreach ($resultSet as &$myCmdSet) {
+        foreach ($resultSet as $key => &$myCmdSet) {
             $myCmdSet['command_line'] = sprintf('%.70s', $myCmdSet['command_line'])."...";
             $myCmdSet['host_use'] = CommandRepository::getUseNumber($myCmdSet["command_id"], "host");
             $myCmdSet['svc_use'] =  CommandRepository::getUseNumber($myCmdSet["command_id"], "service");
         }
+        $resultSet = array_values($resultSet);
     }
 }

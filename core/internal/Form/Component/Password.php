@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -55,20 +55,29 @@ class Password extends Component
         }
         
         if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
+            $placeholder = 'placeholder="'.$element['label'].'" ';
         }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
+
+        $addClass = '';
+        $required = '';
+        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
+            $addClass .= 'mandatory-field ';
+            $required .= ' required';
+        }
+
         $myJs = '';
         $inputHtml = '<input '.
                         'id="'.$element['id'].'" '.
                         'type="password" '.
                         'name="'.$element['name'].'" '.
                         $value.
-                        'class="form-control input-sm" '.
+                        'class="form-control input-sm ' . $addClass . '" '.
                         $placeholder.
+                        $required .
                         '/>';
         
         return array(

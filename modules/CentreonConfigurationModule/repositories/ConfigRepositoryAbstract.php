@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,7 +39,7 @@ use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
 
 /**
- * Factory for ConfigGenerate Engine
+ * TODO
  *
  * @author Julien Mathis <jmathis@centreon.com>
  * @version 3.0.0
@@ -72,8 +72,7 @@ abstract class ConfigRepositoryAbstract
     protected $status;
 
     /**
-     * Method tests
-     * 
+     *
      * @param int $pollerId
      * @return type
      */
@@ -86,7 +85,7 @@ abstract class ConfigRepositoryAbstract
     }
 
     /**
-     * Get output
+     * Get output, converts array as string
      *
      * @param string $glue
      * @return string

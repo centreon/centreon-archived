@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -37,6 +37,8 @@
 namespace CentreonAdministration\Internal;
 
 use Centreon\Internal\Datatable;
+use Centreon\Internal\Di;
+use CentreonAdministration\Repository\TagsRepository;
 
 /**
  * Description of ContactDatatable
@@ -58,6 +60,13 @@ class ContactDatatable extends Datatable
      * @var type 
      */
     protected static $rowIdColumn = array('id' => 'contact_id', 'name' => 'description');
+    
+    /**
+     *
+     * @var array 
+     */
+
+    public static  $aFieldNotAuthorized = array('tagname');
     
     /**
      *
@@ -105,7 +114,28 @@ class ContactDatatable extends Datatable
                     'linkName' => '::description::'
                 )
             )
+        ),
+        array (
+            'title' => 'Tags',
+            'name' => 'tagname',
+            'data' => 'tagname',
+            'orderable' => false,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40px',
+            'tablename' => 'cfg_tags'
+        ),
+    );
+    
+    protected static $extraParams = array(
+        'addToHook' => array(
+            'objectType' => 'contact'
         )
+    );
+
+    protected static $hookParams = array(
+        'resourceType' => 'contact'
     );
     
     /**
@@ -115,5 +145,24 @@ class ContactDatatable extends Datatable
     public function __construct($params, $objectModelClass = '')
     {
         parent::__construct($params, $objectModelClass);
+    }
+    
+    /**
+     * 
+     * @param array $resultSet
+     */
+    protected function formatDatas(&$resultSet)
+    {
+        $previousHost = '';
+        $router = Di::getDefault()->get('router');
+        foreach ($resultSet as &$myContactSet) {      
+            /* Tags */
+            $myContactSet['tagname']  = "";
+            $aTags = TagsRepository::getList('contact', $myContactSet['contact_id'], 2);
+            foreach ($aTags as $oTags) {
+                $myContactSet['tagname'] .= TagsRepository::getTag('contact', $myContactSet['contact_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+            }
+            $myContactSet['tagname'] .= TagsRepository::getAddTag('contact', $myContactSet['contact_id']);
+        }
     }
 }

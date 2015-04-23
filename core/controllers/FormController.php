@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -78,13 +78,19 @@ abstract class FormController extends ListController
      * JSON response
      *
      * @method get
-     * @route /{object}/formlist
+     * @route /{object}/formlist/[i:id]?
      */
     public function formListAction()
     {
         $requestParams = $this->getParams('get');
+        $namedParams = $this->getParams('named');
         $repository = $this->repository;
-        $list = $repository::getFormList($requestParams['q']);
+
+        $objectId = null;
+        if (isset($namedParams['id'])) {
+            $objectId = $namedParams['id'];
+        }
+        $list = $repository::getFormList($requestParams['q'], $objectId);
         $this->router->response()->json($list);
     }
     
@@ -105,7 +111,7 @@ abstract class FormController extends ListController
             );
         }
         
-        $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id']));
+        $myForm = new WebFormGenerator($objectFormUpdateUrl, array('id' => $requestParam['id'], 'objectName'=> static::$objectName));
         $myForm->getFormFromDatabase();
         $myForm->addHiddenComponent('object_id', $requestParam['id']);
         $myForm->addHiddenComponent('object', static::$objectName);
@@ -158,9 +164,7 @@ abstract class FormController extends ListController
     public function updateAction()
     {
         $givenParameters = clone $this->getParams('post');
-        $updateSuccessful = true;
-        $updateErrorMessage = '';
-        
+
         try {
             $repository = $this->repository;
             $repository::update($givenParameters, 'form', $this->getUri());
@@ -169,7 +173,6 @@ abstract class FormController extends ListController
             unset($_SESSION['form_token_time']);
             $this->router->response()->json(array('success' => true));
         } catch (\Centreon\Internal\Exception $e) {
-            $updateSuccessful = false;
             $updateErrorMessage = $e->getMessage();
             $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }

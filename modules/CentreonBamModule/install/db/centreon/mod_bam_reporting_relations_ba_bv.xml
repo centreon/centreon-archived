@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="centreon" package="centreon_bam" defaultIdMethod="native">
+  <table name="mod_bam_reporting_relations_ba_bv" idMethod="native" phpName="ModBamReportingRelationsBaBv">
+    <column name="ba_bv_id" phpName="BaBvId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="bv_id" phpName="BvId" type="INTEGER" required="true"/>
+    <column name="ba_id" phpName="BaId" type="INTEGER" required="true"/>
+    <foreign-key foreignTable="mod_bam_reporting_bv" name="mod_bam_reporting_relations_ba_bv_ibfk_1" onDelete="CASCADE">
+      <reference local="bv_id" foreign="bv_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="mod_bam_reporting_ba" name="mod_bam_reporting_relations_ba_bv_ibfk_2" onDelete="CASCADE">
+      <reference local="ba_id" foreign="ba_id"/>
+    </foreign-key>
+    <index name="bv_id">
+      <index-column name="bv_id"/>
+    </index>
+    <index name="ba_id">
+      <index-column name="ba_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

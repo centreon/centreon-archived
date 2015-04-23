@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -49,35 +49,41 @@ use Centreon\Internal\Command\AbstractCommand;
 class ManageCommand extends AbstractCommand
 {
     /**
-     * 
+     * List module names
      * @param string $type
      * @param string $status
      */
-    public function listAction($type = 'all', $status = 'all')
+    public function simpleListAction($onlyActivated = 1)
     {
-        switch ($type) {
-            default:
-            case 'all':
-                $moduleList = Informations::getModuleList();
-                foreach ($moduleList as $module) {
-                    echo $module."\n";
-                }
-                break;
-            case 'core':
-                echo "centreon-main\ncentreon-configuration";
-                break;
-            case 'engine':
-                echo "Not implemented yet";
-                break;
-            case 'broker':
-                echo "Not implemented yet";
-                break;
-            case 'other':
-                echo "Not implemented yet";
-                break;
+        $moduleList = Informations::getModuleList($onlyActivated);
+        foreach ($moduleList as $module) {
+            echo $module."\n";
         }
     }
-    
+
+    /**
+     * List all information about modules
+     * @param string $type
+     * @param int $onlyActivated
+     * @param int $header
+     */
+    public function extendedListAction($onlyActivated = 1, $header = 1)
+    {
+        $moduleList = Informations::getModuleExtendedList($onlyActivated);
+        if ($header) {
+            echo 'name;alias;description;version;author;isactivated;isinstalled' . "\n";
+        }
+        foreach ($moduleList as $module) {
+            echo $module['name'].';'.
+                $module['alias'].';'.
+                $module['description'].';'.
+                $module['version'].';'.
+                $module['author'].';'.
+                $module['isactivated'].';'.
+                $module['isinstalled']."\n";
+        }
+    }
+
     /**
      * 
      * @param string $moduleName

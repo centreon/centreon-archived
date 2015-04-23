@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2014 CENTREON
+ * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -55,8 +55,10 @@ class Radio extends Component
         }
         
         $addClass = '';
+        $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
             $addClass .= 'mandatory-field ';
+            $required .= ' required';
         }
         
         $inputHtml = '';
@@ -73,6 +75,7 @@ class Radio extends Component
                             '<input '.'id="'.$element['id']. $i . '" '.
                             'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
                             'value=' . $choice . ' '.$htmlSelected.' '.
+                            $required . 
                             '/>'.' '.$key.
                             '</label>'.'&nbsp;&nbsp;';
                 $i++;

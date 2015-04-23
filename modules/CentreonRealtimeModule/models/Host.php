@@ -94,6 +94,23 @@ class Host extends CentreonBaseModel
         $filterType = "OR"
     ) {
         $filters['enabled'] = '1';
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        $aAddFilters = array();
+        $aGroup = array();
+        $tablesString =  null;
+        
+        if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
+           
+            $aAddFilters = array(
+                'tables' => array('cfg_tags', 'cfg_tags_hosts'),
+                'join'   => array('cfg_tags.tag_id = cfg_tags_hosts.tag_id',  'cfg_tags_hosts.resource_id = rt_hosts.host_id ')
+            ); 
+             
+        }
+        
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_hosts.resource_id', 'nb' => count($filters['tagname']));
+        }
+        
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 }
