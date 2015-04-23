@@ -162,75 +162,71 @@ $(document).ready(function() {
 
     // Hide labels by default if placeholders are supported
 
-    if($.support.placeholder ) {
-        $('.CentreonForm .form-group').each(function(){
-            //$(this).addClass('js-hide-label');
-        });
-
-        $form_url = $('.CentreonForm').attr("data-route");
-
-        $.ajax({
-            url: "$form_url",
-            type: "POST",
-            dataType: 'html',
-            success : function(data){
-                console.log(data);
-            },
-            error : function(resultat, statut, erreur){
-
-            },
-
-            complete : function(resultat, statut){
-
-            }
-        })
+    if($.support.placeholder) {
+        if($('input').val() == 0) {
+            $('.CentreonForm .form-group').each(function(){
+                $(this).addClass('js-hide-label');
+                $('input').css({'padding':'10px 12px 12px'});
+            });
+        }
 
         // Code for adding/removing classes here
 
         $('.CentreonForm .form-group').find('input, textarea').on('keyup blur focus', function(e){
 
-            // ajax request for
-
-            /*$.ajax({
-                url: "{url_for url=$validateUrl}",
-                type: "POST",
-                dataType: 'json',
-                data: $(this).serializeArray(),
-                context: document.body
-            })*/
-
             // Cache our selectors
             var $this = $(this),
-                $parent = $this.parent(),
-                url = $ajaxUrl = '/form/help/';
-                $help = $('cite');
+                $label = $this.prev('label'),
+                $parent = $this.parent();
 
-            /*if (e.type == 'keyup') {
-                if( $this.val() == '' ) {
-                    $parent.addClass('js-hide-label');
-                } else {
-                    $parent.removeClass('js-hide-label');
+            // ajax request for
+            var $form_url = $('.CentreonForm').attr("data-route");
+
+            $.ajax({
+                url: '/form/help',
+                type: "POST",
+                dataType: 'JSON',
+                data : {
+                    form: $form_url,
+                    field: $this.attr("name")
+                },
+                success : function(data){
+
+                    if (e.type == 'keyup') {
+                     if( $this.val() == '' ) {
+                         $parent.addClass('js-hide-label');
+                         } else {
+                             $parent.removeClass('js-hide-label');
+                             }
+                     }
+
+                     else if (e.type == 'blur') {
+                        $this.next().css({'display':'none'});
+
+                        if( $this.val() == '' ) {
+                            $parent.addClass('js-hide-label');
+                            $this.css({'padding':'10px 12px 12px'});
+                        }
+                        else {
+                            $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
+                        }
+                    }
+                    else if (e.type == 'focus') {
+
+                        $this.next().css({'display': 'block','padding': '3px'}).html(data.text);
+                        $this.css({'padding':'16px 12px 6px'});
+                        $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
+
+                        if ($this.val() == '') {
+                            $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
+                        }
+                    }
+                },
+                error : function(error){
+                    console.log(error,' -Help- datas not transfered');
                 }
-            }
+            })
 
-            else */if (e.type == 'blur') {
-                $this.next().css({'display':'none'}).html("help");
-
-                if( $this.val() == '' ) {
-                    $parent.addClass('js-hide-label');
-                }
-                else {
-                    $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
-                }
-            }
-            else if (e.type == 'focus') {
-
-                 $this.next().css({'display': 'block'}).html("help");
-
-                if ($this.val() == '') {
-                    $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
-                }
-            }
         });
     }
 

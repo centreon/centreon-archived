@@ -1,24 +1,7 @@
 .CentreonForm {
 
-  /*-- Form --*/
-    /*ul {
-    background: white;
-    margin-bottom: 1em;
-
-    li {
-      border: 1px solid #ccc;
-      border-bottom: 0;
-      margin-bottom: 0px;
-      position: relative;
-
-      &:first-child {
-        border-top: 0;
-      }
-
-      &:last-child {
-        border-bottom: 1px solid #ccc;
-      }
-    }
+  .form-group {
+    margin-bottom: @paddingElem*2;
   }
 
   /*-- Reset --*/
@@ -37,6 +20,7 @@
     border-radius: 3px;
     box-shadow: 2px 1px 1px @lightGray;
     border: 1px solid @lightGray;
+    margin-bottom: 2px;
   }
 
   textarea {
@@ -47,10 +31,26 @@
   /*-- input  --*/
 
   cite {
-    display: none;
+    //display: none;
+    font-size: 70%;
     position: absolute;
-    font-size: 75%;
     color: @info;
+    width: 60%;
+    height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /*-- input inheritance  --*/
+  .inheritance {
+    font-size: 80%;
+    color: @lightGray3;
+    position: absolute;
+    bottom: 5px;
+    right: 1.5em;
+    width: 20%;
+    text-align: right;
   }
 
   /*-- Label  --*/
@@ -75,7 +75,12 @@
 }
 
 .js-unhighlight-label{
-  color: @firstGreenLighten;
+  label {
+    color: @firstGreenLighten;
+  }
+  input {
+    color: @black;
+  }
 }
 .required {
   &:after {

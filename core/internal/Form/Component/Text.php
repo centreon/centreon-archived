@@ -74,6 +74,7 @@ class Text extends Component
                         'name="'.$element['name'].'" '.
                         $value.
                         'class="'.$addClass.'" '.
+                        $placeholder.
                         $required .
                         '/>'.'<cite></cite>';
         

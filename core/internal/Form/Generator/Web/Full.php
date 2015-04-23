@@ -269,7 +269,7 @@ class Full extends Generator
                         if ($component['advanced'] == '1') {
                             $formRendering .= ' advanced';
                         }
-                         $formRendering .= '<span class="inheritance" id="' . $component['name'] . '_inheritance">hello</span>';
+                         $formRendering .= '<span class="inheritance" id="' . $component['name'] . '_inheritance"></span>';
                          $formRendering .= '</div>';
                     }
                 }
