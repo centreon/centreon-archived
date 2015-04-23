@@ -135,7 +135,7 @@ class BasicRepository
             . "AND cfs.form_id = cf.form_id "
             . "AND cfb.section_id = cfs.section_id "
             . "AND cff.block_id = cfb.block_id ";
-        $db = Di::getDefault()->get('centreon');
+        $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->query($fieldHelpRequest);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
