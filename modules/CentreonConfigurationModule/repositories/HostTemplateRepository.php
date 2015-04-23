@@ -156,7 +156,7 @@ class HostTemplateRepository extends Repository
         $values = array();
         $templates = HostRepository::getTemplateChain($hostId, array(), -1);
         if ($isBase) {
-            array_unshift($templates, $hostId);
+            array_unshift($templates, array('id' => $hostId));
         }
         foreach ($templates as $template) {
             $inheritanceValues = static::getInheritanceValues($template['id']);
