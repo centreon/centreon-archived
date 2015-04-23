@@ -34,12 +34,12 @@
  */
 namespace CentreonConfiguration\Commands;
 
-use Centreon\Api\Internal\BasicCrudCommand;
+use CentreonConfiguration\Api\Internal\BasicTagSupport;
 
 /**
  * 
  */
-class ServiceCommand extends BasicCrudCommand
+class ServiceCommand extends BasicTagSupport
 {
     /**
      *
