@@ -43,6 +43,7 @@ use Centreon\Internal\Form\Exception\InvalidTokenException;
 use Centreon\Internal\Exception;
 use Centreon\Internal\Exception\Validator\MissingParameterException;
 use Centreon\Internal\Utils\String\CamelCaseTransformation;
+use \Centreon\Internal\Exception\Http\BadRequestException;
 
 /**
  * Description of Validator
@@ -122,7 +123,7 @@ class Validator
         $datasKeys = array_keys($submittedDatas);
         $missingKeys = array_diff($validationScheme['mandatory'], $datasKeys);
         if (count($missingKeys) > 0) {
-            $errorMessage = "The following mandatory parameters are missing : ";
+            $errorMessage = _("The following mandatory parameters are missing") . " :\n    - ";
             $errorMessage .= implode("\n    - ", $missingKeys);
             throw new MissingParameterException($errorMessage);
         }
@@ -137,21 +138,27 @@ class Validator
 
         // Validate each field according to its validators
         foreach ($submittedDatas as $key => $value) {
+            
             if (isset($validationScheme['fieldScheme'][$key])) {
+                
                 foreach ($validationScheme['fieldScheme'][$key] as $validatorElement) {
-                    //$call = '\Centreon\Internal\Form\Validators\\' . ucfirst($validatorElement['call']);
+                    
+                    // Getting Validator Class to be called
                     $call = $this->parseValidatorName($validatorElement['call']);
                     $validator = new $call($validatorElement['params']);
                     $validatorParams = array_merge($objectParams, json_decode($validatorElement['params'], true));
+                    
+                    // Launch validation
                     $result = $validator->validate($value, $validatorParams);
                     if ($result['success'] === false) {
                         $errors[] = $result['error'];
                     }
+                    
                 }
             }
         }
         
-        // 
+        // If we got error, we throw Exception
         if (count($errors) > 0) {
             $this->raiseValidationException($errors);
         }
@@ -183,6 +190,6 @@ class Validator
      */
     private function raiseValidationException($errors)
     {
-        throw new \Centreon\Internal\Exception\Http\BadRequestException('Validation error', $errors);
+        throw new BadRequestException('Validation error', $errors);
     }
 }

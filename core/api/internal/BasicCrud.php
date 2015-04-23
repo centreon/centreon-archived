@@ -305,6 +305,7 @@ class BasicCrud extends AbstractCommand
      */
     private function parseObjectParams($params)
     {
+        // 
         $finalParamList = array();
 
         // First we seperate the params
@@ -321,8 +322,10 @@ class BasicCrud extends AbstractCommand
             }
         }
 
+        // 
         return $finalParamList;
     }
+    
     
     /**
      * 
@@ -355,12 +358,13 @@ class BasicCrud extends AbstractCommand
             $repository = $this->repository;
             $paramList = $this->parseObjectParams($params);
             $paramList['object_id'] = $object;
+            
             $repository::update(
                         $paramList,
                         'api',
                         $this->objectBaseUrl . '/update'
                     );
-            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
         } catch (Exception $ex) {
             \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
