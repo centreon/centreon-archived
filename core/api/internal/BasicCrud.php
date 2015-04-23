@@ -37,6 +37,7 @@ namespace Centreon\Api\Internal;
 
 use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Module\Informations;
+use Centreon\Internal\Exception;
 
 /**
  * Description of BasicCrud
@@ -299,18 +300,70 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
+     * @param type $params
+     * @return type
      */
-    public function createAction()
+    private function parseObjectParams($params)
     {
-        echo "Not implemented yet";
+        $finalParamList = array();
+
+        // First we seperate the params
+        $rawParamList = explode(';', $params);
+
+        // 
+        foreach ($rawParamList as $param) {
+            $openingDelimiterPos = strpos($param, '[');
+            $closingDelimiterPos = strrpos($param, ']');
+            if (($openingDelimiterPos !== false) || ($closingDelimiterPos !== false)) {
+                $paramName = substr($param, 0, $openingDelimiterPos);
+                $paramValue = substr($param, $openingDelimiterPos + 1, ($closingDelimiterPos - $openingDelimiterPos) - 1);
+                $finalParamList[$paramName] = $paramValue;
+            }
+        }
+
+        return $finalParamList;
     }
     
     /**
      * 
+     * @param string $params
      */
-    public function updateAction()
+    public function createAction($params)
     {
-        echo "Not implemented yet";
+        try {
+            $repository = $this->repository;
+            $paramList = $this->parseObjectParams($params);
+            $idOfCreatedElement = $repository::create(
+                        $paramList,
+                        'api',
+                        $this->objectBaseUrl . '/update'
+                    );
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
+        } catch (Exception $ex) {
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+        }
+    }
+    
+    /**
+     * 
+     * @param string $object
+     * @param string $params
+     */
+    public function updateAction($object, $params)
+    {
+        try {
+            $repository = $this->repository;
+            $paramList = $this->parseObjectParams($params);
+            $paramList['object_id'] = $object;
+            $repository::update(
+                        $paramList,
+                        'api',
+                        $this->objectBaseUrl . '/update'
+                    );
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully created", true, 'green');
+        } catch (Exception $ex) {
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
+        }
     }
     
     /**
