@@ -90,6 +90,27 @@ class HostTemplateRepository extends Repository
     public static $objectName = 'Hosttemplate';
 
     /**
+     * Get list of host templates
+     *
+     * @param string $searchStr
+     * @param int $objectId The self id to skip
+     * @return array
+     */
+    public static function getFormList($searchStr = "", $objectId = null)
+    {
+        $listHostTemplate = parent::getFormList();
+
+        foreach ($listHostTemplate as $key => $hostTemplate) {
+            if ($hostTemplate['id'] == $objectId) {
+                unset($listHostTemplate[$key]);
+            }
+        }
+        $listHostTemplate = array_values($listHostTemplate);
+
+        return $listHostTemplate;
+    }
+
+    /**
      * 
      * @param int $host_id
      * @return string

@@ -18,7 +18,7 @@
 				<field name="service_template_model_stm_id" label="Service Template Model" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/servicetemplate/formlist/[i:id]</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/servicetemplate/[i:id]/servicetemplate</listValuesRoute>
 						<multiple>false</multiple>
 					</attributes>

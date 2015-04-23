@@ -87,6 +87,27 @@ class ServicetemplateRepository extends Repository
         'command_command_id_arg',
         'command_command_id_arg2'
     );
+
+    /**
+     * Get list of service templates
+     *
+     * @param string $searchStr
+     * @param int $objectId The self id to skip
+     * @return array
+     */
+    public static function getFormList($searchStr = "", $objectId = null)
+    {
+        $listServiceTemplate = parent::getFormList();
+
+        foreach ($listServiceTemplate as $key => $serviceTemplate) {
+            if ($serviceTemplate['id'] == $objectId) {
+                unset($listServiceTemplate[$key]);
+            }
+        }
+        $listServiceTemplate = array_values($listServiceTemplate);
+
+        return $listServiceTemplate;
+    }
     
     /**
      * 

@@ -18,7 +18,7 @@
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist/[i:id]</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/hosttemplate</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>true</ordered>
