@@ -283,14 +283,14 @@ class ToolsController extends Controller
     
     /**
      * 
-     * @method post
+     * @method get
      * @route /form/help
      */
     public function getFormHelpAction()
     {
         try {
             // Get request params and thowing exception if missing
-            $requestParams = $this->getParams('post');
+            $requestParams = $this->getParams('get');
             if (!isset($requestParams['form'])) {
                 throw new BadRequestException('Missing parameter', 'The form parameter is missing');
             }

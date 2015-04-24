@@ -3,10 +3,13 @@
 {block name="title"}{$pageTitle}{/block}
 
 {block name="content"}
+
     <div class="col-md-12">
-        <a id="advanced_mode_switcher" href="#" class="btn btn-primary">
-            <i class="fa fa-gears"></i> {t}Switch to Advanced mode{/t}
-        </a>
+        <div class="">
+            <a id="advanced_mode_switcher" href="#" class="btnC btnDefault">
+                <i class="fa fa-gears"></i> {t}Advanced Mode{/t}
+            </a>
+        </div>
         {$form}
      </div>
 
@@ -95,9 +98,6 @@
         });
         
         $(function () {
-            $("#formHeader").parent().parent().append(
-                $('<div class="col-md-12"></div>').append($("#advanced_mode_switcher"))
-            );
 
             {if isset($inheritanceUrl)}
             $.ajax({
