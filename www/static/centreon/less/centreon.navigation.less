@@ -25,7 +25,7 @@
     margin-right: 16px;
 
     a.dropdown-toggle {
-      padding: @paddingElem;
+      padding: @paddingElem*2;
       background-color: @darkBlue;
       display: block;
       &:hover {
@@ -48,7 +48,7 @@
           a {
             display: block;
             color: @lightGray;
-            padding : @paddingElem @paddingElem*2;
+            padding : @paddingElem*2 @paddingElem*4;
               &:hover {
                   text-decoration: none;
                   background-color: @darkBlue;
@@ -56,7 +56,7 @@
           }
       }
       .media {
-        padding : @paddingElem * 2;
+        padding : @paddingElem * 4;
 
           ul {
             text-align: right;
@@ -69,7 +69,7 @@
   }
   /*-- Time Zone --*/
   .clock{
-    padding: @paddingElem+4 @paddingElem*2;
+    padding: @paddingElem*3 @paddingElem*4;
     display: block;
     font-size: 12px;;
     color: @lightGray;
@@ -87,7 +87,7 @@
        }
         a {
             color : lighten(@lightGray,0%);
-            padding : @paddingElem @paddingElem ;
+            padding : @paddingElem*2;
 
         &:hover {
             background-color: transparent;
@@ -144,7 +144,7 @@
 
 .logo a.minimalize-styl-2 img[alt="Centreon"]{
     height: 24px;
-    margin-right: @paddingElem/2;
+    margin-right: @paddingElem;
 }
 .logo a.minimalize-styl-2 .nav-label {
 vertical-align: middle;
@@ -163,7 +163,7 @@ vertical-align: middle;
         padding-left: 0;
     }
     a {
-        padding : @paddingElem @paddingElem+6;
+        padding : @paddingElem*2 @paddingElem*3;
         color : @navbar-default-bg;
         font-weight: normal;
         font-size: 14px;
@@ -173,7 +173,7 @@ vertical-align: middle;
             background-color: lighten(@lightGray,5%);
         }
       i {
-         margin-right: @paddingElem/2;
+         margin-right: @paddingElem;
          font-size : 14px;
       }
     }
@@ -333,7 +333,7 @@ body.fixed-sidebar .navbarSide {
 /*-- Mini Navbar --*/
 
 .mini-navbar .navbarSide #side-menu a {
-  padding: @paddingElem @paddingElem*2;
+  padding: @paddingElem*2 @paddingElem*4;
   transition: all 0.5s ease;
   i {
     font-size: 22px;
@@ -387,7 +387,7 @@ body.mini-navbar .navbar-default .nav > li > .nav-third-level li a {
   padding-bottom: 60px;
 }
 .mini-navbar .navbarSide #side-menu .nav-second-level li a {
-  padding: @paddingElem 22px;
+  padding: @paddingElem*2 22px;
 
 
   i{

@@ -64,14 +64,14 @@ class Selectimage extends Component
         $selectForImage = Select::renderHtmlInput($selectImageParameters);
         $fileUploadForImage = File::renderHtmlInput($element);
         
-        $finalHtml = '<div class="row">'
-                . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
-                . '<div class="col-sm-2">'
+        $finalHtml = '<div class="inlineGroup">'
+                . '<div class="">'.$selectForImage['html'].'</div>'
+                . '<div class="">'
                     . '<button '
-                        . 'class="btn btn-default btn-sm" '
+                        . 'class="btnC btnDefault" '
                         . 'id="modalAdd_'.$element['name'].'" '
                         . 'type="button">'
-                        . 'Add Files...'
+                        . '+'
                     . '</button>'
                 . '</div>'
             . '</div>';

@@ -1,7 +1,7 @@
 .CentreonForm {
 
   .form-group {
-    margin-bottom: @paddingElem*2;
+    margin-bottom: @paddingElem*3;
   }
 
   /*-- Reset --*/
@@ -13,10 +13,13 @@
 
   input[type="text"],
   input[type="number"],
-  textarea {
+  textarea,
+  .select2-container .select2-choice,
+  //.select2-container .select2-choices .select2-search-field input
+{
     width: 100%;
-    height: 100%;
-    padding: 16px @paddingElem @paddingElem/2;
+    height: 44px;
+    padding: @paddingElem*3 @paddingElem*2 @paddingElem;
     outline: 0;
     border-radius: 3px;
     box-shadow: 2px 1px 1px @lightGray;
@@ -35,7 +38,7 @@
     //display: none;
     font-size: 70%;
     position: absolute;
-    color: @info;
+    color: darken(@thirdBlue,10%)/*@thirdBlueDarken*/;
     width: 60%;
     height: 20px;
     overflow: hidden;
@@ -48,7 +51,7 @@
     font-size: 80%;
     color: @lightGray3;
     position: absolute;
-    bottom: 5px;
+    bottom: -8px;
     right: 1.5em;
     width: 30%;
     text-align: right;
@@ -59,7 +62,7 @@
   label.floatLabel {
     font-size: 11px;
     position: absolute;
-    top: @paddingElem / 2;
+    top: @paddingElem;
     left: 30px;
     color: @lightGray3;
     font-weight: normal;
@@ -68,20 +71,58 @@
     -webkit-transition: .333s ease top, .333s ease opacity;
     transition: .333s ease top, .333s ease opacity;
   }
+  .js-unhighlight-label{
+    label {
+      color: @firstGreenLighten;
+    }
+    input {
+      color: @black;
+    }
+  }
+
+  /*---- Select Fields --- */
+
+  //Select Image
+
+  .select2-container {
+      height: 44px;
+      .select2-choice   {
+        img {
+          width: 28px;
+          height: 28px;
+        }
+        > span:first-child {
+          padding: 0;
+        }
+        .select2-chosen {
+          margin-right: 30px;
+            img {
+              position: absolute;
+              right: 3em;
+              bottom: 7px;
+              padding: 1px;
+            }
+         }
+      }
+  }
 }
+
+.select2-drop {
+  .select2-results {
+    .select2-result-label {
+      img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}
+
+
 
 .js-hide-label > label.floatLabel {
   opacity: 0;
   top: 1.5em;
-}
-
-.js-unhighlight-label{
-  label {
-    color: @firstGreenLighten;
-  }
-  input {
-    color: @black;
-  }
 }
 .required {
   &:after {
@@ -104,10 +145,10 @@
     border-width: 0px;
     text-decoration: none;
     font-size: 75%;
-    padding : @paddingElem/2 @paddingElem;
+    padding : @paddingElem*2 @paddingElem;
   }
   .btnDefault{
-    color: @thirdBlue;
+    color: @darkGray1;
     background-color: @lightGray1;
     //border-color: @lightGray;
     box-shadow: 1px 2px 2px @lightGray;
@@ -127,10 +168,6 @@
   z-index: 1;
   color: #007f77;
 }
-  /*-- Form --*/
-  .formWrapper {
-    margin-top: @paddingElem*3;
-  }
   /*---- Notification --- */
 
   .bs-callout {
@@ -141,7 +178,7 @@
     left: 0;
     font-size:90%;
     text-align: center;
-    padding: @paddingElem/2 0;
+    padding: @paddingElem 0;
     border-top: 3px solid;
     top: 0;
   }
