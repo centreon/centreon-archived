@@ -122,7 +122,7 @@ class DowntimesDatatable extends Datatable
             'name' => 'object_name',
             'data' => 'object_name',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
