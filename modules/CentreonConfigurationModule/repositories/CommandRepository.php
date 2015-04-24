@@ -63,6 +63,16 @@ class CommandRepository extends Repository
     public static $objectName = 'Command';
     
     /**
+     *
+     * @var type 
+     */
+    protected static $unicityFields = array(
+        'fields' => array(
+            'command' => 'cfg_commands,command_id,command_name'
+        ),
+    );
+    
+    /**
      * 
      * @param int $id
      * @return mixed

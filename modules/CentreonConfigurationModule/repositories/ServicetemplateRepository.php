@@ -87,6 +87,16 @@ class ServicetemplateRepository extends Repository
         'command_command_id_arg',
         'command_command_id_arg2'
     );
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $unicityFields = array(
+        'fields' => array(
+            'servicetemplate' => 'cfg_services,service_id,service_description'
+        ),
+    );
 
     /**
      * Get list of service templates

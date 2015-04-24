@@ -88,6 +88,7 @@ function addChart( graphId, serviceId, startTime, endTime ) {
 }
 
 function updateChart( startTime, endTime ) {
+   
   $( ".graph" ).each( function( idx, element ) {
     var serviceId = $( element ).data( "serviceId" );
     if ( charts[ idx ] === null ) {

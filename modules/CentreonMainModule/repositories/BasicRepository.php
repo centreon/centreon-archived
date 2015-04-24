@@ -147,4 +147,49 @@ class BasicRepository
         
         return $finalHelpReturn;
     }
+    
+    /**
+     * 
+     * @param type $unicityParams
+     */
+    public static function getIdFromUnicity($unicityParams)
+    {
+        $objClass = static::$objectClass;
+        $tables = array();
+        $conditions = array();
+        
+        // Building Query
+        $query = 'SELECT ' . $objClass::getPrimaryKey() . ' ';
+        
+        // Checking por unicity's params
+        foreach ($unicityParams as $key => $unicityParam) {
+            if (isset(static::$unicityFields['fields'][$key])) {
+                $fieldComponents = explode (',', static::$unicityFields['fields'][$key]);
+                $tables[] = $fieldComponents[0];
+                $conditions[] = $fieldComponents[2] . "='$unicityParam'";
+            }
+        }
+        
+        // 
+        if (isset(static::$unicityFields['joint'])) {
+            $tables[] = static::$unicityFields['joint'];
+            $conditions[] = static::$unicityFields['jointCondition'];
+        }
+        
+        // FInalizing query
+        $query .= 'FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
+        
+        // Execute request
+        $db = Di::getDefault()->get('db_centreon');
+        $stmt = $db->query($query);
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        if (count($result) > 0) {
+            $objectId = $result[0][$objClass::getPrimaryKey()];
+        } else {
+            throw new \Centreon\Internal\Exception\Validator\MissingParameterException("The given object doesn't exist");
+        }
+        
+        return $objectId;
+    }
 }

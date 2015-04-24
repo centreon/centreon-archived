@@ -51,6 +51,8 @@ class BasicTagSupport extends BasicCrudCommand
     public function addTagAction($object, $tag)
     {
         try {
+            $repository = $this->repository;
+            $object = $repository::getIdFromUnicity($this->parseObjectParams($object));
             TagsRepository::add($tag, $this->objectName, $object, 3);
             \Centreon\Internal\Utils\CommandLine\InputOutput::display(
                 "The tag has been successfully added to the object",
@@ -68,9 +70,15 @@ class BasicTagSupport extends BasicCrudCommand
      */
     public function listTagAction($object = null)
     {
-        $TagList = TagsRepository::getList($this->objectName, $object, 1);
-        foreach ($TagList as $tag) {
-            echo $tag['text'] . "\n";
+        try {
+            $repository = $this->repository;
+            $object = $repository::getIdFromUnicity($this->parseObjectParams($object));
+            $TagList = TagsRepository::getList($this->objectName, $object, 1);
+            foreach ($TagList as $tag) {
+                echo $tag['text'] . "\n";
+            }
+        } catch (\Exception $ex) {
+            \Centreon\Internal\Utils\CommandLine\InputOutput::display($ex->getMessage(), true, 'red');
         }
     }
     
@@ -82,6 +90,8 @@ class BasicTagSupport extends BasicCrudCommand
     public function removeTagAction($object, $tag)
     {
         try {
+            $repository = $this->repository;
+            $object = $repository::getIdFromUnicity($this->parseObjectParams($object));
             TagsRepository::delete($tag, $this->objectName, $object);
             \Centreon\Internal\Utils\CommandLine\InputOutput::display(
                 "The tag has been successfully removed from the object",

@@ -40,4 +40,15 @@ namespace CentreonConfiguration\Repository;
  * @package Centreon
  * @subpackage Repository
  */
-class ConnectorRepository extends \CentreonConfiguration\Repository\Repository {}
+class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
+{
+    /**
+     *
+     * @var type 
+     */
+    protected static $unicityFields = array(
+        'fields' => array(
+            'connector' => 'cfg_connectors,id,name'
+        ),
+    );
+}

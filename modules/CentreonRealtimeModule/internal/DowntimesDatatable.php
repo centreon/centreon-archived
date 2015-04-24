@@ -278,7 +278,7 @@ class DowntimesDatatable extends Datatable
         $di = Di::getDefault();
         $dbconn = $di->get('db_centreon');
 
-        $sqlServiceDowntime = 'SELECT d.downtime_id, h.host_name, s.service_description'
+        $sqlServiceDowntime = 'SELECT d.downtime_id, h.host_name, s.service_id, s.service_description'
             . ' FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, rt_downtimes d'
             . ' WHERE s.service_id=d.service_id and h.host_id=d.host_id'
             . ' AND hs.host_host_id=h.host_id and hs.service_service_id=s.service_id';

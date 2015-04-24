@@ -177,8 +177,21 @@ function saveView(viewId, graphs, viewName, viewPrivacy) {
 
 $(function() {
   /* Iniialiaze period */
+  /*
   var endTime = moment(),
       startTime = moment(endTime).subtract(24, 'hours');
+  */
+ 
+ var endTime,
+ startTime;
+      
+ if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
+        endTime = moment().tz(sessionStorage.getItem("sTimezone"));
+    } else {
+        endTime = moment();
+        
+    }
+    startTime = moment(endTime).subtract(24, 'hours');
 
   /* Load tooltip */
   $("[data-toggle='tooltip']").tooltip();
@@ -321,6 +334,7 @@ $(function() {
       "1 month": [moment().subtract(1, 'months'), moment()]
     }
   });
+  
   $("input[name='period']").val(startTime.format('YYYY-MM-DD HH:mm') + " - " + endTime.format('YYYY-MM-DD HH:mm'));
 
   $("#addGraph").on("click", function() {

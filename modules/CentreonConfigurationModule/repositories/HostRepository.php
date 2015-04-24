@@ -81,6 +81,16 @@ class HostRepository extends Repository
         'host_snmp_community',
         'host_snmp_version'
     );
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $unicityFields = array(
+        'fields' => array(
+            'host' => 'cfg_hosts,host_id,host_name'
+        ),
+    );
 
     /**
      * 

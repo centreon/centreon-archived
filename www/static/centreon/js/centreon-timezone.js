@@ -1,4 +1,5 @@
 var sDefaultFormatDate = "YYYY-MM-DD HH:mm:ss";
+var sDefaultFormatDateWithoutSecond = "YYYY-MM-DD HH:mm";
 
 function displayDate()
 {
@@ -7,16 +8,17 @@ function displayDate()
     $.each(aFieldTime, function(idx, el) {
         var unixtime = $(el).data('time');
         if (unixtime != '') {
-            if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
-                var sDate = moment.unix(unixtime);
-                var localDate = sDate.format(sDefaultFormatDate);
-                var newDate =  sDate.tz(sessionStorage.getItem("sTimezone")).format(sDefaultFormatDate);
-                $(el).text(newDate+" ("+localDate+")");
+            var sDate = moment.unix(unixtime);
+            var localDate = sDate.format(sDefaultFormatDate);
+            var newDate = getDateByTz(unixtime);
+            var sNewFormat = '';
+            if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {             
+               sNewFormat = newDate+" ("+localDate+")";
             } else {
-                var sDate = moment.unix(unixtime);
-                var localDate = sDate.format(sDefaultFormatDate);
-                $(el).text(localDate);
+                sNewFormat = localDate;
             }
+            
+            $(el).text(sNewFormat);
         }
     });
        
@@ -33,4 +35,45 @@ function changeTimezone(sTimezone)
         sessionStorage.setItem("sTimezone", sTimezone);
     }
     displayDate();
+    
+    if ($("input[name='period']").length > 0 &&  typeof nbGraph !== 'undefined') {
+        var startTime, endTime, startTimeNew, endTimeNew, startDateNew, endDateNew,
+            time = $("input[name='period']").val();
+
+        startTime = moment(time.split(" - ")[0]).format('X');
+        endTime = moment(time.split(" - ")[1]).format('X');
+        
+        startDateNew = getDateByTz(startTime, sDefaultFormatDateWithoutSecond);
+        endDateNew = getDateByTz(endTime, sDefaultFormatDateWithoutSecond);
+   
+        startTimeNew = moment(startDateNew).unix();
+        endTimeNew = moment(endDateNew).unix();
+
+        $("input[name='period']").val(startDateNew +" - "+endDateNew);
+        
+        if (nbGraph > 0) {
+            updateChart(startTimeNew, endTimeNew);
+        }
+    }
+   
+}
+/**
+ * 
+ * @param {type} unixtime
+ * @returns {String}
+ */
+
+function getDateByTz(unixtime, sFormat)
+{
+    var sDateNew = ''; 
+    
+    sFormat = typeof sFormat !== 'undefined' ? sFormat : sDefaultFormatDate;
+    
+    var sDate = moment.unix(unixtime);
+    if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
+        sDateNew =  sDate.tz(sessionStorage.getItem("sTimezone")).format(sFormat);
+    } else {
+        sDateNew = sDate.format(sFormat);
+    }
+    return sDateNew;
 }

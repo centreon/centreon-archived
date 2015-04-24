@@ -91,8 +91,7 @@ class TagsRepository
             $userId = $_SESSION['user']->getId();
         } else {
             $userId = NULL;
-        }
-        
+        }   
 
         $dbconn = Di::getDefault()->get('db_centreon');
         /* Get or create a tagname */
@@ -476,6 +475,7 @@ class TagsRepository
     
     public static function associateTagWithResource($resourceName, $iTagId, $iResourceId, $iIdTemplate = '')
     {       
+        $resourceName = self::convertResource($resourceName);
         $dbconn = Di::getDefault()->get('db_centreon');
         try {
             $query = "INSERT INTO cfg_tags_" . $resourceName . "s (tag_id, resource_id, template_id)
@@ -536,7 +536,7 @@ class TagsRepository
      * @param type $tagId
      * @return boolean
      */
-    protected static function isLink($resourceName, $resourceId, $tagId)
+    public static function isLink($resourceName, $resourceId, $tagId)
     {
         $dbconn = Di::getDefault()->get('db_centreon');
         foreach (static::$resourceType as $resource) {
@@ -574,4 +574,39 @@ class TagsRepository
 
     }
     
+    
+    /**
+     * Return the list of tags for a template
+     * 
+     * @param type $resourceName
+     * @param int $iTemplateId
+     * @return array
+     * @throws Exception
+     */
+    public static function getListByTplId($resourceName, $iTemplateId)
+    {
+        $resourceName = self::convertResource($resourceName);
+        if (!in_array($resourceName, static::$resourceType)) {
+            throw new Exception("This resource type does not support tags.");
+        }
+        if (empty($iTemplateId)) {
+            return array();
+        }
+
+        $dbconn = Di::getDefault()->get('db_centreon');
+        
+        $query = "SELECT t.tag_id, t.tagname, template_id, user_id, resource_id
+                FROM cfg_tags t LEFT JOIN cfg_tags_" . $resourceName . "s r ON t.tag_id = r.tag_id
+                WHERE t.user_id is null AND template_id = :template_id";
+                
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':template_id', $iTemplateId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $tags = array();
+               
+        while ($row = $stmt->fetch()) {
+            $tags[] = array('tag_id' => $row['tag_id'], 'resource_id' => $row['resource_id'], 'tpl' => $row['template_id']);
+        }
+        return $tags;
+    }
 }

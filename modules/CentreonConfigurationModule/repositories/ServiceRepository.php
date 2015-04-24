@@ -60,6 +60,19 @@ class ServiceRepository extends Repository
     public static $objectName = 'Service';
     
     /**
+     *
+     * @var type 
+     */
+    protected static $unicityFields = array(
+        'fields' => array(
+            'host' => 'cfg_hosts,host_id,host_name',
+            'service' => 'cfg_services,service_id,service_description',
+        ),
+        'joint' => 'cfg_hosts_services_relations',
+        'jointCondition' => 'cfg_hosts_services_relations.host_host_id = cfg_hosts.host_id AND cfg_hosts_services_relations.service_service_id = cfg_services.service_id'
+    );
+    
+    /**
      * 
      * @param int $interval
      * @return string
