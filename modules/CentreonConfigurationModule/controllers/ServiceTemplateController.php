@@ -91,7 +91,10 @@ class ServiceTemplateController extends FormController
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
                 
@@ -111,6 +114,9 @@ class ServiceTemplateController extends FormController
         $macroList = array();
         $aTagList = array();
         $aTags = array();
+        $aTagsInTpl = array();
+        $aTagsIdTpl = array();
+        $aTagsTemplate = array();
         
         $givenParameters = $this->getParams('post');
         
@@ -142,31 +148,47 @@ class ServiceTemplateController extends FormController
             CustomMacroRepository::saveServiceCustomMacro($givenParameters['object_id'], $macroList);
         }
         
+        //Get All tags 
+        $aTagsInTpl =  TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
+        foreach ($aTagsInTpl as $c => $i) {
+            if (isset($i['tpl']) && $i['tpl'] > 0) {
+                array_push($aTagsIdTpl, $i['text']);
+            }
+        }
+        
+        //Delete all tags
+        TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
+        
+        //Insert tags affected to the service
         if (isset($givenParameters['service_tags'])) {
             $aTagList = explode(",", $givenParameters['service_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var) > 1) {
+                if (strlen($var)>1 && !in_array($var, $aTagsIdTpl)) {
                     array_push($aTags, $var);
                 }
             }
+            
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+            }
         }
         
+        //Clean tags for service template
+        TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 1);
+
         //get Tag for serviceTemplate
         if (isset($givenParameters['service_template_model_stm_id'])) {
             $iTemplate = trim($givenParameters['service_template_model_stm_id']);
+                
             if (!empty($iTemplate)) {
-                $aTagsTemplates = TagsRepository::getList('service', $iTemplate, 1);
+                $aTagsTemplates = TagsRepository::getListId('service', $iTemplate);
+
                 foreach ($aTagsTemplates as $key => $oTpl) {
-                    if (!in_array($oTpl['text'], array_values($aTags))) {
-                        array_push($aTags, $oTpl['text']);
-                    }    
+                    TagsRepository::add($oTpl['text'], self::$objectName, $givenParameters['object_id'], 1, $iTemplate);
                 }
             }
         }
         
-        if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource('service', $givenParameters['object_id'], $aTags);
-        }
         parent::updateAction();
     }
     
@@ -222,23 +244,23 @@ class ServiceTemplateController extends FormController
                     array_push($aTags, $var);
                 }
             }
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource('service', $id, $aTags);
+            }
         }
+        
+        //get Tag for serviceTemplate
         
         //get Tag for serviceTemplate
         if (isset($givenParameters['service_template_model_stm_id'])) {
             $iTemplate = trim($givenParameters['service_template_model_stm_id']);
             if (!empty($iTemplate)) {
-                $aTagsTemplates = TagsRepository::getList('service', $iTemplate, 1);
+                $aTagsTemplates = TagsRepository::getListId('service', $iTemplate);
+                
                 foreach ($aTagsTemplates as $key => $oTpl) {
-                    if (!in_array($oTpl['text'], array_values($aTags))) {
-                        array_push($aTags, $oTpl['text']);
-                    }    
-                }
+                    TagsRepository::add($oTpl['text'], self::$objectName, $id, 1, $iTemplate);
+                } 
             }
-        }
-        
-        if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource('service', $id, $aTags);
         }
 
         $this->router->response()->json(array('success' => true));

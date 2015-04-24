@@ -229,18 +229,19 @@ abstract class ListController extends Controller
         $givenParameters = clone $this->getParams('post');
         $repository = $this->repository;
         try {
+            $repository = $this->repository;
             $id = $repository::create($givenParameters, 'wizard', $this->getUri());
-        } catch (Exception $e) {
+
+            unset($_SESSION['form_token']);
+            unset($_SESSION['form_token_time']);
             if ($sendResponse) {
-                $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+                $this->router->response()->json(array('success' => true));
+            } else {
+                return $id;
             }
-            return false;
-        }
-        
-        if ($sendResponse) {
-            $this->router->response()->json(array('success' => true));
-        } else {
-            return $id;
+        } catch (\Centreon\Internal\Exception $e) {
+            $updateErrorMessage = $e->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
     

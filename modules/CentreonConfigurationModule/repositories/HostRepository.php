@@ -127,7 +127,7 @@ class HostRepository extends Repository
                 $finalRoute = '<img src="'.$imgSrc.'" style="width:16px;height:16px;">';
             } else {
                 if (count($templates) == 0 && !$alreadyProcessed) {
-                    $templates = static::getTemplateChain($hostId);
+                    $templates = static::getTemplateChain($hostId, array(), -1);
                     $alreadyProcessed = true;
                 } else if (count($templates) == 0 && $alreadyProcessed) {
                     $finalRoute = "<i class='fa fa-hdd-o'></i>";
@@ -202,7 +202,7 @@ class HostRepository extends Repository
     public static function getInheritanceValues($hostId)
     {
         $values = array();
-        $templates = static::getTemplateChain($hostId);
+        $templates = static::getTemplateChain($hostId, array(), -1);
         foreach ($templates as $template) {
             $inheritanceValues = HostTemplateRepository::getInheritanceValues($template['id']);
             $tmplValues = Host::getParameters($template['id'], self::$inheritanceColumns);
@@ -216,39 +216,50 @@ class HostRepository extends Repository
     }
 
     /**
-     * Get template list (id, text)
+     * Get template chain (id, text)
      *
-     * @param int $hostId The host template Id
+     * @param int $hostId The host or host template Id
+     * @param array $alreadyProcessed The host templates already processed
+     * @param int $depth The depth to search
      * @return array
      */
-    public static function getTemplateChain($hostId, $alreadyProcessed = array())
+    public static function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1)
     {
         $templates = array();
-        if (in_array($hostId, $alreadyProcessed)) {
-            return $templates;
-        } else {
-            $alreadyProcessed[] = $hostId;
-            // @todo improve performance
-            $db = Di::getDefault()->get('db_centreon');
-
-            $sql = "SELECT h.host_id, h.host_name"
-                . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
-                . " WHERE h.host_id=htr.host_tpl_id"
-                . " AND htr.host_host_id=:host_id";
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
-            $stmt->execute();
-            $row = $stmt->fetchAll();
-
-            foreach ($row as $template) {
-                $templates[] = array(
-                    "id" => $template['host_id'],
-                    "text" => $template['host_name']
-                );
-                $templates = array_merge($templates, self::getTemplateChain($template['host_id'], $alreadyProcessed));
+        if (($depth == -1) || ($depth > 0)) {
+            if ($depth > 0) {
+                $depth--;
             }
-            return $templates;
+            if (in_array($hostId, $alreadyProcessed)) {
+                return $templates;
+            } else {
+                $alreadyProcessed[] = $hostId;
+                // @todo improve performance
+                $db = Di::getDefault()->get('db_centreon');
+
+                $sql = "SELECT h.host_id, h.host_name"
+                    . " FROM cfg_hosts h, cfg_hosts_templates_relations htr"
+                    . " WHERE h.host_id=htr.host_tpl_id"
+                    . " AND htr.host_host_id=:host_id"
+                    . " AND host_activate = '1'"
+                    . " AND host_register = '0'"
+                    . " ORDER BY `order` ASC";
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+                $stmt->execute();
+                $row = $stmt->fetchAll();
+
+                foreach ($row as $template) {
+                    $templates[] = array(
+                        "id" => $template['host_id'],
+                        "text" => $template['host_name']
+                    );
+                    $templates = array_merge($templates, self::getTemplateChain($template['host_id'], $alreadyProcessed, $depth));
+                }
+                return $templates;
+            }
         }
+        return $templates;
     }
     
     /**
@@ -291,7 +302,7 @@ class HostRepository extends Repository
         $db = Di::getDefault()->get('db_centreon');
 
         //get host template
-        $aHostTemplates = HostRepository::getTemplateChain($hostId);
+        $aHostTemplates = HostRepository::getTemplateChain($hostId, array(), -1);
 
         // get host services
         $aHostServices = HostServiceRelation::getMergedParameters(

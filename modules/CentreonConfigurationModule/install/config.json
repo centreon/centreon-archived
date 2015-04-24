@@ -1,7 +1,7 @@
 {
     "name": "Centreon Configuration",
     "shortname" : "centreon-configuration",
-    "version": "3.0.0",
+    "version": "2.99.2",
     "author" : [
         "Centreon"
     ],
@@ -9,11 +9,11 @@
     "isdisableable" : true,
     "url" : "",
     "description" : "Centreon Configuration Module",
-    "core version" : "3.0.0",
+    "core version" : "2.99.2",
     "dependencies" : [
         {
             "name" : "centreon-administration",
-            "version" : "3.0.0"
+            "version" : "2.99.2"
         }
     ],
     "optionnal dependencies" : [

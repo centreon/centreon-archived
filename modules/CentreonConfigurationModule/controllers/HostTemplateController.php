@@ -124,7 +124,10 @@ class HostTemplateController extends FormController
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
                 
@@ -171,9 +174,7 @@ class HostTemplateController extends FormController
                     );
                 }
             }
-        }
-        
-        
+        }   
         
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
@@ -191,6 +192,10 @@ class HostTemplateController extends FormController
                     array_push($aTags, $var);
                 }
             }
+            
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource('host', $id, $aTags);
+            }
         }
         
         //get Tag for hostTemplate
@@ -199,19 +204,15 @@ class HostTemplateController extends FormController
             $aTemplate = array_diff( $aTemplate, array( '' ) );
             foreach ($aTemplate as $eTemplate) {
                 $eTemplate = trim($eTemplate);
+                
                 if (!empty($eTemplate)) {
-                    $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                    $aTagsTemplates = TagsRepository::getListId('host', $eTemplate);
+
                     foreach ($aTagsTemplates as $key => $oTpl) {
-                        if (!in_array($oTpl['text'], array_values($aTags))) {
-                            array_push($aTags, $oTpl['text']);
-                        }
+                        TagsRepository::add($oTpl['text'], self::$objectName, $givenParameters['object_id'], 1, $eTemplate);
                     }
                 }
             }
-        }
-
-        if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource('host', $id, $aTags);
         }
         
         $this->router->response()->json(array('success' => true));
@@ -226,11 +227,13 @@ class HostTemplateController extends FormController
      */
     public function updateAction()
     {
-       $givenParameters = $this->getParams('post');
+        $givenParameters = $this->getParams('post');
         $macroList = array();
         $aTagList = array();
         $aTags = array();
         $aTagsTemplate = array();
+        $aTagsInTpl = array();
+        $aTagsIdTpl = array();
         
         if (isset($givenParameters['macro_name']) && isset($givenParameters['macro_value'])) {
             
@@ -255,7 +258,8 @@ class HostTemplateController extends FormController
             }
         }
         
-        parent::updateAction();
+        
+        
         if ($givenParameters['host_create_services_from_template']) {
             \CentreonConfiguration\Models\Host::deployServices($givenParameters['object_id']);
         }
@@ -264,37 +268,51 @@ class HostTemplateController extends FormController
             CustomMacroRepository::saveHostCustomMacro($givenParameters['object_id'], $macroList);
         }
         
+        //Get All tags 
+        $aTagsInTpl =  TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
+        foreach ($aTagsInTpl as $c => $i) {
+            if (isset($i['tpl']) && $i['tpl'] > 0) {
+                array_push($aTagsIdTpl, $i['text']);
+            }
+        }
+        
+        //Delete all tags
+        TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 0);
+        
+        //Insert tags affected to the HOST
+        if (isset($givenParameters['host_tags'])) {
+            $aTagList = explode(",", $givenParameters['host_tags']);
+            foreach ($aTagList as $var) {
+                if (strlen($var)>1 && !in_array($var, $aTagsIdTpl)) {
+                    array_push($aTags, $var);
+                }
+            }
+            
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+            }
+        }
+        
+        //Clean tags for host template
+        TagsRepository::deleteTagsForResource(self::$objectName, $givenParameters['object_id'], 1);
+
         //get Tag for hostTemplate
         if (isset($givenParameters['host_hosttemplates'])) {
-            $aTemplate = explode(",", $givenParameters['host_hosttemplates']); 
+            $aTemplate = explode(",", $givenParameters['host_hosttemplates']);
             $aTemplate = array_diff( $aTemplate, array( '' ) );
-
             foreach ($aTemplate as $eTemplate) {
                 $eTemplate = trim($eTemplate);
+                
                 if (!empty($eTemplate)) {
-                    $aTagsTemplates = TagsRepository::getList('host', $eTemplate, 1);
+                    $aTagsTemplates = TagsRepository::getListId('host', $eTemplate);
+
                     foreach ($aTagsTemplates as $key => $oTpl) {
-                        if (!in_array($oTpl['text'], array_values($aTags))) {
-                            array_push($aTags, $oTpl['text']);
-                        }
+                        TagsRepository::add($oTpl['text'], self::$objectName, $givenParameters['object_id'], 1, $eTemplate);
                     }
                 }
             }
         }
-       
-        if (isset($givenParameters['host_tags'])) {
-            $aTagList = explode(",", $givenParameters['host_tags']);
-            foreach ($aTagList as $var) {
-                if (strlen($var) > 1) {
-                    array_push($aTags, $var);
-                }
-            }
-        }
-        $aTags = array_merge($aTags, $aTagsTemplate);
-
-        if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource('host', $givenParameters['object_id'], $aTags);
-        }
+        parent::updateAction();
     }
     
     /**

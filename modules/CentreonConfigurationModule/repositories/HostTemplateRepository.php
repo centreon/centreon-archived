@@ -38,6 +38,7 @@ namespace CentreonConfiguration\Repository;
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Hosttemplate;
 use CentreonConfiguration\Repository\Repository;
+use CentreonConfiguration\Repository\HostRepository;
 use CentreonConfiguration\Models\Command;
 use CentreonConfiguration\Models\Timeperiod;
 
@@ -56,7 +57,6 @@ class HostTemplateRepository extends Repository
         'command_command_id',
         'command_command_id_arg1',
         'timeperiod_tp_id',
-        'timeperiod_tp_id2',
         'command_command_id2',
         'command_command_id_arg2',
         'host_max_check_attempts',
@@ -73,10 +73,6 @@ class HostTemplateRepository extends Repository
         'host_high_flap_threshold',
         'host_flap_detection_enabled',
         'flap_detection_options',
-        'host_process_perf_data',
-        'host_retain_status_information',
-        'host_retain_nonstatus_information',
-        'host_stalking_options',
         'host_snmp_community',
         'host_snmp_version'
     );
@@ -92,6 +88,27 @@ class HostTemplateRepository extends Repository
      * @var string
      */
     public static $objectName = 'Hosttemplate';
+
+    /**
+     * Get list of host templates
+     *
+     * @param string $searchStr
+     * @param int $objectId The self id to skip
+     * @return array
+     */
+    public static function getFormList($searchStr = "", $objectId = null)
+    {
+        $listHostTemplate = parent::getFormList();
+
+        foreach ($listHostTemplate as $key => $hostTemplate) {
+            if ($hostTemplate['id'] == $objectId) {
+                unset($listHostTemplate[$key]);
+            }
+        }
+        $listHostTemplate = array_values($listHostTemplate);
+
+        return $listHostTemplate;
+    }
 
     /**
      * 
@@ -128,40 +145,6 @@ class HostTemplateRepository extends Repository
     }
 
     /**
-     * 
-     * @param int $host_id
-     * @return string
-     */
-    public static function getTemplateList($host_id)
-    {
-        $di = Di::getDefault();
-        
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-        
-        /* Init Array to return */
-        $hostTemplates = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT host_tpl_id, host_name, host_id, `order` "
-            . "FROM cfg_hosts h, cfg_hosts_templates_relations hr "
-            . "WHERE h.host_id = hr.host_tpl_id "
-            . "AND hr.host_host_id = '$host_id' "
-            . "AND host_activate = '1' "
-            . "AND host_register = '0' "
-            . "ORDER BY `order` ASC";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $hostTemplates[] = array(
-                                     'id' => $row["host_id"],
-                                     'name' => $row["host_name"],
-                                     'ico' => 'fa-shield');
-        }
-        return $hostTemplates;
-    }
-
-    /**
      * Get the value from template
      *
      * @param int $hostId The host template Id
@@ -171,9 +154,9 @@ class HostTemplateRepository extends Repository
     public static function getInheritanceValues($hostId, $isBase=false)
     {
         $values = array();
-        $templates = static::getTemplateList($hostId);
+        $templates = HostRepository::getTemplateChain($hostId, array(), -1);
         if ($isBase) {
-            array_unshift($templates, $hostId);
+            array_unshift($templates, array('id' => $hostId));
         }
         foreach ($templates as $template) {
             $inheritanceValues = static::getInheritanceValues($template['id']);
@@ -202,7 +185,6 @@ class HostTemplateRepository extends Repository
                 $command = Command::get($value);
                 return $command['command_name'];
             case 'timeperiod_tp_id':
-            case 'timeperiod_tp_id2':
                 $timeperiod = Timeperiod::get($value);
                 return $timeperiod['tp_name'];
             case 'host_active_checks_enabled':
@@ -210,9 +192,6 @@ class HostTemplateRepository extends Repository
             case 'host_obsess_over_host':
             case 'host_check_freshness':
             case 'flap_detection_options':
-            case 'host_process_perf_data':
-            case 'host_retain_status_information':
-            case 'host_retain_nonstatus_information':
             case 'host_event_handler_enabled':
                 if ($value == 0) {
                     return _('No');

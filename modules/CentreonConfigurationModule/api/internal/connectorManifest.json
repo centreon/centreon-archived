@@ -1,0 +1,13 @@
+{
+    "liteAttributesSet" : "id,name,description,command_line,enabled",
+    "repository" : "\\CentreonConfiguration\\Repository\\ConnectorRepository",
+    "objectBaseUrl" : "connector",
+    "objectClass" : "\\CentreonConfiguration\\Models\\Connector",
+    "attributesMap" : {
+        "id" : "id",
+        "name" : "name",
+        "description" : "description",
+        "command line" : "connector_line",
+        "activate" : "enabled"
+    }
+}

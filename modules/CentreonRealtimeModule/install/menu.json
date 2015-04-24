@@ -34,6 +34,13 @@
                 "icon_class": "fa fa-edit",
                 "order": 4,
                 "route": "/centreon-realtime/eventlogs"
+            },
+            {
+                "name": "Downtimes",
+                "short_name": "downtimes",
+                "icon_class": "fa fa-bed",
+                "order": 5,
+                "route": "/centreon-realtime/downtimes"
             }
         ]
     }

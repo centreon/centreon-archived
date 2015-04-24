@@ -78,13 +78,19 @@ abstract class FormController extends ListController
      * JSON response
      *
      * @method get
-     * @route /{object}/formlist
+     * @route /{object}/formlist/[i:id]?
      */
     public function formListAction()
     {
         $requestParams = $this->getParams('get');
+        $namedParams = $this->getParams('named');
         $repository = $this->repository;
-        $list = $repository::getFormList($requestParams['q']);
+
+        $objectId = null;
+        if (isset($namedParams['id'])) {
+            $objectId = $namedParams['id'];
+        }
+        $list = $repository::getFormList($requestParams['q'], $objectId);
         $this->router->response()->json($list);
     }
     

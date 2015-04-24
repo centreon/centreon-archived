@@ -239,6 +239,7 @@ abstract class CentreonBaseModel extends CentreonModel
      *
      * @param int $sourceObjectId
      * @param int $duplicateEntries
+     * @return array List of new object id
      */
     public static function duplicate($sourceObjectId, $duplicateEntries = 1)
     {
@@ -292,6 +293,7 @@ abstract class CentreonBaseModel extends CentreonModel
         $i = 1;
         $j = 1;
         /* Add the number for new entries */
+        $listDuplicateId = array();
         while ($i <= $duplicateEntries) {
             /* Test if unique fields are unique */
             if (is_array(static::$uniqueLabelField)) {
@@ -311,6 +313,7 @@ abstract class CentreonBaseModel extends CentreonModel
             }
             if ($unique) {
                 $lastId = static::insert($sourceParams);
+                $listDuplicateId[] = $lastId;
                 $db->beginTransaction();
                 foreach ($firstKeyCopy as $relation => $idArray) {
                     foreach ($idArray as $relationId) {
@@ -327,6 +330,7 @@ abstract class CentreonBaseModel extends CentreonModel
             }
             $j++;
         }
+        return $listDuplicateId;
     }
 
     /**

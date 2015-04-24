@@ -20,7 +20,7 @@
             "lengthMenu": [[10, 25, 50], [10, 25, 50]],
             "language": {
                 "lengthMenu": "_MENU_",
-                "processing": "Go......................"
+                "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
             responsive: true,
@@ -102,7 +102,6 @@
         /* Add modal */
         {if isset($objectAddUrl)}
         $('#modalAdd').on('click', function(e) {
-            console.log('hello Sanfour :)');
             $('#modal').removeData('bs.modal');
             $('#modal').removeData('centreonWizard');
             $('#modal .modal-content').text('');

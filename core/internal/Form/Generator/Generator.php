@@ -144,12 +144,6 @@ abstract class Generator
      */
     public function getMandatoryFields()
     {
-        $di = Di::getDefault();
-        $baseUrl = $di->get('config')->get('global', 'base_url');
-        $uri = substr($this->formRoute, strlen($baseUrl));
-        if ($uri[0] !== '/') {
-           $uri = '/' . $uri;
-        }
         $mandatoryQuery = "SELECT name FROM cfg_forms_fields WHERE mandatory = '1' "
             . "AND field_id IN (
                     SELECT
@@ -165,7 +159,7 @@ abstract class Generator
                     AND
                         fs.form_id = f.form_id
                     AND
-                        f.route = '$uri'
+                        f.route = '$this->formRoute'
             )";
         $stmt = $this->dbconn->query($mandatoryQuery);
         $mandatoryFieldList = $stmt->fetchAll(\PDO::FETCH_ASSOC);

@@ -356,21 +356,30 @@ class ServiceRepository extends Repository
      * @param int $svcId The service ID
      * @return array
      */
-    public static function getListTemplates($svcId)
+    public static function getListTemplates($svcId, $alreadyProcessed = array())
     {
-        $dbconn = Di::getDefault()->get('db_centreon');
         $svcTmpl = array();
-        $query = "SELECT service_template_model_stm_id FROM cfg_services WHERE service_id = :id";
-        $stmt = $dbconn->prepare($query);
-        $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
-        $stmt->execute();
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetch();
-            $stmt->closeCursor();
-            $svcTmpl = self::getListTemplates($row['service_template_model_stm_id']);
-            array_unshift($svcTmpl, $row['service_template_model_stm_id']);
+        if (in_array($svcId, $alreadyProcessed)) {
+            return $svcTmpl;
+        } else {
+            $alreadyProcessed[] = $svcId;
+            // @todo improve performance
+            $dbconn = Di::getDefault()->get('db_centreon');
+
+            $query = "SELECT service_template_model_stm_id FROM cfg_services WHERE service_id = :id";
+            $stmt = $dbconn->prepare($query);
+            $stmt->bindParam(':id', $svcId, \PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->rowCount()) {
+                $row = $stmt->fetch();
+                $stmt->closeCursor();
+                if ($row['service_template_model_stm_id'] !== NULL) {
+                    $svcTmpl = array_merge($svcTmpl, self::getListTemplates($row['service_template_model_stm_id'], $alreadyProcessed));
+                    $svcTmpl[] = $row['service_template_model_stm_id'];
+                }
+            }
+            return $svcTmpl;
         }
-        return $svcTmpl;
     }
     
     /**

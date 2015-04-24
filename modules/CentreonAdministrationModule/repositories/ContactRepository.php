@@ -109,6 +109,7 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
         
         return $finalInfos;
     }
+
     /**
      * Update contact
      * @param array $givenParameters
