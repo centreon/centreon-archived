@@ -157,9 +157,7 @@ class HostController extends FormController
             }
         }
         
-        
-        
-                
+                      
         if (!isset($givenParameters['host_alias']) && isset($givenParameters['host_name'])) {
             $givenParameters['host_alias'] = $givenParameters['host_name'];
         }
@@ -192,9 +190,8 @@ class HostController extends FormController
                 
                 if (!empty($eTemplate)) {
                     $aTagsTemplates = TagsRepository::getListId('host', $eTemplate);
-
                     foreach ($aTagsTemplates as $key => $oTpl) {
-                        TagsRepository::add($oTpl['text'], self::$objectName, $givenParameters['object_id'], 1, $eTemplate);
+                        TagsRepository::add($oTpl['text'], self::$objectName, $id, 1, $eTemplate);
                     }
                 }
             }

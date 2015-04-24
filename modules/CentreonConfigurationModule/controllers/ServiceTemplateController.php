@@ -189,6 +189,25 @@ class ServiceTemplateController extends FormController
             }
         }
         
+        /*
+         * Reaffecte to the host
+         */
+        //Get the new version of list of tags 
+        $aTagsInTpl =  TagsRepository::getListByTplId(self::$objectName, $givenParameters['object_id']);
+
+        foreach ($aTagsInTpl as $c => $i) {
+            TagsRepository::deleteTagsForResource(self::$objectName, $i['resource_id'], 1);
+        }
+        
+        $aTagsTemplates = TagsRepository::getListId(self::$objectName, $givenParameters['object_id']);
+        foreach ($aTagsTemplates as $key => $oTpl) {
+            foreach ($aTagsInTpl as $c => $i) {
+                if (!TagsRepository::isLink('service', $i['resource_id'], $oTpl['id'])) {
+                    TagsRepository::associateTagWithResource(self::$objectName, $oTpl['id'], $i['resource_id'], $givenParameters['object_id']);
+                }
+            }
+        }
+        
         parent::updateAction();
     }
     
