@@ -114,6 +114,22 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
         
         parent::update($givenParameters);
     }
+
+    /**
+     *
+     * @param string $givenParameters
+     * @param string $login
+     */
+    public static function delete($ids)
+    {
+        foreach ($ids as $id) {
+            $contact = User::getParameters($id, array('contact_id'));
+            if (isset($contact['contact_id'])) {
+                Contact::delete($contact['contact_id']);
+            }
+        }
+        parent::delete($ids);
+    }
     
     /**
      * 
