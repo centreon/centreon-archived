@@ -129,7 +129,9 @@ class Database extends Storage
                         $values[$key] = $value;
                     }
                 }*/
-                $wheres[] = $clause;
+                if (isset($clause)) {
+                    $wheres[] = $clause;
+                }
             }
         }
         if (count($wheres) > 0) {
