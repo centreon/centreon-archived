@@ -266,10 +266,10 @@ class Full extends Generator
                     if (isset($formElements[$component['name']]['html'])) {
                         $formRendering .= '<div class="col-md-6">';
                         $formRendering .= $formElements[$component['name']]['html'];
-                        if ($component['advanced'] == '1') {
+                        /*if ($component['advanced'] == '1') {
                             $formRendering .= ' advanced';
-                        }
-                         $formRendering .= '<span class="inheritance" id="' . $component['name'] . '_inheritance"></span>';
+                        }*/
+
                          $formRendering .= '</div>';
                     }
                 }

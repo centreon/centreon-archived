@@ -316,10 +316,10 @@ class Form
             $classAdvanced = 'advanced';
         }
         
-        return '<div class="form-group' . $classAdvanced . '">'.
+        return '<div class="form-group ' . $classAdvanced . '">'.
                 $inputElement['label'].
                 $inputElement['input']. $extraHtml .
-                $helpButton.
+                '<span class="inheritance" id="' . $inputElement['name'] . '_inheritance"></span>'.
                 '</div>';
     }
     
