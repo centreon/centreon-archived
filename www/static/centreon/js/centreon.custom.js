@@ -223,7 +223,7 @@ $(document).ready(function() {
                     }
                 },
                 error : function(error){
-                    console.log(error,' -Help- datas not transfered');
+                    //console.log(error,' -Help- datas not transfered');
                 }
             })
 
