@@ -17,7 +17,7 @@
                         	<argument name="maxlength">255</argument>
                         </validator>
                     </validators>
-					<help>The host name defined here is used in host group and service definitions to reference this particular host.</help>
+					<help>Field used in host group and service definitions to reference this particular host.</help>
 				</field>
 				<field name="host_alias" label="Alias" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
                     <validators>
@@ -26,7 +26,7 @@
                         	<argument name="maxlength">255</argument>
                         </validator>
                     </validators>
-					<help>The alias is used to define a longer name or description for the host.</help>
+					<help>Field used to define a longer name or description for the host.</help>
 				</field>
 				<field name="host_address" label="IP address / DNS" default_value="" advanced="0" type="ipaddress" parent_field="" mandatory="1">
 					<help>Define the address of the host here. Normally, this should be an IP address, but a FQDN can be used to identify the host instead. If DNS services are not reachable a FQDN could cause problems.</help>

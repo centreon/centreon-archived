@@ -141,6 +141,9 @@ class ConfigCorrelationRepository
             $pollers = $rows;
 
             foreach ($rows as $row) {
+                if (!is_dir("{$tmpPath}/{$row['poller_id']}")) {
+                    mkdir("{$tmpPath}/{$row['poller_id']}");
+                }
                 /* @todo: replace hardcoded "correlation.xml" with value from template */
                 $correlationFile = rtrim($tmpPath, '/') . '/' . $row['poller_id'] . '/correlation.xml';
 

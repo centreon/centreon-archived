@@ -97,7 +97,7 @@ class Select extends Component
         }
 
         $myHtml = '<input '
-            . 'class="form-control input-sm '
+            . 'class="form-control '
             . $addClass
             . '" id="'.$element['name']
             . '" name="' . $element['name']
