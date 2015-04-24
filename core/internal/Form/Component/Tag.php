@@ -126,7 +126,7 @@ class Tag extends Component
                 . 'ajax: {'
                     .'data: function(term, page) {'
                         .'return { '
-                            .'q: term, '
+                            .'search: term, '
                         .'};'
                     .'},'
                     .'dataType: "json", '

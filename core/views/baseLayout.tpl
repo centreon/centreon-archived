@@ -104,8 +104,10 @@
                                        </a>
                                      </div>
                                      <div class="media-body">
-                                       <strong>User Name</strong>
-                                       <p><small>adress@email.com</small></p>
+                                       <strong>{$userName}</strong>
+                                       {foreach $userEmails as $userEmail}
+                                         <p><small>{$userEmail}</small></p>
+                                       {/foreach}
                                         <ul class="list-unstyled list-inline ">
                                             <li>
                                                 <a href="#" id="help">{t}Help{/t}</a>

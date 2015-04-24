@@ -8,8 +8,8 @@
 			<block name="General information">
 				<field name="host_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 					<validators>
-                    	<validator rules="remote" serverside="unique" />
-                        <validator rules="forbiddenChar" serverside="forbiddenChar">
+                    	<validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
                         	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
                         </validator>
 					</validators>
@@ -18,11 +18,15 @@
 				<field name="host_hosttemplates" label="Host templates" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 					<attributes>
 						<object_type>object</object_type>
-						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist</defaultValuesRoute>
+						<defaultValuesRoute>/centreon-configuration/hosttemplate/formlist/[i:id]</defaultValuesRoute>
 						<listValuesRoute>/centreon-configuration/hosttemplate/[i:id]/hosttemplate</listValuesRoute>
 						<multiple>true</multiple>
 						<ordered>true</ordered>
 					</attributes>
+                                    <validators>
+                                        <validator rules="remote" serverside="centreon-configuration.circular.dependency">
+                                        </validator>
+                                    </validators>
 				</field>
 				<field name="host_icon" label="Icon" default_value="" advanced="0" type="selectimage" parent_field="" mandatory="0">
 					<attributes>

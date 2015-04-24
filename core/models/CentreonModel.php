@@ -81,9 +81,10 @@ abstract class CentreonModel
         $filterType = "OR",
         $tablesString = null,
         $staticFilter = null,
-        $aAddFilters  = array()
+        $aAddFilters  = array(),
+        $sGroup = array()
     ) {
-       
+
         if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         } elseif (is_array($filterType)) {
@@ -123,6 +124,8 @@ abstract class CentreonModel
         } 
         
         if (count($filters)) {
+            $filters = array_unique($filters);
+            
             foreach ($filters as $key => $rawvalue) {
                 if (is_array($rawvalue)) {
                     $filterStr = "(";
@@ -162,7 +165,13 @@ abstract class CentreonModel
         if (!is_null($aAddFilters) && isset($aAddFilters['join'])) {
             $sql .= " AND ".implode(" AND ", $aAddFilters['join']);
         }
-             
+
+       
+        if (!empty($sGroup) && isset($sGroup['nb']) && isset($sGroup['sField'])) {
+           $iNb = $sGroup['nb']  - 1;
+           $sql .= " GROUP BY ".$sGroup['sField']." having count(*) > ".$iNb;
+        }
+        //echo $sql;
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
@@ -170,7 +179,7 @@ abstract class CentreonModel
             $db = Di::getDefault()->get(static::$databaseName);
             $sql = $db->limit($sql, $count, $offset);
         }
-        //echo $sql;
+        
         return static::getResult($sql, $filterTab, "fetchAll");
     }
     
@@ -199,7 +208,8 @@ abstract class CentreonModel
         $filterType = "OR",
         $tablesString = null,
         $staticFilter = null,
-        $aAddFilters = array()
+        $aAddFilters = array(),
+        $sGroup = array()
     ) {
         
         $searchFilters = array();
@@ -212,7 +222,7 @@ abstract class CentreonModel
                 $searchFilters[$name] = '%' . $values . '%';
             }
         }
-
+        
         return static::getList(
             $parameterNames,
             $count,
@@ -223,7 +233,8 @@ abstract class CentreonModel
             $filterType,
             $tablesString,
             $staticFilter,
-            $aAddFilters
+            $aAddFilters,
+            $sGroup
         );
     }
 
@@ -240,6 +251,7 @@ abstract class CentreonModel
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         return $result;
     }
 

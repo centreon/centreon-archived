@@ -41,12 +41,45 @@
                                                 "name" : "failover-central-output",
                                                 "path" : "%global_broker_data_directory%/central-output.failover",
                                                 "failover": "central-output"
+                                            },
+                                            {
+                                              "type": "dumper",
+                                              "tagname": "extcommand-%poller_name%",
+                                              "path": "%engine_command_file%",
+                                              "name": "extcommand-%poller_name%"
+                                            },
+                                            {
+                                              "type": "dumper",
+                                              "tagname": "cfg-engine-%poller_name%",
+                                              "path": "%engine_conf_dir%/$FILENAME$",
+                                              "name": "cfg-engine-%poller_name%"
+                                            },
+                                            {
+                                              "type": "dumper",
+                                              "tagname": "cfg-broker-%poller_name%",
+                                              "path": "%global_broker_etc_directory%/$FILENAME$",
+                                              "name": "cfg-broker-%poller_name%"
                                             }
+                                        ],
+                                        "input": [
+                                          {
+                                            "type": "tcp",
+                                            "name": "central-transfert-input",
+                                            "host": "%broker_central_ip%",
+                                            "port": "5669"
+                                          }
                                         ],
                                         "logger": [
                                           {
                                             "type": "file",
                                             "name": "%global_broker_logs_directory%/central-module.log"
+                                          }
+                                        ],
+                                        "stats": [
+                                          {
+                                            "type": "stats",
+                                            "name": "stats-central-broker",
+                                            "fifo": "/var/lib/centreon-broker/stats-central-module.fifo"
                                           }
                                         ]
                                     }
@@ -68,12 +101,25 @@
                                                 "name" : "failover-central-output",
                                                 "path" : "%global_broker_data_directory%/central-output.failover",
                                                 "failover": "central-output"
+                                            },
+                                            {
+                                              "type": "dump",
+                                              "tagname": "extcmd-%poller_name%",
+                                              "path": "%engine_command_file%",
+                                              "name": "extcmd-%poller_name%"
                                             }
                                         ],
                                         "logger": [
                                           {
                                             "type": "file",
                                             "name": "%global_broker_logs_directory%/central-module.log"
+                                          }
+                                        ],
+                                        "stats": [
+                                          {
+                                            "type": "stats",
+                                            "name": "stats-central-broker",
+                                            "fifo": "/var/lib/centreon-broker/stats-central-module.fifo"
                                           }
                                         ]
                                     }

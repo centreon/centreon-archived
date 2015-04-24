@@ -7,6 +7,7 @@
         <foreign-key foreignTable="cfg_timezones" name="contacts_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="timezone_id" foreign="timezone_id"/>
         </foreign-key>
+        
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

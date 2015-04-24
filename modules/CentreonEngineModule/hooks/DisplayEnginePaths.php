@@ -89,7 +89,7 @@ class DisplayEnginePaths
     	$paths['module_dir'] = array(
             'label' => _('Module directory'),
             'help' => _('Event broker modules will be placed there.'),
-            'value' => '/usr/lib/centreon-engine/'
+            'value' => '/usr/lib64/centreon-engine/'
         );
 
 	    $paths['init_script'] = array(

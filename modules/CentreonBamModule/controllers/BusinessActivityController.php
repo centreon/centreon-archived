@@ -54,6 +54,43 @@ class BusinessActivityController extends FormController
     );
    
     public static $isDisableable = true;
+
+    /**
+    * Create a new business activity
+    *
+    * @method post
+    * @route /businessactivity/add
+    */
+    public function createAction()
+    {
+        $aTagList = array();
+        $aTags = array();
+        
+        $givenParameters = $this->getParams('post');
+
+        $repository = $this->repository;
+        try {
+            $id = $repository::create($givenParameters, 'wizard', $this->getUri());
+            
+            if (isset($givenParameters['ba_tags'])) {
+                $aTagList = explode(",", $givenParameters['ba_tags']);
+                foreach ($aTagList as $var) {
+                    if (strlen($var) > 1) {
+                        array_push($aTags, $var);
+                    }
+                }
+                if (count($aTags) > 0) {
+                    TagsRepository::saveTagsForResource('ba', $id, $aTags);
+                }
+            }
+
+            BusinessActivityRepository::createVirtualService($id);
+        } catch (Exception $e) {
+            $this->router->response()->json(array('success' => false, 'error' => $e->getMessage()));
+        }
+
+        $this->router->response()->json(array('success' => true));
+    }
  
     /**
      * 
@@ -69,7 +106,10 @@ class BusinessActivityController extends FormController
         $urls = array(
             'tag' => array(
                 'add' => $router->getPathFor('/centreon-administration/tag/add'),
-                'del' => $router->getPathFor('/centreon-administration/tag/delete')
+                'del' => $router->getPathFor('/centreon-administration/tag/delete'),
+                'getallGlobal' => $router->getPathFor('/centreon-administration/tag/all'),
+                'getallPerso' => $router->getPathFor('/centreon-administration/tag/allPerso'),
+                'addMassive' => $router->getPathFor('/centreon-administration/tag/addMassive')
             )
         );
         $this->tpl->append('jsUrl', $urls, true);
@@ -123,7 +163,7 @@ class BusinessActivityController extends FormController
     }
     
     /**
-     * Update a host
+     * Update a business activity
      *
      *
      * @method post
@@ -133,7 +173,7 @@ class BusinessActivityController extends FormController
     {
         $givenParameters = $this->getParams('post');
         $aTagList = array();
-        $aTags = array();  
+        $aTags = array();
         
         parent::updateAction();
         
@@ -144,10 +184,24 @@ class BusinessActivityController extends FormController
                     array_push($aTags, $var);
                 }
             }
-        }
-        
-        if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
-        }
+            if (count($aTags) > 0) {
+                TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
+            }
+        }        
+    }
+
+    /**
+     * Delete a business activity
+     *
+     *
+     * @method post
+     * @route /businessactivity/delete
+     */
+    public function deleteAction()
+    {
+        $givenParameters = $this->getParams('post');
+
+        BusinessActivityRepository::deleteVirtualService($givenParameters['ids']);
+        parent::deleteAction();
     }
 }

@@ -108,7 +108,7 @@ class TimezoneDatatable extends Datatable
             )
         ),
         array (
-            'title' => 'Offet',
+            'title' => 'Offset',
             'name' => 'offset',
             'data' => 'offset',
             'orderable' => true,

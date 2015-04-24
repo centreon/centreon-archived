@@ -57,6 +57,16 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
             case 'internal':
                 $filename .= '/core/internal/'.  implode('/', $fullClassPath);
                 break;
+            case 'api':
+                $thirdScope = array_shift($fullClassPath);
+                if (strtolower($thirdScope) === 'internal') {
+                    $filename .= '/core/api/internal/'.  implode('/', $fullClassPath);
+                } elseif (strtolower($thirdScope) === 'rest') {
+                    $filename .= '/core/api/rest/'.  implode('/', $fullClassPath);
+                } elseif (strtolower($thirdScope) === 'soap') {
+                    $filename .= '/core/api/soap/'.  implode('/', $fullClassPath);
+                }
+                break;
             case 'commands':
                 $filename .= '/core/commands/'.  implode('/', $fullClassPath);
                 break;
@@ -105,11 +115,24 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
         case 'install':
             $filename .= '/install/'.  implode('/', $fullClassPath);
             break;
+        case 'forms':
+            $filename .= '/forms/'.  implode('/', $fullClassPath);
+            break;
         case 'events':
             $filename .= '/events/'.  implode('/', $fullClassPath);
             break;
         case 'listeners':
             $filename .= '/listeners/'.  implode('/', $fullClassPath);
+            break;
+        case 'api':
+            $thirdScope = array_shift($fullClassPath);
+            if (strtolower($thirdScope) === 'internal') {
+                $filename .= '/api/internal/'.  implode('/', $fullClassPath);
+            } elseif (strtolower($thirdScope) === 'rest') {
+                $filename .= '/api/rest/'.  implode('/', $fullClassPath);
+            } elseif (strtolower($thirdScope) === 'soap') {
+                $filename .= '/api/soap/'.  implode('/', $fullClassPath);
+            }
             break;
     }
     

@@ -71,6 +71,7 @@ class Contact extends CentreonBaseModel
         $filterType = "OR"
     ) {
         $aAddFilters = array();
+        $aGroup = array();
 
         if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
             $aAddFilters = array(
@@ -79,8 +80,12 @@ class Contact extends CentreonBaseModel
                     'cfg_tags_contacts.resource_id = cfg_contacts.contact_id ')
             ); 
         }
+        
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_contacts.resource_id', 'nb' => count($filters['tagname']));
+        }
 
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters);
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
     }
     
 }

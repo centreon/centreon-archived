@@ -126,7 +126,8 @@ class Service extends CentreonBaseModel
         $filterType = "OR",
         $tablesString = null,
         $staticFilter = null,
-        $aAddFilters  = array()
+        $aAddFilters  = array(),
+        $aGroup = array()
     ) {
         $filters['service_register'] = '1';
         if (is_array($filterType)) {
@@ -137,7 +138,8 @@ class Service extends CentreonBaseModel
                 'service_register' => 'AND'
             );
         }
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+               
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
     }
     
     /**
@@ -160,6 +162,10 @@ class Service extends CentreonBaseModel
         $filters = array(),
         $filterType = "OR"
     ) {
+        $aAddFilters = array();
+        $tablesString =  '';
+        $aGroup = array();
+        
         $filters['service_register'] = '1';
         if (is_array($filterType)) {
             $filterType['service_register'] = 'AND';
@@ -170,8 +176,11 @@ class Service extends CentreonBaseModel
             );
         }
         
- 
-        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_services.resource_id', 'nb' => count($filters['tagname']));
+        }
+         
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 
     /**
@@ -186,4 +195,115 @@ class Service extends CentreonBaseModel
         return parent::getIdByParameter($paramName, $paramValues, $extraConditions);
     }
 
+    /**
+     * Used for duplicate a service
+     *
+     * @param int $sourceObjectId The source service id
+     * @param int $duplicateEntries The number entries
+     * @param bool $duplicateHost If this service is duplicate by a host duplication
+     * @return array List of new service id
+     */
+    public static function duplicate($sourceObjectId, $duplicateEntries = 1, $duplicateHost = false)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        /* Get element to duplicate */
+        $sourceParams = static::getParameters($sourceObjectId, '*');
+        if (false === $sourceParams) {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+
+        /* Get host id for this service */
+        $query = "SELECT host_host_id FROM cfg_hosts_services_relations WHERE service_service_id  = :svc_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam('svc_id', $sourceObjectId);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if (is_null($row)) {
+            throw new \Exception(static::OBJ_NOT_EXIST);
+        }
+        $hostId = $row['host_host_id'];
+
+        unset($sourceParams['service_id']);
+        $originalName = $sourceParams['service_description'];
+        $explodeOriginalName = explode('_', $originalName);
+        $j = 0;
+        if (($count = count($explodeOriginalName)) > 1 && is_numeric($explodeOriginalName[$count - 1])) {
+            $newName = join('_', array_slice($explodeOriginalName, 0, -1));
+            $j = $explodeOriginalName[$count - 1];
+        } else {
+            $newName = $originalName;
+        }
+
+        /* Insert new service */
+        $listDuplicateId = array();
+        for ($i = 0; $i < $duplicateEntries; $i++) {
+            /* Search the unique name for duplicate service if not duplicate from host */
+            if (false === $duplicateHost) {
+                do {
+                    $j++;
+                    $unique = self::isUnique($newName . '_' . $j, $duplicateHost, $hostId);
+                } while (false === $unique);
+                $newName = $newName . '_' . $j;
+            }
+            $sourceParams['service_description'] = $newName;
+            /* Insert the duplicate service */
+            $lastId = static::insert($sourceParams);
+            $listDuplicateId[] = $lastId;
+            /* Insert relation */
+            $db->beginTransaction();
+            /*  Duplicate macros for new service */
+            $queryDupMacros = "INSERT INTO cfg_customvariables_services (svc_macro_name, svc_macro_value, is_password, svc_svc_id)
+                SELECT svc_macro_name, svc_macro_value, is_password, " . $lastId . " FROM cfg_customvariables_services
+                    WHERE svc_svc_id = " . $sourceObjectId;
+            $db->query($queryDupMacros);
+            /*  Recreate service template create by host template */
+            if ($duplicateHost) {
+                $queryDupHT = "INSERT INTO cfg_services_hosts_templates_relations (service_id, host_tpl_id)
+                    SELECT " . $lastId . ", host_tpl_id FROM cfg_services_hosts_templates_relations
+                        WHERE service_id = " . $sourceObjectId;
+                $db->query($queryDupHT);
+            }
+            /* Service global tags */
+            $queryDupTag = "INSERT INTO cfg_tags_services (tag_id, resource_id)
+                SELECT ts.tag_id, " . $lastId . " FROM cfg_tags_services ts, cfg_tags t
+                    WHERE t.user_id IS NULL AND t.tag_id = ts.tag_id AND ts.resource_id = " . $sourceObjectId;
+            $db->query($queryDupTag);
+            /* Add relation to host only if not duplicate from host */
+            if (false === $duplicateHost) {
+                $queryDupHostRelation = "INSERT INTO cfg_hosts_services_relations (host_host_id, service_service_id)
+                    SELECT host_host_id, " . $lastId . " FROM cfg_hosts_services_relations
+                        WHERE service_service_id = " . $sourceObjectId;
+                $db->query($queryDupHostRelation);
+            }
+            $db->commit();
+        }
+        return $listDuplicateId;
+    }
+
+    /**
+     * Check if the name is unique
+     *
+     * @param string $name The name to validate
+     * @param int $hostId The host id for validate : the name is unqiue by host
+     * @return bool
+     */
+    public static function isUnique($name, $hostId)
+    {
+        $db = Di::getDefault()->get(static::$databaseName);
+        $query = "SELECT COUNT(s.service_id) as nb
+            FROM cfg_services s, cfg_hosts_services_relations hs
+            WHERE s.service_register = '1'
+                AND s.service_id = hs.service_service_id
+                AND s.service_description = :svc_desc
+                AND hs.host_host_id = :host_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':svc_desc', $name, \PDO::PARAM_STR);
+        $stmt->bindParam(':host_id', $hostId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if ($row['nb'] > 0) {
+            return false;
+        }
+        return true;   
+    }
 }

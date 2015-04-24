@@ -165,10 +165,9 @@ class User
      */
     public function getEmail()
     {
-        if (!isset($this->email)) {
-            throw new Exception(self::$notInit);
-        }
-        return $this->email;
+        $emails = UserRepository::getEmail($this->id);
+
+        return $emails;
     }
 
     /**

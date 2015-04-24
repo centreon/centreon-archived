@@ -73,13 +73,18 @@ class Host extends CentreonRelationModel
         $filters['service_register'] = '1';
         $aAddFilters = array();
         $tablesString =  '';
+        $aGroup = array();
         
         if (array('tagname', array_values($filters)) && !empty($filters['tagname'])) {
             $aAddFilters = array(
                 'tables' => array('cfg_tags', 'cfg_tags_services'),
-                'join'   => array('cfg_tags.tag_id = cfg_tags_services.tag_id', 'cfg_tags.tag_id = cfg_tags_services.tag_id',
+                'join'   => array('cfg_tags.tag_id = cfg_tags_services.tag_id',
                     'cfg_tags_services.resource_id = cfg_services.service_id ')
             ); 
+        }
+        
+        if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
+            $aGroup = array('sField' => 'cfg_tags_services.resource_id', 'nb' => count($filters['tagname']));
         }
         
         return parent::getMergedParametersBySearch(
@@ -92,7 +97,8 @@ class Host extends CentreonRelationModel
             $filters,
             $filterType,
             $relationTableParams,
-            $aAddFilters
+            $aAddFilters,
+            $aGroup
         );
     }
 }

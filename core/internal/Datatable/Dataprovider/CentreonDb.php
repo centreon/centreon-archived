@@ -78,10 +78,19 @@ class CentreonDb implements DataProviderInterface
         $conditions = array();
         foreach ($params['columns'] as $columnSearch) {
             if ($columnSearch['searchable'] === "true" && (!empty($columnSearch['search']['value']) || $columnSearch['search']['value'] == "0")) {
-                $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
+                if ($columnSearch['data'] == 'tagname') {
+                    $aSearch = explode(" ", $columnSearch['search']['value']);
+                    foreach ($aSearch as $sSearch) {
+                        $conditions[$columnSearch['data']][] = $sSearch;
+                    }
+                } else {
+                    $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
+                }
+                
             }
         }
-         
+      
+        
       if (isset($additionnalClass)) {
             $result = $additionnalClass::getMergedParametersBySearch(
                 explode(',', $fields),

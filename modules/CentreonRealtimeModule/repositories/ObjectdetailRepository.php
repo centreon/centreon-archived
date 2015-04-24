@@ -37,6 +37,7 @@ namespace CentreonRealtime\Repository;
 
 use Centreon\Internal\Di;
 use Centreon\Internal\Exception;
+use CentreonRealtime\Events\ExternalCommand;
 
 /**
  * Repository for host and object
@@ -50,15 +51,16 @@ class ObjectdetailRepository
      * Send command to service
      *
      * @param int $cmdId
+     * @param int $pollerId The poller ID
      * @param array $params
      * @todo retrieve centcorecmd path
      */
-    public static function sendCommand($cmdId, $params)
+    public static function sendCommand($cmdId, $pollerId, $params)
     {
-        $centcorecmd = '/var/lib/centreon/centcore.cmd';
         $prefix = sprintf("[%u] ", time());
         $command = $prefix . static::getCommandString($cmdId) . ";" .implode(';', $params) . "\n";
-        file_put_contents($centcorecmd, $command, FILE_APPEND);
+        $eventObj = new ExternalCommand($pollerId, $command);
+        Di::getDefault()->get('events')->emit('centreon-realtime.command.send', array($eventObj));
     }
 
     /**
@@ -106,8 +108,11 @@ class ObjectdetailRepository
                     $options = array();
                     break;
             }
+            $instanceId = $row['instance_id'];
+            unset($row['instance_id']);
             self::sendCommand(
                 $cmdId,
+                $instanceId,
                 array_merge($row, $options)
             );
         }

@@ -114,37 +114,4 @@ class BasicRepository
     {
         static::$secondaryObjectClass = $secondaryObjectClass;
     }
-    
-    /**
-     * 
-     * @param string $formRoute
-     * @param string $formField
-     */
-    public static function getFormHelp($formRoute, $formField)
-    {
-        $finalHelpReturn = array(
-            'text' => '',
-            'url' => ''
-        );
-        
-        // request to get Help and Help url for the field
-        $fieldHelpRequest = "SELECT help, help_url "
-            . "FROM cfg_forms_fields cff, cfg_forms_blocks_fields_relations cfbfr, cfg_forms_blocks cfb, cfg_forms_sections cfs, cfg_forms cf "
-            . "WHERE cff.name = '$formField' "
-            . "AND cf.route = '$formRoute' "
-            . "AND cfs.form_id = cf.form_id "
-            . "AND cfb.section_id = cfs.section_id "
-            . "AND cfbfr.block_id = cfb.block_id "
-            . "AND cfbfr.field_id = cff.field_id ";
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->query($fieldHelpRequest);
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
-        if (count($result) > 0) {
-            $finalHelpReturn['text'] = $result[0]['help'];
-            $finalHelpReturn['url'] = $result[0]['help_url'];
-        }
-        
-        return $finalHelpReturn;
-    }
 }

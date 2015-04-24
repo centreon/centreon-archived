@@ -4,7 +4,8 @@
         "short_name": "performance",
         "icon_class": "icon-perf",
         "bgcolor": "lightseagreen",
-        "order": 3,
+        "block": "root",
+        "order": 4,
       	"menus": [ {
                   "name" : "Graph",
                   "short_name" : "graph",

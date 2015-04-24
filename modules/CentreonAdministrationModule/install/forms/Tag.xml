@@ -6,13 +6,12 @@
         <redirect_route>/centreon-administration/tag</redirect_route>
         <section name="General">
             <block name="General information">
-                <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                <field name="tagname" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
                         <validator events="blur">unique</validator>
                         <validator events="blur">forbiddenChar</validator>
                     </validators>
                 </field>
-                <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
             </block>
         </section>
     </form>

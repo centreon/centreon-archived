@@ -53,7 +53,7 @@ abstract class FormRepository extends ListRepository
      * @param string $searchStr
      * @return array
      */
-    public static function getFormList($searchStr = "")
+    public static function getFormList($searchStr = "", $objectId = null)
     {
         if (!empty(static::$secondaryObjectClass)) {
             $class = static::$secondaryObjectClass;

@@ -233,7 +233,7 @@
     },
     {
       "key": "broker_module_directory",
-      "value": "/usr/lib/centreon-broker"
+      "value": "/usr/share/centreon/lib/centreon-broker"
     },
     {
       "key": "broker_logs_directory",
@@ -245,7 +245,7 @@
     },
     {
       "key": "broker_cbmod_directory",
-      "value": "/usr/lib/centreon-engine"
+      "value": "/usr/lib64/nagios"
     },
     {
       "key": "broker_init_script",
