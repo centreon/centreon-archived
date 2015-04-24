@@ -284,6 +284,8 @@ class BasicCrud extends AbstractCommand
     public function showAction($objectSlug, $fields = null, $linkedObject = '')
     {
         $repository = $this->repository;
+        
+        $objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
 
         //
         $fields = (!is_null($fields)) ? $fields : '*';
@@ -356,13 +358,16 @@ class BasicCrud extends AbstractCommand
     {
         try {
             $repository = $this->repository;
+            
             $paramList = $this->parseObjectParams($params);
-            $paramList['object_id'] = $object;
+            $paramList['object_id'] = $repository::getIdFromUnicity($this->parseObjectParams($object));
             
             $repository::update(
                         $paramList,
                         'api',
-                        $this->objectBaseUrl . '/update'
+                        $this->objectBaseUrl . '/update',
+                        true,
+                        false
                     );
             \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully updated", true, 'green');
         } catch (Exception $ex) {
@@ -372,12 +377,13 @@ class BasicCrud extends AbstractCommand
     
     /**
      * 
-     * @param type $id
+     * @param integer $id
      */
     public function deleteAction($id)
     {
         try {
             $repository = $this->repository;
+            $id = $repository::getIdFromUnicity($this->parseObjectParams($id));
             $repository::delete(array($id));
             \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
         } catch (Exception $ex) {

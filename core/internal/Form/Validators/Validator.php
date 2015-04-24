@@ -52,8 +52,16 @@ use \Centreon\Internal\Exception\Http\BadRequestException;
  */
 class Validator
 {
+    /**
+     *
+     * @var type 
+     */
     private $formType;
     
+    /**
+     *
+     * @var type 
+     */
     private $formGenerator;
     
     /**
@@ -70,6 +78,7 @@ class Validator
     /**
      * 
      * @param type $formType
+     * @param type $formInfo
      */
     private function getFormGenerator($formType, $formInfo = array())
     {
@@ -93,10 +102,10 @@ class Validator
      * 
      * @param type $submittedDatas
      */
-    public function validate($submittedDatas)
+    public function validate($submittedDatas, $validateMandatory = true)
     {
         $validationScheme = $this->formGenerator->getValidationScheme(array_keys($submittedDatas));
-        $this->validateDatas($validationScheme, $submittedDatas);
+        $this->validateDatas($validationScheme, $submittedDatas, $validateMandatory);
     }
     
     /**
@@ -104,9 +113,9 @@ class Validator
      * @param type $validationScheme
      * @param type $submittedDatas
      */
-    public function customValidate($validationScheme, $submittedDatas)
+    public function customValidate($validationScheme, $submittedDatas, $validateMandatory = true)
     {
-        $this->validateDatas($validationScheme, $submittedDatas);
+        $this->validateDatas($validationScheme, $submittedDatas, $validateMandatory);
     }
     
     /**
@@ -115,17 +124,19 @@ class Validator
      * @param type $submittedDatas
      * @throws \Exception
      */
-    private function validateDatas($validationScheme, $submittedDatas)
+    private function validateDatas($validationScheme, $submittedDatas, $validateMandatory = true)
     {
         $errors = array();
 
-        // If not all mandatory parameters are in the dataset, throw an exception
-        $datasKeys = array_keys($submittedDatas);
-        $missingKeys = array_diff($validationScheme['mandatory'], $datasKeys);
-        if (count($missingKeys) > 0) {
-            $errorMessage = _("The following mandatory parameters are missing") . " :\n    - ";
-            $errorMessage .= implode("\n    - ", $missingKeys);
-            throw new MissingParameterException($errorMessage);
+        if ($validateMandatory) {
+            // If not all mandatory parameters are in the dataset, throw an exception
+            $datasKeys = array_keys($submittedDatas);
+            $missingKeys = array_diff($validationScheme['mandatory'], $datasKeys);
+            if (count($missingKeys) > 0) {
+                $errorMessage = _("The following mandatory parameters are missing") . " :\n    - ";
+                $errorMessage .= implode("\n    - ", $missingKeys);
+                throw new MissingParameterException($errorMessage);
+            }
         }
 
         $objectParams = array();

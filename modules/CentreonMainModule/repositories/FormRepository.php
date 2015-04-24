@@ -89,7 +89,7 @@ abstract class FormRepository extends ListRepository
      * @param type $origin
      * @param type $route
      */
-    protected static function validateForm($givenParameters, $origin = "", $route = "")
+    protected static function validateForm($givenParameters, $origin = "", $route = "", $validateMandatory = true)
     {
         $formValidator = new Validator($origin, array('route' => $route, 'params' => array(), 'version' => '3.0.0'));
         
@@ -97,7 +97,7 @@ abstract class FormRepository extends ListRepository
             $givenParameters = $givenParameters->all();
         }
         
-        $formValidator->validate($givenParameters);
+        $formValidator->validate($givenParameters, $validateMandatory);
     }
 
     /**
@@ -174,10 +174,10 @@ abstract class FormRepository extends ListRepository
      * @param array $givenParameters
      * @throws \Centreon\Internal\Exception
      */
-    public static function update($givenParameters, $origin = "", $route = "", $validate = true)
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
         if ($validate) {
-            self::validateForm($givenParameters, $origin, $route);
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
         }
         
         $class = static::$objectClass;
