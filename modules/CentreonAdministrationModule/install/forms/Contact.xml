@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+    <form name="contact_form">
+        <route>/centreon-administration/contact/update</route>
+        <redirect>1</redirect>
+        <redirect_route>/centreon-administration/contact</redirect_route>
+        <section name="General">
+            <block name="General information">
+                <field name="description" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <validators>
+                        <validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                            <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                        </validator>
+                    </validators>
+                </field>
+                <field name="timezone_id" label="Timezone" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/timezone/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/contact/[i:id]/timezone</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                    <help>Define the timezone</help>
+                </field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_contact">
+        <route>/centreon-administration/contact/add</route>
+        <step name="General">
+            <field name="description" mandatory="1"></field>
+            <field name="timezone_id" mandatory="0"></field>
+        </step>
+    </wizard>
+</forms>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-    <form name="contact_form">
+    <form name="user_form">
         <route>/centreon-administration/user/update</route>
         <redirect>1</redirect>
         <redirect_route>/centreon-administration/user</redirect_route>
@@ -74,7 +74,7 @@
             </block>
         </section>
     </form>
-    <wizard name="add_contact">
+    <wizard name="add_user">
         <route>/centreon-administration/user/add</route>
         <step name="General">
             <field name="firstname" mandatory="1"></field>
