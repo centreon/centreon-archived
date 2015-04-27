@@ -249,7 +249,7 @@ class BasicCrud extends AbstractCommand
                 if ($externalAttribute['link'] == 'relation') {
                     $relClass = $this->relationMap[$externalAttribute['objectClass']];
                     $exP = $relClass::getMergedParameters(
-                        $externalAttribute['fields'],
+                        explode(',', $externalAttribute['fields']),
                         array(),
                         -1,
                         0,
