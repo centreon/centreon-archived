@@ -6,89 +6,84 @@
         <redirect_route>/centreon-administration/user</redirect_route>
         <section name="General">
             <block name="General information">
-            <field name="login" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-                <validators>
-                    <validator rules="remote" serverside="core.unique" />
-                    <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-                        <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
-                    </validator>
-                </validators>
-				</field>
-				<field name="firstname" label="Firstname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-				<field name="lastname" label="Lastname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
-			</block>
-                        <block name="Locale settings">
-                            <field name="language_id" label="Language" default_value="1" advanced="0" type="select" parent_field="" mandatory="0">
-                                <attributes>
-                                        <object_type>object</object_type>
-                                        <defaultValuesRoute>/centreon-administration/language/formlist</defaultValuesRoute>
-                                        <listValuesRoute>/centreon-administration/user/[i:id]/language</listValuesRoute>
-                                        <multiple>false</multiple>
-                                </attributes>
-                            </field>
-			</block>
-		</section>
-		<section name="Access">
-			<block name="Authentication">
-				<field name="password" label="Password" default_value="" advanced="0" type="password" parent_field="" mandatory="0"></field>
-				<field name="password_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" mandatory="0">
-				    <validators>
-				        <validator rules="equalTo" serverside="core.EqualTo">
-				            <argument name="equalfield">password</argument>
-				        </validator>
-				        <validator rules="size" serverside="core.String">
-				           <argument name="minlength">8</argument>
-				           <argument name="maxlength">255</argument> 
-				        </validator>
-				    </validators>
-				</field>
-				<field name="autologin_key" label="Autologin key" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
-				<field name="auth_type" label="Authentication type" default_value="local" advanced="0" type="radio" parent_field="" mandatory="0">
-					<attributes>
+                <field name="login" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <validators>
+                        <validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                            <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                        </validator>
+                    </validators>
+                </field>
+                <field name="firstname" label="Firstname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+                <field name="lastname" label="Lastname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
+            </block>
+            <block name="Locale settings">
+                <field name="language_id" label="Language" default_value="1" advanced="0" type="select" parent_field="" mandatory="0">
+                    <attributes>
+                        <object_type>object</object_type>
+                        <defaultValuesRoute>/centreon-administration/language/formlist</defaultValuesRoute>
+                        <listValuesRoute>/centreon-administration/user/[i:id]/language</listValuesRoute>
+                        <multiple>false</multiple>
+                    </attributes>
+                </field>
+            </block>
+            <block name="Authentication">
+                <field name="password" label="Password" default_value="" advanced="0" type="password" parent_field="" mandatory="0"></field>
+                <field name="password_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" mandatory="0">
+                    <validators>
+                        <validator rules="equalTo" serverside="core.EqualTo">
+                            <argument name="equalfield">password</argument>
+                        </validator>
+                        <validator rules="size" serverside="core.String">
+                            <argument name="minlength">8</argument>
+                            <argument name="maxlength">255</argument> 
+                        </validator>
+                    </validators>
+                </field>
+                <field name="autologin_key" label="Autologin key" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
+                <field name="auth_type" label="Authentication type" default_value="local" advanced="0" type="radio" parent_field="" mandatory="0">
+                    <attributes>
                         <choices>
                             <Default>local</Default>
                             <LDAP>ldap</LDAP>
                         </choices>
-					</attributes>
-				</field>
-			</block>
-			<block name="ACL">
-				<field name="is_admin" label="Admin role" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
-                                    <attributes>
-                                        <choices>
-                                            <Yes>1</Yes>
-                                            <No>0</No>
-                                        </choices>
-                                    </attributes>
-				</field>
-			</block>
-		</section>
-		<section name="Extended information">
-			<block name="Additional information">
-                            <field name="is_activated" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
-                                <attributes>
-                                    <choices>
-                                        <Enabled>1</Enabled>
-                                        <Disabled>0</Disabled>
-                                    </choices>
-				</attributes>
-                            </field>
-			</block>
-		</section>
-	</form>
-	<wizard name="add_contact">
-		<route>/centreon-administration/user/add</route>
-		<step name="General">
-			<field name="firstname" mandatory="1"></field>
-			<field name="lastname" mandatory="1"></field>
-			<field name="login" mandatory="1"></field>
-			<field name="language_id" mandatory="1"></field>
-		</step>
-		<step name="Access">
-			<field name="password" mandatory="1"></field>
-			<field name="password_confirm" mandatory="1"></field>
-			<field name="is_admin" mandatory="1"></field>
-			<field name="auth_type" mandatory="1"></field>
-		</step>
+                    </attributes>
+                </field>
+            </block>
+            <block name="ACL">
+                <field name="is_admin" label="Admin role" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+                    <attributes>
+                        <choices>
+                            <Yes>1</Yes>
+                            <No>0</No>
+                        </choices>
+                    </attributes>
+                </field>
+            </block>
+        </section>
+	<section name="Extended information">
+            <block name="Additional information">
+                <field name="is_activated" label="Status" default_value="1" advanced="0" type="radio" parent_field="" mandatory="1">
+                    <attributes>
+                        <choices>
+                            <Enabled>1</Enabled>
+                            <Disabled>0</Disabled>
+                        </choices>
+                    </attributes>
+                </field>
+            </block>
+        </section>
+    </form>
+    <wizard name="add_contact">
+        <route>/centreon-administration/user/add</route>
+        <step name="General">
+            <field name="firstname" mandatory="1"></field>
+            <field name="lastname" mandatory="1"></field>
+            <field name="login" mandatory="1"></field>
+            <field name="password" mandatory="1"></field>
+            <field name="password_confirm" mandatory="1"></field>
+            <field name="is_admin" mandatory="1"></field>
+            <field name="auth_type" mandatory="1"></field>
+        </step>
     </wizard>
 </forms>
