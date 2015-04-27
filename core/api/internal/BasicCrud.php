@@ -226,7 +226,7 @@ class BasicCrud extends AbstractCommand
             $objectList = $repository::getList($fieldsToQuery, $count, $offset);
             $this->getExternalObject($objectList);
             
-            $this->normalizeParams($objectList);
+            $this->normalizeParams($objectList, false);
             
         } catch (\Exception $ex) {
             
