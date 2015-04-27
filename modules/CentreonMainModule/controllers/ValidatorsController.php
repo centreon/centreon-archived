@@ -89,7 +89,11 @@ class ValidatorsController extends Controller
             $jsonResponse = array('success' => false, 'error' => _("Can't resolve the given dns name"));
         }
         
-        $router->response()->code('200')->json($jsonResponse);
+        if (isset($params['clientside']) && $params['clientside'] == true) {
+            return $jsonResponse['success'];
+        } else {
+            $router->response()->code('200')->json($jsonResponse);
+        }
     }
     
     /**
@@ -103,7 +107,12 @@ class ValidatorsController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $jsonResponse = Ipaddress::validate($params['ipaddress']);
-        $router->response()->code('200')->json($jsonResponse);
+
+        if (isset($params['clientside']) && $params['clientside'] == true) {
+            return $jsonResponse['success'];
+        } else {
+            $router->response()->code('200')->json($jsonResponse);
+        }
     }
     
     /**
@@ -122,7 +131,11 @@ class ValidatorsController extends Controller
             $params['object'],
             $params['object_id']
         );
-        $router->response()->code('200')->json($jsonResponse);
+        if (isset($params['clientside']) && $params['clientside'] == true) {
+            return $jsonResponse['success'];
+        } else {
+            $router->response()->code('200')->json($jsonResponse);
+        }
     }
     
     /**
@@ -136,7 +149,11 @@ class ValidatorsController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         $jsonResponse = ForbiddenChar::validate($params['value']);
-        $router->response()->code('200')->json($jsonResponse);
+        if (isset($params['clientside']) && $params['clientside'] == true) {
+            return $jsonResponse['success'];
+        } else {
+            $router->response()->code('200')->json($jsonResponse);
+        }
     }
 
     /**

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-	<form name="contact_form">
-		<route>/centreon-administration/user/update</route>
-		<redirect>1</redirect>
-		<redirect_route>/centreon-administration/user</redirect_route>
-		<section name="General">
-			<block name="General information">
-				<field name="login" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-					<validators>
-                    	<validator rules="remote" serverside="core.unique" />
-                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
-                        </validator>
-					</validators>
+    <form name="contact_form">
+        <route>/centreon-administration/user/update</route>
+        <redirect>1</redirect>
+        <redirect_route>/centreon-administration/user</redirect_route>
+        <section name="General">
+            <block name="General information">
+            <field name="login" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                <validators>
+                    <validator rules="remote" serverside="core.unique" />
+                    <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                        <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                    </validator>
+                </validators>
 				</field>
 				<field name="firstname" label="Firstname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
 				<field name="lastname" label="Lastname" default_value="" advanced="0" type="text" parent_field="" mandatory="1"></field>
@@ -35,6 +35,10 @@
 				    <validators>
 				        <validator rules="equalTo" serverside="core.EqualTo">
 				            <argument name="equalfield">password</argument>
+				        </validator>
+				        <validator rules="size" serverside="core.String">
+				           <argument name="minlength">8</argument>
+				           <argument name="maxlength">255</argument> 
 				        </validator>
 				    </validators>
 				</field>
