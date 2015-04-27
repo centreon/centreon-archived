@@ -37,6 +37,7 @@
 namespace CentreonMain\Repository;
 
 use Centreon\Internal\Di;
+use Centreon\Internal\Exception\Validator\MissingParameterException;
 
 
 class BasicRepository
@@ -161,6 +162,16 @@ class BasicRepository
         // Building Query
         $query = 'SELECT ' . $objClass::getPrimaryKey() . ' ';
         
+        // Check if all mandatory unicty fields are present
+        $requiredFields = array_keys(static::$unicityFields['fields']);
+        $givenFields = array_keys($unicityParams);
+        $missingFields = array_diff($requiredFields, $givenFields);
+        if (count($missingFields) > 0) {
+            $errorMessage = _("The following mandatory parameters are missing") . " :\n    - ";
+            $errorMessage .= implode("\n    - ", $missingFields);
+            throw new MissingParameterException($errorMessage);
+        }
+        
         // Checking por unicity's params
         foreach ($unicityParams as $key => $unicityParam) {
             if (isset(static::$unicityFields['fields'][$key])) {
@@ -187,7 +198,7 @@ class BasicRepository
         if (count($result) > 0) {
             $objectId = $result[0][$objClass::getPrimaryKey()];
         } else {
-            throw new \Centreon\Internal\Exception\Validator\MissingParameterException("The given object doesn't exist");
+            throw new MissingParameterException("The given object doesn't exist");
         }
         
         return $objectId;

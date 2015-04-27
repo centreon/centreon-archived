@@ -84,7 +84,6 @@ abstract class CentreonModel
         $aAddFilters  = array(),
         $sGroup = array()
     ) {
-
         if (is_string($filterType) && $filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         } elseif (is_array($filterType)) {

@@ -182,16 +182,28 @@ $(function() {
       startTime = moment(endTime).subtract(24, 'hours');
   */
  
- var endTime,
- startTime;
+var endTime,
+ startTime,
+ timeMoinsHeight,
+ timeMoinsDay,
+ timeMoinsWeek,
+ timeMoinsMonth;
       
- if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
-        endTime = moment().tz(sessionStorage.getItem("sTimezone"));
-    } else {
-        endTime = moment();
-        
-    }
-    startTime = moment(endTime).subtract(24, 'hours');
+if (sessionStorage.length > 0 &&  sessionStorage.getItem("sTimezone") != 'undefined' && sessionStorage.getItem("sTimezone") != '') {
+    endTime = moment().tz(sessionStorage.getItem("sTimezone"));
+    timeMoinsHeight = moment().tz(sessionStorage.getItem("sTimezone")).subtract(8, 'hours');
+    timeMoinsDay = moment().tz(sessionStorage.getItem("sTimezone")).subtract(24, 'hours');
+    timeMoinsWeek = moment().tz(sessionStorage.getItem("sTimezone")).subtract(7, 'days');
+    timeMoinsMonth = moment().tz(sessionStorage.getItem("sTimezone")).subtract(1, 'months');
+} else {
+    endTime = moment();
+    timeMoinsHeight = moment().subtract(8, 'hours');
+    timeMoinsDay = moment().subtract(24, 'hours');
+    timeMoinsWeek = moment().subtract(7, 'days');
+    timeMoinsMonth = moment().subtract(1, 'months');
+}
+
+startTime = moment(endTime).subtract(24, 'hours');
 
   /* Load tooltip */
   $("[data-toggle='tooltip']").tooltip();
@@ -328,10 +340,10 @@ $(function() {
     startDate: startTime,
     endDate: endTime,
     ranges: {
-      "8 hours": [moment().subtract(8, 'hours'), moment()],
-      "24 hours": [moment().subtract(24, 'hours'), moment()],
-      "1 week": [moment().subtract(7, 'days'), moment()],
-      "1 month": [moment().subtract(1, 'months'), moment()]
+      "8 hours": [timeMoinsHeight, endTime],
+      "24 hours": [timeMoinsDay, endTime],
+      "1 week": [timeMoinsWeek, endTime],
+      "1 month": [timeMoinsMonth,endTime]
     }
   });
   

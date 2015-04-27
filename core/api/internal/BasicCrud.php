@@ -301,7 +301,7 @@ class BasicCrud extends AbstractCommand
      * @param type $params
      * @return type
      */
-    private function parseObjectParams($params)
+    protected function parseObjectParams($params)
     {
         // 
         $finalParamList = array();

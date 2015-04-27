@@ -42,7 +42,6 @@
         "queries_per_transaction": 1000,
         "read_timeout": 2,
         "check_replication": 0,
-        "with_state_events": "yes",
         "store_in_data_bin": "yes",
         "insert_in_index_data": "yes",
         "interval": 60,
@@ -55,6 +54,7 @@
         "db_name": "%global_db_name%",
         "db_user": "%global_db_user%",
         "db_password": "%global_db_password%",
+        "with_state_events": "yes",
         "queries_per_transaction": 1000,
         "read_timeout": 2,
         "check_replication": 0,
@@ -111,7 +111,6 @@
         "queries_per_transaction": 1000,
         "read_timeout": 2,
         "check_replication": 0,
-        "with_state_events": "yes"
       },
       "sql": {
         "db_type": "%global_db_type%",
@@ -121,6 +120,7 @@
         "db_user": "%global_db_user%",
         "db_password": "%global_db_password%",
         "queries_per_transaction": 1000,
+        "with_state_events": "yes"
         "read_timeout": 2,
         "check_replication": 0,
         "interval": "%global_interval%",
