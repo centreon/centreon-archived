@@ -13,7 +13,7 @@
     "objectBaseUrl" : "service",
     "objectClass" : "\\CentreonConfiguration\\Models\\Service",
     "relationMap" : {
-        "service_hosts" : "\\CentreonConfiguration\\Models\\Relation\\Host\\Service",
+        "service_hosts" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Host",
         "service_parents" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Serviceparents",
         "service_children" : "\\CentreonConfiguration\\Models\\Relation\\Service\\Servicechildren"
     },

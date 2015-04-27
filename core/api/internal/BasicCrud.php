@@ -224,9 +224,9 @@ class BasicCrud extends AbstractCommand
             
             // Getting the list from
             $objectList = $repository::getList($fieldsToQuery, $count, $offset);
-            $this->normalizeParams($objectList);
-            
             $this->getExternalObject($objectList);
+            
+            $this->normalizeParams($objectList);
             
         } catch (\Exception $ex) {
             
@@ -286,18 +286,14 @@ class BasicCrud extends AbstractCommand
         $repository = $this->repository;
         
         $objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
-
+        
         //
         $fields = (!is_null($fields)) ? $fields : '*';
         
         $object = $repository::load($objectSlug, $fields);
-        $this->normalizeSingleSet($object);
+        $this->normalizeSingleSet($object, false);
         
         return $object;
-        
-        /*$objPrimaryKey = $obj::getPrimaryKey();
-        $linkedObjects = (!empty($linkedObject)) ? explode(',', $linkedObject) : array();
-        $object['links'] = $this->getLinkedObjects($params['id'], $linkedObjects);*/
     }
     
     /**
