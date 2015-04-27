@@ -375,11 +375,11 @@ class BasicCrud extends AbstractCommand
      * 
      * @param integer $id
      */
-    public function deleteAction($id)
+    public function deleteAction($object)
     {
         try {
             $repository = $this->repository;
-            $id = $repository::getIdFromUnicity($this->parseObjectParams($id));
+            $id = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $repository::delete(array($id));
             \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
         } catch (Exception $ex) {
