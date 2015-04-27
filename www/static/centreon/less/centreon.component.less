@@ -15,10 +15,9 @@
   input[type="number"],
   textarea,
   .select2-container .select2-choice,
-  //.select2-container .select2-choices .select2-search-field input
 {
     width: 100%;
-    height: 44px;
+    height: 40px;
     padding: @paddingElem*3 @paddingElem*2 @paddingElem;
     outline: 0;
     border-radius: 3px;
@@ -62,7 +61,7 @@
   label.floatLabel {
     font-size: 11px;
     position: absolute;
-    top: @paddingElem;
+    top: @paddingElem/2;
     left: 30px;
     color: @lightGray3;
     font-weight: normal;
@@ -80,12 +79,23 @@
     }
   }
 
+  /*---- Group of 2 Fields --- */
+  .inlineGroup {
+    .Elem1 {
+      float: left;
+      width: 92%;
+    }
+    .Elem2 {
+      float: right;
+      width: 6%;
+    }
+  }
   /*---- Select Fields --- */
 
   //Select Image
 
   .select2-container {
-      height: 44px;
+      height: 40px;
       .select2-choice   {
         img {
           width: 28px;
@@ -106,19 +116,34 @@
       }
   }
 }
-
-.select2-drop {
+/* -- Select Drop --*/
+.select2-drop.select2-drop-active {
+  border-radius: 0 0 3px;
+  box-shadow: 2px 1px 1px @lightGray;
+  border: 1px solid @lightGray;
+  .select2-search {
+    input {
+      border-radius: 3px;
+      height: 36px !important;
+      max-height: 40px;
+      box-shadow: none;
+      border: 1px solid @lightGray;
+    }
+  }
   .select2-results {
+    .select2-result-unselectable .select2-result-label {display: none;}
     .select2-result-label {
-      img {
-        width: 24px;
-        height: 24px;
-      }
+      padding: @paddingElem;
+      margin: 0 @paddingElem*2;
+      border-bottom: 1px solid @lightGray1;
+    }
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: @paddingElem;
     }
   }
 }
-
-
 
 .js-hide-label > label.floatLabel {
   opacity: 0;
@@ -150,8 +175,9 @@
   .btnDefault{
     color: @darkGray1;
     background-color: @lightGray1;
-    //border-color: @lightGray;
+    border: 1px solid @white;
     box-shadow: 1px 2px 2px @lightGray;
+    box-sizing: border-box;
   }
 
   .btnSuccess{
