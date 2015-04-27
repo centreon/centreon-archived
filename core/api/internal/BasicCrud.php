@@ -224,9 +224,9 @@ class BasicCrud extends AbstractCommand
             
             // Getting the list from
             $objectList = $repository::getList($fieldsToQuery, $count, $offset);
-            $this->normalizeParams($objectList);
-            
             $this->getExternalObject($objectList);
+            
+            $this->normalizeParams($objectList, false);
             
         } catch (\Exception $ex) {
             
@@ -249,7 +249,7 @@ class BasicCrud extends AbstractCommand
                 if ($externalAttribute['link'] == 'relation') {
                     $relClass = $this->relationMap[$externalAttribute['objectClass']];
                     $exP = $relClass::getMergedParameters(
-                        $externalAttribute['fields'],
+                        explode(',', $externalAttribute['fields']),
                         array(),
                         -1,
                         0,
@@ -286,18 +286,14 @@ class BasicCrud extends AbstractCommand
         $repository = $this->repository;
         
         $objectSlug = $repository::getIdFromUnicity($this->parseObjectParams($objectSlug));
-
+        
         //
         $fields = (!is_null($fields)) ? $fields : '*';
         
         $object = $repository::load($objectSlug, $fields);
-        $this->normalizeSingleSet($object);
+        $this->normalizeSingleSet($object, false);
         
         return $object;
-        
-        /*$objPrimaryKey = $obj::getPrimaryKey();
-        $linkedObjects = (!empty($linkedObject)) ? explode(',', $linkedObject) : array();
-        $object['links'] = $this->getLinkedObjects($params['id'], $linkedObjects);*/
     }
     
     /**
@@ -379,11 +375,11 @@ class BasicCrud extends AbstractCommand
      * 
      * @param integer $id
      */
-    public function deleteAction($id)
+    public function deleteAction($object)
     {
         try {
             $repository = $this->repository;
-            $id = $repository::getIdFromUnicity($this->parseObjectParams($id));
+            $id = $repository::getIdFromUnicity($this->parseObjectParams($object));
             $repository::delete(array($id));
             \Centreon\Internal\Utils\CommandLine\InputOutput::display("Object successfully deleted", true, 'green');
         } catch (Exception $ex) {

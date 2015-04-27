@@ -78,13 +78,13 @@ class BasicCrudCommand extends BasicCrud
     
     /**
      * 
-     * @param type $objectSlug
+     * @param type $object
      * @param type $fields
      * @param type $linkedObject
      */
-    public function showAction($objectSlug, $fields = null, $linkedObject = '')
+    public function showAction($object, $fields = null, $linkedObject = '')
     {
-        $myObject = parent::showAction($objectSlug, $fields, $linkedObject);
+        $myObject = parent::showAction($object, $fields, $linkedObject);
         
         $result = '';
         foreach ($myObject as $key => $value) {
