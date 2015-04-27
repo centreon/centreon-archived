@@ -65,8 +65,8 @@ class Selectimage extends Component
         $fileUploadForImage = File::renderHtmlInput($element);
         
         $finalHtml = '<div class="inlineGroup">'
-                . '<div class="">'.$selectForImage['html'].'</div>'
-                . '<div class="">'
+                . '<div class="Elem1">'.$selectForImage['html'].'</div>'
+                . '<div class="Elem2">'
                     . '<button '
                         . 'class="btnC btnDefault" '
                         . 'id="modalAdd_'.$element['name'].'" '
