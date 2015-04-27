@@ -89,11 +89,7 @@ class ValidatorsController extends Controller
             $jsonResponse = array('success' => false, 'error' => _("Can't resolve the given dns name"));
         }
         
-        if (isset($params['clientside']) && $params['clientside'] == true) {
-            return $jsonResponse['success'];
-        } else {
-            $router->response()->code('200')->json($jsonResponse);
-        }
+        return $jsonResponse['success'];
     }
     
     /**
@@ -104,15 +100,9 @@ class ValidatorsController extends Controller
     public function ipAddressAction()
     {
         $params = $this->getParams('post');
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $jsonResponse = Ipaddress::validate($params['ipaddress']);
 
-        if (isset($params['clientside']) && $params['clientside'] == true) {
-            return $jsonResponse['success'];
-        } else {
-            $router->response()->code('200')->json($jsonResponse);
-        }
+        return $jsonResponse['success'];
     }
     
     /**
@@ -123,19 +113,14 @@ class ValidatorsController extends Controller
     public function uniqueAction()
     {
         $params = $this->getParams('post');
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $jsonResponse = Unique::validate(
             $params['value'],
             $params['module'],
             $params['object'],
             $params['object_id']
         );
-        if (isset($params['clientside']) && $params['clientside'] == true) {
-            return $jsonResponse['success'];
-        } else {
-            $router->response()->code('200')->json($jsonResponse);
-        }
+
+        return $jsonResponse['success'];
     }
     
     /**
@@ -146,14 +131,9 @@ class ValidatorsController extends Controller
     public function forbiddenCharAction()
     {
         $params = $this->getParams('post');
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $jsonResponse = ForbiddenChar::validate($params['value']);
-        if (isset($params['clientside']) && $params['clientside'] == true) {
-            return $jsonResponse['success'];
-        } else {
-            $router->response()->code('200')->json($jsonResponse);
-        }
+
+        return $jsonResponse['success'];
     }
 
     /**
