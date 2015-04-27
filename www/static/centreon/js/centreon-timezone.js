@@ -29,30 +29,37 @@ function displayDate()
  */
 function changeTimezone(sTimezone)
 {
-    if (sTimezone == '') {
+    if (sTimezone == '' || typeof sTimezone === 'undefined') {
         sessionStorage.clear();
     } else {
         sessionStorage.setItem("sTimezone", sTimezone);
     }
+    
     displayDate();
     
     if ($("input[name='period']").length > 0 &&  typeof nbGraph !== 'undefined') {
-        var startTime, endTime, startTimeNew, endTimeNew, startDateNew, endDateNew,
+        var startTime, endTime, startTimeNew, endTimeNew, startDateNew, endDateNew, time;
+        
+        if (sTimezone == '' || typeof sTimezone === 'undefined') {
+            endDateNew = moment().format('YYYY-MM-DD HH:mm');
+            startDateNew = moment(endDateNew).subtract(24, 'hours').format('YYYY-MM-DD HH:mm');
+        } else {
             time = $("input[name='period']").val();
 
-        startTime = moment(time.split(" - ")[0]).format('X');
-        endTime = moment(time.split(" - ")[1]).format('X');
-        
-        startDateNew = getDateByTz(startTime, sDefaultFormatDateWithoutSecond);
-        endDateNew = getDateByTz(endTime, sDefaultFormatDateWithoutSecond);
-   
-        startTimeNew = moment(startDateNew).unix();
-        endTimeNew = moment(endDateNew).unix();
+            startTime = moment(time.split(" - ")[0]).format('X');
+            endTime = moment(time.split(" - ")[1]).format('X');
+
+            startDateNew = getDateByTz(startTime, sDefaultFormatDateWithoutSecond);
+            endDateNew = getDateByTz(endTime, sDefaultFormatDateWithoutSecond);
+
+            startTimeNew = moment(startDateNew).unix();
+            endTimeNew = moment(endDateNew).unix();
+        }
 
         $("input[name='period']").val(startDateNew +" - "+endDateNew);
-        
+
         if (nbGraph > 0) {
-            updateChart(startTimeNew, endTimeNew);
+           updateChart(startTimeNew, endTimeNew);
         }
     }
    
@@ -66,7 +73,7 @@ function changeTimezone(sTimezone)
 function getDateByTz(unixtime, sFormat)
 {
     var sDateNew = ''; 
-    
+    console.log("78"+sessionStorage.getItem("sTimezone"));
     sFormat = typeof sFormat !== 'undefined' ? sFormat : sDefaultFormatDate;
     
     var sDate = moment.unix(unixtime);
