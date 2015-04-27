@@ -104,7 +104,7 @@ class ImageController extends Controller
             $finalIconList[] = array(
                 "id" => $row['binary_id'],
                 "text" => $row['filename'],
-                "theming" => '<img src="'.$imgSrc.'" style="width:20px;height:20px;"> '.$row['filename']
+                "theming" => '<img src="'.$imgSrc.'"> '.$row['filename']
             );
         }
         

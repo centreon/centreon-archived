@@ -27,7 +27,7 @@
 .table > tfoot > tr > td {
   border-top: none;
   line-height: 1.42857;
-  padding: @paddingElem;
+  padding: @paddingElem/2;
   vertical-align: middle;
   font-size: 13px;
   border-bottom: 1px solid @white;
@@ -86,13 +86,13 @@ table.dataTable thead .sorting:after {
       border-bottom: 1px solid lighten(@lightGray,5%);
     }
     tbody>tr>td {
-      padding: @paddingElem/2 @paddingElem;
+      padding: @paddingElem @paddingElem*2;
       font-size: 12px;
       white-space: nowrap;
 
       a {
         position: relative;
-        padding: @paddingElem/2 0;
+        padding: @paddingElem 0;
       }
     }
 

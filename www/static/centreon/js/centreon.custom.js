@@ -213,7 +213,7 @@ $(document).ready(function() {
                     }
                     else if (e.type == 'focus') {
 
-                        $this.next().css({'display': 'block','padding': '3px'}).html(data.text);
+                        $this.next().css({'display': 'block'}).html(data.text);
                         $this.css({'padding':'16px 12px 6px'});
                         $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
 
