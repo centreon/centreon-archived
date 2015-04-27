@@ -176,6 +176,18 @@ class Form
     {
         return $this->ajaxValidator;
     }
+
+    /**
+     * Set the form ID
+     *
+     * @param string $formId The new form ID
+     */
+    public function setFormId($formId)
+    {
+        if ($this->formName != $formId) {
+            $this->eventValidation['formId'] = $formId;
+        }
+    }
     
     /**
      * 
@@ -194,7 +206,9 @@ class Form
             'hidden' => $smartyArray['hidden']
         );
 
-        $this->eventValidation['formId'] = $this->formName;
+        if ($this->eventValidation['formId'] === '') {
+            $this->eventValidation['formId'] = $this->formName;
+        }
         
         if (isset($smartyArray['elements'])) {
             foreach ($smartyArray['elements'] as $element) {

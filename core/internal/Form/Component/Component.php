@@ -102,10 +102,15 @@ class Component
                         }
                         break;
                     case 'forbiddenChar':
-                        if (false === isset($validator['params']['charaters'])) {
+                        if (false === isset($validator['params']['characters'])) {
                             break;
                         }
                         $rule['characters'] = $validator['params']['characters'];
+                    case 'equalTo':
+                        if (false === isset($validator['params']['equalfield'])) {
+                            break;
+                        }
+                        $rule['equalfield'] = $validator['params']['equalfield'];
                     default:
                         // @todo log warning rules not found
                         break;

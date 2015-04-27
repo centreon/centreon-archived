@@ -8,8 +8,8 @@
 			<block name="General information">
 				<field name="login" label="Alias / Login" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 					<validators>
-                    	<validator rules="remote" serverside="unique" />
-                        <validator rules="forbiddenChar" serverside="forbiddenChar">
+                    	<validator rules="remote" serverside="core.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
                         	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
                         </validator>
 					</validators>
@@ -31,7 +31,13 @@
 		<section name="Access">
 			<block name="Authentication">
 				<field name="password" label="Password" default_value="" advanced="0" type="password" parent_field="" mandatory="0"></field>
-				<field name="password_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" mandatory="0"></field>
+				<field name="password_confirm" label="Confirm password" default_value="" advanced="0" type="password" parent_field="" mandatory="0">
+				    <validators>
+				        <validator rules="equalTo" serverside="core.EqualTo">
+				            <argument name="equalfield">password</argument>
+				        </validator>
+				    </validators>
+				</field>
 				<field name="autologin_key" label="Autologin key" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>
 				<field name="auth_type" label="Authentication type" default_value="local" advanced="0" type="radio" parent_field="" mandatory="0">
 					<attributes>

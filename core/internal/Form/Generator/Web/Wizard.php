@@ -97,6 +97,7 @@ class Wizard extends Full
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
                 $this->formHandler = new Form($this->formName);
+                $this->formHandler->setFormId("wizard_form");
             }
             if (false === isset($this->formComponents[$row['step_name']])) {
                 $this->formComponents[$row['step_name']] = array();
