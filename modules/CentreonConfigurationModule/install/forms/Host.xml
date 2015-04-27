@@ -10,7 +10,7 @@
                     <validators>
                     	<validator rules="remote" serverside="core.unique" />
                         <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()="']]></argument>
+                        	<argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
                         </validator>
                         <validator rules="size" serverside="core.String">
                         	<argument name="minlength">3</argument>
