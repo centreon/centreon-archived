@@ -266,7 +266,7 @@ $(function () {
       var newSearch = "tags:" + sSearch;
       var regexSearch = new RegExp("(^| )" + newSearch + "( |$)", "g");
       if (null === sOldFilter.match(regexSearch)) {
-        $("input[name='advsearch']").val($.trim(sOldFilter + " " + newSearch));
+        $("input[name='advsearch']").val($.trim(sOldFilter + " " + sSearch));
       }
       $("#btnSearch").click();
   });
