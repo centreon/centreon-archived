@@ -29,14 +29,13 @@ $.validator.setDefaults({
     list.closest('.flash').addClass('alert-danger').show();
   }
 });
-
 var elRules = {};
-{foreach $eventValidation['validators'] as $fieldName => $fieldValidators}
-  {foreach $fieldValidators as $type => $options}
+{foreach from=$eventValidation['validators'] key=fieldName item=fieldValidators}
+  {foreach from=$fieldValidators key=type item=options}
     {if $type == 'remote'}
       elRules['remote'] = {
         url: "{url_for url=$options['action']}",
-        type: 'type',
+        type: 'post',
         data: {
           'module': function () {
             return $("[name='module']").val();
@@ -55,11 +54,15 @@ var elRules = {};
         minlength: {$options['minlength']},
         {/if}
         {if $options['maxlength']}
-        minlength: {$options['maxlength']},
+        maxlength: {$options['maxlength']},
         {/if}
       };
     {elseif $type == 'forbiddenChar'}
       {* TODO *}
+    {elseif $type == 'equalTo'}
+      {if $options['equalfield']}
+        elRules['equalTo'] = "#{$options['equalfield']}";
+      {/if}
     {elseif $type == 'ipaddress'}
       {* TODO *}
     {elseif $type == 'depends'}
@@ -71,16 +74,18 @@ var elRules = {};
     {/if}
   {/foreach}
   {if count($fieldValidators) > 0}
-  rules[{$fieldName}] = elRules;
+    rules[$({$fieldName}).attr('id')] = elRules;
+    elRules = {};
   {/if}
 {/foreach}
 {if $eventValidation['formId']}
-$('#{$eventValidation['formId']}').validate({
-  rules: rules
-});
+  $('#{$eventValidation['formId']}').validate({
+    ignore: '*:not([name])',
+    rules: rules
+  });
 {/if}
 {if $eventValidation['extraJs']}
-{$eventValidation['extraJs']}
+  {$eventValidation['extraJs']}
 {/if}
 </script>
 {/block}
