@@ -2,7 +2,6 @@
 
   .form-group {
     margin-bottom: @paddingElem*3;
-    height: 40px;
   }
 
   /*-- Reset --*/
@@ -44,6 +43,8 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    bottom: -3px;
+    left: 2em;
   }
 
   /*-- input inheritance  --*/
@@ -82,6 +83,7 @@
 
   /*---- Group of 2 Fields --- */
   .inlineGroup {
+    height: 40px;
     .Elem1 {
       float: left;
       width: 87%;
@@ -90,13 +92,6 @@
       float: left;
       width: 12%;
       margin-left: @paddingElem/2;
-    }
-    .btnDefault {
-      padding: 2px 8px;
-      box-shadow: 2px 2px 1px 0px @lightGray;
-      box-sizing: border-box;
-      font-size: 22px;
-      font-weight: bold;
     }
   }
   /*---- Select Fields --- */
@@ -118,7 +113,7 @@
             img {
               position: absolute;
               right: 3em;
-              bottom: 7px;
+              bottom: 5px;
               padding: 1px;
             }
          }
@@ -135,14 +130,13 @@
 }
 .select2-container.select2-container-multi .select2-choices {
   .select2-search-choice {
-
     &:first-child {
       margin-left: @paddingElem*2;
     }
     padding: 1px @paddingElem*3 1px @paddingElem/2;
     margin-left: @paddingElem;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
     font-size: 75%;
 
     .select2-search-choice-close {
@@ -151,14 +145,20 @@
     }
   }
 }
-
+.select2-drop.select2-drop-active {
+  padding-top: @paddingElem*3;
+  padding-bottom: @paddingElem/3;
+  border-radius: 0 0 3px;
+  box-shadow: 2px 1px 1px @lightGray;
+  border: 1px solid @lightGray;
+}
 .select2-drop.select2-drop-active,
 .select2-container.select2-container-multi,
 .select2-container.select2-container-active {
 
   .select2-choices {
     padding-top: @paddingElem*3;
-    padding-bottom: @paddingElem;
+    padding-bottom: @paddingElem/3;
     border-radius: 0 0 3px;
     box-shadow: 2px 1px 1px @lightGray;
     border: 1px solid @lightGray;
@@ -183,7 +183,6 @@
 
     }
   }
-
   }
   .select2-results {
     .select2-result-unselectable .select2-result-label {
@@ -220,49 +219,6 @@
     top: 4px;
     color: fade(@danger,60%);
   }
-}
-
-  /*-- Buttons --*/
-  .btnC {
-    position: relative;
-    line-height: 1.5;
-    margin: 0 2px;
-    border-radius: 2px;
-    border-width: 0px;
-    text-decoration: none;
-    font-size: 75%;
-    padding : @paddingElem*2 @paddingElem;
-  }
-  .btnDefault{
-    color: @darkGray1;
-    background-color: @lightGray1;
-    border: 1px solid @white;
-    box-shadow: 1px 2px 2px @lightGray;
-    box-sizing: border-box;
-
-    &:focus {
-      outline: none;
-    }
-    &:hover {
-      color: @lightGray1;
-      background-color: @darkGray2;
-      transition: all 0.3s ease;
-    }
-  }
-
-  .btnSuccess{
-    position: absolute;
-    background-color: #e2efc6;
-    box-shadow: 1px 2px 2px @success;
-    z-index: 1;
-    color: #27651a;
-  }
-.btnInfo{
-  position: absolute;
-  background-color: #b2ece8;
-  box-shadow: 1px 2px 2px @info;
-  z-index: 1;
-  color: #007f77;
 }
   /*---- Notification --- */
 
