@@ -35,6 +35,8 @@
  */
 namespace Centreon\Internal\Installer;
 
+use Centreon\Models\Module as ModuleModel;
+
 /**
  * 
  * 
@@ -42,20 +44,117 @@ namespace Centreon\Internal\Installer;
 class Versioning
 {
     /**
-     * 
-     * @param string $moduleName
+     *
+     * @var type 
      */
-    public static function getVersion($moduleName = 'core')
+    private $currentVersion;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $moduleInfo;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $moduleSlug;
+    
+    /**
+     * 
+     * @param type $moduleSlug
+     */
+    public function __construct($moduleSlug = 'core')
     {
-        
+        $this->moduleSlug = $moduleSlug;
+    }
+    
+    /**
+     * 
+     * @param type $moduleInfo
+     */
+    public function setModuleInfo($moduleInfo)
+    {
+        $this->moduleInfo = $moduleInfo;
+    }
+
+
+    /**
+     * 
+     * @return type
+     */
+    public function getVersion()
+    {
+        return $this->currentVersion;
+    }
+
+
+    /**
+     * 
+     * @param type $newVersion
+     */
+    public function setVersion($newVersion)
+    {
+        $this->currentVersion = $newVersion;
     }
     
     /**
      * 
      * @param string $moduleName
      */
-    public static function upgradeVersion($moduleName = 'core')
+    public function upgradeVersion()
     {
+        $this->setTemporaryVersion('upgrade');
+    }
+    
+    /**
+     * 
+     * @param string $operation
+     * @return string
+     */
+    public function setTemporaryVersion($operation, $applyInDb = false)
+    {
+        $temporarySuffix = '';
+        switch ($operation) {
+            case 'upgrade':
+                $temporarySuffix .= '-upgr';
+                break;
+            case 'install':
+                $temporarySuffix .= '-inst';
+                break;
+            case 'uninstall':
+                $temporarySuffix .= '-rem';
+                break;
+        }
         
+        $finalTemporaryVersion = $this->getVersion() . $temporarySuffix;
+        
+        if ($applyInDb) {
+            $this->updateVersionInDb($finalTemporaryVersion);
+        }
+        
+        return $finalTemporaryVersion;
+    }
+    
+    /**
+     * 
+     * @param string $version
+     */
+    public function updateVersionInDb($version)
+    {
+        $dataToInsert = array('version' => $version);
+        
+        // Get Module ID, if exist we update otherwise we insert
+        $moduleId = ModuleModel::getIdByParameter('name', array($this->moduleSlug));
+        if (count($moduleId) > 0) {
+            ModuleModel::update($moduleId[0], $dataToInsert);
+        } else {
+            if (!is_null($this->moduleInfo)) {
+                $dataToInsert['alias'] = $this->moduleInfo['name'];
+                $dataToInsert['name'] = $this->moduleInfo['shortname'];
+                ModuleModel::insert($dataToInsert);
+            }
+        }
     }
 }

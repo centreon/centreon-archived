@@ -42,6 +42,7 @@ use Centreon\Internal\Utils\CommandLine\Colorize;
 use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Utils\Dependency\PhpDependencies;
 use Centreon\Internal\Exception\Module\MissingDependenciesException;
+use Centreon\Internal\Installer\Versioning;
 
 class AbstractModuleInstaller
 {
@@ -80,6 +81,12 @@ class AbstractModuleInstaller
      * @var type 
      */
     protected $launcher;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $versionManager;
 
 
     /**
@@ -95,12 +102,14 @@ class AbstractModuleInstaller
         $this->launcher = $launcher;
         $this->moduleFullName = $this->moduleInfo['name'];
         $this->moduleSlug = $this->moduleInfo['shortname'];
+        $this->versionManager = new Versioning($this->moduleSlug);
+        $this->versionManager->setVersion($this->moduleInfo['version']);
+        $this->versionManager->setModuleInfo($this->moduleInfo);
     }
     
     /**
      * Perform Install operation for module
      * 
-     * @param type $verbose
      */
     public function install()
     {
@@ -116,8 +125,15 @@ class AbstractModuleInstaller
         // Performing pre operation check
         $this->checkOperationValidity('install');
         
+        // Set TemporaryVersion
+        $this->versionManager->setTemporaryVersion('install', true);
+        
         // Deploy module Static files
         $this->deployStaticFiles();
+        
+        // Set Final Version
+        $this->versionManager->setVersion($this->moduleInfo['version']);
+        $this->versionManager->updateVersionInDb($this->moduleInfo['version']);
         
         // Ending Message
         $message = _("Installation of %s module complete");
@@ -148,9 +164,16 @@ class AbstractModuleInstaller
         // Performing pre operation check
         $this->checkOperationValidity('upgrade');
         
+        // Set TemporaryVersion
+        $this->versionManager->setTemporaryVersion('upgrade', true);
+        
         // Remove old static files and deploy new ones
         $this->removeStaticFiles();
         $this->deployStaticFiles();
+        
+        // Set Final Version
+        $this->versionManager->setVersion($this->moduleInfo['version']);
+        $this->versionManager->updateVersionInDb($this->moduleInfo['version']);
         
         // Ending Message
         $message = _("Upgrade of %s module complete");
@@ -180,6 +203,9 @@ class AbstractModuleInstaller
         
         // Performing pre operation check
         $this->checkOperationValidity('uninstall');
+        
+        // Set TemporaryVersion
+        $this->versionManager->setTemporaryVersion('uninstall', true);
         
         // Remove old static files
         $this->removeStaticFiles();

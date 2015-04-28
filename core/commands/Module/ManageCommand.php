@@ -90,4 +90,18 @@ class ManageCommand extends AbstractCommand
         }
         StaticFiles::deploy($module);
     }
+    
+    /**
+     * 
+     * @param string $module
+     */
+    public function buildForms($module)
+    {
+        $moduleInstaller = Informations::getModuleInstaller('console', $module);
+        
+        $formsFiles = $this->moduleDirectory . '/install/forms/*.xml';
+        foreach (glob($formsFiles) as $xmlFile) {
+            FormInstaller::installFromXml($this->moduleId, $xmlFile);
+        }
+    }
 }
