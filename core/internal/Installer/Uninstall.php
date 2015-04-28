@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,62 +33,16 @@
  * For more information : contact@centreon.com
  * 
  */
-
-namespace Centreon\Commands\Module;
-
-use Centreon\Internal\Module\Informations;
-use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
+namespace Centreon\Internal\Installer;
 
 /**
- * COmmand Line to manage
- *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * 
+ * Centreon Removal Class
  */
-class ManageCommand extends AbstractCommand
+class Uninstall
 {
-    /**
-     * 
-     * @param string $moduleName
-     */
-    public function installAction($module, $verbose = 1)
+    public static function uninstallCentreon()
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $moduleName
-     */
-    public function upgradeAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $moduleName
-     */
-    public function uninstallAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     */
-    public function deployStaticAction($module, $removeOld = 1)
-    {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
-        }
-        StaticFiles::deploy($module);
+        
     }
 }

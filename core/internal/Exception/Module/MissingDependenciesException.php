@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,62 +33,24 @@
  * For more information : contact@centreon.com
  * 
  */
+namespace Centreon\Internal\Exception\Module;
 
-namespace Centreon\Commands\Module;
-
-use Centreon\Internal\Module\Informations;
-use Centreon\Internal\Command\AbstractCommand;
-use Centreon\Internal\Installer\StaticFiles;
+use Centreon\Internal\Exception;
 
 /**
- * COmmand Line to manage
- *
- * @author Lionel Assepo
- * @version 3.0.0
- * @package Centreon
- * @subpackage Core
+ * 
+ * 
  */
-class ManageCommand extends AbstractCommand
+class MissingDependenciesException extends Exception
 {
     /**
      * 
-     * @param string $moduleName
+     * @param string $message
+     * @param integer $code
+     * @param type $previous
      */
-    public function installAction($module, $verbose = 1)
+    public function __construct($message, $code, $previous)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->install($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $moduleName
-     */
-    public function upgradeAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->upgrade($verbose);
-    }
-    
-    /**
-     * 
-     * @param string $moduleName
-     */
-    public function uninstallAction($module, $verbose = 1)
-    {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        $moduleInstaller->uninstall($verbose);
-    }
-    
-    /**
-     * 
-     * @param type $module
-     */
-    public function deployStaticAction($module, $removeOld = 1)
-    {
-        if ($removeOld == true) {
-            StaticFiles::remove($module);
-        }
-        StaticFiles::deploy($module);
+        parent::__construct($message, $code, $previous);
     }
 }

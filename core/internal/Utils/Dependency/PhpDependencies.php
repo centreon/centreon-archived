@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal\Utils\Dependency;
 
+use Centreon\Internal\Exception\Module\MissingDependenciesException;
+
 /**
  * Check for PHP Dependencies
  *
@@ -66,12 +68,12 @@ class PhpDependencies
                 
                 if ($strict) {
                     if (($nbDependencies == 0) || (!$fullScan)) {
-                        throw new Exception($message, 1);
+                        throw new MissingDependenciesException($message, 1004);
                     }
                     $nbDependencies--;
                 } else {
                     $status = false;
-                    $errors[] = array($message);
+                    $errors[] = $message;
                 }
             }
         }

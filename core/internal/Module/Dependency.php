@@ -93,6 +93,7 @@ class Dependency
     {
         $seen = array();
         $mList = $this->moduleNameList;
+        var_dump($mList);
         
         while (count(array_diff($this->moduleNameList, $this->modulesOrderInstall)) > 0) {
             $currentModule = array_pop($mList);

@@ -119,4 +119,26 @@ class Directory
         }
         return $dirname;
     }
+    
+    /**
+     * 
+     * @param string $sourceDirectory
+     * @param string $destinationDirectory
+     */
+    public static function copy($sourceDirectory, $destinationDirectory)
+    {
+        $dir = opendir($sourceDirectory); 
+        mkdir($destinationDirectory, 0777, true); 
+        while(false !== ( $file = readdir($dir)) ) { 
+            if (( $file != '.' ) && ( $file != '..' )) { 
+                if ( is_dir($sourceDirectory . '/' . $file) ) { 
+                    self::copy($sourceDirectory . '/' . $file,$destinationDirectory . '/' . $file); 
+                } 
+                else { 
+                    copy($sourceDirectory . '/' . $file,$destinationDirectory . '/' . $file); 
+                } 
+            } 
+        }
+        closedir($dir); 
+    }
 }
