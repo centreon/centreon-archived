@@ -105,6 +105,8 @@
       height += this.$elem.children( "thead" ).height();
 
       this.$elem.children( "tbody" ).height( $parentContent.height() - height );
+      /* @todo fixed height waiting finished design */
+      this.$elem.children( "tbody" ).height( 500 );
     },
 
     preResize: function() {
