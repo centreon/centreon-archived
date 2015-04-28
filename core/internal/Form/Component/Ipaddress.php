@@ -65,23 +65,23 @@ class Ipaddress extends Component
         
         $myJs = "";
         
-        $myHtml = '<div id="'.$element['name'].'_ipaddress">';
+        $myHtml = '<div id="'.$element['name'].'_ipaddress" class="inlineGroup">';
         
-        $myHtml .= '<input '.
+        $myHtml .= '<div class="Elem1"><input '.
                 'id="'.$element['id'].'" '.
                 'type="text" '.
                 'name="'.$element['name'].'" '.
                 $value.
-                'class="form-control '.$addClass.'" '.
+                'class="form-control'.$addClass.'" '.
                 $placeholder.
                 $required.
-                '/>';
+                '/></div>';
                     
         $myHtml .= '<cite id="'.$element['name'].'_ipaddress_span"></cite>';
         
-        $myHtml .= '<span id="'.$element['name'].'_resolve_dns_span" class="input-group-btn">'
-            . '<button id="'.$element['name'].'_resolve_dns" class="btn btn-default" type="button">Resolve</button>'
-            . '</span>';
+        $myHtml .= '<div id="'.$element['name'].'_resolve_dns_span" class="input-group-btn Elem2">'
+            . '<button id="'.$element['name'].'_resolve_dns" class="btnC btnDefault" type="button"><h6>DNS</h6></button>'
+            . '</div>';
         
         $myHtml .= '</div>';
         

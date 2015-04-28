@@ -333,7 +333,7 @@ class Form
         return '<div class="form-group ' . $classAdvanced . '">'.
                 $inputElement['label'].
                 $inputElement['input']. $extraHtml .
-                '<span class="inheritance" id="' . $inputElement['name'] . '_inheritance"></span>'.
+                '<i class="inheritance" id="' . $inputElement['name'] . '_inheritance"></i>'.
                 '</div>';
     }
     
