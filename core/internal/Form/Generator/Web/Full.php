@@ -280,7 +280,7 @@ class Full extends Generator
         }
         $formRendering .= '</div>';
         
-        $formRendering .= .$formElements['save_form']['html'].'</div>';
+        $formRendering .= '<div>'.$formElements['save_form']['html'].'</div>';
         
         $formRendering .= $formElements['hidden'];
         $htmlRendering .= $tabRendering.$formRendering.'</form></div>';
