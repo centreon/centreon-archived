@@ -40,6 +40,7 @@ use Centreon\Internal\Form;
 use Centreon\Internal\Di;
 use CentreonAdministration\Events\ContactinfoListKey;
 use Centreon\Controllers\FormController;
+use Centreon\Internal\Form\Generator\Web\Full as WebFormGenerator;
 
 class ContactController extends FormController
 {
@@ -139,14 +140,7 @@ class ContactController extends FormController
      */
     public function updateContactAction()
     {
-        $givenParameters = $this->getParams();
-
-        unset($givenParameters['token']);
-        $repository = $this->repository;
-        $contactId = $repository::updateContact($givenParameters);
-        
-        $this->router->service()->back();
-
+        parent::updateAction();
     }
     
     /**
@@ -158,89 +152,7 @@ class ContactController extends FormController
      */
     public function editAction()
     {
-        $this->tpl->addJs('centreon.tag.js', 'bottom', 'centreon-administration')
-            ->addCss('centreon.tag.css', 'centreon-administration');
-        
-        $requestParam = $this->getParams('named');
-        $customForm = new Form('ContactInfoForm');
-        
-        // Add selector
-        $selectAttributes = json_encode(array(
-            'defaultValuesRoute' =>  '/centreon-administration/contact/contact-info/formlist',
-            'listValuesRoute' =>  ''
-        ));
-        
-        // Add selector
-        $aSelectTimezones = json_encode(array(
-            'defaultValuesRoute' =>  '/centreon-administration/timezone/formlist',
-            'listValuesRoute' =>  $this->router->getPathFor(
-                    '/centreon-administration/contact/[i:id]/timezone', 
-                    array('id' => $requestParam['id'])
-            )
-        ));
-        
-        // Add selector
-        $aSelectTags = json_encode(array(
-            'defaultValuesRoute' =>  '/centreon-administration/tag/all',
-            'listValuesRoute' =>  $this->router->getPathFor(
-                    '/centreon-administration/tag/[i:id]/contact/formlist', 
-                    array('id' => $requestParam['id'])
-            )
-        ));
-        
-        $customForm->addStatic(array(
-            'name' => 'contact_info_key',
-            'label' => _('Notification way'),
-            'type' => 'select',
-            'mandatory' => false,
-            'advanced' => false,
-            'attributes' => $selectAttributes
-        ));
-        
-        $customForm->addStatic(array(
-            'name' => 'contact_info_value',
-            'label' => _('Value'),
-            'type' => 'text',
-            'mandatory' => false,
-            'advanced' => false,
-        ));
-        
-        $customForm->addStatic(array(
-            'name' => 'timezone_id',
-            'label' => _('Timezone'),
-            'type' => 'select',
-            'mandatory' => false,
-            'advanced' => false,
-            'attributes' => $aSelectTimezones,
-        ));
-        $customForm->addStatic(array(
-            'name' => 'contact_tags',
-            'label' => _('Tags'),
-            'type' => 'tag',
-            'mandatory' => false,
-            'advanced' => false,
-            'attributes' => $aSelectTags,
-        ));
-        
-        $customForm->addSubmit('add_button', 'Add');
-        $customForm->addHidden('object_id', $requestParam['id']);
-        $customForm->addHidden('object', static::$objectName);
-        
-        // Get Already loaded
-        $repository = $this->repository;
-        $contactInfos =  $repository::getContactInfo($requestParam['id'], true);
-        
-        
-        $objectFormUpdateUrl = $this->objectBaseUrl.'/add/info';
-        $objectFormupdateContact = $this->objectBaseUrl.'/update';
-        $deleteUrl = $this->router->getPathFor('/centreon-administration/contact/info/remove/[i:id]', array('id' => $requestParam['id']));
-        $this->tpl->assign('deleteUrl', $deleteUrl);
-        $this->tpl->assign('validateUrl', $objectFormUpdateUrl);
-        $this->tpl->assign('updateContact', $objectFormupdateContact);
-        $this->tpl->assign('formName', 'ContactInfoForm');
-        $this->tpl->assign('contactInfos', $contactInfos);
-        $this->tpl->assign('form', $customForm->toSmarty());
-        $this->tpl->display('file:contactform.tpl');
+        parent::editAction();
     }
     
     /**
