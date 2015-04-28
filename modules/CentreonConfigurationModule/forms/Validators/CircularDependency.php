@@ -73,7 +73,7 @@ class CircularDependency implements ValidatorInterface
                 $result = false;
             }
             foreach($listServiceId as $serviceTemplateId) {
-                if (isset($params['object_id']) && ($serviceTemplateId['id'] == $params['object_id'])) {
+                if (isset($params['object_id']) && ($serviceTemplateId == $params['object_id'])) {
                     $result = false;
                 }
             }

@@ -89,7 +89,7 @@ class ValidatorsController extends Controller
             $jsonResponse = array('success' => false, 'error' => _("Can't resolve the given dns name"));
         }
         
-        $router->response()->code('200')->json($jsonResponse);
+        return $jsonResponse['success'];
     }
     
     /**
@@ -100,10 +100,9 @@ class ValidatorsController extends Controller
     public function ipAddressAction()
     {
         $params = $this->getParams('post');
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $jsonResponse = Ipaddress::validate($params['ipaddress']);
-        $router->response()->code('200')->json($jsonResponse);
+
+        return $jsonResponse['success'];
     }
     
     /**
@@ -114,15 +113,14 @@ class ValidatorsController extends Controller
     public function uniqueAction()
     {
         $params = $this->getParams('post');
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $jsonResponse = Unique::validate(
             $params['value'],
             $params['module'],
             $params['object'],
             $params['object_id']
         );
-        $router->response()->code('200')->json($jsonResponse);
+
+        return $jsonResponse['success'];
     }
     
     /**
@@ -133,10 +131,9 @@ class ValidatorsController extends Controller
     public function forbiddenCharAction()
     {
         $params = $this->getParams('post');
-        $di = Di::getDefault();
-        $router = $di->get('router');
         $jsonResponse = ForbiddenChar::validate($params['value']);
-        $router->response()->code('200')->json($jsonResponse);
+
+        return $jsonResponse['success'];
     }
 
     /**
