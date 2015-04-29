@@ -534,13 +534,17 @@ class Datatable
             $subCaster = 'add'.ucwords($cast['selecttype']);
             $myElement = static::$subCaster($field, $values, $cast['parameters'][$values[$field]]['parameters']);
         } elseif (isset($values[$field])) {
-            $myElement = $cast[$values[$field]];
-            if (isset($extra['groupable']) && $extra['groupable']) {
-                if ($myElement === $previousValue) {
-                    $myElement = "";
-                } else {
-                    $previousValue = $myElement;
+            if (isset($cast[$values[$field]])) {
+                $myElement = $cast[$values[$field]];
+                if (isset($extra['groupable']) && $extra['groupable']) {
+                    if ($myElement === $previousValue) {
+                        $myElement = "";
+                    } else {
+                        $previousValue = $myElement;
+                    }
                 }
+            } else {
+                $myElement = $values[$field];
             }
         }
         
