@@ -34,12 +34,16 @@
  */
 namespace Centreon\Internal\Form\Component;
 
+use CentreonAdministration\Repository\NotificationWayRepository;
+use CentreonAdministration\Repository\ContactRepository;
+use Centreon\Internal\Di;
+
 /**
- * @author Lionel Assepo <lassepo@centreon.com>
+ * @author Kevin Duret <kduret@centreon.com>
  * @package Centreon
  * @subpackage Core
  */
-class Textarea extends Component
+class NotificationWay extends Component
 {
     /**
      * 
@@ -48,41 +52,28 @@ class Textarea extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        $value = (isset($element['html']) ? $element['html'] : '');
+        $notificationWays = NotificationWayRepository::getNotificationWays();
         
-        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
-            $element['label'] = $element['name'];
-        }
+        // Load JsFile
+        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
+        $tpl->addJs('centreon-clone.js');
         
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $placeholder = 'placeholder="'.$element['name'].'" ';
-        }
-        
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
-        }
-        
-        $addClass = '';
-        $required = '';
-        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
-            $required = ' required';
-        }
-        
-        $inputHtml = '<textarea '.
-                    'id="'.$element['id'].'" '.
-                    'name="'.$element['name'].'" '.
-                    'class="form-control '.$addClass.'" '.
-                    'rows="3" '.' maxlength="150"'.
-                    $placeholder.
-                    $required .
-                    '>'.$value.'</textarea><cite></cite>';
-        
-        $myJs = '';
-        
+        $contactId = $element['label_extra']['id'];
+        $currentNotificationWays = ContactRepository::getContactInfo($contactId, false);
+
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->addCss('select2.css')
+            ->addCss('select2-bootstrap.css');
+
+        $tpl->addJs('jquery.select2/select2.min.js')
+            ->addJs('component/notificationWay.js');
+
+        $tpl->assign('notificationWays', $notificationWays);
+        $tpl->assign('currentNotificationWays', $currentNotificationWays);
+
         return array(
-            'html' => $inputHtml,
-            'js' => $myJs
+            'html' => $tpl->fetch('file:[Core]/form/component/notificationway.tpl'),
         );
     }
 }

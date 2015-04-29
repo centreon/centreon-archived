@@ -188,8 +188,19 @@ external/bin/centreonConsole core:module:manage:install moduleName=centreon-perf
 \cp -r modules/CentreonConfigurationModule/static/centreon-configuration/ www/static/
 
 chown apache.apache /srv/centreon/www/uploads/images
-usermod -G centreon-engine apache
-usermod -G centreon-broker apache
+usermod -a -G centreon-engine apache
+usermod -a -G centreon-broker apache
+
+# Check and create group/user centreon
+getent group centreon &>/dev/null || groupadd -r centreon
+getent passwd centreon &>/dev/null || useradd -g centreon -m -d /var/spool/centreon -r centreon
+usermod -a -G centreon apache
+
+# Create default generation directory
+mkdir -p /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
+chown centreon: /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
+chmod g+ws /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
+setfacl -R -m d:u:centreon:rwX,d:g:centreon:rwX,d:o:r-X /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
 
 # Start services
 # Nothing to do, they should already be running due to previous steps

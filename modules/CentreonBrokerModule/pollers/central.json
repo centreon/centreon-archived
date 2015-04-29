@@ -125,6 +125,11 @@
                         "type": "tcp",
                         "name": "central-transfert-output",
                         "port": "5669"
+                      },
+                      {
+                        "name": "correlation",
+                        "type": "correlation",
+                        "file": "%global_broker_etc_directory%/correlation.xml"
                       }
                     ],
                     "logger": [
@@ -132,13 +137,7 @@
                         "type": "file",
                         "name": "%global_broker_logs_directory%/central-broker.log"
                       }
-                    ],
-                    "correlation": [
-                      {
-                        "name": "correlation",
-                        "filepath": "%global_broker_etc_directory%/correlation.xml"
-                      }
-                    ],
+                    ]
                     "stats": [
                       {
                         "type": "stats",
