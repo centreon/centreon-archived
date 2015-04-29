@@ -34,9 +34,9 @@
  */
 namespace Centreon\Internal\Form\Component;
 
+use Centreon\Internal\Di;
 use CentreonAdministration\Repository\NotificationWayRepository;
 use CentreonAdministration\Repository\ContactRepository;
-use Centreon\Internal\Di;
 
 /**
  * @author Kevin Duret <kduret@centreon.com>
@@ -54,10 +54,6 @@ class NotificationWay extends Component
     {
         $notificationWays = NotificationWayRepository::getNotificationWays();
         
-        // Load JsFile
-        $tpl = \Centreon\Internal\Di::getDefault()->get('template');
-        $tpl->addJs('centreon-clone.js');
-        
         $contactId = $element['label_extra']['id'];
         $currentNotificationWays = ContactRepository::getContactInfo($contactId, false);
 
@@ -67,6 +63,7 @@ class NotificationWay extends Component
             ->addCss('select2-bootstrap.css');
 
         $tpl->addJs('jquery.select2/select2.min.js')
+            ->addJs('centreon-clone.js');
             ->addJs('component/notificationWay.js');
 
         $tpl->assign('notificationWays', $notificationWays);
