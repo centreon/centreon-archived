@@ -162,10 +162,12 @@ $(document).ready(function() {
 
     // Hide labels by default if placeholders are supported
 
+
     if($.support.placeholder) {
+
         if($('input').val() == 0) {
             $('.CentreonForm .form-group').each(function(){
-                $(this).addClass('js-hide-label');
+               $(this).addClass('js-hide-label');
                 $('input').css({'padding':'10px 12px 12px'});
             });
         }
@@ -218,7 +220,8 @@ $(document).ready(function() {
                         $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
 
                         if ($this.val() == '') {
-                            $parent.removeClass('js-hide-label').addClass('js-unhighlight-label');
+                            $parent.addClass('js-hide-label').addClass('js-unhighlight-label');
+                            $this.css({'padding':'10px 12px 6px'});
                         }
                     }
                 },
