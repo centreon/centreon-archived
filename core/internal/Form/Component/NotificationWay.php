@@ -58,10 +58,6 @@ class NotificationWay extends Component
         $tpl = \Centreon\Internal\Di::getDefault()->get('template');
         $tpl->addJs('centreon-clone.js');
         
-        $myJs = '$(function() {'
-            . '$(".clonable").centreonClone();'
-            . '})';
-        
         $contactId = $element['label_extra']['id'];
         $currentNotificationWays = ContactRepository::getContactInfo($contactId, false);
 
@@ -70,14 +66,14 @@ class NotificationWay extends Component
         $tpl->addCss('select2.css')
             ->addCss('select2-bootstrap.css');
 
-        $tpl->addJs('jquery.select2/select2.min.js');
+        $tpl->addJs('jquery.select2/select2.min.js')
+            ->addJs('component/notificationWay.js');
 
         $tpl->assign('notificationWays', $notificationWays);
         $tpl->assign('currentNotificationWays', $currentNotificationWays);
 
         return array(
             'html' => $tpl->fetch('file:[Core]/form/component/notificationway.tpl'),
-            'js' => $myJs
         );
     }
 }
