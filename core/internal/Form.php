@@ -35,6 +35,8 @@
 
 namespace Centreon\Internal;
 
+use Centreon\Internal\Di;
+
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -288,20 +290,19 @@ class Form
      */
     public function renderHtmlButton($inputElement)
     {
-        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        if (!isset($inputElement['value'])) {
+            $inputElement['value'] = '';
+        }
 
         if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
             $inputElement['id'] = $inputElement['name'];
         }
-        
-        $inputHtml = '<input '.
-                            'id="'.$inputElement['id'].'" '.
-                            'type="'.$inputElement['type'].'" '.
-                            'name="'.$inputElement['name'].'" '.
-                            $value.
-                            'class="btn btn-default" '.
-                            '/>';
-        return $inputHtml;
+
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('inputElement', $inputElement);
+
+        return $tpl->fetch('file:[Core]/form/component/button.tpl');
     }
     
     /**
@@ -353,17 +354,11 @@ class Form
             $inputElement['id'] = $inputElement['name'];
         }
         
-        $mandatorySign = "";
-        $mandatorySpan = "";
-        if (isset($inputElement['label_mandatory']) && $inputElement['label_mandatory'] == "1") {
-            $mandatorySign .= ' required';
-            $mandatorySpan = '<span>*</span>';
-        }
-        
-        $inputHtml = '<label class="label-controller floatLabel' . $mandatorySign . '" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>'.$mandatorySpan;
+        $tpl = Di::getDefault()->get('template');
 
-        
-        return $inputHtml;
+        $tpl->assign('inputElement', $inputElement);
+
+        return $tpl->fetch('file:[Core]/form/component/label.tpl');
     }
 
      /**
