@@ -34,6 +34,8 @@
  */
 namespace Centreon\Internal\Form\Component;
 
+use Centreon\Internal\Di;
+
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -48,39 +50,24 @@ class Text extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        $value = (isset($element['html']) ? 'value="'.$element['html'].'" ' : '');
-        
-        $placeholder = 'placeholder="'.$element['name'].'" ';
-        if (isset($element['label_label']) && (!empty($element['label_label']))) {
-            $placeholder = 'placeholder="'.$element['label_label'].'" ';
+        if (!isset($element['html'])) {
+            $element['html'] = '';
         }
+
+        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
+            $element['placeholder'] = $element['label_label'];
+        }        
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
-        
-        $addClass = '';
-        $required = '';
-        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
-            $required .= ' required';
-        }
-        
-        $myJs = '';
 
-        $inputHtml = '<input '.
-                        'id="'.$element['id'].'" '.
-                        'type="text" '.
-                        'name="'.$element['name'].'" '.
-                        $value.
-                        'class="'.$addClass.'" '.
-                        $placeholder.
-                        $required .
-                        '/>'.'<cite></cite>';
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('element', $element);
         
         return array(
-            'html' => $inputHtml,
-            'js' => $myJs
+            'html' => $tpl->fetch('file:[Core]/form/component/text.tpl'),
         );
     }
 }
