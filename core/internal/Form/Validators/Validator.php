@@ -158,9 +158,11 @@ class Validator
                     $call = $this->parseValidatorName($validatorElement['call']);
                     $validator = new $call($validatorElement['params']);
                     $validatorParams = array_merge($objectParams, json_decode($validatorElement['params'], true));
+                    $validatorParams['extraParams'] = $submittedDatas;
                     
                     // Launch validation
                     $result = $validator->validate($value, $validatorParams);
+                    
                     if ($result['success'] === false) {
                         $errors[] = $result['error'];
                     }
@@ -168,7 +170,6 @@ class Validator
                 }
             }
         }
-        
         // If we got error, we throw Exception
         if (count($errors) > 0) {
             $this->raiseValidationException($errors);
