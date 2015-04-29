@@ -148,7 +148,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="host_activate" label="Status" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="1">
+				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>

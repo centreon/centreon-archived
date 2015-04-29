@@ -59,15 +59,18 @@ class Radio extends Component
         $addClass = '';
         $required = '';
         if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field floatLabel';
+            $addClass .= 'mandatory-field';
             $required .= ' required';
         }
         
         $inputHtml = '';
         $myJs = '';
         $i = 1;
-        
+
+
         if (isset($element['label_choices'])) {
+
+            $inputHtml .='<div class="choiceGroup">';
             foreach ($element['label_choices'] as $key => $choice) {
                 $htmlSelected = '';
                 if ($value == $choice) {
@@ -82,6 +85,7 @@ class Radio extends Component
                             '</label>';
                 $i++;
             }
+            $inputHtml .='</div>';
         }
         
         return array(

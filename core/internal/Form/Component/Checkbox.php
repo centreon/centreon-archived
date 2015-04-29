@@ -34,7 +34,7 @@
  */
 namespace Centreon\Internal\Form\Component;
 
-use Centreon\Internal\Di;
+//use Centreon\Internal\Di;
 
 /**
  * Html Checkobox element
@@ -54,12 +54,13 @@ class Checkbox extends Component
     public static function renderHtmlInput(array $element)
     {
 
-        $tpl = Di::getDefault()->get('template');
-        // Load CssFile
+        /*$tpl = Di::getDefault()->get('template');
+        load CssFile
         $tpl->addCss('bootstrap-toggle.min.css');
 
-        // Load JsFile
+         Load JsFile
         $tpl->addJs('bootstrap-toggle.min.js');
+        $tpl->addJs('component/centreon.checkbox.js'); */
 
 
         (isset($element['html']) ? $value = $element['html'] :  $value = '');
@@ -82,12 +83,12 @@ class Checkbox extends Component
             if ($value == $choice) {
                 $htmlSelected = 'checked=checked';
             }
-            $inputHtml .= '<div class="checkbox"><label class="label-controller" for="'.$element['id'] . $i . '">'.
+            $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">'.
                         '<input '.'id="'.$element['id']. $i . '" '.
                         'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
-                        'value=' . $choice . ' '.$htmlSelected.' '.' data-toggle="toggle"'.
-                        '/>'.' '.
-                        '</label></div>';
+                        'value=' . $choice . ' '.$htmlSelected.' '.
+                        '/>'.' '.$key.
+                        '</label>';
             $i++;
         }
         
