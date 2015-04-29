@@ -144,6 +144,8 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
 
         if (isset($givenParameters['timezone_id']) && is_numeric($givenParameters['timezone_id'])) {
             $infoToUpdate['timezone_id'] = $givenParameters['timezone_id'];
+        } else {
+            $infoToUpdate['timezone_id'] = "";
         }
 
         if (isset($givenParameters['description'])) {
