@@ -148,10 +148,7 @@
 				</field>
 			</block>
 			<block name="Additional information">
-				<field name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0">
-					<help>Macros are used as object-specific variables/properties, which can be referenced in commands and extended infos. Example: a macro named MACADDRESS can be referenced as $_HOSTMACADDRESS$.</help>
-				</field>
-				<field name="host_activate" label="Status" default_value="" advanced="0" type="radio" parent_field="" mandatory="1">
+				<field name="host_activate" label="Status" default_value="" advanced="0" type="checkbox" parent_field="" mandatory="1">
 					<attributes>
                         <choices>
                             <Enabled>1</Enabled>
@@ -159,6 +156,9 @@
                         </choices>
 					</attributes>
 				</field>
+                <field name="host_comment" label="Comments" default_value="" advanced="1" type="textarea" parent_field="" mandatory="0">
+                    <help>Macros are used as object-specific variables/properties, which can be referenced in commands and extended infos. Example: a macro named MACADDRESS can be referenced as $_HOSTMACADDRESS$.</help>
+                </field>
 			</block>
         </section>
 		<section name="Relations">

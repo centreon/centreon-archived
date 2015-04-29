@@ -73,10 +73,10 @@ class Textarea extends Component
                     'id="'.$element['id'].'" '.
                     'name="'.$element['name'].'" '.
                     'class="form-control '.$addClass.'" '.
-                    'rows="3" '.
+                    'rows="3" '.' maxlength="150"'.
                     $placeholder.
                     $required .
-                    '>'.$value.'</textarea>';
+                    '>'.$value.'</textarea><cite></cite>';
         
         $myJs = '';
         

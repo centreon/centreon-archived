@@ -9,10 +9,12 @@
   label, input[type="text"],input[type="number"], textarea {
     display: block;
     border: 0;
+    outline: 0;
   }
 
   input[type="text"],
   input[type="number"],
+  input[type="mail"],
   textarea,
   .select2-container .select2-choice,
 {
@@ -27,7 +29,7 @@
   }
 
   textarea {
-    height: 16em;
+    height: 6em;
     resize: none;
   }
 
@@ -86,12 +88,15 @@
     height: 40px;
     .Elem1 {
       float: left;
-      width: 87%;
+      width: 91%;
     }
     .Elem2 {
-      float: left;
-      width: 12%;
-      margin-left: @paddingElem/2;
+      float: right;
+      width: 8%;
+
+      button {
+        float: right;
+      }
     }
   }
   /*---- Select Fields --- */

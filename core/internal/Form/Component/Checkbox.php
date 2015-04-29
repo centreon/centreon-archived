@@ -34,6 +34,8 @@
  */
 namespace Centreon\Internal\Form\Component;
 
+use Centreon\Internal\Di;
+
 /**
  * Html Checkobox element
  * 
@@ -51,6 +53,15 @@ class Checkbox extends Component
      */
     public static function renderHtmlInput(array $element)
     {
+
+        $tpl = Di::getDefault()->get('template');
+        // Load CssFile
+        $tpl->addCss('bootstrap-toggle.min.css');
+
+        // Load JsFile
+        $tpl->addJs('bootstrap-toggle.min.js');
+
+
         (isset($element['html']) ? $value = $element['html'] :  $value = '');
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
@@ -71,12 +82,12 @@ class Checkbox extends Component
             if ($value == $choice) {
                 $htmlSelected = 'checked=checked';
             }
-            $inputHtml .= '<label class="label-controller" for="'.$element['id'] . $i . '">&nbsp;'.
+            $inputHtml .= '<div class="checkbox"><label class="label-controller" for="'.$element['id'] . $i . '">'.
                         '<input '.'id="'.$element['id']. $i . '" '.
                         'type="'.$element['label_type'].'" '.'name="'.$element['name'].'" '.
-                        'value=' . $choice . ' '.$htmlSelected.' '.
-                        '/>'.' '.$key.
-                        '</label>'.'&nbsp;&nbsp;';
+                        'value=' . $choice . ' '.$htmlSelected.' '.' data-toggle="toggle"'.
+                        '/>'.' '.
+                        '</label></div>';
             $i++;
         }
         
