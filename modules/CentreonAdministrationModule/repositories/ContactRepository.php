@@ -142,8 +142,12 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
 
         $infoToUpdate['contact_id'] = $givenParameters['object_id'];
 
-        if (isset($givenParameters['timezone_id'])) {
+        if (isset($givenParameters['timezone_id']) && is_numeric($givenParameters['timezone_id'])) {
             $infoToUpdate['timezone_id'] = $givenParameters['timezone_id'];
+        }
+
+        if (isset($givenParameters['description'])) {
+            $infoToUpdate['description'] = $givenParameters['description'];
         }
 
         return Contact::update($givenParameters['object_id'], $infoToUpdate);
