@@ -23,6 +23,11 @@
             <div class="col-sm-4">
                 <input class="form-control" name="way_value[#index#]" />
             </div>
+            <div class="col-sm-1">
+                <span class="remove-trigger" style="cursor:pointer;">
+                    <i class="fa fa-times-circle"></i>
+                </span>
+            </div>
         </div>
         <input type="hidden" name="clone_order_notification_way_#index#" id="clone_order_#index#" />
     </li>
@@ -47,6 +52,11 @@
             </div>
             <div class="col-sm-4">
                 <input class="form-control" name="way_value[{$i}]" value="{$wayValue['info_value']}"/>
+            </div>
+            <div class="col-sm-1">
+                <span class="remove-trigger" style="cursor:pointer;">
+                    <i class="fa fa-times-circle"></i>
+                </span>
             </div>
         </div>
         <input type="hidden" name="clone_order_notification_way_{$i}" id="clone_order_{$i}" />
