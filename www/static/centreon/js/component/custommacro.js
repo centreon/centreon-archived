@@ -1,0 +1,4 @@
+$(function() {
+    $(".clonable").centreonClone();
+})
+
