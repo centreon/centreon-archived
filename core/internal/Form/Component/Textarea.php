@@ -48,7 +48,7 @@ class Textarea extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        $value = (isset($element['html']) ? ''.$element['html'].' ' : '');
+        $value = (isset($element['html']) ? $element['html'] : '');
         
         if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
             $element['label'] = $element['name'];
