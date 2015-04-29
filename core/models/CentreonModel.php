@@ -123,7 +123,6 @@ abstract class CentreonModel
         } 
         
         if (count($filters)) {
-            $filters = array_unique($filters);
             
             foreach ($filters as $key => $rawvalue) {
                 if (is_array($rawvalue)) {
