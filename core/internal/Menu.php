@@ -69,9 +69,6 @@ class Menu
                 } else {
                     $element['children'] = array();
                 }
-                if (false === is_null($element['url'])) {
-                    $element['url'] = $router->getPathFor($element['url']);
-                }
                 $branch[] = $element;
             }
         }

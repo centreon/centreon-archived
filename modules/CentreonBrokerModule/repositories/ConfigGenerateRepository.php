@@ -77,6 +77,9 @@ class ConfigGenerateRepository
 
         /* Load defaults values */
         $this->defaults = json_decode(file_get_contents(dirname(__DIR__) . '/data/default.json'), true);
+        if (is_null($this->defaults)) {
+            throw new Exception("Bad json format for default values");
+        }
 
         /* Create directories if they don't exist */
         if (!is_dir($this->tmpPath)) {
