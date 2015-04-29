@@ -127,17 +127,16 @@ class ServiceTemplateController extends FormController
             
             $macroHidden = $givenParameters['macro_hidden'];
             
-            $nbMacro = count($macroName);
-            for($i=0; $i<$nbMacro; $i++) {
-                if (!empty($macroName[$i])) {
-                    if (isset($macroHidden[$i])) {
+            foreach ($macroName as $key => $name) {
+                if (!empty($name)) {
+                    if (isset($macroHidden[$key])) {
                         $isPassword = '1';
                     } else {
                         $isPassword = '0';
                     }
-                    
-                    $macroList[$macroName[$i]] = array(
-                        'value' => $macroValue[$i],
+
+                    $macroList[$name] = array(
+                        'value' => $macroValue[$key],
                         'ispassword' => $isPassword
                     );
                 }
@@ -232,22 +231,21 @@ class ServiceTemplateController extends FormController
             $macroValue = $givenParameters['macro_value'];
             
             $macroHidden = $givenParameters['macro_hidden'];
-            
-            $nbMacro = count($macroName);
-            for($i=0; $i<$nbMacro; $i++) {
-                if (!empty($macroName[$i])) {
-                    if (isset($macroHidden[$i])) {
+     
+            foreach ($macroName as $key => $name) {
+                if (!empty($name)) {
+                    if (isset($macroHidden[$key])) {
                         $isPassword = '1';
                     } else {
                         $isPassword = '0';
                     }
-                    
-                    $macroList[$macroName[$i]] = array(
-                        'value' => $macroValue[$i],
+
+                    $macroList[$name] = array(
+                        'value' => $macroValue[$key],
                         'ispassword' => $isPassword
                     );
                 }
-            }
+            }       
         }
         
         $id = parent::createAction(false);
