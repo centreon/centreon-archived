@@ -565,8 +565,10 @@
           /* Fill the advanced search */
           var advString = $( "input[name='advsearch']" ).val(),
               searchTag = $( this ).data( "searchtag" ),
-              tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" ),
-              splitRegex = new RegExp( "(\\w+|\"[^\"]+\"|'[^']+')", "g" );
+              //tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" ),
+              tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" ),
+              //splitRegex = new RegExp( "((\\w+\\.*)+|\"[^\"]+(?!\\.+)+\"|'[^']+(?!\\.+)+')", "g" );
+              splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
           /* Remove the existing values */
           advString = advString.replace( tagRegex, "").trim();
           while ( match = splitRegex.exec( $( this ).val() ) ) {
