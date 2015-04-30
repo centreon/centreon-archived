@@ -548,20 +548,20 @@
         var requestSent = true;
         $('input.centreon-search').on('keyup', function(e) {
             var listSearch = [];
-            if (this.value.length > 2) {
+            if ((this.value.length > 2) || (e.keyCode == 8) || (e.keyCode == 46) || (e.keyCode == 13)) {
                 oTable.api().column($(this).data('column-index'))
                     .search(this.value)
                     .draw();
-                requestSent = false;
+                requestSent = true;
             } else {
                 if (!requestSent) {
                     oTable.api().column($(this).data('column-index'))
-                        .search(' ')
+                        .search(this.value)
                         .draw();
                     requestSent = true;
                 }
             }
-        }).on( "blur", function( e ) {
+        }).on( "keyup", function( e ) {
           /* Fill the advanced search */
           var advString = $( "input[name='advsearch']" ).val(),
               searchTag = $( this ).data( "searchtag" ),
