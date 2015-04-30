@@ -34,14 +34,13 @@
  *
  */
 
+namespace CentreonRealtime\Models\Relation;
 
-namespace CentreonRealtime\Models\Relation\Service;
+use Centreon\Models\CentreonBaseModel;
 
-class Host extends \CentreonRealtime\Models\Relation
+class Host extends CentreonBaseModel
 {
-    protected static $relationTable = "cfg_hosts_services_relations";
-    protected static $firstKey = "service_service_id";
-    protected static $secondKey = "host_host_id";
-    public static $firstObject = "\CentreonRealtime\Models\Service";
-    public static $secondObject = "\CentreonRealtime\Models\Host";
+    protected static $table = "rt_hosts";
+    protected static $primaryKey = "host_id";
+    protected static $uniqueLabelField = "name";
 }

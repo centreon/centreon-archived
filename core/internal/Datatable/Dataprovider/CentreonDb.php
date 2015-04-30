@@ -84,14 +84,20 @@ class CentreonDb implements DataProviderInterface
                         $conditions[$columnSearch['data']][] = $sSearch;
                     }
                 } else {
-                    $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
+                    foreach ($columns as $column) {
+                        if ($column['data'] === $columnSearch['data']) {
+                            if (isset($column['type']) && (strtolower($column['type']) === 'string')) {
+                                $conditions[$columnSearch['data']] = '%' . $columnSearch['search']['value'] . '%';
+                            } else {
+                                $conditions[$columnSearch['data']] = $columnSearch['search']['value'];
+                            }
+                        }
+                    }
                 }
-                
             }
         }
-      
         
-      if (isset($additionnalClass)) {
+        if (isset($additionnalClass)) {
             $result = $additionnalClass::getMergedParametersBySearch(
                 explode(',', $fields),
                 explode(',', $otherFields),
@@ -114,8 +120,7 @@ class CentreonDb implements DataProviderInterface
                 "AND"
             );
             $a['nbOfTotalDatas'] = count($result2);
-        } else { 
-     
+        } else {
             $result = $modelClass::getListBySearch(
                 $fields,
                 $params['length'],
