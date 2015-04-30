@@ -73,8 +73,8 @@ from Centreon menus.
 **[generate_files > \*.php]**
 
 The PHP files contained inside the ``generate_files`` directory will
-be executed during the Nagios configuration files generation (inside
-*Configuration > Nagios*). Those files must generate Nagios
+be executed during the monitoring engine configuration files generation (inside
+*Configuration > Monitoring Engines*). Those files must generate
 configuration files.
 
 **[UPGRADE > dummy-x.x > sql > upgrade.sql]**

@@ -379,14 +379,6 @@ If you use Centreon Engine:
   What is the Monitoring engine user ?
   > centreon-engine
 
-If you use Nagios:
-
- ::
-
-  What is the Monitoring engine user ?
-  > nagios
-
-This user executes the Stream Multiplexer:
 
 If you use Centreon Broker:
 
@@ -394,13 +386,6 @@ If you use Centreon Broker:
 
   What is the Broker user ? (optional)
   > centreon-broker
-
-If you use NDOUtils:
-
- ::
-  
-  What is the Broker user ? (optional)
-  > nagios
 
 
 Monitoring logs directory
@@ -412,13 +397,6 @@ If you use Centreon Engine:
 
   What is the Monitoring engine log directory ?
   > /var/log/centreon-engine
-
-If you use Nagios:
-
- ::
-
-  What is the Monitoring engine log directory ?
-  > /var/log/nagios
 
 
 Plugin path
@@ -464,18 +442,6 @@ If you use Centreon Engine:
   What is the Monitoring engine configuration directory ?
   > /etc/centreon-engine
 
-If you use Nagios:
-
- ::
-
-  What is the Monitoring engine init.d script ?
-  > /etc/init.d/nagios
-
-  What is the Monitoring engine binary ?
-  > /usr/sbin/nagios
-
-  What is the Monitoring engine configuration directory ?
-  > /etc/nagios
 
 If you use Centreon Broker:
 
@@ -486,17 +452,6 @@ If you use Centreon Broker:
 
   Where is the init script for broker module daemon ?
   > /etc/init.d/cbd
-
-If you use NDOUtils:
-
- ::
-  
-  Where is the configuration directory for broker module ?
-  > /etc/nagios
-
-  Where is the init script for broker module daemon ?
-  > /etc/init.d/ndo2db
-
 
 Sudo configuration:
 
@@ -823,11 +778,6 @@ For Centreon Engine:
 .. image:: /_static/images/installation/setup_3_2.png
    :align: center
 
-For Nagios:
-
-.. image:: /_static/images/installation/setup_3_3.png
-   :align: center
-
 Click on the **Next** button as soon as all the fields are filled.
 
 .. image:: /_static/images/installation/setup_4.png
@@ -838,11 +788,6 @@ Select your Stream Multiplexer. Depending on the selection, the settings are dif
 For Centreon Broker:
 
 .. image:: /_static/images/installation/setup_4_2.png
-   :align: center
-
-For NDOUtils:
-
-.. image:: /_static/images/installation/setup_4_3.png
    :align: center
 
 Click on the **Next** button when all parameters are filled.
