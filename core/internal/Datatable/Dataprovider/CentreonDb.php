@@ -140,7 +140,12 @@ class CentreonDb implements DataProviderInterface
                 $conditions,
                 "AND"
             );
-            $a['nbOfTotalDatas'] = $result2[0]['count(*)'];
+
+            if (isset($result2[0]['count(*)'])) {
+                $a['nbOfTotalDatas'] = $result2[0]['count(*)'];
+            } else {
+                $a['nbOfTotalDatas'] = 0;
+            }
         }
 
         $a['datas'] = $result;
