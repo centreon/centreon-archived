@@ -179,7 +179,7 @@ class Service extends CentreonBaseModel
         if (isset($filters['tagname']) && count($filters['tagname']) > 1) {
             $aGroup = array('sField' => 'cfg_tags_services.resource_id', 'nb' => count($filters['tagname']));
         }
-         
+        
         return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 

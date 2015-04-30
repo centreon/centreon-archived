@@ -9,6 +9,11 @@ div.tagGlobal {
   border : 2px solid @firstGreenLighten;
   color : @white;
 }
+div.tagGlobalNotDelete {
+  background-color: @tag-global-color;
+  border : 2px solid @tag-global-color;
+  color : @white;
+}
 div.tag {
   color: @customTag-color;
   background-color: lighten(@customTag-color,30%);
@@ -16,7 +21,7 @@ div.tag {
 }
 
 
-div.tag, div.tagGlobal {
+div.tag, div.tagGlobal, div.tagGlobalNotDelete {
 
   display: inline-block;
   border-radius: 2px;

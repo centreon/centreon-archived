@@ -8,7 +8,7 @@
             <block name="General information">
                 <field name="description" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
-                        <validator rules="remote" serverside="core.unique" />
+                        <validator rules="remote" serverside="centreon-configuration.unique" />
                         <validator rules="forbiddenChar" serverside="core.forbiddenChar">
                             <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
                         </validator>

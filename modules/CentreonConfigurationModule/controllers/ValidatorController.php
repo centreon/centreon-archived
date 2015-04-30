@@ -49,14 +49,13 @@ class ValidatorController extends Controller
      */
     public function uniqueAction()
     {
-        $givenParameters = $this->getParams('post');
+        $params = $this->getParams('post')->all();
+        
         $value = '';
+        $aParams = array('object' => $params['object'], 'extraParams' => $params);
+        
         $oValidator = new Unique();
-        
-        
-        $aParams = array($givenParameters, array('extraParams' => $givenParameters));
-       
-        echo json_encode($oValidator->validate($value, array('extraParams' => $givenParameters)));
+        echo json_encode($oValidator->validate($value, $aParams));
     }
     
     /**

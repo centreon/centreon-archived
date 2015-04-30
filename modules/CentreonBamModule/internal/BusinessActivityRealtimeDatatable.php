@@ -246,7 +246,7 @@ class BusinessActivityRealtimeDatatable extends Datatable
             $myBaSet['tagname']  = "";
             $aTags = TagsRepository::getList('ba', $myBaSet['ba_id'], 2);
             foreach ($aTags as $oTags) {
-                $myBaSet['tagname'] .= TagsRepository::getTag('ba', $myBaSet['ba_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+                $myBaSet['tagname'] .= TagsRepository::getTag('ba', $myBaSet['ba_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
             }
             $myBaSet['tagname'] .= TagsRepository::getAddTag('ba', $myBaSet['ba_id']);
         }

@@ -63,6 +63,18 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      * @var string
      */
     public static $objectName = 'User';
+    
+    public static $objectClass = '\CentreonAdministration\Models\User';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $unicityFields = array(
+        'fields' => array(
+            'user' => 'cfg_users,user_id,login'
+        ),
+    );
 
     /**
      * 

@@ -193,7 +193,7 @@ class HostTemplateController extends FormController
             }
             
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource('host', $id, $aTags);
+                TagsRepository::saveTagsForResource('host', $id, $aTags, '', false);
             }
         }
         
@@ -285,7 +285,7 @@ class HostTemplateController extends FormController
             }
             
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false);
             }
         }
         

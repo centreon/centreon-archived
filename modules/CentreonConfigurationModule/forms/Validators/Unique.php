@@ -34,10 +34,21 @@
  */
 
 namespace CentreonConfiguration\Forms\Validators;
+
 use Centreon\Internal\Di;
 use Centreon\Internal\Form\Validators\ValidatorInterface;
+
 use CentreonConfiguration\Repository\ServicetemplateRepository;
+use CentreonConfiguration\Repository\ServiceRepository;
+use CentreonConfiguration\Repository\HostTemplateRepository;
+use CentreonConfiguration\Repository\HostRepository;
+use CentreonConfiguration\Repository\CommandRepository;
+
+use CentreonAdministration\Repository\ContactRepository;
+use CentreonAdministration\Repository\UserRepository;
+
 use Centreon\Internal\Exception\Validator\MissingParameterException;
+use CentreonConfiguration\Models\Host;
 
 
 /**
@@ -47,9 +58,6 @@ use Centreon\Internal\Exception\Validator\MissingParameterException;
  */
 class Unique implements ValidatorInterface
 {
-    
-    public static $unicityFields = array(); 
-
     /**
      * 
      * @param type $value
@@ -60,57 +68,203 @@ class Unique implements ValidatorInterface
     public function validate($value, $params = array())
     {
         $db = Di::getDefault()->get('db_centreon');
-        $tables = array();
-        $conditions = array();
         $bSuccess = true;
         $resultError = _("Object already exists");
         $sMessage = '';
-
+        
+        $aParams = array();
+        $aHost = array();
+        $sLabel = '';
+        $iId = '';
+        $return = '';
+        
+        //echo "obj".$params['object'];
+        //var_dump($params);die;
         if (isset($params['object'])) {
-            $objClass = "CentreonConfiguration\\Repository\\".ucfirst($params['object']."Repository");
-            self::$unicityFields = $objClass::$unicityFields;
-            
-            // Check if all mandatory unicty fields are present
-            $requiredFields = array_keys(self::$unicityFields['fields']);
-            $givenFields = array_keys($params['extraParams']);
-            
-         
-            /*
-            $missingFields = array_diff($requiredFields, $givenFields);
-            if (count($missingFields) > 0) {
-                $errorMessage = _("The following mandatory parameters are missing") . " :\n    - ";
-                $errorMessage .= implode("\n    - ", $missingFields);
-                throw new MissingParameterException($errorMessage);
+            if (isset($params['extraParams']['module']) && !empty($params['extraParams']['module'])) {
+                $oModule = $params['extraParams']['module'];
+            } else {
+                $oModule = "CentreonConfiguration";
             }
-            */
-            // Checking por unicity's params
-            foreach ($params['extraParams'] as $key => $unicityParam) {
-                if (isset(self::$unicityFields['fields'][$key])) {
-                    $fieldComponents = explode (',', self::$unicityFields['fields'][$key]);
-                    $tables[] = $fieldComponents[0];
-                    $conditions[] = $fieldComponents[2] . "='$unicityParam'";
+            
+            $objClass = $oModule."\\Repository\\".ucfirst($params['object']."Repository");
+        }
+           
+        if (isset($params['object']) && $params['object'] == 'service') {
+            
+            if (isset($params['extraParams']['service_description'])) {
+                $sLabel = $params['extraParams']['service_description'];
+            }
+            if (isset($params['extraParams']['service_id'])) {
+                $iId = $params['extraParams']['service_id'];
+            }
+
+            if (isset($params['extraParams']['service_hosts'])) {
+                $aHosts = explode(",", $params['extraParams']['service_hosts']);
+                $aHosts = array_diff($aHosts, array( '' ) );
+                foreach ($aHosts as $iIdHost) {
+                    $sHostName = "";
+                    $aHostName = Host::getParameters($iIdHost, 'host_name');
+                    if (is_array($aHostName) && isset($aHostName['host_name']) & !empty($aHostName['host_name'])) {
+                        $sHostName = $aHostName['host_name'];
+                    }
+
+                    $aParams['host'] = $sHostName;
+                    $aParams['service'] = $sLabel;
+                    try {
+                        $idReturned = $objClass::getIdFromUnicity($aParams);
+
+                        $return[] = self::compareResponse($iIdHost, $idReturned);
+                        
+                    } catch (MissingParameterException $e) {
+                        $return[] = 0;
+                    }
                 }
             }
-
-            // 
-            if (isset(self::$unicityFields['joint'])) {
-                $tables[] = self::$unicityFields['joint'];
-                $conditions[] = self::$unicityFields['jointCondition'];
+        } elseif (isset($params['object']) && $params['object'] == 'servicetemplate') {
+            
+            if (isset($params['extraParams']['service_description'])) {
+                $sLabel = $params['extraParams']['service_description'];
             }
-            
-            // FInalizing query
-            $query = ' SELECT COUNT(*) AS NB FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
-            
 
-            // Execute request
-            $stmt = $db->query($query);
-            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            if (isset($result[0]['NB']) && $result[0]['NB'] > 0) {
+            $aParams['servicetemplate'] = $sLabel;
+            
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } elseif (isset($params['object']) && $params['object'] == 'host') {
+            
+            if (isset($params['extraParams']['host_name'])) {
+                $sLabel = $params['extraParams']['host_name'];
+            }
+
+            $aParams['host'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);               
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } elseif (isset($params['object']) && $params['object'] == 'hosttemplate') {
+            $objClass = $oModule."\\Repository\HostTemplateRepository";
+            
+            if (isset($params['extraParams']['host_name'])) {
+                $sLabel = $params['extraParams']['host_name'];
+            }
+
+            $aParams['hosttemplate'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned); 
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } elseif (isset($params['object']) && $params['object'] == 'command') {
+            
+            if (isset($params['extraParams']['command_name'])) {
+                $sLabel = $params['extraParams']['command_name'];
+            }
+
+            $aParams['command'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } elseif (isset($params['object']) && $params['object'] == 'contact') {
+            
+            if (isset($params['extraParams']['description'])) {
+                $sLabel = $params['extraParams']['description'];
+            }
+
+            $aParams['contact'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } elseif (isset($params['object']) && $params['object'] == 'user') {
+            
+            if (isset($params['extraParams']['login'])) {
+                $sLabel = $params['extraParams']['login'];
+            }
+
+            $aParams['user'] = $sLabel;
+            try {
+                $return[] = $objClass::getIdFromUnicity($aParams);
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        }
+        //var_dump($return);
+        if (is_array($return)) {
+            foreach($return as $valeur) {
+                if ($valeur > 0) {
+                    $bSuccess = false;
+                    $sMessage = $resultError;
+                    break;
+                }
+            } 
+        } else {
+            if ($return > 0) {
                 $bSuccess = false;
                 $sMessage = $resultError;
             }
         }
-       
+     
         return array('success' => $bSuccess, 'error' => $sMessage);
+    }
+    /**
+     * 
+     * @param int $iObjectId
+     * @param int $iIdReturned
+     * @return int
+     */
+    private function compareResponse($iObjectId, $iIdReturned)
+    {
+        $iRetour = '';
+        if (!empty($iIdReturned)) {
+            if ($iObjectId == $iIdReturned) {
+                $iRetour = 0;
+            } else {
+                $iRetour = $iIdReturned;
+            }
+        } else {
+            $iRetour = $iIdReturned;
+        }
+        //echo "<>".$iObjectId."<>".$iIdReturned."<>".$iRetour;
+        return $iRetour;
     }
 }

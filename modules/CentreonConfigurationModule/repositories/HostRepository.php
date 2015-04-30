@@ -86,7 +86,7 @@ class HostRepository extends Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+    public static $unicityFields = array(
         'fields' => array(
             'host' => 'cfg_hosts,host_id,host_name'
         ),

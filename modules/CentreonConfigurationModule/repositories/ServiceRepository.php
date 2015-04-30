@@ -37,9 +37,10 @@ namespace CentreonConfiguration\Repository;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Host;
 use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\Repository;
-
+use Centreon\Internal\Exception\Validator\MissingParameterException;
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon

@@ -45,7 +45,7 @@ use CentreonAdministration\Repository\TagsRepository;
  * @package Centreon
  * @subpackage Repository
  */
-class ContactRepository extends \CentreonAdministration\Repository\Repository
+class ContactRepository extends Repository
 {
     /**
      *
@@ -53,11 +53,23 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
      */
     public static $tableName = 'cfg_contacts';
     
+    public static $objectClass = '\CentreonAdministration\Models\Contact';
+    
     /**
      *
      * @var string
      */
     public static $objectName = 'Contact';
+    
+    /**
+     *
+     * @var type 
+     */
+    protected static $unicityFields = array(
+        'fields' => array(
+            'contact' => 'cfg_contacts,contact_id,description'
+        ),
+    );
     
     /**
      * 
@@ -106,7 +118,7 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
         }
         
         if (count($aTags) > 0) {
-            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+            TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false);
         }
 
         $wayList = array();
@@ -151,7 +163,7 @@ class ContactRepository extends \CentreonAdministration\Repository\Repository
         if (isset($givenParameters['description'])) {
             $infoToUpdate['description'] = $givenParameters['description'];
         }
-
+        
         return Contact::update($givenParameters['object_id'], $infoToUpdate);
     }            
 }

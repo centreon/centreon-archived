@@ -80,7 +80,7 @@ class BusinessActivityController extends FormController
                     }
                 }
                 if (count($aTags) > 0) {
-                    TagsRepository::saveTagsForResource('ba', $id, $aTags);
+                    TagsRepository::saveTagsForResource('ba', $id, $aTags, '', false);
                 }
             }
 
@@ -185,7 +185,7 @@ class BusinessActivityController extends FormController
                 }
             }
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags);
+                TagsRepository::saveTagsForResource('ba', $givenParameters['object_id'], $aTags, '', false);
             }
         }        
     }

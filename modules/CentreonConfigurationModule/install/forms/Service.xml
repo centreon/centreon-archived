@@ -7,8 +7,14 @@
 	<section name="Service configuration">
 	  	<block name="General information">
 			<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-          		<help>Name used for service in auto-deploy by template.</help>
-        	</field>
+                            <help>Name used for service in auto-deploy by template.</help>
+                            <validators>
+                                <validator rules="remote" serverside="centreon-configuration.unique" />
+                                <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                                        <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                                </validator>
+                            </validators>
+                        </field>
 			<field name="service_template_model_stm_id" label="Template" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  		<attributes>
 					<object_type>object</object_type>

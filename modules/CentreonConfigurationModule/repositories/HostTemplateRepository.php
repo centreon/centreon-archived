@@ -49,6 +49,8 @@ use CentreonConfiguration\Models\Timeperiod;
  */
 class HostTemplateRepository extends Repository
 {
+    public static $objectClass = '\CentreonConfiguration\Models\Hosttemplate';
+    
     /**
      * List of column for inheritance
      * @var array
