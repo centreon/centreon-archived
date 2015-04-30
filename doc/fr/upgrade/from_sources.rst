@@ -170,7 +170,6 @@ Si vide, l'utilisateur du moteur de supervision sera utilisé.
 Par exemple :
 
 * Centreon Broker : *centreon-broker*
-* ndo2db : *nagios*
 
   :: 
 
@@ -180,12 +179,6 @@ Par exemple :
 Le chemin vers les journaux. Par exmeple :
 
 * Centeron Engine : */var/log/centreon-engine*
-* Nagios : */var/log/nagios*
-
-  ::
-
-    What is the Monitoring engine log directory ?
-    > /var/log/nagios
 
 Le chemin vers les sondes de supervision :
   ::
@@ -209,33 +202,16 @@ Le chemin vers les sondes de supervision :
 Le chemin vers le script de démarrage de l'ordonnanceur. Par exemple :
 
 * Centreon Engine : */etc/init.d/centengine*
-* Nagios : */etc/init.d/nagios*
 
-  ::
-
-    What is the Monitoring engine init.d script ?
-    > /etc/init.d/nagios
 
 Le chemin vers le répertoire de configuratino du broker. Par exemple : 
 
 * Centreon Broker : */etc/centreon-broker*
-* NDO : */etc/nagios*
-
-  ::
-
-    Where is the configuration directory for broker module ?
-    > /etc/nagios
 
 Le chemin vers e script de démarrage du broker. Par exemple :
 
 * Centreon Broker : */etc/init.d/cbd*
-* ndo2db : */etc/init.d/ndo2db*
 
-  ::
-
-    Where is the init script for broker module daemon ?
-    > /etc/init.d/ndo2db
-    Your sudo has been configured previously
 
 Remplacement ou non du fichier de droits utilisateurs.
 Pour plus de sécurité, sauvegarder le fichier **/etc/sudoers**.
@@ -263,7 +239,6 @@ Pour plus de sécurité, sauvegarder le fichier **/etc/sudoers**.
     Change macros for insertBaseConf.sql                       OK
     Change macros for sql update files                         OK
     Change macros for php files                                OK
-    Change right on /etc/nagios3                               OK
     Disconnect users from WebUI
     All users are disconnected                                 OK
     Copy CentWeb in system directory
@@ -381,7 +356,7 @@ De nouvelle informaitons sont nécessaires.
 Mise à jour Centreon Core
 -------------------------
 
-De nouvelle informaitons sont nécessaires.
+De nouvelle informations sont nécessaires.
 
   ::
 
@@ -416,7 +391,7 @@ De nouvelle informaitons sont nécessaires.
 Mise à jour des sondes Centreon
 -------------------------------
 
-De nouvelle informaitons sont nécessaires.
+De nouvelle informations sont nécessaires.
 
   ::
 

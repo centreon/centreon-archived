@@ -8,7 +8,7 @@ des couches applicatives, du service utilisateur jusqu’aux ressources matérie
 
 
 Centreon est un puissant outillage destiné aux administrateurs et exploitants 
-du service de supervision. Basé historiquement sur Nagios, il intègre depuis 
+du service de supervision. Il intègre depuis 
 2012 son propre moteur de collecte (Centreon Engine) et gestionnaire d’événements 
 (Centreon Broker).
 

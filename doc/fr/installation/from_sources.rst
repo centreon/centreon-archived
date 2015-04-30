@@ -397,11 +397,6 @@ Si vous utilisez Centreon Engine::
   What is the Monitoring engine user ?
   > centreon-engine
 
-Si vous utilisez Nagios::
-
-  What is the Monitoring engine user ?
-  > nagios
-
 Cet utilisateur exécute le multiplexeur de flux :
 
 Si vous utilisez Centreon Broker::
@@ -409,23 +404,13 @@ Si vous utilisez Centreon Broker::
   What is the Broker user ? (optional)
   > centreon-broker
 
-Si vous utilisez NDOUtils::
-  
-  What is the Broker user ? (optional)
-  > nagios
-
 Répertoire des journaux d'évènements
 ------------------------------------
 
-Si vous utilisez Centreon Engine::
+::
 
   What is the Monitoring engine log directory ?
   > /var/log/centreon-engine
-
-Si vous utilisez Nagios::
-
-  What is the Monitoring engine log directory ?
-  > /var/log/nagios
 
 Répertoire des plugins
 ----------------------
@@ -457,8 +442,6 @@ Configuration des droits sudo
   /etc/sudoers                                               OK
 
 
-Si vous utilisez Centreon Engine::
-
   What is the Monitoring engine init.d script ?
   > /etc/init.d/centengine
 
@@ -468,17 +451,6 @@ Si vous utilisez Centreon Engine::
   What is the Monitoring engine configuration directory ?
   > /etc/centreon-engine
 
-Si vous utilisez Nagios ::
-
-  What is the Monitoring engine init.d script ?
-  > /etc/init.d/nagios
-
-  What is the Monitoring engine binary ?
-  > /usr/sbin/nagios
-
-  What is the Monitoring engine configuration directory ?
-  > /etc/nagios
-
 Si vous utilisez Centreon Broker::
 
   Where is the configuration directory for broker module ?
@@ -486,15 +458,6 @@ Si vous utilisez Centreon Broker::
 
   Where is the init script for broker module daemon ?
   > /etc/init.d/cbd
-
-Si vous utilisez NDOUtils::
-  
-  Where is the configuration directory for broker module ?
-  > /etc/nagios
-
-  Where is the init script for broker module daemon ?
-  > /etc/init.d/ndo2db
-
 
 Configuration des droits::
 
@@ -819,11 +782,6 @@ Pour Centreon Engine :
 .. image:: /images/installation/setup_3_2.png
    :align: center
    
-Pour Nagios :
-
-.. image:: /images/installation/setup_3_3.png
-   :align: center
-
 Cliquez sur le bouton **Next** dès que tous les champs sont remplis.
 
 .. image:: /images/installation/setup_4.png
@@ -834,11 +792,6 @@ Sélectionnez votre multiplexeur de flux. Suivant la sélection, le paramétrage
 Pour Centreon Broker :
 
 .. image:: /images/installation/setup_4_2.png
-   :align: center
-
-Pour NDOUtils :
-
-.. image:: /images/installation/setup_4_3.png
    :align: center
 
 Cliquez sur le bouton **Next** dès que tous les champs sont remplis.
