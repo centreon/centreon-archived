@@ -63,7 +63,7 @@ class NotificationWay extends Component
             ->addCss('select2-bootstrap.css');
 
         $tpl->addJs('jquery.select2/select2.min.js')
-            ->addJs('centreon-clone.js');
+            ->addJs('centreon-clone.js')
             ->addJs('component/notificationWay.js');
 
         $tpl->assign('notificationWays', $notificationWays);

@@ -334,6 +334,8 @@ class BasicCrud extends AbstractCommand
         try {
             $repository = $this->repository;
             $paramList = $this->parseObjectParams($params);
+            $paramList['object'] = $this->objectName;
+                       
             $idOfCreatedElement = $repository::create(
                         $paramList,
                         'api',

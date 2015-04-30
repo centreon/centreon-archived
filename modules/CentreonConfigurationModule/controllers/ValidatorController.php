@@ -29,41 +29,45 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
- * For more information : contact@centreon.com
+ * For more information : resource@centreon.com
  *
  */
 
-namespace Centreon\Internal\Form\Validators;
+namespace CentreonConfiguration\Controllers;
+use Centreon\Internal\Controller;
+use Centreon\Internal\Form\Validators\Validator;
 
-/**
- * @author Lionel Assepo <lassepo@centreon.com>
- * @package Centreon
- * @subpackage Core
- */
-class Unique implements ValidatorInterface
+use CentreonConfiguration\Forms\Validators\Unique;
+
+class ValidatorController extends Controller
 {
     /**
      * 
-     * @param type $value
-     * @param type $module
-     * @param type $objectName
-     * @param type $id
-     * @param type $fieldname
-     * @return boolean
+     *
+     * @method post
+     * @route /validator/unique
      */
-    public function validate($value, $params = array())
+    public function uniqueAction()
     {
-        /*$callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
-        if ($callableObject::isUnique($value, $id)) {
-            $result = array('success' => true);
-        } else {
-            $result = array(
-                'success' => false,
-                'error' => _("\"<i>$value</i>\" is already in use for another $objectName")
-            );
-        }
-        return $result;*/
+        $givenParameters = $this->getParams('post');
+        $value = '';
+        $oValidator = new Unique();
         
-        return array('success' => true, 'error' => '');
+        
+        $aParams = array($givenParameters, array('extraParams' => $givenParameters));
+       
+        echo json_encode($oValidator->validate($value, array('extraParams' => $givenParameters)));
+    }
+    
+    /**
+     * 
+     *
+     * @method post
+     * @route /validator/circular
+     */
+    public function circularAction()
+    {
+        echo json_encode(array('success' => true, 'error' => ''));
+
     }
 }
