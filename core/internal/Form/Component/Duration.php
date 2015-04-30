@@ -34,6 +34,8 @@
  */
 namespace Centreon\Internal\Form\Component;
 
+use Centreon\Internal\Di;
+
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -48,74 +50,26 @@ class Duration extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        $value = (isset($element['html']) ? 'value="'.$element['html'].'" ' : '');
-        
-        $placeholder = 'placeholder="'.$element['name'].'" ';
+        $element['placeholder'] = $element['name'];
         if (isset($element['label_label']) && (!empty($element['label_label']))) {
-            $placeholder = 'placeholder="'.$element['label_label'].'" ';
+            $element['placeholder'] = $element['label_label'];
         }
         
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
         
-        $addClass = '';
-        $required = '';
-        if (isset($element['label_mandatory']) && $element['label_mandatory'] == "1") {
-            $addClass .= 'mandatory-field ';
-            $required = ' required';
-        }
-        
-        $myJs = '';
-
-        $durationInput = '<input '
-            . 'id="'.$element['id'].'" '
-            . 'type="number" '
-            . 'name="'.$element['name'].'" '
-            . $value
-            . 'class="form-control input-sm '.$addClass.'" '
-            . $placeholder
-            . $required
-            . '/>';
-            
-        $durationScaleSelector = '<button '
-            . 'id="'.$element['id'].'_scale_selector" '
-            . 'type="button" '
-            . 'class="btn btn-default btn-sm dropdown-toggle" '
-            . 'data-toggle="dropdown">'
-            . 'Seconds '
-            . '<span class="caret"></span></button>'
-            . ''
-            . ''
-            . '<ul class="dropdown-menu" role="menu">'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Seconds</a></li>'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Minutes</a></li>'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Hours</a></li>'
-            . '<li class="'.$element['name'].'_scale_values"><a href="#">Years</a></li>'
-            . '</ul>'
-            . '';
-        
-        $durationInputScaleValue = '<input '
-            . 'id="'.$element['id'].'_scale" '
-            . 'type="hidden" '
-            . 'name="'.$element['name'].'_scale" '
-            . $value
-            . '/>';
-        
-        
-         $finalHtml = '<div class="input-group">'
-            .$durationInput
-            . '<span class="input-group-btn">' . $durationScaleSelector . ' ' . $durationInputScaleValue . '</span>'
-            . '</div>';
-         
-         
-         $myJs = '$(".'.$element['name'].'_scale_values").on("click", function(){'
+        $myJs = '$(".'.$element['name'].'_scale_values").on("click", function(){'
              . '$("#'.$element['id'].'_scale").val($(this).text()); '
              . '$("#'.$element['id'].'_scale_selector").text($(this).text());'
              . '});';
-        
+
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('element', $element);
+
         return array(
-            'html' => $finalHtml,
+            'html' => $tpl->fetch('file:[Core]/form/component/duration.tpl'),
             'js' => $myJs
         );
     }

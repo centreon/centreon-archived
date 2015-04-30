@@ -5,7 +5,7 @@
 ########################################################################
 
 # Install base packages
-yum install -y gcc rrdtool rrdtool-devel
+yum install -y gcc rrdtool rrdtool-devel curl wget
 
 # Install LA*P stack
 yum install -y centos-release-SCL
@@ -169,6 +169,46 @@ EOF
 
 chmod 440 /etc/sudoers.d/centreon
 
+# Install SNMP
+yum install -y perl-Net-SNMP.noarch net-snmp-perl.x86_64 net-snmp.x86_64 net-snmp-utils.x86_64
+cat << EOF > /etc/snmp/snmpd.conf
+####
+# First, map the community name "public" into a "security name"
+
+#       sec.name  source          community
+com2sec notConfigUser  default       public
+
+####
+# Second, map the security name into a group name:
+
+#       groupName      securityModel securityName
+group   notConfigGroup v1           notConfigUser
+group   notConfigGroup v2c           notConfigUser
+
+####
+# Third, create a view for us to let the group have rights to:
+
+# Make at least  snmpwalk -v 1 localhost -c public system fast again.
+#       name           incl/excl     subtree         mask(optional)
+view centreon included .1.3.6.1
+view    systemview    included   .1.3.6.1.2.1.1
+view    systemview    included   .1.3.6.1.2.1.25.1.1
+
+####
+# Finally, grant the group read-only access to the systemview view.
+
+#       group          context sec.model sec.level prefix read   write  notif
+access notConfigGroup "" any noauth exact centreon none none
+access  notConfigGroup ""      any       noauth    exact  systemview none none
+
+includeAllDisks 10%
+EOF
+
+service snmpd restart
+
+# Install centreon-plugins
+git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
+
 # On to the PHP soft now, first let's install composer + update Centreon dependencies
 curl -sS https://getcomposer.org/installer | scl enable php54 "php -- --install-dir=/usr/local/bin"
 mv /usr/local/bin/composer.phar /usr/local/bin/composer
@@ -210,6 +250,7 @@ chkconfig --level 2345 mysql on
 chkconfig --level 2345 httpd on
 chkconfig --level 2345 cbd on
 chkconfig --level 2345 centengine on
+chkconfig --level 2345 snmpd on
 
 # FIXME We should add somewhere a oif checks like SE Linux disbaled + PHP version and so on
 
