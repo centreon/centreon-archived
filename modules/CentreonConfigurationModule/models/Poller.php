@@ -48,7 +48,83 @@ use Centreon\Models\CentreonBaseModel;
  */
 class Poller extends CentreonBaseModel
 {
-    protected static $table = "cfg_pollers";
+    protected static $table = "cfg_pollers p";
     protected static $primaryKey = "poller_id";
     protected static $uniqueLabelField = "name";
+
+    /**
+     *
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+    }
+
+    /**
+     *
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $aAddFilters = array();
+        $tablesString =  null;
+        $aGroup = array();
+
+        // Add join on node table
+        if (isset($filters['ip_address']) && !empty($filters['ip_address'])) {
+            $aAddFilters['tables'][] = 'cfg_nodes n';
+            $aAddFilters['join'][] = 'p.node_id = n.node_id';
+        }
+
+        // Add join on instance table
+        if ((isset($filters['running']) && !empty($filters['running']))
+            || (isset($filters['version']) && !empty($filters['version']))
+        ) {
+            $aAddFilters['tables'][] = 'rt_instances i';
+            $aAddFilters['join'][] = 'p.name = i.name';
+        }
+
+        // Avoid error on ambiguous column
+        if (isset($filters['name'])) {
+            $filters['p.name'] = $filters['name'];
+            unset($filters['name']);
+        }
+
+        // Avoid error on ambiguous column
+        if (isset($filters['enable'])) {
+            $filters['p.enable'] = $filters['enable'];
+            unset($filters['enable']);
+        }
+
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
+    }
 }

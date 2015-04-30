@@ -69,7 +69,7 @@ class PollerDatatable extends Datatable
     protected static $configuration = array(
         'autowidth' => true,
         'order' => array(
-            array('name', 'asc')
+            array('p.name', 'asc')
         ),
         'stateSave' => false,
         'paging' => true,
@@ -91,7 +91,7 @@ class PollerDatatable extends Datatable
         ),
         array (
             'title' => 'Name',
-            'name' => 'name',
+            'name' => 'p.name',
             'data' => 'name',
             'orderable' => true,
             'searchable' => true,
@@ -164,7 +164,7 @@ class PollerDatatable extends Datatable
             'name' => 'hasChanged',
             'data' => 'hasChanged',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
@@ -195,7 +195,7 @@ class PollerDatatable extends Datatable
         ),
         array (
             'title' => 'Status',
-            'name' => 'enable',
+            'name' => 'p.enable',
             'data' => 'enable',
             'orderable' => true,
             'searchable' => true,
