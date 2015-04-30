@@ -116,6 +116,11 @@ class Service extends CentreonBaseModel
             $aAddFilters['join'][] = 'rt_hosts.host_id = s.host_id';
         }
 
+        if (isset($filters['state'])) {
+            $filters['s.state'] = $filters['state'];
+            unset($filters['state']);
+        }
+
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
     }
 }

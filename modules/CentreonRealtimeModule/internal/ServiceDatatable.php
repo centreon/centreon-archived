@@ -169,7 +169,7 @@ class ServiceDatatable extends Datatable
             'data' => 'state',
             'orderable' => true,
             'searchable' => true,
-            'type' => 'string',
+            'type' => 'integer',
             'visible' => true,
             'cast' => array(
                 'type' => 'select',
@@ -306,6 +306,7 @@ class ServiceDatatable extends Datatable
                     . $icon
                     . '&nbsp;'.$myServiceSet['name'].'</span></span>';
             }
+            
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
             $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'
                 . $myServiceSet['host_id']
