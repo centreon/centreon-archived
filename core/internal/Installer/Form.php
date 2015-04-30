@@ -35,6 +35,8 @@
  */
 namespace Centreon\Internal\Installer;
 
+use Centreon\Models\Validators;
+
 /**
  * Description of Form
  *
@@ -173,6 +175,20 @@ class Form
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($rows as $row) {
             self::$validators[$row['name']] = $row['validator_id'];
+        }
+    }
+    
+    /**
+     * 
+     * @param array $validatorsList
+     */
+    public static function insertValidators($validatorsList)
+    {
+        foreach($validatorsList as $validator) {
+            $validatorId = Validators::getIdByParamaters('name', array($validator['name']));
+            if (count($validatorId) == 0) {
+                Validators::insert($validator);
+            }
         }
     }
 

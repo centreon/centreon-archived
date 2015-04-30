@@ -43,7 +43,12 @@ use Centreon\Internal\Utils\CommandLine\InputOutput;
 use Centreon\Internal\Utils\Dependency\PhpDependencies;
 use Centreon\Internal\Exception\Module\MissingDependenciesException;
 use Centreon\Internal\Installer\Versioning;
+use Centreon\Internal\Installer\Form;
+use \Centreon\Internal\Exception\FilesystemException;
 
+/**
+ * 
+ */
 class AbstractModuleInstaller
 {
     /**
@@ -350,5 +355,41 @@ class AbstractModuleInstaller
         
         $message = $this->colorizeMessage(_("     Done"), 'green');
         $this->displayOperationMessage($message);
+    }
+    
+    /**
+     * 
+     * @throws FilesystemException
+     */
+    protected function installValidators()
+    {
+        $validatorFile = $this->moduleDirectory . '/install/validators.json';
+        if (!file_exists($validatorFile)) {
+            $exceptionMessage = "Validators file for this module doesn't exists";
+            throw new FilesystemException($this->colorizeMessage($exceptionMessage, 'red'), 1024);
+        }
+        $message = $this->colorizeText(_("Installation of validators..."));
+        $this->displayOperationMessage($message, false);
+        Form::insertValidators(json_decode($validatorFile, true));
+        $message = $this->colorizeMessage(_("     Done"), 'green');
+        $this->displayOperationMessage($message);
+    }
+    
+    /**
+     * 
+     */
+    protected function deployForms()
+    {
+        try {
+            $message = $this->colorizeText(_("Deployment of Forms..."));
+            $this->displayOperationMessage($message, false);
+            $this->installValidators();
+            
+            $message = $this->colorizeMessage(_("     Done"), 'green');
+            $this->displayOperationMessage($message);
+        } catch (FilesystemException $ex) {
+            
+        }
+        
     }
 }

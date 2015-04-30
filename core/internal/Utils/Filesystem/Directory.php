@@ -36,6 +36,7 @@
 namespace Centreon\Internal\Utils\Filesystem;
 
 use Centreon\Internal\Exception;
+use Centreon\Internal\Exception\Filesystem\DirectoryNotExistsException;
 
 /**
  * Utils for filesystem directories
@@ -136,9 +137,30 @@ class Directory
                 } 
                 else { 
                     copy($sourceDirectory . '/' . $file,$destinationDirectory . '/' . $file); 
-                } 
+                }
             } 
         }
         closedir($dir); 
+    }
+    
+    /**
+     * 
+     * @param string $directory Directory to check
+     * @param string $pattern 
+     * @return boolean
+     * @throws DirectoryNotExistsException
+     */
+    public static function isEmpty($directory, $pattern = "*")
+    {
+        if (!file_exists($directory)) {
+            throw new DirectoryNotExistsException;
+        }
+        
+        $directoryEmpty = false;
+        if (count(glob($directory . '/' . $pattern)) == 0) {
+             $directoryEmpty = true;
+        }
+        
+        return $directoryEmpty;
     }
 }

@@ -38,6 +38,7 @@ namespace Centreon\Commands\Module;
 use Centreon\Internal\Module\Informations;
 use Centreon\Internal\Command\AbstractCommand;
 use Centreon\Internal\Installer\StaticFiles;
+use Centreon\Internal\Installer\Form;
 
 /**
  * COmmand Line to manage
@@ -51,7 +52,8 @@ class ManageCommand extends AbstractCommand
 {
     /**
      * 
-     * @param string $moduleName
+     * @param type $module
+     * @param type $verbose
      */
     public function installAction($module, $verbose = 1)
     {
@@ -61,7 +63,8 @@ class ManageCommand extends AbstractCommand
     
     /**
      * 
-     * @param string $moduleName
+     * @param type $module
+     * @param type $verbose
      */
     public function upgradeAction($module, $verbose = 1)
     {
@@ -71,7 +74,8 @@ class ManageCommand extends AbstractCommand
     
     /**
      * 
-     * @param string $moduleName
+     * @param type $module
+     * @param type $verbose
      */
     public function uninstallAction($module, $verbose = 1)
     {
@@ -82,6 +86,7 @@ class ManageCommand extends AbstractCommand
     /**
      * 
      * @param type $module
+     * @param type $removeOld
      */
     public function deployStaticAction($module, $removeOld = 1)
     {
@@ -97,11 +102,11 @@ class ManageCommand extends AbstractCommand
      */
     public function buildForms($module)
     {
-        $moduleInstaller = Informations::getModuleInstaller('console', $module);
-        
-        $formsFiles = $this->moduleDirectory . '/install/forms/*.xml';
+        $modulePath = Informations::getModulePath($module);
+        $moduleId = Informations::getModuleIdByName($module);
+        $formsFiles = $modulePath . '/install/forms/*.xml';
         foreach (glob($formsFiles) as $xmlFile) {
-            FormInstaller::installFromXml($this->moduleId, $xmlFile);
+            Form::installFromXml($moduleId, $xmlFile);
         }
     }
 }
