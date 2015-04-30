@@ -34,8 +34,10 @@
  */
 namespace Centreon\Internal\Form\Component;
 
+use Centreon\Internal\Di;
+
 /**
- * Html Checkobox element
+ * Html Checkbox element
  * Checkbox with no label
  * 
  * @author Sylvestre Ho <sho@centreon.com>
@@ -52,24 +54,16 @@ class Singlecheckbox extends Component
      */
     public static function renderHtmlInput(array $element)
     {
-        (isset($element['html']) ? $value = $element['html'] :  $value = '');
-        
         if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
             $element['id'] = $element['name'];
         }
         
-        $htmlSelected = '';
-        if ($value) {
-            $htmlSelected = 'checked=checked';
-        }
-        $inputHtml = '<label class="label-controller" for="'. $element['id'] . '">&nbsp;' .
-                    '<input id="' . $element['id'] . '" ' .
-                    'type="checkbox" name="' . $element['name'] . '" ' .
-                    'value=1 ' . $htmlSelected . ' />' .
-                    '</label>&nbsp;&nbsp;';
+        $tpl = Di::getDefault()->get('template');
+
+        $tpl->assign('element', $element);
+
         return array(
-            'html' => $inputHtml,
-            'js' => ''
+            'html' => $tpl->fetch('file:[Core]/form/component/singlecheckbox.tpl'),
         );
     }
 }
