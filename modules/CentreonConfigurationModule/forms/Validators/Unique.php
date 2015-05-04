@@ -47,6 +47,8 @@ use CentreonConfiguration\Repository\CommandRepository;
 use CentreonAdministration\Repository\ContactRepository;
 use CentreonAdministration\Repository\UserRepository;
 
+use CentreonBam\Repository\BusinessActivityRepository;
+
 use Centreon\Internal\Exception\Validator\MissingParameterException;
 use CentreonConfiguration\Models\Host;
 
@@ -78,8 +80,9 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
         
-        //echo "obj".$params['object'];
-        //var_dump($params);die;
+//        echo "obj".$params['object'];
+       // var_dump($params);die;
+        /*
         if (isset($params['object'])) {
             if (isset($params['extraParams']['module']) && !empty($params['extraParams']['module'])) {
                 $oModule = $params['extraParams']['module'];
@@ -87,10 +90,12 @@ class Unique implements ValidatorInterface
                 $oModule = "CentreonConfiguration";
             }
             
-            $objClass = $oModule."\\Repository\\".ucfirst($params['object']."Repository");
+            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
         }
-           
+        */
+
         if (isset($params['object']) && $params['object'] == 'service') {
+            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
             
             if (isset($params['extraParams']['service_description'])) {
                 $sLabel = $params['extraParams']['service_description'];
@@ -102,6 +107,13 @@ class Unique implements ValidatorInterface
             if (isset($params['extraParams']['service_hosts'])) {
                 $aHosts = explode(",", $params['extraParams']['service_hosts']);
                 $aHosts = array_diff($aHosts, array( '' ) );
+                
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                
                 foreach ($aHosts as $iIdHost) {
                     $sHostName = "";
                     $aHostName = Host::getParameters($iIdHost, 'host_name');
@@ -114,7 +126,7 @@ class Unique implements ValidatorInterface
                     try {
                         $idReturned = $objClass::getIdFromUnicity($aParams);
 
-                        $return[] = self::compareResponse($iIdHost, $idReturned);
+                        $return[] = self::compareResponse($iObjectId, $idReturned);
                         
                     } catch (MissingParameterException $e) {
                         $return[] = 0;
@@ -122,7 +134,7 @@ class Unique implements ValidatorInterface
                 }
             }
         } elseif (isset($params['object']) && $params['object'] == 'servicetemplate') {
-            
+            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
             if (isset($params['extraParams']['service_description'])) {
                 $sLabel = $params['extraParams']['service_description'];
             }
@@ -142,6 +154,7 @@ class Unique implements ValidatorInterface
                 $return[] = 0;
             }
         } elseif (isset($params['object']) && $params['object'] == 'host') {
+            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
             
             if (isset($params['extraParams']['host_name'])) {
                 $sLabel = $params['extraParams']['host_name'];
@@ -159,7 +172,7 @@ class Unique implements ValidatorInterface
                 $return[] = 0;
             }
         } elseif (isset($params['object']) && $params['object'] == 'hosttemplate') {
-            $objClass = $oModule."\\Repository\HostTemplateRepository";
+            $objClass = "CentreonConfiguration\Repository\HostTemplateRepository";
             
             if (isset($params['extraParams']['host_name'])) {
                 $sLabel = $params['extraParams']['host_name'];
@@ -179,6 +192,7 @@ class Unique implements ValidatorInterface
                 $return[] = 0;
             }
         } elseif (isset($params['object']) && $params['object'] == 'command') {
+            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
             
             if (isset($params['extraParams']['command_name'])) {
                 $sLabel = $params['extraParams']['command_name'];
@@ -198,7 +212,7 @@ class Unique implements ValidatorInterface
                 $return[] = 0;
             }
         } elseif (isset($params['object']) && $params['object'] == 'contact') {
-            
+            $objClass = "CentreonAdministration\Repository\\".ucfirst($params['object']."Repository");
             if (isset($params['extraParams']['description'])) {
                 $sLabel = $params['extraParams']['description'];
             }
@@ -216,6 +230,7 @@ class Unique implements ValidatorInterface
                 $return[] = 0;
             }
         } elseif (isset($params['object']) && $params['object'] == 'user') {
+            $objClass = "CentreonAdministration\Repository\\".ucfirst($params['object']."Repository");
             
             if (isset($params['extraParams']['login'])) {
                 $sLabel = $params['extraParams']['login'];
@@ -227,8 +242,29 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
+        } elseif (isset($params['object']) && $params['object'] == 'businessactivity') {
+            $objClass = "CentreonBam\Repository\\".ucfirst($params['object']."Repository");
+            
+            if (isset($params['extraParams']['name'])) {
+                $sLabel = $params['extraParams']['name'];
+            }
+
+            $aParams['bam'] = $sLabel;
+            
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
         }
-        //var_dump($return);
+        //var_dump($sContext); die;
         if (is_array($return)) {
             foreach($return as $valeur) {
                 if ($valeur > 0) {

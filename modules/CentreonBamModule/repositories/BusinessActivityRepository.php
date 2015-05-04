@@ -47,6 +47,16 @@ use CentreonConfiguration\Models\VirtualService;
  */
 class BusinessActivityRepository extends FormRepository
 {
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $unicityFields = array(
+        'fields' => array('bam' => 'cfg_bam, ba_id, name'
+        ),
+    );
+    
     /**
      * 
      * @param string $name

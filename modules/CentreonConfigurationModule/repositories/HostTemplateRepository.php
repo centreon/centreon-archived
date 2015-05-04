@@ -110,7 +110,7 @@ class HostTemplateRepository extends Repository
      */
     public static function getFormList($searchStr = "", $objectId = null)
     {
-        $listHostTemplate = parent::getFormList();
+        $listHostTemplate = parent::getFormList($searchStr, $objectId);
 
         foreach ($listHostTemplate as $key => $hostTemplate) {
             if ($hostTemplate['id'] == $objectId) {
