@@ -37,12 +37,13 @@
  */
 
  	ini_set("display_errors", "Off");
- 	if (defined("E_DEPRECATED")) {
- 	    ini_set("error_reporting", E_ALL ^ E_NOTICE ^ E_STRICT ^ E_DEPRECATED);
- 	} else {
- 	    ini_set("error_reporting", E_ALL ^ E_NOTICE ^ E_STRICT);
- 	}
 
+ 	// Set logging options                                                                                                                                                                                                                                                    
+    if (version_compare(phpversion(), '5.3', '>')) {
+        ini_set("error_reporting", E_ALL ^ E_NOTICE ^ E_STRICT ^ E_DEPRECATED);
+    } else {
+        ini_set("error_reporting", E_ALL ^ E_DEPRECATED);
+    }
 
 	/*
 	 * Define Local Functions
