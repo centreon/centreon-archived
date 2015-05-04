@@ -48,7 +48,7 @@ use Centreon\Models\CentreonBaseModel;
  */
 class Poller extends CentreonBaseModel
 {
-    protected static $table = "cfg_pollers p";
+    protected static $table = "cfg_pollers";
     protected static $primaryKey = "poller_id";
     protected static $uniqueLabelField = "name";
 
@@ -98,11 +98,19 @@ class Poller extends CentreonBaseModel
         $aAddFilters = array();
         $tablesString =  null;
         $aGroup = array();
-
+        
+        if ($parameterNames != '*' && $count != -1)
+        {
+            $aParam = explode(",", $parameterNames);
+            $aParam = array_diff( $aParam, array( '' ) );
+            $aParam = array_map("self::concatNameTable", $aParam);
+            $parameterNames = implode(",", $aParam);
+        }
+       
         // Add join on node table
         if (isset($filters['ip_address']) && !empty($filters['ip_address'])) {
             $aAddFilters['tables'][] = 'cfg_nodes n';
-            $aAddFilters['join'][] = 'p.node_id = n.node_id';
+            $aAddFilters['join'][] = static::$table.'.node_id = n.node_id';
         }
 
         // Add join on instance table
@@ -110,21 +118,32 @@ class Poller extends CentreonBaseModel
             || (isset($filters['version']) && !empty($filters['version']))
         ) {
             $aAddFilters['tables'][] = 'rt_instances i';
-            $aAddFilters['join'][] = 'p.name = i.name';
+            $aAddFilters['join'][] = static::$table.'.name = i.name';
         }
 
         // Avoid error on ambiguous column
         if (isset($filters['name'])) {
+            $sField = static::$table.'.name';
             $filters['p.name'] = $filters['name'];
             unset($filters['name']);
         }
 
         // Avoid error on ambiguous column
         if (isset($filters['enable'])) {
-            $filters['p.enable'] = $filters['enable'];
+            $sField = static::$table.'.enable';
+            $filters[$sField] = $filters['enable'];
             unset($filters['enable']);
         }
 
         return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
+    }
+    
+    /**
+     * 
+     * @param string $item
+     */
+    public function concatNameTable($item)
+    {
+        return static::$table.".".$item; 
     }
 }
