@@ -289,13 +289,26 @@ class ConfigGenerateRepository
                 } else {
                     $file->startElement($key);
                     foreach ($value as $subkey => $subvalue) {
-                        $subvalue = str_replace(
-                            array_keys($this->baseConfig),
-                            array_values($this->baseConfig),
-                            $subvalue
-                        );
-                        if (is_string($subkey)) {
-                            $file->writeElement($subkey, $subvalue);
+                        if (is_array($subvalue)) {
+                            foreach ($subvalue as $kkey => $vvalue) {
+                                $vvalue = str_replace(
+                                    array_keys($this->baseConfig),
+                                    array_values($this->baseConfig),
+                                    $vvalue
+                                );
+                                if (is_string($kkey)) {
+                                    $file->writeElement($kkey, $vvalue);
+                                }
+                            }
+                        } else {
+                            $subvalue = str_replace(
+                                array_keys($this->baseConfig),
+                                array_values($this->baseConfig),
+                                $subvalue
+                            );
+                            if (is_string($subkey)) {
+                                $file->writeElement($subkey, $subvalue);
+                            }
                         }
                     }
                     $file->endElement();

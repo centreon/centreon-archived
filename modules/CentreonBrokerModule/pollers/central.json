@@ -20,7 +20,12 @@
                         "port" : "5668",
                         "host" : "localhost",
                         "failover" : "failover-central-output",
-                        "protocol": "bbdo"
+                        "protocol": "bbdo",
+                        "filters": [
+                          {
+                            "category": "neb"
+                          }
+                        ]
                       },
                       {
                         "type" :"file",
@@ -124,7 +129,12 @@
                       {
                         "type": "tcp",
                         "name": "central-transfert-output",
-                        "port": "5669"
+                        "port": "5669",
+                        "filters": [
+                          {
+                            "category": "dumper"
+                          }
+                        ]
                       },
                       {
                         "name": "correlation",
