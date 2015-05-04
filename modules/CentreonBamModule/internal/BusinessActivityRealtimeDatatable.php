@@ -110,7 +110,15 @@ class BusinessActivityRealtimeDatatable extends Datatable
             'searchable' => true,
             'type' => 'string',
             'visible' => true,
-            'width' => 70
+            'width' => 70,
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Business Unit' => '1',
+                    'Application' => '2',
+                    'Middleware' => '3'
+                )
+            ),
         ),
         array (
             'title' => 'Business Activity',
