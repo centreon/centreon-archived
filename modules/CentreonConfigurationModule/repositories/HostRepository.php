@@ -54,6 +54,8 @@ use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTem
  */
 class HostRepository extends Repository
 {
+    
+    public static $objectClass = '\CentreonConfiguration\Models\Host';
     /**
      * List of column for inheritance
      * @var array

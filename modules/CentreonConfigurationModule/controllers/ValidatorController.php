@@ -38,9 +38,12 @@ use Centreon\Internal\Controller;
 use Centreon\Internal\Form\Validators\Validator;
 
 use CentreonConfiguration\Forms\Validators\Unique;
+use CentreonConfiguration\Forms\Validators\CircularDependency;
 
 class ValidatorController extends Controller
 {
+    public static $sContext  = 'client';
+    
     /**
      * 
      *
@@ -49,13 +52,16 @@ class ValidatorController extends Controller
      */
     public function uniqueAction()
     {
+       
         $params = $this->getParams('post')->all();
         
         $value = '';
         $aParams = array('object' => $params['object'], 'extraParams' => $params);
         
         $oValidator = new Unique();
-        echo json_encode($oValidator->validate($value, $aParams));
+        echo json_encode($oValidator->validate($value, $aParams, static::$sContext));
+        
+       
     }
     
     /**
@@ -66,7 +72,12 @@ class ValidatorController extends Controller
      */
     public function circularAction()
     {
-        echo json_encode(array('success' => true, 'error' => ''));
+        $params = $this->getParams('post')->all();
+        
+        $value = '';
+           
+        $oValidator = new CircularDependency();
+        echo json_encode($oValidator->validate($value, $params, static::$sContext));
 
     }
 }

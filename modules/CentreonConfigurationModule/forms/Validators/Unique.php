@@ -65,7 +65,7 @@ class Unique implements ValidatorInterface
      * @return boolean
      */
     
-    public function validate($value, $params = array())
+    public function validate($value, $params = array(), $sContext = 'server')
     {
         $db = Di::getDefault()->get('db_centreon');
         $bSuccess = true;
@@ -243,8 +243,12 @@ class Unique implements ValidatorInterface
                 $sMessage = $resultError;
             }
         }
-     
-        return array('success' => $bSuccess, 'error' => $sMessage);
+        if ($sContext == 'client') {
+            $reponse = $bSuccess;
+        } else {
+            $reponse = array('success' => $bSuccess, 'error' => $sMessage);
+        }
+        return $reponse;
     }
     /**
      * 
