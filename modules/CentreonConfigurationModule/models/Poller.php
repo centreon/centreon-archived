@@ -124,7 +124,7 @@ class Poller extends CentreonBaseModel
         // Avoid error on ambiguous column
         if (isset($filters['name'])) {
             $sField = static::$table.'.name';
-            $filters['p.name'] = $filters['name'];
+            $filters[$sField] = $filters['name'];
             unset($filters['name']);
         }
 
