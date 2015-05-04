@@ -68,10 +68,14 @@ class Service extends CentreonBaseModel
         $order = null,
         $sort = "ASC",
         $filters = array(),
-        $filterType = "OR"
+        $filterType = "OR",
+        $tablesString = null,
+        $staticFilter = null,
+        $aAddFilters  = array(),
+        $aGroup = array()
     ) {
         $filters['s.enabled'] = '1';
-        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType);
+        return parent::getList($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, null, null, $aAddFilters, $aGroup);
     }
 
     /**
