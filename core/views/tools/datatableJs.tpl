@@ -43,7 +43,7 @@
                     $('table[id^="datatable"] tbody tr[id=' + selectedCb[ct] + ']').toggleClass('selected');
                 }
             }
-        })
+        });
         
         $('#datatable{$object} tbody').on('click', 'tr', function (e){
             if (!e.ctrlKey && !e.shiftKey) {
@@ -547,39 +547,57 @@
 
         var requestSent = true;
         $('input.centreon-search').on('keyup', function(e) {
-            var listSearch = [];
-            if ((this.value.length > 2) || (e.keyCode == 8) || (e.keyCode == 46) || (e.keyCode == 13)) {
+            if (e.keyCode == 13) {
                 oTable.api().column($(this).data('column-index'))
                     .search(this.value)
                     .draw();
-                requestSent = true;
             } else {
-                if (!requestSent) {
-                    oTable.api().column($(this).data('column-index'))
-                        .search(this.value)
-                        .draw();
-                    requestSent = true;
+                /* Fill the advanced search */
+                var advString = $( "input[name='advsearch']" ).val();
+                var searchTag = $( this ).data( "searchtag" );
+                var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+                var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
+                /* Remove the existing values */
+                advString = advString.replace( tagRegex, "").trim();
+                while ( match = splitRegex.exec( $( this ).val() ) ) {
+                    advString += " " + searchTag + ":" + match[1];
                 }
+                $( "input[name='advsearch']" ).val( advString.trim() );
             }
-        }).on( "keyup", function( e ) {
-          /* Fill the advanced search */
-          var advString = $( "input[name='advsearch']" ).val(),
-              searchTag = $( this ).data( "searchtag" ),
-              //tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" ),
-              tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" ),
-              //splitRegex = new RegExp( "((\\w+\\.*)+|\"[^\"]+(?!\\.+)+\"|'[^']+(?!\\.+)+')", "g" );
-              splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
-          /* Remove the existing values */
-          advString = advString.replace( tagRegex, "").trim();
-          while ( match = splitRegex.exec( $( this ).val() ) ) {
-            advString += " " + searchTag + ":" + match[1];
-          }
-          $( "input[name='advsearch']" ).val( advString.trim() );
+        }).on('blur', function(e) {
+            /* Fill the advanced search */
+            var advString = $( "input[name='advsearch']" ).val();
+            var searchTag = $( this ).data( "searchtag" );
+            var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+            var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
+            /* Remove the existing values */
+            advString = advString.replace( tagRegex, "").trim();
+            while ( match = splitRegex.exec( $( this ).val() ) ) {
+                advString += " " + searchTag + ":" + match[1];
+            }
+            $( "input[name='advsearch']" ).val( advString.trim() );
+            oTable.api().column($(this).data('column-index'))
+                .search(this.value)
+                .draw();
         });
         
         $('select.centreon-search').on('change', function(e) {
+            /* Fill the advanced search */
+            var advString = $( "input[name='advsearch']" ).val();
+            var searchTag = $( this ).data( "searchtag" );
+            var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+            var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
+            /* Remove the existing values */
+            advString = advString.replace( tagRegex, "").trim();
+            while ( match = splitRegex.exec( $( this ).find("option:selected").text() ) ) {
+                advString += " " + searchTag + ":" + match[1];
+            }
+            $( "input[name='advsearch']" ).val( advString.trim() );
             oTable.api().column($(this).data('column-index'))
-                .search(this.value)
+                .search($(this).val())
                 .draw();
         });
 

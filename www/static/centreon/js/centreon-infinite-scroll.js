@@ -50,20 +50,24 @@
   }
 
   CentreonInfiniteScroll.prototype = {
-    loadData: function () {
+    loadData: function (ajax) {
       var self = this;
+      var ajax = ajax || true;
       if ( this.settings.ajaxUrlGetScroll === "" ) {
         return;
       }
 
-      if (this.inLoading) {
+      if (this.inLoading && ajax) {
         return;
       }
 
-      this.inLoading = true;
+      if (ajax) {
+        this.inLoading = true;
+      }
 
       data = this.prepareData();
       data.startTime = this.lastTime;
+      data.next = !ajax;
 
       $.ajax({
         url: this.settings.ajaxUrlGetScroll,
@@ -105,7 +109,7 @@
               height += $(childrens[i]).height();
             }
             if (self.$elem.scrollTop() + self.$elem.height() > height) {
-              self.loadData();
+              self.loadData(false);
             } else {
               self.loading = false;
             }
@@ -115,7 +119,9 @@
           if (!self.loading) {
             self.$elem.trigger("loaded");
           }
-          self.inLoading = false;
+          if (ajax) {
+            self.inLoading = false;
+          }
         }
       });
     },
@@ -198,6 +204,7 @@
       if (!data) {
         $this.data("centreonInfiniteScroll", ( data = new CentreonInfiniteScroll(settings, $this)));
       }
+
       if (typeof options === "string") {
         methodReturn = data[options].apply(data, args);
       }

@@ -129,12 +129,15 @@ $(function() {
   //var reload = true;
   $("input.centreon-search").on("keyup", function(e) {
     var listSearch = [];
-    if (e.which == 13) {
+    if (e.keyCode == 13) {
+      runSearch();
+    } else {
       /* Fill the advanced search */
       var advString = $("input[name='advsearch']").val();
       var searchTag = $(this).data("searchtag");
-      var tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" );
-      var splitRegex = new RegExp( "(\\w+|\"[^\"]+\"|'[^']+')", "g" );
+      var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+      var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
       /* Remove the existing values */
       advString = advString.replace( tagRegex, "").trim();
       while (match = splitRegex.exec($(this).val())) {
@@ -142,18 +145,38 @@ $(function() {
       }
       $("input[name='advsearch']").val(advString.trim());
     }
-  }).on("blur", function (e) {
+  }).on("blur", function(e) {
     /* Fill the advanced search */
     var advString = $("input[name='advsearch']").val();
     var searchTag = $(this).data("searchtag");
-    var tagRegex = new RegExp( "(^| )" + searchTag + ":(\\w+|\"[^\"]+\"|'[^']+')", "g" );
-    var splitRegex = new RegExp( "(\\w+|\"[^\"]+\"|'[^']+')", "g" );
+    var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+    var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
     /* Remove the existing values */
     advString = advString.replace( tagRegex, "").trim();
     while (match = splitRegex.exec($(this).val())) {
       advString += " " + searchTag + ":" + match[1];
     }
     $("input[name='advsearch']").val(advString.trim());
+    runSearch();
+  });
+
+  $('select.centreon-search').on('change', function(e) {
+    /* Fill the advanced search */
+    var advString = $( "input[name='advsearch']" ).val();
+    var searchTag = $( this ).data( "searchtag" );
+    var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
+    var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
+
+    /* Remove the existing values */
+    advString = advString.replace( tagRegex, "").trim();
+    while ( match = splitRegex.exec( $( this ).find("option:selected").text()) ) {
+        advString += " " + searchTag + ":" + match[1];
+    }
+    $( "input[name='advsearch']" ).val( advString.trim() );
+
+    e.preventDefault();
+    runSearch();
   });
 
   $("#btnSearch").on("click", function (e) {
@@ -173,16 +196,18 @@ $(function() {
       runSearch();
     },
     tags: {
-      host: "input[name='host']",
-      service: "input[name='service']",
-      'status': "select[name='status']",
-      eventtype: "select[name='eventtype']"
+      "host": "input[name='host']",
+      "service": "input[name='service']",
+      "status": "select[name='status']",
+      "eventtype": "select[name='eventtype']",
+      "output": "input[name='output']"
     },
     associateFields: {
-      host: "input[name='host']",
-      service: "input[name='service']",
-      'status': "select[name='status']",
-      eventtype: "select[name='eventtype']"
+      "host": "input[name='host']",
+      "service": "input[name='service']",
+      "status": "select[name='status']",
+      "eventtype": "select[name='eventtype']",
+      "output": "input[name='output']"
     }
   });
 });
