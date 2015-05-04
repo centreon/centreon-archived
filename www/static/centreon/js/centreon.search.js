@@ -333,7 +333,7 @@
           if ( $.inArray( tagName, Object.keys( listUsedTags ) ) == -1 ) {
             listUsedTags[tagName] = [];
           }
-          listUsedTags[tagName].push( element.substring( sepPos + 1, element.lenght ) );
+          listUsedTags[tagName].push( element.substring( sepPos + 1, element.length ) );
         }
       }
     });
