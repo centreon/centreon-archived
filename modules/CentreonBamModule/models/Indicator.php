@@ -36,6 +36,7 @@
 namespace CentreonBam\Models;
 
 use Centreon\Models\CentreonBaseModel;
+use CentreonBam\Repository\IndicatorRepository;
 
 /**
  * Used for interacting with host categories
@@ -44,7 +45,47 @@ use Centreon\Models\CentreonBaseModel;
  */
 class Indicator extends CentreonBaseModel
 {
-    protected static $table = "cfg_bam_kpi";
+    protected static $table = "cfg_bam_kpi k";
     protected static $primaryKey = "kpi_id";
     protected static $uniqueLabelField = "kpi_id";
+
+    /**
+     *
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $aAddFilters = array();
+        $tablesString =  null;
+        $aGroup = array();
+
+        // Filter by kpi name
+        if (isset($filters['object']) && !empty($filters['object'])) {
+            $indicatorsName = IndicatorRepository::getIndicatorsName($filters['object']);
+            if (count($indicatorsName)) {
+                foreach ($indicatorsName as $indicatorName) {
+                    $filters['kpi_id'][] = $indicatorName['id'];
+                }
+            } else {
+                $count = 0;
+            }
+            unset($filters['object']);
+        }
+
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
+    }
 }
