@@ -1,6 +1,8 @@
 <div class="col-lg-12">
 
+  {if (!isset($displaySearchBar) || $displaySearchBar === true)}
     {include file='tools/datatable-search.tpl'}
+  {/if}
 
    <!-- Datatable-->
    <div class="ibox float-e-margins">

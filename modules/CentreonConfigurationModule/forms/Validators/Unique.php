@@ -80,8 +80,6 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
         
-        echo "obj".$params['object'];
-        var_dump($params);die;
         /*
         if (isset($params['object'])) {
             if (isset($params['extraParams']['module']) && !empty($params['extraParams']['module'])) {
@@ -291,8 +289,8 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
-        } 
-        var_dump($sContext); die;
+        }
+
         if (is_array($return)) {
             foreach($return as $valeur) {
                 if ($valeur > 0) {

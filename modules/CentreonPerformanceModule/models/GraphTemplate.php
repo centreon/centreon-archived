@@ -36,6 +36,8 @@
 
 namespace CentreonPerformance\Models;
 
+use CentreonConfiguration\Models\Servicetemplate;
+
 /**
  * Listing for template graph
  *
@@ -59,4 +61,45 @@ class GraphTemplate extends \Centreon\Models\CentreonBaseModel
      * @var string Unique field
      */
     protected static $uniqueLabelField = 'svc_tmpl_id';
+
+    /**
+     *
+     * @param type $parameterNames
+     * @param type $count
+     * @param type $offset
+     * @param type $order
+     * @param type $sort
+     * @param array $filters
+     * @param type $filterType
+     * @return type
+     */
+    public static function getListBySearch(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        $aAddFilters = array();
+        $tablesString =  null;
+        $aGroup = array();
+
+        // Filter by service template
+        if (isset($filters['svc_tmpl_id']) && !empty($filters['svc_tmpl_id'])) {
+            $serviceTemplateId = Servicetemplate::getIdByParameter('service_description', $filters['svc_tmpl_id'], array(), 'LIKE');
+            unset($filters['svc_tmpl_id']);
+
+            if (count($serviceTemplateId)) {
+                foreach ($serviceTemplateId as $id) {
+                    $filters['svc_tmpl_id'][] = $id;
+                }
+            } else {
+                $count = 0;
+            }
+        }
+
+        return parent::getListBySearch($parameterNames, $count, $offset, $order, $sort, $filters, $filterType, $tablesString, null, $aAddFilters, $aGroup);
+    }
 }

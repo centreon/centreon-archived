@@ -83,6 +83,12 @@ abstract class ListController extends Controller
 
     /**
      *
+     * @var type
+     */
+    public static $displaySearchBar = true;
+
+    /**
+     *
      * @var type 
      */
     protected $repository = null;
@@ -183,6 +189,7 @@ abstract class ListController extends Controller
         $this->tpl->assign('objectMcUrl', $this->objectBaseUrl . '/massive_change');
         $this->tpl->assign('objectMcFieldsUrl', $this->objectBaseUrl . '/mc_fields');
         $this->tpl->assign('isDisableable', static::$isDisableable);
+        $this->tpl->assign('displaySearchBar', static::$displaySearchBar);
         if (static::$isDisableable) {
             $this->tpl->assign('objectEnableUrl', $this->objectBaseUrl . '/enable');
             $this->tpl->assign('objectDisableUrl', $this->objectBaseUrl . '/disable');

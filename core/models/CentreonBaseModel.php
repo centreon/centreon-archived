@@ -391,7 +391,7 @@ abstract class CentreonBaseModel extends CentreonModel
      * @param array $extraConditions used for precising query with AND clauses
      * @return array
      */
-    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array())
+    public static function getIdByParameter($paramName, $paramValues = array(), $extraConditions = array(), $conditionType = '=')
     {
         $sql = "SELECT " . static::$primaryKey . " FROM " . static::$table . " WHERE ";
         $condition = "";
@@ -404,7 +404,7 @@ abstract class CentreonBaseModel extends CentreonModel
             } else {
                 $condition .= "(";
             }
-            $condition .= $paramName . " = ? ";
+            $condition .= $paramName . " " . $conditionType . " ? ";
         }
         if ($condition) {
             $condition .= ")";

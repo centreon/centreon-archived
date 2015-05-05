@@ -60,6 +60,11 @@ class ConfigGraphTemplateController extends FormController
     protected $repository = '\CentreonPerformance\Repository\GraphTemplate';
     protected $objectBaseUrl = '/centreon-performance/configuration/graphtemplate';
 
+    /**
+     *
+     * @var type
+     */
+    public static $displaySearchBar = true;
 
     /**
      *
