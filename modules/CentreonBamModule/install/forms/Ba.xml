@@ -8,7 +8,7 @@
             <block name="Information">
                 <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                     <validators>
-                    	<validator rules="remote" serverside="centreon-configuration.unique" />
+                    	<validator rules="remote" serverside="centreon-main.unique" />
                     </validators>
                 </field>
                 <field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0"></field>

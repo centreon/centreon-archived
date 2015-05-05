@@ -37,8 +37,8 @@ namespace CentreonConfiguration\Controllers;
 use Centreon\Internal\Controller;
 use Centreon\Internal\Form\Validators\Validator;
 
-use CentreonConfiguration\Forms\Validators\Unique;
-use CentreonConfiguration\Forms\Validators\CircularDependency;
+use CentreonMain\Forms\Validators\Unique;
+use CentreonMain\Forms\Validators\CircularDependency;
 
 class ValidatorController extends Controller
 {

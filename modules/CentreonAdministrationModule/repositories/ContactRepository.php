@@ -103,8 +103,12 @@ class ContactRepository extends Repository
      * Update contact
      * @param array $givenParameters
      */
-    public static function update($givenParameters)
+    public static function update($givenParameters, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+        if ($validate) {
+            self::validateForm($givenParameters, $origin, $route, $validateMandatory);
+        }
+        
         $aTagList = array();
         $aTags = array();
         

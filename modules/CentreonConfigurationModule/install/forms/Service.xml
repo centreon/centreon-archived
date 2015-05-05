@@ -9,7 +9,7 @@
 			<field name="service_description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
                             <help>Name used for service in auto-deploy by template.</help>
                             <validators>
-                                <validator rules="remote" serverside="centreon-configuration.unique" />
+                                <validator rules="remote" serverside="centreon-main.unique" />
                                 <validator rules="forbiddenChar" serverside="core.forbiddenChar">
                                         <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
                                 </validator>

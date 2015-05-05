@@ -50,7 +50,7 @@ use CentreonAdministration\Models\Relation\User\Timezone;
  * @package Centreon
  * @subpackage Repository
  */
-class UserRepository extends \CentreonAdministration\Repository\Repository
+class UserRepository extends Repository
 {
     /**
      *

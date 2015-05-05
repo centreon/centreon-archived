@@ -59,9 +59,10 @@ class Installer extends ModuleInstaller
      */
     protected function setUpFormValidators()
     {
+        /*
         $validators = array(
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
-            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.unique', '/centreon-configuration/validator/unique')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.circular.dependency', '/validator/circular')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.unique', '/validator/unique')",
         );
 
         $db = Di::getDefault()->get('db_centreon');
@@ -69,6 +70,7 @@ class Installer extends ModuleInstaller
         foreach ($validators as $validator) {
             $db->exec($validator);
         }
+        */
     }
     
     public function customPreInstall()

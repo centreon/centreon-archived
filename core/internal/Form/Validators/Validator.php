@@ -185,7 +185,7 @@ class Validator
             $call .= '\Centreon\Internal\Form\Validators\\';
         } else {
             $call .= CamelCaseTransformation::customToCamelCase($parsedValidator[0], '-')
-                . '\Forms\Validators\\';
+                . '\forms\Validators\\';
         }
         
         for ($i = 1; $i < count($parsedValidator); $i++) {

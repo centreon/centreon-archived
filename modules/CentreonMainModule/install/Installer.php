@@ -70,6 +70,8 @@ class Installer extends ModuleInstaller
             "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.Misc', '/validator/misc')",
             "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.Datetime', '/validator/datetime')",
             "INSERT INTO cfg_forms_validators(name, route) VALUES ('core.EqualTo', '/validator/equalto')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.circular.dependency', '/validator/circular')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-main.unique', '/validator/unique')",
         );
         
         $db = Di::getDefault()->get('db_centreon');
