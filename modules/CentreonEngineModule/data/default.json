@@ -29,5 +29,6 @@
     "translate_passive_host_checks": "1",
     "use_retained_program_state": "1",
     "use_retained_scheduling_info": "1",
-    "use_setpgid": "1"
+    "use_setpgid": "1",
+    "command_file": "%var_lib_dir%/rw/centengine.cmd"
 }
