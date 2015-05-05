@@ -345,7 +345,7 @@ class IndicatorRepository extends FormRepository
      *
      * @return string
      */
-    public static function getIndicatorsName()
+    public static function getIndicatorsName($filterName = "")
     {
         // Get datatabases connections
         $di = Di::getDefault();
@@ -354,25 +354,49 @@ class IndicatorRepository extends FormRepository
         $sqlKpiService = 'SELECT k.kpi_id, h.host_name, s.service_id, s.service_description
             FROM cfg_hosts h, cfg_services s, cfg_hosts_services_relations hs, cfg_bam_kpi k
             WHERE s.service_id=k.service_id and hs.host_host_id=h.host_id and hs.service_service_id=s.service_id';
-        $stmtKpiService = $dbconn->query($sqlKpiService);
+        $stmtKpiService = $dbconn->prepare($sqlKpiService);
+        if (isset($filterName) && $filterName !== "") {
+            $sqlKpiService .= ' AND CONCAT(h.host_name, " ", s.service_description) like :filter';
+            $stmtKpiService = $dbconn->prepare($sqlKpiService);
+            $stmtKpiService->bindParam(':filter', $filterName, \PDO::PARAM_STR);
+        }
+        $stmtKpiService->execute();
         $resultKpiService = $stmtKpiService->fetchAll(\PDO::FETCH_ASSOC);
 
-        $sqlKpiMetaservice = 'SELECT k.kpi_id,ms.meta_id
+        $sqlKpiMetaservice = 'SELECT k.kpi_id,ms.meta_id,ms.meta_name
             FROM cfg_meta_services ms,cfg_bam_kpi k
             WHERE ms.meta_id=k.meta_id';
-        $stmtKpiMetaservice = $dbconn->query($sqlKpiMetaservice);
+        $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
+        if (isset($filterName) && $filterName !== "") {
+            $sqlKpiMetaservice .= ' AND ms.meta_name like :filter';
+            $stmtKpiMetaservice = $dbconn->prepare($sqlKpiMetaservice);
+            $stmtKpiMetaservice->bindParam(':filter', $filterName, \PDO::PARAM_STR);
+        }
+        $stmtKpiMetaservice->execute();
         $resultKpiMetaservice = $stmtKpiMetaservice->fetchAll(\PDO::FETCH_ASSOC);
 
         $sqlKpiBa = 'SELECT k.kpi_id,b.ba_id,b.name
             FROM cfg_bam b,cfg_bam_kpi k
             WHERE b.ba_id=k.id_indicator_ba';
-        $stmtKpiBa = $dbconn->query($sqlKpiBa);
+        $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
+        if (isset($filterName) && $filterName !== "") {
+            $sqlKpiBa .= ' AND b.name like :filter';
+            $stmtKpiBa = $dbconn->prepare($sqlKpiBa);
+            $stmtKpiBa->bindParam(':filter', $filterName, \PDO::PARAM_STR);
+        }
+        $stmtKpiBa->execute();
         $resultKpiBa = $stmtKpiBa->fetchAll(\PDO::FETCH_ASSOC);
 
         $sqlKpiBoolean = "SELECT k.kpi_id,b.boolean_id,b.name
             FROM cfg_bam_boolean b,cfg_bam_kpi k
             WHERE b.boolean_id=k.boolean_id";
-        $stmtKpiBoolean = $dbconn->query($sqlKpiBoolean);
+        $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
+        if (isset($filterName) && $filterName !== "") {
+            $sqlKpiBoolean .= ' AND b.name like :filter';
+            $stmtKpiBoolean = $dbconn->prepare($sqlKpiBoolean);
+            $stmtKpiBoolean->bindParam(':filter', $filterName, \PDO::PARAM_STR);
+        }
+        $stmtKpiBoolean->execute();
         $resultKpiBoolean = $stmtKpiBoolean->fetchAll(\PDO::FETCH_ASSOC);
 
         $resultPki = array();

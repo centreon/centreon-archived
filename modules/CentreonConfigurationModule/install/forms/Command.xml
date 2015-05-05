@@ -8,7 +8,7 @@
 	  <block name="General information">
 		<field name="command_name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
 			<validators>
-                <validator rules="remote" serverside="core.unique" />
+                <validator rules="remote" serverside="centreon-configuration.unique" />
                 <validator rules="forbiddenChar" serverside="core.forbiddenChar">
                 	<argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
                 </validator>
@@ -28,7 +28,7 @@
 		<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" mandatory="1">
           <help>The command line specifies the real command line, that is actually executed by Monitoring engine. Before execution, all valid macros are replaced with their respective values. To use the dollar sign (\$) on the command line, you have to escape it with another dollar sign (\$\$). A semicolon (;) is used as seperator for config file comments and must be worked around by setting a \$USER\$ macro to a semicolon and then referencing it here in place of the semicolon. If you want to pass arguments to commands during runtime, you can use \$ARGn\$ macros in the command line.</help>
         </field>
-		<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" mandatory="1">
+		<field name="enable_shell" label="Enable shell" default_value="0" advanced="0" type="radio" parent_field="" mandatory="0">
 		  <attributes>
             <choices>
               <Yes>1</Yes>

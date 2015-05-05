@@ -20,7 +20,7 @@
                     <span class="caret"></span>
                   </button>
                   <ul name="action-bar" class="dropdown-menu">
-                    {if $isDisableable}
+                    {if (isset($isDisableable) && $isDisableable) }
                         <li><a href="#" id="modalEnable">{t}Enable{/t}</a></li>
                         <li><a href="#" id="modalDisable">{t}Disable{/t}</a></li>
                     {/if}

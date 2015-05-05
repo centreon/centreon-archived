@@ -176,7 +176,7 @@ class HostController extends FormController
                 }
             }
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags);
+                TagsRepository::saveTagsForResource(self::$objectName, $id, $aTags, '', false);
             }
         }
         
@@ -190,7 +190,7 @@ class HostController extends FormController
                 if (!empty($eTemplate)) {
                     $aTagsTemplates = TagsRepository::getListId('host', $eTemplate);
                     foreach ($aTagsTemplates as $key => $oTpl) {
-                        TagsRepository::add($oTpl['text'], self::$objectName, $id, 1, $eTemplate);
+                        TagsRepository::add($oTpl['text'], self::$objectName, $id, 1, $eTemplate, false);
                     }
                 }
             }
@@ -271,7 +271,7 @@ class HostController extends FormController
             }
             
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags);
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false);
             }
         }
         

@@ -64,6 +64,8 @@ class TagController extends Controller
     
     public static $disableButton = true;
     
+    public static $displayActionBar = true; 
+    
     /**
      *
      * @var type 
@@ -117,6 +119,8 @@ class TagController extends Controller
         $bStatus = false;
         $addErrorMessage = '';
         
+        $bNotDelete = true;
+        
         $sTagName = trim($post['tagName']);
         
         if (empty($sTagName)) {
@@ -140,18 +144,19 @@ class TagController extends Controller
         }
         
         $listTag = array_diff($listTag, array(''));
-       
-        try {    
-            foreach ($listResources as $resourceId) {
-                TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag);
+        
+        if (count($listTag) > 0) {
+            try {    
+                foreach ($listResources as $resourceId) {
+                    TagsRepository::saveTagsForResource($post['resourceName'], $resourceId, $listTag, '', $bNotDelete);
+                }
+                $bStatus = true;
+
+            } catch (Exception $e) {
+                $addErrorMessage = $e->getMessage();
+                $bStatus = false;
             }
-            $bStatus = true;
-            
-        } catch (Exception $e) {
-            $addErrorMessage = $e->getMessage();
-            $bStatus = false;
         }
- 
         return $this->router->response()->json(array('success' => $bStatus,'error' => $addErrorMessage));
             
     }
@@ -302,6 +307,7 @@ class TagController extends Controller
         $this->tpl->assign('objectListUrl', $this->objectBaseUrl . '/list');
         $this->tpl->assign('isDisableable', static::$isDisableable);
         $this->tpl->assign('disableButton', static::$disableButton);
+        $this->tpl->assign('displayActionBar', static::$displayActionBar);
         
         $this->tpl->assign('objectDeleteUrl', $this->objectBaseUrl . '/del');
         $this->tpl->display('file:[CentreonAdministrationModule]list.tpl');

@@ -218,7 +218,7 @@ abstract class CentreonRelationModel extends CentreonModel
         $staticFilter = $firstObject::getTableName() . "." . $firstObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$firstKey;
         $staticFilter .= " AND ";
         $staticFilter .= $secondObject::getTableName() . "." . $secondObject::getPrimaryKey() . " = " . static::$relationTable . "." . static::$secondKey;
-
+        
         return static::getListBySearch($params, $count, $offset, $order, $sort, $filters, $filterType, $listTable, $staticFilter, $aAddFilters, $aGroup);
     }
 

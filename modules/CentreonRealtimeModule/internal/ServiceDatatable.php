@@ -169,7 +169,7 @@ class ServiceDatatable extends Datatable
             'data' => 'state',
             'orderable' => true,
             'searchable' => true,
-            'type' => 'string',
+            'type' => 'integer',
             'visible' => true,
             'cast' => array(
                 'type' => 'select',
@@ -306,6 +306,7 @@ class ServiceDatatable extends Datatable
                     . $icon
                     . '&nbsp;'.$myServiceSet['name'].'</span></span>';
             }
+            
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
             $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'
                 . $myServiceSet['host_id']
@@ -336,7 +337,7 @@ class ServiceDatatable extends Datatable
             $myServiceSet['tagname']  = "";
             $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
             foreach ($aTags as $oTags) {
-                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
             }
             $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
             //$myServiceSet['last_check'] = date("d/m/Y - H:i:s", $myServiceSet['last_check']);

@@ -37,9 +37,10 @@ namespace CentreonConfiguration\Repository;
 
 use Centreon\Internal\Di;
 use CentreonConfiguration\Models\Service;
+use CentreonConfiguration\Models\Host;
 use Centreon\Internal\Utils\YesNoDefault;
 use CentreonConfiguration\Repository\Repository;
-
+use Centreon\Internal\Exception\Validator\MissingParameterException;
 /**
  * @author Lionel Assepo <lassepo@centreon.com>
  * @package Centreon
@@ -63,7 +64,8 @@ class ServiceRepository extends Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+
+    public static $unicityFields = array(
         'fields' => array(
             'host' => 'cfg_hosts,host_id,host_name',
             'service' => 'cfg_services,service_id,service_description',
@@ -71,7 +73,7 @@ class ServiceRepository extends Repository
         'joint' => 'cfg_hosts_services_relations',
         'jointCondition' => 'cfg_hosts_services_relations.host_host_id = cfg_hosts.host_id AND cfg_hosts_services_relations.service_service_id = cfg_services.service_id'
     );
-    
+
     /**
      * 
      * @param int $interval

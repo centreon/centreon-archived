@@ -54,6 +54,8 @@ use CentreonConfiguration\Models\Relation\Service\Hosttemplate as ServiceHostTem
  */
 class HostRepository extends Repository
 {
+    
+    public static $objectClass = '\CentreonConfiguration\Models\Host';
     /**
      * List of column for inheritance
      * @var array
@@ -86,7 +88,7 @@ class HostRepository extends Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+    public static $unicityFields = array(
         'fields' => array(
             'host' => 'cfg_hosts,host_id,host_name'
         ),

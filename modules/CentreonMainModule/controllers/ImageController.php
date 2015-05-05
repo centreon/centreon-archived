@@ -77,11 +77,18 @@ class ImageController extends Controller
         $di = Di::getDefault();
         $router = $di->get('router');
         
+        $givenParameters = $this->getParams('get');
+        
         $finalIconList = array();
 
         // Get User Images
         $dbconn = $di->get('db_centreon');
         $query = 'SELECT binary_id, filename FROM cfg_binaries';
+        if (isset($givenParameters['q']) && !empty($givenParameters['q'])) {
+            $query .= " WHERE filename like '%".$givenParameters['q']."%'";
+        }
+        $query .= " ORDER BY filename ASC";
+        
         $stmt = $dbconn->query($query);
         $userImageExist = true;
         while ($row = $stmt->fetch()) {

@@ -303,8 +303,12 @@ class BrokerRepository
         
         $return = false;
         
-        if (count($row) > 1) {
-            $return = $row;
+        if ($withName) {
+            if (count($row) > 1) {
+                $return = $row;
+            } else {
+                $return = array();
+            }
         } elseif (count($row) == 1) {
             $return = $row[0]['config_id'];
         }

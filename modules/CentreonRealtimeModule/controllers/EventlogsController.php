@@ -85,7 +85,7 @@ class EventlogsController extends Controller
         $tmpl->addCss('select2.css');
         $tmpl->addCss('select2-bootstrap.css');
         $tmpl->addCss('daterangepicker-bs3.css');
-        $tmpl->addCss('centreon.status.css');
+        //$tmpl->addCss('centreon.status.css');
         if (Module::isModuleReachable('centreon-performance')) {
             $tmpl->addJs('d3.min.js');
             $tmpl->addJs('c3.min.js');
@@ -179,6 +179,7 @@ class EventlogsController extends Controller
         $listEvents = $this->convertListEventLogs($listEvents);
         /* Purge data */
         if (isset($_SESSION['eventlogs_lasttime'])
+            && isset($params['next']) && $params['next'] === true
             && count($listEvents['data']) > 0
             && $_SESSION['eventlogs_lasttime'][0] == $listEvents['data'][0]['datetime']) {
             for ($i = 0; $i < $_SESSION['eventlogs_lasttime'][1]; $i++) {

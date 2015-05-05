@@ -46,7 +46,7 @@ class ConnectorRepository extends \CentreonConfiguration\Repository\Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+    public static $unicityFields = array(
         'fields' => array(
             'connector' => 'cfg_connectors,id,name'
         ),

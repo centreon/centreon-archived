@@ -34,7 +34,12 @@
                                                 "type" :"tcp",
                                                 "name" : "central-output",
                                                 "host": "%broker_central_ip%",
-                                                "port" : "5668"
+                                                "port" : "5668",
+                                                "filters": [
+                                                  {
+                                                    "category": "neb"
+                                                  }
+                                                ]
                                             },
                                             {
                                                 "type" :"file",
@@ -94,7 +99,12 @@
                                                 "type":"tcp",
                                                 "name": "central-output",
                                                 "port" : "5668",
-                                                "one_peer_retention_mode": "yes"
+                                                "one_peer_retention_mode": "yes",
+                                                "filters": [
+                                                  {
+                                                    "category": "neb"
+                                                  }
+                                                ]
                                             },
                                             {
                                                 "type" :"file",

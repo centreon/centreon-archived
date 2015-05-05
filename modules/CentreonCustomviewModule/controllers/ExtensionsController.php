@@ -52,6 +52,8 @@ class ExtensionsController extends Controller
     protected $objectClass = '\CentreonCustomview\Models\WidgetModel';
     protected $di;
     protected $tpl;
+    
+    public static $isDisableable = true;
 
     /**
      * 
@@ -70,6 +72,9 @@ class ExtensionsController extends Controller
         /* Display variable */
         $this->tpl->assign('objectName', self::$objectDisplayName);
         $this->tpl->assign('moduleName', self::$moduleName);
+        $this->tpl->assign('isDisableable', static::$isDisableable);
+        
+        
         $this->tpl->assign('objectListUrl', '/centreon-customview/extensions/widgets/list');
         $this->tpl->display('administration/module.tpl');
     }

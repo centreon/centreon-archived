@@ -364,7 +364,7 @@ class ServiceDatatable extends Datatable
             $myServiceSet['tagname']  = "";
             $aTags = TagsRepository::getList('service', $myServiceSet['service_id'], 2);
             foreach ($aTags as $oTags) {
-                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+                $myServiceSet['tagname'] .= TagsRepository::getTag('service', $myServiceSet['service_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
             }
             $myServiceSet['tagname'] .= TagsRepository::getAddTag('service', $myServiceSet['service_id']);
         }

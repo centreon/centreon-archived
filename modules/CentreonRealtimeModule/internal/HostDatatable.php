@@ -283,7 +283,7 @@ class HostDatatable extends Datatable
             $myHostSet['tagname']  = "";
             $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
             foreach ($aTags as $oTags) {
-                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id']);
+                $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
             }
             $myHostSet['tagname'] .= TagsRepository::getAddTag('host', $myHostSet['host_id']);
         }

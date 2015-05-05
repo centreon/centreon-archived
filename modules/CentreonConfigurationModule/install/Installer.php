@@ -61,6 +61,7 @@ class Installer extends ModuleInstaller
     {
         $validators = array(
             "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.circular.dependency', '/centreon-configuration/validator/circular')",
+            "INSERT INTO cfg_forms_validators(name, route) VALUES ('centreon-configuration.unique', '/centreon-configuration/validator/unique')",
         );
 
         $db = Di::getDefault()->get('db_centreon');

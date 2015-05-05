@@ -57,8 +57,12 @@ class EngineRepository extends FormRepository
      * @param int $pollerId
      * @param array $params
      */
-    public static function save($pollerId, $params)
+    public static function save($pollerId, $params, $origin = "", $route = "", $validate = true, $validateMandatory = true)
     {
+         if ($validate) {
+            self::validateForm($params, $origin, $route, $validateMandatory);
+        }
+        
         $db = Di::getDefault()->get('db_centreon');
 
         /* Get engine id, if it does not exist, insert it */

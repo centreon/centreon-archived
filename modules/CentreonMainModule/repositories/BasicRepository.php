@@ -158,6 +158,7 @@ class BasicRepository
         $objClass = static::$objectClass;
         $tables = array();
         $conditions = array();
+        $objectId = 0;
         
         // Building Query
         $query = 'SELECT ' . $objClass::getPrimaryKey() . ' ';
@@ -166,6 +167,7 @@ class BasicRepository
         $requiredFields = array_keys(static::$unicityFields['fields']);
         $givenFields = array_keys($unicityParams);
         $missingFields = array_diff($requiredFields, $givenFields);
+        
         if (count($missingFields) > 0) {
             $errorMessage = _("The following mandatory parameters are missing") . " :\n    - ";
             $errorMessage .= implode("\n    - ", $missingFields);
@@ -189,7 +191,7 @@ class BasicRepository
         
         // FInalizing query
         $query .= 'FROM ' . implode(', ', $tables) . ' WHERE ' . implode(' AND ', $conditions);
-        
+
         // Execute request
         $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->query($query);

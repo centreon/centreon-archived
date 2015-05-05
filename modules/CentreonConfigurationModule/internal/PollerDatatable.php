@@ -164,7 +164,7 @@ class PollerDatatable extends Datatable
             'name' => 'hasChanged',
             'data' => 'hasChanged',
             'orderable' => true,
-            'searchable' => true,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',

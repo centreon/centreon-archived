@@ -29,41 +29,55 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
- * For more information : contact@centreon.com
+ * For more information : resource@centreon.com
  *
  */
 
-namespace Centreon\Internal\Form\Validators;
+namespace CentreonConfiguration\Controllers;
+use Centreon\Internal\Controller;
+use Centreon\Internal\Form\Validators\Validator;
 
-/**
- * @author Lionel Assepo <lassepo@centreon.com>
- * @package Centreon
- * @subpackage Core
- */
-class Unique implements ValidatorInterface
+use CentreonConfiguration\Forms\Validators\Unique;
+use CentreonConfiguration\Forms\Validators\CircularDependency;
+
+class ValidatorController extends Controller
 {
+    public static $sContext  = 'client';
+    
     /**
      * 
-     * @param type $value
-     * @param type $module
-     * @param type $objectName
-     * @param type $id
-     * @param type $fieldname
-     * @return boolean
+     *
+     * @method post
+     * @route /validator/unique
      */
-    public function validate($value, $params = array())
+    public function uniqueAction()
     {
-        /*$callableObject = '\\' . $module . '\Models\\'.ucwords($objectName);
-        if ($callableObject::isUnique($value, $id)) {
-            $result = array('success' => true);
-        } else {
-            $result = array(
-                'success' => false,
-                'error' => _("\"<i>$value</i>\" is already in use for another $objectName")
-            );
-        }
-        return $result;*/
+       
+        $params = $this->getParams('post')->all();
         
-        return array('success' => true, 'error' => '');
+        $value = '';
+        $aParams = array('object' => $params['object'], 'extraParams' => $params);
+        
+        $oValidator = new Unique();
+        echo json_encode($oValidator->validate($value, $aParams, static::$sContext));
+        
+       
+    }
+    
+    /**
+     * 
+     *
+     * @method post
+     * @route /validator/circular
+     */
+    public function circularAction()
+    {
+        $params = $this->getParams('post')->all();
+        
+        $value = '';
+           
+        $oValidator = new CircularDependency();
+        echo json_encode($oValidator->validate($value, $params, static::$sContext));
+
     }
 }

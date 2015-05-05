@@ -123,7 +123,6 @@ abstract class CentreonModel
         } 
         
         if (count($filters)) {
-            $filters = array_unique($filters);
             
             foreach ($filters as $key => $rawvalue) {
                 if (is_array($rawvalue)) {
@@ -164,13 +163,12 @@ abstract class CentreonModel
         if (!is_null($aAddFilters) && isset($aAddFilters['join'])) {
             $sql .= " AND ".implode(" AND ", $aAddFilters['join']);
         }
-
        
         if (!empty($sGroup) && isset($sGroup['nb']) && isset($sGroup['sField'])) {
            $iNb = $sGroup['nb']  - 1;
            $sql .= " GROUP BY ".$sGroup['sField']." having count(*) > ".$iNb;
         }
-        //echo $sql;
+
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
