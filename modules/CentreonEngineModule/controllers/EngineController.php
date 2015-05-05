@@ -67,30 +67,17 @@ class EngineController extends FormController
     public function updateAction()
     {
         $givenParameters = clone $this->getParams('post');
-        $updateSuccessful = true;
-        $updateErrorMessage = '';
-        
-        $validationResult = Form::validate("form", $this->getUri(), static::$moduleName, $givenParameters);
-        if ($validationResult['success']) {
+
+        try {
             $repository = $this->repository;
-            try {
-                $repository::save($givenParameters['object_id'], $givenParameters);
-            } catch (Exception $e) {
-                $updateSuccessful = false;
-                $updateErrorMessage = $e->getMessage();
-            }
-        } else {
-            $updateSuccessful = false;
-            $updateErrorMessage = $validationResult['error'];
-        }
-        
-        $router = Di::getDefault()->get('router');
-        if ($updateSuccessful) {
+            $repository::save($givenParameters['object_id'], $givenParameters, 'form', $this->getUri());
+            
             unset($_SESSION['form_token']);
             unset($_SESSION['form_token_time']);
-            $router->response()->json(array('success' => true));
-        } else {
-            $router->response()->json(array('success' => false,'error' => $updateErrorMessage));
+            $this->router->response()->json(array('success' => true));
+        } catch (\Centreon\Internal\Exception $e) {
+            $updateErrorMessage = $e->getMessage();
+            $this->router->response()->json(array('success' => false,'error' => $updateErrorMessage));
         }
     }
     
@@ -114,7 +101,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /[i:id]/globalhosteventhandler
+     * @route /engine/[i:id]/globalhosteventhandler
      */
     public function globalHostEventHandlerForEngineAction()
     {
@@ -124,7 +111,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /[i:id]/globalserviceeventhandler
+     * @route /engine/[i:id]/globalserviceeventhandler
      */
     public function globalServiceEventHandlerForEngineAction()
     {
@@ -134,7 +121,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /[i:id]/ochpcommand
+     * @route /engine/[i:id]/ochpcommand
      */
     public function ochpCommandForEngineAction()
     {
@@ -144,7 +131,7 @@ class EngineController extends FormController
     /**
      *
      * @method get
-     * @route /[i:id]/ocspcommand
+     * @route /engine/[i:id]/ocspcommand
      */
     public function ocspCommandForEngineAction()
     {
