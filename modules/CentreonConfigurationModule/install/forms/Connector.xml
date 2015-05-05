@@ -5,22 +5,22 @@
 	<redirect>1</redirect>
 	<redirect_route>/centreon-configuration/connector</redirect_route>
 	<section name="General">
-	  <block name="General information">
-		<field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
-			<validators>
-				<validator rules="remote" serverside="core.unique" />
-        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
-          <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
-        </validator>
-			</validators>
-          <help>Name which will be used for identifying the connector.</help>
-        </field>
+            <block name="General information">
+                <field name="name" label="Name" default_value="" advanced="0" type="text" parent_field="" mandatory="1">
+                    <validators>
+                        <validator rules="remote" serverside="centreon-configuration.unique" />
+                        <validator rules="forbiddenChar" serverside="core.forbiddenChar">
+                            <argument name="characters"><![CDATA[~!$%^&|<>?,;()=\"']]></argument>
+                        </validator>
+                    </validators>
+                    <help>Name which will be used for identifying the connector.</help>
+                </field>
 		<field name="description" label="Description" default_value="" advanced="0" type="text" parent_field="" mandatory="0">
-          <help>A short description of the connector.</help>
-        </field>
+                    <help>A short description of the connector.</help>
+                </field>
 		<field name="command_line" label="Command line" default_value="" advanced="0" type="textarea" parent_field="" mandatory="1">
-          <help>This will be executed by Centreon Engine, note that this line contains macros that will be replaced before execution. e.g: centreon_connector_perl.</help>
-        </field>
+                    <help>This will be executed by Centreon Engine, note that this line contains macros that will be replaced before execution. e.g: centreon_connector_perl.</help>
+                </field>
 		<field name="connector_command" label="Commands" default_value="" advanced="0" type="select" parent_field="" mandatory="0">
 		  <attributes>
 			<object_type>object</object_type>
