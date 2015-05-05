@@ -31,11 +31,13 @@ SELinux should be disabled; for this, you have to modify the file "/etc/sysconfi
  
  SELINUX=disabled
 
-PHP timezone should be set; go to the ";date.timezone" line into the file "/etc/php.ini". Comment out this line and add your timezone:
+PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line : 
 
  ::
  
  date.timezone = Europe/Paris
+
+After saving the file, please don't forget to restart apache server. 
 
 The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
