@@ -6,7 +6,7 @@
         <column name="command_name" phpName="CommandName" type="VARCHAR" size="200" required="false"/>
         <column name="command_line" phpName="CommandLine" type="LONGVARCHAR" required="false"/>
         <column name="command_example" phpName="CommandExample" type="VARCHAR" size="254" required="false"/>
-        <column name="command_type" phpName="CommandType" type="TINYINT" required="false"/>
+        <column name="command_type" phpName="CommandType" type="TINYINT" required="false" defaultValue="2"/>
         <column name="enable_shell" phpName="EnableShell" type="INTEGER" size="1" sqlType="int(1) unsigned" required="true" defaultValue="0"/>
         <column name="command_comment" phpName="CommandComment" type="LONGVARCHAR" required="false"/>
         <column name="graph_id" phpName="GraphId" type="INTEGER" required="false"/>
