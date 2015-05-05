@@ -291,6 +291,7 @@ class ToolsController extends Controller
         try {
             // Get request params and thowing exception if missing
             $requestParams = $this->getParams('get');
+            /*
             if (!isset($requestParams['form'])) {
                 throw new BadRequestException('Missing parameter', 'The form parameter is missing');
             }
@@ -298,8 +299,11 @@ class ToolsController extends Controller
                 throw new BadRequestException('Missing parameter', 'The field parameter is missing');
             }
             
-            $fieldHelp = BasicRepository::getFormHelp($requestParams['form'], $requestParams['field']);
-            $this->router->response()->json($fieldHelp);
+             */
+            if (isset($requestParams['form']) && isset($requestParams['field'])) {       
+                $fieldHelp = BasicRepository::getFormHelp($requestParams['form'], $requestParams['field']);
+                $this->router->response()->json($fieldHelp);
+            }
             
         } catch(\Exception $ex) {
             $this->router->response()->code($ex->getCode())->json($ex->getMessage());

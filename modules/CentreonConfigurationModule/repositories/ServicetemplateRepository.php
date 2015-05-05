@@ -108,7 +108,7 @@ class ServicetemplateRepository extends Repository
      */
     public static function getFormList($searchStr = "", $objectId = null)
     {
-        $listServiceTemplate = parent::getFormList();
+        $listServiceTemplate = parent::getFormList($searchStr, $objectId);
 
         foreach ($listServiceTemplate as $key => $serviceTemplate) {
             if ($serviceTemplate['id'] == $objectId) {
