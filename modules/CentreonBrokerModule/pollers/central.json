@@ -35,7 +35,7 @@
                       {
                         "type": "dumper",
                         "tagname": "extcommand-%poller_name%",
-                        "path": "%engine_command_file%",
+                        "path": "%engine_var_lib_dir%/rw/centengine.cmd",
                         "name": "extcommand-%poller_name%"
                       },
                       {
