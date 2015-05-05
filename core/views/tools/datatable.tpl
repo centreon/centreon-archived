@@ -3,7 +3,9 @@
     {include file='tools/datatable-search.tpl'}
 
    <!-- Datatable-->
-   <div class="ibox float-e-margins">
+
+
+   <div class="ibox float-e-margins" id="hostListing">
         <div class="ibox-content">
             <!-- Add / Actions -->
             {if $displayActionBar === true}
@@ -43,8 +45,11 @@
                 </div>
               </div>
 
-            <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
+            </div>
         </div>
+
    </div>
 </div>
 

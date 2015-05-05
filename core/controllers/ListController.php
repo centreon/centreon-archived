@@ -151,6 +151,7 @@ abstract class ListController extends Controller
         $this->tpl->addJs('jquery.dataTables.min.js')
             ->addJs('dataTables.tableTools.min.js')
             ->addJs('dataTables.colVis.min.js')
+
             ->addJs('dataTables.colReorder.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')

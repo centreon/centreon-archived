@@ -6,7 +6,7 @@
 // Custom scripts
 $(document).ready(function () {
 
-    // MetsiMenu
+    // MetisMenu
     $('#side-menu').metisMenu();
 
     // Collapse ibox function
@@ -85,6 +85,7 @@ $(document).ready(function () {
 
     $("[data-toggle=popover]")
         .popover();
+
 });
 
 
@@ -232,8 +233,6 @@ $(document).ready(function() {
 
         });
     }
-
-
 
 });
 

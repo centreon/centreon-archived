@@ -175,7 +175,7 @@
             </nav>
         </div>
 
-        <div class="row">
+        <div class="row" id="contentWrapper">
             {block name="content"}{/block}
         </div>
         

@@ -287,8 +287,17 @@ class HostDatatable extends Datatable
 
             ---------*/
 
-            $myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'.
-                $myHostSet['host_name'];
+            /*$myHostSet['host_name'] = HostRepository::getIconImage($myHostSet['host_name']).
+                            '&nbsp;<span data-overlay-url="'.$router->getPathFor('/centreon-configuration/host/snapshot/').
+                            $myHostSet['host_id'].
+                            '"><span class="overlay">'.
+                            $myHostSet['host_name'].
+                            '</span></span>';*/
+
+            $myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
+
+            /*$myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'
+                $myHostSet['host_name'];*/
 
                 /* Host State */
                 $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(

@@ -23,8 +23,8 @@
                 "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
-            responsive: true,
             'dom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            responsive: true,
             "columns": [
                 {$datatableParameters.header.columnHeader}
             ],
@@ -702,6 +702,39 @@
             }
           });
         });
+
+        /* Right side details */
+
+
+            var tr = $('#datatable{$object} tbody');
+
+            var $url_details = tr.data('right_side_details');
+
+            tr.on( "click", 'tr.selected', function( e ) {
+                $.ajax({
+                      url: $url_details,
+                      type: "GET",
+                      dataType: 'JSON',
+                      success : function(){
+                         console.log('hello');
+                      },
+                      error : function(error){
+                      }
+                  });
+            });
+
+            tr.sidr({
+                  name: 'sidr-right',
+                  side: 'right',
+                  body: '#hostListing',
+                  speed: '100',
+                  source: function(){
+
+                  }
+              });
+
+
+
 
         /* Delete search action */
         $( "#deleteView" ).on( "click", function( e ) {

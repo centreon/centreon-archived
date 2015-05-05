@@ -199,6 +199,8 @@ class Datatable
             }
         }
 
+        // Add
+
         static::processHooks($datasFromDb['datas']);
         $this->formatDatas($datasFromDb['datas']);
         $sendableDatas = $this->prepareDatasForSending($datasFromDb);
