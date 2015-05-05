@@ -80,8 +80,8 @@ class Unique implements ValidatorInterface
         $iId = '';
         $return = '';
         
-//        echo "obj".$params['object'];
-       // var_dump($params);die;
+        echo "obj".$params['object'];
+        var_dump($params);die;
         /*
         if (isset($params['object'])) {
             if (isset($params['extraParams']['module']) && !empty($params['extraParams']['module'])) {
@@ -237,8 +237,16 @@ class Unique implements ValidatorInterface
             }
 
             $aParams['user'] = $sLabel;
+            
             try {
-                $return[] = $objClass::getIdFromUnicity($aParams);
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
@@ -263,8 +271,28 @@ class Unique implements ValidatorInterface
             } catch (MissingParameterException $e) {
                 $return[] = 0;
             }
-        }
-        //var_dump($sContext); die;
+        } elseif (isset($params['object']) && $params['object'] == 'connector') {
+            $objClass = "CentreonConfiguration\Repository\\".ucfirst($params['object']."Repository");
+            
+            if (isset($params['extraParams']['name'])) {
+                $sLabel = $params['extraParams']['name'];
+            }
+
+            $aParams['connector'] = $sLabel;
+            try {
+                $idReturned = $objClass::getIdFromUnicity($aParams);
+                $iObjectId = '';
+                
+                if (isset($params['extraParams']['object_id']) && !empty($params['extraParams']['object_id'])) {
+                    $iObjectId = $params['extraParams']['object_id'];
+                }
+                $return[] = self::compareResponse($iObjectId, $idReturned);
+                
+            } catch (MissingParameterException $e) {
+                $return[] = 0;
+            }
+        } 
+        var_dump($sContext); die;
         if (is_array($return)) {
             foreach($return as $valeur) {
                 if ($valeur > 0) {
