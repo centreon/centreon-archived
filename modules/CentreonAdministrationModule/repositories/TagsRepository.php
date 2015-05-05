@@ -281,9 +281,10 @@ class TagsRepository
      * @param type $objectId
      * @param type $submittedValues
      * @param type $iIdTemplate
+     * @param int  $sGlobal
      * @throws Exception
      */
-    public static function saveTagsForResource($resourceName, $objectId, $submittedValues, $iIdTemplate = '', $bNotDelete = false)
+    public static function saveTagsForResource($resourceName, $objectId, $submittedValues, $iIdTemplate = '', $bNotDelete = false, $sGlobal)
     {
         $resourceName = self::convertResource($resourceName);
         if (!in_array($resourceName, static::$resourceType)) {
@@ -301,7 +302,7 @@ class TagsRepository
         
         foreach ($submittedValues as $s => $tagName) {
             if (!is_numeric($tagName)) {
-                self::add($tagName, $resourceName, $objectId, 1, $iIdTemplate);
+                self::add($tagName, $resourceName, $objectId, $sGlobal, $iIdTemplate);
             } else {
                 self::associateTagWithResource($resourceName, $tagName, $objectId, $iIdTemplate);
             }

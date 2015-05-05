@@ -168,7 +168,7 @@ class ServiceTemplateController extends FormController
             }
             
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false);
+                TagsRepository::saveTagsForResource(self::$objectName, $givenParameters['object_id'], $aTags, '', false, 1);
             }
         }
         
@@ -262,7 +262,7 @@ class ServiceTemplateController extends FormController
                 }
             }
             if (count($aTags) > 0) {
-                TagsRepository::saveTagsForResource('service', $id, $aTags, '', false);
+                TagsRepository::saveTagsForResource('service', $id, $aTags, '', false, 1);
             }
         }
         
