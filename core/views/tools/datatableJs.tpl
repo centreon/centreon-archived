@@ -546,8 +546,8 @@
         {/if}
 
         var requestSent = true;
-        $('input.centreon-search').on('keyup', function(e) {
-            if (e.keyCode == 13) {
+        $('input.centreon-search').on('blur keyup', function(e) {
+            if (e.type === 'blur' || e.keyCode == 13) {
                 oTable.api().column($(this).data('column-index'))
                     .search(this.value)
                     .draw();
@@ -565,22 +565,6 @@
                 }
                 $( "input[name='advsearch']" ).val( advString.trim() );
             }
-        }).on('blur', function(e) {
-            /* Fill the advanced search */
-            var advString = $( "input[name='advsearch']" ).val();
-            var searchTag = $( this ).data( "searchtag" );
-            var tagRegex = new RegExp( "(^| )" + searchTag + ":((?![\"'])\\S+|\".*\"|'.*')", "g" );
-            var splitRegex = new RegExp( "([^\\s\"']+|\"([^\"]*)\"|'([^']*)')", "g" );
-
-            /* Remove the existing values */
-            advString = advString.replace( tagRegex, "").trim();
-            while ( match = splitRegex.exec( $( this ).val() ) ) {
-                advString += " " + searchTag + ":" + match[1];
-            }
-            $( "input[name='advsearch']" ).val( advString.trim() );
-            oTable.api().column($(this).data('column-index'))
-                .search(this.value)
-                .draw();
         });
         
         $('select.centreon-search').on('change', function(e) {
