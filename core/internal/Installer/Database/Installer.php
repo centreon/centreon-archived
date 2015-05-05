@@ -35,6 +35,11 @@
  */
 namespace Centreon\Internal\Installer\Database;
 
+use Centreon\Internal\Di;
+use Centreon\Internal\Module\Informations;
+use Centreon\Custom\Propel\CentreonMysqlPlatform; 
+
+
 /**
  * 
  */
@@ -65,24 +70,36 @@ class Installer
     private $propelDbConnector;
     
     /**
+     *
+     * @var type 
+     */
+    private $appConfig;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $di;
+    
+    /**
      * 
      */
     public function __construct()
     {
         ini_set('memory_limit', '-1');
-        $di = Di::getDefault();
-        $config = $di->get('config');
+        $this->di = Di::getDefault();
+        $this->appConfig = $this->di->get('config');
         
         $targetDb = 'db_centreon';
-        $this->dbConnector = $di->get($targetDb);
+        $this->dbConnector = $this->di->get($targetDb);
         
         // Configuration for Propel
         $this->propelConfigParams = array(
             'propel.project' => 'centreon',
             'propel.database' => 'mysql',
-            'propel.database.url' => $config->get($targetDb, 'dsn'),
-            'propel.database.user' => $config->get($targetDb, 'username'),
-            'propel.database.password' => $config->get($targetDb, 'password')
+            'propel.database.url' => $this->appConfig->get($targetDb, 'dsn'),
+            'propel.database.user' => $this->appConfig->get($targetDb, 'username'),
+            'propel.database.password' => $this->appConfig->get($targetDb, 'password')
         );
         
         // Set the Current Platform and DB Connection
@@ -106,7 +123,7 @@ class Installer
         $currentDb = $currentDbAppData->addDatabase(array('name' => 'centreon'));
         $this->propelDbConnector->parse($currentDb);
         
-        // Retreive target DB State
+        // Retrieve target DB State
         $updatedAppData = new \AppData($this->platform);
         self::getDbFromXml($updatedAppData, 'centreon');
         
@@ -135,5 +152,51 @@ class Installer
         
         // Empty Target DB
         self::deleteTargetDbSchema('centreon');
+    }
+    
+    /**
+     * 
+     * @param type $path
+     */
+    public function generateDiffClasses($path)
+    {
+        // Connection config
+        $connectionConf = array(
+            'centreon' => array(
+                'adapter' => 'Mysql',
+                'dsn' => $this->appConfig->get('db_centreon', 'dsn'),
+                'user' => $this->appConfig->get('db_centreon', 'username'),
+                'password' => $this->appConfig->get('db_centreon', 'password')
+            )
+        );
+        $myMigrationManager = new \PropelMigrationManager();
+        $myMigrationManager->setMigrationDir($path);
+        $myMigrationManager->setConnections($connectionConf);
+        $myMigrationManager->createMigrationTable('centreon');
+        /*$lastMigrationTimestamp = $myMigrationManager->getOldestDatabaseVersion();
+        
+        var_dump($myMigrationManager);
+        var_dump($lastMigrationTimestamp);
+        $path = '/tmp/';
+        // get Current Db State
+        $currentDbAppData = new \AppData($this->platform);
+        $currentDbAppData->setGeneratorConfig(new \GeneratorConfig($this->propelConfigParams));
+        $currentDb = $currentDbAppData->addDatabase(array('name' => 'centreon'));
+        $this->propelDbConnector->parse($currentDb);
+        
+        // Retrieve target DB State
+        $updatedAppData = new \AppData($this->platform);
+        self::getDbFromXml($updatedAppData, 'centreon');
+        
+        // Get diff between current db state and target db state
+        $diff = \PropelDatabaseComparator::computeDiff(
+            $currentDb,
+            $updatedAppData->getDatabase('centreon'),
+            false
+        );
+        $strDiff = $this->platform->getModifyDatabaseDDL($diff);
+        file_put_contents($path . "installSqlLog.sql", $strDiff);*/
+        
+        
     }
 }
