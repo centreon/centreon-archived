@@ -49,7 +49,7 @@ class BrokerController extends FormController
 {
     protected $objectDisplayName = 'Broker';
     public static $objectName = 'broker';
-    protected $objectBaseUrl = '/centreon-broker/broker';
+    protected $objectBaseUrl = '';
     protected $objectClass = '\CentreonBroker\Models\Broker';
     protected $datatableObject = '\CentreonBroker\Internal\BrokerDatatable';
     protected $repository = '\CentreonBroker\Repository\BrokerFormRepository';
@@ -60,7 +60,7 @@ class BrokerController extends FormController
      *
      *
      * @method post
-     * @route /update
+     * @route /broker/update
      */
     public function updateAction()
     {
@@ -99,7 +99,7 @@ class BrokerController extends FormController
     {
         $requestParam = $this->getParams('named');
         $objectFormUpdateUrl = $this->objectBaseUrl.'/update';
-        
+                
         $formModeUrl = $this->router->getPathFor(
             $this->objectBaseUrl.'/[i:id]',
             array(

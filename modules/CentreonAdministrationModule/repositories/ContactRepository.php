@@ -65,9 +65,9 @@ class ContactRepository extends Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+    public static $unicityFields = array(
         'fields' => array(
-            'contact' => 'cfg_contacts,contact_id,description'
+            'contact' => 'cfg_contacts, contact_id, description'
         ),
     );
     

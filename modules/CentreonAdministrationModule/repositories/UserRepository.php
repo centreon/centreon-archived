@@ -70,9 +70,9 @@ class UserRepository extends \CentreonAdministration\Repository\Repository
      *
      * @var type 
      */
-    protected static $unicityFields = array(
+    public static $unicityFields = array(
         'fields' => array(
-            'user' => 'cfg_users,user_id,login'
+            'user' => 'cfg_users, user_id, login'
         ),
     );
 
