@@ -21,6 +21,8 @@
         <column name="triggered_by" phpName="TriggeredBy" type="INTEGER" required="false"/>
         <column name="type" phpName="Type" type="SMALLINT" required="false"/>
         <column name="is_recurring" phpName="isRecurring" type="BOOLEAN" required="false"/>
+        <column name="recurring_interval" phpName="recurringInterval" type="INTEGER" required="false" />
+        <column name="recurring_timeperiod" phpName="recurringTimeperiod" type="VARCHAR" size="200" required="false" />
         <foreign-key foreignTable="rt_hosts" name="rt_downtimes_ibfk_1" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="host_id" foreign="host_id"/>
         </foreign-key>
