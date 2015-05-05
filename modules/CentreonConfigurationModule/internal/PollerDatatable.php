@@ -139,8 +139,8 @@ class PollerDatatable extends Datatable
             'title' => 'Is Running',
             'name' => 'running',
             'data' => 'running',
-            'orderable' => true,
-            'searchable' => true,
+            'orderable' => false,
+            'searchable' => false,
             'type' => 'string',
             'visible' => true,
             'source' => 'other',
@@ -149,13 +149,6 @@ class PollerDatatable extends Datatable
                 'parameters' => array(
                     '0' => '<span class="label label-danger">No</span>',
                     '1' => '<span class="label label-success">Yes</span>'
-                )
-            ),
-            'searchParam' => array(
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Yes' => '1',
-                    'No' => '0'
                 )
             )
         ),
