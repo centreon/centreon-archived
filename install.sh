@@ -207,7 +207,7 @@ access  notConfigGroup ""      any       noauth    exact  systemview none none
 includeAllDisks 10%
 EOF
 
-service snmpd restart
+service snmpd start
 
 # Install centreon-plugins
 git clone https://github.com/centreon/centreon-plugins.git /usr/lib/nagios/plugins/centreon-plugins/
@@ -238,6 +238,9 @@ usermod -a -G centreon-broker apache
 getent group centreon &>/dev/null || groupadd -r centreon
 getent passwd centreon &>/dev/null || useradd -g centreon -m -d /var/spool/centreon -r centreon
 usermod -a -G centreon apache
+
+# Needed to apply new groups to the process
+service httpd restart
 
 # Create default generation directory
 mkdir -p /tmp/broker/generate /tmp/broker/apply /tmp/engine/generate /tmp/engine/apply
