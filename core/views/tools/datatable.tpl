@@ -49,8 +49,8 @@
                 <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
             </div>
         </div>
-        <div class="col-md-4 sideRight" id="sideRight"></div>
    </div>
 </div>
+    <!--<div class="col-md-4 sideRight" id="sideRight"></div>-->
 
 

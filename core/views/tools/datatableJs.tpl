@@ -16,28 +16,30 @@
 
         /* Right side details */
 
+           // var tr = $('#datatable{$object} tbody');
+
+           //var $url_details = row.data('right_side_details');
+
             "rowCallback": function( row, data ) {
 
                 $(row).on('click', function(){
-                    //console.log(data);
 
-                   // var tr = $('#datatable{$object} tbody');
+                $(this).each(function(){
 
-                   //var $url_details = row.data('right_side_details');
+                    $.ajax({
+                          url: data.DT_RowData.right_side_details,
+                          type: "GET",
+                          dataType: 'html',
+                          success : function(e){
+                                //$('#sideRight').append(e);
 
-                        $.ajax({
-                              url: data.DT_RowData.right_side_details,
-                              type: "GET",
-                              dataType: 'html',
-                              success : function(e){
-                                 console.log(e);
-                                 $('#sideRight').append(e);
+                          },
+                          error : function(error){
+                          }
+                      });
 
-                              },
-                              error : function(error){
-                              }
-                          });
-                });
+                })
+            });
             },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
