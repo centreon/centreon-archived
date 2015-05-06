@@ -187,7 +187,9 @@ class HostTemplateController extends FormController
         if (isset($givenParameters['host_tags'])) {
             $aTagList = explode(",", $givenParameters['host_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1) {
+                $var = trim($var);
+                
+                if (!empty($var)) {
                     array_push($aTags, $var);
                 }
             }
@@ -279,7 +281,8 @@ class HostTemplateController extends FormController
         if (isset($givenParameters['host_tags'])) {
             $aTagList = explode(",", $givenParameters['host_tags']);
             foreach ($aTagList as $var) {
-                if (strlen($var)>1 && !in_array($var, $aTagsIdTpl)) {
+                $var = trim($var);
+                if (!empty($var)&& !in_array($var, $aTagsIdTpl)) {
                     array_push($aTags, $var);
                 }
             }

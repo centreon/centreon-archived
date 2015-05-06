@@ -105,7 +105,7 @@ class TagsRepository
                 )
             );
         }
-        
+   
         /* Insert relation tag */
         if (!self::isLink($resourceName, $resourceId, $tagId)) {
             self::associateTagWithResource($resourceName, $tagId, $resourceId, $iIdTemplate);
@@ -150,10 +150,11 @@ class TagsRepository
      * @param type $resourceName
      * @param int $resourceId
      * @param int $bGlobaux
+     * @param int $bWithHerited 
      * @return array
      * @throws Exception
      */
-    public static function getList($resourceName, $resourceId, $bGlobaux = 0)
+    public static function getList($resourceName, $resourceId, $bGlobaux = 0, $bWithHerited = 1)
     {
         $resourceName = self::convertResource($resourceName);
         if (!in_array($resourceName, static::$resourceType)) {
@@ -179,9 +180,12 @@ class TagsRepository
         if ($resourceId > 0) {
             $query .= " AND r.resource_id = :resource_id";
         }
-
-        $query .= " ORDER BY tagname ASC";
+        if ($bWithHerited == 0) {
+            $query .= " AND (template_id IS NULL OR template_id = 0) ";
+        }
         
+        $query .= " ORDER BY tagname ASC";
+      
         $stmt = $dbconn->prepare($query);
         
         if ($resourceId > 0) {
@@ -193,8 +197,6 @@ class TagsRepository
         }
         $stmt->execute();
         $tags = array();
-        
-        //echo $query;
         
         while ($row = $stmt->fetch()) {
             if ($bGlobaux == 0) {

@@ -13,6 +13,42 @@
         <!-- Init DataTable -->
 
         oTable = $('#datatable{$object}').dataTable({
+
+        /* Right side details */
+
+           // var tr = $('#datatable{$object} tbody');
+
+           //var $url_details = row.data('right_side_details');
+            "rowCallback": function( row, data ) {
+
+                var memRow = false;
+
+                $(row).on('click', function(){
+                    var elem = this;
+                    $.ajax({
+                          url: data.DT_RowData.right_side_details,
+                          type: "GET",
+                          dataType: 'html',
+                          success : function(e){
+                               if(memRow && elem === memRow){
+                                   $('#tableLeft').css('margin-right','0%');
+                                   $('#sideRight').css('display','none');
+                                   memRow = false;
+                               }else if(!memRow){
+                                   $('#tableLeft').css('margin-right','16%');
+                                   $('#sideRight').css('display','block');
+                                   $('#sideRight').html(e);
+                                   memRow = elem;
+                               }else{
+                                   $('#sideRight').html(e);
+                                   memRow = elem;
+                               }
+                          },
+                          error : function(error){
+                          }
+                      });
+                });
+            },
             "processing": true,
             "ajax": "{url_for url=$objectUrl}",
             "serverSide": true,
@@ -23,8 +59,8 @@
                 "processing": "Loading information. Please wait a moment."
             },
             {$datatableParameters.configuration}
-            responsive: true,
             'dom': "R<'row'r<'clear'><'col-sm-6'l><'col-sm-6 text-right'T C>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            responsive: true,
             "columns": [
                 {$datatableParameters.header.columnHeader}
             ],
@@ -719,7 +755,9 @@
           });
         });
 
+
         /* Delete search action */
+
         $( "#deleteView" ).on( "click", function( e ) {
           alertClose();
           if ( $( "input[name='filters']" ).val().trim() === "" ) {
