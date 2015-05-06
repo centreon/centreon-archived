@@ -91,7 +91,7 @@ class BusinessActivityRepository extends FormRepository
             $imgSrc = $router->getPathFor('/uploads/[*:image][png|jpg|gif|jpeg:format]', $routeAttr);
             $finalRoute .= '<img src="'.$imgSrc.'" style="width:16px;height:16px;">&nbsp;';
         } elseif (is_null($baIconResult['filename'])/* && !is_null($tplResult['host_tpl_id'])*/) {
-            $finalRoute .= "<i class='icon-BAM'></i>&nbsp;";
+            $finalRoute .= "<i class='icon-BAM ico-16'></i>&nbsp;";
         }
         
         return $finalRoute;
