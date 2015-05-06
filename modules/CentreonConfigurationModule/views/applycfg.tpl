@@ -96,12 +96,14 @@ $(function() {
               $csl.append(format_check_log(data2.output));
               $thisBtn.removeAttr('disabled');
             }).error(function(jqXHR2, textStatus2, errorThrown2) {
-              $csl.append(errorThrown2);
+              $csl.append('Invalid response from server<br>');
+              $csl.append('Error: ' + errorThrown2.message);
               $thisBtn.removeAttr('disabled');
             });
           }
         }).error(function(jqXHR, textStatus, errorThrown) {
-          $csl.append(errorThrown);
+          $csl.append('Invalid response from server<br>');
+          $csl.append('Error: ' + errorThrown.message);
           $thisBtn.removeAttr('disabled');
         });
       });
@@ -125,7 +127,8 @@ $(function() {
           $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {
-          $csl.append(errorThrown);
+          $csl.append('Invalid response from server<br>');
+          $csl.append('Error: ' + errorThrown.message);
           $thisBtn.removeAttr('disabled');
         });
       });
@@ -149,7 +152,8 @@ $(function() {
           $csl.append(format_check_log(data2.output));
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR2, textStatus2, errorThrown2) {
-          $csl.append(errorThrown2);
+          $csl.append('Invalid response from server<br>');
+          $csl.append('Error: ' + errorThrown2.message);
           $thisBtn.removeAttr('disabled');
         });
 
@@ -175,7 +179,8 @@ $(function() {
           $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {
-          $csl.append(errorThrown);
+          $csl.append('Invalid response from server<br>');
+          $csl.append('Error: ' + errorThrown.message);
           $thisBtn.removeAttr('disabled');
         });
       });
@@ -201,7 +206,8 @@ $(function() {
           $csl.append(data.output);
           $thisBtn.removeAttr('disabled');
         }).error(function(jqXHR, textStatus, errorThrown) {
-          $csl.append(errorThrown);
+          $csl.append('Invalid response from server<br>');
+          $csl.append('Error: ' + errorThrown.message);
           $thisBtn.removeAttr('disabled');
         }); 
       });

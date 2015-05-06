@@ -10,4 +10,9 @@ external/bin/centreonConsole core:module:manage:install moduleName=centreon-brok
 external/bin/centreonConsole core:module:manage:install moduleName=centreon-engine
 external/bin/centreonConsole core:module:manage:install moduleName=centreon-performance 
 
+# Purge previously generated conf
+rm -rf /tmp/engine/generate/*
+rm -rf /tmp/engine/apply/*
+rm -rf /tmp/broker/apply/*
+rm -rf /tmp/broker/generate/*
 

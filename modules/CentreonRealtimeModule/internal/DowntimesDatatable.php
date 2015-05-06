@@ -103,8 +103,8 @@ class DowntimesDatatable extends Datatable
             'cast' => array(
                 'type' => 'select',
                 'parameters' =>array(
-                    '1' => "<i class='fa fa-rss'></i>",
-                    '2' => "<i class='fa fa-desktop'></i>",
+                    '1' => "<i class='icon-service ico-16'></i>",
+                    '2' => "<i class='icon-host ico-16'></i>",
                 )
             ),
             'searchParam' => array(
@@ -169,17 +169,6 @@ class DowntimesDatatable extends Datatable
             'type' => 'string',
             'visible' => true,
             'width' => '10%',
-            'className' => 'cell_center'
-        ),
-        array (
-            'title' => 'Comments',
-            'name' => 'comment_data',
-            'data' => 'comment_data',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'width' => '40%',
             'className' => 'cell_center'
         ),
         array (
@@ -257,6 +246,18 @@ class DowntimesDatatable extends Datatable
             'width' => '5%',
             'className' => 'cell_center'
         ),
+        array (
+            'title' => 'Comments',
+            'name' => 'comment_data',
+            'data' => 'comment_data',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => '40%',
+            'className' => 'cell_center'
+        ),
+
     );
 
     /**
@@ -295,7 +296,7 @@ class DowntimesDatatable extends Datatable
             if ($downtime['type'] == 1) {
                 foreach ($resultServiceDowntime as $downtimeObject) {
                     if ($downtimeObject['downtime_id'] === $downtime['downtime_id']) {
-                        $downtime['object_name'] = '<a href="/centreon-realtime/service/' . $downtimeObject['service_id'] . '">' . $downtimeObject['name'].' '.$downtimeObject['description'] . '</a>';
+                        $downtime['object_name'] = '<a href="/centreon-realtime/service/' . $downtimeObject['service_id'] . '">' . $downtimeObject['name'].' / '.$downtimeObject['description'] . '</a>';
                     }
                 }
             } else if ($downtime['type'] == 2) {

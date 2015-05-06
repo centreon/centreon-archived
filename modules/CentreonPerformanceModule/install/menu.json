@@ -9,7 +9,7 @@
       	"menus": [ {
                   "name" : "Graph",
                   "short_name" : "graph",
-                  "icon_class": "fa fa-bar-chart-o",
+                  "icon_class": "icon-perf",
                   "route" : "/centreon-performance/graph"
       	}]
     },
@@ -20,7 +20,7 @@
         {
           "name": "Performance",
           "short_name": "configuration_performance",
-          "icon_class": "fa fa-bar-chart",
+          "icon_class": "icon-perf",
           "menus": [
             {
               "name": "Graph Template",
