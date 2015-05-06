@@ -57,6 +57,9 @@ class Hosttemplate extends CentreonBaseModel
         "\CentreonConfiguration\Models\Relation\Host\Hostparents",
         "\CentreonConfiguration\Models\Relation\Host\Hostchildren"
     );
+    protected static $basicFilters = array(
+        'host_register' => '0',
+    );
     
     /**
      * Used for inserting object into database

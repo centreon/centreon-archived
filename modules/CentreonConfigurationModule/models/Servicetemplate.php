@@ -49,6 +49,9 @@ class Servicetemplate extends CentreonBaseModel
     protected static $table = "cfg_services";
     protected static $primaryKey = "service_id";
     protected static $uniqueLabelField = "service_description";
+    protected static $basicFilters = array(
+        'service_register' => '0',
+    );
     
     /**
      * Used for inserting object into database
