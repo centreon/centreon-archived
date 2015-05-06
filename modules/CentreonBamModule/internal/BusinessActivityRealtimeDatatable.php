@@ -103,24 +103,6 @@ class BusinessActivityRealtimeDatatable extends Datatable
             'visible' => false,
         ),
         array (
-            'title' => 'Type',
-            'name' => 'ba_type_id',
-            'data' => 'ba_type_id',
-            'orderable' => true,
-            'searchable' => true,
-            'type' => 'string',
-            'visible' => true,
-            'width' => 70,
-            'searchParam' => array(
-                'type' => 'select',
-                'additionnalParams' => array(
-                    'Business Unit' => '1',
-                    'Application' => '2',
-                    'Middleware' => '3'
-                )
-            ),
-        ),
-        array (
             'title' => 'Business Activity',
             'name' => 'name',
             'data' => 'name',
@@ -166,7 +148,25 @@ class BusinessActivityRealtimeDatatable extends Datatable
             'width' => '50px',
             'className' => 'cell_center'
         ),
-         array (
+        array (
+            'title' => 'Type',
+            'name' => 'ba_type_id',
+            'data' => 'ba_type_id',
+            'orderable' => true,
+            'searchable' => true,
+            'type' => 'string',
+            'visible' => true,
+            'width' => 70,
+            'searchParam' => array(
+                'type' => 'select',
+                'additionnalParams' => array(
+                    'Business Unit' => '1',
+                    'Application' => '2',
+                    'Middleware' => '3'
+                )
+            ),
+        ),
+        array (
             'title' => 'Availability',
             'name' => 'current_level',
             'data' => 'current_level',

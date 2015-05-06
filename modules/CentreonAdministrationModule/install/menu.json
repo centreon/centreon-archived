@@ -2,7 +2,7 @@
     {
       "name": "Administration",
       "short_name": "administration",
-      "icon_class": "fa fa-folder-open",
+      "icon_class": "icon-administration",
       "bgcolor": "#FA5858",
       "block": "root",
       "order": 10,
