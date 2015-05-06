@@ -155,7 +155,7 @@ class ServiceTemplateDatatable extends Datatable
             "width" => '40px'
         ),
         array (
-            'title' => 'Atp',
+            'title' => 'Attempts',
             'name' => 'service_max_check_attempts',
             'data' => 'service_max_check_attempts',
             'orderable' => false,
