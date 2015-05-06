@@ -42,7 +42,7 @@ use CentreonRealtime\Models\Host;
 use Centreon\Internal\Utils\Datetime;
 use Centreon\Internal\Datatable;
 use CentreonAdministration\Repository\TagsRepository;
-
+use Centreon\Internal\Di;
 /**
  * Description of ServiceDatatable
  *
@@ -283,6 +283,7 @@ class ServiceDatatable extends Datatable
      */
     protected function formatDatas(&$resultSet)
     {
+        $router = Di::getDefault()->get('router');
         $previousHost = '';
         HostConfigurationRepository::setObjectClass('\CentreonConfiguration\Models\Host');
         foreach ($resultSet as $key => &$myServiceSet) {
@@ -308,6 +309,12 @@ class ServiceDatatable extends Datatable
             }
             
             $icon = ServiceConfigurationRepository::getIconImage($myServiceSet['service_id']);
+            $myServiceSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-realtime/service/')
+                . $myServiceSet['host_id']
+                . '/'.$myServiceSet['service_id']
+                . '/tooltip';
+            
+            
             $myServiceSet['description'] = '<span data-overlay-url="/centreon-realtime/service/'
                 . $myServiceSet['host_id']
                 . '/'.$myServiceSet['service_id']

@@ -370,34 +370,6 @@ class Form
         {
             $helpButton = '';
 
-            /*if (isset($inputElement['label_help'])) {
-                $helpButton = '<button id="'
-                    . $inputElement['name'] . '_help" type="button" class="btn btn-sm btn-info">?</button>';
-                $helpBubble = '$("#' . $inputElement['name'] . '_help").qtip({
-                                    content: {
-                                        text: "'.str_replace('"', '\"', $inputElement['label_help']).'",
-                                        title: "'.$inputElement['label_label'].' Help",
-                                        button: true
-                                    },
-                                    position: {
-                                        my: "top right",
-                                        at: "bottom left",
-                                        target: $("#' . $inputElement['name'] . '_help") // my target
-                                    },
-                                    show: {
-                                        event: "click",
-                                        solo: "true"
-                                    },
-                                    style: {
-                                        classes: "qtip-bootstrap"
-                                    },
-                                    hide: {
-                                        event: "unfocus"
-                                    }
-                                });';
-                $this->tpl->addCustomJs($helpBubble);
-            }*/
-
             return $helpButton;
         }
     

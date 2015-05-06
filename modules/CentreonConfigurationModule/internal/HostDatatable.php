@@ -278,19 +278,28 @@ class HostDatatable extends Datatable
             $myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'.
                 $myHostSet['host_name'];
 
-            /* Host State */
-            $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
-                RealTimeHostRepository::getStatus($myHostSet['host_id'])
-            );
+           
+            $myHostSet['DT_RowData']['right_side_details'] = $router->getPathFor('/centreon-configuration/host/snapshot/').$myHostSet['host_id'];
+
+            /*$myHostSet['host_name'] ='<span class="icoListing">'.HostRepository::getIconImage($myHostSet['host_name']).'</span>'
+                $myHostSet['host_name'];*/
+
+                /* Host State */
+                $myHostSet['host_name'] .= RealTimeHostRepository::getStatusBadge(
+                    RealTimeHostRepository::getStatus($myHostSet['host_id'])
+                );
 
             /* Templates */
             $myHostSet['host_template']  = "";
+            //$myHostSet['DT_RowData']['host_template']  = array();
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
             foreach ($templates as $template) {
                 $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/')
                 . $template['id'].'"><a class="overlay" href="'
                 . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
                 . '"><i class="fa fa-shield"></i></a></span>';
+
+                //$myHostSet['DT_RowData']['host_template'][] = $router->getPathFor('/centreon-configuration/hosttemplate/viewconf/'). $template['id'];
             }
 
             /* Display human readable the check/retry interval */
@@ -300,6 +309,7 @@ class HostDatatable extends Datatable
             /* Tags */
             $myHostSet['tagname']  = "";
             $aTags = TagsRepository::getList('host', $myHostSet['host_id'], 2);
+
             foreach ($aTags as $oTags) {
                 $myHostSet['tagname'] .= TagsRepository::getTag('host', $myHostSet['host_id'], $oTags['id'], $oTags['text'], $oTags['user_id'], $oTags['template_id']);
             }

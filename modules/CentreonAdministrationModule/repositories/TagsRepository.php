@@ -198,8 +198,6 @@ class TagsRepository
         $stmt->execute();
         $tags = array();
         
-        //echo $query;
-        
         while ($row = $stmt->fetch()) {
             if ($bGlobaux == 0) {
                 $sField = $row['tag_id'];
