@@ -30,9 +30,10 @@
                               type: "GET",
                               dataType: 'html',
                               success : function(e){
-                                 console.log(e);
-                                 $('#sideRight').append(e);
-
+                                 //console.log(e);
+                                 $('#hostListing').addClass('col-lg-10').removeClass('col-lg-12');
+                                 $('#sideRight').addClass('col-lg-2');
+                                 $('#hostListing').bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){ $('#sideRight').html(e); });
                               },
                               error : function(error){
                               }
