@@ -19,31 +19,34 @@
            // var tr = $('#datatable{$object} tbody');
 
            //var $url_details = row.data('right_side_details');
-
             "rowCallback": function( row, data ) {
 
+                var memRow = false;
+
                 $(row).on('click', function(){
-                    //console.log(data);
-
-                   // var tr = $('#datatable{$object} tbody');
-
-                   //var $url_details = row.data('right_side_details');
-
-                        $.ajax({
-                              url: data.DT_RowData.right_side_details,
-                              type: "GET",
-                              dataType: 'html',
-                              success : function(e){
-  
+                    var elem = this;
+                    $.ajax({
+                          url: data.DT_RowData.right_side_details,
+                          type: "GET",
+                          dataType: 'html',
+                          success : function(e){
+                               if(memRow && elem === memRow){
+                                   $('#tableLeft').css('margin-right','0%');
+                                   $('#sideRight').css('display','none');
+                                   memRow = false;
+                               }else if(!memRow){
                                    $('#tableLeft').css('margin-right','16%');
                                    $('#sideRight').css('display','block');
                                    $('#sideRight').html(e);
-                                   
-
-                              },
-                              error : function(error){
-                              }
-                          });
+                                   memRow = elem;
+                               }else{
+                                   $('#sideRight').html(e);
+                                   memRow = elem;
+                               }
+                          },
+                          error : function(error){
+                          }
+                      });
                 });
             },
             "processing": true,
