@@ -64,7 +64,7 @@ class TagController extends Controller
     
     public static $disableButton = true;
     
-    public static $displayActionBar = true; 
+    public static $displayActionBar = false; 
     
     /**
      *
