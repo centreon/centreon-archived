@@ -217,7 +217,7 @@ class HostDatatable extends Datatable
             'className' => "cell_center"
         ),
         array (
-            'title' => 'Atp',
+            'title' => 'Attempts',
             'name' => 'host_max_check_attempts',
             'data' => 'host_max_check_attempts',
             'orderable' => false,
