@@ -8,7 +8,7 @@
 
 
    <div class="ibox float-e-margins col-lg-12" id="hostListing">
-        <div class="ibox-content">
+        <div class="ibox-content" id="tableLeft">
             <!-- Add / Actions -->
             <div class="buttonGroup">
                 {if $displayActionBar === true}
@@ -53,8 +53,9 @@
                 <table class="table table-striped table-bordered table-hover centreon_table" id="datatable{$object}" ></table>
             </div>
         </div>
+            <div id="sideRight" style="position:absolute;display:none;top:0;right:0;width:15%;"   ></div>
    </div>
-                        <div id="sideRight"    ></div>
+   
 </div>
     <!--<div class="col-md-4 sideRight" id="sideRight"></div>-->
 

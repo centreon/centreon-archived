@@ -34,14 +34,11 @@
                               type: "GET",
                               dataType: 'html',
                               success : function(e){
-                                 //console.log(e);
-                                 if($('#hostListing').hasClass('col-lg-12')){
-                                    $('#hostListing').addClass('col-lg-10').removeClass('col-lg-12');
-                                    $('#sideRight').addClass('col-lg-2');
-                                    $('#hostListing').bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){ $('#sideRight').html(e); });     
-                                 }else{
-                                     $('#sideRight').html(e);
-                                 }
+  
+                                   $('#tableLeft').css('margin-right','16%');
+                                   $('#sideRight').css('display','block');
+                                   $('#sideRight').html(e);
+                                   
 
                               },
                               error : function(error){
