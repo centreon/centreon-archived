@@ -226,7 +226,7 @@ class HostTemplateRepository extends Repository
      */
     public static function getConfigurationData($hostId)
     {
-        return Host::getParameters($hostId, "*");
+        return HostTemplate::getParameters($hostId, "*");
     }
 
     /**
