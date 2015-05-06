@@ -157,7 +157,7 @@ class HostDatatable extends Datatable
             'orderable' => true,
             'searchable' => true,
             'type' => 'string',
-            'visible' => false,
+            'visible' => true,
         ),
         array (
             'title' => 'IP Address / DNS',
@@ -293,19 +293,14 @@ class HostDatatable extends Datatable
                 RealTimeHostRepository::getStatus($myHostSet['host_id'])
             );
 
-
             /* Templates */
             $myHostSet['host_template']  = "";
             $templates = HostRepository::getTemplateChain($myHostSet['host_id'], array(), 1);
-            $myHostSet['host_template'] .= '<span>'.count($templates).'</span>';
-
             foreach ($templates as $template) {
-               /* $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/').
-                    $template['id'].'"><a class="overlay" href="'.
-                    $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id'])).
-                    '"><i class="fa '.
-                    $template['ico'].
-                    '"></i></a></span>';
+                $myHostSet['host_template'] .= '<span class="badge alert-success" data-overlay-url="'.$router->getPathFor('/centreon-configuration/hosttemplate/viewconf/')
+                . $template['id'].'"><a class="overlay" href="'
+                . $router->getPathFor("/centreon-configuration/hosttemplate/[i:id]", array('id' => $template['id']))
+                . '"><i class="fa fa-shield"></i></a></span>';
             }
             
             /* Tags */
