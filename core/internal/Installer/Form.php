@@ -185,7 +185,7 @@ class Form
     public static function insertValidators($validatorsList)
     {
         foreach($validatorsList as $validator) {
-            $validatorId = Validators::getIdByParamaters('name', array($validator['name']));
+            $validatorId = Validators::getIdByParameter('name', array($validator['name']));
             if (count($validatorId) == 0) {
                 Validators::insert($validator);
             }

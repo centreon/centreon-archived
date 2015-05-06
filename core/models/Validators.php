@@ -36,8 +36,6 @@
 
 namespace Centreon\Models;
 
-use CentreonBaseModel;
-
 /**
  * Used for interacting with commands
  *
@@ -45,7 +43,7 @@ use CentreonBaseModel;
  */
 class Validators extends CentreonBaseModel
 {
-    protected static $table = "cfg_validators";
+    protected static $table = "cfg_forms_validators";
     protected static $primaryKey = "validator_id";
     protected static $uniqueLabelField = "name";
 }

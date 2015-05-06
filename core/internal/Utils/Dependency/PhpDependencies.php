@@ -64,7 +64,7 @@ class PhpDependencies
         foreach ($dependencies as $dependency) {
             if (!extension_loaded($dependency)) {
                 
-                $message = 'Mandatory PHP module ' . $dependency . 'is not available';
+                $message = 'Mandatory PHP module ' . $dependency . ' is not available';
                 
                 if ($strict) {
                     if (($nbDependencies == 0) || (!$fullScan)) {

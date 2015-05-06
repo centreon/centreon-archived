@@ -69,7 +69,46 @@ class Db
         // Set the Current Platform and DB Connection
         $platform = new CentreonMysqlPlatform($db);
         
+        // Initilize Schema Parser
+        $propelDb = new \MysqlSchemaParser($db);
+        $propelDb->setGeneratorConfig(new \GeneratorConfig($configParams));
+        $propelDb->setPlatform($platform);
         
+        // get Current Db State
+        $currentDbAppData = new \AppData($platform);
+        $currentDbAppData->setGeneratorConfig(new \GeneratorConfig($configParams));
+        $currentDb = $currentDbAppData->addDatabase(array('name' => $targetDbName));
+        $propelDb->parse($currentDb);
+        
+        // Retreive target DB State
+        $updatedAppData = new \AppData($platform);
+        self::getDbFromXml($updatedAppData, 'centreon');
+        
+        // Get diff between current db state and target db state
+        $diff = \PropelDatabaseComparator::computeDiff(
+            $currentDb,
+            $updatedAppData->getDatabase('centreon'),
+            false
+        );
+        $strDiff = $platform->getModifyDatabaseDDL($diff);
+        file_put_contents("/tmp/installSqlLog.sql", $strDiff);
+        //$sqlToBeExecuted = \PropelSQLParser::parseString($strDiff);
+        //unlink("/tmp/installSqlLog.sql");
+        
+        // Loading Modules Pre Update Operations
+        self::preUpdate();
+        
+        // to sent to verify
+        //$tablesToBeDropped = self::getTablesToBeRemoved($sqlToBeExecuted);
+        
+        // Perform Update
+        \PropelSQLParser::executeString($strDiff, $db);
+        
+        // Loading Modules Post Update Operations
+        self::postUpdate();
+        
+        // Empty Target DB
+        self::deleteTargetDbSchema($targetDbName);
     }
     
     /**

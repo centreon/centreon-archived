@@ -44,12 +44,16 @@ use Centreon\Internal\Utils\Dependency\PhpDependencies;
 use Centreon\Internal\Exception\Module\MissingDependenciesException;
 use Centreon\Internal\Installer\Versioning;
 use Centreon\Internal\Installer\Form;
-use \Centreon\Internal\Exception\FilesystemException;
+use Centreon\Internal\Exception\FilesystemException;
+use Centreon\Internal\Hook;
+use Centreon\Models\Module;
+use Centreon\Internal\Di;
+use Centreon\Internal\Install\Db;
 
 /**
  * 
  */
-class AbstractModuleInstaller
+abstract class AbstractModuleInstaller
 {
     /**
      *
@@ -57,6 +61,12 @@ class AbstractModuleInstaller
      */
     protected $moduleSlug;
     
+    /**
+     *
+     * @var type 
+     */
+    protected $moduleId;
+
     /**
      *
      * @var type 
@@ -130,8 +140,23 @@ class AbstractModuleInstaller
         // Performing pre operation check
         $this->checkOperationValidity('install');
         
+        // Performing pre-install operation
+        $this->preInstall();
+        
         // Set TemporaryVersion
         $this->versionManager->setTemporaryVersion('install', true);
+        
+        // Install DB
+        $this->installDb();
+        
+        // Install menu
+        $this->installMenu();
+        
+        // Install Hooks
+        $this->installHooks();
+        
+        // Install Forms
+        $this->deployForms();
         
         // Deploy module Static files
         $this->deployStaticFiles();
@@ -139,6 +164,12 @@ class AbstractModuleInstaller
         // Set Final Version
         $this->versionManager->setVersion($this->moduleInfo['version']);
         $this->versionManager->updateVersionInDb($this->moduleInfo['version']);
+        
+        // Performing custom install task
+        $this->customInstall();
+        
+        // Performing post-install operation
+        $this->postInstall();
         
         // Ending Message
         $message = _("Installation of %s module complete");
@@ -171,6 +202,19 @@ class AbstractModuleInstaller
         
         // Set TemporaryVersion
         $this->versionManager->setTemporaryVersion('upgrade', true);
+        $this->moduleId = Informations::getModuleIdByName($this->moduleSlug);
+        
+        // Install DB
+        $this->installDb(false);
+        
+        // Install menu
+        $this->installMenu();
+        
+        // Install Forms
+        $this->deployForms();
+        
+        // Install Hooks
+        $this->installHooks();
         
         // Remove old static files and deploy new ones
         $this->removeStaticFiles();
@@ -211,9 +255,18 @@ class AbstractModuleInstaller
         
         // Set TemporaryVersion
         $this->versionManager->setTemporaryVersion('uninstall', true);
+        $this->moduleId = Informations::getModuleIdByName($this->moduleSlug);
+        
+        // 
+        $this->preRemove();
+        $this->removeHook();
         
         // Remove old static files
         $this->removeStaticFiles();
+        
+        // Custom removal of the module
+        $this->customRemove();
+        $this->postRemove();
         
         // Ending Message
         $message = _("Removal of %s module complete");
@@ -222,6 +275,69 @@ class AbstractModuleInstaller
                 sprintf($message, $this->moduleFullName),
                 'success'
             )
+        );
+    }
+    
+    /**
+     * 
+     */
+    abstract public function customPreInstall();
+    
+    /**
+     * 
+     */
+    abstract public function customInstall();
+    
+    /**
+     * 
+     */
+    abstract public function customRemove();
+    
+    /**
+     * 
+     * @throws \Exception
+     */
+    protected function preInstall()
+    {
+        $newModuleId = Module::getIdByParameter('name', $this->moduleInfo['shortname']);
+        if (count($newModuleId) == 0) {
+            $params = array(
+                'name' => $this->moduleInfo['shortname'],
+                'alias' => $this->moduleInfo['name'],
+                'description' => $this->moduleInfo['description'],
+                'author' => implode(", ", $this->moduleInfo['author']),
+                'name' => $this->moduleInfo['shortname'],
+                'version' => $this->moduleInfo['version'],
+                'isactivated' => '0',
+                'isinstalled' => '0',
+            );
+            Module::insert($params);
+            $newModuleId = Module::getIdByParameter('name', $this->moduleInfo['shortname']);
+            $this->moduleId = $newModuleId[0];
+        } else {
+            throw new \Exception("Module already installed");
+        }
+    }
+    
+    /**
+     * 
+     */
+    protected function postInstall()
+    {
+        $isinstalled = 1;
+        $isactivated = 1;
+        
+        if (isset($this->moduleInfo['isuninstallable']) && ($this->moduleInfo['isuninstallable'] === false)) {
+            $isinstalled = 2;
+        }
+        
+        if (isset($this->moduleInfo['isdisableable']) && ($this->moduleInfo['isdisableable'] === false)) {
+            $isactivated = 2;
+        }
+        
+        Module::update(
+            $this->moduleId,
+            array('isactivated' => $isactivated,'isinstalled' => $isinstalled)
         );
     }
     
@@ -328,7 +444,7 @@ class AbstractModuleInstaller
     {
         $status = PhpDependencies::checkDependencies($this->moduleInfo['php module dependencies'], false);
         if ($status['success'] === false) {
-            $exceptionMessage = _("The following dependencies are not satisfied") . " :\n";
+            $exceptionMessage = _("\nThe following dependencies are not satisfied") . " :\n";
             $exceptionMessage .= implode("\n    - ", $status['errors']);
             throw new MissingDependenciesException($this->colorizeMessage($exceptionMessage, 'red'), 1004);
         }
@@ -364,15 +480,13 @@ class AbstractModuleInstaller
     protected function installValidators()
     {
         $validatorFile = $this->moduleDirectory . '/install/validators.json';
-        if (!file_exists($validatorFile)) {
-            $exceptionMessage = "Validators file for this module doesn't exists";
-            throw new FilesystemException($this->colorizeMessage($exceptionMessage, 'red'), 1024);
+        if (file_exists($validatorFile)) {
+            $message = $this->colorizeText(_("Installation of validators..."));
+            $this->displayOperationMessage($message, false);
+            Form::insertValidators(json_decode(file_get_contents($validatorFile), true));
+            $message = $this->colorizeMessage(_("     Done"), 'green');
+            $this->displayOperationMessage($message);
         }
-        $message = $this->colorizeText(_("Installation of validators..."));
-        $this->displayOperationMessage($message, false);
-        Form::insertValidators(json_decode($validatorFile, true));
-        $message = $this->colorizeMessage(_("     Done"), 'green');
-        $this->displayOperationMessage($message);
     }
     
     /**
@@ -385,11 +499,140 @@ class AbstractModuleInstaller
             $this->displayOperationMessage($message, false);
             $this->installValidators();
             
+            $currentModuleId = Informations::getModuleIdByName($this->moduleSlug);
+            $myFormFiles = glob($this->moduleDirectory. '/install/forms/*.xml');
+            foreach ($myFormFiles as $formFile) {
+                Form::installFromXml($this->moduleId, $formFile);
+            }
             $message = $this->colorizeMessage(_("     Done"), 'green');
             $this->displayOperationMessage($message);
         } catch (FilesystemException $ex) {
             
         }
         
+    }
+    
+    /**
+     * 
+     */
+    protected function installHooks()
+    {
+        $hooksFile = $this->moduleDirectory . '/install/hooks.json';
+        $moduleHooksFile = $this->moduleDirectory . '/install/registeredHooks.json';
+        if (file_exists($hooksFile)) {
+            $hooks = json_decode(file_get_contents($hooksFile), true);
+            foreach ($hooks as $hook) {
+                Hook::insertHook($hook['name'], $hook['description']);
+            }
+        }
+        
+        if (file_exists($moduleHooksFile)) {
+            $moduleHooks = json_decode(file_get_contents($moduleHooksFile), true);
+            foreach ($moduleHooks as $moduleHook) {
+                Hook::register(
+                    $this->moduleId,
+                    $moduleHook['name'],
+                    $moduleHook['moduleHook'],
+                    $moduleHook['moduleHookDescription']
+                );
+            }
+        }
+    }
+    
+    /**
+     * 
+     */
+    protected function installMenu()
+    {
+        $filejson = $this->moduleDirectory . 'install/menu.json';
+        if (file_exists($filejson)) {
+            $menus = json_decode(file_get_contents($filejson), true);
+            self::parseMenuArray($this->moduleId, $menus);
+        }
+    }
+    
+    /**
+     * 
+     */
+    protected function remove()
+    {
+        $this->preRemove();
+        $this->removeHook();
+        $this->removeDb();
+        $this->postRemove();
+    }
+    
+    /**
+     * 
+     */
+    protected function preRemove()
+    {
+        if (is_null($this->moduleId)) {
+            $this->moduleId = $this->moduleInfo['id'];
+        }
+    }
+    
+    /**
+     * 
+     */
+    protected function postRemove()
+    {
+        Module::delete($this->moduleId);
+    }
+    
+    /**
+     * 
+     */
+    protected function removeHook()
+    {
+        $moduleHooksFile = $this->moduleDirectory . '/install/registeredHooks.json';
+        if (file_exists($moduleHooksFile)) {
+            $moduleHooks = json_decode(file_get_contents($moduleHooksFile), true);
+            foreach ($moduleHooks as $moduleHook) {
+                Hook::unregister(
+                    $this->moduleId,
+                    $moduleHook['name'],
+                    $moduleHook['moduleHook']
+                );
+            }
+        }
+    }
+    
+    /**
+     * @todo After seeing Propel
+     */
+    protected function installDb($installDefault = true)
+    {
+        // Initialize configuration
+        $di = Di::getDefault();
+        $config = $di->get('config');
+        $dbName = $config->get('db_centreon', 'dbname');
+        echo "Updating " . Colorize::colorizeText('centreon', 'blue', 'black', true) . " database... ";
+        Db::update($dbName);
+        echo Colorize::colorizeText('Done', 'green', 'black', true) . "\n";
+        if ($installDefault) {
+            Db::loadDefaultDatas($this->moduleDirectory . 'install/datas');
+        }
+    }
+    
+    /**
+     * 
+     * @param int $moduleId
+     * @param array $menus
+     * @param string $parent
+     */
+    public static function parseMenuArray($moduleId, $menus, $parent = null)
+    {
+        $i = 1;
+        foreach ($menus as $menu) {
+            if (!is_null($parent)) {
+                $menu['parent'] = $parent;
+            }
+            $menu['module'] = $moduleId;
+            Informations::setMenu($menu);
+            if (isset($menu['menus']) && count($menu['menus'])) {
+                self::parseMenuArray($moduleId, $menu['menus'], $menu['short_name']);
+            }
+        }
     }
 }

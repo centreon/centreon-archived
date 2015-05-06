@@ -46,13 +46,18 @@ class Installer extends AbstractModuleInstaller
 {
     /**
      * 
+     * @param type $moduleDirectory
      * @param type $moduleInfo
+     * @param type $launcher
      */
     public function __construct($moduleDirectory, $moduleInfo, $launcher)
     {
         parent::__construct($moduleDirectory, $moduleInfo, $launcher);
     }
     
+    /**
+     * 
+     */
     public function customPreInstall()
     {
         

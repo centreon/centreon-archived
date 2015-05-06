@@ -1,7 +1,7 @@
 {
     "name": "Centreon Engine",
     "shortname" : "centreon-engine",
-    "version": "2.99.2",
+    "version": "2.99.3",
     "author" : [
         "Centreon"
     ],

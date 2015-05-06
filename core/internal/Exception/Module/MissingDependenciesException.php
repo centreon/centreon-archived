@@ -49,7 +49,7 @@ class MissingDependenciesException extends Exception
      * @param integer $code
      * @param type $previous
      */
-    public function __construct($message, $code, $previous)
+    public function __construct($message, $code, $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

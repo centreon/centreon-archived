@@ -76,7 +76,7 @@ class Install extends AbstractInstall
             
             foreach($installOrder as $moduleName) {
                 $currentModule = $modulesToInstall['modules'][$moduleName];
-                $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos']);
+                $moduleInstaller = new $currentModule['classCall']($currentModule['directory'], $currentModule['infos'], 'console');
                 echo "Installing ". Colorize::colorizeText($moduleName, 'purple', 'black', true) . " module\n";
                 $moduleInstaller->install();
                 echo Colorize::colorizeText('Installation of module ' .$moduleName . ' done', 'green', 'black', true) . "\n";
